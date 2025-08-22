@@ -1,0 +1,36 @@
+# NutriSaur Project - Git Ignore File
+
+# Sensitive Configuration Files
+*.json
+!package.json
+!composer.json
+config_production.php
+
+# Database Configuration (contains credentials)
+config.php
+
+# Firebase Admin SDK (contains private keys)
+**/nutrisaur-ebf29-firebase-adminsdk-*.json
+
+# System Files
+.DS_Store
+Thumbs.db
+*.log
+
+# Backup Files
+*_backup.php
+*_broken.php
+*_original_backup.php
+
+# Cache Files
+*.cache
+fcm_token_cache.json
+
+# IDE Files
+.vscode/
+.idea/
+*.code-workspace
+
+# Temporary Files
+*.tmp
+*.temp
