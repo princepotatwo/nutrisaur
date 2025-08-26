@@ -30,13 +30,14 @@ header('Content-Type: text/html; charset=UTF-8');
             <h2>✅ PHP Environment Check</h2>
             <p><strong>PHP Version:</strong> <?php echo PHP_VERSION; ?></p>
             <p><strong>Server Software:</strong> <?php echo $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown'; ?></p>
-            <p><strong>Railway Port:</strong> <?php echo $_ENV['PORT'] ?? 'Not set'; ?></p>
+            <p><strong>Railway Port:</strong> <?php echo $_ENV['PORT'] ?? $_SERVER['SERVER_PORT'] ?? 'Not set'; ?></p>
+            <p><strong>Request URI:</strong> <?php echo $_SERVER['REQUEST_URI'] ?? 'Unknown'; ?></p>
         </div>
 
         <div class="status status-info">
             <h2>🔧 Extensions Check</h2>
             <?php
-            $required_extensions = ['mysqli', 'pdo', 'json', 'curl'];
+            $required_extensions = ['mysqli', 'pdo', 'json'];
             foreach ($required_extensions as $ext) {
                 if (extension_loaded($ext)) {
                     echo "<p class='success'>✅ $ext: Loaded</p>";
@@ -51,7 +52,6 @@ header('Content-Type: text/html; charset=UTF-8');
             <h2>📁 File System Check</h2>
             <?php
             $files_to_check = [
-                'settings_verified_mho.php' => 'Main MHO Settings',
                 'health.php' => 'Health Check Endpoint',
                 'index.php' => 'Main Entry Point'
             ];
@@ -78,7 +78,7 @@ header('Content-Type: text/html; charset=UTF-8');
             <p>If you see any ❌ errors:</p>
             <ul>
                 <li>Check Railway build logs</li>
-                <li>Verify nixpacks.toml configuration</li>
+                <li>Verify Dockerfile configuration</li>
                 <li>Ensure all required files are in the repository</li>
             </ul>
         </div>
