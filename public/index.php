@@ -43,6 +43,7 @@ switch ($path) {
             echo '<li><a href="/settings_verified_mho.php">MHO Settings</a> - Main application</li>';
             echo '<li><a href="/test_db_connection">Database Connection Test</a> - Test MySQL connection</li>';
             echo '<li><a href="/import_database">Import Database</a> - Import SQL data</li>';
+            echo '<li><a href="/simple_db_test">Simple DB Test</a> - Basic connection test</li>';
             echo '</ul>';
             echo '</div></body></html>';
         }
@@ -62,6 +63,10 @@ switch ($path) {
         
     case 'import_database':
         include 'import_database.php';
+        break;
+        
+    case 'simple_db_test':
+        include 'simple_db_test.php';
         break;
         
     default:
