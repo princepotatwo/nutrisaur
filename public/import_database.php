@@ -4,26 +4,33 @@
  * This script will import the nutrisaur_db.sql file into your Railway MySQL database
  */
 
-// Database connection details from Railway
-$host = 'mainline.proxy.rlwy.net';
-$port = '26063';
-$username = 'root';
-$password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-$database = 'railway';
+require_once 'config.php';
 
 echo "🚀 Starting Database Import for Nutrisaur...\n\n";
 
+// Show current configuration
+echo "🔍 Database Configuration:\n";
+$config = showDatabaseConfig();
+echo "📍 Host: " . $config['host'] . "\n";
+echo "🚪 Port: " . $config['port'] . "\n";
+echo "🗄️ Database: " . $config['database'] . "\n";
+echo "👤 Username: " . $config['username'] . "\n";
+echo "🔑 Password: [hidden]\n\n";
+
 try {
-    // Create connection
-    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$database", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Create connection using config function
+    $pdo = getDatabaseConnection();
+    
+    if (!$pdo) {
+        throw new Exception("Failed to establish database connection");
+    }
     
     echo "✅ Connected to Railway MySQL database successfully!\n";
-    echo "📍 Host: $host:$port\n";
-    echo "🗄️ Database: $database\n\n";
+    echo "📍 Host: {$config['host']}:{$config['port']}\n";
+    echo "🗄️ Database: {$config['database']}\n\n";
     
     // Read the SQL file
-    $sqlFile = 'app/nutrisaur_db (14).sql';
+    $sqlFile = '../app/nutrisaur_db (14).sql';
     
     if (!file_exists($sqlFile)) {
         throw new Exception("SQL file not found: $sqlFile");

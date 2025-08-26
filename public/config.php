@@ -4,12 +4,22 @@
  * Railway Production Environment
  */
 
-// Database Configuration
-$host = 'mainline.proxy.rlwy.net';
-$port = '26063';
-$dbname = 'railway';
-$dbUsername = 'root';
-$dbPassword = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+// Database Configuration - Use Railway environment variables
+$mysql_url = $_ENV['MYSQL_URL'] ?? 'mysql://root:nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy@mainline.proxy.rlwy.net:26063/railway';
+
+// Parse the MySQL URL
+function parseMySQLUrl($url) {
+    $parsed = parse_url($url);
+    return [
+        'host' => $parsed['host'] ?? 'mainline.proxy.rlwy.net',
+        'port' => $parsed['port'] ?? 26063,
+        'username' => $parsed['user'] ?? 'root',
+        'password' => $parsed['pass'] ?? 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy',
+        'database' => ltrim($parsed['path'] ?? 'railway', '/')
+    ];
+}
+
+$db_config = parseMySQLUrl($mysql_url);
 
 // Application Configuration
 define('APP_NAME', 'Nutrisaur');
@@ -26,12 +36,15 @@ ini_set('log_errors', 1);
 
 // Database connection function
 function getDatabaseConnection() {
-    global $host, $port, $dbname, $dbUsername, $dbPassword;
+    global $db_config;
     
     try {
-        $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname", $dbUsername, $dbPassword);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $dsn = "mysql:host={$db_config['host']};port={$db_config['port']};dbname={$db_config['database']};charset=utf8mb4";
+        $pdo = new PDO($dsn, $db_config['username'], $db_config['password'], [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 10
+        ]);
         return $pdo;
     } catch (PDOException $e) {
         // Log error but don't expose details to user
@@ -42,10 +55,16 @@ function getDatabaseConnection() {
 
 // Legacy mysqli connection for backward compatibility
 function getMysqliConnection() {
-    global $host, $port, $dbname, $dbUsername, $dbPassword;
+    global $db_config;
     
     try {
-        $mysqli = new mysqli($host, $dbUsername, $dbPassword, $dbname, $port);
+        $mysqli = new mysqli(
+            $db_config['host'], 
+            $db_config['username'], 
+            $db_config['password'], 
+            $db_config['database'], 
+            $db_config['port']
+        );
         
         if ($mysqli->connect_error) {
             throw new Exception("Connection failed: " . $mysqli->connect_error);
@@ -71,5 +90,17 @@ function testDatabaseConnection() {
         }
     }
     return false;
+}
+
+// Debug function to show current config
+function showDatabaseConfig() {
+    global $db_config;
+    return [
+        'host' => $db_config['host'],
+        'port' => $db_config['port'],
+        'username' => $db_config['username'],
+        'database' => $db_config['database'],
+        'mysql_url' => $_ENV['MYSQL_URL'] ?? 'Not set'
+    ];
 }
 ?>
