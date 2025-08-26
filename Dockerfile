@@ -29,8 +29,8 @@ RUN cp -r sss/* public/ 2>/dev/null || true
 # Create health check endpoint
 RUN echo '<?php echo json_encode(["status" => "healthy", "timestamp" => date("Y-m-d H:i:s")]); ?>' > public/health.php
 
-# Expose port
+# Expose port (Railway will set the actual port)
 EXPOSE 8000
 
-# Start PHP development server
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+# Start PHP development server using environment variable for port
+CMD php -S 0.0.0.0:${PORT:-8000} -t public
