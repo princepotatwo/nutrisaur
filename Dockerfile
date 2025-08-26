@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mysqli json
+# Install PHP extensions (json is built into PHP 8.1)
+RUN docker-php-ext-install pdo_mysql mysqli
 
 # Set working directory
 WORKDIR /var/www/html
