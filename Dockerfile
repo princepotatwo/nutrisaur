@@ -1,4 +1,4 @@
-FROM php:8.1-cli
+FROM php:8.1-apache
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install PHP extensions (json is built into PHP 8.1)
 RUN docker-php-ext-install pdo_mysql mysqli
+
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
 
 # Set working directory
 WORKDIR /var/www/html
@@ -27,10 +30,15 @@ RUN mkdir -p public
 RUN cp -r sss/* public/ 2>/dev/null || true
 
 # Create health check endpoint
-RUN echo '<?php header("Content-Type: application/json"); echo json_encode(["status" => "healthy", "timestamp" => date("Y-m-d H:i:s"), "port" => $_ENV["PORT"] ?? "8000"]); ?>' > public/health.php
+RUN echo '<?php header("Content-Type: application/json"); echo json_encode(["status" => "healthy", "timestamp" => date("Y-m-d H:i:s"), "port" => $_ENV["PORT"] ?? "80"]); ?>' > public/health.php
 
-# Expose port
-EXPOSE 8000
+# Set Apache document root to public directory
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Start PHP server on fixed port 8000
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public", "-d", "display_errors=1", "-d", "error_reporting=E_ALL"]
+# Expose port 80
+EXPOSE 80
+
+# Start Apache
+CMD ["apache2-foreground"]
