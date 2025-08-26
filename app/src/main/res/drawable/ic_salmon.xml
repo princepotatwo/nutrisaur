@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- Salmon body -->
+    <path
+        android:fillColor="#FF8A65"
+        android:pathData="M24,14 a10,6 0 1,0 0.1,0 z"/>
+    <!-- Center dot -->
+    <path
+        android:fillColor="#FFF"
+        android:pathData="M24,20 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
+</vector> 

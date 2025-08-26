@@ -1,0 +1,30 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Nutrisaur11" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Use the same FreshFood green colors for night theme -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryContainer">@color/colorPrimaryContainer</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        
+        <!-- Material3 specific colors to prevent violet override -->
+        <item name="colorPrimaryVariant">@color/colorPrimary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondary</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        
+        <!-- Override any potential violet colors -->
+        <item name="colorTertiary">@color/colorPrimary</item>
+        <item name="colorTertiaryContainer">@color/colorPrimaryContainer</item>
+        <item name="colorOnTertiary">@color/colorOnPrimary</item>
+        <item name="colorOnTertiaryContainer">@color/colorOnSecondary</item>
+        
+        <!-- Button style overrides -->
+        <item name="materialButtonStyle">@style/FreshFoodButton</item>
+        <item name="android:buttonStyle">@style/FreshFoodButton</item>
+    </style>
+</resources>

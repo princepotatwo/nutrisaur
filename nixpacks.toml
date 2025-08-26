@@ -1,0 +1,15 @@
+[phases.setup]
+nixPkgs = ["php", "php-extensions.mysqli", "php-extensions.pdo", "php-extensions.pdo_mysql", "php-extensions.json", "php-extensions.curl"]
+
+[phases.install]
+cmds = ["mkdir -p public"]
+
+[phases.build]
+cmds = [
+    "cp -r sss/* public/",
+    "echo '<?php phpinfo(); ?>' > public/health.php",
+    "echo 'Railway deployment successful!' > public/status.txt"
+]
+
+[start]
+cmd = "php -S 0.0.0.0:$PORT -t public"

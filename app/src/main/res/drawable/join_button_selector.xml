@@ -1,0 +1,5 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" android:drawable="@color/darker_gray" />
+    <item android:state_selected="true" android:drawable="@drawable/filled_green_button" />
+    <item android:drawable="@drawable/outline_green_button" />
+</selector> 

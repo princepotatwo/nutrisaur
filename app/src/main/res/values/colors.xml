@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- FreshFood Green Theme Colors -->
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimaryContainer">#81C784</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSecondary">#66BB6A</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
+    <color name="colorAccent">#4CAF50</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorOnSurface">#222222</color>
+    
+    <!-- Additional FreshFood Theme Colors -->
+    <color name="fresh_green_light">#A5D6A7</color>
+    <color name="fresh_green_dark">#388E3C</color>
+    <color name="fresh_green_accent">#66BB6A</color>
+    <color name="background_light">#F8F9FA</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="text_primary">#222222</color>
+    <color name="text_secondary">#666666</color>
+    <color name="text_hint">#BBBBBB</color>
+    <color name="border_color">#E0E0E0</color>
+    
+    <!-- Legacy colors for backward compatibility -->
+    <color name="darker_gray">#666666</color>
+    <color name="green">#4CAF50</color>
+    <color name="notification_color">#4CAF50</color>
+</resources>

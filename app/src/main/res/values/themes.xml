@@ -1,0 +1,151 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Nutrisaur11" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryContainer">@color/colorPrimaryContainer</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        
+        <!-- Material3 specific colors to prevent violet override -->
+        <item name="colorPrimaryVariant">@color/colorPrimary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondary</item>
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        
+        <!-- Disable Material3 dynamic colors -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        
+        <!-- Override any potential violet colors -->
+        <item name="colorTertiary">@color/colorPrimary</item>
+        <item name="colorTertiaryContainer">@color/colorPrimaryContainer</item>
+        <item name="colorOnTertiary">@color/colorOnPrimary</item>
+        <item name="colorOnTertiaryContainer">@color/colorOnSecondary</item>
+    </style>
+
+    <style name="Theme.Nutrisaur11" parent="Base.Theme.Nutrisaur11" />
+
+    <!-- FreshFood Green Button Styles -->
+    <style name="FreshFoodButton" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/freshfood_button_primary</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- FreshFood Outline Button Style -->
+    <style name="FreshFoodOutlineButton" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:background">@drawable/freshfood_button_outline</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- FreshFood Selection Button Style -->
+    <style name="FreshFoodSelectionButton" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/screening_button_text_selector</item>
+        <item name="android:background">@drawable/screening_button_selector</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- FreshFood EditText Style -->
+    <style name="FreshFoodEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="android:background">@drawable/freshfood_edittext_background</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:minHeight">52dp</item>
+    </style>
+
+    <!-- FreshFood Spinner Style -->
+    <style name="FreshFoodSpinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/freshfood_spinner_background</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:minHeight">52dp</item>
+    </style>
+
+    <!-- Legacy button style for backward compatibility -->
+    <style name="GreenOutlineButton" parent="FreshFoodOutlineButton" />
+
+    <!-- Custom theme for screening form with glassy design -->
+    <style name="Theme.ScreeningForm" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#66BB6A</item>
+        <item name="colorPrimaryVariant">#81C784</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#A5D6A7</item>
+        <item name="colorSecondaryVariant">#C8E6C9</item>
+        <item name="colorOnSecondary">#2C3E50</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">#66BB6A</item>
+        <!-- Background color -->
+        <item name="android:windowBackground">@drawable/gradient_green_background</item>
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">#2C3E50</item>
+        <item name="android:textColorSecondary">#7F8C8D</item>
+        <!-- Button styles -->
+        <item name="android:buttonStyle">@style/Widget.App.Button.Glossy</item>
+
+    </style>
+
+    <!-- Glassy button style -->
+    <style name="Widget.App.Button.Glossy" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/glassy_button_selector</item>
+        <item name="android:textColor">#2C3E50</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:elevation">8dp</item>
+        <item name="android:stateListAnimator">@anim/button_press_animator</item>
+        <item name="android:minHeight">60dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <!-- Primary button style for Next/Submit -->
+    <style name="Widget.App.Button.Primary" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/glassy_button_primary_selector</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:elevation">12dp</item>
+        <item name="android:stateListAnimator">@anim/button_press_animator</item>
+        <item name="android:minHeight">60dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+</resources>

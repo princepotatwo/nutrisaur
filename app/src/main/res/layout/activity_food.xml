@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="96dp"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#FFFFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recommended for You"
+                        android:textSize="20sp"
+                android:textStyle="bold"
+                        android:textColor="#1A4D2E"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Personalized nutrition recommendations based on your health profile"
+                        android:textSize="14sp"
+                        android:textColor="#4A7C59"
+                android:fontFamily="sans-serif"
+                        android:gravity="center"
+                        android:lineSpacingExtra="2dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Refresh and Customize Buttons in one line -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:id="@+id/btn_refresh"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Refresh"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/refresh_button_bg"
+                    android:layout_marginEnd="8dp"
+                    android:elevation="4dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:stateListAnimator="@null" />
+
+                <Button
+                    android:id="@+id/btn_customize_recommendations"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Customize"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A1A"
+                    android:background="@drawable/substitute_button_bg"
+                    android:layout_marginStart="8dp"
+                    android:elevation="4dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:stateListAnimator="@null" />
+            </LinearLayout>
+
+            <!-- Food Recommendation RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/food_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:clipToPadding="false"
+                android:paddingBottom="16dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Sheet for Substitutions -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/substitution_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="16dp"
+        app:cardBackgroundColor="#FFFFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="120dp"
+        android:visibility="gone">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+            
+            <!-- Header with close button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingBottom="16dp">
+                
+                <TextView
+                    android:id="@+id/substitution_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Substitute for Veggie Bowl"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#222"
+                    android:fontFamily="sans-serif" />
+                
+                <ImageView
+                    android:id="@+id/close_substitution"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_close"
+                    app:tint="#888"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="4dp" />
+            </LinearLayout>
+            
+            <!-- Substitution options -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/substitution_options_container">
+                
+                <!-- Options will be added dynamically -->
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Bottom Sheet for Dish Information -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dish_info_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="16dp"
+        app:cardBackgroundColor="#FFFFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="120dp"
+        android:visibility="gone">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            
+            <!-- Image Container with Close Button -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp">
+                
+                <!-- Dish Image - Fixed height, no margins -->
+                <ImageView
+                    android:id="@+id/dish_info_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_food_simple"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Food image" />
+                
+                <!-- Close button floating over image -->
+                <ImageView
+                    android:id="@+id/close_dish_info"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="top|end"
+                    android:src="@drawable/ic_close"
+                    app:tint="#FFFFFF"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="8dp"
+                    android:layout_margin="16dp"
+                    android:elevation="10dp" />
+            </FrameLayout>
+            
+            <!-- Title Section - Fixed height, no scroll -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="20dp"
+                android:background="#FFFFFF">
+                
+                <TextView
+                    android:id="@+id/dish_info_emoji"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🍽️"
+                    android:textSize="32sp"
+                    android:layout_marginEnd="12dp" />
+                
+                <TextView
+                    android:id="@+id/dish_info_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dish Name"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A1A" />
+            </LinearLayout>
+            
+            <!-- Scrollable Content Area - Takes remaining space -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"
+                android:padding="20dp"
+                android:background="#FFFFFF">
+                
+                <!-- Dish Information Content -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/dish_info_content_container">
+                    
+                    <!-- Description Section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Description"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:layout_marginBottom="8dp" />
+                    
+                    <TextView
+                        android:id="@+id/dish_info_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="A delicious Filipino dish with rich flavors and authentic taste. This traditional recipe combines fresh ingredients with aromatic spices to create a mouthwatering meal that's perfect for any occasion. The dish features tender meat or vegetables cooked in a flavorful sauce that's been perfected over generations."
+                        android:textSize="14sp"
+                        android:textColor="#4A4A4A"
+                        android:lineSpacingExtra="4dp"
+                        android:layout_marginBottom="20dp" />
+                    
+                    <!-- Ingredients Section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ingredients"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:layout_marginBottom="8dp" />
+                    
+                    <TextView
+                        android:id="@+id/dish_info_ingredients"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• 500g fresh meat (pork, chicken, or beef)\n• 4 cloves garlic, minced\n• 1 medium onion, diced\n• 2 tablespoons soy sauce\n• 1 tablespoon vinegar\n• 1 bay leaf\n• 1 teaspoon black peppercorns\n• 2 cups water or broth\n• Salt to taste\n• 2 tablespoons cooking oil"
+                        android:textSize="14sp"
+                        android:textColor="#4A4A4A"
+                        android:lineSpacingExtra="4dp"
+                        android:layout_marginBottom="20dp" />
+                    
+                    <!-- Nutritional Facts Section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Nutritional Facts"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:layout_marginBottom="8dp" />
+                    
+                    <TextView
+                        android:id="@+id/dish_info_nutrition"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• Calories: 350-450 kcal per serving\n• Protein: 25-35g\n• Fat: 15-25g\n• Carbohydrates: 5-10g\n• Fiber: 2-4g\n• Sodium: 800-1200mg"
+                        android:textSize="14sp"
+                        android:textColor="#4A4A4A"
+                        android:lineSpacingExtra="4dp"
+                        android:layout_marginBottom="20dp" />
+                    
+                    <!-- Health Benefits Section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Health Benefits"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:layout_marginBottom="8dp" />
+                    
+                    <TextView
+                        android:id="@+id/dish_info_benefits"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="• High protein content for muscle building and repair\n• Rich in essential amino acids\n• Good source of B vitamins for energy metabolism\n• Contains minerals like iron and zinc\n• Balanced meal option for active lifestyles"
+                        android:textSize="14sp"
+                        android:textColor="#4A4A4A"
+                        android:lineSpacingExtra="4dp"
+                        android:layout_marginBottom="20dp" />
+                    
+                    <!-- Cooking Method Section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Cooking Method"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:layout_marginBottom="8dp" />
+                    
+                    <TextView
+                        android:id="@+id/dish_info_cooking_method"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1. Heat oil in a large pot over medium heat\n2. Sauté garlic and onions until fragrant\n3. Add meat and brown on all sides\n4. Pour in soy sauce, vinegar, and water\n5. Add bay leaf and peppercorns\n6. Bring to boil, then simmer for 45-60 minutes\n7. Season with salt to taste\n8. Serve hot with steamed rice"
+                        android:textSize="14sp"
+                        android:textColor="#4A4A4A"
+                        android:lineSpacingExtra="4dp"
+                        android:layout_marginBottom="20dp" />
+                    
+                    <!-- Allergens Section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Allergens"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A1A"
+                        android:layout_marginBottom="8dp" />
+                    
+                    <TextView
+                        android:id="@+id/dish_info_allergens"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Contains: Soy sauce, Meat (pork/chicken/beef)"
+                        android:textSize="14sp"
+                        android:textColor="#E53E3E"
+                        android:lineSpacingExtra="4dp" />
+                    
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Glassy Bottom Nav Bar, floating, no text, only icons, using vector drawables -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bottom_nav"
+        android:layout_width="0dp"
+        android:layout_height="72dp"
+        app:cardCornerRadius="36dp"
+        app:cardElevation="16dp"
+        app:cardBackgroundColor="#FFFFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="4">
+            <LinearLayout
+                android:id="@+id/nav_home"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_home"
+                    app:tint="#B0B0B0" /> <!-- unselected: gray -->
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/nav_food"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_plate_simple"
+                    app:tint="#10B981" /> <!-- selected: green -->
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/nav_favorites"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_heart_simple"
+                    app:tint="#B0B0B0" /> <!-- unselected: gray -->
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/nav_account"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_person"
+                    app:tint="#B0B0B0" /> <!-- unselected: gray -->
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout> 

@@ -1,0 +1,543 @@
+package com.example.nutrisaur11;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+import android.content.Intent;
+import android.app.Activity;
+import com.example.nutrisaur11.UserPreferencesDbHelper;
+
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
+
+import org.json.JSONObject;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+public class FCMTokenManager {
+    private static final String TAG = "FCMTokenManager";
+    private static final String PREFS_NAME = "fcm_prefs";
+    private static final String KEY_FCM_TOKEN = "fcm_token";
+    private static final String KEY_LAST_REGISTRATION = "last_registration";
+    private static final String KEY_USER_EMAIL = "user_email";
+    private static final String KEY_USER_BARANGAY = "user_barangay";
+    
+    // Server endpoint for FCM token registration
+    private static final String SERVER_URL = Constants.API_BASE_URL + "sss/api/register_fcm_token.php";
+    
+    // Registration intervals
+    private static final long REGISTRATION_INTERVAL = TimeUnit.HOURS.toMillis(24); // 24 hours (daily sync)
+    private static final long RETRY_INTERVAL = TimeUnit.MINUTES.toMillis(30); // 30 minutes
+    
+    private Context context;
+    private SharedPreferences prefs;
+    private Handler handler;
+    private OkHttpClient httpClient;
+    private boolean isRegistrationInProgress = false;
+    
+    public FCMTokenManager(Context context) {
+        this.context = context;
+        this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        this.handler = new Handler(Looper.getMainLooper());
+        this.httpClient = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build();
+    }
+
+    /**
+     * Check with server if the given token exists
+     */
+    private boolean tokenExistsOnServer(String token) {
+        try {
+            okhttp3.HttpUrl url = okhttp3.HttpUrl.parse(Constants.API_BASE_URL + "sss/api/auto_register_fcm.php")
+                .newBuilder()
+                .addQueryParameter("fcm_token", token)
+                .build();
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url)
+                .get()
+                .build();
+            try (okhttp3.Response response = httpClient.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return false;
+                }
+                String body = response.body() != null ? response.body().string() : "";
+                org.json.JSONObject json = new org.json.JSONObject(body);
+                return json.optBoolean("token_exists", false);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to check token existence on server: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Initialize FCM token registration
+     * Call this when the app starts or user logs in
+     */
+    public void initialize() {
+        Log.d(TAG, "Initializing FCM token manager");
+        
+        // Get current FCM token
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    String token = task.getResult();
+                    Log.d(TAG, "FCM token obtained: " + token.substring(0, Math.min(50, token.length())) + "...");
+                    
+                    // Check if we need to register this token
+                    if (shouldRegisterToken(token)) {
+                        Log.d(TAG, "Token needs registration, sending to server");
+                        registerTokenWithServer(token);
+                    } else {
+                        Log.d(TAG, "Token already registered and up-to-date, skipping server call");
+                    }
+                } else {
+                    Log.e(TAG, "Failed to get FCM token", task.getException());
+                }
+            });
+        
+        // Schedule periodic token refresh (daily sync)
+        scheduleTokenRefresh();
+    }
+    
+    /**
+     * Initialize FCM token registration with user email
+     * Call this when the app starts and user is logged in
+     */
+    public void initializeWithUser(String userEmail) {
+        Log.d(TAG, "Initializing FCM token manager with user: " + userEmail);
+        
+        // Check if user has changed
+        String previousUser = prefs.getString(KEY_USER_EMAIL, "");
+        if (!previousUser.isEmpty() && !previousUser.equals(userEmail)) {
+            Log.d(TAG, "User changed from " + previousUser + " to " + userEmail + ", clearing previous token data");
+            // Clear previous user's token data to force new registration
+            prefs.edit().remove(KEY_FCM_TOKEN).remove(KEY_LAST_REGISTRATION).apply();
+        }
+        
+        // Save user email
+        prefs.edit().putString(KEY_USER_EMAIL, userEmail).apply();
+        
+        // Get current FCM token
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    String token = task.getResult();
+                    Log.d(TAG, "FCM token obtained: " + token.substring(0, Math.min(50, token.length())) + "...");
+                    
+                    // Decide registration in background to avoid blocking main thread
+                    new Thread(() -> {
+                        try {
+                            boolean shouldRegister = shouldRegisterToken(token);
+                            if (!shouldRegister) {
+                                // Double-check with server in case database was cleared
+                                boolean existsOnServer = tokenExistsOnServer(token);
+                                if (!existsOnServer) {
+                                    Log.d(TAG, "Server reports token is missing; will register now");
+                                    registerTokenWithServer(token);
+                                } else {
+                                    Log.d(TAG, "Token already registered and up-to-date on server, skipping");
+                                }
+                            } else {
+                                Log.d(TAG, "Token needs registration based on local checks; registering");
+                                registerTokenWithServer(token);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error deciding token registration: " + e.getMessage());
+                        }
+                    }).start();
+                } else {
+                    Log.e(TAG, "Failed to get FCM token", task.getException());
+                }
+            });
+        
+        // Schedule periodic token refresh
+        scheduleTokenRefresh();
+    }
+    
+    /**
+     * Register FCM token after user screening or profile update
+     * Call this when user completes screening or updates their location
+     */
+    public void registerTokenAfterScreening(String userEmail, String userBarangay) {
+        Log.d(TAG, "Registering token after screening for user: " + userEmail + " in " + userBarangay);
+        
+        // Save user info
+        prefs.edit()
+            .putString(KEY_USER_EMAIL, userEmail)
+            .putString(KEY_USER_BARANGAY, userBarangay)
+            .apply();
+        
+        // Get current token and register
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    String token = task.getResult();
+                    registerTokenWithServer(token, userEmail, userBarangay);
+                }
+            });
+    }
+    
+    /**
+     * Update user location and refresh FCM token
+     * Call this when user changes their location
+     */
+    public void updateUserLocation(String userEmail, String newBarangay) {
+        Log.d(TAG, "Updating user location for " + userEmail + " to " + newBarangay);
+        
+        // Update stored barangay
+        prefs.edit().putString(KEY_USER_BARANGAY, newBarangay).apply();
+        
+        // Force refresh token to update server with new location
+        forceTokenRefresh();
+    }
+    
+    /**
+     * Check if we should register the token
+     */
+    private boolean shouldRegisterToken(String newToken) {
+        String storedToken = prefs.getString(KEY_FCM_TOKEN, "");
+        long lastRegistration = prefs.getLong(KEY_LAST_REGISTRATION, 0);
+        long currentTime = System.currentTimeMillis();
+        
+        // Only register if:
+        // 1. Token is completely different from stored token (Firebase generated new token)
+        // 2. No token was ever stored (first time)
+        // 3. Last registration was more than 24 hours ago (daily refresh for server sync)
+        
+        if (storedToken.isEmpty()) {
+            Log.d(TAG, "No stored token found, will register");
+            return true;
+        }
+        
+        if (!newToken.equals(storedToken)) {
+            Log.d(TAG, "Token changed from Firebase, will register new token");
+            return true;
+        }
+        
+        // Only refresh every 24 hours for server sync, not every 6 hours
+        long dailyInterval = TimeUnit.HOURS.toMillis(24);
+        if ((currentTime - lastRegistration) > dailyInterval) {
+            Log.d(TAG, "Daily refresh interval reached, will sync with server");
+            return true;
+        }
+        
+        Log.d(TAG, "Token is the same and recently registered, skipping registration");
+        return false;
+    }
+    
+    /**
+     * Public method to check if token registration is needed
+     * Used by MyFirebaseMessagingService to determine if onNewToken should trigger registration
+     */
+    public boolean isTokenRegistrationNeeded() {
+        String storedToken = prefs.getString(KEY_FCM_TOKEN, "");
+        long lastRegistration = prefs.getLong(KEY_LAST_REGISTRATION, 0);
+        long currentTime = System.currentTimeMillis();
+        
+        // If no token stored, registration is needed
+        if (storedToken.isEmpty()) {
+            Log.d(TAG, "isTokenRegistrationNeeded: No stored token, registration needed");
+            return true;
+        }
+        
+        // If last registration was more than 24 hours ago, registration is needed for daily sync
+        long dailyInterval = TimeUnit.HOURS.toMillis(24);
+        if ((currentTime - lastRegistration) > dailyInterval) {
+            Log.d(TAG, "isTokenRegistrationNeeded: Daily sync interval reached, registration needed");
+            return true;
+        }
+        
+        Log.d(TAG, "isTokenRegistrationNeeded: Token recently registered, no registration needed");
+        return false;
+    }
+    
+    /**
+     * Register token with server
+     */
+    private void registerTokenWithServer(String token) {
+        String userEmail = prefs.getString(KEY_USER_EMAIL, "");
+        String userBarangay = prefs.getString(KEY_USER_BARANGAY, "");
+        
+        // If no barangay in preferences, try to fetch from database
+        if (userBarangay.isEmpty() && !userEmail.isEmpty()) {
+            userBarangay = fetchBarangayFromDatabase(userEmail);
+            if (!userBarangay.isEmpty()) {
+                // Save the fetched barangay
+                prefs.edit().putString(KEY_USER_BARANGAY, userBarangay).apply();
+                Log.d(TAG, "Fetched barangay from database: " + userBarangay);
+            } else {
+                Log.w(TAG, "No barangay found for user " + userEmail + ". FCM token will be registered without location data.");
+                Log.w(TAG, "User should complete screening to enable location-based notifications.");
+            }
+        }
+        
+        registerTokenWithServer(token, userEmail, userBarangay);
+    }
+    
+    /**
+     * Register token with server with user info
+     */
+    private void registerTokenWithServer(String token, String userEmail, String userBarangay) {
+        if (isRegistrationInProgress) {
+            Log.d(TAG, "Registration already in progress, skipping");
+            return;
+        }
+        
+        isRegistrationInProgress = true;
+        
+        try {
+            // Prepare request data
+            JSONObject requestData = new JSONObject();
+            requestData.put("fcm_token", token);
+            requestData.put("device_name", android.os.Build.MODEL);
+            requestData.put("user_email", userEmail);
+            requestData.put("user_barangay", userBarangay);
+            requestData.put("app_version", "1.0");
+            requestData.put("platform", "android");
+            
+            RequestBody body = RequestBody.create(
+                requestData.toString(), 
+                MediaType.parse("application/json; charset=utf-8")
+            );
+            
+            Request request = new Request.Builder()
+                .url(SERVER_URL)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+            
+            // Execute request in background
+            new Thread(() -> {
+                try {
+                    Response response = httpClient.newCall(request).execute();
+                    String responseBody = response.body() != null ? response.body().string() : "";
+                    
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "FCM token registered successfully: " + responseBody);
+                        
+                        // Save successful registration
+                        handler.post(() -> {
+                            prefs.edit()
+                                .putString(KEY_FCM_TOKEN, token)
+                                .putLong(KEY_LAST_REGISTRATION, System.currentTimeMillis())
+                                .apply();
+                            
+                            isRegistrationInProgress = false;
+                        });
+                        
+                    } else {
+                        Log.e(TAG, "Failed to register FCM token. HTTP " + response.code() + ": " + responseBody);
+                        
+                        // Schedule retry
+                        handler.post(() -> {
+                            isRegistrationInProgress = false;
+                            scheduleRetry();
+                        });
+                    }
+                    
+                } catch (IOException e) {
+                    Log.e(TAG, "Network error registering FCM token", e);
+                    
+                    // Schedule retry
+                    handler.post(() -> {
+                        isRegistrationInProgress = false;
+                        scheduleRetry();
+                    });
+                }
+            }).start();
+            
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating request JSON", e);
+            isRegistrationInProgress = false;
+        }
+    }
+    
+    /**
+     * Schedule token refresh
+     */
+    private void scheduleTokenRefresh() {
+        handler.postDelayed(() -> {
+            Log.d(TAG, "Performing scheduled token refresh");
+            
+            FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        String token = task.getResult();
+                        if (shouldRegisterToken(token)) {
+                            registerTokenWithServer(token);
+                        }
+                    }
+                    
+                    // Schedule next refresh
+                    scheduleTokenRefresh();
+                });
+                
+        }, REGISTRATION_INTERVAL);
+    }
+    
+    /**
+     * Schedule retry after failure
+     */
+    private void scheduleRetry() {
+        handler.postDelayed(() -> {
+            Log.d(TAG, "Retrying FCM token registration");
+            FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        String token = task.getResult();
+                        registerTokenWithServer(token);
+                    }
+                });
+        }, RETRY_INTERVAL);
+    }
+    
+    /**
+     * Get current stored token
+     */
+    public String getCurrentToken() {
+        return prefs.getString(KEY_FCM_TOKEN, "");
+    }
+    
+    /**
+     * Get user email
+     */
+    public String getUserEmail() {
+        return prefs.getString(KEY_USER_EMAIL, "");
+    }
+    
+    /**
+     * Get user barangay
+     */
+    public String getUserBarangay() {
+        return prefs.getString(KEY_USER_BARANGAY, "");
+    }
+    
+    /**
+     * Clear stored data (call on logout)
+     */
+    public void clearData() {
+        prefs.edit().clear().apply();
+        Log.d(TAG, "FCM data cleared");
+    }
+    
+    /**
+     * Clear FCM token data for current user (call when switching users)
+     */
+    public void clearTokenData() {
+        prefs.edit()
+            .remove(KEY_FCM_TOKEN)
+            .remove(KEY_LAST_REGISTRATION)
+            .apply();
+        Log.d(TAG, "FCM token data cleared for user switch");
+    }
+    
+    /**
+     * Fetch barangay from user_preferences database
+     */
+    private String fetchBarangayFromDatabase(String userEmail) {
+        try {
+            // Use the existing UserPreferencesDbHelper to fetch barangay
+            UserPreferencesDbHelper dbHelper = new UserPreferencesDbHelper(context);
+            android.database.sqlite.SQLiteDatabase db = dbHelper.getReadableDatabase();
+            
+            // Check if table exists first
+            android.database.Cursor tableCheck = db.rawQuery(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name=?", 
+                new String[]{UserPreferencesDbHelper.TABLE_NAME}
+            );
+            
+            if (tableCheck == null || !tableCheck.moveToFirst()) {
+                Log.w(TAG, "Table " + UserPreferencesDbHelper.TABLE_NAME + " does not exist");
+                if (tableCheck != null) tableCheck.close();
+                dbHelper.close();
+                return "";
+            }
+            tableCheck.close();
+            
+            // Check if barangay column exists
+            android.database.Cursor columnCheck = db.rawQuery(
+                "PRAGMA table_info(" + UserPreferencesDbHelper.TABLE_NAME + ")", 
+                null
+            );
+            
+            boolean hasBarangayColumn = false;
+            if (columnCheck != null) {
+                while (columnCheck.moveToNext()) {
+                    String columnName = columnCheck.getString(columnCheck.getColumnIndex("name"));
+                    if (UserPreferencesDbHelper.COL_BARANGAY.equals(columnName)) {
+                        hasBarangayColumn = true;
+                        break;
+                    }
+                }
+                columnCheck.close();
+            }
+            
+            if (!hasBarangayColumn) {
+                Log.w(TAG, "Column " + UserPreferencesDbHelper.COL_BARANGAY + " does not exist in table " + UserPreferencesDbHelper.TABLE_NAME);
+                dbHelper.close();
+                return "";
+            }
+            
+            String[] columns = {UserPreferencesDbHelper.COL_BARANGAY};
+            String selection = UserPreferencesDbHelper.COL_USER_EMAIL + " = ?";
+            String[] selectionArgs = {userEmail};
+            
+            android.database.Cursor cursor = db.query(
+                UserPreferencesDbHelper.TABLE_NAME,
+                columns,
+                selection,
+                selectionArgs,
+                null, null, null
+            );
+            
+            String barangay = "";
+            if (cursor != null && cursor.moveToFirst()) {
+                barangay = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_BARANGAY));
+                cursor.close();
+            }
+            
+            dbHelper.close();
+            Log.d(TAG, "Fetched barangay from database for " + userEmail + ": " + barangay);
+            return barangay != null ? barangay : "";
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching barangay from database: " + e.getMessage());
+            return "";
+        }
+    }
+    
+    /**
+     * Force token refresh (call when needed)
+     */
+    public void forceTokenRefresh() {
+        Log.d(TAG, "Forcing token refresh");
+        FirebaseMessaging.getInstance().deleteToken()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Old token deleted, getting new token");
+                    FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(tokenTask -> {
+                            if (tokenTask.isSuccessful() && tokenTask.getResult() != null) {
+                                String newToken = tokenTask.getResult();
+                                registerTokenWithServer(newToken);
+                            }
+                        });
+                }
+            });
+    }
+    
+}

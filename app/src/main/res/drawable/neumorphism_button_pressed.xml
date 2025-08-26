@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Bottom shadow (darker) - positioned to create lift effect -->
+    <item android:top="12dp" android:left="12dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#888888" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+    
+    <!-- Additional bottom shadow for more depth -->
+    <item android:top="10dp" android:left="10dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#999999" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+    
+    <!-- Extra bottom shadow for even more depth -->
+    <item android:top="8dp" android:left="8dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#AAAAAA" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+    
+    <!-- Main button with proper offset for 3D lift effect -->
+    <item android:top="0dp" android:left="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#F0F0F0" />
+            <corners android:radius="10dp" />
+            <stroke android:width="3dp" android:color="#666666" />
+        </shape>
+    </item>
+    
+    <!-- Top highlight for lift effect - more prominent for raised appearance -->
+    <item android:top="1dp" android:left="1dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <corners android:radius="9dp" />
+        </shape>
+    </item>
+    
+    <!-- Additional top highlight for more pronounced lift -->
+    <item android:top="2dp" android:left="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <corners android:radius="8dp" />
+        </shape>
+    </item>
+    
+    <!-- Extra top highlight for maximum lift effect -->
+    <item android:top="3dp" android:left="3dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <corners android:radius="7dp" />
+        </shape>
+    </item>
+</layer-list>

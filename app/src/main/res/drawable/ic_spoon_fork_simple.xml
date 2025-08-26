@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Fork -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M7,2L7,20L9,20L9,2L7,2ZM11,2L11,20L13,20L13,2L11,2ZM15,2L15,20L17,20L17,2L15,2ZM5,2L5,8L7,8L7,2L5,2ZM9,2L9,8L11,8L11,2L9,2ZM13,2L13,8L15,8L15,2L13,2ZM17,2L17,8L19,8L19,2L17,2Z" />
+    
+    <!-- Spoon -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M21,2L21,20L19,20L19,2L21,2ZM19,2L19,8C19,9.1 18.1,10 17,10C15.9,10 15,9.1 15,8L15,2L19,2Z" />
+</vector> 

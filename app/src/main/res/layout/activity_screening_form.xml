@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- Question Container -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navigation_buttons"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Page 1: Basic Information & Measurements -->
+            <LinearLayout
+                android:id="@+id/question_1_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/question_card_background"
+                android:padding="24dp"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Page 1: Basic Information &amp; Measurements"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="32dp" />
+
+                <!-- Birthday Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="When is your birthday?"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+
+                <Button
+                    android:id="@+id/birthday_picker_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                                            android:text="Select Birthday"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="32dp" />
+
+                <!-- Weight & Height Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What are your measurements?"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight (kg):"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/child_weight_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Enter weight in kilograms"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:textColorHint="#9E9E9E"
+                    android:fontFamily="sans-serif"
+                    android:background="@drawable/question_input_background"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:inputType="numberDecimal"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Height (cm):"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/child_height_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Enter height in centimeters"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:textColorHint="#9E9E9E"
+                    android:fontFamily="sans-serif"
+                    android:background="@drawable/question_input_background"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:inputType="numberDecimal"
+                    android:layout_marginBottom="32dp" />
+
+                <!-- MUAC Section (for children 6-59 months) -->
+                <TextView
+                    android:id="@+id/muac_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MUAC Measurement (for children 6-59 months):"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/muac_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mid-Upper Arm Circumference in centimeters"
+                    android:textSize="14sp"
+                    android:textColor="#666666"
+                    android:fontFamily="sans-serif"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/muac_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Enter MUAC in cm"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:textColorHint="#9E9E9E"
+                    android:fontFamily="sans-serif"
+                    android:background="@drawable/question_input_background"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:inputType="numberDecimal"
+                    android:layout_marginBottom="32dp"
+                    android:visibility="gone" />
+
+                <!-- Gender Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What is your gender?"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="32dp">
+                    
+                    <Button
+                        android:id="@+id/gender_boy"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="Boy"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+                    
+                    <Button
+                        android:id="@+id/gender_girl"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="Girl"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <!-- Location & Income Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Where do you live?"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Barangay:"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/barangay_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/question_input_background"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Household Income:"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/income_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/question_input_background"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp" />
+            </LinearLayout>
+
+            <!-- Page 2: Health Assessment & Risk Factors -->
+            <LinearLayout
+                android:id="@+id/question_2_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/question_card_background"
+                android:padding="24dp"
+                android:layout_marginBottom="0dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Page 2: Health Assessment &amp; Risk Factors"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/screening_button_text_selector"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="32dp" />
+
+                <!-- Swelling Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Do you have swelling in your feet, ankles, or face?"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="32dp">
+                    
+                    <Button
+                        android:id="@+id/swelling_yes"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="Yes"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+                    
+                    <Button
+                        android:id="@+id/swelling_no"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="No"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <!-- Weight Loss Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Have you lost weight or failed to gain weight recently?"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="32dp">
+                    
+                    <Button
+                        android:id="@+id/weightloss_10plus"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="&gt;10%"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp" />
+                    
+                    <Button
+                        android:id="@+id/weightloss_5to10"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="5-10%"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp" />
+                    
+                    <Button
+                        android:id="@+id/weightloss_less5"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="&lt;5% or none"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Nutrition Assessment Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nutrition Assessment"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="How many different food groups did you eat yesterday?"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/dietary_diversity_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Enter number of food groups"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:textColorHint="#9E9E9E"
+                    android:fontFamily="sans-serif"
+                    android:background="@drawable/question_input_background"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:inputType="number"
+                    android:layout_marginBottom="24dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="How would you describe your appetite?"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="32dp">
+                    
+                    <Button
+                        android:id="@+id/feeding_good"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Good appetite"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp" />
+                    
+                    <Button
+                        android:id="@+id/feeding_moderate"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Moderate appetite"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp" />
+                    
+                    <Button
+                        android:id="@+id/feeding_poor"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Poor appetite"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Physical Signs Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Do you have any of these physical signs?"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="32dp">
+                    
+                    <Button
+                        android:id="@+id/physical_thin"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Thin"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp" />
+                    
+                    <Button
+                        android:id="@+id/physical_shorter"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Shorter"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp" />
+                    
+                    <Button
+                        android:id="@+id/physical_weak"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Weak"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="12dp" />
+                    
+                    <Button
+                        android:id="@+id/physical_none"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="None"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Clinical Risk Factors Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Additional Health Factors"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Recent Acute Illness -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recent acute illness (past 2 weeks)?"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+                    
+                    <Button
+                        android:id="@+id/illness_yes"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="Yes"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+                    
+                    <Button
+                        android:id="@+id/illness_no"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="No"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <!-- Eating Difficulty -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Difficulty eating or swallowing?"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+                    
+                    <Button
+                        android:id="@+id/eating_difficulty_yes"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="Yes"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+                    
+                    <Button
+                        android:id="@+id/eating_difficulty_no"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="No"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <!-- Food Insecurity -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Food insecurity or limited access to food?"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+                    
+                    <Button
+                        android:id="@+id/food_insecurity_yes"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="Yes"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+                    
+                    <Button
+                        android:id="@+id/food_insecurity_no"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="No"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <!-- Micronutrient Deficiency -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Signs of micronutrient deficiency?"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+                    
+                    <Button
+                        android:id="@+id/micronutrient_yes"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="Yes"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+                    
+                    <Button
+                        android:id="@+id/micronutrient_no"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="No"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <!-- Functional Decline (for older adults) -->
+                <TextView
+                    android:id="@+id/functional_decline_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Functional decline or reduced mobility?"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/functional_decline_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Difficulty with daily activities or movement"
+                    android:textSize="14sp"
+                    android:textColor="#666666"
+                    android:fontFamily="sans-serif"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/functional_decline_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone">
+                    
+                    <Button
+                        android:id="@+id/functional_decline_yes"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="Yes"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+                    
+                    <Button
+                        android:id="@+id/functional_decline_no"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_weight="1"
+                        android:text="No"
+                        android:textAllCaps="false"
+                        android:textColor="@color/screening_button_text_selector"
+                        android:background="@drawable/button_state_selector"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="16sp"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Navigation Buttons -->
+    <LinearLayout
+        android:id="@+id/navigation_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:elevation="8dp"
+        android:orientation="horizontal"
+        android:padding="24dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/prev_button"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:text="← Previous"
+            android:textAllCaps="false"
+            android:textColor="@color/screening_button_text_selector"
+            android:background="@drawable/question_button_background"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="16sp"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:text="Next →"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/next_button_background"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="16sp"
+            android:layout_marginStart="12dp" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout> 
