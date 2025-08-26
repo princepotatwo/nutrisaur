@@ -4,22 +4,19 @@
  * Railway Production Environment
  */
 
-// Database Configuration - Use Railway environment variables
-$mysql_url = $_ENV['MYSQL_URL'] ?? 'mysql://root:nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy@mainline.proxy.rlwy.net:26063/railway';
+// Database Configuration - Use Railway's actual environment variables
+$mysql_host = $_ENV['MYSQLHOST'] ?? 'localhost';
+$mysql_port = $_ENV['MYSQLPORT'] ?? 3306;
+$mysql_user = $_ENV['MYSQLUSER'] ?? 'root';
+$mysql_password = $_ENV['MYSQLPASSWORD'] ?? '';
+$mysql_database = $_ENV['MYSQLDATABASE'] ?? 'railway';
 
-// Parse the MySQL URL
-function parseMySQLUrl($url) {
-    $parsed = parse_url($url);
-    return [
-        'host' => $parsed['host'] ?? 'mainline.proxy.rlwy.net',
-        'port' => $parsed['port'] ?? 26063,
-        'username' => $parsed['user'] ?? 'root',
-        'password' => $parsed['pass'] ?? 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy',
-        'database' => ltrim($parsed['path'] ?? 'railway', '/')
-    ];
+// Fallback to MYSQL_URL if individual variables aren't set
+if (isset($_ENV['MYSQL_URL'])) {
+    $mysql_url = $_ENV['MYSQL_URL'];
+} else {
+    $mysql_url = "mysql://{$mysql_user}:{$mysql_password}@{$mysql_host}:{$mysql_port}/{$mysql_database}";
 }
-
-$db_config = parseMySQLUrl($mysql_url);
 
 // Application Configuration
 define('APP_NAME', 'Nutrisaur');
@@ -36,11 +33,11 @@ ini_set('log_errors', 1);
 
 // Database connection function
 function getDatabaseConnection() {
-    global $db_config;
+    global $mysql_host, $mysql_port, $mysql_user, $mysql_password, $mysql_database;
     
     try {
-        $dsn = "mysql:host={$db_config['host']};port={$db_config['port']};dbname={$db_config['database']};charset=utf8mb4";
-        $pdo = new PDO($dsn, $db_config['username'], $db_config['password'], [
+        $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
+        $pdo = new PDO($dsn, $mysql_user, $mysql_password, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_TIMEOUT => 10
@@ -55,15 +52,15 @@ function getDatabaseConnection() {
 
 // Legacy mysqli connection for backward compatibility
 function getMysqliConnection() {
-    global $db_config;
+    global $mysql_host, $mysql_port, $mysql_user, $mysql_password, $mysql_database;
     
     try {
         $mysqli = new mysqli(
-            $db_config['host'], 
-            $db_config['username'], 
-            $db_config['password'], 
-            $db_config['database'], 
-            $db_config['port']
+            $mysql_host, 
+            $mysql_user, 
+            $mysql_password, 
+            $mysql_database, 
+            $mysql_port
         );
         
         if ($mysqli->connect_error) {
@@ -94,13 +91,19 @@ function testDatabaseConnection() {
 
 // Debug function to show current config
 function showDatabaseConfig() {
-    global $db_config;
+    global $mysql_host, $mysql_port, $mysql_user, $mysql_database, $mysql_url;
     return [
-        'host' => $db_config['host'],
-        'port' => $db_config['port'],
-        'username' => $db_config['username'],
-        'database' => $db_config['database'],
-        'mysql_url' => $_ENV['MYSQL_URL'] ?? 'Not set'
+        'host' => $mysql_host,
+        'port' => $mysql_port,
+        'username' => $mysql_user,
+        'database' => $mysql_database,
+        'mysql_url' => $mysql_url,
+        'env_vars' => [
+            'MYSQLHOST' => $_ENV['MYSQLHOST'] ?? 'Not set',
+            'MYSQLPORT' => $_ENV['MYSQLPORT'] ?? 'Not set',
+            'MYSQLUSER' => $_ENV['MYSQLUSER'] ?? 'Not set',
+            'MYSQLDATABASE' => $_ENV['MYSQLDATABASE'] ?? 'Not set'
+        ]
     ];
 }
 ?>
