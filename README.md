@@ -1,17 +1,18 @@
-# Nutrisaur - Malnutrition Assessment System
+# 🦕 Nutrisaur - Malnutrition Assessment System
 
-A comprehensive malnutrition assessment system with both Android mobile app and web backend components.
+A comprehensive malnutrition assessment system with both Android mobile app and web backend components, now configured for Railway deployment.
 
 ## 🏗️ Project Structure
 
 - **`app/`** - Android mobile application (Gradle project)
 - **`sss/`** - PHP web backend components
-- **`thesis355/`** - Additional PHP backend files
 - **`public/`** - Web application entry point for Railway deployment
+- **`railway.json`** - Railway deployment configuration
+- **`nixpacks.toml`** - PHP runtime and build configuration
 
 ## 🚀 Railway Deployment
 
-This project is configured for Railway deployment with the following setup:
+This project is now configured for Railway deployment with the following setup:
 
 ### Prerequisites
 - Railway account
@@ -34,7 +35,7 @@ This project is configured for Railway deployment with the following setup:
 ### Build Process
 
 The deployment process:
-1. Installs PHP and required extensions
+1. Installs PHP and required extensions (mysqli, pdo, json, curl)
 2. Creates `public/` directory
 3. Copies PHP files to public directory
 4. Starts PHP development server on Railway's port
@@ -74,6 +75,7 @@ php -S localhost:8000 -t public
 ### Testing
 - Health check: `http://localhost:8000/health`
 - Main app: `http://localhost:8000/`
+- Test page: `http://localhost:8000/test`
 - API endpoints: `http://localhost:8000/api`
 
 ## 📊 Features
@@ -97,14 +99,38 @@ php -S localhost:8000 -t public
 - **Port binding**: Railway automatically sets `$PORT` environment variable
 - **File permissions**: Ensure PHP can read/write to necessary directories
 
-## 📞 Support
+## 📱 Mobile App Integration
 
-For deployment issues:
-1. Check Railway build logs
-2. Verify configuration files
-3. Test health check endpoint
-4. Review PHP error logs
+Your Android app can now connect to the Railway-deployed backend:
+
+```java
+// Update your API base URL in Constants.java
+public static final String BASE_URL = "https://your-app.railway.app/";
+```
+
+## 🔄 Continuous Deployment
+
+- Railway will automatically redeploy when you push to GitHub
+- Monitor deployment status in Railway dashboard
+- Set up notifications for deployment failures
+
+## 📊 Monitoring
+
+- Use Railway's built-in metrics
+- Check application logs for errors
+- Monitor health check endpoint response times
+
+## 🎯 Success Criteria
+
+Your deployment is successful when:
+- [ ] Health check returns "healthy" status
+- [ ] Test page shows all extensions loaded
+- [ ] Main application loads without errors
+- [ ] Mobile app can connect to backend
+- [ ] All routes work correctly
 
 ---
 
 **Note**: This is a dual-purpose repository containing both Android mobile app and web backend components. Railway deployment focuses on the web backend portion.
+
+**Built with ❤️ for better nutrition management**

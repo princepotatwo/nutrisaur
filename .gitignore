@@ -1,3 +1,17 @@
+# NutriSaur Project - Git Ignore File
+
+# Sensitive Configuration Files
+*.json
+!package.json
+!composer.json
+config_production.php
+
+# Database Configuration (contains credentials)
+config.php
+
+# Firebase Admin SDK (contains private keys)
+**/nutrisaur-ebf29-firebase-adminsdk-*.json
+
 # Android build files
 app/build/
 app/release/
@@ -10,6 +24,7 @@ local.properties
 .idea/
 *.iml
 .vscode/
+*.code-workspace
 
 # OS generated files
 .DS_Store
@@ -51,9 +66,17 @@ vendor/
 # Compiled class files
 *.class
 
-# Keep web backend files
+# Backup Files
+*_backup.php
+*_broken.php
+*_original_backup.php
+
+# Cache Files
+*.cache
+fcm_token_cache.json
+
+# Keep web backend files for Railway deployment
 !sss/
-!thesis355/
 !public/
 !railway.json
 !nixpacks.toml

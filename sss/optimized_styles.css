@@ -1,0 +1,213 @@
+/* Optimized CSS for better performance */
+
+/* Dark Theme (Default) - Softer colors */
+.dark-theme {
+    --color-bg: #1A211A;
+    --color-card: #2A3326;
+    --color-highlight: #A1B454;
+    --color-text: #E8F0D6;
+    --color-accent1: #8CA86E;
+    --color-accent2: #B5C88D;
+    --color-accent3: #546048;
+    --color-accent4: #C9D8AA;
+    --color-danger: #CF8686;
+    --color-warning: #E0C989;
+}
+
+/* Light Theme - Softer colors */
+.light-theme {
+    --color-bg: #a0ca3f;
+    --color-card: #EAF0DC;
+    --color-highlight: #8EB96E;
+    --color-text: #415939;
+    --color-accent1: #F9B97F;
+    --color-accent2: #E9957C;
+    --color-accent3: #76BB6E;
+    --color-accent4: #D7E3A0;
+    --color-danger: #E98D7C;
+    --color-warning: #F9C87F;
+}
+
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+body {
+    min-height: 200vh;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+    padding-left: 340px;
+    line-height: 1.6;
+    letter-spacing: 0.2px;
+}
+
+/* Dashboard layout */
+.dashboard {
+    max-width: calc(100% - 60px);
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+/* Navigation */
+.nav-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100vh;
+    background: var(--color-card);
+    border-right: 2px solid var(--color-highlight);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+/* Cards and containers */
+.card {
+    background: var(--color-card);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* Tables */
+.table-container {
+    overflow-x: auto;
+    border-radius: 15px;
+    background: var(--color-card);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-card);
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+th {
+    background: var(--color-accent3);
+    color: var(--color-text);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Buttons */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--color-highlight);
+    color: var(--color-bg);
+}
+
+.btn-secondary {
+    background: var(--color-accent2);
+    color: var(--color-text);
+}
+
+.btn-danger {
+    background: var(--color-danger);
+    color: white;
+}
+
+/* Risk status indicators */
+.risk-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-align: center;
+    display: inline-block;
+    min-width: 80px;
+}
+
+.risk-low { background: #4CAF50; color: white; }
+.risk-moderate { background: #FF9800; color: white; }
+.risk-high { background: #F44336; color: white; }
+.risk-severe { background: #9C27B0; color: white; }
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: var(--color-card);
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    body {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    
+    .nav-container {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    .dashboard {
+        max-width: 100%;
+        margin-top: 20px;
+    }
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+} 
