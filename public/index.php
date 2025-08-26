@@ -14,15 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Debug information
-$debug_info = [
-    'php_version' => PHP_VERSION,
-    'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown',
-    'server_port' => $_SERVER['SERVER_PORT'] ?? 'Unknown',
-    'request_uri' => $_SERVER['REQUEST_URI'] ?? 'Unknown',
-    'remote_addr' => $_SERVER['REMOTE_ADDR'] ?? 'Unknown'
-];
-
 // Simple routing
 $request_uri = $_SERVER['REQUEST_URI'];
 $path = parse_url($request_uri, PHP_URL_PATH);
@@ -32,24 +23,27 @@ $path = trim($path, '/');
 switch ($path) {
     case '':
     case 'index':
-        // Show main dashboard or welcome page
-        echo '<!DOCTYPE html>';
-        echo '<html><head><title>Nutrisaur - Railway Deployment</title></head>';
-        echo '<body style="font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5;">';
-        echo '<div style="max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">';
-        echo '<h1>🚀 Nutrisaur is Running on Railway!</h1>';
-        echo '<p><strong>Status:</strong> <span style="color: #28a745;">✅ Active</span></p>';
-        echo '<p><strong>PHP Version:</strong> ' . $debug_info['php_version'] . '</p>';
-        echo '<p><strong>Server:</strong> ' . $debug_info['server_software'] . '</p>';
-        echo '<p><strong>Port:</strong> ' . $debug_info['server_port'] . '</p>';
-        echo '<hr>';
-        echo '<h2>🔗 Available Endpoints:</h2>';
-        echo '<ul>';
-        echo '<li><a href="/health">Health Check</a> - Verify system status</li>';
-        echo '<li><a href="/test">Test Page</a> - Detailed system information</li>';
-        echo '<li><a href="/sss/settings_verified_mho.php">MHO Settings</a> - Main application</li>';
-        echo '</ul>';
-        echo '</div></body></html>';
+        // Show the main Nutrisaur application
+        if (file_exists('settings_verified_mho.php')) {
+            include 'settings_verified_mho.php';
+        } else {
+            // Fallback welcome page
+            echo '<!DOCTYPE html>';
+            echo '<html><head><title>Nutrisaur - Railway Deployment</title></head>';
+            echo '<body style="font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5;">';
+            echo '<div style="max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">';
+            echo '<h1>🚀 Nutrisaur is Running on Railway!</h1>';
+            echo '<p><strong>Status:</strong> <span style="color: #28a745;">✅ Active</span></p>';
+            echo '<p><strong>PHP Version:</strong> ' . PHP_VERSION . '</p>';
+            echo '<hr>';
+            echo '<h2>🔗 Available Endpoints:</h2>';
+            echo '<ul>';
+            echo '<li><a href="/health">Health Check</a> - Verify system status</li>';
+            echo '<li><a href="/test">Test Page</a> - Detailed system information</li>';
+            echo '<li><a href="/settings_verified_mho.php">MHO Settings</a> - Main application</li>';
+            echo '</ul>';
+            echo '</div></body></html>';
+        }
         break;
         
     case 'health':
@@ -61,8 +55,10 @@ switch ($path) {
         break;
         
     default:
-        // Try to find the file in sss directory
-        if (file_exists("sss/$path.php")) {
+        // Try to find the file in current directory first, then in sss directory
+        if (file_exists("$path.php")) {
+            include "$path.php";
+        } elseif (file_exists("sss/$path.php")) {
             include "sss/$path.php";
         } else {
             http_response_code(404);

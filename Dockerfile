@@ -16,14 +16,21 @@ WORKDIR /var/www/html
 COPY sss/ ./sss/
 COPY public/ ./public/
 
-# Create simple health check
-RUN echo '<?php echo "OK"; ?>' > public/health.php
+# Create proper health check
+RUN echo '<?php header("Content-Type: application/json"); echo json_encode(["status" => "healthy", "timestamp" => date("Y-m-d H:i:s")]); ?>' > public/health.php
 
-# Create simple index
-RUN echo '<?php echo "Nutrisaur is running!"; ?>' > public/index.php
+# Copy your actual web application files to public directory
+RUN cp -r sss/* public/ 2>/dev/null || true
+
+# Create startup script that uses Railway's PORT
+RUN echo '#!/bin/bash' > /start.sh && \
+    echo 'PORT=${PORT:-8000}' >> /start.sh && \
+    echo 'echo "Starting PHP server on port $PORT"' >> /start.sh && \
+    echo 'php -S 0.0.0.0:$PORT -t public' >> /start.sh && \
+    chmod +x /start.sh
 
 # Expose port
 EXPOSE 8000
 
-# Start PHP server
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+# Start using the script
+CMD ["/bin/bash", "/start.sh"]
