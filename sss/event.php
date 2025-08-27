@@ -26,7 +26,7 @@ $username = $_SESSION['username'];
 $email = $_SESSION['email'];
 
     // Include the centralized configuration file
-    require_once __DIR__ . "/../config.php";
+    require_once __DIR__ . "/../public/config.php";
 
 // Initialize variables
 $dbConnected = false;
