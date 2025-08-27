@@ -3791,7 +3791,7 @@ optgroup option {
         <div class="navbar-header">
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
-                    <img src="logo.png" alt="Logo" style="width: 40px; height: 40px;">
+                    <img src="../sss/logo.png" alt="Logo" style="width: 40px; height: 40px;">
                 </div>
                 <div class="navbar-logo-text">NutriSaur</div>
             </div>
@@ -4784,9 +4784,9 @@ optgroup option {
                         
                         // Check if users exist in different possible locations
                         let users = data.users;
-                        if (!users && data.data && data.data.users) {
-                            users = data.data.users;
-                            console.log('Found users in data.data.users');
+                        if (!users && data.data) {
+                            users = data.data; // The API returns users directly in data.data
+                            console.log('Found users in data.data');
                         } else if (!users && data.result && data.result.users) {
                             users = data.result.users;
                             console.log('Found users in data.result.users');
