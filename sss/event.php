@@ -35,17 +35,22 @@ $programs = [];
 
 try {
     // Get database connection from config.php
-    $conn = getDatabaseConnection();
-    if ($conn) {
-        $dbConnected = true;
-        
-        // Fetch programs from database
-        $stmt = $conn->prepare("SELECT * FROM programs ORDER BY date_time DESC");
-        $stmt->execute();
-        $programs = $stmt->fetchAll();
+    if (function_exists('getDatabaseConnection')) {
+        $conn = getDatabaseConnection();
+        if ($conn) {
+            $dbConnected = true;
+            
+            // Fetch programs from database
+            $stmt = $conn->prepare("SELECT * FROM programs ORDER BY date_time DESC");
+            $stmt->execute();
+            $programs = $stmt->fetchAll();
+        } else {
+            $dbConnected = false;
+            $errorMessage = "Database connection failed: Could not establish connection";
+        }
     } else {
         $dbConnected = false;
-        $errorMessage = "Database connection failed: Could not establish connection";
+        $errorMessage = "Database connection function not found - config.php may not be loaded";
     }
     
 } catch(PDOException $e) {
