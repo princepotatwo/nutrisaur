@@ -1420,7 +1420,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
                 conn.setRequestProperty("User-Agent", Constants.USER_AGENT);
                 conn.setRequestProperty("Accept", "application/json, text/plain, */*");
                 conn.setRequestProperty("X-API-Key", Constants.API_KEY);
-                conn.setRequestProperty("Origin", "https://nutrisaur.gt.tc");
+                conn.setRequestProperty("Origin", "https://nutrisaur-production.up.railway.app");
                 conn.setRequestProperty("Cache-Control", "no-cache");
                 conn.setDoOutput(true);
                 conn.setConnectTimeout(15000);
