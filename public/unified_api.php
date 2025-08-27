@@ -593,34 +593,39 @@ function getAIFoodRecommendations($pdo) {
 
 function getUserManagementData($pdo) {
     try {
-        // Get all users with their basic info
+        // Get all users directly from user_preferences table
         $stmt = $pdo->query("
             SELECT 
-                u.user_id,
-                u.username,
-                u.email,
-                u.created_at as user_created
-            FROM users u
-            ORDER BY u.created_at DESC
+                id,
+                username,
+                user_email as email,
+                name,
+                risk_score,
+                barangay,
+                created_at as user_created,
+                updated_at as last_screening
+            FROM user_preferences 
+            WHERE username IS NOT NULL AND username != ''
+            ORDER BY created_at DESC
         ");
         
         $users = $stmt->fetchAll();
         
-        // Get user preferences count for each user
+        // Process each user to add computed fields
         foreach ($users as &$user) {
-            $prefStmt = $pdo->prepare("
-                SELECT COUNT(*) as preferences_count, 
-                       MAX(risk_score) as max_risk_score,
-                       MAX(created_at) as last_screening
-                FROM user_preferences 
-                WHERE user_email = ?
-            ");
-            $prefStmt->execute([$user['email']]);
-            $prefs = $prefStmt->fetch();
+            // Set preferences_count to 1 since each row represents one screening
+            $user['preferences_count'] = 1;
             
-            $user['preferences_count'] = $prefs['preferences_count'] ?? 0;
-            $user['max_risk_score'] = $prefs['max_risk_score'] ?? null;
-            $user['last_screening'] = $prefs['last_screening'] ?? null;
+            // Use risk_score directly
+            $user['max_risk_score'] = $user['risk_score'] ?? null;
+            
+            // Use updated_at as last screening date
+            $user['last_screening'] = $user['updated_at'] ?? null;
+            
+            // Add user_id if not present (use id from user_preferences)
+            if (!isset($user['user_id'])) {
+                $user['user_id'] = $user['id'];
+            }
         }
         
         echo json_encode(['success' => true, 'data' => $users]);
