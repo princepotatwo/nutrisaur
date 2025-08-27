@@ -9,33 +9,24 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 
-// Database Configuration - Read from Railway environment variables
-$mysql_host = $_ENV['MYSQLHOST'] ?? 'mainline.proxy.rlwy.net';
-$mysql_port = $_ENV['MYSQLPORT'] ?? 26063;
-$mysql_user = $_ENV['MYSQLUSER'] ?? 'root';
-$mysql_password = $_ENV['MYSQLPASSWORD'] ?? 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-$mysql_database = $_ENV['MYSQLDATABASE'] ?? 'railway';
+// Database Configuration - Parse from Railway's MYSQL_PUBLIC_URL
+$mysql_host = 'mainline.proxy.rlwy.net';
+$mysql_port = 26063;
+$mysql_user = 'root';
+$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+$mysql_database = 'railway';
 
 // If MYSQL_PUBLIC_URL is set (Railway sets this), parse it
 if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
     $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
-    echo "🔗 Found MYSQL_PUBLIC_URL: $mysql_url\n";
     
-    if (preg_match('/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/', $mysql_url, $matches)) {
+    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
+    if (preg_match($pattern, $mysql_url, $matches)) {
         $mysql_user = $matches[1];
         $mysql_password = $matches[2];
         $mysql_host = $matches[3];
         $mysql_port = $matches[4];
         $mysql_database = $matches[5];
-        
-        echo "✅ Parsed MYSQL_PUBLIC_URL successfully:\n";
-        echo "   👤 User: $mysql_user\n";
-        echo "   🔑 Password: " . substr($mysql_password, 0, 10) . "...\n";
-        echo "   📍 Host: $mysql_host\n";
-        echo "   🚪 Port: $mysql_port\n";
-        echo "   🗄️ Database: $mysql_database\n\n";
-    } else {
-        echo "❌ Failed to parse MYSQL_PUBLIC_URL format\n\n";
     }
 }
 
@@ -51,46 +42,17 @@ $base_url = 'https://nutrisaur-production.up.railway.app/';
 function getDatabaseConnection() {
     global $mysql_host, $mysql_port, $mysql_user, $mysql_password, $mysql_database;
     
-    echo "🔍 Attempting database connection...\n";
-    echo "📍 Host: $mysql_host\n";
-    echo "🚪 Port: $mysql_port\n";
-    echo "👤 User: $mysql_user\n";
-    echo "🗄️ Database: $mysql_database\n";
-    echo "🔑 Password: " . substr($mysql_password, 0, 10) . "...\n\n";
-    
-    // Test socket connection first
-    echo "🔌 Testing socket connection...\n";
-    $socket = @fsockopen($mysql_host, $mysql_port, $errno, $errstr, 10);
-    if ($socket) {
-        echo "✅ Socket connection successful!\n";
-        fclose($socket);
-    } else {
-        echo "❌ Socket connection failed: $errstr ($errno)\n";
-    }
-    echo "\n";
-    
     try {
-        echo "🚀 Creating PDO connection...\n";
         $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-        echo "🔗 DSN: $dsn\n";
-        
         $pdo = new PDO($dsn, $mysql_user, $mysql_password, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_TIMEOUT => 10
         ]);
         
-        echo "✅ PDO connection successful!\n";
         return $pdo;
         
     } catch (PDOException $e) {
-        echo "💥 PDO connection failed!\n";
-        echo "❌ Error: " . $e->getMessage() . "\n";
-        echo "🔍 Error Code: " . $e->getCode() . "\n";
-        echo "📍 File: " . $e->getFile() . "\n";
-        echo "🚪 Line: " . $e->getLine() . "\n";
-        
-        // Log error
         error_log("Database connection failed: " . $e->getMessage());
         return null;
     }
@@ -99,8 +61,6 @@ function getDatabaseConnection() {
 // Legacy mysqli connection for backward compatibility
 function getMysqliConnection() {
     global $mysql_host, $mysql_port, $mysql_user, $mysql_password, $mysql_database;
-    
-    echo "🔍 Attempting MySQLi connection...\n";
     
     try {
         $mysqli = new mysqli(
@@ -112,20 +72,13 @@ function getMysqliConnection() {
         );
         
         if ($mysqli->connect_error) {
-            echo "❌ MySQLi connection failed: " . $mysqli->connect_error . "\n";
-            echo "🔍 Error Code: " . $mysqli->connect_errno . "\n";
             throw new Exception("Connection failed: " . $mysqli->connect_error);
         }
-        
-        echo "✅ MySQLi connection successful!\n";
-        echo "📊 Server info: " . $mysqli->server_info . "\n";
         
         $mysqli->set_charset("utf8mb4");
         return $mysqli;
         
     } catch (Exception $e) {
-        echo "💥 MySQLi connection failed!\n";
-        echo "❌ Error: " . $e->getMessage() . "\n";
         error_log("MySQLi connection failed: " . $e->getMessage());
         return null;
     }
@@ -133,36 +86,17 @@ function getMysqliConnection() {
 
 // Test database connection function
 function testDatabaseConnection() {
-    echo "🧪 Testing database connection...\n\n";
-    
-    // Test PDO
     $pdo = getDatabaseConnection();
     if ($pdo) {
-        echo "✅ PDO connection test: SUCCESS\n\n";
-        
-        // Test a simple query
         try {
             $stmt = $pdo->query("SELECT 1 as test");
             $result = $stmt->fetch();
-            echo "✅ Query test: SUCCESS - Result: " . $result['test'] . "\n";
+            return true;
         } catch (Exception $e) {
-            echo "❌ Query test: FAILED - " . $e->getMessage() . "\n";
+            return false;
         }
-        
-    } else {
-        echo "❌ PDO connection test: FAILED\n\n";
     }
-    
-    echo "\n";
-    
-    // Test MySQLi
-    $mysqli = getMysqliConnection();
-    if ($mysqli) {
-        echo "✅ MySQLi connection test: SUCCESS\n";
-        $mysqli->close();
-    } else {
-        echo "❌ MySQLi connection test: FAILED\n";
-    }
+    return false;
 }
 
 // Show database configuration (for debugging)
