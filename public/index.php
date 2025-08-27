@@ -165,6 +165,11 @@ switch ($path) {
         include 'test_api_endpoint.php';
         break;
         
+    case 'debug_routing':
+        echo "🧪 Routing to: Comprehensive Routing Debug\n";
+        include 'debug_routing.php';
+        break;
+        
     case 'debug_env':
         if ($is_test_route) echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';
