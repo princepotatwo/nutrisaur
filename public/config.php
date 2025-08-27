@@ -4,19 +4,12 @@
  * Railway Production Environment
  */
 
-// Database Configuration - Use Railway's actual environment variables
-$mysql_host = $_ENV['MYSQLHOST'] ?? 'localhost';
-$mysql_port = $_ENV['MYSQLPORT'] ?? 3306;
-$mysql_user = $_ENV['MYSQLUSER'] ?? 'root';
-$mysql_password = $_ENV['MYSQLPASSWORD'] ?? '';
-$mysql_database = $_ENV['MYSQLDATABASE'] ?? 'railway';
-
-// Fallback to MYSQL_URL if individual variables aren't set
-if (isset($_ENV['MYSQL_URL'])) {
-    $mysql_url = $_ENV['MYSQL_URL'];
-} else {
-    $mysql_url = "mysql://{$mysql_user}:{$mysql_password}@{$mysql_host}:{$mysql_port}/{$mysql_database}";
-}
+// Database Configuration - HARDCODED with working values from MySQL Workbench
+$mysql_host = 'mainline.proxy.rlwy.net';
+$mysql_port = 26063;
+$mysql_user = 'root';
+$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+$mysql_database = 'railway';
 
 // Application Configuration
 define('APP_NAME', 'Nutrisaur');
@@ -91,19 +84,13 @@ function testDatabaseConnection() {
 
 // Debug function to show current config
 function showDatabaseConfig() {
-    global $mysql_host, $mysql_port, $mysql_user, $mysql_database, $mysql_url;
+    global $mysql_host, $mysql_port, $mysql_user, $mysql_database;
     return [
         'host' => $mysql_host,
         'port' => $mysql_port,
         'username' => $mysql_user,
         'database' => $mysql_database,
-        'mysql_url' => $mysql_url,
-        'env_vars' => [
-            'MYSQLHOST' => $_ENV['MYSQLHOST'] ?? 'Not set',
-            'MYSQLPORT' => $_ENV['MYSQLPORT'] ?? 'Not set',
-            'MYSQLUSER' => $_ENV['MYSQLUSER'] ?? 'Not set',
-            'MYSQLDATABASE' => $_ENV['MYSQLDATABASE'] ?? 'Not set'
-        ]
+        'method' => 'HARDCODED - Working values from MySQL Workbench'
     ];
 }
 ?>
