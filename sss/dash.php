@@ -7844,7 +7844,7 @@ body {
         */
 
         // API Connection and Data Fetching Functions
-        const API_BASE_URL = window.location.origin + '/api';
+        const API_BASE_URL = window.location.origin + '/unified_api.php';
 
         // Function to fetch data from API
         async function fetchDataFromAPI(endpoint, params = {}) {
@@ -7852,7 +7852,7 @@ body {
                 // Add endpoint to params
                 const allParams = { endpoint, ...params };
                 const queryString = new URLSearchParams(allParams).toString();
-                const url = `${API_BASE_URL}/unified_api?${queryString}`;
+                const url = `${API_BASE_URL}?${queryString}`;
                 
                 console.log(`Fetching data from: ${url}`);
                 console.log(`Endpoint: ${endpoint}, Params:`, params);
