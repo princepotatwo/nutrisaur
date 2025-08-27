@@ -124,6 +124,11 @@ switch ($path) {
         include 'test_config.php';
         break;
         
+    case 'test_dash':
+        if ($is_test_route) echo "🧪 Routing to: Test Dash\n";
+        include 'test_dash.php';
+        break;
+        
     case 'debug_env':
         if ($is_test_route) echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';
