@@ -1240,7 +1240,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                 const response = await fetch('api/check_session.php');
                 const data = await response.json();
                 
-                if (data.success) {
+                // Only redirect if user is actually logged in
+                if (data.success && data.logged_in && (data.user_id || data.admin_id)) {
                     // User is already logged in, redirect to dashboard
                     window.location.href = 'dash.php';
                 }
