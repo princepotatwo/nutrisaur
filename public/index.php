@@ -41,7 +41,7 @@ switch ($path) {
     case 'event':
     case 'events':
         // Route to events page
-        include_once '../sss/event.php';
+        include_once '../sss/event_simple.php';
         break;
         
     case 'logout':
