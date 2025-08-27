@@ -34,13 +34,19 @@ $errorMessage = null;
 $programs = [];
 
 try {
-    // Use the existing connection from config.php
-    $dbConnected = true;
-    
-    // Fetch programs from database
-    $stmt = $conn->prepare("SELECT * FROM programs ORDER BY date_time DESC");
-    $stmt->execute();
-    $programs = $stmt->fetchAll();
+    // Get database connection from config.php
+    $conn = getDatabaseConnection();
+    if ($conn) {
+        $dbConnected = true;
+        
+        // Fetch programs from database
+        $stmt = $conn->prepare("SELECT * FROM programs ORDER BY date_time DESC");
+        $stmt->execute();
+        $programs = $stmt->fetchAll();
+    } else {
+        $dbConnected = false;
+        $errorMessage = "Database connection failed: Could not establish connection";
+    }
     
 } catch(PDOException $e) {
     $dbConnected = false;
