@@ -89,6 +89,10 @@ switch ($endpoint) {
         getDetailedScreeningResponses($pdo);
         break;
         
+    case 'ai_food_recommendations':
+        getAIFoodRecommendations($pdo);
+        break;
+        
     default:
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
@@ -494,6 +498,116 @@ function getTimeFrameData($pdo) {
         $data = $stmt->fetchAll();
         
         echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+}
+
+function getAIFoodRecommendations($pdo) {
+    try {
+        // Get AI food recommendations from the database
+        $stmt = $pdo->query("
+            SELECT 
+                id,
+                user_email,
+                food_name,
+                food_emoji,
+                food_description,
+                ai_reasoning,
+                nutritional_priority,
+                ingredients,
+                benefits,
+                nutritional_impact_score,
+                created_at
+            FROM ai_food_recommendations 
+            ORDER BY created_at DESC
+            LIMIT 20
+        ");
+        
+        $recommendations = $stmt->fetchAll();
+        
+        // If no recommendations exist, create some sample ones
+        if (empty($recommendations)) {
+            $sampleRecommendations = [
+                [
+                    'id' => 1,
+                    'user_email' => 'sample@example.com',
+                    'food_name' => 'Nutrient-Rich Smoothie Bowl',
+                    'food_emoji' => '🥗',
+                    'food_description' => 'A balanced smoothie bowl with fruits, nuts, and seeds',
+                    'ai_reasoning' => 'High in vitamins, minerals, and healthy fats for overall nutrition',
+                    'nutritional_priority' => 'general',
+                    'ingredients' => 'Banana, berries, almond milk, chia seeds, almonds',
+                    'benefits' => 'Rich in antioxidants, fiber, and essential nutrients',
+                    'nutritional_impact_score' => 85,
+                    'created_at' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'id' => 2,
+                    'user_email' => 'sample@example.com',
+                    'food_name' => 'Protein-Packed Quinoa Bowl',
+                    'food_emoji' => '🍚',
+                    'food_description' => 'Complete protein source with vegetables and healthy fats',
+                    'ai_reasoning' => 'Quinoa provides complete protein, essential for muscle development',
+                    'nutritional_priority' => 'protein',
+                    'ingredients' => 'Quinoa, chickpeas, spinach, avocado, olive oil',
+                    'benefits' => 'Complete protein, fiber, healthy fats, and micronutrients',
+                    'nutritional_impact_score' => 90,
+                    'created_at' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'id' => 3,
+                    'user_email' => 'sample@example.com',
+                    'food_name' => 'Iron-Rich Spinach Salad',
+                    'food_emoji' => '🥬',
+                    'food_description' => 'Dark leafy greens with vitamin C for iron absorption',
+                    'ai_reasoning' => 'Addresses iron deficiency common in malnutrition cases',
+                    'nutritional_priority' => 'iron',
+                    'ingredients' => 'Spinach, oranges, walnuts, lemon juice, olive oil',
+                    'benefits' => 'High iron content, vitamin C for absorption, healthy fats',
+                    'nutritional_impact_score' => 88,
+                    'created_at' => date('Y-m-d H:i:s')
+                ]
+            ];
+            
+            // Insert sample data
+            $insertStmt = $pdo->prepare("
+                INSERT INTO ai_food_recommendations (
+                    user_email, food_name, food_emoji, food_description, ai_reasoning,
+                    nutritional_priority, ingredients, benefits, nutritional_impact_score, created_at
+                ) VALUES (
+                    :user_email, :food_name, :food_emoji, :food_description, :ai_reasoning,
+                    :nutritional_priority, :ingredients, :benefits, :nutritional_impact_score, :created_at
+                )
+            ");
+            
+            foreach ($sampleRecommendations as $rec) {
+                $insertStmt->execute($rec);
+            }
+            
+            // Fetch the newly inserted data
+            $stmt = $pdo->query("
+                SELECT 
+                    id,
+                    user_email,
+                    food_name,
+                    food_emoji,
+                    food_description,
+                    ai_reasoning,
+                    nutritional_priority,
+                    ingredients,
+                    benefits,
+                    nutritional_impact_score,
+                    created_at
+                FROM ai_food_recommendations 
+                ORDER BY created_at DESC
+                LIMIT 20
+            ");
+            $recommendations = $stmt->fetchAll();
+        }
+        
+        echo json_encode(['success' => true, 'data' => $recommendations]);
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
