@@ -119,6 +119,6 @@ function showDatabaseConfig() {
     echo "🔗 MYSQL_PUBLIC_URL: " . ($_ENV['MYSQL_PUBLIC_URL'] ?? 'NOT SET') . "\n\n";
 }
 
-// Create a global connection variable for backward compatibility
-$conn = getDatabaseConnection();
+// Note: $conn variable is not created automatically
+// Use getDatabaseConnection() function when you need a database connection
 ?>
