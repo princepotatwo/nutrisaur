@@ -25,14 +25,18 @@ $path = trim($path, '/');
 // Only show debug output for test routes
 $is_test_route = in_array($path, ['test_config', 'minimal_test', 'debug_config', 'debug_env', 'simple_db_test', 'test_db_connection']);
 
-if ($is_test_route) {
-    // Debug routing for test routes
+// Also show debug for API routes
+$is_api_route = strpos($path, 'api/') === 0;
+
+if ($is_test_route || $is_api_route) {
+    // Debug routing for test routes and API routes
     echo "🔍 Routing Debug:\n";
     echo "📍 REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "\n";
     echo "🌐 SCRIPT_NAME: " . $_SERVER['SCRIPT_NAME'] . "\n";
     echo "📁 PHP_SELF: " . $_SERVER['PHP_SELF'] . "\n";
     echo "🎯 Parsed Path: '$path'\n";
-    echo "📏 Path Length: " . strlen($path) . "\n\n";
+    echo "📏 Path Length: " . strlen($path) . "\n";
+    echo "🔗 Is API Route: " . ($is_api_route ? 'Yes' : 'No') . "\n\n";
 }
 
 // Route to appropriate file
@@ -154,6 +158,11 @@ switch ($path) {
     case 'test_dashboard_db':
         if ($is_test_route) echo "🧪 Routing to: Test Dashboard Database\n";
         include 'test_dashboard_db.php';
+        break;
+        
+    case 'test_api_endpoint':
+        if ($is_test_route) echo "🧪 Routing to: Test API Endpoint\n";
+        include 'test_api_endpoint.php';
         break;
         
     case 'debug_env':
