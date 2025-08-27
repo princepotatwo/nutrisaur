@@ -777,15 +777,14 @@ function handleMobileSignup($pdo) {
             // Insert into user_preferences table
             $stmt = $pdo->prepare("
                 INSERT INTO user_preferences 
-                (user_email, risk_score, screening_answers, created_at, updated_at) 
-                VALUES (?, ?, ?, NOW(), NOW())
+                (user_email, risk_score, created_at, updated_at) 
+                VALUES (?, ?, NOW(), NOW())
                 ON DUPLICATE KEY UPDATE 
                 risk_score = VALUES(risk_score),
-                screening_answers = VALUES(screening_answers),
                 updated_at = NOW()
             ");
             
-            $stmt->execute([$email, $riskScore, $screeningData]);
+            $stmt->execute([$email, $riskScore]);
             
             echo json_encode([
                 'success' => true, 
@@ -814,17 +813,14 @@ function handleMobileSignup($pdo) {
             // Update user_preferences table with food preferences
             $stmt = $pdo->prepare("
                 INSERT INTO user_preferences 
-                (user_email, allergies, diet_prefs, avoid_foods, risk_score, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+                (user_email, risk_score, created_at, updated_at) 
+                VALUES (?, ?, NOW(), NOW())
                 ON DUPLICATE KEY UPDATE 
-                allergies = VALUES(allergies),
-                diet_prefs = VALUES(diet_prefs),
-                avoid_foods = VALUES(avoid_foods),
                 risk_score = VALUES(risk_score),
                 updated_at = NOW()
             ");
             
-            $stmt->execute([$email, $allergies, $dietPrefs, $avoidFoods, $riskScore]);
+            $stmt->execute([$email, $riskScore]);
             
             echo json_encode([
                 'success' => true, 
