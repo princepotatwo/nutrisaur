@@ -593,19 +593,22 @@ function getAIFoodRecommendations($pdo) {
 
 function getUserManagementData($pdo) {
     try {
+        // First, let's check what columns actually exist in the user_preferences table
+        $stmt = $pdo->query("DESCRIBE user_preferences");
+        $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
         // Get all users directly from user_preferences table
+        // Use only columns that definitely exist
         $stmt = $pdo->query("
             SELECT 
                 id,
-                username,
                 user_email as email,
-                name,
                 risk_score,
                 barangay,
                 created_at as user_created,
                 updated_at as last_screening
             FROM user_preferences 
-            WHERE username IS NOT NULL AND username != ''
+            WHERE user_email IS NOT NULL AND user_email != ''
             ORDER BY created_at DESC
         ");
         
@@ -625,6 +628,18 @@ function getUserManagementData($pdo) {
             // Add user_id if not present (use id from user_preferences)
             if (!isset($user['user_id'])) {
                 $user['user_id'] = $user['id'];
+            }
+            
+            // Try to get username from screening_answers JSON if it exists
+            if (isset($user['screening_answers'])) {
+                $screeningData = json_decode($user['screening_answers'], true);
+                if ($screeningData && isset($screeningData['username'])) {
+                    $user['username'] = $screeningData['username'];
+                } else {
+                    $user['username'] = 'User_' . $user['id']; // Fallback username
+                }
+            } else {
+                $user['username'] = 'User_' . $user['id']; // Fallback username
             }
         }
         
