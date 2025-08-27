@@ -102,10 +102,12 @@ switch ($endpoint) {
             // Check if it's a type-based request
             if ($type === 'usm') {
                 getUserManagementData($pdo);
-            } else {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
+                break;
             }
+            
+            // No valid endpoint or type found
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid endpoint or type']);
             break;
 }
 
