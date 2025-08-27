@@ -531,7 +531,6 @@ function getAIFoodRecommendations($pdo) {
         if (empty($recommendations)) {
             $sampleRecommendations = [
                 [
-                    'id' => 1,
                     'user_email' => 'sample@example.com',
                     'food_name' => 'Nutrient-Rich Smoothie Bowl',
                     'food_emoji' => '🥗',
@@ -544,7 +543,6 @@ function getAIFoodRecommendations($pdo) {
                     'created_at' => date('Y-m-d H:i:s')
                 ],
                 [
-                    'id' => 2,
                     'user_email' => 'sample@example.com',
                     'food_name' => 'Protein-Packed Quinoa Bowl',
                     'food_emoji' => '🍚',
@@ -557,7 +555,6 @@ function getAIFoodRecommendations($pdo) {
                     'created_at' => date('Y-m-d H:i:s')
                 ],
                 [
-                    'id' => 3,
                     'user_email' => 'sample@example.com',
                     'food_name' => 'Iron-Rich Spinach Salad',
                     'food_emoji' => '🥬',
@@ -615,4 +612,4 @@ function getAIFoodRecommendations($pdo) {
 }
 ?>
 
-// Force redeploy Wed Aug 27 16:31:52 PST 2025
+
