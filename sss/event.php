@@ -46,12 +46,37 @@ function safeDbQuery($conn, $sql, $params = []) {
 }
 
     // Include the centralized configuration file
-    require_once __DIR__ . "/../config.php";
+    $configPath = __DIR__ . "/../config.php";
+    echo "<!-- Debug: Looking for config at: $configPath -->";
+    echo "<!-- Debug: Current directory: " . __DIR__ . " -->";
+    
+    if (file_exists($configPath)) {
+        require_once $configPath;
+        echo "<!-- Debug: config.php loaded successfully -->";
+    } else {
+        echo "<!-- Debug: config.php NOT FOUND at $configPath -->";
+        // Try alternative paths
+        $altPaths = [
+            __DIR__ . "/../../config.php",
+            __DIR__ . "/../public/config.php",
+            "config.php"
+        ];
+        
+        foreach ($altPaths as $altPath) {
+            if (file_exists($altPath)) {
+                echo "<!-- Debug: Found config at alternative path: $altPath -->";
+                require_once $altPath;
+                break;
+            }
+        }
+    }
     
     // Debug: Check if config was loaded
     if (!function_exists('getDatabaseConnection')) {
-        // For now, just log the error but don't stop the page
+        echo "<!-- Debug: getDatabaseConnection function not found -->";
         error_log("WARNING: config.php not loaded properly in event.php");
+    } else {
+        echo "<!-- Debug: getDatabaseConnection function found -->";
     }
 
 // Initialize variables
