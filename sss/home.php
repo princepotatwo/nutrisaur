@@ -1098,7 +1098,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                     
                     // Redirect to dashboard after a short delay
                     setTimeout(() => {
-                        window.location.href = 'dash.php';
+                        window.location.href = '/dash';
                     }, 1000);
                 } else {
                     showMessage(data.message || 'Login failed. Please try again.', 'error');
@@ -1176,7 +1176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                                 showMessage('Login successful! Redirecting to dashboard...', 'success');
                                 // Redirect to dashboard after successful auto-login
                                 setTimeout(() => {
-                                    window.location.href = 'dash.php';
+                                    window.location.href = '/dash';
                                 }, 1000);
                             } else {
                                 // If auto-login fails, show error and switch to login mode

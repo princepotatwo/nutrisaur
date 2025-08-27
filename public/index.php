@@ -55,7 +55,6 @@ switch ($path) {
         break;
         
     case 'dash':
-    case 'dashboard':
     case 'dash.php':
         if ($is_test_route) echo "📊 Routing to: Dashboard\n";
         include '../sss/dash.php';
@@ -131,6 +130,25 @@ switch ($path) {
     case 'test_dash':
         if ($is_test_route) echo "🧪 Routing to: Test Dash\n";
         include 'test_dash.php';
+        break;
+        
+    case 'test_dashboard':
+        if ($is_test_route) echo "🧪 Routing to: Test Dashboard Direct\n";
+        if (file_exists("../sss/dash.php")) {
+            echo "✅ dash.php exists in sss directory\n";
+            echo "📁 Current working directory: " . getcwd() . "\n";
+            echo "🔍 Trying to include dash.php...\n";
+            include "../sss/dash.php";
+        } else {
+            echo "❌ dash.php not found in sss directory\n";
+            echo "📁 Contents of sss directory:\n";
+            $files = scandir("../sss/");
+            foreach ($files as $file) {
+                if (strpos($file, 'dash') !== false) {
+                    echo "  - $file\n";
+                }
+            }
+        }
         break;
         
     case 'debug_env':

@@ -1,4 +1,16 @@
 <?php
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+    // Redirect to login page if not logged in
+    header('Location: /');
+    exit;
+}
+
 // Database connection - Use the same working approach as simple_db_test.php
 $mysql_host = 'mainline.proxy.rlwy.net';
 $mysql_port = 26063;
