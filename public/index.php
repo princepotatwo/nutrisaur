@@ -40,6 +40,8 @@ switch ($path) {
     case '':
     case 'index':
         if ($is_test_route) echo "🏠 Routing to: Home/Index\n";
+        // Suppress PHP notices for main website
+        error_reporting(E_ERROR | E_PARSE);
         // Include the original home.php from sss directory
         include '../sss/home.php';
         break;
@@ -47,6 +49,8 @@ switch ($path) {
     case 'home':
     case 'home.php':
         if ($is_test_route) echo "🏠 Routing to: Home\n";
+        // Suppress PHP notices for main website
+        error_reporting(E_ERROR | E_PARSE);
         include '../sss/home.php';
         break;
         
