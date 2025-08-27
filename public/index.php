@@ -30,7 +30,7 @@ switch ($path) {
         
     case 'settings':
         // Route to settings
-        include_once '../sss/settings_working.php';
+        include_once '../sss/settings_test.php';
         break;
         
     case 'ai':
