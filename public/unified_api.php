@@ -58,6 +58,7 @@ try {
 
 // Get the endpoint from query parameters
 $endpoint = $_GET['endpoint'] ?? '';
+$type = $_GET['type'] ?? '';
 
 // Route to appropriate handler
 switch ($endpoint) {
@@ -97,10 +98,15 @@ switch ($endpoint) {
         getAIFoodRecommendations($pdo); // Redirect to AI food recommendations
         break;
         
-    default:
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
-        break;
+            default:
+            // Check if it's a type-based request
+            if ($type === 'usm') {
+                getUserManagementData($pdo);
+            } else {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
+            }
+            break;
 }
 
 function getCommunityMetrics($pdo) {
@@ -577,6 +583,41 @@ function getAIFoodRecommendations($pdo) {
         }
         
         echo json_encode(['success' => true, 'data' => $recommendations]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+}
+
+function getUserManagementData($pdo) {
+    try {
+        // Get all users with their preferences
+        $stmt = $pdo->query("
+            SELECT 
+                u.user_id,
+                u.username,
+                u.email,
+                u.created_at as user_created,
+                up.name,
+                up.birthday,
+                up.age,
+                up.gender,
+                up.height,
+                up.weight,
+                up.bmi,
+                up.muac,
+                up.barangay,
+                up.income_level,
+                up.risk_score,
+                up.created_at as screening_created
+            FROM users u
+            LEFT JOIN user_preferences up ON u.email = up.user_email
+            ORDER BY u.created_at DESC
+        ");
+        
+        $users = $stmt->fetchAll();
+        
+        echo json_encode(['success' => true, 'data' => $users]);
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
