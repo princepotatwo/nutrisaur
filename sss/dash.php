@@ -7362,11 +7362,24 @@ body {
                 }
 
                 console.log('Intelligent programs params:', params);
-                const data = await fetchDataFromAPI('intelligent_programs', params);
+                const data = await fetchDataFromAPI('ai_food_recommendations', params);
                 
                 if (data && data.success) {
                     console.log('Intelligent programs data received:', data);
-                    updateIntelligentProgramsDisplay(data.programs, data.data_analysis);
+                    // Map AI food recommendations to programs format
+                    const programs = data.data || [];
+                    const analysis = {
+                        total_users: programs.length,
+                        high_risk_percentage: 0,
+                        sam_cases: 0,
+                        children_count: 0,
+                        elderly_count: 0,
+                        low_dietary_diversity: 0,
+                        average_risk: 0,
+                        community_health_status: 'Active',
+                        message: `Generated ${programs.length} AI food recommendations based on community data`
+                    };
+                    updateIntelligentProgramsDisplay(programs, analysis);
                 } else {
                     console.log('Intelligent programs failed or no data:', data);
                     // Show appropriate no-data message
@@ -7464,30 +7477,30 @@ body {
             const card = document.createElement('div');
             card.className = 'program-card';
             
-            // Determine priority class
+            // Determine priority class based on nutritional impact score
             let priorityClass = 'priority-medium';
-            if (program.priority === 'Critical') priorityClass = 'priority-immediate';
-            else if (program.priority === 'High') priorityClass = 'priority-high';
+            if (program.nutritional_impact_score >= 85) priorityClass = 'priority-immediate';
+            else if (program.nutritional_impact_score >= 70) priorityClass = 'priority-high';
             
             card.innerHTML = `
                 <div class="program-content">
-                    <div class="program-title">${program.title}</div>
-                    <div class="program-description">${program.description}</div>
+                    <div class="program-title">${program.food_emoji} ${program.food_name}</div>
+                    <div class="program-description">${program.food_description}</div>
                     <div class="program-meta">
-                        <span class="priority-tag ${priorityClass}">${getPriorityLabel(program.priority)}</span>
+                        <span class="priority-tag ${priorityClass}">${getPriorityLabel(program.nutritional_impact_score)}</span>
                         <div class="program-details" style="margin-top: 6px; font-size: 11px; opacity: 0.8;">
-                            <div><strong>Type:</strong> ${program.type}</div>
-                            <div><strong>Duration:</strong> ${program.duration}</div>
-                            <div><strong>Target:</strong> ${program.target_audience}</div>
+                            <div><strong>Priority:</strong> ${program.nutritional_priority}</div>
+                            <div><strong>Impact Score:</strong> ${program.nutritional_impact_score}/100</div>
+                            <div><strong>Ingredients:</strong> ${program.ingredients}</div>
                             <div class="target-location" style="background: rgba(161, 180, 84, 0.2); padding: 4px 8px; border-radius: 6px; margin-top: 4px; border-left: 3px solid var(--color-highlight);">
-                                <strong style="color: #4CAF50;">Target Location:</strong> ${program.location}
+                                <strong style="color: #4CAF50;">Benefits:</strong> ${program.benefits}
                             </div>
                         </div>
                         <div style="display: flex; gap: 10px; margin-top: 8px;">
-                            <button class="show-reasoning-btn" onclick="showAIReasoning('${program.title}', '${program.reasoning}')">
+                            <button class="show-reasoning-btn" onclick="showAIReasoning('${program.food_name}', '${program.ai_reasoning}')">
                                 Show AI Reasoning
                             </button>
-                            <button class="create-this-program-btn" onclick="createProgramFromCard('${program.title}', '${program.type}', '${program.location}', '${program.description}', '${program.priority}')">
+                            <button class="create-this-program-btn" onclick="createProgramFromCard('${program.food_name}', '${program.nutritional_priority}', '${program.nutritional_priority}', '${program.food_description}', '${getPriorityLabel(program.nutritional_impact_score)}')">
                                 Create This Program
                             </button>
                         </div>
@@ -7521,15 +7534,24 @@ body {
 
         // Function to get proper priority labels
         function getPriorityLabel(priority) {
-            switch(priority) {
-                case 'Critical':
-                    return 'High Risk';
-                case 'High':
-                    return 'Moderate Risk';
-                case 'Medium':
-                    return 'Low Risk';
-                default:
-                    return priority;
+            if (typeof priority === 'number') {
+                // Handle nutritional impact score
+                if (priority >= 85) return 'High Impact';
+                if (priority >= 70) return 'Medium Impact';
+                if (priority >= 50) return 'Moderate Impact';
+                return 'Low Impact';
+            } else {
+                // Handle string priority
+                switch(priority) {
+                    case 'Critical':
+                        return 'High Risk';
+                    case 'High':
+                        return 'Moderate Risk';
+                    case 'Medium':
+                        return 'Low Risk';
+                    default:
+                        return priority;
+                }
             }
         }
 

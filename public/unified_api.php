@@ -93,6 +93,10 @@ switch ($endpoint) {
         getAIFoodRecommendations($pdo);
         break;
         
+    case 'intelligent_programs':
+        getAIFoodRecommendations($pdo); // Redirect to AI food recommendations
+        break;
+        
     default:
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
