@@ -207,55 +207,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             $debugInfo = [];
             
             // Check if notification_logs table exists
-            try {
-                $stmt = $conn->prepare("SHOW TABLES LIKE 'notification_logs'");
-                $stmt->execute();
-                $debugInfo['notification_logs_table_exists'] = $stmt->rowCount() > 0;
-            } catch (Exception $e) {
-                $debugInfo['notification_logs_table_exists'] = false;
-                $debugInfo['notification_logs_error'] = $e->getMessage();
+            $stmt = safeDbQuery($conn, "SHOW TABLES LIKE 'notification_logs'");
+            $debugInfo['notification_logs_table_exists'] = $stmt ? $stmt->rowCount() > 0 : false;
+            if (!$stmt) {
+                $debugInfo['notification_logs_error'] = 'Database connection failed';
             }
             
             // Check if fcm_tokens table exists
-            try {
-                $stmt = $conn->prepare("SHOW TABLES LIKE 'fcm_tokens'");
-                $stmt->execute();
-                $debugInfo['fcm_tokens_table_exists'] = $stmt->rowCount() > 0;
-            } catch (Exception $e) {
-                $debugInfo['fcm_tokens_table_exists'] = false;
-                $debugInfo['fcm_tokens_error'] = $e->getMessage();
+            $stmt = safeDbQuery($conn, "SHOW TABLES LIKE 'fcm_tokens'");
+            $debugInfo['fcm_tokens_table_exists'] = $stmt ? $stmt->rowCount() > 0 : false;
+            if (!$stmt) {
+                $debugInfo['fcm_tokens_error'] = 'Database connection failed';
             }
             
             // Check if user_preferences table exists
-            try {
-                $stmt = $conn->prepare("SHOW TABLES LIKE 'user_preferences'");
-                $stmt->execute();
-                $debugInfo['user_preferences_table_exists'] = $stmt->rowCount() > 0;
-            } catch (Exception $e) {
-                $debugInfo['user_preferences_table_exists'] = false;
-                $debugInfo['user_preferences_error'] = $e->getMessage();
+            $stmt = safeDbQuery($conn, "SHOW TABLES LIKE 'user_preferences'");
+            $debugInfo['user_preferences_table_exists'] = $stmt ? $stmt->rowCount() > 0 : false;
+            if (!$stmt) {
+                $debugInfo['user_preferences_error'] = 'Database connection failed';
             }
             
             // Get FCM token count
             if ($debugInfo['fcm_tokens_table_exists']) {
-                try {
-                    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM fcm_tokens WHERE is_active = TRUE");
-                    $stmt->execute();
-                    $debugInfo['active_fcm_tokens'] = $stmt->fetchColumn();
-                } catch (Exception $e) {
-                    $debugInfo['active_fcm_tokens'] = 'Error: ' . $e->getMessage();
-                }
+                $stmt = safeDbQuery($conn, "SELECT COUNT(*) as count FROM fcm_tokens WHERE is_active = TRUE");
+                $debugInfo['active_fcm_tokens'] = $stmt ? $stmt->fetchColumn() : 'Database error';
             }
             
             // Get user preferences count
             if ($debugInfo['user_preferences_table_exists']) {
-                try {
-                    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM user_preferences WHERE barangay IS NOT NULL AND barangay != ''");
-                    $stmt->execute();
-                    $debugInfo['users_with_barangay'] = $stmt->fetchColumn();
-                } catch (Exception $e) {
-                    $debugInfo['users_with_barangay'] = 'Error: ' . $e->getMessage();
-                }
+                $stmt = safeDbQuery($conn, "SELECT COUNT(*) as count FROM user_preferences WHERE barangay IS NOT NULL AND barangay != ''");
+                $debugInfo['users_with_barangay'] = $stmt ? $stmt->fetchColumn() : 'Database error';
             }
             
             // Check Firebase Admin SDK file
