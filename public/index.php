@@ -170,6 +170,11 @@ switch ($path) {
         include 'debug_routing.php';
         break;
         
+    case 'test_railway_routing':
+        echo "🧪 Routing to: Railway Routing Test\n";
+        include 'test_railway_routing.php';
+        break;
+        
     case 'debug_env':
         if ($is_test_route) echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';

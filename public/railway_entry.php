@@ -10,7 +10,7 @@ session_start();
 
 // Set headers for CORS and security
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: 'GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: text/html; charset=UTF-8');
 
