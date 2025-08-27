@@ -20,9 +20,6 @@ COPY config.example.php ./config.php
 # Create proper health check
 RUN echo '<?php header("Content-Type: application/json"); echo json_encode(["status" => "healthy", "timestamp" => date("Y-m-d H:i:s")]); ?>' > public/health.php
 
-# Copy your actual web application files to public directory
-RUN cp -r sss/* public/ 2>/dev/null || true
-
 # Ensure config.php is accessible from public directory
 RUN cp config.php public/config.php
 
