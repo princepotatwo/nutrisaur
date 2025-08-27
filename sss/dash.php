@@ -6891,7 +6891,7 @@ body {
 
                 // Update Screening Responses (Age, Gender, Income, Height, Swelling, Weight Loss, Feeding, Physical Signs, Dietary, Clinical)
                 console.log('Fetching screening responses...');
-                const screeningData = await fetchDataFromAPI('screening_responses', params);
+                const screeningData = await fetchDataFromAPI('detailed_screening_responses', params);
                 console.log('Screening responses API response:', screeningData);
                 if (screeningData && screeningData.success) {
                     console.log('Screening responses data:', screeningData.data);
@@ -9983,7 +9983,7 @@ body {
             
             // Update gender distribution
             console.log('Updating gender distribution...');
-            updateResponseSection('gender-responses', data.gender_distribution || [], 'Gender', data.total_screened);
+            updateResponseSection('gender-responses', data.gender || [], 'Gender', data.total_screened);
             
             // Update income levels
             console.log('Updating income levels...');
@@ -9991,19 +9991,19 @@ body {
             
             // Update height distribution
             console.log('Updating height distribution...');
-            updateResponseSection('height-responses', data.height_distribution || [], 'Height Range', data.total_screened);
+            updateResponseSection('height-responses', data.height || [], 'Height Range', data.total_screened);
             
             // Update swelling distribution
             console.log('Updating swelling distribution...');
-            updateResponseSection('swelling-responses', data.swelling_distribution || [], 'Swelling Status', data.total_screened);
+            updateResponseSection('swelling-responses', data.swelling || [], 'Swelling Status', data.total_screened);
             
             // Update weight loss distribution
             console.log('Updating weight loss distribution...');
-            updateResponseSection('weight-loss-responses', data.weight_loss_distribution || [], 'Weight Loss Status', data.total_screened);
+            updateResponseSection('weight-loss-responses', data.weight_loss || [], 'Weight Loss Status', data.total_screened);
             
             // Update feeding behavior distribution
             console.log('Updating feeding behavior distribution...');
-            updateResponseSection('feeding-behavior-responses', data.feeding_behavior_distribution || [], 'Feeding Behavior', data.total_screened);
+            updateResponseSection('feeding-behavior-responses', data.feeding_behavior || [], 'Feeding Behavior', data.total_screened);
             
             // Update physical signs
             console.log('Updating physical signs...');
@@ -10011,11 +10011,11 @@ body {
             
             // Update dietary diversity distribution
             console.log('Updating dietary diversity distribution...');
-            updateResponseSection('dietary-diversity-responses', data.dietary_diversity_distribution || [], 'Dietary Diversity Score', data.total_screened);
+            updateResponseSection('dietary-diversity-responses', data.dietary_diversity || [], 'Dietary Diversity Score', data.total_screened);
             
             // Update clinical risk factors
             console.log('Updating clinical risk factors...');
-            updateResponseSection('clinical-risk-responses', data.clinical_risk_factors || [], 'Clinical Risk Factor', data.total_screened);
+            updateResponseSection('clinical-risk-responses', data.clinical_risk || [], 'Clinical Risk Factor', data.total_screened);
             
             // Update critical alerts
             console.log('Updating critical alerts...');
