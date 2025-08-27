@@ -441,18 +441,15 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
     }
 }
 
-// Start the session
-session_start();
-
 // Debug: Check session status
 echo "<!-- Debug: Session started -->";
 echo "<!-- Debug: Session data: " . print_r($_SESSION, true) . " -->";
 
 // Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    echo "<!-- Debug: No user_id in session, redirecting to home.php -->";
+if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+    echo "<!-- Debug: No user_id or admin_id in session, redirecting to home.php -->";
     // Redirect to login page if not logged in
-    header("Location: home.php");
+    header("Location: /");
     exit;
 }
 
@@ -5656,10 +5653,10 @@ body {
             <ul>
                 <li><a href="dash.php"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
 
-                <li><a href="event.php"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
-                <li><a href="AI.php"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
-                <li><a href="settings.php"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
-                <li><a href="logout.php" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
+                <li><a href="/event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
+                <li><a href="/AI"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
+                <li><a href="/settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
+                <li><a href="/logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
             </ul>
         </div>
         <div class="navbar-footer">
@@ -7836,7 +7833,7 @@ body {
         */
 
         // API Connection and Data Fetching Functions
-        const API_BASE_URL = 'http://localhost/thesis355/unified_api.php';
+        const API_BASE_URL = window.location.origin + '/api';
 
         // Function to fetch data from API
         async function fetchDataFromAPI(endpoint, params = {}) {
@@ -7844,7 +7841,7 @@ body {
                 // Add endpoint to params
                 const allParams = { endpoint, ...params };
                 const queryString = new URLSearchParams(allParams).toString();
-                const url = `${API_BASE_URL}?${queryString}`;
+                const url = `${API_BASE_URL}/unified_api?${queryString}`;
                 
                 console.log(`Fetching data from: ${url}`);
                 console.log(`Endpoint: ${endpoint}, Params:`, params);
@@ -9206,7 +9203,7 @@ body {
         function createNewProgram() {
             console.log('createNewProgram called');
             // Redirect to event.php in the same tab
-            window.location.href = 'event.php';
+                            window.location.href = '/event';
         }
 
         // Function to create program from card - redirects to event.php with pre-filled data

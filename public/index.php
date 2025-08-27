@@ -171,6 +171,11 @@ switch ($path) {
         include 'api/login.php';
         break;
         
+    case 'api/unified_api':
+        if ($is_test_route) echo "🔗 Routing to: Unified API\n";
+        include 'api/unified_api.php';
+        break;
+        
     default:
         if ($is_test_route) {
             echo "❓ No route match, trying default handler\n";
