@@ -14,15 +14,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+// Debug routing
+echo "🔍 Routing Debug:\n";
+echo "📍 REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "\n";
+echo "🌐 SCRIPT_NAME: " . $_SERVER['SCRIPT_NAME'] . "\n";
+echo "📁 PHP_SELF: " . $_SERVER['PHP_SELF'] . "\n";
+
 // Simple routing
 $request_uri = $_SERVER['REQUEST_URI'];
 $path = parse_url($request_uri, PHP_URL_PATH);
 $path = trim($path, '/');
 
+echo "🎯 Parsed Path: '$path'\n";
+echo "📏 Path Length: " . strlen($path) . "\n\n";
+
 // Route to appropriate file
 switch ($path) {
     case '':
     case 'index':
+        echo "🏠 Routing to: Home/Index\n";
         // Show the main Nutrisaur application
         if (file_exists('settings_verified_mho.php')) {
             include 'settings_verified_mho.php';
@@ -50,36 +60,46 @@ switch ($path) {
         break;
         
     case 'health':
+        echo "🏥 Routing to: Health\n";
         include 'health.php';
         break;
         
     case 'test':
+        echo "🧪 Routing to: Test\n";
         include 'test.php';
         break;
         
     case 'test_db_connection':
+        echo "🔌 Routing to: Test DB Connection\n";
         include 'test_db_connection.php';
         break;
         
     case 'import_database':
+        echo "📥 Routing to: Import Database\n";
         include 'import_database.php';
         break;
         
     case 'simple_db_test':
+        echo "🗄️ Routing to: Simple DB Test\n";
         include 'simple_db_test.php';
         break;
         
     case 'debug_env':
+        echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';
         break;
         
     default:
+        echo "❓ No route match, trying default handler\n";
         // Try to find the file in current directory first, then in sss directory
         if (file_exists("$path.php")) {
+            echo "📁 Found file: $path.php\n";
             include "$path.php";
         } elseif (file_exists("sss/$path.php")) {
+            echo "📁 Found file in sss: sss/$path.php\n";
             include "sss/$path.php";
         } else {
+            echo "❌ File not found: $path.php or sss/$path.php\n";
             http_response_code(404);
             echo '<h1>404 - Page Not Found</h1>';
             echo '<p>The requested page could not be found.</p>';
