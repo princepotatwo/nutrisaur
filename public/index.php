@@ -25,12 +25,12 @@ switch ($path) {
     case 'dash':
     case 'dashboard':
         // Route to dashboard
-        include_once '../sss/dash_minimal.php';
+        include_once '../sss/dash.php';
         break;
         
     case 'settings':
         // Route to settings
-        include_once '../sss/settings_test.php';
+        include_once '../sss/settings.php';
         break;
         
     case 'ai':
