@@ -36,7 +36,9 @@ if ($is_test_route || $is_api_route) {
     echo "📁 PHP_SELF: " . $_SERVER['PHP_SELF'] . "\n";
     echo "🎯 Parsed Path: '$path'\n";
     echo "📏 Path Length: " . strlen($path) . "\n";
-    echo "🔗 Is API Route: " . ($is_api_route ? 'Yes' : 'No') . "\n\n";
+    echo "🔗 Is API Route: " . ($is_api_route ? 'Yes' : 'No') . "\n";
+    echo "🔍 Path starts with 'api/': " . (strpos($path, 'api/') === 0 ? 'Yes' : 'No') . "\n";
+    echo "🔍 Raw path check: " . (strpos($path, 'api/') === 0 ? 'YES' : 'NO') . "\n\n";
 }
 
 // Route to appropriate file
@@ -175,6 +177,18 @@ switch ($path) {
         include 'test_railway_routing.php';
         break;
         
+    case 'test_api_routing':
+        echo "🧪 Testing API Routing Specifically\n";
+        echo "🔍 Testing /api/unified_api route:\n";
+        echo "📍 REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "\n";
+        echo "🎯 Parsed Path: '$path'\n";
+        echo "🔍 Path starts with 'api/': " . (strpos($path, 'api/') === 0 ? 'Yes' : 'No') . "\n";
+        echo "🔍 Exact match for 'api/unified_api': " . ($path === 'api/unified_api' ? 'Yes' : 'No') . "\n";
+        echo "🔍 String comparison: " . (strcmp($path, 'api/unified_api') === 0 ? 'EQUAL' : 'NOT EQUAL') . "\n";
+        echo "🔍 Path length: " . strlen($path) . "\n";
+        echo "🔍 Path bytes: " . bin2hex($path) . "\n";
+        break;
+        
     case 'debug_env':
         if ($is_test_route) echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';
@@ -197,6 +211,15 @@ switch ($path) {
         
     case 'api/unified_api':
         if ($is_test_route) echo "🔗 Routing to: Unified API\n";
+        echo "🎯 API ROUTE REACHED: api/unified_api\n";
+        echo "📍 REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "\n";
+        echo "🎯 Parsed Path: '$path'\n";
+        echo "🔍 Path starts with 'api/': " . (strpos($path, 'api/') === 0 ? 'Yes' : 'No') . "\n";
+        echo "🔍 Exact match for 'api/unified_api': " . ($path === 'api/unified_api' ? 'Yes' : 'No') . "\n";
+        echo "🔍 String comparison: " . (strcmp($path, 'api/unified_api') === 0 ? 'EQUAL' : 'NOT EQUAL') . "\n";
+        echo "🔍 Path length: " . strlen($path) . "\n";
+        echo "🔍 Path bytes: " . bin2hex($path) . "\n";
+        echo "🔍 Including api/unified_api.php...\n";
         include 'api/unified_api.php';
         break;
         
