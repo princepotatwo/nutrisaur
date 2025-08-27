@@ -1040,34 +1040,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             e.preventDefault();
             clearMessage();
             
-            // Validate form
-            if (isLoginMode) {
-                // Login mode
-                if (!usernameInput.value || !passwordInput.value) {
-                    showMessage('Please enter both username/email and password', 'error');
-                    return;
-                }
-                
-                await login(usernameInput.value, passwordInput.value);
-            } else {
-                // Register mode
-                if (!usernameInput.value || !emailInput.value || !passwordInput.value) {
-                    showMessage('Please fill in all fields', 'error');
-                    return;
-                }
-                
-                if (!validateEmail(emailInput.value)) {
-                    showMessage('Please enter a valid email address', 'error');
-                    return;
-                }
-                
-                if (passwordInput.value.length < 6) {
-                    showMessage('Password must be at least 6 characters long', 'error');
-                    return;
-                }
-                
-                await register(usernameInput.value, emailInput.value, passwordInput.value);
+            // Always in login mode for auth-form
+            if (!usernameInput.value || !passwordInput.value) {
+                showMessage('Please enter both username/email and password', 'error');
+                return;
             }
+            
+            await login(usernameInput.value, passwordInput.value);
         });
 
         // Register form submission handler

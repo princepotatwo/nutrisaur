@@ -148,6 +148,11 @@ switch ($path) {
         include 'api/check_session.php';
         break;
         
+    case 'api/login':
+        if ($is_test_route) echo "🔐 Routing to: Login API\n";
+        include 'api/login.php';
+        break;
+        
     default:
         if ($is_test_route) {
             echo "❓ No route match, trying default handler\n";
