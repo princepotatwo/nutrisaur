@@ -27,6 +27,13 @@ $email = $_SESSION['email'];
 
     // Include the centralized configuration file
     require_once __DIR__ . "/../public/config.php";
+    
+    // Debug: Check if config was loaded
+    if (!function_exists('getDatabaseConnection')) {
+        echo "ERROR: config.php not loaded properly. Functions available: ";
+        echo implode(', ', get_defined_functions()['user']);
+        exit;
+    }
 
 // Initialize variables
 $dbConnected = false;
