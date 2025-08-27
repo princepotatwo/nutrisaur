@@ -189,6 +189,11 @@ switch ($path) {
         echo "🔍 Path bytes: " . bin2hex($path) . "\n";
         break;
         
+    case 'test_api_call':
+        echo "🧪 Testing API Call Path\n";
+        include 'test_api_call.php';
+        break;
+        
     case 'debug_env':
         if ($is_test_route) echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';
