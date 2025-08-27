@@ -3798,12 +3798,12 @@ optgroup option {
         </div>
         <div class="navbar-menu">
             <ul>
-                <li><a href="dash.php"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
+                <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
 
-                <li><a href="event.php"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
-                <li><a href="AI.php"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
-                <li><a href="settings.php"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
-                <li><a href="logout.php" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
+                <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
+                <li><a href="ai"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
+                <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
+                <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
             </ul>
         </div>
         <div class="navbar-footer">
