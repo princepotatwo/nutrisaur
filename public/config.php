@@ -9,12 +9,24 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 
-// Database Configuration - HARDCODED with working values from MySQL Workbench
-$mysql_host = 'mainline.proxy.rlwy.net';
-$mysql_port = 26063;
-$mysql_user = 'root';
-$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-$mysql_database = 'railway';
+// Database Configuration - Read from Railway environment variables
+$mysql_host = $_ENV['MYSQLHOST'] ?? 'mainline.proxy.rlwy.net';
+$mysql_port = $_ENV['MYSQLPORT'] ?? 26063;
+$mysql_user = $_ENV['MYSQLUSER'] ?? 'root';
+$mysql_password = $_ENV['MYSQLPASSWORD'] ?? 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+$mysql_database = $_ENV['MYSQLDATABASE'] ?? 'railway';
+
+// If MYSQL_URL is set, parse it
+if (isset($_ENV['MYSQL_URL'])) {
+    $mysql_url = $_ENV['MYSQL_URL'];
+    if (preg_match('/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/', $mysql_url, $matches)) {
+        $mysql_user = $matches[1];
+        $mysql_password = $matches[2];
+        $mysql_host = $matches[3];
+        $mysql_port = $matches[4];
+        $mysql_database = $matches[5];
+    }
+}
 
 // Application Configuration
 define('APP_NAME', 'Nutrisaur');
@@ -101,40 +113,67 @@ function getMysqliConnection() {
         return $mysqli;
         
     } catch (Exception $e) {
-        echo "💥 MySQLi connection failed: " . $e->getMessage() . "\n";
+        echo "💥 MySQLi connection failed!\n";
+        echo "❌ Error: " . $e->getMessage() . "\n";
         error_log("MySQLi connection failed: " . $e->getMessage());
         return null;
     }
 }
 
-// Test database connection
+// Test database connection function
 function testDatabaseConnection() {
-    echo "🧪 Testing database connection...\n";
+    echo "🧪 Testing database connection...\n\n";
+    
+    // Test PDO
     $pdo = getDatabaseConnection();
     if ($pdo) {
+        echo "✅ PDO connection test: SUCCESS\n\n";
+        
+        // Test a simple query
         try {
-            echo "🔍 Testing basic query...\n";
-            $result = $pdo->query("SELECT 1 as test");
-            $row = $result->fetch();
-            echo "✅ Query successful: " . $row['test'] . "\n";
-            return true;
-        } catch (PDOException $e) {
-            echo "❌ Query test failed: " . $e->getMessage() . "\n";
-            return false;
+            $stmt = $pdo->query("SELECT 1 as test");
+            $result = $stmt->fetch();
+            echo "✅ Query test: SUCCESS - Result: " . $result['test'] . "\n";
+        } catch (Exception $e) {
+            echo "❌ Query test: FAILED - " . $e->getMessage() . "\n";
         }
+        
+    } else {
+        echo "❌ PDO connection test: FAILED\n\n";
     }
-    return false;
+    
+    echo "\n";
+    
+    // Test MySQLi
+    $mysqli = getMysqliConnection();
+    if ($mysqli) {
+        echo "✅ MySQLi connection test: SUCCESS\n";
+        $mysqli->close();
+    } else {
+        echo "❌ MySQLi connection test: FAILED\n";
+    }
 }
 
-// Debug function to show current config
+// Show database configuration (for debugging)
 function showDatabaseConfig() {
     global $mysql_host, $mysql_port, $mysql_user, $mysql_database;
-    return [
-        'host' => $mysql_host,
-        'port' => $mysql_port,
-        'username' => $mysql_user,
-        'database' => $mysql_database,
-        'method' => 'HARDCODED - Working values from MySQL Workbench'
-    ];
+    
+    echo "🔧 Database Configuration:\n";
+    echo "📍 Host: $mysql_host\n";
+    echo "🚪 Port: $mysql_port\n";
+    echo "👤 User: $mysql_user\n";
+    echo "🗄️ Database: $mysql_database\n";
+    echo "🔑 Password: " . str_repeat('*', 10) . "\n\n";
+    
+    echo "🌍 Environment Variables:\n";
+    echo "📍 MYSQLHOST: " . ($_ENV['MYSQLHOST'] ?? 'NOT SET') . "\n";
+    echo "🚪 MYSQLPORT: " . ($_ENV['MYSQLPORT'] ?? 'NOT SET') . "\n";
+    echo "👤 MYSQLUSER: " . ($_ENV['MYSQLUSER'] ?? 'NOT SET') . "\n";
+    echo "🗄️ MYSQLDATABASE: " . ($_ENV['MYSQLDATABASE'] ?? 'NOT SET') . "\n";
+    echo "🔗 MYSQL_URL: " . ($_ENV['MYSQL_URL'] ?? 'NOT SET') . "\n";
+    echo "🔗 MYSQL_PUBLIC_URL: " . ($_ENV['MYSQL_PUBLIC_URL'] ?? 'NOT SET') . "\n\n";
 }
+
+// Create a global connection variable for backward compatibility
+$conn = getDatabaseConnection();
 ?>
