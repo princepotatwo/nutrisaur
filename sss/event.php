@@ -26,7 +26,7 @@ $username = $_SESSION['username'];
 $email = $_SESSION['email'];
 
     // Include the centralized configuration file
-    require_once __DIR__ . "/../public/config.php";
+    require_once __DIR__ . "/../config.php";
     
     // Debug: Check if config was loaded
     if (!function_exists('getDatabaseConnection')) {
@@ -39,6 +39,26 @@ $dbConnected = false;
 $errorMessage = null;
 $programs = [];
 
+// Create a safe database wrapper that won't crash the page
+function safeDbQuery($conn, $sql, $params = []) {
+    if (!$conn) {
+        return null;
+    }
+    
+    try {
+        $stmt = $conn->prepare($sql);
+        if ($params) {
+            $stmt->execute($params);
+        } else {
+            $stmt->execute();
+        }
+        return $stmt;
+    } catch (Exception $e) {
+        error_log("Database query failed: " . $e->getMessage());
+        return null;
+    }
+}
+
 try {
     // Get database connection from config.php
     if (function_exists('getDatabaseConnection')) {
@@ -46,27 +66,27 @@ try {
         if ($conn) {
             $dbConnected = true;
             
-            // Fetch programs from database
-            $stmt = $conn->prepare("SELECT * FROM programs ORDER BY date_time DESC");
-            $stmt->execute();
-            $programs = $stmt->fetchAll();
+            // Fetch programs from database using safe wrapper
+            $stmt = safeDbQuery($conn, "SELECT * FROM programs ORDER BY date_time DESC");
+            if ($stmt) {
+                $programs = $stmt->fetchAll();
+            } else {
+                $programs = [];
+            }
         } else {
             $dbConnected = false;
             $errorMessage = "Database connection failed: Could not establish connection";
-            // Set empty programs array for now
             $programs = [];
         }
     } else {
         $dbConnected = false;
         $errorMessage = "Database connection function not found - config.php may not be loaded";
-        // Set empty programs array for now
         $programs = [];
     }
     
-} catch(PDOException $e) {
+} catch(Exception $e) {
     $dbConnected = false;
     $errorMessage = "Database connection failed: " . $e->getMessage();
-    // Set empty programs array for now
     $programs = [];
 }
 
