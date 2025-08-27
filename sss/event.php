@@ -46,7 +46,16 @@ function safeDbQuery($conn, $sql, $params = []) {
 }
 
     // Include the centralized configuration file
-    require_once __DIR__ . "/../config.php";
+    $configPath = __DIR__ . "/../config.php";
+    if (!file_exists($configPath)) {
+        die("Config file not found at: $configPath");
+    }
+    require_once $configPath;
+    
+    // Test if config loaded
+    if (!function_exists('getDatabaseConnection')) {
+        die("getDatabaseConnection function not found after loading config");
+    }
 
 // Initialize variables
 $dbConnected = false;
