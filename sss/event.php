@@ -66,12 +66,20 @@ try {
         if ($conn) {
             $dbConnected = true;
             
-            // Fetch programs from database using safe wrapper
-            $stmt = safeDbQuery($conn, "SELECT * FROM programs ORDER BY date_time DESC");
-            if ($stmt) {
-                $programs = $stmt->fetchAll();
+            // Check if programs table exists first
+            $tableCheck = safeDbQuery($conn, "SHOW TABLES LIKE 'programs'");
+            if ($tableCheck && $tableCheck->rowCount() > 0) {
+                // Fetch programs from database using safe wrapper
+                $stmt = safeDbQuery($conn, "SELECT * FROM programs ORDER BY date_time DESC");
+                if ($stmt) {
+                    $programs = $stmt->fetchAll();
+                } else {
+                    $programs = [];
+                }
             } else {
+                // Programs table doesn't exist, use empty array
                 $programs = [];
+                $errorMessage = "Programs table not found - using sample data";
             }
         } else {
             $dbConnected = false;
