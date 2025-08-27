@@ -4751,7 +4751,7 @@ optgroup option {
         // Create an XMLHttpRequest to fetch app users with risk data
         const xhr = new XMLHttpRequest();
         
-        xhr.open('GET', 'http://localhost/thesis355/unified_api.php?type=usm&t=' + Date.now(), true);
+        xhr.open('GET', API_BASE_URL + '/unified_api.php?type=usm&t=' + Date.now(), true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         
         xhr.onreadystatechange = function() {
@@ -5109,7 +5109,7 @@ optgroup option {
         showAlert('info', 'Deleting user...');
         
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost/thesis355/unified_api.php', true);
+        xhr.open('POST', API_BASE_URL + '/unified_api.php', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         
         const deleteData = {
@@ -5183,7 +5183,7 @@ optgroup option {
             showAlert('info', 'Loading user data...');
             
             // Fetch user data for editing using fetch API
-            const response = await fetch('http://localhost/thesis355/unified_api.php', {
+            const response = await fetch(API_BASE_URL + '/unified_api.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -5704,7 +5704,7 @@ optgroup option {
         
         // Send update request
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost/thesis355/unified_api.php', true);
+        xhr.open('POST', 'API_BASE_URL + "/unified_api.php"', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         
         const updateData = {
@@ -5871,7 +5871,7 @@ optgroup option {
             document.getElementById('userDetailsModal').style.display = 'block';
             
             // Fetch fresh user data from API using POST with get_user_data action
-            const response = await fetch('http://localhost/thesis355/unified_api.php', {
+            const response = await fetch('API_BASE_URL + "/unified_api.php"', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -6159,7 +6159,7 @@ optgroup option {
         }
         
         // Test the API directly
-        fetch('http://localhost/thesis355/unified_api.php?type=usm&t=' + Date.now())
+        fetch('API_BASE_URL + "/unified_api.php"?type=usm&t=' + Date.now())
             .then(response => response.json())
             .then(data => {
                 console.log('🧪 API Test Response:', data);
@@ -6599,7 +6599,7 @@ optgroup option {
             let deletedCount = 0;
             const deletePromises = usersToDelete.map(async (user) => {
                 try {
-                    const response = await fetch('http://localhost/thesis355/unified_api.php', {
+                    const response = await fetch('API_BASE_URL + "/unified_api.php"', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -6651,7 +6651,7 @@ optgroup option {
             let deletedCount = 0;
             const deletePromises = usersArray.map(async (user) => {
                 try {
-                    const response = await fetch('http://localhost/thesis355/unified_api.php', {
+                    const response = await fetch('API_BASE_URL + "/unified_api.php"', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -7089,7 +7089,7 @@ optgroup option {
     
     async function checkUserExists(email) {
         try {
-            const response = await fetch('http://localhost/thesis355/unified_api.php?type=usm&t=' + Date.now());
+            const response = await fetch('API_BASE_URL + "/unified_api.php"?type=usm&t=' + Date.now());
             const data = await response.json();
             
             if (data.users) {
@@ -7153,7 +7153,7 @@ optgroup option {
             
             console.log('Sending to API:', requestBody);
             
-            const userResponse = await fetch('http://localhost/thesis355/unified_api.php', {
+            const userResponse = await fetch('API_BASE_URL + "/unified_api.php"', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -7364,7 +7364,7 @@ optgroup option {
             };
             
             // Send to API
-            const response = await fetch('http://localhost/thesis355/unified_api.php', {
+            const response = await fetch('API_BASE_URL + "/unified_api.php"', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -7560,7 +7560,7 @@ optgroup option {
         }
         
         try {
-            const response = await fetch('http://localhost/thesis355/unified_api.php', {
+            const response = await fetch('API_BASE_URL + "/unified_api.php"', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
