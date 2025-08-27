@@ -615,3 +615,4 @@ function getAIFoodRecommendations($pdo) {
 }
 ?>
 
+// Force redeploy Wed Aug 27 16:31:52 PST 2025
