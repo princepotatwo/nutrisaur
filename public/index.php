@@ -45,43 +45,51 @@ switch ($path) {
         break;
         
     case 'home':
+    case 'home.php':
         if ($is_test_route) echo "🏠 Routing to: Home\n";
         include '../sss/home.php';
         break;
         
     case 'dash':
     case 'dashboard':
+    case 'dash.php':
         if ($is_test_route) echo "📊 Routing to: Dashboard\n";
         include '../sss/dash.php';
         break;
         
     case 'event':
     case 'events':
+    case 'event.php':
         if ($is_test_route) echo "📅 Routing to: Events\n";
         include '../sss/event.php';
         break;
         
     case 'settings':
+    case 'settings.php':
         if ($is_test_route) echo "⚙️ Routing to: Settings\n";
         include '../sss/settings.php';
         break;
         
     case 'ai':
+    case 'AI.php':
         if ($is_test_route) echo "🤖 Routing to: AI\n";
         include '../sss/AI.php';
         break;
         
     case 'fpm':
+    case 'FPM.php':
         if ($is_test_route) echo "📋 Routing to: FPM\n";
         include '../sss/FPM.php';
         break;
         
     case 'nr':
+    case 'NR.php':
         if ($is_test_route) echo "📊 Routing to: NR\n";
         include '../sss/NR.php';
         break;
         
     case 'logout':
+    case 'logout.php':
         if ($is_test_route) echo "🚪 Routing to: Logout\n";
         include '../sss/logout.php';
         break;
