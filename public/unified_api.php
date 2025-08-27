@@ -543,8 +543,7 @@ function getAIFoodRecommendations($pdo) {
                     'nutritional_priority' => 'general',
                     'ingredients' => 'Banana, berries, almond milk, chia seeds, almonds',
                     'benefits' => 'Rich in antioxidants, fiber, and essential nutrients',
-                    'nutritional_impact_score' => 85,
-                    'created_at' => date('Y-m-d H:i:s')
+                    'nutritional_impact_score' => 85
                 ],
                 [
                     'user_email' => 'sample@example.com',
@@ -555,8 +554,7 @@ function getAIFoodRecommendations($pdo) {
                     'nutritional_priority' => 'protein',
                     'ingredients' => 'Quinoa, chickpeas, spinach, avocado, olive oil',
                     'benefits' => 'Complete protein, fiber, healthy fats, and micronutrients',
-                    'nutritional_impact_score' => 90,
-                    'created_at' => date('Y-m-d H:i:s')
+                    'nutritional_impact_score' => 90
                 ],
                 [
                     'user_email' => 'sample@example.com',
@@ -567,19 +565,18 @@ function getAIFoodRecommendations($pdo) {
                     'nutritional_priority' => 'iron',
                     'ingredients' => 'Spinach, oranges, walnuts, lemon juice, olive oil',
                     'benefits' => 'High iron content, vitamin C for absorption, healthy fats',
-                    'nutritional_impact_score' => 88,
-                    'created_at' => date('Y-m-d H:i:s')
+                    'nutritional_impact_score' => 88
                 ]
             ];
             
-            // Insert sample data
+            // Insert sample data - let the database handle the ID
             $insertStmt = $pdo->prepare("
                 INSERT INTO ai_food_recommendations (
                     user_email, food_name, food_emoji, food_description, ai_reasoning,
-                    nutritional_priority, ingredients, benefits, nutritional_impact_score, created_at
+                    nutritional_priority, ingredients, benefits, nutritional_impact_score
                 ) VALUES (
                     :user_email, :food_name, :food_emoji, :food_description, :ai_reasoning,
-                    :nutritional_priority, :ingredients, :benefits, :nutritional_impact_score, :created_at
+                    :nutritional_priority, :ingredients, :benefits, :nutritional_impact_score
                 )
             ");
             
