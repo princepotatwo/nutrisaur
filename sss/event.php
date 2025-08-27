@@ -25,20 +25,6 @@ $userId = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 $email = $_SESSION['email'];
 
-    // Include the centralized configuration file
-    require_once __DIR__ . "/../config.php";
-    
-    // Debug: Check if config was loaded
-    if (!function_exists('getDatabaseConnection')) {
-        // For now, just log the error but don't stop the page
-        error_log("WARNING: config.php not loaded properly in event.php");
-    }
-
-// Initialize variables
-$dbConnected = false;
-$errorMessage = null;
-$programs = [];
-
 // Create a safe database wrapper that won't crash the page
 function safeDbQuery($conn, $sql, $params = []) {
     if (!$conn) {
@@ -58,6 +44,20 @@ function safeDbQuery($conn, $sql, $params = []) {
         return null;
     }
 }
+
+    // Include the centralized configuration file
+    require_once __DIR__ . "/../config.php";
+    
+    // Debug: Check if config was loaded
+    if (!function_exists('getDatabaseConnection')) {
+        // For now, just log the error but don't stop the page
+        error_log("WARNING: config.php not loaded properly in event.php");
+    }
+
+// Initialize variables
+$dbConnected = false;
+$errorMessage = null;
+$programs = [];
 
 try {
     // Get database connection from config.php
