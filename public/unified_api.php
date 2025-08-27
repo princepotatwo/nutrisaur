@@ -531,10 +531,11 @@ function getAIFoodRecommendations($pdo) {
         
         $recommendations = $stmt->fetchAll();
         
-        // If no recommendations exist, create some sample ones
+        // If no recommendations exist, return sample data directly
         if (empty($recommendations)) {
-            $sampleRecommendations = [
+            $recommendations = [
                 [
+                    'id' => 1,
                     'user_email' => 'sample@example.com',
                     'food_name' => 'Nutrient-Rich Smoothie Bowl',
                     'food_emoji' => '🥗',
@@ -543,9 +544,11 @@ function getAIFoodRecommendations($pdo) {
                     'nutritional_priority' => 'general',
                     'ingredients' => 'Banana, berries, almond milk, chia seeds, almonds',
                     'benefits' => 'Rich in antioxidants, fiber, and essential nutrients',
-                    'nutritional_impact_score' => 85
+                    'nutritional_impact_score' => 85,
+                    'created_at' => date('Y-m-d H:i:s')
                 ],
                 [
+                    'id' => 2,
                     'user_email' => 'sample@example.com',
                     'food_name' => 'Protein-Packed Quinoa Bowl',
                     'food_emoji' => '🍚',
@@ -554,9 +557,11 @@ function getAIFoodRecommendations($pdo) {
                     'nutritional_priority' => 'protein',
                     'ingredients' => 'Quinoa, chickpeas, spinach, avocado, olive oil',
                     'benefits' => 'Complete protein, fiber, healthy fats, and micronutrients',
-                    'nutritional_impact_score' => 90
+                    'nutritional_impact_score' => 90,
+                    'created_at' => date('Y-m-d H:i:s')
                 ],
                 [
+                    'id' => 3,
                     'user_email' => 'sample@example.com',
                     'food_name' => 'Iron-Rich Spinach Salad',
                     'food_emoji' => '🥬',
@@ -565,44 +570,10 @@ function getAIFoodRecommendations($pdo) {
                     'nutritional_priority' => 'iron',
                     'ingredients' => 'Spinach, oranges, walnuts, lemon juice, olive oil',
                     'benefits' => 'High iron content, vitamin C for absorption, healthy fats',
-                    'nutritional_impact_score' => 88
+                    'nutritional_impact_score' => 88,
+                    'created_at' => date('Y-m-d H:i:s')
                 ]
             ];
-            
-            // Insert sample data - let the database handle the ID
-            $insertStmt = $pdo->prepare("
-                INSERT INTO ai_food_recommendations (
-                    user_email, food_name, food_emoji, food_description, ai_reasoning,
-                    nutritional_priority, ingredients, benefits, nutritional_impact_score
-                ) VALUES (
-                    :user_email, :food_name, :food_emoji, :food_description, :ai_reasoning,
-                    :nutritional_priority, :ingredients, :benefits, :nutritional_impact_score
-                )
-            ");
-            
-            foreach ($sampleRecommendations as $rec) {
-                $insertStmt->execute($rec);
-            }
-            
-            // Fetch the newly inserted data
-            $stmt = $pdo->query("
-                SELECT 
-                    id,
-                    user_email,
-                    food_name,
-                    food_emoji,
-                    food_description,
-                    ai_reasoning,
-                    nutritional_priority,
-                    ingredients,
-                    benefits,
-                    nutritional_impact_score,
-                    created_at
-                FROM ai_food_recommendations 
-                ORDER BY created_at DESC
-                LIMIT 20
-            ");
-            $recommendations = $stmt->fetchAll();
         }
         
         echo json_encode(['success' => true, 'data' => $recommendations]);
@@ -614,4 +585,4 @@ function getAIFoodRecommendations($pdo) {
 ?>
 
 
-// Force redeploy Wed Aug 27 16:55:52 PST 2025
+
