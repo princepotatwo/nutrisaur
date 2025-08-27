@@ -11,17 +11,11 @@ echo "================================\n\n";
 
 // Show current configuration
 echo "🔍 Current Configuration:\n";
-$config = showDatabaseConfig();
-echo "📍 Host: " . $config['host'] . "\n";
-echo "🚪 Port: " . $config['port'] . "\n";
-echo "🗄️ Database: " . $config['database'] . "\n";
-echo "👤 Username: " . $config['username'] . "\n";
-echo "🔑 Password: [hidden]\n";
-echo "🌐 MYSQL_URL: " . $config['mysql_url'] . "\n\n";
+showDatabaseConfig();
 
 // Test 1: Socket connection
 echo "1️⃣ Testing socket connection...\n";
-$socket = @fsockopen($config['host'], $config['port'], $errno, $errstr, 5);
+$socket = @fsockopen($mysql_host, $mysql_port, $errno, $errstr, 5);
 if ($socket) {
     echo "✅ Socket connection successful!\n";
     fclose($socket);
@@ -32,7 +26,7 @@ if ($socket) {
 // Test 2: MySQL connection without database
 echo "\n2️⃣ Testing MySQL connection without database...\n";
 try {
-    $mysqli = new mysqli($config['host'], $config['username'], $config['password'], '', $config['port']);
+    $mysqli = new mysqli($mysql_host, $mysql_user, $mysql_password, '', $mysql_port);
     if ($mysqli->connect_error) {
         echo "❌ MySQL connection failed: " . $mysqli->connect_error . "\n";
         echo "🔍 Error Code: " . $mysqli->connect_errno . "\n";
