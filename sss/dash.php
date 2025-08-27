@@ -7935,29 +7935,26 @@ body {
                 let actualRiskScores = []; // Store actual risk scores from API
                 
                 if (data && data.length > 0) {
-                    // API returns data in format: [{label: 'Low Risk', value: 1, color: '#4CAF50', risk_score: 51}, ...]
-                    // OR: [{label: 'Low Risk', value: 1, color: '#4CAF50', risk_scores: [51, 45, 38]}, ...]
-                    // The risk_score field should contain the actual risk percentage (0-100) for each user
+                    // API returns data in format: [{risk_level: 'Low', count: 1}, {risk_level: 'Moderate', count: 1}, {risk_level: 'High', count: 1}]
                     // Risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)
                     data.forEach(item => {
-                        totalUsers += item.value;
+                        totalUsers += item.count;
                         
-                        // Map the label to the correct index
-                        if (item.label === 'Low Risk') riskLevels[0] = item.value;
-                        else if (item.label === 'Moderate Risk') riskLevels[1] = item.value;
-                        else if (item.label === 'High Risk') riskLevels[2] = item.value;
-                        else if (item.label === 'Critical Risk') riskLevels[3] = item.value;
-                        else if (item.label === 'Severe Risk') riskLevels[3] = item.value;
+                        // Map the risk_level to the correct index
+                        if (item.risk_level === 'Low') riskLevels[0] = item.count;
+                        else if (item.risk_level === 'Moderate') riskLevels[1] = item.count;
+                        else if (item.risk_level === 'High') riskLevels[2] = item.count;
+                        else if (item.risk_level === 'Critical') riskLevels[3] = item.count;
+                        else if (item.risk_level === 'Severe') riskLevels[3] = item.count;
                         
-                        // Store actual risk scores for each user
-                        if (item.risk_score !== undefined) {
-                            // If risk_score is a single value, repeat it for each user
-                            for (let i = 0; i < item.value; i++) {
-                                actualRiskScores.push(item.risk_score);
-                            }
-                        } else if (item.risk_scores && Array.isArray(item.risk_scores)) {
-                            // If risk_scores is an array, add all scores
-                            actualRiskScores.push(...item.risk_scores);
+                        // Store actual risk scores for each user (using count as proxy)
+                        // Since we don't have individual risk scores, we'll use the weighted average approach
+                        const riskScore = item.risk_level === 'Low' ? 10 : 
+                                        item.risk_level === 'Moderate' ? 35 : 
+                                        item.risk_level === 'High' ? 65 : 90;
+                        
+                        for (let i = 0; i < item.count; i++) {
+                            actualRiskScores.push(riskScore);
                         }
                     });
                 }
