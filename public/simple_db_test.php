@@ -1,87 +1,84 @@
 <?php
 /**
  * Simple Database Connection Test
- * This will test the database connection using the updated config
+ * This will test the database connection using the working approach from debug_config.php
  */
-
-require_once 'config.php';
 
 echo "🧪 Simple Database Connection Test\n";
 echo "================================\n\n";
 
-// Show current configuration
-echo "🔍 Current Configuration:\n";
-showDatabaseConfig();
+// Step 1: Check environment variables
+echo "1️⃣ Checking environment variables...\n";
+echo "📍 MYSQL_PUBLIC_URL: " . ($_ENV['MYSQL_PUBLIC_URL'] ?? 'NOT SET') . "\n";
+echo "📍 MYSQLHOST: " . ($_ENV['MYSQLHOST'] ?? 'NOT SET') . "\n";
+echo "📍 MYSQLPORT: " . ($_ENV['MYSQLPORT'] ?? 'NOT SET') . "\n\n";
 
-// Test 1: Socket connection
-echo "1️⃣ Testing socket connection...\n";
-$socket = @fsockopen($mysql_host, $mysql_port, $errno, $errstr, 5);
-if ($socket) {
-    echo "✅ Socket connection successful!\n";
-    fclose($socket);
-} else {
-    echo "❌ Socket connection failed: $errstr ($errno)\n";
-}
-
-// Test 2: MySQL connection without database
-echo "\n2️⃣ Testing MySQL connection without database...\n";
-try {
-    $mysqli = new mysqli($mysql_host, $mysql_user, $mysql_password, '', $mysql_port);
-    if ($mysqli->connect_error) {
-        echo "❌ MySQL connection failed: " . $mysqli->connect_error . "\n";
-        echo "🔍 Error Code: " . $mysqli->connect_errno . "\n";
-    } else {
-        echo "✅ MySQL connection successful!\n";
+// Step 2: Parse MYSQL_PUBLIC_URL and test connection
+if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
+    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
+    echo "2️⃣ Parsing MYSQL_PUBLIC_URL: $mysql_url\n";
+    
+    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
+    if (preg_match($pattern, $mysql_url, $matches)) {
+        echo "✅ Parsed successfully:\n";
+        echo "   👤 User: " . $matches[1] . "\n";
+        echo "   🔑 Password: " . substr($matches[2], 0, 10) . "...\n";
+        echo "   📍 Host: " . $matches[3] . "\n";
+        echo "   🚪 Port: " . $matches[4] . "\n";
+        echo "   🗄️ Database: " . $matches[5] . "\n\n";
         
-        // List databases
-        $result = $mysqli->query("SHOW DATABASES");
-        if ($result) {
-            echo "📋 Available databases:\n";
-            while ($row = $result->fetch_array()) {
-                echo "   - " . $row[0] . "\n";
+        // Step 3: Test database connection
+        echo "3️⃣ Testing database connection...\n";
+        try {
+            $dsn = "mysql:host={$matches[3]};port={$matches[4]};dbname={$matches[5]};charset=utf8mb4";
+            echo "🔗 DSN: $dsn\n";
+            
+            $pdo = new PDO($dsn, $matches[1], $matches[2], [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_TIMEOUT => 10
+            ]);
+            
+            echo "✅ PDO connection successful!\n";
+            
+            // Test basic query
+            $stmt = $pdo->query("SELECT VERSION() as version");
+            $result = $stmt->fetch();
+            echo "📊 MySQL Version: " . $result['version'] . "\n";
+            
+            // Test if our tables exist
+            echo "\n4️⃣ Checking database tables...\n";
+            $stmt = $pdo->query("SHOW TABLES");
+            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            
+            if (count($tables) > 0) {
+                echo "✅ Found " . count($tables) . " tables:\n";
+                foreach ($tables as $table) {
+                    echo "   - $table\n";
+                }
+            } else {
+                echo "❌ No tables found in database\n";
             }
+            
+            // Test a specific table if it exists
+            if (in_array('users', $tables)) {
+                echo "\n5️⃣ Testing users table...\n";
+                $stmt = $pdo->query("SELECT COUNT(*) as count FROM users");
+                $result = $stmt->fetch();
+                echo "✅ Users table has " . $result['count'] . " records\n";
+            }
+            
+        } catch (PDOException $e) {
+            echo "💥 Database connection failed!\n";
+            echo "❌ Error: " . $e->getMessage() . "\n";
+            echo "🔍 Error Code: " . $e->getCode() . "\n";
         }
         
-        $mysqli->close();
-    }
-} catch (Exception $e) {
-    echo "❌ MySQL connection failed: " . $e->getMessage() . "\n";
-}
-
-// Test 3: Database connection using config functions
-echo "\n3️⃣ Testing database connection using config functions...\n";
-$pdo = getDatabaseConnection();
-if ($pdo) {
-    echo "✅ PDO connection successful!\n";
-    
-    // Test basic query
-    try {
-        $result = $pdo->query("SELECT VERSION() as version")->fetch();
-        echo "📊 MySQL Version: " . $result['version'] . "\n";
-    } catch (PDOException $e) {
-        echo "❌ Query test failed: " . $e->getMessage() . "\n";
+    } else {
+        echo "❌ Failed to parse MYSQL_PUBLIC_URL\n";
     }
 } else {
-    echo "❌ PDO connection failed!\n";
-}
-
-// Test 4: MySQLi connection using config functions
-echo "\n4️⃣ Testing MySQLi connection using config functions...\n";
-$mysqli = getMysqliConnection();
-if ($mysqli) {
-    echo "✅ MySQLi connection successful!\n";
-    echo "📊 Server info: " . $mysqli->server_info . "\n";
-    
-    // Test a simple query
-    $result = $mysqli->query("SELECT 1 as test");
-    if ($result) {
-        $row = $result->fetch_assoc();
-        echo "✅ Test query successful: " . $row['test'] . "\n";
-    }
-    
-    $mysqli->close();
-} else {
-    echo "❌ MySQLi connection failed!\n";
+    echo "❌ MYSQL_PUBLIC_URL not set!\n";
 }
 
 echo "\n🎯 Test complete!\n";
