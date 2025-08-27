@@ -25,7 +25,7 @@ switch ($path) {
     case 'dash':
     case 'dashboard':
         // Route to dashboard
-        include_once '../sss/test_dash.php';
+        include_once '../sss/dash.php';
         break;
         
     case 'settings':
@@ -41,7 +41,7 @@ switch ($path) {
     case 'event':
     case 'events':
         // Route to events page
-        include_once '../sss/event_simple.php';
+        include_once '../sss/event.php';
         break;
         
     case 'logout':

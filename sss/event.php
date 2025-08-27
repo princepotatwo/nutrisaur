@@ -46,38 +46,7 @@ function safeDbQuery($conn, $sql, $params = []) {
 }
 
     // Include the centralized configuration file
-    $configPath = __DIR__ . "/../config.php";
-    echo "<!-- Debug: Looking for config at: $configPath -->";
-    echo "<!-- Debug: Current directory: " . __DIR__ . " -->";
-    
-    if (file_exists($configPath)) {
-        require_once $configPath;
-        echo "<!-- Debug: config.php loaded successfully -->";
-    } else {
-        echo "<!-- Debug: config.php NOT FOUND at $configPath -->";
-        // Try alternative paths
-        $altPaths = [
-            __DIR__ . "/../../config.php",
-            __DIR__ . "/../public/config.php",
-            "config.php"
-        ];
-        
-        foreach ($altPaths as $altPath) {
-            if (file_exists($altPath)) {
-                echo "<!-- Debug: Found config at alternative path: $altPath -->";
-                require_once $altPath;
-                break;
-            }
-        }
-    }
-    
-    // Debug: Check if config was loaded
-    if (!function_exists('getDatabaseConnection')) {
-        echo "<!-- Debug: getDatabaseConnection function not found -->";
-        error_log("WARNING: config.php not loaded properly in event.php");
-    } else {
-        echo "<!-- Debug: getDatabaseConnection function found -->";
-    }
+    require_once __DIR__ . "/../config.php";
 
 // Initialize variables
 $dbConnected = false;
@@ -91,20 +60,12 @@ try {
         if ($conn) {
             $dbConnected = true;
             
-            // Check if programs table exists first
-            $tableCheck = safeDbQuery($conn, "SHOW TABLES LIKE 'programs'");
-            if ($tableCheck && $tableCheck->rowCount() > 0) {
-                // Fetch programs from database using safe wrapper
-                $stmt = safeDbQuery($conn, "SELECT * FROM programs ORDER BY date_time DESC");
-                if ($stmt) {
-                    $programs = $stmt->fetchAll();
-                } else {
-                    $programs = [];
-                }
+            // Fetch programs from database using safe wrapper
+            $stmt = safeDbQuery($conn, "SELECT * FROM programs ORDER BY date_time DESC");
+            if ($stmt) {
+                $programs = $stmt->fetchAll();
             } else {
-                // Programs table doesn't exist, use empty array
                 $programs = [];
-                $errorMessage = "Programs table not found - using sample data";
             }
         } else {
             $dbConnected = false;
