@@ -105,6 +105,12 @@ switch ($endpoint) {
                 break;
             }
             
+            // Check if it's a mobile app login request
+            if ($type === 'mobile_login') {
+                handleMobileLogin($pdo);
+                break;
+            }
+            
             // No valid endpoint or type found
             http_response_code(400);
             echo json_encode(['success' => false, 'message' => 'Invalid endpoint or type']);
@@ -644,6 +650,93 @@ function getUserManagementData($pdo) {
         }
         
         echo json_encode(['success' => true, 'data' => $users]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+}
+
+function handleMobileLogin($pdo) {
+    try {
+        // Get POST data
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
+            return;
+        }
+        
+        $usernameOrEmail = $data['username'] ?? '';
+        $password = $data['password'] ?? '';
+        
+        if (empty($usernameOrEmail) || empty($password)) {
+            echo json_encode(['success' => false, 'message' => 'Please enter both username/email and password']);
+            return;
+        }
+        
+        // Check if input is email or username
+        $isEmail = filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL);
+        
+        // First check in users table
+        if ($isEmail) {
+            $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE email = ?");
+            $stmt->execute([$usernameOrEmail]);
+        } else {
+            $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE username = ?");
+            $stmt->execute([$usernameOrEmail]);
+        }
+        
+        if ($stmt->rowCount() > 0) {
+            $user = $stmt->fetch();
+            
+            if (password_verify($password, $user['password'])) {
+                // Password is correct
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Login successful!',
+                    'data' => [
+                        'user_id' => $user['user_id'],
+                        'username' => $user['username'],
+                        'email' => $user['email']
+                    ]
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid password']);
+            }
+        } else {
+            // If not found in users table, check admin table
+            if ($isEmail) {
+                $stmt = $pdo->prepare("SELECT admin_id, username, email, password, role FROM admin WHERE email = ?");
+                $stmt->execute([$usernameOrEmail]);
+            } else {
+                $stmt = $pdo->prepare("SELECT admin_id, username, email, password, role FROM admin WHERE username = ?");
+                $stmt->execute([$usernameOrEmail]);
+            }
+            
+            if ($stmt->rowCount() > 0) {
+                $admin = $stmt->fetch();
+                
+                if (password_verify($password, $admin['password'])) {
+                    // Password is correct
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Admin login successful!',
+                        'data' => [
+                            'admin_id' => $admin['admin_id'],
+                            'username' => $admin['username'],
+                            'email' => $admin['email'],
+                            'role' => $admin['role'],
+                            'is_admin' => true
+                        ]
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid password']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'User not found']);
+            }
+        }
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
