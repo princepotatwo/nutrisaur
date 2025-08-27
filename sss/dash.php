@@ -6805,38 +6805,43 @@ body {
                 
                 if (data && data.success) {
                     console.log('Community metrics data received:', data);
-                    console.log('Total screened:', data.total_screened);
-                    console.log('High risk cases:', data.high_risk_cases);
-                    console.log('SAM cases:', data.sam_cases);
-                    console.log('Barangay filter applied:', data.barangay_filter);
-                    console.log('Average risk score from API:', data.avg_risk_score);
+                    console.log('Total screened:', data.data.total_screenings);
+                    console.log('High risk cases:', data.data.risk_distribution.high);
+                    console.log('Moderate risk cases:', data.data.risk_distribution.moderate);
+                    console.log('Low risk cases:', data.data.risk_distribution.low);
+                    console.log('Recent screenings:', data.data.recent_activity.screenings_this_week);
                     
                     // Update Total Screened
                     const totalScreened = document.getElementById('community-total-screened');
                     const screenedChange = document.getElementById('community-screened-change');
                     if (totalScreened && screenedChange) {
-                        totalScreened.textContent = data.total_screened || 0;
-                        screenedChange.textContent = data.screened_change || 'No change';
+                        totalScreened.textContent = data.data.total_screenings || 0;
+                        screenedChange.textContent = data.data.recent_activity.screenings_this_week || 0;
                     }
 
                     // Update High Risk Cases
                     const highRisk = document.getElementById('community-high-risk');
                     const riskChange = document.getElementById('community-risk-change');
                     if (highRisk && riskChange) {
-                        highRisk.textContent = data.high_risk_cases || 0;
-                        riskChange.textContent = data.risk_change || 'No change';
+                        highRisk.textContent = data.data.risk_distribution.high || 0;
+                        riskChange.textContent = data.data.risk_distribution.moderate || 0;
                     }
 
-                    // Update SAM Cases
+                    // Update SAM Cases (using moderate risk as proxy)
                     const samCases = document.getElementById('community-sam-cases');
                     const samChange = document.getElementById('community-sam-change');
                     if (samCases && samChange) {
-                        samCases.textContent = data.sam_cases || 0;
-                        samChange.textContent = data.sam_change || 'No change';
+                        samCases.textContent = data.data.risk_distribution.moderate || 0;
+                        samChange.textContent = data.data.risk_distribution.low || 0;
                     }
                     
+                    // Calculate average risk score from distribution
+                    const totalRisk = (data.data.risk_distribution.high * 75) + (data.data.risk_distribution.moderate * 50) + (data.data.risk_distribution.low * 25);
+                    const totalUsers = data.data.risk_distribution.high + data.data.risk_distribution.moderate + data.data.risk_distribution.low;
+                    const avgRiskScore = totalUsers > 0 ? totalRisk / totalUsers : 0;
+                    
                     // Store the average risk score globally for use in charts
-                    window.globalAverageRiskScore = data.avg_risk_score || 0;
+                    window.globalAverageRiskScore = avgRiskScore;
                     console.log('Stored global average risk score:', window.globalAverageRiskScore);
                     
                     // Update the risk chart center text immediately if it exists
