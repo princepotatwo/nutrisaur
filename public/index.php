@@ -14,6 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+// Set working directory to public/ so relative paths work correctly
+chdir(__DIR__);
+
 // Debug routing
 echo "🔍 Routing Debug:\n";
 echo "📍 REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "\n";
