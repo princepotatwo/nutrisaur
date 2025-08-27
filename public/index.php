@@ -94,6 +94,11 @@ switch ($path) {
         include 'simple_db_test.php';
         break;
         
+    case 'debug_config':
+        echo "🔧 Routing to: Debug Config\n";
+        include 'debug_config.php';
+        break;
+        
     case 'debug_env':
         echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';
