@@ -194,6 +194,11 @@ switch ($path) {
         include 'test_api_call.php';
         break;
         
+    case 'test_tables':
+        echo "🧪 Testing Railway Database Tables\n";
+        include 'test_tables.php';
+        break;
+        
     case 'debug_env':
         if ($is_test_route) echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';
