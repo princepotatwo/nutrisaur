@@ -30,9 +30,8 @@ $email = $_SESSION['email'];
     
     // Debug: Check if config was loaded
     if (!function_exists('getDatabaseConnection')) {
-        echo "ERROR: config.php not loaded properly. Functions available: ";
-        echo implode(', ', get_defined_functions()['user']);
-        exit;
+        // For now, just log the error but don't stop the page
+        error_log("WARNING: config.php not loaded properly in event.php");
     }
 
 // Initialize variables
@@ -54,15 +53,21 @@ try {
         } else {
             $dbConnected = false;
             $errorMessage = "Database connection failed: Could not establish connection";
+            // Set empty programs array for now
+            $programs = [];
         }
     } else {
         $dbConnected = false;
         $errorMessage = "Database connection function not found - config.php may not be loaded";
+        // Set empty programs array for now
+        $programs = [];
     }
     
 } catch(PDOException $e) {
     $dbConnected = false;
     $errorMessage = "Database connection failed: " . $e->getMessage();
+    // Set empty programs array for now
+    $programs = [];
 }
 
 // Check if program recommendation was passed from community hub
