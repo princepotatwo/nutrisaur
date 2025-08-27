@@ -107,6 +107,11 @@ switch ($path) {
         include 'test_config.php';
         break;
         
+    case 'minimal_test':
+        echo "🧪 Routing to: Minimal Test\n";
+        include 'minimal_test.php';
+        break;
+        
     case 'debug_env':
         echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';
