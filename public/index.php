@@ -199,6 +199,11 @@ switch ($path) {
         include 'test_tables.php';
         break;
         
+    case 'create_missing_tables':
+        echo "🔧 Creating Missing Tables\n";
+        include 'create_missing_tables.php';
+        break;
+        
     case 'debug_env':
         if ($is_test_route) echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';
