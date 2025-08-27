@@ -16,15 +16,26 @@ $mysql_user = $_ENV['MYSQLUSER'] ?? 'root';
 $mysql_password = $_ENV['MYSQLPASSWORD'] ?? 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
 $mysql_database = $_ENV['MYSQLDATABASE'] ?? 'railway';
 
-// If MYSQL_URL is set, parse it
-if (isset($_ENV['MYSQL_URL'])) {
-    $mysql_url = $_ENV['MYSQL_URL'];
+// If MYSQL_PUBLIC_URL is set (Railway sets this), parse it
+if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
+    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
+    echo "🔗 Found MYSQL_PUBLIC_URL: $mysql_url\n";
+    
     if (preg_match('/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/', $mysql_url, $matches)) {
         $mysql_user = $matches[1];
         $mysql_password = $matches[2];
         $mysql_host = $matches[3];
         $mysql_port = $matches[4];
         $mysql_database = $matches[5];
+        
+        echo "✅ Parsed MYSQL_PUBLIC_URL successfully:\n";
+        echo "   👤 User: $mysql_user\n";
+        echo "   🔑 Password: " . substr($mysql_password, 0, 10) . "...\n";
+        echo "   📍 Host: $mysql_host\n";
+        echo "   🚪 Port: $mysql_port\n";
+        echo "   🗄️ Database: $mysql_database\n\n";
+    } else {
+        echo "❌ Failed to parse MYSQL_PUBLIC_URL format\n\n";
     }
 }
 
