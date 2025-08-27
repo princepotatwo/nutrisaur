@@ -1242,7 +1242,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                 
                 if (data.success) {
                     // User is already logged in, redirect to dashboard
-                    window.location.href = 'dash.html';
+                    window.location.href = 'dash.php';
                 }
             } catch (error) {
                 console.error('Session check error:', error);
