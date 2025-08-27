@@ -69,6 +69,10 @@ switch ($path) {
         include 'simple_db_test.php';
         break;
         
+    case 'debug_env':
+        include 'debug_env.php';
+        break;
+        
     default:
         // Try to find the file in current directory first, then in sss directory
         if (file_exists("$path.php")) {
