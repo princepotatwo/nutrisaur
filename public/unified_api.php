@@ -111,6 +111,12 @@ switch ($endpoint) {
                 break;
             }
             
+            // Check if it's a mobile app signup request
+            if ($type === 'mobile_signup') {
+                handleMobileSignup($pdo);
+                break;
+            }
+            
             // No valid endpoint or type found
             http_response_code(400);
             echo json_encode(['success' => false, 'message' => 'Invalid endpoint or type']);
@@ -737,6 +743,104 @@ function handleMobileLogin($pdo) {
                 echo json_encode(['success' => false, 'message' => 'User not found']);
             }
         }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+}
+
+function handleMobileSignup($pdo) {
+    try {
+        // Get POST data
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
+            return;
+        }
+        
+        $action = $data['action'] ?? '';
+        
+        if ($action === 'save_screening') {
+            // Handle user registration/screening data
+            $email = $data['email'] ?? '';
+            $username = $data['username'] ?? '';
+            $screeningData = $data['screening_data'] ?? '{}';
+            $riskScore = $data['risk_score'] ?? 0;
+            
+            if (empty($email) || empty($username)) {
+                echo json_encode(['success' => false, 'message' => 'Email and username are required']);
+                return;
+            }
+            
+            // Insert into user_preferences table
+            $stmt = $pdo->prepare("
+                INSERT INTO user_preferences 
+                (user_email, username, risk_score, screening_answers, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, NOW(), NOW())
+                ON DUPLICATE KEY UPDATE 
+                username = VALUES(username),
+                risk_score = VALUES(risk_score),
+                screening_answers = VALUES(screening_answers),
+                updated_at = NOW()
+            ");
+            
+            $stmt->execute([$email, $username, $riskScore, $screeningData]);
+            
+            echo json_encode([
+                'success' => true, 
+                'message' => 'User screening data saved successfully',
+                'data' => [
+                    'email' => $email,
+                    'username' => $username,
+                    'risk_score' => $riskScore
+                ]
+            ]);
+            
+        } elseif ($action === 'save_preferences') {
+            // Handle food preferences
+            $email = $data['email'] ?? '';
+            $username = $data['username'] ?? '';
+            $allergies = $data['allergies'] ?? '[]';
+            $dietPrefs = $data['diet_prefs'] ?? '[]';
+            $avoidFoods = $data['avoid_foods'] ?? '';
+            $riskScore = $data['risk_score'] ?? 0;
+            
+            if (empty($email)) {
+                echo json_encode(['success' => false, 'message' => 'Invalid action specified']);
+                return;
+            }
+            
+            // Update user_preferences table with food preferences
+            $stmt = $pdo->prepare("
+                INSERT INTO user_preferences 
+                (user_email, username, allergies, diet_prefs, avoid_foods, risk_score, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())
+                ON DUPLICATE KEY UPDATE 
+                username = VALUES(username),
+                allergies = VALUES(allergies),
+                diet_prefs = VALUES(diet_prefs),
+                avoid_foods = VALUES(avoid_foods),
+                risk_score = VALUES(risk_score),
+                updated_at = NOW()
+            ");
+            
+            $stmt->execute([$email, $username, $allergies, $dietPrefs, $avoidFoods, $riskScore]);
+            
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Food preferences saved successfully',
+                'data' => [
+                    'email' => $email,
+                    'username' => $username
+                ]
+            ]);
+            
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid action specified']);
+        }
+        
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);

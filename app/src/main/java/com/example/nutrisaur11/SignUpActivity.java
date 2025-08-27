@@ -208,7 +208,7 @@ public class SignUpActivity extends AppCompatActivity {
                     );
                     
                     okhttp3.Request request = new okhttp3.Request.Builder()
-                        .url(Constants.UNIFIED_API_URL)
+                        .url(Constants.UNIFIED_API_URL + "?type=mobile_signup")
                         .post(body)
                         .build();
                     
@@ -254,7 +254,7 @@ public class SignUpActivity extends AppCompatActivity {
                 );
                 
                 okhttp3.Request request = new okhttp3.Request.Builder()
-                    .url(Constants.UNIFIED_API_URL)
+                    .url(Constants.UNIFIED_API_URL + "?type=mobile_signup")
                     .post(body)
                     .build();
                 
