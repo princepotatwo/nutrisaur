@@ -33,44 +33,54 @@ switch ($path) {
     case '':
     case 'index':
         echo "🏠 Routing to: Home/Index\n";
-        // Show the main Nutrisaur application
-        if (file_exists('settings_verified_mho.php')) {
-            include 'settings_verified_mho.php';
-        } else {
-            // Fallback welcome page
-            echo '<!DOCTYPE html>';
-            echo '<html><head><title>Nutrisaur - Railway Deployment</title></head>';
-            echo '<body style="font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5;">';
-            echo '<div style="max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">';
-            echo '<h1>🚀 Nutrisaur is Running on Railway!</h1>';
-            echo '<p><strong>Status:</strong> <span style="color: #28a745;">✅ Active</span></p>';
-            echo '<p><strong>PHP Version:</strong> ' . PHP_VERSION . '</p>';
-            echo '<hr>';
-            echo '<h2>🔗 Available Endpoints:</h2>';
-            echo '<ul>';
-            echo '<li><a href="/health">Health Check</a> - Verify system status</li>';
-            echo '<li><a href="/test">Test Page</a> - Detailed system information</li>';
-            echo '<li><a href="/settings_verified_mho.php">MHO Settings</a> - Main application</li>';
-            echo '<li><a href="/test_db_connection">Database Connection Test</a> - Test MySQL connection</li>';
-            echo '<li><a href="/import_database">Import Database</a> - Import SQL data</li>';
-            echo '<li><a href="/simple_db_test">Simple DB Test</a> - Basic connection test</li>';
-            echo '</ul>';
-            echo '</div></body></html>';
-        }
+        // Include the original home.php from sss directory
+        include '../sss/home.php';
         break;
         
-    case 'health':
-        echo "🏥 Routing to: Health\n";
-        include 'health.php';
+    case 'home':
+        echo "🏠 Routing to: Home\n";
+        include '../sss/home.php';
         break;
         
-    case 'test':
-        echo "🧪 Routing to: Test\n";
-        include 'test.php';
+    case 'dash':
+    case 'dashboard':
+        echo "📊 Routing to: Dashboard\n";
+        include '../sss/dash.php';
+        break;
+        
+    case 'event':
+    case 'events':
+        echo "📅 Routing to: Events\n";
+        include '../sss/event.php';
+        break;
+        
+    case 'settings':
+        echo "⚙️ Routing to: Settings\n";
+        include '../sss/settings.php';
+        break;
+        
+    case 'ai':
+        echo "🤖 Routing to: AI\n";
+        include '../sss/AI.php';
+        break;
+        
+    case 'fpm':
+        echo "📋 Routing to: FPM\n";
+        include '../sss/FPM.php';
+        break;
+        
+    case 'nr':
+        echo "📊 Routing to: NR\n";
+        include '../sss/NR.php';
+        break;
+        
+    case 'logout':
+        echo "🚪 Routing to: Logout\n";
+        include '../sss/logout.php';
         break;
         
     case 'test_db_connection':
-        echo "🔌 Routing to: Test DB Connection\n";
+        echo "🗄️ Routing to: Test DB Connection\n";
         include 'test_db_connection.php';
         break;
         
@@ -89,17 +99,22 @@ switch ($path) {
         include 'debug_env.php';
         break;
         
+    case 'health':
+        echo "❤️ Routing to: Health Check\n";
+        include 'health.php';
+        break;
+        
     default:
         echo "❓ No route match, trying default handler\n";
-        // Try to find the file in current directory first, then in sss directory
-        if (file_exists("$path.php")) {
+        // First check if it's a direct sss file
+        if (file_exists("../sss/$path.php")) {
+            echo "📁 Found file in sss: ../sss/$path.php\n";
+            include "../sss/$path.php";
+        } elseif (file_exists("$path.php")) {
             echo "📁 Found file: $path.php\n";
             include "$path.php";
-        } elseif (file_exists("sss/$path.php")) {
-            echo "📁 Found file in sss: sss/$path.php\n";
-            include "sss/$path.php";
         } else {
-            echo "❌ File not found: $path.php or sss/$path.php\n";
+            echo "❌ File not found: $path.php or ../sss/$path.php\n";
             http_response_code(404);
             echo '<h1>404 - Page Not Found</h1>';
             echo '<p>The requested page could not be found.</p>';

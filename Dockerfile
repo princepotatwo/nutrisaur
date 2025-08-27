@@ -23,6 +23,9 @@ RUN echo '<?php header("Content-Type: application/json"); echo json_encode(["sta
 # Ensure config.php is accessible from public directory
 RUN cp config.php public/config.php
 
+# Ensure sss directory is accessible from public directory
+RUN ln -sf ../sss public/sss
+
 # Create startup script that uses Railway's PORT
 RUN echo '#!/bin/bash' > /start.sh && \
     echo 'PORT=${PORT:-8000}' >> /start.sh && \
