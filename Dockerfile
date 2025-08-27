@@ -28,7 +28,11 @@ RUN ln -sf ../sss public/sss
 
 # Create startup script that uses Railway's PORT
 RUN echo '#!/bin/bash' > /start.sh && \
+    echo 'set -e' >> /start.sh && \
+    echo 'echo "Environment variables:"' >> /start.sh && \
+    echo 'env | grep -E "(PORT|RAILWAY)" || echo "No PORT or RAILWAY variables found"' >> /start.sh && \
     echo 'PORT=${PORT:-8000}' >> /start.sh && \
+    echo 'echo "Using port: $PORT"' >> /start.sh && \
     echo 'echo "Starting PHP server on port $PORT"' >> /start.sh && \
     echo 'php -S 0.0.0.0:$PORT -t public' >> /start.sh && \
     chmod +x /start.sh
