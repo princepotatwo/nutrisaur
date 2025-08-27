@@ -593,31 +593,35 @@ function getAIFoodRecommendations($pdo) {
 
 function getUserManagementData($pdo) {
     try {
-        // Get all users with their preferences
+        // Get all users with their basic info
         $stmt = $pdo->query("
             SELECT 
                 u.user_id,
                 u.username,
                 u.email,
-                u.created_at as user_created,
-                up.name,
-                up.birthday,
-                up.age,
-                up.gender,
-                up.height,
-                up.weight,
-                up.bmi,
-                up.muac,
-                up.barangay,
-                up.income_level,
-                up.risk_score,
-                up.created_at as screening_created
+                u.created_at as user_created
             FROM users u
-            LEFT JOIN user_preferences up ON u.email = up.user_email
             ORDER BY u.created_at DESC
         ");
         
         $users = $stmt->fetchAll();
+        
+        // Get user preferences count for each user
+        foreach ($users as &$user) {
+            $prefStmt = $pdo->prepare("
+                SELECT COUNT(*) as preferences_count, 
+                       MAX(risk_score) as max_risk_score,
+                       MAX(created_at) as last_screening
+                FROM user_preferences 
+                WHERE user_email = ?
+            ");
+            $prefStmt->execute([$user['email']]);
+            $prefs = $prefStmt->fetch();
+            
+            $user['preferences_count'] = $prefs['preferences_count'] ?? 0;
+            $user['max_risk_score'] = $prefs['max_risk_score'] ?? null;
+            $user['last_screening'] = $prefs['last_screening'] ?? null;
+        }
         
         echo json_encode(['success' => true, 'data' => $users]);
     } catch (Exception $e) {
