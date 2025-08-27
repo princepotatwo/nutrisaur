@@ -151,6 +151,11 @@ switch ($path) {
         }
         break;
         
+    case 'test_dashboard_db':
+        if ($is_test_route) echo "🧪 Routing to: Test Dashboard Database\n";
+        include 'test_dashboard_db.php';
+        break;
+        
     case 'debug_env':
         if ($is_test_route) echo "🔍 Routing to: Debug Environment\n";
         include 'debug_env.php';

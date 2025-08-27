@@ -34,15 +34,21 @@ if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
 // Create database connection
 try {
     $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
+    echo "<!-- Debug: Attempting to connect to database with DSN: $dsn -->";
+    echo "<!-- Debug: Host: $mysql_host, Port: $mysql_port, User: $mysql_user, Database: $mysql_database -->";
+    
     $conn = new PDO($dsn, $mysql_user, $mysql_password, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_TIMEOUT => 10
     ]);
+    
+    echo "<!-- Debug: Database connection successful -->";
 } catch (PDOException $e) {
     // If database connection fails, show error but don't crash
     $conn = null;
     $dbError = "Database connection failed: " . $e->getMessage();
+    echo "<!-- Debug: Database connection failed: $dbError -->";
 }
 
 /*
@@ -469,6 +475,7 @@ echo "<!-- Debug: User info - userId: $userId, username: $username, email: $emai
             // Get user profile data from users and user_preferences tables
         $profile = null;
         try {
+            echo "<!-- Debug: Attempting to get user profile for user_id: $userId -->";
             $stmt = $conn->prepare("
                 SELECT u.*, up.* 
                 FROM users u 
@@ -480,10 +487,14 @@ echo "<!-- Debug: User info - userId: $userId, username: $username, email: $emai
             
             if ($stmt->rowCount() > 0) {
                 $profile = $stmt->fetch(PDO::FETCH_ASSOC);
+                echo "<!-- Debug: User profile retrieved successfully -->";
+            } else {
+                echo "<!-- Debug: No user profile found for user_id: $userId -->";
             }
         } catch (PDOException $e) {
             // Handle case where user_id might not exist
             $profile = null;
+            echo "<!-- Debug: Error getting user profile: " . $e->getMessage() . " -->";
         }
         
         // Get user nutrition goals
