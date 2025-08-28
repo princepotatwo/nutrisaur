@@ -1090,6 +1090,9 @@ function generateTestData($pdo) {
             // Calculate BMI
             $bmi = round($weight_kg / (($height_cm / 100) * ($height_cm / 100)), 2);
             
+            // Ensure BMI stays within database limits (DECIMAL(4,2) = 99.99 max)
+            $bmi = max(10.0, min(99.9, $bmi));
+            
             // Generate MUAC (Mid-Upper Arm Circumference) - realistic values
             $muac = round(rand(80, 350) / 10, 1); // 8.0 to 35.0 cm
             
