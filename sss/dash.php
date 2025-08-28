@@ -8888,7 +8888,7 @@ body {
         async function testAPIConnection() {
             console.log('Testing API connection...');
             try {
-                const response = await fetch('http://localhost/thesis355/unified_api.php?test=1');
+                const response = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?test=1');
                 console.log('API Response status:', response.status);
                 if (response.ok) {
                     const data = await response.text();
@@ -8906,8 +8906,21 @@ body {
         // Test municipality filtering
         async function testMunicipalityFiltering(barangay) {
             console.log('Testing municipality filtering for:', barangay);
-            try {
-                const response = await fetch(`http://localhost/thesis355/unified_api.php?endpoint=test_municipality&barangay=${encodeURIComponent(barangay)}`);
+            try {        // Barangay and Municipality selection handling
+                    document.addEventListener('DOMContentLoaded', function() {
+                    });
+                            const response = await fetch('http://localhost/thesis355/unified_api.php?test=1');
+                            const response = await fetch(`http://localhost/thesis355/unified_api.php?endpoint=test_municipality&barangay=${encodeURIComponent(barangay)}`);
+                            const response = await fetch('http://localhost/thesis355/unified_api.php?endpoint=intelligent_programs');
+                            const barangayResponse = await fetch('http://localhost/thesis355/unified_api.php?endpoint=intelligent_programs&barangay=Bangkal');
+                            const response = await fetch(`http://localhost/thesis355/unified_api.php?endpoint=check_user_data&email=${encodeURIComponent(email)}`);
+                            const response = await fetch('http://localhost/thesis355/unified_api.php?endpoint=screening_responses');
+                            const response1 = await fetch('http://localhost/thesis355/debug_db.php');
+                            const response2 = await fetch('http://localhost/thesis355/debug_table.php?table=user_preferences');
+                            const response1 = await fetch('http://localhost/thesis355/unified_api.php?endpoint=screening_responses');
+                                updateDashboardByLocation(selectedValue);
+            
+                const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=test_municipality&barangay=${encodeURIComponent(barangay)}`);
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Municipality test response:', data);
@@ -8937,7 +8950,7 @@ body {
             console.log('Testing intelligent programs API...');
             try {
                 // Test general endpoint
-                const response = await fetch('http://localhost/thesis355/unified_api.php?endpoint=intelligent_programs');
+                const response = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=intelligent_programs');
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Intelligent programs API test successful:', data);
@@ -8953,7 +8966,7 @@ body {
                 }
                 
                 // Test with barangay parameter
-                const barangayResponse = await fetch('http://localhost/thesis355/unified_api.php?endpoint=intelligent_programs&barangay=Bangkal');
+                const barangayResponse = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=intelligent_programs&barangay=Bangkal');
                 if (barangayResponse.ok) {
                     const barangayData = await barangayResponse.json();
                     console.log('Barangay-specific programs test:', barangayData);
@@ -9033,7 +9046,7 @@ body {
         async function testUserDataConsistency(email) {
             console.log('Testing user data consistency for:', email);
             try {
-                const response = await fetch(`http://localhost/thesis355/unified_api.php?endpoint=check_user_data&email=${encodeURIComponent(email)}`);
+                const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_user_data&email=${encodeURIComponent(email)}`);
                 if (response.ok) {
                     const data = await response.json();
                     console.log('User data consistency test response:', data);
@@ -9063,7 +9076,7 @@ body {
             console.log('=== DEBUGGING API RESPONSE ===');
             
             try {
-                const response = await fetch('http://localhost/thesis355/unified_api.php?endpoint=screening_responses');
+                const response = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses');
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Raw API response:', data);
@@ -9108,7 +9121,7 @@ body {
             // Test 1: Check if we can connect to the database
             console.log('Test 1: Database connection test');
             try {
-                const response1 = await fetch('http://localhost/thesis355/debug_db.php');
+                const response1 = await fetch('https://nutrisaur-production.up.railway.app/debug_db.php');
                 console.log('Database test response status:', response1.status);
                 if (response1.ok) {
                     const data1 = await response1.text();
@@ -9123,7 +9136,7 @@ body {
             // Test 2: Check user_preferences table directly
             console.log('Test 2: Direct table check');
             try {
-                const response2 = await fetch('http://localhost/thesis355/debug_table.php?table=user_preferences');
+                const response2 = await fetch('https://nutrisaur-production.up.railway.app/debug_table.php');
                 console.log('Table check response status:', response2.status);
                 if (response2.ok) {
                     const data2 = await response2.text();
@@ -9145,7 +9158,7 @@ body {
             // Test 1: Basic endpoint
             console.log('Test 1: Basic endpoint');
             try {
-                const response1 = await fetch('http://localhost/thesis355/unified_api.php?endpoint=screening_responses');
+                const response1 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses');
                 console.log('Response 1 status:', response1.status);
                 if (response1.ok) {
                     const data1 = await response1.json();
@@ -9161,7 +9174,7 @@ body {
             // Test 2: With barangay filter
             console.log('Test 2: With barangay filter');
             try {
-                const response2 = await fetch('http://localhost/thesis355/unified_api.php?endpoint=screening_responses&barangay=Bangkal');
+                const response2 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses&barangay=Bangkal');
                 console.log('Response 2 status:', response2.status);
                 if (response2.ok) {
                     const data2 = await response2.json();
@@ -9177,7 +9190,7 @@ body {
             // Test 3: Check if API file exists
             console.log('Test 3: Check API file');
             try {
-                const response3 = await fetch('http://localhost/thesis355/unified_api.php?test=1');
+                const response3 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?test=1');
                 console.log('Response 3 status:', response3.status);
                 if (response3.ok) {
                     const data3 = await response3.text();
@@ -9190,7 +9203,7 @@ body {
             // Test 4: Check database table structure
             console.log('Test 4: Check database table structure');
             try {
-                const response4 = await fetch('http://localhost/thesis355/unified_api.php?endpoint=check_table_structure&table=user_preferences');
+                const response4 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_table_structure&table=user_preferences');
                 console.log('Response 4 status:', response4.status);
                 if (response4.ok) {
                     const data4 = await response4.json();
@@ -9206,7 +9219,7 @@ body {
             // Test 5: Check sample data
             console.log('Test 5: Check sample data');
             try {
-                const response5 = await fetch('http://localhost/thesis355/unified_api.php?endpoint=check_sample_data&table=user_preferences&limit=5');
+                const response5 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_sample_data&table=user_preferences&limit=5');
                 console.log('Response 5 status:', response5.status);
                 if (response5.ok) {
                     const data5 = await response5.json();
@@ -9222,7 +9235,7 @@ body {
             // Test 6: Check raw user_preferences data
             console.log('Test 6: Check raw user_preferences data');
             try {
-                const response6 = await fetch('http://localhost/thesis355/unified_api.php?endpoint=check_raw_data&table=user_preferences&limit=10');
+                const response6 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_raw_data&table=user_preferences&limit=10');
                 console.log('Response 6 status:', response6.status);
                 if (response6.ok) {
                     const data6 = await response6.json();
@@ -9308,7 +9321,7 @@ body {
         // Screening Responses Functions
         async function loadScreeningResponses(barangay = '') {
             try {
-                let url = 'http://localhost/thesis355/unified_api.php?endpoint=screening_responses';
+                let url = 'https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses';
                 if (barangay && barangay !== '') {
                     url += `&barangay=${encodeURIComponent(barangay)}`;
                 }
@@ -9911,7 +9924,7 @@ body {
         async function fetchTimeFrameData(timeFrame, barangay) {
             try {
                 console.log(`Fetching time frame data: ${timeFrame}, barangay: ${barangay}`);
-                const response = await fetch(`http://localhost/thesis355/unified_api.php?endpoint=time_frame_data&time_frame=${timeFrame}&barangay=${encodeURIComponent(barangay)}`);
+                const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=time_frame_data&time_frame=${timeFrame}&barangay=${encodeURIComponent(barangay)}`);
                 
                 if (response.ok) {
                     const responseData = await response.json();
@@ -10286,7 +10299,7 @@ body {
                     document.querySelector('.dropdown-arrow').style.transform = 'rotate(0deg)';
                     
                     // Update dashboard based on selected location
-                    updateDashboardByLocation(selectedValue);
+                    updateDashboardForBarangay(selectedValue);
                 }
             });
         }
