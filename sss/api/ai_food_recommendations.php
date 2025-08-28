@@ -37,17 +37,40 @@ if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
 
 try {
     $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-    $conn = new PDO($dsn, $mysql_user, $mysql_password, [
+    
+    // Railway-specific PDO options for better connection stability
+    $pdoOptions = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_TIMEOUT => 10
-    ]);
+        PDO::ATTR_TIMEOUT => 30, // Increased timeout for Railway
+        PDO::ATTR_PERSISTENT => false, // Disable persistent connections for Railway
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
+        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+        PDO::MYSQL_ATTR_FOUND_ROWS => true,
+        PDO::MYSQL_ATTR_LOCAL_INFILE => false,
+        PDO::MYSQL_ATTR_MAX_ALLOWED_PACKET => 16777216, // 16MB
+        PDO::MYSQL_ATTR_READ_TIMEOUT => 30,
+        PDO::MYSQL_ATTR_WRITE_TIMEOUT => 30
+    ];
+    
+    $conn = new PDO($dsn, $mysql_user, $mysql_password, $pdoOptions);
+    
+    // Test the connection
+    $conn->query("SELECT 1");
+    
 } catch (PDOException $e) {
+    error_log("Database connection failed: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,
         'message' => 'Database connection failed',
-        'error' => $e->getMessage()
+        'error' => $e->getMessage(),
+        'details' => [
+            'host' => $mysql_host,
+            'port' => $mysql_port,
+            'database' => $mysql_database,
+            'user' => $mysql_user
+        ]
     ]);
     exit;
 }
