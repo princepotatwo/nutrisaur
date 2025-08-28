@@ -250,6 +250,10 @@ switch ($endpoint) {
         handleDeleteAllUsers($pdo);
         break;
         
+    case 'debug_add_user':
+        debugAddUser($pdo);
+        break;
+        
     default:
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
@@ -2127,6 +2131,77 @@ function handleDeleteAllUsers($pdo) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+function debugAddUser($pdo) {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON data']);
+            return;
+        }
+        
+        // Debug: Show what we're trying to insert
+        $columns = [
+            'user_email', 'name', 'age', 'gender', 'barangay', 'municipality', 'province',
+            'weight_kg', 'height_cm', 'bmi', 'birthday', 'income', 'muac',
+            'swelling', 'weight_loss', 'feeding_behavior', 'physical_signs',
+            'dietary_diversity', 'clinical_risk_factors', 'allergies', 'diet_prefs',
+            'avoid_foods', 'risk_score', 'malnutrition_risk', 'screening_date'
+        ];
+        
+        $values = [
+            $data['user_email'] ?? null,
+            $data['name'] ?? null,
+            $data['age'] ?? null,
+            $data['gender'] ?? null,
+            $data['barangay'] ?? null,
+            $data['municipality'] ?? null,
+            $data['province'] ?? null,
+            $data['weight_kg'] ?? null,
+            $data['height_cm'] ?? null,
+            $data['bmi'] ?? null,
+            $data['birthday'] ?? null,
+            $data['income'] ?? null,
+            $data['muac'] ?? null,
+            $data['swelling'] ?? null,
+            $data['weight_loss'] ?? null,
+            $data['feeding_behavior'] ?? null,
+            $data['physical_signs'] ?? null,
+            $data['dietary_diversity'] ?? null,
+            $data['clinical_risk_factors'] ?? null,
+            $data['allergies'] ?? null,
+            $data['diet_prefs'] ?? null,
+            $data['avoid_foods'] ?? null,
+            $data['risk_score'] ?? 0,
+            $data['malnutrition_risk'] ?? 'Low',
+            $data['screening_date'] ?? date('Y-m-d')
+        ];
+        
+        echo json_encode([
+            'success' => true,
+            'debug_info' => [
+                'columns_count' => count($columns),
+                'values_count' => count($values),
+                'columns' => $columns,
+                'values' => $values,
+                'sql_placeholders' => str_repeat('?,', count($columns) - 1) . '?'
+            ]
+        ]);
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Debug error: ' . $e->getMessage()]);
     }
 }
 ?>
