@@ -1884,11 +1884,11 @@ function handleGetScreeningData($pdo, $data) {
     }
 }
 
-// User management functions - Railway deployment trigger
+// User management functions - FORCE RAILWAY REDEPLOYMENT
 function handleAddUser($pdo) {
     try {
         // Debug: Log that we're in the function
-        error_log("handleAddUser function called");
+        error_log("handleAddUser function called - VERSION 2.0 - FORCE REDEPLOY");
         
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
