@@ -7348,30 +7348,29 @@ optgroup option {
             console.log('Creating user with database-compatible data...');
             
             const requestBody = {
-                action: 'add_user_csv',
-                user_data: {
-                    user_email: userData.user_email,
-                    name: userData.name,
-                    birthday: userData.birthday,
-                    age: age,
-                    gender: userData.gender,
-                    height: parseFloat(userData.height) || 0,
-                    weight: parseFloat(userData.weight) || 0,
-                    bmi: bmi,
-                    muac: parseFloat(userData.muac) || 0,
-                    goal: userData.goal || 'maintain',
-                    risk_score: parseInt(userData.risk_score) || 0,
-                    allergies: userData.allergies || '',
-                    diet_prefs: userData.diet_prefs || '',
-                    avoid_foods: userData.avoid_foods || '',
-                    barangay: userData.barangay || '',
-                    income: userData.income || ''
-                }
+                user_email: userData.user_email,
+                name: userData.name,
+                birthday: userData.birthday,
+                age: age,
+                gender: userData.gender,
+                height_cm: parseFloat(userData.height) || 0,
+                weight_kg: parseFloat(userData.weight) || 0,
+                bmi: bmi,
+                muac: parseFloat(userData.muac) || 0,
+                risk_score: parseInt(userData.risk_score) || 0,
+                allergies: userData.allergies || '',
+                diet_prefs: userData.diet_prefs || '',
+                avoid_foods: userData.avoid_foods || '',
+                barangay: userData.barangay || '',
+                income: userData.income || '',
+                municipality: userData.municipality || '',
+                province: userData.province || '',
+                screening_date: new Date().toISOString().split('T')[0]
             };
             
             console.log('Sending to API:', requestBody);
             
-            const userResponse = await fetch('API_BASE_URL + "/unified_api.php"', {
+            const userResponse = await fetch(API_BASE_URL + '/unified_api.php?endpoint=add_user', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -7380,7 +7379,20 @@ optgroup option {
             });
             
             console.log('User API response status:', userResponse.status);
-            const userResult = await userResponse.json();
+            console.log('User API response headers:', userResponse.headers);
+            
+            // Get response text first to debug
+            const responseText = await userResponse.text();
+            console.log('User API response text (first 200 chars):', responseText.substring(0, 200));
+            
+            let userResult;
+            try {
+                userResult = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('JSON parse error:', parseError);
+                console.error('Full response text:', responseText);
+                throw new Error('Invalid JSON response: ' + responseText.substring(0, 100));
+            }
             console.log('User API response:', userResult);
             console.log('Response keys:', Object.keys(userResult));
             console.log('Response success flag:', userResult.success);
