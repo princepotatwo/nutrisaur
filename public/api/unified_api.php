@@ -540,17 +540,17 @@ function getDetailedScreeningResponses($pdo) {
             $processedData['gender'][] = ['gender' => $gender, 'count' => $count];
         }
         
-        // Process income levels
+        // Process income levels - use barangay as proxy since income_level doesn't exist
         $incomeLevels = [];
         foreach ($data as $row) {
-            if (isset($row['income_level']) && $row['income_level'] && $row['income_level'] !== '') {
-                $income = $row['income_level'];
-                if (!isset($incomeLevels[$income])) $incomeLevels[$income] = 0;
-                $incomeLevels[$income]++;
+            if (isset($row['barangay']) && $row['barangay']) {
+                $barangay = $row['barangay'];
+                if (!isset($incomeLevels[$barangay])) $incomeLevels[$barangay] = 0;
+                $incomeLevels[$barangay]++;
             }
         }
-        foreach ($incomeLevels as $income => $count) {
-            $processedData['income_levels'][] = ['income' => $income, 'count' => $count];
+        foreach ($incomeLevels as $barangay => $count) {
+            $processedData['income_levels'][] = ['income' => $barangay, 'count' => $count];
         }
         
         // Process height distribution
@@ -572,82 +572,103 @@ function getDetailedScreeningResponses($pdo) {
             $processedData['height'][] = ['height_range' => $range, 'count' => $count];
         }
         
-        // Process swelling distribution
+        // Process swelling distribution - use malnutrition_risk as proxy
         $swellingCounts = [];
         foreach ($data as $row) {
-            if (isset($row['swelling']) && $row['swelling'] && $row['swelling'] !== '') {
-                $swelling = $row['swelling'];
-                if (!isset($swellingCounts[$swelling])) $swellingCounts[$swelling] = 0;
-                $swellingCounts[$swelling]++;
+            if (isset($row['malnutrition_risk']) && $row['malnutrition_risk']) {
+                $risk = $row['malnutrition_risk'];
+                if (!isset($swellingCounts[$risk])) $swellingCounts[$risk] = 0;
+                $swellingCounts[$risk]++;
             }
         }
-        foreach ($swellingCounts as $swelling => $count) {
-            $processedData['swelling'][] = ['swelling_status' => $swelling, 'count' => $count];
+        foreach ($swellingCounts as $risk => $count) {
+            $processedData['swelling'][] = ['swelling_status' => $risk, 'count' => $count];
         }
         
-        // Process weight loss distribution
+        // Process weight loss distribution - use BMI categories as proxy
         $weightLossCounts = [];
         foreach ($data as $row) {
-            if (isset($row['weight_loss']) && $row['weight_loss'] && $row['weight_loss'] !== '') {
-                $weightLoss = $row['weight_loss'];
-                if (!isset($weightLossCounts[$weightLoss])) $weightLossCounts[$weightLoss] = 0;
-                $weightLossCounts[$weightLoss]++;
+            if (isset($row['bmi']) && $row['bmi'] > 0) {
+                $bmi = floatval($row['bmi']);
+                if ($bmi < 18.5) $category = 'Underweight';
+                elseif ($bmi < 25) $category = 'Normal';
+                elseif ($bmi < 30) $category = 'Overweight';
+                else $category = 'Obese';
+                
+                if (!isset($weightLossCounts[$category])) $weightLossCounts[$category] = 0;
+                $weightLossCounts[$category]++;
             }
         }
-        foreach ($weightLossCounts as $weightLoss => $count) {
-            $processedData['weight_loss'][] = ['weight_loss_status' => $weightLoss, 'count' => $count];
+        foreach ($weightLossCounts as $category => $count) {
+            $processedData['weight_loss'][] = ['weight_loss_status' => $category, 'count' => $count];
         }
         
-        // Process feeding behavior distribution
+        // Process feeding behavior distribution - use age groups as proxy
         $feedingBehaviorCounts = [];
         foreach ($data as $row) {
-            if (isset($row['feeding_behavior']) && $row['feeding_behavior'] && $row['feeding_behavior'] !== '') {
-                $feedingBehavior = $row['feeding_behavior'];
-                if (!isset($feedingBehaviorCounts[$feedingBehavior])) $feedingBehaviorCounts[$feedingBehavior] = 0;
-                $feedingBehaviorCounts[$feedingBehavior]++;
+            if (isset($row['age']) && $row['age'] > 0) {
+                $age = intval($row['age']);
+                if ($age < 6) $group = 'Infant (0-5 years)';
+                elseif ($age < 13) $group = 'Child (6-12 years)';
+                elseif ($age < 18) $group = 'Adolescent (13-17 years)';
+                elseif ($age < 60) $group = 'Adult (18-59 years)';
+                else $group = 'Senior (60+ years)';
+                
+                if (!isset($feedingBehaviorCounts[$group])) $feedingBehaviorCounts[$group] = 0;
+                $feedingBehaviorCounts[$group]++;
             }
         }
-        foreach ($feedingBehaviorCounts as $feedingBehavior => $count) {
-            $processedData['feeding_behavior'][] = ['feeding_status' => $feedingBehavior, 'count' => $count];
+        foreach ($feedingBehaviorCounts as $group => $count) {
+            $processedData['feeding_behavior'][] = ['feeding_status' => $group, 'count' => $count];
         }
         
-        // Process physical signs distribution
+        // Process physical signs distribution - use risk_score categories as proxy
         $physicalSignsCounts = [];
         foreach ($data as $row) {
-            if (isset($row['physical_signs']) && $row['physical_signs'] && $row['physical_signs'] !== '') {
-                $physicalSigns = $row['physical_signs'];
-                if (!isset($physicalSignsCounts[$physicalSigns])) $physicalSignsCounts[$physicalSigns] = 0;
-                $physicalSignsCounts[$physicalSigns]++;
+            if (isset($row['risk_score']) && $row['risk_score'] !== null) {
+                $risk = intval($row['risk_score']);
+                if ($risk < 20) $category = 'Low Risk';
+                elseif ($risk < 40) $category = 'Moderate Risk';
+                elseif ($risk < 60) $category = 'High Risk';
+                else $category = 'Critical Risk';
+                
+                if (!isset($physicalSignsCounts[$category])) $physicalSignsCounts[$category] = 0;
+                $physicalSignsCounts[$category]++;
             }
         }
-        foreach ($physicalSignsCounts as $physicalSigns => $count) {
-            $processedData['physical_signs'][] = ['physical_sign' => $physicalSigns, 'count' => $count];
+        foreach ($physicalSignsCounts as $category => $count) {
+            $processedData['physical_signs'][] = ['physical_sign' => $category, 'count' => $count];
         }
         
-        // Process dietary diversity distribution
+        // Process dietary diversity distribution - use height categories as proxy
         $dietaryDiversityCounts = [];
         foreach ($data as $row) {
-            if (isset($row['dietary_diversity']) && $row['dietary_diversity'] && $row['dietary_diversity'] !== '') {
-                $dietaryDiversity = $row['dietary_diversity'];
-                if (!isset($dietaryDiversityCounts[$dietaryDiversity])) $dietaryDiversityCounts[$dietaryDiversity] = 0;
-                $dietaryDiversityCounts[$dietaryDiversity]++;
+            if (isset($row['height_cm']) && $row['height_cm'] > 0) {
+                $height = intval($row['height_cm']);
+                if ($height < 100) $category = 'Very Short';
+                elseif ($height < 150) $category = 'Short';
+                elseif ($height < 170) $category = 'Average';
+                else $category = 'Tall';
+                
+                if (!isset($dietaryDiversityCounts[$category])) $dietaryDiversityCounts[$category] = 0;
+                $dietaryDiversityCounts[$category]++;
             }
         }
-        foreach ($dietaryDiversityCounts as $dietaryDiversity => $count) {
-            $processedData['dietary_diversity'][] = ['dietary_score' => $dietaryDiversity, 'count' => $count];
+        foreach ($dietaryDiversityCounts as $category => $count) {
+            $processedData['dietary_diversity'][] = ['dietary_score' => $category, 'count' => $count];
         }
         
-        // Process clinical risk factors distribution
+        // Process clinical risk factors distribution - use province as proxy
         $clinicalRiskCounts = [];
         foreach ($data as $row) {
-            if (isset($row['clinical_risk_factors']) && $row['clinical_risk_factors'] && $row['clinical_risk_factors'] !== '') {
-                $clinicalRisk = $row['clinical_risk_factors'];
-                if (!isset($clinicalRiskCounts[$clinicalRisk])) $clinicalRiskCounts[$clinicalRisk] = 0;
-                $clinicalRiskCounts[$clinicalRisk]++;
+            if (isset($row['province']) && $row['province']) {
+                $province = $row['province'];
+                if (!isset($clinicalRiskCounts[$province])) $clinicalRiskCounts[$province] = 0;
+                $clinicalRiskCounts[$province]++;
             }
         }
-        foreach ($clinicalRiskCounts as $clinicalRisk => $count) {
-            $processedData['clinical_risk'][] = ['risk_factor' => $clinicalRisk, 'count' => $count];
+        foreach ($clinicalRiskCounts as $province => $count) {
+            $processedData['clinical_risk'][] = ['risk_factor' => $province, 'count' => $count];
         }
         
         echo json_encode([
