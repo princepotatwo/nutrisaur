@@ -17,9 +17,6 @@ COPY sss/ ./sss/
 COPY public/ ./public/
 COPY config.php ./config.php
 
-# Create proper health check
-RUN echo '<?php header("Content-Type: application/json"); echo json_encode(["status" => "healthy", "timestamp" => date("Y-m-d H:i:s")]); ?>' > public/health.php
-
 # Ensure config.php is accessible from both root and public directory
 RUN cp config.php public/config.php
 
