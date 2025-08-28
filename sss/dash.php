@@ -7889,14 +7889,7 @@ body {
                     // Clear segments and show no data message
                     segments.innerHTML = '<div style="text-align: center; color: #999; font-style: italic;">No data available for selected area</div>';
                     
-                    // Clear any existing SVG chart
-                    const donutChart = document.querySelector('.donut-chart');
-                    if (donutChart) {
-                        const existingSvg = donutChart.querySelector('svg');
-                        if (existingSvg) {
-                            existingSvg.remove();
-                        }
-                    }
+
                     
                     // Clear percentage labels
                     const percentageLabelsContainer = document.getElementById('percentage-labels');
@@ -7999,182 +7992,16 @@ body {
                 console.log('Final gradient string:', gradientString);
                 console.log('Total percentage calculated:', calculatedTotalPercentage);
                 
-                // Create clean donut chart without hover effects
-                const donutChart = document.querySelector('.donut-chart');
-                if (donutChart) {
-                    // Remove existing SVG if any
-                    const existingSvg = donutChart.querySelector('svg');
-                    if (existingSvg) {
-                        existingSvg.remove();
-                    }
-                    
-                    // Create SVG container
-                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    svg.setAttribute('width', '200');
-                    svg.setAttribute('height', '200');
-                    svg.setAttribute('viewBox', '0 0 200 200');
-                    svg.style.position = 'absolute';
-                    svg.style.top = '0';
-                    svg.style.left = '0';
-                    svg.style.zIndex = '3';
-                    svg.style.pointerEvents = 'none';
-                    
-                    // Create individual segments based on risk score distribution
-                    let currentAngle = 0;
-                    
-                    if (actualRiskScores.length > 0) {
-                        // Use actual risk scores for SVG segments - MATCHING ANDROID APP LOGIC
-                        const lowRiskCount = actualRiskScores.filter(score => score < 20).length;
-                        const moderateRiskCount = actualRiskScores.filter(score => score >= 20 && score < 50).length;
-                        const highRiskCount = actualRiskScores.filter(score => score >= 50 && score < 80).length;
-                        const severeRiskCount = actualRiskScores.filter(score => score >= 80).length;
-                        
-                        const lowRiskPercentage = (lowRiskCount / actualRiskScores.length) * 100;
-                        const moderateRiskPercentage = (moderateRiskCount / actualRiskScores.length) * 100;
-                        const highRiskPercentage = (highRiskCount / actualRiskScores.length) * 100;
-                        const severeRiskPercentage = (severeRiskCount / actualRiskScores.length) * 100;
-                        
-                        // Create segments for each risk level
-                        const riskSegments = [
-                            { index: 0, percentage: lowRiskPercentage, count: lowRiskCount, label: 'Low Risk' },
-                            { index: 1, percentage: moderateRiskPercentage, count: moderateRiskCount, label: 'Moderate Risk' },
-                            { index: 2, percentage: highRiskPercentage, count: highRiskCount, label: 'High Risk' },
-                            { index: 3, percentage: severeRiskPercentage, count: severeRiskCount, label: 'Severe Risk' }
-                        ];
-                        
-                        riskSegments.forEach((segment, segmentIndex) => {
-                            if (segment.count > 0) {
-                                const startAngle = currentAngle;
-                                const endAngle = currentAngle + segment.percentage;
-                                
-                                // Convert percentages to degrees
-                                const startDeg = (startAngle / 100) * 360;
-                                const endDeg = (endAngle / 100) * 360;
-                                
-                                // Calculate SVG path for segment (donut shape)
-                                const radius = 100;
-                                const innerRadius = 60;
-                                
-                                const startRad = (startDeg - 90) * (Math.PI / 180);
-                                const endRad = (endDeg - 90) * (Math.PI / 180);
-                                
-                                const x1 = 100 + radius * Math.cos(startRad);
-                                const y1 = 100 + radius * Math.sin(startRad);
-                                const x2 = 100 + radius * Math.cos(endRad);
-                                const y2 = 100 + radius * Math.sin(endRad);
-                                
-                                const x1Inner = 100 + innerRadius * Math.cos(startRad);
-                                const y1Inner = 100 + innerRadius * Math.sin(startRad);
-                                const x2Inner = 100 + innerRadius * Math.cos(endRad);
-                                const y2Inner = 100 + innerRadius * Math.sin(endRad);
-                                
-                                // Create large arc flag
-                                const largeArcFlag = (endDeg - startDeg) > 180 ? 1 : 0;
-                                
-                                // Create path data for donut segment
-                                const pathData = [
-                                    `M ${x1} ${y1}`,
-                                    `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-                                    `L ${x2Inner} ${y2Inner}`,
-                                    `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner}`,
-                                    'Z'
-                                ].join(' ');
-                                
-                                // Create clean path element without hover effects
-                                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                                path.setAttribute('d', pathData);
-                                path.setAttribute('fill', colors[segment.index]);
-                                path.style.opacity = '0.9';
-                                path.style.transition = 'none';
-                                path.style.cursor = 'default';
-                                path.style.pointerEvents = 'none';
-                                path.style.stroke = 'rgba(255, 255, 255, 0.1)';
-                                path.style.strokeWidth = '1';
-                                
-                                // No hover effects - clean static display
-                                
-                                svg.appendChild(path);
-                                currentAngle = endAngle;
-                                
-                                console.log(`Created clean SVG segment ${segmentIndex}: ${segment.label} - ${segment.percentage.toFixed(1)}% (${startDeg.toFixed(1)}° to ${endDeg.toFixed(1)}°)`);
-                            }
-                        });
-                    } else {
-                        // Fallback to original logic if no risk scores available
-                        validSegments.forEach((segment, segmentIndex) => {
-                            if (segment.count > 0) {
-                                const startAngle = currentAngle;
-                                const endAngle = currentAngle + segment.percentage;
-                                
-                                // Convert percentages to degrees
-                                const startDeg = (startAngle / 100) * 360;
-                                const endDeg = (endAngle / 100) * 360;
-                                
-                                // Calculate SVG path for segment (donut shape)
-                                const radius = 100;
-                                const innerRadius = 60;
-                                
-                                const startRad = (startDeg - 90) * (Math.PI / 180);
-                                const endRad = (endDeg - 90) * (Math.PI / 180);
-                                
-                                const x1 = 100 + radius * Math.cos(startRad);
-                                const y1 = 100 + radius * Math.sin(startRad);
-                                const x2 = 100 + radius * Math.cos(endRad);
-                                const y2 = 100 + radius * Math.sin(endRad);
-                                
-                                const x1Inner = 100 + innerRadius * Math.cos(startRad);
-                                const y1Inner = 100 + innerRadius * Math.sin(startRad);
-                                const x2Inner = 100 + innerRadius * Math.cos(endRad);
-                                const y2Inner = 100 + innerRadius * Math.sin(endRad);
-                                
-                                // Create large arc flag
-                                const largeArcFlag = (endDeg - startDeg) > 180 ? 1 : 0;
-                                
-                                // Create path data for donut segment
-                                const pathData = [
-                                    `M ${x1} ${y1}`,
-                                    `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-                                    `L ${x2Inner} ${y2Inner}`,
-                                    `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${x1Inner} ${y1Inner}`,
-                                    'Z'
-                                ].join(' ');
-                                
-                                // Create clean path element without hover effects
-                                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                                path.setAttribute('d', pathData);
-                                path.setAttribute('fill', colors[segment.index]);
-                                path.style.opacity = '0.9';
-                                path.style.transition = 'none';
-                                path.style.cursor = 'default';
-                                path.style.pointerEvents = 'none';
-                                path.style.stroke = 'rgba(255, 255, 255, 0.1)';
-                                path.style.strokeWidth = '1';
-                                
-                                // No hover effects - clean static display
-                                
-                                svg.appendChild(path);
-                                currentAngle = endAngle;
-                                
-                                console.log(`Created clean SVG segment ${segmentIndex}: ${segment.label} - ${segment.percentage.toFixed(1)}% (${startDeg.toFixed(1)}° to ${endDeg.toFixed(1)}°)`);
-                            }
-                        });
-                    }
-                    
-                    donutChart.appendChild(svg);
-                    console.log(`Clean SVG with ${svg.children.length} segments added to donut chart (no hover effects)`);
-                }
-                
-                // Apply the conic gradient as background (will be behind SVG segments)
+                // Apply the conic gradient to the background
                 if (gradientString.trim()) {
                     chartBg.style.background = `conic-gradient(${gradientString})`;
-                    chartBg.style.opacity = '0.1'; // Make it very subtle since we have SVG segments on top
-                    console.log('Applied background gradient:', gradientString);
+                    chartBg.style.opacity = '1';
+                    console.log('Applied conic gradient:', gradientString);
                 } else {
-                    // Fallback to a default gradient if no data
+                    // Fallback if no data
                     chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
-                    chartBg.style.opacity = '0.1';
-                    console.log('Applied fallback background gradient');
-                }
+                    chartBg.style.opacity = '0.3';
+
                 
                 // Create percentage labels around the donut chart - properly aligned with segments
                 const percentageLabelsContainer = document.getElementById('percentage-labels');
