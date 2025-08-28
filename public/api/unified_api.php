@@ -230,6 +230,26 @@ switch ($endpoint) {
         getUSMData($pdo);
         break;
         
+    case 'add_user':
+        handleAddUser($pdo);
+        break;
+        
+    case 'update_user':
+        handleUpdateUser($pdo);
+        break;
+        
+    case 'delete_user':
+        handleDeleteUser($pdo);
+        break;
+        
+    case 'delete_users_by_location':
+        handleDeleteUsersByLocation($pdo);
+        break;
+        
+    case 'delete_all_users':
+        handleDeleteAllUsers($pdo);
+        break;
+        
     default:
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
@@ -1857,6 +1877,257 @@ function handleGetScreeningData($pdo, $data) {
         error_log("Error in handleGetScreeningData: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Failed to get screening data: ' . $e->getMessage()]);
+    }
+}
+
+// User management functions
+function handleAddUser($pdo) {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON data']);
+            return;
+        }
+        
+        // Check if user already exists
+        $stmt = $pdo->prepare("SELECT id FROM user_preferences WHERE user_email = ?");
+        $stmt->execute([$data['user_email']]);
+        if ($stmt->fetch()) {
+            http_response_code(409);
+            echo json_encode(['success' => false, 'error' => 'User already exists']);
+            return;
+        }
+        
+        // Insert new user
+        $stmt = $pdo->prepare("
+            INSERT INTO user_preferences (
+                user_email, name, age, gender, barangay, municipality, province,
+                weight_kg, height_cm, bmi, birthday, income, muac,
+                swelling, weight_loss, feeding_behavior, physical_signs,
+                dietary_diversity, clinical_risk_factors, allergies, diet_prefs,
+                avoid_foods, risk_score, malnutrition_risk, screening_date,
+                created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+        ");
+        
+        $stmt->execute([
+            $data['user_email'],
+            $data['name'] ?? null,
+            $data['age'] ?? null,
+            $data['gender'] ?? null,
+            $data['barangay'] ?? null,
+            $data['municipality'] ?? null,
+            $data['province'] ?? null,
+            $data['weight_kg'] ?? null,
+            $data['height_cm'] ?? null,
+            $data['bmi'] ?? null,
+            $data['birthday'] ?? null,
+            $data['income'] ?? null,
+            $data['muac'] ?? null,
+            $data['swelling'] ?? null,
+            $data['weight_loss'] ?? null,
+            $data['feeding_behavior'] ?? null,
+            $data['physical_signs'] ?? null,
+            $data['dietary_diversity'] ?? null,
+            $data['clinical_risk_factors'] ?? null,
+            $data['allergies'] ?? null,
+            $data['diet_prefs'] ?? null,
+            $data['avoid_foods'] ?? null,
+            $data['risk_score'] ?? 0,
+            $data['malnutrition_risk'] ?? 'Low',
+            $data['screening_date'] ?? date('Y-m-d')
+        ]);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'User added successfully',
+            'user_id' => $pdo->lastInsertId()
+        ]);
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+function handleUpdateUser($pdo) {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data || !isset($data['user_email'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'User email is required']);
+            return;
+        }
+        
+        // Update user
+        $stmt = $pdo->prepare("
+            UPDATE user_preferences SET
+                name = ?, age = ?, gender = ?, barangay = ?, municipality = ?, province = ?,
+                weight_kg = ?, height_cm = ?, bmi = ?, birthday = ?, income = ?, muac = ?,
+                swelling = ?, weight_loss = ?, feeding_behavior = ?, physical_signs = ?,
+                dietary_diversity = ?, clinical_risk_factors = ?, allergies = ?, diet_prefs = ?,
+                avoid_foods = ?, risk_score = ?, malnutrition_risk = ?, screening_date = ?,
+                updated_at = NOW()
+            WHERE user_email = ?
+        ");
+        
+        $stmt->execute([
+            $data['name'] ?? null,
+            $data['age'] ?? null,
+            $data['gender'] ?? null,
+            $data['barangay'] ?? null,
+            $data['municipality'] ?? null,
+            $data['province'] ?? null,
+            $data['weight_kg'] ?? null,
+            $data['height_cm'] ?? null,
+            $data['bmi'] ?? null,
+            $data['birthday'] ?? null,
+            $data['income'] ?? null,
+            $data['muac'] ?? null,
+            $data['swelling'] ?? null,
+            $data['weight_loss'] ?? null,
+            $data['feeding_behavior'] ?? null,
+            $data['physical_signs'] ?? null,
+            $data['dietary_diversity'] ?? null,
+            $data['clinical_risk_factors'] ?? null,
+            $data['allergies'] ?? null,
+            $data['diet_prefs'] ?? null,
+            $data['avoid_foods'] ?? null,
+            $data['risk_score'] ?? 0,
+            $data['malnutrition_risk'] ?? 'Low',
+            $data['screening_date'] ?? date('Y-m-d'),
+            $data['user_email']
+        ]);
+        
+        if ($stmt->rowCount() > 0) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'User updated successfully'
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'error' => 'User not found']);
+        }
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+function handleDeleteUser($pdo) {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data || !isset($data['user_email'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'User email is required']);
+            return;
+        }
+        
+        // Delete user
+        $stmt = $pdo->prepare("DELETE FROM user_preferences WHERE user_email = ?");
+        $stmt->execute([$data['user_email']]);
+        
+        if ($stmt->rowCount() > 0) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'User deleted successfully',
+                'deleted_count' => 1
+            ]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'error' => 'User not found']);
+        }
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+function handleDeleteUsersByLocation($pdo) {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data || !isset($data['location'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Location is required']);
+            return;
+        }
+        
+        // Delete users by location
+        $stmt = $pdo->prepare("DELETE FROM user_preferences WHERE barangay = ?");
+        $stmt->execute([$data['location']]);
+        
+        $deletedCount = $stmt->rowCount();
+        
+        echo json_encode([
+            'success' => true,
+            'message' => "Successfully deleted $deletedCount users from {$data['location']}",
+            'deleted_count' => $deletedCount
+        ]);
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+function handleDeleteAllUsers($pdo) {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        // Delete all users
+        $stmt = $pdo->prepare("DELETE FROM user_preferences");
+        $stmt->execute();
+        
+        $deletedCount = $stmt->rowCount();
+        
+        echo json_encode([
+            'success' => true,
+            'message' => "Successfully deleted $deletedCount users",
+            'deleted_count' => $deletedCount
+        ]);
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
     }
 }
 ?>

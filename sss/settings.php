@@ -4135,10 +4135,7 @@ optgroup option {
                             <span class="btn-icon">🗑️</span>
                             <span class="btn-text">Delete All Users</span>
                         </button>
-                        <button class="btn btn-secondary" onclick="testAPI()" id="testAPIBtn">
-                            <span class="btn-icon">🧪</span>
-                            <span class="btn-text">Test API</span>
-                        </button>
+
 
 
                     </div>
@@ -4988,6 +4985,243 @@ optgroup option {
         console.log('Using event delegation instead of individual listeners');
     }
 
+    // Helper functions for user data processing
+    function calculateAge(birthday) {
+        const birthDate = new Date(birthday);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            return age - 1;
+        }
+        return age;
+    }
+
+    function calculateBMI(weight, height) {
+        const heightM = height / 100;
+        return (weight / (heightM * heightM)).toFixed(2);
+    }
+
+    function getPhysicalSignsString(thin, shorter, weak, none) {
+        const signs = [];
+        if (thin) signs.push('thin');
+        if (shorter) signs.push('shorter');
+        if (weak) signs.push('weak');
+        if (none) signs.push('none');
+        return signs.join(', ');
+    }
+
+    function getClinicalRiskFactorsString(recentIllness, eatingDifficulty, foodInsecurity, micronutrientDeficiency, functionalDecline) {
+        const factors = [];
+        if (recentIllness) factors.push('recent_illness');
+        if (eatingDifficulty) factors.push('eating_difficulty');
+        if (foodInsecurity) factors.push('food_insecurity');
+        if (micronutrientDeficiency) factors.push('micronutrient_deficiency');
+        if (functionalDecline) factors.push('functional_decline');
+        return factors.join(', ');
+    }
+
+    function getMalnutritionRiskLevel(riskScore) {
+        if (riskScore >= 70) return 'Critical';
+        if (riskScore >= 50) return 'High';
+        if (riskScore >= 30) return 'Moderate';
+        return 'Low';
+    }
+
+    // Database modification functions
+    function addUserToDatabase(userData) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', API_BASE_URL + '/unified_api.php?endpoint=add_user', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                resolve(response);
+                            } else {
+                                reject(new Error(response.error || 'Failed to add user'));
+                            }
+                        } catch (error) {
+                            reject(new Error('Invalid response format'));
+                        }
+                    } else {
+                        reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                    }
+                }
+            };
+            
+            xhr.onerror = () => reject(new Error('Network error'));
+            xhr.send(JSON.stringify(userData));
+        });
+    }
+
+    function updateUserInDatabase(userData) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', API_BASE_URL + '/unified_api.php?endpoint=update_user', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                resolve(response);
+                            } else {
+                                reject(new Error(response.error || 'Failed to update user'));
+                            }
+                        } catch (error) {
+                            reject(new Error('Invalid response format'));
+                        }
+                    } else {
+                        reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                    }
+                }
+            };
+            
+            xhr.onerror = () => reject(new Error('Network error'));
+            xhr.send(JSON.stringify(userData));
+        });
+    }
+
+    function deleteUserFromDatabase(userEmail) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', API_BASE_URL + '/unified_api.php?endpoint=delete_user', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                resolve(response);
+                            } else {
+                                reject(new Error(response.error || 'Failed to delete user'));
+                            }
+                        } catch (error) {
+                            reject(new Error('Invalid response format'));
+                        }
+                    } else {
+                        reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                    }
+                }
+            };
+            
+            xhr.onerror = () => reject(new Error('Network error'));
+            xhr.send(JSON.stringify({ user_email: userEmail }));
+        });
+    }
+
+    function deleteUsersByLocationFromDatabase(location) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', API_BASE_URL + '/unified_api.php?endpoint=delete_users_by_location', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                resolve(response);
+                            } else {
+                                reject(new Error(response.error || 'Failed to delete users by location'));
+                            }
+                        } catch (error) {
+                            reject(new Error('Invalid response format'));
+                        }
+                    } else {
+                        reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                    }
+                }
+            };
+            
+            xhr.onerror = () => reject(new Error('Network error'));
+            xhr.send(JSON.stringify({ location: location }));
+        });
+    }
+
+    function deleteAllUsersFromDatabase() {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', API_BASE_URL + '/unified_api.php?endpoint=delete_all_users', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                resolve(response);
+                            } else {
+                                reject(new Error(response.error || 'Failed to delete all users'));
+                            }
+                        } catch (error) {
+                            reject(new Error('Invalid response format'));
+                        }
+                    } else {
+                        reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                    }
+                }
+            };
+            
+            xhr.onerror = () => reject(new Error('Network error'));
+            xhr.send(JSON.stringify({}));
+        });
+    }
+
+    // Functions for the action buttons
+    function deleteUsersByLocation() {
+        const locationFilter = document.getElementById('locationFilter').value;
+        if (!locationFilter) {
+            showAlert('warning', 'Please select a location first');
+            return;
+        }
+        
+        if (!confirm(`Are you sure you want to delete ALL users from ${locationFilter}? This action cannot be undone!`)) {
+            return;
+        }
+        
+        showAlert('info', `Deleting users from ${locationFilter}...`);
+        
+        deleteUsersByLocationFromDatabase(locationFilter)
+            .then(result => {
+                showAlert('success', `Successfully deleted ${result.deleted_count || 0} users from ${locationFilter}`);
+                loadUsers(); // Refresh the table
+            })
+            .catch(error => {
+                console.error('Error deleting users by location:', error);
+                showAlert('danger', 'Error deleting users by location: ' + error.message);
+            });
+    }
+
+    function deleteAllUsers() {
+        if (!confirm('Are you sure you want to delete ALL users? This action cannot be undone!')) {
+            return;
+        }
+        
+        showAlert('info', 'Deleting all users...');
+        
+        deleteAllUsersFromDatabase()
+            .then(result => {
+                showAlert('success', `Successfully deleted ${result.deleted_count || 0} users`);
+                loadUsers(); // Refresh the table
+            })
+            .catch(error => {
+                console.error('Error deleting all users:', error);
+                showAlert('danger', 'Error deleting all users: ' + error.message);
+            });
+    }
+
     // Function to render users in the table
     function renderUsers(preferences) {
         const tableBody = document.querySelector('#usersTableBody');
@@ -5098,7 +5332,7 @@ optgroup option {
     }
 
     // Function to delete a user
-    function deleteUser(email) {
+    async function deleteUser(email) {
         console.log('deleteUser called with email:', email);
         
         if (!confirm('Are you sure you want to delete this user?')) {
@@ -5108,62 +5342,19 @@ optgroup option {
         // Show loading state
         showAlert('info', 'Deleting user...');
         
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', API_BASE_URL + '/unified_api.php', true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        
-        const deleteData = {
-            action: 'delete_user',
-            email: email
-        };
-        
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    try {
-                        const response = JSON.parse(xhr.responseText);
-                        if (response.success) {
-                            showAlert('success', 'User deleted successfully');
-                            
-                            // Immediately remove the user row from the table for instant feedback
-                            const userRow = document.querySelector(`button[data-email="${email}"]`).closest('tr');
-                            if (userRow && userRow.parentNode) {
-                                // Add fade-out effect
-                                userRow.style.transition = 'opacity 0.3s ease-out';
-                                userRow.style.opacity = '0';
-                                
-                                setTimeout(() => {
-                                    if (userRow.parentNode) {
-                                        userRow.parentNode.removeChild(userRow);
-                                    }
-                                }, 300);
-                            }
-                            
-                            // Update user count immediately
-                            const userCountElement = document.getElementById('userCount');
-                            if (userCountElement) {
-                                const currentCount = parseInt(userCountElement.textContent) || 0;
-                                userCountElement.textContent = Math.max(0, currentCount - 1);
-                            }
-                            
-                            // Reload users to ensure data consistency (shorter delay for better UX)
-                            setTimeout(() => {
-                                loadUsers();
-                            }, 300); // Reduced delay for faster refresh
-                            
-                        } else {
-                            showAlert('danger', response.error || 'Failed to delete user');
-                        }
-                    } catch (error) {
-                        console.error('Error parsing response:', error);
-                        showAlert('danger', 'Error deleting user');
-                    }
-                } else {
-                    console.error('Delete request failed:', xhr.status);
-                    showAlert('danger', 'Failed to delete user. Status: ' + xhr.status);
-                }
+        try {
+            const result = await deleteUserFromDatabase(email);
+            if (result.success) {
+                showAlert('success', 'User deleted successfully');
+                loadUsers(); // Refresh the table
+            } else {
+                showAlert('danger', 'Error deleting user: ' + result.error);
             }
-        };
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            showAlert('danger', 'Error deleting user: ' + error.message);
+        }
+
         
         xhr.onerror = function() {
             console.error('Network error during delete');
@@ -7363,20 +7554,35 @@ optgroup option {
                 avoid_foods: avoidFoods
             };
             
-            // Send to API
-            const response = await fetch('API_BASE_URL + "/unified_api.php"', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'add_user',
-                    user_data: userData,
-                    screening_data: JSON.stringify(screeningData)
-                })
-            });
+            // Prepare user data for database insertion
+            const userDataForDB = {
+                user_email: email,
+                name: username,
+                birthday: birthday,
+                age: calculateAge(birthday),
+                gender: gender,
+                weight_kg: weight,
+                height_cm: height,
+                bmi: calculateBMI(weight, height),
+                muac: muac,
+                barangay: barangay,
+                income: income,
+                swelling: swelling,
+                weight_loss: weightLoss,
+                feeding_behavior: feedingBehavior,
+                physical_signs: getPhysicalSignsString(physicalThin, physicalShorter, physicalWeak, physicalNone),
+                dietary_diversity: dietaryDiversity,
+                clinical_risk_factors: getClinicalRiskFactorsString(recentIllness, eatingDifficulty, foodInsecurity, micronutrientDeficiency, functionalDecline),
+                allergies: allergies,
+                diet_prefs: dietPrefs,
+                avoid_foods: avoidFoods,
+                risk_score: riskScore,
+                malnutrition_risk: getMalnutritionRiskLevel(riskScore),
+                screening_date: new Date().toISOString().split('T')[0]
+            };
             
-            const result = await response.json();
+            // Use the database function
+            const result = await addUserToDatabase(userDataForDB);
             
             if (result.success) {
                 showAlert('success', `User added successfully! Risk Score: ${riskScore}%`);
