@@ -53,12 +53,7 @@ try {
         PDO::ATTR_TIMEOUT => 30, // Increased timeout for Railway
         PDO::ATTR_PERSISTENT => false, // Disable persistent connections for Railway
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
-        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-        PDO::MYSQL_ATTR_FOUND_ROWS => true,
-        PDO::MYSQL_ATTR_LOCAL_INFILE => false,
-        PDO::MYSQL_ATTR_MAX_ALLOWED_PACKET => 16777216, // 16MB
-        PDO::MYSQL_ATTR_READ_TIMEOUT => 30,
-        PDO::MYSQL_ATTR_WRITE_TIMEOUT => 30
+        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
     ];
     
     $pdo = new PDO($dsn, $mysql_user, $mysql_password, $pdoOptions);
