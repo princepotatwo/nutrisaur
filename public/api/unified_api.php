@@ -230,6 +230,10 @@ switch ($endpoint) {
         getUSMData($pdo);
         break;
         
+    case 'events':
+        getEventsData($pdo);
+        break;
+        
     case 'add_user':
         handleAddUser($pdo);
         break;
@@ -279,6 +283,11 @@ switch ($endpoint) {
                 
                 if ($action === 'add_user_csv') {
                     handleAddUser($pdo);
+                    exit;
+                }
+                
+                if ($action === 'get_user_notifications') {
+                    handleGetUserNotifications($pdo, $postData);
                     exit;
                 }
             }
@@ -2184,6 +2193,78 @@ function handleAddUserNew($pdo) {
         error_log("handleAddUserNew error: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+// Events endpoint function
+function getEventsData($pdo) {
+    try {
+        // Get all upcoming programs/events
+        $stmt = $pdo->prepare("
+            SELECT 
+                p.program_id,
+                p.title,
+                p.type,
+                p.description,
+                p.date_time,
+                p.location,
+                p.organizer,
+                p.created_at
+            FROM programs p
+            WHERE p.date_time >= NOW()
+            ORDER BY p.date_time ASC
+        ");
+        $stmt->execute();
+        $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Format events data
+        $eventsData = [];
+        foreach ($events as $event) {
+            $eventsData[] = [
+                'id' => intval($event['program_id']),
+                'title' => $event['title'],
+                'type' => $event['type'],
+                'description' => $event['description'],
+                'date_time' => $event['date_time'],
+                'location' => $event['location'],
+                'organizer' => $event['organizer'],
+                'created_at' => $event['created_at']
+            ];
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'events' => $eventsData,
+            'total_events' => count($eventsData)
+        ]);
+        
+    } catch(PDOException $e) {
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+// Handle user notifications
+function handleGetUserNotifications($pdo, $postData) {
+    try {
+        $userEmail = $postData['user_email'] ?? '';
+        $limit = $postData['limit'] ?? 10;
+        
+        if (!$userEmail) {
+            echo json_encode(['error' => 'User email is required']);
+            exit;
+        }
+        
+        // For now, return empty notifications since we don't have a notifications table
+        // This will prevent the 400 error
+        echo json_encode([
+            'success' => true,
+            'notifications' => [],
+            'unread_count' => 0,
+            'total_count' => 0
+        ]);
+        
+    } catch(PDOException $e) {
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
     }
 }
 ?>
