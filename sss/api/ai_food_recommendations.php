@@ -79,12 +79,9 @@ try {
             up.gender,
             up.risk_score,
             up.bmi,
-            up.muac,
             up.barangay,
             up.dietary_diversity,
-            up.swelling,
-            up.weight_loss,
-            up.feeding_behavior
+            up.created_at
         FROM user_preferences up
         $whereClause
         ORDER BY up.risk_score DESC, up.created_at DESC
@@ -135,11 +132,11 @@ function generateIntelligentRecommendations($users) {
     
     foreach ($users as $user) {
         if ($user['risk_score'] >= 50) $highRiskCount++;
-        if ($user['bmi'] < 18.5) $samCount++; // Using BMI < 18.5 as underweight indicator
-        if ($user['age'] < 18) $childrenCount++;
+        if ($user['bmi'] < 18.5 && $user['bmi'] > 0) $samCount++; // Using BMI < 18.5 as underweight indicator
+        if ($user['age'] < 18 && $user['age'] > 0) $childrenCount++;
         if ($user['age'] > 65) $elderlyCount++;
-        if ($user['dietary_diversity'] < 5) $lowDietaryDiversity++;
-        $totalRiskScore += $user['risk_score'];
+        if ($user['dietary_diversity'] < 5 && $user['dietary_diversity'] > 0) $lowDietaryDiversity++;
+        $totalRiskScore += $user['risk_score'] ?? 0;
     }
     
     $avgRiskScore = count($users) > 0 ? $totalRiskScore / count($users) : 0;
