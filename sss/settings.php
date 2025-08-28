@@ -5092,11 +5092,18 @@ optgroup option {
     function deleteUserFromDatabase(userEmail) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', API_BASE_URL + '/unified_api.php?endpoint=delete_user', true);
+            const url = API_BASE_URL + '/unified_api.php?endpoint=delete_user';
+            console.log('deleteUserFromDatabase: Calling URL:', url);
+            
+            xhr.open('POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
+                    console.log('deleteUserFromDatabase: Response status:', xhr.status);
+                    console.log('deleteUserFromDatabase: Response headers:', xhr.getAllResponseHeaders());
+                    console.log('deleteUserFromDatabase: Response text (first 200 chars):', xhr.responseText.substring(0, 200));
+                    
                     if (xhr.status === 200) {
                         try {
                             const response = JSON.parse(xhr.responseText);
@@ -5106,7 +5113,9 @@ optgroup option {
                                 reject(new Error(response.error || 'Failed to delete user'));
                             }
                         } catch (error) {
-                            reject(new Error('Invalid response format'));
+                            console.error('deleteUserFromDatabase: JSON parse error:', error);
+                            console.error('deleteUserFromDatabase: Full response text:', xhr.responseText);
+                            reject(new Error('Invalid response format: ' + xhr.responseText.substring(0, 100)));
                         }
                     } else {
                         reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
@@ -5122,11 +5131,18 @@ optgroup option {
     function deleteUsersByLocationFromDatabase(location) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', API_BASE_URL + '/unified_api.php?endpoint=delete_users_by_location', true);
+            const url = API_BASE_URL + '/unified_api.php?endpoint=delete_users_by_location';
+            console.log('deleteUsersByLocationFromDatabase: Calling URL:', url);
+            
+            xhr.open('POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
+                    console.log('deleteUsersByLocationFromDatabase: Response status:', xhr.status);
+                    console.log('deleteUsersByLocationFromDatabase: Response headers:', xhr.getAllResponseHeaders());
+                    console.log('deleteUsersByLocationFromDatabase: Response text (first 200 chars):', xhr.responseText.substring(0, 200));
+                    
                     if (xhr.status === 200) {
                         try {
                             const response = JSON.parse(xhr.responseText);
@@ -5136,7 +5152,9 @@ optgroup option {
                                 reject(new Error(response.error || 'Failed to delete users by location'));
                             }
                         } catch (error) {
-                            reject(new Error('Invalid response format'));
+                            console.error('deleteUsersByLocationFromDatabase: JSON parse error:', error);
+                            console.error('deleteUsersByLocationFromDatabase: Full response text:', xhr.responseText);
+                            reject(new Error('Invalid response format: ' + xhr.responseText.substring(0, 100)));
                         }
                     } else {
                         reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
@@ -5152,11 +5170,18 @@ optgroup option {
     function deleteAllUsersFromDatabase() {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', API_BASE_URL + '/unified_api.php?endpoint=delete_all_users', true);
+            const url = API_BASE_URL + '/unified_api.php?endpoint=delete_all_users';
+            console.log('deleteAllUsersFromDatabase: Calling URL:', url);
+            
+            xhr.open('POST', url, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
+                    console.log('deleteAllUsersFromDatabase: Response status:', xhr.status);
+                    console.log('deleteAllUsersFromDatabase: Response headers:', xhr.getAllResponseHeaders());
+                    console.log('deleteAllUsersFromDatabase: Response text (first 200 chars):', xhr.responseText.substring(0, 200));
+                    
                     if (xhr.status === 200) {
                         try {
                             const response = JSON.parse(xhr.responseText);
@@ -5166,7 +5191,9 @@ optgroup option {
                                 reject(new Error(response.error || 'Failed to delete all users'));
                             }
                         } catch (error) {
-                            reject(new Error('Invalid response format'));
+                            console.error('deleteAllUsersFromDatabase: JSON parse error:', error);
+                            console.error('deleteAllUsersFromDatabase: Full response text:', xhr.responseText);
+                            reject(new Error('Invalid response format: ' + xhr.responseText.substring(0, 100)));
                         }
                     } else {
                         reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
