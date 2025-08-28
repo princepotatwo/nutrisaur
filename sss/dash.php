@@ -3196,7 +3196,7 @@ header .user-info {
     flex-direction: column;
     gap: 6px;
     height: 100%;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .geo-bar-item {
@@ -5644,7 +5644,7 @@ body {
         <div class="navbar-header">
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
-                    <img src="../sss/logo.png" alt="Logo" style="width: 40px; height: 40px;">
+                    <img src="logo.png" alt="Logo" style="width: 40px; height: 40px;">
                 </div>
                 <div class="navbar-logo-text">NutriSaur</div>
             </div>
@@ -6943,32 +6943,7 @@ body {
             }
         }
 
-        // Function to update geographic chart
-        async function updateGeographicChart(barangay = '') {
-            try {
-                console.log('updateGeographicChart called with barangay:', barangay);
-                
-                const params = {};
-                if (barangay && barangay !== '') {
-                    params.barangay = barangay;
-                    console.log('Added barangay to geographic chart params:', barangay);
-                } else {
-                    console.log('No barangay filter for geographic chart');
-                }
 
-                console.log('Geographic chart params:', params);
-                const data = await fetchDataFromAPI('geographic_distribution', params);
-                
-                if (data && data.success) {
-                    console.log('Geographic chart data received:', data);
-                    updateGeographicChartDisplay(data.data);
-                } else {
-                    console.log('Geographic chart failed or no data:', data);
-                }
-            } catch (error) {
-                console.error('Error updating geographic chart:', error);
-            }
-        }
 
         // Function to update geographic distribution display
         function updateGeographicChartDisplay(data) {
