@@ -1887,6 +1887,9 @@ function handleGetScreeningData($pdo, $data) {
 // User management functions - Railway deployment trigger
 function handleAddUser($pdo) {
     try {
+        // Debug: Log that we're in the function
+        error_log("handleAddUser function called");
+        
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             echo json_encode(['success' => false, 'error' => 'Method not allowed']);
@@ -1902,6 +1905,9 @@ function handleAddUser($pdo) {
             return;
         }
         
+        // Debug: Log the data we received
+        error_log("handleAddUser received data: " . json_encode($data));
+        
         // Check if user already exists
         $stmt = $pdo->prepare("SELECT id FROM user_preferences WHERE user_email = ?");
         $stmt->execute([$data['user_email']]);
@@ -1911,8 +1917,8 @@ function handleAddUser($pdo) {
             return;
         }
         
-        // Insert new user
-        $stmt = $pdo->prepare("
+        // Debug: Log the SQL we're about to execute
+        $sql = "
             INSERT INTO user_preferences (
                 user_email, name, age, gender, barangay, municipality, province,
                 weight_kg, height_cm, bmi, birthday, income, muac,
@@ -1920,9 +1926,12 @@ function handleAddUser($pdo) {
                 dietary_diversity, clinical_risk_factors, allergies, diet_prefs,
                 avoid_foods, risk_score, malnutrition_risk, screening_date
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
+        ";
+        error_log("handleAddUser SQL: " . $sql);
         
-        $stmt->execute([
+        $stmt = $pdo->prepare($sql);
+        
+        $values = [
             $data['user_email'],
             $data['name'] ?? null,
             $data['age'] ?? null,
@@ -1948,7 +1957,13 @@ function handleAddUser($pdo) {
             $data['risk_score'] ?? 0,
             $data['malnutrition_risk'] ?? 'Low',
             $data['screening_date'] ?? date('Y-m-d')
-        ]);
+        ];
+        
+        // Debug: Log the values we're about to bind
+        error_log("handleAddUser values count: " . count($values));
+        error_log("handleAddUser values: " . json_encode($values));
+        
+        $stmt->execute($values);
         
         echo json_encode([
             'success' => true,
@@ -1957,6 +1972,7 @@ function handleAddUser($pdo) {
         ]);
         
     } catch (Exception $e) {
+        error_log("handleAddUser error: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
     }
