@@ -1706,7 +1706,7 @@ function handleAddUser($pdo) {
                 swelling, weight_loss, feeding_behavior, physical_signs,
                 dietary_diversity, clinical_risk_factors, allergies, diet_prefs,
                 avoid_foods, risk_score, malnutrition_risk, screening_date
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
         error_log("handleAddUser SQL: " . $sql);
         error_log("handleAddUser SQL placeholders count: " . substr_count($sql, '?'));
