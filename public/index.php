@@ -14,13 +14,15 @@ if (strpos($path, '?') !== false) {
     $path = substr($path, 0, strpos($path, '?'));
 }
 
-// Define the correct path to sss directory
+// Define the correct paths
 $sss_path = __DIR__ . '/../sss/';
+$public_api_path = __DIR__ . '/api/';
 
 // Debug logging for development
 if (isset($_GET['debug'])) {
     error_log("Requested path: $path");
     error_log("SSS path: $sss_path");
+    error_log("Public API path: $public_api_path");
 }
 
 // Route to appropriate file
@@ -73,16 +75,23 @@ switch ($path) {
         if (strpos($path, 'api/') === 0) {
             // Handle API requests
             $api_path = str_replace('api/', '', $path);
-            $api_file = $sss_path . "api/$api_path.php";
+            
+            // First check if file exists in public/api directory
+            $public_api_file = $public_api_path . "$api_path.php";
+            $sss_api_file = $sss_path . "api/$api_path.php";
             
             if (isset($_GET['debug'])) {
                 error_log("API path: $api_path");
-                error_log("API file: $api_file");
-                error_log("File exists: " . (file_exists($api_file) ? 'yes' : 'no'));
+                error_log("Public API file: $public_api_file");
+                error_log("SSS API file: $sss_api_file");
+                error_log("Public file exists: " . (file_exists($public_api_file) ? 'yes' : 'no'));
+                error_log("SSS file exists: " . (file_exists($sss_api_file) ? 'yes' : 'no'));
             }
             
-            if (file_exists($api_file)) {
-                include_once $api_file;
+            if (file_exists($public_api_file)) {
+                include_once $public_api_file;
+            } elseif (file_exists($sss_api_file)) {
+                include_once $sss_api_file;
             } else {
                 http_response_code(404);
                 echo "API endpoint not found: $api_path";
