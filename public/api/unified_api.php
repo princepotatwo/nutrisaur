@@ -1053,6 +1053,12 @@ function generateTestData($pdo) {
         $barangays = ['Bangkal', 'Poblacion', 'San Antonio', 'San Isidro', 'San Jose', 'San Miguel', 'San Nicolas', 'San Pedro', 'Santa Ana', 'Santa Cruz', 'Santa Maria', 'Santo Niño', 'Santo Rosario', 'Tibag', 'Tugatog', 'Tumana', 'Vergara', 'Villa Concepcion', 'Villa Hermosa', 'Villa Rosario'];
         $municipalities = ['Makati', 'Manila', 'Quezon City', 'Caloocan', 'Pasig', 'Taguig', 'Valenzuela', 'Parañaque', 'Las Piñas', 'Muntinlupa'];
         $provinces = ['Metro Manila', 'Cavite', 'Laguna', 'Rizal', 'Batangas', 'Pampanga', 'Bulacan', 'Nueva Ecija', 'Tarlac', 'Zambales'];
+        $incomeLevels = ['low', 'medium', 'high'];
+        $swellings = ['yes', 'no'];
+        $weightLosses = ['yes', 'no'];
+        $feedingBehaviors = ['normal', 'poor', 'good'];
+        $allergies = ['None', 'Peanuts', 'Dairy', 'Eggs', 'Shellfish', 'Wheat', 'Soy'];
+        $dietPrefs = ['Regular', 'Vegetarian', 'Vegan', 'Low-sodium', 'Low-fat', 'Gluten-free'];
         
         $inserted = 0;
         for ($i = 1; $i <= 50; $i++) {
@@ -1084,13 +1090,21 @@ function generateTestData($pdo) {
             // Calculate BMI
             $bmi = round($weight_kg / (($height_cm / 100) * ($height_cm / 100)), 2);
             
-            // Generate risk score based on BMI and age
+            // Generate MUAC (Mid-Upper Arm Circumference) - realistic values
+            $muac = round(rand(80, 350) / 10, 1); // 8.0 to 35.0 cm
+            
+            // Generate WHZ score (Weight-for-Height Z-score) - realistic values
+            $whz_score = round(rand(-300, 200) / 100, 2); // -3.00 to 2.00
+            
+            // Generate risk score based on BMI, age, and other factors
             $risk_score = 0;
             if ($bmi < 18.5) $risk_score += 30; // Underweight
             if ($bmi > 25) $risk_score += 25; // Overweight
             if ($bmi > 30) $risk_score += 35; // Obese
             if ($age < 5) $risk_score += 20; // Young children
             if ($age > 65) $risk_score += 15; // Elderly
+            if ($muac < 11.5) $risk_score += 25; // Low MUAC
+            if ($whz_score < -2) $risk_score += 20; // Low WHZ
             
             // Cap risk score at 100
             $risk_score = min($risk_score, 100);
@@ -1105,19 +1119,34 @@ function generateTestData($pdo) {
             $created_at = date('Y-m-d H:i:s', strtotime('-' . rand(0, 180) . ' days'));
             $updated_at = date('Y-m-d H:i:s', strtotime('-' . rand(0, 30) . ' days'));
             
+            // Generate screening answers JSON
+            $screeningAnswers = [
+                'swelling' => $swellings[array_rand($swellings)],
+                'weight_loss' => $weightLosses[array_rand($weightLosses)],
+                'feeding_behavior' => $feedingBehaviors[array_rand($feedingBehaviors)],
+                'dietary_diversity' => rand(1, 8),
+                'physical_signs' => rand(0, 1) ? 'Thin appearance' : 'Normal',
+                'clinical_risk_factors' => rand(0, 1) ? 'Recent illness' : 'None'
+            ];
+            
             $sql = "INSERT INTO user_preferences (
-                user_email, age, gender, barangay, municipality, province, 
-                weight_kg, height_cm, bmi, risk_score, malnutrition_risk, 
-                screening_date, created_at, updated_at
+                user_email, name, age, gender, barangay, municipality, province, 
+                weight_kg, height_cm, bmi, muac, whz_score, risk_score, malnutrition_risk,
+                income_level, swelling, weight_loss, feeding_behavior, dietary_diversity,
+                physical_signs, clinical_risk_factors, screening_answers, allergies,
+                diet_prefs, avoid_foods, screening_date, created_at, updated_at
             ) VALUES (
-                :user_email, :age, :gender, :barangay, :municipality, :province,
-                :weight_kg, :height_cm, :bmi, :risk_score, :malnutrition_risk,
-                :screening_date, :created_at, :updated_at
+                :user_email, :name, :age, :gender, :barangay, :municipality, :province,
+                :weight_kg, :height_cm, :bmi, :muac, :whz_score, :risk_score, :malnutrition_risk,
+                :income_level, :swelling, :weight_loss, :feeding_behavior, :dietary_diversity,
+                :physical_signs, :clinical_risk_factors, :screening_answers, :allergies,
+                :diet_prefs, :avoid_foods, :screening_date, :created_at, :updated_at
             )";
             
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':user_email' => strtolower($firstName . $lastName . $i . '@test.com'),
+                ':name' => $firstName . ' ' . $lastName,
                 ':age' => $age,
                 ':gender' => rand(0, 1) ? 'male' : 'female',
                 ':barangay' => $barangay,
@@ -1126,8 +1155,21 @@ function generateTestData($pdo) {
                 ':weight_kg' => $weight_kg,
                 ':height_cm' => $height_cm,
                 ':bmi' => $bmi,
+                ':muac' => $muac,
+                ':whz_score' => $whz_score,
                 ':risk_score' => $risk_score,
                 ':malnutrition_risk' => $malnutrition_risk,
+                ':income_level' => $incomeLevels[array_rand($incomeLevels)],
+                ':swelling' => $swellings[array_rand($swellings)],
+                ':weight_loss' => $weightLosses[array_rand($weightLosses)],
+                ':feeding_behavior' => $feedingBehaviors[array_rand($feedingBehaviors)],
+                ':dietary_diversity' => rand(1, 8),
+                ':physical_signs' => rand(0, 1) ? 'Thin appearance' : 'Normal',
+                ':clinical_risk_factors' => rand(0, 1) ? 'Recent illness' : 'None',
+                ':screening_answers' => json_encode($screeningAnswers),
+                ':allergies' => $allergies[array_rand($allergies)],
+                ':diet_prefs' => $dietPrefs[array_rand($dietPrefs)],
+                ':avoid_foods' => rand(0, 1) ? 'Spicy foods' : 'None',
                 ':screening_date' => date('Y-m-d', strtotime('-' . rand(0, 180) . ' days')),
                 ':created_at' => $created_at,
                 ':updated_at' => $updated_at
@@ -1138,7 +1180,7 @@ function generateTestData($pdo) {
         
         echo json_encode([
             'success' => true,
-            'message' => "Successfully generated $inserted test users",
+            'message' => "Successfully generated $inserted test users with comprehensive data",
             'users_created' => $inserted
         ]);
         
