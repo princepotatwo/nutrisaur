@@ -373,31 +373,54 @@ function getDetailedScreeningResponses($pdo) {
 function getAIFoodRecommendations($pdo) {
     try {
         $barangay = $_GET['barangay'] ?? '';
+        $municipality = $_GET['municipality'] ?? '';
         
-        // Generate sample AI food recommendations
-        $recommendations = [
-            [
-                'id' => 1,
-                'title' => 'High Protein Diet Plan',
-                'description' => 'Customized meal plan for malnutrition recovery',
-                'foods' => ['Lean meat', 'Fish', 'Eggs', 'Legumes'],
-                'target_risk' => 'High'
-            ],
-            [
-                'id' => 2,
-                'title' => 'Vitamin-Rich Foods',
-                'description' => 'Focus on essential vitamins and minerals',
-                'foods' => ['Dark leafy greens', 'Citrus fruits', 'Nuts', 'Seeds'],
-                'target_risk' => 'Moderate'
-            ],
-            [
-                'id' => 3,
-                'title' => 'Balanced Nutrition',
-                'description' => 'Well-rounded diet for overall health',
-                'foods' => ['Whole grains', 'Vegetables', 'Fruits', 'Dairy'],
-                'target_risk' => 'Low'
-            ]
-        ];
+        // Build query based on location filter
+        $whereClause = "WHERE 1=1";
+        $params = [];
+        
+        if (!empty($barangay)) {
+            $whereClause .= " AND up.barangay = :barangay";
+            $params[':barangay'] = $barangay;
+        }
+        
+        if (!empty($municipality)) {
+            $whereClause .= " AND up.municipality = :municipality";
+            $params[':municipality'] = $municipality;
+        }
+        
+        // Get community health data using correct column names
+        $query = "
+            SELECT 
+                up.id,
+                up.age,
+                up.gender,
+                up.risk_score,
+                up.whz_score,
+                up.muac,
+                up.barangay,
+                up.dietary_diversity_score,
+                up.swelling,
+                up.weight_loss,
+                up.feeding_behavior,
+                up.created_at
+            FROM user_preferences up
+            $whereClause
+            ORDER BY up.risk_score DESC, up.created_at DESC
+            LIMIT 50
+        ";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($params);
+        $users = $stmt->fetchAll();
+        
+        if (empty($users)) {
+            // Return sample data for demonstration
+            $recommendations = generateSampleRecommendations();
+        } else {
+            // Generate intelligent recommendations based on real data
+            $recommendations = generateIntelligentRecommendations($users);
+        }
         
         echo json_encode([
             'success' => true,
@@ -406,8 +429,133 @@ function getAIFoodRecommendations($pdo) {
         
     } catch (Exception $e) {
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Error generating recommendations',
+            'error' => $e->getMessage()
+        ]);
     }
+}
+
+function generateIntelligentRecommendations($users) {
+    $recommendations = [];
+    
+    // Analyze community health patterns
+    $highRiskCount = 0;
+    $samCount = 0;
+    $childrenCount = 0;
+    $elderlyCount = 0;
+    $lowDietaryDiversity = 0;
+    $totalRiskScore = 0;
+    
+    foreach ($users as $user) {
+        if ($user['risk_score'] >= 50) $highRiskCount++;
+        if ($user['whz_score'] < -3 && $user['whz_score'] !== null) $samCount++;
+        if ($user['age'] < 18 && $user['age'] > 0) $childrenCount++;
+        if ($user['age'] > 65) $elderlyCount++;
+        if ($user['dietary_diversity_score'] < 5 && $user['dietary_diversity_score'] > 0) $lowDietaryDiversity++;
+        $totalRiskScore += $user['risk_score'] ?? 0;
+    }
+    
+    $totalUsers = count($users);
+    $avgRiskScore = $totalUsers > 0 ? round($totalRiskScore / $totalUsers) : 0;
+    
+    // Generate recommendations based on analysis
+    if ($samCount > 0) {
+        $recommendations[] = [
+            'food_emoji' => '🥛',
+            'food_name' => 'Therapeutic Milk Formula',
+            'food_description' => 'High-energy therapeutic milk for severe acute malnutrition cases (WHZ < -3)',
+            'nutritional_priority' => 'Critical',
+            'nutritional_impact_score' => 95,
+            'ingredients' => 'Fortified milk powder, vegetable oil, sugar, vitamins, minerals',
+            'benefits' => 'High energy density, complete protein, essential vitamins and minerals',
+            'ai_reasoning' => "Critical intervention for {$samCount} SAM cases (WHZ < -3). Therapeutic milk provides concentrated nutrition for rapid recovery."
+        ];
+    }
+    
+    if ($highRiskCount > 0) {
+        $recommendations[] = [
+            'food_emoji' => '🥚',
+            'food_name' => 'High-Protein Nutritional Supplement',
+            'food_description' => 'Protein-rich supplement for high-risk individuals (risk score ≥ 50)',
+            'nutritional_priority' => 'High',
+            'nutritional_impact_score' => 85,
+            'ingredients' => 'Whey protein, casein protein, essential amino acids, vitamins B12, D, iron',
+            'benefits' => 'Muscle building, immune support, energy boost, weight management',
+            'ai_reasoning' => "Targeted intervention for {$highRiskCount} high-risk individuals (avg risk score: {$avgRiskScore}). High-protein supplements address malnutrition and support recovery."
+        ];
+    }
+    
+    if ($lowDietaryDiversity > 0) {
+        $recommendations[] = [
+            'food_emoji' => '🥗',
+            'food_name' => 'Diverse Food Group Program',
+            'food_description' => 'Program to increase dietary diversity (currently < 5 food groups)',
+            'nutritional_priority' => 'Medium',
+            'nutritional_impact_score' => 75,
+            'ingredients' => 'Mixed vegetables, fruits, grains, proteins, dairy alternatives',
+            'benefits' => 'Improved nutrient intake, better health outcomes, reduced malnutrition risk',
+            'ai_reasoning' => "Addressing low dietary diversity in {$lowDietaryDiversity} individuals. Diverse food groups ensure comprehensive nutrition and prevent deficiencies."
+        ];
+    }
+    
+    if ($childrenCount > 0) {
+        $recommendations[] = [
+            'food_emoji' => '🍎',
+            'food_name' => 'Child Nutrition Program',
+            'food_description' => 'Age-appropriate nutrition for children under 18',
+            'nutritional_priority' => 'High',
+            'nutritional_impact_score' => 80,
+            'ingredients' => 'Fortified cereals, fruits, vegetables, lean proteins, dairy',
+            'benefits' => 'Growth support, cognitive development, immune system strengthening',
+            'ai_reasoning' => "Specialized nutrition for {$childrenCount} children. Early intervention prevents stunting and supports healthy development."
+        ];
+    }
+    
+    if ($elderlyCount > 0) {
+        $recommendations[] = [
+            'food_emoji' => '🥛',
+            'food_name' => 'Senior Nutrition Support',
+            'food_description' => 'Nutritional support for elderly individuals (65+)',
+            'nutritional_priority' => 'Medium',
+            'nutritional_impact_score' => 70,
+            'ingredients' => 'Calcium-rich foods, vitamin D, omega-3, fiber, antioxidants',
+            'benefits' => 'Bone health, cognitive function, immune support, digestive health',
+            'ai_reasoning' => "Targeted nutrition for {$elderlyCount} elderly individuals. Addresses age-related nutritional needs and health maintenance."
+        ];
+    }
+    
+    // Default recommendation if no specific cases found
+    if (empty($recommendations)) {
+        $recommendations[] = [
+            'food_emoji' => '🥗',
+            'food_name' => 'Community Wellness Program',
+            'food_description' => 'General nutrition improvement for community health',
+            'nutritional_priority' => 'Medium',
+            'nutritional_impact_score' => 65,
+            'ingredients' => 'Balanced meals, local produce, fortified foods, clean water',
+            'benefits' => 'Overall health improvement, disease prevention, community resilience',
+            'ai_reasoning' => "General wellness program for {$totalUsers} community members. Promotes overall health and prevents malnutrition."
+        ];
+    }
+    
+    return $recommendations;
+}
+
+function generateSampleRecommendations() {
+    return [
+        [
+            'food_emoji' => '🥛',
+            'food_name' => 'Sample Therapeutic Milk',
+            'food_description' => 'Sample high-energy therapeutic milk for demonstration',
+            'nutritional_priority' => 'Critical',
+            'nutritional_impact_score' => 90,
+            'ingredients' => 'Fortified milk powder, vegetable oil, sugar, vitamins, minerals',
+            'benefits' => 'High energy density, complete protein, essential vitamins and minerals',
+            'ai_reasoning' => 'Sample recommendation for demonstration purposes.'
+        ]
+    ];
 }
 
 function getAnalysisData($pdo) {
