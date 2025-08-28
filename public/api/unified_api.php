@@ -483,29 +483,26 @@ function getAIFoodRecommendations($pdo) {
         $params = [];
         
         if (!empty($barangay)) {
-            $whereClause .= " AND up.barangay = :barangay";
-            $params[':barangay'] = $barangay;
+            if (strpos($barangay, 'MUNICIPALITY_') === 0) {
+                $municipality = str_replace('MUNICIPALITY_', '', $barangay);
+                $whereClause .= " AND up.barangay LIKE :municipality";
+                $params[':municipality'] = "%$municipality%";
+            } else {
+                $whereClause .= " AND up.barangay = :barangay";
+                $params[':barangay'] = $barangay;
+            }
         }
         
-        if (!empty($municipality)) {
-            $whereClause .= " AND up.municipality = :municipality";
-            $params[':municipality'] = $municipality;
-        }
-        
-        // Get community health data using correct column names
+        // Get community health data using only existing columns
         $query = "
             SELECT 
                 up.id,
                 up.age,
                 up.gender,
                 up.risk_score,
-                up.whz_score,
-                up.muac,
+                up.bmi,
                 up.barangay,
-                up.dietary_diversity_score,
-                up.swelling,
-                up.weight_loss,
-                up.feeding_behavior,
+                up.malnutrition_risk,
                 up.created_at
             FROM user_preferences up
             $whereClause
@@ -531,6 +528,7 @@ function getAIFoodRecommendations($pdo) {
         ]);
         
     } catch (Exception $e) {
+        error_log("Error in getAIFoodRecommendations: " . $e->getMessage());
         http_response_code(500);
         echo json_encode([
             'success' => false, 
@@ -543,20 +541,18 @@ function getAIFoodRecommendations($pdo) {
 function generateIntelligentRecommendations($users) {
     $recommendations = [];
     
-    // Analyze community health patterns
+    // Analyze community health patterns using existing columns
     $highRiskCount = 0;
-    $samCount = 0;
+    $underweightCount = 0;
     $childrenCount = 0;
     $elderlyCount = 0;
-    $lowDietaryDiversity = 0;
     $totalRiskScore = 0;
     
     foreach ($users as $user) {
         if ($user['risk_score'] >= 50) $highRiskCount++;
-        if ($user['whz_score'] < -3 && $user['whz_score'] !== null) $samCount++;
+        if ($user['bmi'] < 18.5 && $user['bmi'] > 0) $underweightCount++; // Using BMI < 18.5 as underweight indicator
         if ($user['age'] < 18 && $user['age'] > 0) $childrenCount++;
         if ($user['age'] > 65) $elderlyCount++;
-        if ($user['dietary_diversity_score'] < 5 && $user['dietary_diversity_score'] > 0) $lowDietaryDiversity++;
         $totalRiskScore += $user['risk_score'] ?? 0;
     }
     
@@ -564,16 +560,16 @@ function generateIntelligentRecommendations($users) {
     $avgRiskScore = $totalUsers > 0 ? round($totalRiskScore / $totalUsers) : 0;
     
     // Generate recommendations based on analysis
-    if ($samCount > 0) {
+    if ($underweightCount > 0) {
         $recommendations[] = [
             'food_emoji' => '🥛',
-            'food_name' => 'Therapeutic Milk Formula',
-            'food_description' => 'High-energy therapeutic milk for severe acute malnutrition cases (WHZ < -3)',
+            'food_name' => 'High-Energy Nutritional Supplement',
+            'food_description' => 'High-energy supplement for underweight individuals (BMI < 18.5)',
             'nutritional_priority' => 'Critical',
-            'nutritional_impact_score' => 95,
+            'nutritional_impact_score' => 90,
             'ingredients' => 'Fortified milk powder, vegetable oil, sugar, vitamins, minerals',
             'benefits' => 'High energy density, complete protein, essential vitamins and minerals',
-            'ai_reasoning' => "Critical intervention for {$samCount} SAM cases (WHZ < -3). Therapeutic milk provides concentrated nutrition for rapid recovery."
+            'ai_reasoning' => "Critical intervention for {$underweightCount} underweight individuals (BMI < 18.5). High-energy supplements provide concentrated nutrition for weight gain and recovery."
         ];
     }
     
@@ -587,19 +583,6 @@ function generateIntelligentRecommendations($users) {
             'ingredients' => 'Whey protein, casein protein, essential amino acids, vitamins B12, D, iron',
             'benefits' => 'Muscle building, immune support, energy boost, weight management',
             'ai_reasoning' => "Targeted intervention for {$highRiskCount} high-risk individuals (avg risk score: {$avgRiskScore}). High-protein supplements address malnutrition and support recovery."
-        ];
-    }
-    
-    if ($lowDietaryDiversity > 0) {
-        $recommendations[] = [
-            'food_emoji' => '🥗',
-            'food_name' => 'Diverse Food Group Program',
-            'food_description' => 'Program to increase dietary diversity (currently < 5 food groups)',
-            'nutritional_priority' => 'Medium',
-            'nutritional_impact_score' => 75,
-            'ingredients' => 'Mixed vegetables, fruits, grains, proteins, dairy alternatives',
-            'benefits' => 'Improved nutrient intake, better health outcomes, reduced malnutrition risk',
-            'ai_reasoning' => "Addressing low dietary diversity in {$lowDietaryDiversity} individuals. Diverse food groups ensure comprehensive nutrition and prevent deficiencies."
         ];
     }
     
