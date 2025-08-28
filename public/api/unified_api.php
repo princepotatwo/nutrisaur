@@ -1040,76 +1040,111 @@ function getClinicalRiskFactorsDistribution($pdo) {
 
 function generateTestData($pdo) {
     try {
-        // This function will generate test data for the user_preferences table
-        // It will insert a large number of dummy records to simulate real data
-        // For demonstration, we'll insert 10000 dummy records
-        $numRecords = 10000;
-        $barangays = ['Barangay A', 'Barangay B', 'Barangay C', 'MUNICIPALITY_City X', 'MUNICIPALITY_City Y'];
-        $genders = ['Male', 'Female'];
-        $incomeLevels = ['Low', 'Medium', 'High'];
-        $malnutritionRisks = ['Yes', 'No'];
-        $swellings = ['Yes', 'No'];
-        $weightLosses = ['Yes', 'No'];
-        $feedingBehaviors = ['Normal', 'Poor', 'Good'];
-        $physicalSigns = ['Yes', 'No'];
-        $dietaryDiversities = ['Yes', 'No'];
-        $clinicalRiskFactors = ['Yes', 'No'];
-
-        $sql = "INSERT INTO user_preferences (
-            user_email, age, gender, risk_score, bmi, barangay, malnutrition_risk,
-            income_level, swelling, weight_loss, feeding_behavior, physical_signs,
-            dietary_diversity, clinical_risk_factors, created_at
-        ) VALUES (
-            CONCAT('test_user_', LPAD(FLOOR(RAND() * 1000), 4, '0')),
-            FLOOR(RAND() * 70) + 1, -- Age between 1 and 70
-            :gender,
-            FLOOR(RAND() * 100), -- Risk score between 0 and 100
-            ROUND(RAND() * 40 + 10, 1), -- BMI between 10 and 50
-            :barangay,
-            :malnutritionRisk,
-            :incomeLevel,
-            :swelling,
-            :weightLoss,
-            :feedingBehavior,
-            :physicalSigns,
-            :dietaryDiversity,
-            :clinicalRiskFactors,
-            NOW()
-        )";
-
-        $stmt = $pdo->prepare($sql);
-
-        for ($i = 0; $i < $numRecords; $i++) {
-            $gender = $genders[array_rand($genders)];
+        // Clear existing test data first
+        $pdo->exec("DELETE FROM user_preferences WHERE user_email LIKE '%@test.com'");
+        
+        // Sample data arrays
+        $firstNames = ['Anna', 'John', 'Maria', 'Carlos', 'Sarah', 'Michael', 'Isabella', 'David', 'Emma', 'James', 'Sophia', 'Robert', 'Olivia', 'William', 'Ava', 'Christopher', 'Mia', 'Daniel', 'Charlotte', 'Matthew', 'Amelia', 'Andrew', 'Harper', 'Joshua', 'Evelyn', 'Ryan', 'Abigail', 'Nathan', 'Emily', 'Tyler', 'Elizabeth', 'Alexander', 'Sofia', 'Henry', 'Avery', 'Sebastian', 'Ella', 'Jack', 'Madison', 'Owen', 'Scarlett', 'Samuel', 'Victoria', 'Dylan', 'Luna', 'Nathaniel', 'Grace', 'Isaac', 'Chloe', 'Kyle', 'Penelope'];
+        $lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson', 'Walker', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores', 'Green', 'Adams', 'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts'];
+        $barangays = ['Bangkal', 'Poblacion', 'San Antonio', 'San Isidro', 'San Jose', 'San Miguel', 'San Nicolas', 'San Pedro', 'Santa Ana', 'Santa Cruz', 'Santa Maria', 'Santo Niño', 'Santo Rosario', 'Tibag', 'Tugatog', 'Tumana', 'Vergara', 'Villa Concepcion', 'Villa Hermosa', 'Villa Rosario'];
+        $municipalities = ['Makati', 'Manila', 'Quezon City', 'Caloocan', 'Pasig', 'Taguig', 'Valenzuela', 'Parañaque', 'Las Piñas', 'Muntinlupa'];
+        $provinces = ['Metro Manila', 'Cavite', 'Laguna', 'Rizal', 'Batangas', 'Pampanga', 'Bulacan', 'Nueva Ecija', 'Tarlac', 'Zambales'];
+        
+        $inserted = 0;
+        for ($i = 1; $i <= 50; $i++) {
+            $firstName = $firstNames[array_rand($firstNames)];
+            $lastName = $lastNames[array_rand($lastNames)];
             $barangay = $barangays[array_rand($barangays)];
-            $malnutritionRisk = $malnutritionRisks[array_rand($malnutritionRisks)];
-            $incomeLevel = $incomeLevels[array_rand($incomeLevels)];
-            $swelling = $swellings[array_rand($swellings)];
-            $weightLoss = $weightLosses[array_rand($weightLosses)];
-            $feedingBehavior = $feedingBehaviors[array_rand($feedingBehaviors)];
-            $physicalSigns = $physicalSigns[array_rand($physicalSigns)];
-            $dietaryDiversity = $dietaryDiversities[array_rand($dietaryDiversities)];
-            $clinicalRiskFactors = $clinicalRiskFactors[array_rand($clinicalRiskFactors)];
-
+            $municipality = $municipalities[array_rand($municipalities)];
+            $province = $provinces[array_rand($provinces)];
+            
+            // Generate realistic age (1-85 years)
+            $age = rand(1, 85);
+            
+            // Generate realistic height (50cm for babies to 200cm for adults)
+            if ($age < 18) {
+                $height_cm = rand(50, 180);
+            } else {
+                $height_cm = rand(140, 200);
+            }
+            
+            // Generate realistic weight based on age and height
+            if ($age < 18) {
+                $weight_kg = rand(3, 80);
+            } else {
+                // Adult weight based on height
+                $bmi = rand(18, 35);
+                $weight_kg = round(($height_cm / 100) * ($height_cm / 100) * $bmi, 2);
+            }
+            
+            // Calculate BMI
+            $bmi = round($weight_kg / (($height_cm / 100) * ($height_cm / 100)), 2);
+            
+            // Generate risk score based on BMI and age
+            $risk_score = 0;
+            if ($bmi < 18.5) $risk_score += 30; // Underweight
+            if ($bmi > 25) $risk_score += 25; // Overweight
+            if ($bmi > 30) $risk_score += 35; // Obese
+            if ($age < 5) $risk_score += 20; // Young children
+            if ($age > 65) $risk_score += 15; // Elderly
+            
+            // Cap risk score at 100
+            $risk_score = min($risk_score, 100);
+            
+            // Determine malnutrition risk based on risk score
+            if ($risk_score >= 80) $malnutrition_risk = 'critical';
+            elseif ($risk_score >= 60) $malnutrition_risk = 'high';
+            elseif ($risk_score >= 40) $malnutrition_risk = 'moderate';
+            else $malnutrition_risk = 'low';
+            
+            // Generate random dates within last 6 months
+            $created_at = date('Y-m-d H:i:s', strtotime('-' . rand(0, 180) . ' days'));
+            $updated_at = date('Y-m-d H:i:s', strtotime('-' . rand(0, 30) . ' days'));
+            
+            $sql = "INSERT INTO user_preferences (
+                user_email, age, gender, barangay, municipality, province, 
+                weight_kg, height_cm, bmi, risk_score, malnutrition_risk, 
+                screening_date, created_at, updated_at
+            ) VALUES (
+                :user_email, :age, :gender, :barangay, :municipality, :province,
+                :weight_kg, :height_cm, :bmi, :risk_score, :malnutrition_risk,
+                :screening_date, :created_at, :updated_at
+            )";
+            
+            $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                ':gender' => $gender,
+                ':user_email' => strtolower($firstName . $lastName . $i . '@test.com'),
+                ':age' => $age,
+                ':gender' => rand(0, 1) ? 'male' : 'female',
                 ':barangay' => $barangay,
-                ':malnutritionRisk' => $malnutritionRisk,
-                ':incomeLevel' => $incomeLevel,
-                ':swelling' => $swelling,
-                ':weightLoss' => $weightLoss,
-                ':feedingBehavior' => $feedingBehavior,
-                ':physicalSigns' => $physicalSigns,
-                ':dietaryDiversity' => $dietaryDiversity,
-                ':clinicalRiskFactors' => $clinicalRiskFactors
+                ':municipality' => $municipality,
+                ':province' => $province,
+                ':weight_kg' => $weight_kg,
+                ':height_cm' => $height_cm,
+                ':bmi' => $bmi,
+                ':risk_score' => $risk_score,
+                ':malnutrition_risk' => $malnutrition_risk,
+                ':screening_date' => date('Y-m-d', strtotime('-' . rand(0, 180) . ' days')),
+                ':created_at' => $created_at,
+                ':updated_at' => $updated_at
             ]);
+            
+            $inserted++;
         }
-
-        echo json_encode(['success' => true, 'message' => 'Generated ' . $numRecords . ' test data records.']);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => "Successfully generated $inserted test users",
+            'users_created' => $inserted
+        ]);
+        
     } catch (Exception $e) {
         error_log("Error generating test data: " . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Error generating test data: ' . $e->getMessage()]);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Error generating test data: ' . $e->getMessage()
+        ]);
     }
 }
 ?>
