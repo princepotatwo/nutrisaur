@@ -3139,14 +3139,64 @@ header .user-info {
 .geo-chart-container {
     padding: 15px;
     height: 280px;
+    max-height: 280px;
     overflow-y: auto;
+    overflow-x: hidden;
     flex: 1;
+    position: relative;
+    border-radius: 8px;
+    background: var(--color-card);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.geo-chart-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.geo-chart-container::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+    border-radius: 3px;
+}
+
+.geo-chart-container::-webkit-scrollbar-thumb {
+    background: var(--color-highlight);
+    border-radius: 3px;
+}
+
+.geo-chart-container::-webkit-scrollbar-thumb:hover {
+    background: var(--color-accent2);
+}
+
+/* Specific styles for Geographic Distribution chart card */
+.geo-distribution-card {
+    height: auto;
+    min-height: 400px;
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.geo-distribution-card h3 {
+    margin-bottom: 15px;
+    flex-shrink: 0;
+}
+
+.geo-distribution-card .chart-description {
+    margin-bottom: 15px;
+    flex-shrink: 0;
+}
+
+.geo-distribution-card .geo-chart-container {
+    flex: 1;
+    min-height: 0;
 }
 
 .geo-bars {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    height: 100%;
+    overflow: hidden;
 }
 
 .geo-bar-item {
@@ -3159,6 +3209,9 @@ header .user-info {
     border-left: 3px solid var(--color-highlight);
     transition: all 0.3s ease;
     cursor: pointer;
+    min-height: 32px;
+    max-height: 32px;
+    flex-shrink: 0;
 }
 
 .geo-bar-item:hover {
@@ -6014,7 +6067,7 @@ body {
 
 
         <div class="chart-row">
-            <div class="chart-card">
+            <div class="chart-card geo-distribution-card">
                 <h3>Geographic Distribution</h3>
                 <p class="chart-description">User distribution by barangay showing percentage of total users. Red indicators show SAM cases per barangay.</p>
                 <div class="geo-chart-container">
