@@ -231,7 +231,7 @@ switch ($endpoint) {
         break;
         
     case 'add_user':
-        handleAddUserNew($pdo);
+        handleAddUser($pdo);
         break;
         
     case 'update_user':
@@ -1928,6 +1928,7 @@ function handleAddUser($pdo) {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
         error_log("handleAddUser SQL: " . $sql);
+        error_log("handleAddUser SQL placeholders count: " . substr_count($sql, '?'));
         
         $stmt = $pdo->prepare($sql);
         
@@ -1962,6 +1963,11 @@ function handleAddUser($pdo) {
         // Debug: Log the values we're about to bind
         error_log("handleAddUser values count: " . count($values));
         error_log("handleAddUser values: " . json_encode($values));
+        
+        // Verify parameter count matches
+        if (count($values) !== substr_count($sql, '?')) {
+            throw new Exception("Parameter count mismatch: " . count($values) . " values vs " . substr_count($sql, '?') . " placeholders");
+        }
         
         $stmt->execute($values);
         
