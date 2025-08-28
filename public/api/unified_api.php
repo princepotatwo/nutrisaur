@@ -1914,9 +1914,8 @@ function handleAddUser($pdo) {
                 weight_kg, height_cm, bmi, birthday, income, muac,
                 swelling, weight_loss, feeding_behavior, physical_signs,
                 dietary_diversity, clinical_risk_factors, allergies, diet_prefs,
-                avoid_foods, risk_score, malnutrition_risk, screening_date,
-                created_at, updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+                avoid_foods, risk_score, malnutrition_risk, screening_date
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         
         $stmt->execute([
