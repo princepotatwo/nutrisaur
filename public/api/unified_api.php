@@ -1620,36 +1620,131 @@ function handleSaveScreening($pdo, $data) {
             return;
         }
         
+        // Parse screening data to extract individual fields
+        $screeningFields = [];
+        if ($screeningData) {
+            try {
+                $screeningFields = json_decode($screeningData, true) ?: [];
+            } catch (Exception $e) {
+                $screeningFields = [];
+            }
+        }
+        
         // Check if user exists in user_preferences
         $stmt = $pdo->prepare("SELECT id FROM user_preferences WHERE user_email = ?");
         $stmt->execute([$userEmail]);
         $existingUser = $stmt->fetch();
         
         if ($existingUser) {
-            // Update existing user
+            // Update existing user with individual columns + screening_answers
             $stmt = $pdo->prepare("
                 UPDATE user_preferences SET 
+                    name = ?,
+                    age = ?,
+                    gender = ?,
+                    barangay = ?,
+                    municipality = ?,
+                    province = ?,
+                    weight_kg = ?,
+                    height_cm = ?,
+                    bmi = ?,
+                    birthday = ?,
+                    income = ?,
+                    muac = ?,
+                    swelling = ?,
+                    weight_loss = ?,
+                    feeding_behavior = ?,
+                    physical_signs = ?,
+                    dietary_diversity = ?,
+                    clinical_risk_factors = ?,
+                    allergies = ?,
+                    diet_prefs = ?,
+                    avoid_foods = ?,
                     screening_answers = ?,
                     risk_score = ?,
+                    malnutrition_risk = ?,
+                    screening_date = ?,
                     updated_at = NOW()
                 WHERE user_email = ?
             ");
-            $stmt->execute([$screeningData, $riskScore, $userEmail]);
+            
+            $stmt->execute([
+                $screeningFields['name'] ?? null,
+                $screeningFields['age'] ?? null,
+                $screeningFields['gender'] ?? null,
+                $screeningFields['barangay'] ?? null,
+                $screeningFields['municipality'] ?? null,
+                $screeningFields['province'] ?? null,
+                $screeningFields['weight'] ?? null,
+                $screeningFields['height'] ?? null,
+                $screeningFields['bmi'] ?? null,
+                $screeningFields['birthday'] ?? null,
+                $screeningFields['income'] ?? null,
+                $screeningFields['muac'] ?? null,
+                $screeningFields['swelling'] ?? null,
+                $screeningFields['weight_loss'] ?? null,
+                $screeningFields['feeding_behavior'] ?? null,
+                $screeningFields['physical_signs'] ?? null,
+                $screeningFields['dietary_diversity'] ?? null,
+                $screeningFields['clinical_risk_factors'] ?? null,
+                $screeningFields['allergies'] ?? null,
+                $screeningFields['diet_prefs'] ?? null,
+                $screeningFields['avoid_foods'] ?? null,
+                $screeningData, // Keep original JSON for backward compatibility
+                $riskScore,
+                $screeningFields['malnutrition_risk'] ?? null,
+                $screeningFields['screening_date'] ?? date('Y-m-d'),
+                $userEmail
+            ]);
         } else {
-            // Create new user record
+            // Create new user record with all columns
             $stmt = $pdo->prepare("
                 INSERT INTO user_preferences (
-                    user_email, screening_answers, risk_score, created_at, updated_at
-                ) VALUES (?, ?, ?, NOW(), NOW())
+                    user_email, name, age, gender, barangay, municipality, province,
+                    weight_kg, height_cm, bmi, birthday, income, muac,
+                    swelling, weight_loss, feeding_behavior, physical_signs,
+                    dietary_diversity, clinical_risk_factors, allergies, diet_prefs,
+                    avoid_foods, screening_answers, risk_score, malnutrition_risk,
+                    screening_date, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
             ");
-            $stmt->execute([$userEmail, $screeningData, $riskScore]);
+            
+            $stmt->execute([
+                $userEmail,
+                $screeningFields['name'] ?? null,
+                $screeningFields['age'] ?? null,
+                $screeningFields['gender'] ?? null,
+                $screeningFields['barangay'] ?? null,
+                $screeningFields['municipality'] ?? null,
+                $screeningFields['province'] ?? null,
+                $screeningFields['weight'] ?? null,
+                $screeningFields['height'] ?? null,
+                $screeningFields['bmi'] ?? null,
+                $screeningFields['birthday'] ?? null,
+                $screeningFields['income'] ?? null,
+                $screeningFields['muac'] ?? null,
+                $screeningFields['swelling'] ?? null,
+                $screeningFields['weight_loss'] ?? null,
+                $screeningFields['feeding_behavior'] ?? null,
+                $screeningFields['physical_signs'] ?? null,
+                $screeningFields['dietary_diversity'] ?? null,
+                $screeningFields['clinical_risk_factors'] ?? null,
+                $screeningFields['allergies'] ?? null,
+                $screeningFields['diet_prefs'] ?? null,
+                $screeningFields['avoid_foods'] ?? null,
+                $screeningData, // Keep original JSON for backward compatibility
+                $riskScore,
+                $screeningFields['malnutrition_risk'] ?? null,
+                $screeningFields['screening_date'] ?? date('Y-m-d')
+            ]);
         }
         
         echo json_encode([
             'success' => true,
-            'message' => 'Screening data saved successfully',
+            'message' => 'Screening data saved successfully to user_preferences table',
             'user_email' => $userEmail,
-            'risk_score' => $riskScore
+            'risk_score' => $riskScore,
+            'saved_fields' => array_keys($screeningFields)
         ]);
         
     } catch (Exception $e) {
@@ -1676,14 +1771,29 @@ function handleGetScreeningData($pdo, $data) {
                 risk_score, 
                 created_at, 
                 updated_at,
+                name,
+                age,
                 gender,
                 barangay,
-                income,
+                municipality,
+                province,
                 weight_kg as weight,
                 height_cm as height,
                 bmi,
-                age,
-                malnutrition_risk
+                birthday,
+                income,
+                muac,
+                malnutrition_risk,
+                screening_date,
+                swelling,
+                weight_loss,
+                feeding_behavior,
+                physical_signs,
+                dietary_diversity,
+                clinical_risk_factors,
+                allergies,
+                diet_prefs,
+                avoid_foods
             FROM user_preferences 
             WHERE user_email = ?
         ");
@@ -1707,14 +1817,29 @@ function handleGetScreeningData($pdo, $data) {
                 'risk_score' => $screeningData['risk_score'],
                 'created_at' => $screeningData['created_at'],
                 'updated_at' => $screeningData['updated_at'],
+                'name' => $screeningData['name'],
+                'age' => $screeningData['age'],
                 'gender' => $screeningData['gender'],
                 'barangay' => $screeningData['barangay'],
-                'income' => $screeningData['income'],
+                'municipality' => $screeningData['municipality'],
+                'province' => $screeningData['province'],
                 'weight' => $screeningData['weight'],
                 'height' => $screeningData['height'],
                 'bmi' => $screeningData['bmi'],
-                'age' => $screeningData['age'],
-                'malnutrition_risk' => $screeningData['malnutrition_risk']
+                'birthday' => $screeningData['birthday'],
+                'income' => $screeningData['income'],
+                'muac' => $screeningData['muac'],
+                'malnutrition_risk' => $screeningData['malnutrition_risk'],
+                'screening_date' => $screeningData['screening_date'],
+                'swelling' => $screeningData['swelling'],
+                'weight_loss' => $screeningData['weight_loss'],
+                'feeding_behavior' => $screeningData['feeding_behavior'],
+                'physical_signs' => $screeningData['physical_signs'],
+                'dietary_diversity' => $screeningData['dietary_diversity'],
+                'clinical_risk_factors' => $screeningData['clinical_risk_factors'],
+                'allergies' => $screeningData['allergies'],
+                'diet_prefs' => $screeningData['diet_prefs'],
+                'avoid_foods' => $screeningData['avoid_foods']
             ]);
             
             echo json_encode([
