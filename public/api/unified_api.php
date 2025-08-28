@@ -186,6 +186,10 @@ switch ($endpoint) {
         generateTestData($pdo);
         break;
         
+    case 'add_missing_columns':
+        addMissingColumns($pdo);
+        break;
+        
     default:
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
@@ -1144,6 +1148,72 @@ function generateTestData($pdo) {
         echo json_encode([
             'success' => false, 
             'message' => 'Error generating test data: ' . $e->getMessage()
+        ]);
+    }
+}
+
+function addMissingColumns($pdo) {
+    try {
+        // List of columns to add based on local API requirements
+        $columnsToAdd = [
+            'name' => 'VARCHAR(255) NULL',
+            'birthday' => 'DATE NULL',
+            'income' => 'VARCHAR(100) NULL',
+            'muac' => 'DECIMAL(4,2) NULL',
+            'screening_answers' => 'TEXT NULL',
+            'allergies' => 'TEXT NULL',
+            'diet_prefs' => 'TEXT NULL',
+            'avoid_foods' => 'TEXT NULL',
+            'swelling' => 'ENUM("yes", "no") NULL',
+            'weight_loss' => 'ENUM("yes", "no") NULL',
+            'feeding_behavior' => 'ENUM("normal", "poor", "good") NULL',
+            'physical_signs' => 'TEXT NULL',
+            'dietary_diversity' => 'INT NULL',
+            'clinical_risk_factors' => 'TEXT NULL',
+            'whz_score' => 'DECIMAL(4,2) NULL',
+            'income_level' => 'ENUM("low", "medium", "high") NULL'
+        ];
+        
+        $addedColumns = [];
+        $existingColumns = [];
+        
+        // Check which columns already exist
+        $stmt = $pdo->query("SHOW COLUMNS FROM user_preferences");
+        $existingColumnsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $existingColumnNames = array_column($existingColumnsData, 'Field');
+        
+        foreach ($columnsToAdd as $columnName => $columnDefinition) {
+            if (!in_array($columnName, $existingColumnNames)) {
+                try {
+                    $sql = "ALTER TABLE user_preferences ADD COLUMN $columnName $columnDefinition";
+                    $pdo->exec($sql);
+                    $addedColumns[] = $columnName;
+                } catch (Exception $e) {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => "Error adding column $columnName: " . $e->getMessage()
+                    ]);
+                    exit;
+                }
+            } else {
+                $existingColumns[] = $columnName;
+            }
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Database schema updated successfully',
+            'added_columns' => $addedColumns,
+            'existing_columns' => $existingColumns,
+            'total_columns_added' => count($addedColumns)
+        ]);
+        
+    } catch (Exception $e) {
+        error_log("Error adding missing columns: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Error updating database schema: ' . $e->getMessage()
         ]);
     }
 }
