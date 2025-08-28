@@ -138,31 +138,105 @@ switch ($endpoint) {
 
 function getCommunityMetrics($pdo) {
     try {
-        // Get basic counts
-        $stmt = $pdo->query("SELECT COUNT(*) as total_users FROM users");
-        $totalUsers = $stmt->fetch()['total_users'];
+        $barangay = $_GET['barangay'] ?? '';
         
-        $stmt = $pdo->query("SELECT COUNT(*) as total_screenings FROM user_preferences");
+        // Build WHERE clause for barangay filtering
+        $whereClause = "";
+        $params = [];
+        
+        if (!empty($barangay)) {
+            if (strpos($barangay, 'MUNICIPALITY_') === 0) {
+                $municipality = str_replace('MUNICIPALITY_', '', $barangay);
+                $whereClause = "WHERE barangay LIKE :municipality";
+                $params[':municipality'] = "%$municipality%";
+            } else {
+                $whereClause = "WHERE barangay = :barangay";
+                $params[':barangay'] = $barangay;
+            }
+        }
+        
+        // Get total screenings
+        $sql = "SELECT COUNT(*) as total_screenings FROM user_preferences";
+        if ($whereClause) {
+            $sql .= " " . $whereClause;
+        }
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
         $totalScreenings = $stmt->fetch()['total_screenings'];
         
-        $stmt = $pdo->query("SELECT COUNT(*) as high_risk FROM user_preferences WHERE risk_score > 70");
-        $highRisk = $stmt->fetch()['high_risk'];
+        // Get risk distribution
+        $riskSql = "
+            SELECT 
+                CASE 
+                    WHEN risk_score < 30 THEN 'low'
+                    WHEN risk_score < 50 THEN 'moderate'
+                    WHEN risk_score < 70 THEN 'high'
+                    ELSE 'critical'
+                END as risk_level,
+                COUNT(*) as count
+            FROM user_preferences 
+            WHERE risk_score IS NOT NULL
+        ";
+        if ($whereClause) {
+            $riskSql .= " AND " . substr($whereClause, 6); // Remove "WHERE " prefix
+        }
+        $riskSql .= " GROUP BY risk_level";
         
-        $stmt = $pdo->query("SELECT COUNT(*) as critical FROM user_preferences WHERE risk_score > 90");
-        $critical = $stmt->fetch()['critical'];
+        $stmt = $pdo->prepare($riskSql);
+        $stmt->execute($params);
+        $riskData = $stmt->fetchAll();
+        
+        // Convert to expected format
+        $riskDistribution = ['low' => 0, 'moderate' => 0, 'high' => 0, 'critical' => 0];
+        foreach ($riskData as $risk) {
+            $riskDistribution[$risk['risk_level']] = $risk['count'];
+        }
+        
+        // Get recent activity (screenings this week)
+        $recentSql = "
+            SELECT COUNT(*) as screenings_this_week 
+            FROM user_preferences 
+            WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+        ";
+        if ($whereClause) {
+            $recentSql .= " AND " . substr($whereClause, 6); // Remove "WHERE " prefix
+        }
+        
+        $stmt = $pdo->prepare($recentSql);
+        $stmt->execute($params);
+        $recentActivity = $stmt->fetch()['screenings_this_week'];
+        
+        // Get total users (if users table exists)
+        $totalUsers = 0;
+        try {
+            $userSql = "SELECT COUNT(*) as total_users FROM users";
+            $stmt = $pdo->query($userSql);
+            $totalUsers = $stmt->fetch()['total_users'];
+        } catch (Exception $e) {
+            // Users table might not exist, use total_screenings as fallback
+            $totalUsers = $totalScreenings;
+        }
         
         echo json_encode([
             'success' => true,
             'data' => [
-                'total_screened' => $totalScreenings,
-                'high_risk_cases' => $highRisk,
-                'critical_cases' => $critical,
+                'total_screenings' => $totalScreenings,
+                'total_screened' => $totalScreenings, // Alias for dashboard compatibility
+                'risk_distribution' => $riskDistribution,
+                'recent_activity' => [
+                    'screenings_this_week' => $recentActivity
+                ],
                 'total_users' => $totalUsers
             ]
         ]);
+        
     } catch (Exception $e) {
+        error_log("Error in getCommunityMetrics: " . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Error fetching community metrics: ' . $e->getMessage()]);
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Error fetching community metrics: ' . $e->getMessage()
+        ]);
     }
 }
 
