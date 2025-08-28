@@ -7922,7 +7922,7 @@ body {
                         averageRisk = Math.round(sum / actualRiskScores.length);
                         console.log('Using actual risk scores from chart data:', actualRiskScores);
                         console.log('Calculated average from actual scores:', averageRisk);
-                } else {
+                    } else {
                         // Final fallback to weighted average if no actual scores available
                         // For 1 user with 100% risk, this should give 100
                         // Updated to match Android app risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)
@@ -8001,7 +8001,7 @@ body {
                     // Fallback if no data
                     chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
                     chartBg.style.opacity = '0.3';
-
+                }
                 
                 // Create percentage labels around the donut chart - properly aligned with segments
                 const percentageLabelsContainer = document.getElementById('percentage-labels');
@@ -8154,8 +8154,8 @@ body {
                     });
                 } else {
                     // Fallback to count-based calculation if no risk scores available
-                riskLevels.forEach((count, index) => {
-                    if (count > 0) {
+                    riskLevels.forEach((count, index) => {
+                        if (count > 0) {
                             let percentage = (count / totalUsers) * 100;
                             segmentPercentages.push({ index, percentage, count });
                             totalCalculatedPercentage += percentage;
