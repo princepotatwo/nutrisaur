@@ -1880,7 +1880,7 @@ function handleGetScreeningData($pdo, $data) {
     }
 }
 
-// User management functions
+// User management functions - Railway deployment trigger
 function handleAddUser($pdo) {
     try {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
