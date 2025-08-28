@@ -4135,7 +4135,7 @@ header:hover {
             
 
             
-            <form class="event-form" method="POST" action="event.php" onsubmit="return validateEventForm()">
+            <form class="event-form" name="createEventForm" method="POST" action="event.php">
                 <div class="form-group">
                     <label for="eventTitle">Event Title</label>
                     <input type="text" id="eventTitle" name="eventTitle" placeholder="e.g., Nutrition Seminar in Barangay Hall" value="<?php echo htmlspecialchars($recommended_program); ?>" required>
@@ -4935,6 +4935,48 @@ header:hover {
             console.log('DOM loaded, loading saved theme...');
             loadSavedTheme();
             console.log('Theme loaded, current body classes:', document.body.className);
+            
+            // Add form submission handler for event creation
+            const eventForm = document.querySelector('form[name="createEventForm"]');
+            if (eventForm) {
+                eventForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    console.log('Event form submitted, handling via AJAX...');
+                    
+                    const formData = new FormData(eventForm);
+                    const eventData = {
+                        title: formData.get('eventTitle'),
+                        type: formData.get('eventType'),
+                        description: formData.get('eventDescription'),
+                        date_time: formData.get('eventDate'),
+                        location: formData.get('eventLocation'),
+                        organizer: formData.get('eventOrganizer')
+                    };
+                    
+                    // Send AJAX request
+                    fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=create_event', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(eventData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Event created successfully!');
+                            location.reload(); // Refresh to show new event
+                        } else {
+                            alert('Error creating event: ' + (data.message || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error creating event. Please try again.');
+                    });
+                });
+            }
         });
 
 

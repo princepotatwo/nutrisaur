@@ -234,6 +234,10 @@ switch ($endpoint) {
         getEventsData($pdo);
         break;
         
+    case 'create_event':
+        handleCreateEvent($pdo);
+        break;
+        
     case 'add_user':
         handleAddUser($pdo);
         break;
@@ -2265,6 +2269,68 @@ function handleGetUserNotifications($pdo, $postData) {
         
     } catch(PDOException $e) {
         echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+// Handle event creation
+function handleCreateEvent($pdo) {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON data']);
+            return;
+        }
+        
+        // Validate required fields
+        $requiredFields = ['title', 'type', 'description', 'date_time', 'location', 'organizer'];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'error' => "Missing required field: $field"]);
+                return;
+            }
+        }
+        
+        // Insert event into database
+        $stmt = $pdo->prepare("
+            INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, NOW())
+        ");
+        
+        $stmt->execute([
+            $data['title'],
+            $data['type'],
+            $data['description'],
+            $data['date_time'],
+            $data['location'],
+            $data['organizer']
+        ]);
+        
+        $eventId = $pdo->lastInsertId();
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Event created successfully',
+            'event_id' => $eventId
+        ]);
+        
+    } catch(PDOException $e) {
+        error_log("Database error creating event: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    } catch(Exception $e) {
+        error_log("General error creating event: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Error creating event: ' . $e->getMessage()]);
     }
 }
 ?>
