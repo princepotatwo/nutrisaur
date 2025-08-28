@@ -7858,17 +7858,17 @@ body {
                         
                         // Map the risk_level to the correct index (case-insensitive)
                         const riskLevel = item.risk_level.toLowerCase();
-                        if (riskLevel === 'low') riskLevels[0] = item.count;
-                        else if (riskLevel === 'moderate') riskLevels[1] = item.count;
-                        else if (riskLevel === 'high') riskLevels[2] = item.count;
-                        else if (riskLevel === 'critical') riskLevels[3] = item.count;
-                        else if (riskLevel === 'severe') riskLevels[3] = item.count;
+                        if (riskLevel === 'low risk') riskLevels[0] = item.count;
+                        else if (riskLevel === 'moderate risk') riskLevels[1] = item.count;
+                        else if (riskLevel === 'high risk') riskLevels[2] = item.count;
+                        else if (riskLevel === 'critical risk') riskLevels[3] = item.count;
+                        else if (riskLevel === 'severe risk') riskLevels[3] = item.count;
                         
                         // Store actual risk scores for each user (using count as proxy)
                         // Since we don't have individual risk scores, we'll use the weighted average approach
-                        const riskScore = riskLevel === 'low' ? 10 : 
-                                        riskLevel === 'moderate' ? 35 : 
-                                        riskLevel === 'high' ? 65 : 90;
+                        const riskScore = riskLevel === 'low risk' ? 10 : 
+                                        riskLevel === 'moderate risk' ? 35 : 
+                                        riskLevel === 'high risk' ? 65 : 90;
                         
                         for (let i = 0; i < item.count; i++) {
                             actualRiskScores.push(riskScore);

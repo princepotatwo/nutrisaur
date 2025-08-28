@@ -536,15 +536,115 @@ function getDetailedScreeningResponses($pdo) {
             $processedData['gender'][] = ['gender' => $gender, 'count' => $count];
         }
         
-        // Process other categories similarly
-        $processedData['income_levels'] = [];
-        $processedData['height'] = [];
-        $processedData['swelling'] = [];
-        $processedData['weight_loss'] = [];
-        $processedData['feeding_behavior'] = [];
-        $processedData['physical_signs'] = [];
-        $processedData['dietary_diversity'] = [];
-        $processedData['clinical_risk'] = [];
+        // Process income levels
+        $incomeLevels = [];
+        foreach ($data as $row) {
+            if (isset($row['income_level']) && $row['income_level'] && $row['income_level'] !== '') {
+                $income = $row['income_level'];
+                if (!isset($incomeLevels[$income])) $incomeLevels[$income] = 0;
+                $incomeLevels[$income]++;
+            }
+        }
+        foreach ($incomeLevels as $income => $count) {
+            $processedData['income_levels'][] = ['income' => $income, 'count' => $count];
+        }
+        
+        // Process height distribution
+        $heightRanges = [];
+        foreach ($data as $row) {
+            if (isset($row['height_cm']) && $row['height_cm'] > 0) {
+                $height = intval($row['height_cm']);
+                if ($height < 50) $range = 'Under 50cm';
+                elseif ($height < 100) $range = '50-99cm';
+                elseif ($height < 150) $range = '100-149cm';
+                elseif ($height < 200) $range = '150-199cm';
+                else $range = '200cm+';
+                
+                if (!isset($heightRanges[$range])) $heightRanges[$range] = 0;
+                $heightRanges[$range]++;
+            }
+        }
+        foreach ($heightRanges as $range => $count) {
+            $processedData['height'][] = ['height_range' => $range, 'count' => $count];
+        }
+        
+        // Process swelling distribution
+        $swellingCounts = [];
+        foreach ($data as $row) {
+            if (isset($row['swelling']) && $row['swelling'] && $row['swelling'] !== '') {
+                $swelling = $row['swelling'];
+                if (!isset($swellingCounts[$swelling])) $swellingCounts[$swelling] = 0;
+                $swellingCounts[$swelling]++;
+            }
+        }
+        foreach ($swellingCounts as $swelling => $count) {
+            $processedData['swelling'][] = ['swelling_status' => $swelling, 'count' => $count];
+        }
+        
+        // Process weight loss distribution
+        $weightLossCounts = [];
+        foreach ($data as $row) {
+            if (isset($row['weight_loss']) && $row['weight_loss'] && $row['weight_loss'] !== '') {
+                $weightLoss = $row['weight_loss'];
+                if (!isset($weightLossCounts[$weightLoss])) $weightLossCounts[$weightLoss] = 0;
+                $weightLossCounts[$weightLoss]++;
+            }
+        }
+        foreach ($weightLossCounts as $weightLoss => $count) {
+            $processedData['weight_loss'][] = ['weight_loss_status' => $weightLoss, 'count' => $count];
+        }
+        
+        // Process feeding behavior distribution
+        $feedingBehaviorCounts = [];
+        foreach ($data as $row) {
+            if (isset($row['feeding_behavior']) && $row['feeding_behavior'] && $row['feeding_behavior'] !== '') {
+                $feedingBehavior = $row['feeding_behavior'];
+                if (!isset($feedingBehaviorCounts[$feedingBehavior])) $feedingBehaviorCounts[$feedingBehavior] = 0;
+                $feedingBehaviorCounts[$feedingBehavior]++;
+            }
+        }
+        foreach ($feedingBehaviorCounts as $feedingBehavior => $count) {
+            $processedData['feeding_behavior'][] = ['feeding_status' => $feedingBehavior, 'count' => $count];
+        }
+        
+        // Process physical signs distribution
+        $physicalSignsCounts = [];
+        foreach ($data as $row) {
+            if (isset($row['physical_signs']) && $row['physical_signs'] && $row['physical_signs'] !== '') {
+                $physicalSigns = $row['physical_signs'];
+                if (!isset($physicalSignsCounts[$physicalSigns])) $physicalSignsCounts[$physicalSigns] = 0;
+                $physicalSignsCounts[$physicalSigns]++;
+            }
+        }
+        foreach ($physicalSignsCounts as $physicalSigns => $count) {
+            $processedData['physical_signs'][] = ['physical_sign' => $physicalSigns, 'count' => $count];
+        }
+        
+        // Process dietary diversity distribution
+        $dietaryDiversityCounts = [];
+        foreach ($data as $row) {
+            if (isset($row['dietary_diversity']) && $row['dietary_diversity'] && $row['dietary_diversity'] !== '') {
+                $dietaryDiversity = $row['dietary_diversity'];
+                if (!isset($dietaryDiversityCounts[$dietaryDiversity])) $dietaryDiversityCounts[$dietaryDiversity] = 0;
+                $dietaryDiversityCounts[$dietaryDiversity]++;
+            }
+        }
+        foreach ($dietaryDiversityCounts as $dietaryDiversity => $count) {
+            $processedData['dietary_diversity'][] = ['dietary_score' => $dietaryDiversity, 'count' => $count];
+        }
+        
+        // Process clinical risk factors distribution
+        $clinicalRiskCounts = [];
+        foreach ($data as $row) {
+            if (isset($row['clinical_risk_factors']) && $row['clinical_risk_factors'] && $row['clinical_risk_factors'] !== '') {
+                $clinicalRisk = $row['clinical_risk_factors'];
+                if (!isset($clinicalRiskCounts[$clinicalRisk])) $clinicalRiskCounts[$clinicalRisk] = 0;
+                $clinicalRiskCounts[$clinicalRisk]++;
+            }
+        }
+        foreach ($clinicalRiskCounts as $clinicalRisk => $count) {
+            $processedData['clinical_risk'][] = ['risk_factor' => $clinicalRisk, 'count' => $count];
+        }
         
         echo json_encode([
             'success' => true,
