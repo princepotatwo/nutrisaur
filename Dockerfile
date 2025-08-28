@@ -15,7 +15,7 @@ WORKDIR /var/www/html
 # Copy files
 COPY sss/ ./sss/
 COPY public/ ./public/
-COPY config.example.php ./config.php
+COPY config.php ./config.php
 
 # Create proper health check
 RUN echo '<?php header("Content-Type: application/json"); echo json_encode(["status" => "healthy", "timestamp" => date("Y-m-d H:i:s")]); ?>' > public/health.php
