@@ -4751,7 +4751,7 @@ optgroup option {
         // Create an XMLHttpRequest to fetch app users with risk data
         const xhr = new XMLHttpRequest();
         
-        xhr.open('GET', API_BASE_URL + '/unified_api.php?type=usm&t=' + Date.now(), true);
+        xhr.open('GET', API_BASE_URL + '/unified_api.php?endpoint=usm&t=' + Date.now(), true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         
         xhr.onreadystatechange = function() {
@@ -6159,7 +6159,7 @@ optgroup option {
         }
         
         // Test the API directly
-        fetch('API_BASE_URL + "/unified_api.php"?type=usm&t=' + Date.now())
+        fetch(API_BASE_URL + '/unified_api.php?endpoint=usm&t=' + Date.now())
             .then(response => response.json())
             .then(data => {
                 console.log('🧪 API Test Response:', data);
@@ -7089,7 +7089,7 @@ optgroup option {
     
     async function checkUserExists(email) {
         try {
-            const response = await fetch('API_BASE_URL + "/unified_api.php"?type=usm&t=' + Date.now());
+            const response = await fetch(API_BASE_URL + '/unified_api.php?endpoint=usm&t=' + Date.now());
             const data = await response.json();
             
             if (data.users) {
