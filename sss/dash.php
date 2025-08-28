@@ -1,24 +1,19 @@
 <?php
-// Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
-    // Redirect to login page if not logged in
     header('Location: /');
     exit;
 }
 
-// Database connection - Use the same working approach as simple_db_test.php
 $mysql_host = 'mainline.proxy.rlwy.net';
 $mysql_port = 26063;
 $mysql_user = 'root';
 $mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
 $mysql_database = 'railway';
 
-// If MYSQL_PUBLIC_URL is set (Railway sets this), parse it
 if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
     $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
     $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
@@ -31,50 +26,17 @@ if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
     }
 }
 
-// Create database connection
 try {
     $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-    echo "<!-- Debug: Attempting to connect to database with DSN: $dsn -->";
-    echo "<!-- Debug: Host: $mysql_host, Port: $mysql_port, User: $mysql_user, Database: $mysql_database -->";
-    
     $conn = new PDO($dsn, $mysql_user, $mysql_password, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_TIMEOUT => 10
     ]);
-    
-    echo "<!-- Debug: Database connection successful -->";
 } catch (PDOException $e) {
-    // If database connection fails, show error but don't crash
     $conn = null;
     $dbError = "Database connection failed: " . $e->getMessage();
-    echo "<!-- Debug: Database connection failed: $dbError -->";
 }
-
-/*
- * UPDATED DATABASE STRUCTURE - ALIGNED WITH ScreeningFormActivity.java
- * 
- * This dashboard now uses the updated user_preferences table structure that matches
- * the Android app's data collection fields. The table structure follows the
- * "ONE COLUMN PER QUESTION" approach as requested by the user.
- * 
- * Key changes:
- * - Removed MHO risk update button (no longer needed)
- * - Database queries already use the correct user_preferences table
- * - All MHO calculations are now handled directly from the updated table structure
- * - No additional tables or complex joins required
- * 
- * Database structure matches ScreeningFormActivity.java fields:
- * - Basic info: user_email, name, birthday, age, gender, height, weight, bmi, muac
- * - Physical signs: physical_thin, physical_shorter, physical_weak, physical_none
- * - Clinical factors: swelling, weight_loss, feeding_behavior, etc.
- * - Risk assessment: risk_score (calculated using MHO standards)
- * - Location: barangay, income
- */
-
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 // PHP Date formatting function for user-friendly time display
 function formatTimeAgoPHP($dateString) {
@@ -447,57 +409,30 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
     }
 }
 
-// Debug: Check session status
-echo "<!-- Debug: Session started -->";
-echo "<!-- Debug: Session data: " . print_r($_SESSION, true) . " -->";
-
-// Check if user is logged in
-if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
-    echo "<!-- Debug: No user_id or admin_id in session, redirecting to home.php -->";
-    // Redirect to login page if not logged in
-    header("Location: /");
-    exit;
-}
-
-echo "<!-- Debug: User is logged in, user_id: " . $_SESSION['user_id'] . " -->";
-
-// Get user info from session
 $userId = $_SESSION['user_id'] ?? 'unknown';
 $username = $_SESSION['username'] ?? 'User';
 $email = $_SESSION['email'] ?? 'user@example.com';
 $isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
 $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user';
 
-echo "<!-- Debug: User info - userId: $userId, username: $username, email: $email -->";
-
-// Database connection already established from config.php include
+$profile = null;
+try {
+    $stmt = $conn->prepare("
+        SELECT u.*, up.* 
+        FROM users u 
+        LEFT JOIN user_preferences up ON u.email = up.user_email 
+        WHERE u.user_id = :user_id
+    ");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->execute();
     
-            // Get user profile data from users and user_preferences tables
-        $profile = null;
-        try {
-            echo "<!-- Debug: Attempting to get user profile for user_id: $userId -->";
-            $stmt = $conn->prepare("
-                SELECT u.*, up.* 
-                FROM users u 
-                LEFT JOIN user_preferences up ON u.email = up.user_email 
-                WHERE u.user_id = :user_id
-            ");
-            $stmt->bindParam(':user_id', $userId);
-            $stmt->execute();
-            
-            if ($stmt->rowCount() > 0) {
-                $profile = $stmt->fetch(PDO::FETCH_ASSOC);
-                echo "<!-- Debug: User profile retrieved successfully -->";
-            } else {
-                echo "<!-- Debug: No user profile found for user_id: $userId -->";
-            }
-        } catch (PDOException $e) {
-            // Handle case where user_id might not exist
-            $profile = null;
-            echo "<!-- Debug: Error getting user profile: " . $e->getMessage() . " -->";
-        }
+    if ($stmt->rowCount() > 0) {
+        $profile = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+} catch (PDOException $e) {
+    $profile = null;
+}
         
-        // Get user nutrition goals
         $stmt = $conn->prepare("SELECT * FROM nutrition_goals WHERE user_id = :user_id");
         $stmt->bindParam(':user_id', $userId);
         $stmt->execute();
@@ -506,19 +441,14 @@ echo "<!-- Debug: User info - userId: $userId, username: $username, email: $emai
             $goals = $stmt->fetch(PDO::FETCH_ASSOC);
         }
         
-        // Get initial time frame data (default to 1 day)
         $currentTimeFrame = '1d';
         $currentBarangay = '';
         $timeFrameData = getTimeFrameData($conn, $currentTimeFrame, $currentBarangay);
         $screeningResponsesData = getScreeningResponsesByTimeFrame($conn, $currentTimeFrame, $currentBarangay);
 
-// Handle logout
 if (isset($_GET['logout'])) {
-    // Destroy the session
     session_unset();
     session_destroy();
-    
-    // Redirect to login page
     header("Location: home.php");
     exit;
 }
@@ -8682,17 +8612,9 @@ body {
             return { path: pathString, area: areaString };
         }
 
-        // Initialize dashboard on page load
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== DASHBOARD INITIALIZATION STARTED ===');
-            console.log('Dashboard initialized - DOM loaded');
-            
-            // Initialize global average risk score
             window.globalAverageRiskScore = 0;
-            console.log('Initialized global average risk score:', window.globalAverageRiskScore);
             
-            // Check if key DOM elements exist
-            console.log('Checking key DOM elements...');
             const keyElements = {
                 'community-total-screened': document.getElementById('community-total-screened'),
                 'community-high-risk': document.getElementById('community-high-risk'),
@@ -8710,253 +8632,94 @@ body {
                 'search-input': document.getElementById('search-input')
             };
             
-            console.log('Key DOM elements status:', keyElements);
-            
-            // Check dropdown elements specifically
-            console.log('Checking dropdown elements...');
-            const dropdownElements = {
-                'custom-select-container': document.querySelector('.custom-select-container'),
-                'options-container': document.querySelector('.options-container'),
-                'option-items': document.querySelectorAll('.option-item')
-            };
-            
-            console.log('Dropdown elements status:', dropdownElements);
-            
-            // Set up barangay selection handlers after ensuring elements exist
-            console.log('Setting up barangay selection...');
             setupBarangaySelection();
-            
-            // Test API connection first
-            console.log('Testing API connection...');
             testAPIConnection();
             
-            // Restore selected barangay from localStorage if available
             const barangayRestored = restoreSelectedBarangay();
             
-            // Load initial data with error handling
             try {
-                console.log('Loading initial dashboard data...');
-                
                 if (barangayRestored && currentSelectedBarangay) {
-                    console.log('Loading data for previously selected barangay:', currentSelectedBarangay);
                     updateDashboardForBarangay(currentSelectedBarangay);
                 } else {
-                    console.log('Loading data for: All Barangays (default)');
-                    
-                    console.log('Calling updateCommunityMetrics()...');
                     updateCommunityMetrics();
-                    
-                    console.log('Calling updateCharts()...');
                     updateCharts();
-                    
-                    console.log('Calling updateGeographicChart()...');
                     updateGeographicChart();
-                    
-                    console.log('Calling updateCriticalAlerts()...');
-                    // Initialize critical alerts - will be updated with real data from API
-                    // Don't call updateCriticalAlerts here - it will be called automatically when community metrics are loaded
-                    console.log('Critical alerts will be updated when community metrics data is loaded');
-                    
-                    console.log('Calling updateAnalysisSection()...');
                     updateAnalysisSection();
-                    
-                    console.log('Auto-generating intelligent programs...');
                     generateIntelligentPrograms(currentSelectedBarangay);
                 }
-                
-                console.log('Initial data loading complete');
             } catch (error) {
                 console.error('Error loading initial data:', error);
             }
             
-            // Set up auto-refresh every 3 seconds with seamless updates
-            console.log('Setting up auto-refresh every 3 seconds...');
             setInterval(() => {
                 try {
-                    console.log('Auto-refresh triggered');
-                    // Use requestAnimationFrame for smooth, seamless updates
                     requestAnimationFrame(() => {
-                        console.log('Auto-refresh: updating community metrics...');
                         updateCommunityMetrics(currentSelectedBarangay);
-                        console.log('Auto-refresh: updating charts...');
                         updateCharts(currentSelectedBarangay);
-                        console.log('Auto-refresh: updating critical alerts...');
                         updateCriticalAlerts(currentSelectedBarangay);
-                        console.log('Auto-refresh complete');
                     });
                 } catch (error) {
                     console.error('Error in auto-refresh:', error);
                 }
             }, 3000);
-            console.log('Auto-refresh setup complete');
             
-            // Initialize critical alerts state tracking
             initializeAlertsState();
-            
-            console.log('=== DASHBOARD INITIALIZATION COMPLETE ===');
-            
-            // Test intelligent programs API connection
-            console.log('Testing intelligent programs API connection...');
             testIntelligentProgramsAPI();
         });
         
-        // Theme toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Setting up theme toggle...');
-            
-            // Initialize theme from localStorage or default to dark
             const savedTheme = localStorage.getItem('nutrisaur-theme') || 'light';
             document.body.className = savedTheme + '-theme';
-            
-
-            
-            // Theme toggle functionality is handled in the main DOMContentLoaded event listener below
         });
         
-        // Theme icon updates are handled in the main toggleTheme function
-        
-
-        
-        // Additional debugging for dropdown functionality
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== ADDITIONAL DROPDOWN DEBUGGING ===');
-            
-            // Check if dropdown elements exist after a short delay
             setTimeout(() => {
-                console.log('Checking dropdown elements after delay...');
-                
                 const dropdownContent = document.getElementById('dropdown-content');
                 const optionItems = document.querySelectorAll('.option-item');
                 const selectHeader = document.querySelector('.select-header');
                 
-                console.log('Dropdown elements after delay:', {
-                    dropdownContent: !!dropdownContent,
-                    optionItemsCount: optionItems.length,
-                    selectHeader: !!selectHeader
-                });
-                
-                if (dropdownContent) {
-                    console.log('Dropdown content HTML:', dropdownContent.innerHTML);
-                }
-                
-                if (optionItems.length > 0) {
-                    console.log('First few option items:');
-                    // Convert NodeList to Array before using slice
-                    Array.from(optionItems).slice(0, 3).forEach((item, index) => {
-                        console.log(`Option ${index}:`, { 
-                            text: item.textContent, 
-                            value: item.getAttribute('data-value'), 
-                            classes: item.className 
-                        });
-                    });
-                }
-                
-                // Try to find any elements with data-value attribute
-                const allDataValueElements = document.querySelectorAll('[data-value]');
-                console.log('All elements with data-value attribute:', allDataValueElements.length);
-                
-                if (allDataValueElements.length > 0) {
-                    console.log('First few data-value elements:');
-                    // Convert NodeList to Array before using slice
-                    Array.from(allDataValueElements).slice(0, 5).forEach((item, index) => {
-                        console.log(`Data-value element ${index}:`, { 
-                            text: item.textContent, 
-                            value: item.getAttribute('data-value'), 
-                            tagName: item.tagName,
-                            classes: item.className 
-                        });
-                    });
-                }
-                
-                // After checking elements, try to restore barangay selection if it was delayed
                 if (currentSelectedBarangay && !document.querySelector('.option-item.selected')) {
-                    console.log('Attempting to restore barangay selection after delay...');
                     restoreSelectedBarangay();
                 }
                 
-                // If we still have a selected barangay but no visual indication, update the dashboard
                 if (currentSelectedBarangay && currentSelectedBarangay !== '') {
-                    console.log('Ensuring dashboard reflects current barangay selection...');
                     updateDashboardForBarangay(currentSelectedBarangay);
                 }
-                
-                console.log('=== DROPDOWN DEBUGGING COMPLETE ===');
             }, 1000);
         });
 
-        // Test API connection
         async function testAPIConnection() {
-            console.log('Testing API connection...');
             try {
                 const response = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?test=1');
-                console.log('API Response status:', response.status);
                 if (response.ok) {
                     const data = await response.text();
-                    console.log('API Response:', data);
-                    console.log('API connection successful');
-                } else {
-                    console.error('API not responding properly');
                 }
             } catch (error) {
                 console.error('API Connection failed:', error);
-                console.log('Please check if unified_api.php exists and XAMPP is running');
             }
         }
         
-        // Test municipality filtering
         async function testMunicipalityFiltering(barangay) {
-            console.log('Testing municipality filtering for:', barangay);
             try {
                 const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=test_municipality&barangay=${encodeURIComponent(barangay)}`);
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('Municipality test response:', data);
-                    
-                    if (data.success) {
-                        console.log('Municipality test successful');
-                        console.log('Is municipality:', data.is_municipality);
-                        console.log('Municipality name:', data.municipality_name);
-                        console.log('Barangays in municipality:', data.barangays_in_municipality);
-                        console.log('Total users in municipality:', data.total_users_in_municipality);
-                        
-                        if (data.sql_query) {
-                            console.log('SQL query used:', data.sql_query);
-                            console.log('SQL parameters:', data.params);
-                        }
-                    }
-                } else {
-                    console.error('Municipality test failed');
                 }
             } catch (error) {
                 console.error('Error testing municipality filtering:', error);
             }
         }
         
-        // Test intelligent programs API
         async function testIntelligentProgramsAPI() {
-            console.log('Testing intelligent programs API...');
             try {
-                // Test general endpoint
                 const response = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=intelligent_programs');
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('Intelligent programs API test successful:', data);
-                    
-                    if (data.success && data.programs) {
-                        console.log(`API returned ${data.programs.length} programs`);
-                        console.log('Sample program:', data.programs[0]);
-                    } else {
-                        console.warn('API returned success but no programs');
-                    }
-                } else {
-                    console.error('Intelligent programs API test failed:', response.status);
                 }
                 
-                // Test with barangay parameter
                 const barangayResponse = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=intelligent_programs&barangay=Bangkal');
                 if (barangayResponse.ok) {
                     const barangayData = await barangayResponse.json();
-                    console.log('Barangay-specific programs test:', barangayData);
                 }
                 
             } catch (error) {
@@ -8964,9 +8727,7 @@ body {
             }
         }
 
-        // Debug function to show program generation analysis
         async function debugProgramGeneration() {
-            console.log('Debugging program generation...');
             try {
                 const currentBarangay = currentSelectedBarangay || '';
                 const params = {};
@@ -8978,19 +8739,9 @@ body {
                     }
                 }
                 
-                console.log('Debug params:', params);
                 const data = await fetchDataFromAPI('intelligent_programs', params);
                 
                 if (data && data.success) {
-                    console.log('=== PROGRAM GENERATION DEBUG ===');
-                    console.log('Total programs:', data.programs ? data.programs.length : 0);
-                    console.log('Data analysis:', data.data_analysis);
-                    console.log('Community health status:', data.data_analysis?.community_health_status);
-                    console.log('High risk percentage:', data.data_analysis?.high_risk_percentage);
-                    console.log('SAM cases:', data.data_analysis?.sam_cases);
-                    console.log('Total users:', data.data_analysis?.total_users);
-                    
-                    // Show debug info in the UI
                     const debugElement = document.getElementById('community-health-debug');
                     const debugContent = document.getElementById('debug-content');
                     
@@ -9018,224 +8769,133 @@ body {
                         debugContent.innerHTML = debugInfo;
                     }
                     
-                    // Update the programs display
                     updateIntelligentProgramsDisplay(data.programs, data.data_analysis);
                     
-                } else {
-                    console.error('Debug failed - no data received');
                 }
             } catch (error) {
                 console.error('Error debugging program generation:', error);
             }
         }
 
-        // Test user data consistency
         async function testUserDataConsistency(email) {
-            console.log('Testing user data consistency for:', email);
             try {
                 const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_user_data&email=${encodeURIComponent(email)}`);
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('User data consistency test response:', data);
                     
                     if (data.success) {
-                        console.log('User data consistency test successful');
-                        console.log('Individual column barangay:', data.user_data.barangay);
-                        console.log('User barangay:', data.user_data.barangay);
-                        console.log('Barangay match:', data.comparison.barangay_match);
-                        
                         if (!data.comparison.barangay_match) {
                             console.warn('BARANGAY MISMATCH DETECTED!');
-                            console.warn('Individual column:', data.user_data.barangay);
-                            console.warn('User data barangay:', data.user_data.barangay);
                         }
                     }
-                } else {
-                    console.error('User data consistency test failed');
                 }
             } catch (error) {
                 console.error('Error testing user data consistency:', error);
             }
         }
         
-        // Debug function to check what the API actually returns
         async function debugAPIResponse() {
-            console.log('=== DEBUGGING API RESPONSE ===');
-            
             try {
                 const response = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses');
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('Raw API response:', data);
                     
                     if (data.success && data.data) {
-                        console.log('\n=== DETAILED DATA ANALYSIS ===');
-                        
-                        // Check each section
                         Object.keys(data.data).forEach(key => {
                             const section = data.data[key];
-                            console.log(`\n--- ${key} ---`);
                             
                             if (Array.isArray(section)) {
                                 section.forEach((item, index) => {
-                                    console.log(`  Item ${index}:`, item);
                                     if (item.label) {
-                                        console.log(`    Label: "${item.label}" (Type: ${typeof item.label})`);
+                                        console.log(`Label: "${item.label}" (Type: ${typeof item.label})`);
                                     }
                                     if (item.value !== undefined) {
-                                        console.log(`    Value: ${item.value} (Type: ${typeof item.value})`);
+                                        console.log(`Value: ${item.value} (Type: ${typeof item.value})`);
                                     }
                                 });
-                            } else {
-                                console.log('  Not an array:', section);
                             }
                         });
                     }
-                } else {
-                    console.log('API request failed:', response.status);
                 }
             } catch (error) {
                 console.error('Debug API error:', error);
             }
-            
-            console.log('=== API DEBUG COMPLETE ===');
         }
         
-        // Debug function to check database directly
         async function debugDatabaseDirectly() {
-            console.log('=== DEBUGGING DATABASE DIRECTLY ===');
-            
-            // Test 1: Check if we can connect to the database
-            console.log('Test 1: Database connection test');
             try {
                 const response1 = await fetch('https://nutrisaur-production.up.railway.app/debug_db.php');
-                console.log('Database test response status:', response1.status);
                 if (response1.ok) {
                     const data1 = await response1.text();
-                    console.log('Database test response:', data1);
-                } else {
-                    console.log('Database test failed:', response1.status);
                 }
             } catch (error) {
                 console.error('Database test error:', error);
             }
             
-            // Test 2: Check user_preferences table directly
-            console.log('Test 2: Direct table check');
             try {
                 const response2 = await fetch('https://nutrisaur-production.up.railway.app/debug_table.php');
-                console.log('Table check response status:', response2.status);
                 if (response2.ok) {
                     const data2 = await response2.text();
-                    console.log('Table check response:', data2);
-                } else {
-                    console.log('Table check failed:', response2.status);
                 }
             } catch (error) {
                 console.error('Table check error:', error);
             }
-            
-            console.log('=== DATABASE DEBUG COMPLETE ===');
         }
         
-        // Test screening responses API directly
         async function testScreeningResponsesAPI() {
-            console.log('=== TESTING SCREENING RESPONSES API ===');
-            
-            // Test 1: Basic endpoint
-            console.log('Test 1: Basic endpoint');
             try {
                 const response1 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses');
-                console.log('Response 1 status:', response1.status);
                 if (response1.ok) {
                     const data1 = await response1.json();
-                    console.log('Response 1 data:', data1);
-                } else {
-                    const error1 = await response1.text();
-                    console.log('Response 1 error:', error1);
                 }
             } catch (error) {
                 console.error('Test 1 failed:', error);
             }
             
-            // Test 2: With barangay filter
-            console.log('Test 2: With barangay filter');
             try {
                 const response2 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses&barangay=Bangkal');
-                console.log('Response 2 status:', response2.status);
                 if (response2.ok) {
                     const data2 = await response2.json();
-                    console.log('Response 2 data:', data2);
-                } else {
-                    const error2 = await response2.text();
-                    console.log('Response 2 error:', error2);
                 }
             } catch (error) {
                 console.error('Test 2 failed:', error);
             }
             
-            // Test 3: Check if API file exists
-            console.log('Test 3: Check API file');
             try {
                 const response3 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?test=1');
-                console.log('Response 3 status:', response3.status);
                 if (response3.ok) {
                     const data3 = await response3.text();
-                    console.log('Response 3 (API file check):', data3.substring(0, 200) + '...');
                 }
             } catch (error) {
                 console.error('Test 3 failed:', error);
             }
             
-            // Test 4: Check database table structure
-            console.log('Test 4: Check database table structure');
             try {
                 const response4 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_table_structure&table=user_preferences');
-                console.log('Response 4 status:', response4.status);
                 if (response4.ok) {
                     const data4 = await response4.json();
-                    console.log('Response 4 (table structure):', data4);
-                } else {
-                    const error4 = await response4.text();
-                    console.log('Response 4 error:', error4);
                 }
             } catch (error) {
                 console.error('Test 4 failed:', error);
             }
             
-            // Test 5: Check sample data
-            console.log('Test 5: Check sample data');
             try {
                 const response5 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_sample_data&table=user_preferences&limit=5');
-                console.log('Response 5 status:', response5.status);
                 if (response5.ok) {
                     const data5 = await response5.json();
-                    console.log('Response 5 (sample data):', data5);
-                } else {
-                    const error5 = await response5.text();
-                    console.log('Response 5 error:', error5);
                 }
             } catch (error) {
                 console.error('Test 5 failed:', error);
             }
             
-            // Test 6: Check raw user_preferences data
-            console.log('Test 6: Check raw user_preferences data');
             try {
                 const response6 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_raw_data&table=user_preferences&limit=10');
-                console.log('Response 6 status:', response6.status);
                 if (response6.ok) {
                     const data6 = await response6.json();
-                    console.log('Response 6 (raw data):', data6);
-                } else {
-                    const error6 = await response6.text();
-                    console.log('Response 6 error:', error6);
                 }
             } catch (error) {
                 console.error('Test 6 failed:', error);
             }
-            
-            console.log('=== SCREENING RESPONSES API TEST COMPLETE ===');
         }
 
         // Function to create new program - redirects to event.php in same tab

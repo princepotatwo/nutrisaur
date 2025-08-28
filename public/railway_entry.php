@@ -173,6 +173,10 @@ switch ($path) {
         include 'health.php';
         break;
         
+    case 'unified_api':
+        include 'unified_api.php';
+        break;
+        
     default:
         // First check if it's a direct sss file
         if (file_exists("../sss/$path.php")) {
