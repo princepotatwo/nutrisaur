@@ -839,10 +839,10 @@ function testColumns($pdo) {
 function getHeightDistribution($pdo) {
     try {
         $stmt = $pdo->query("
-            SELECT height, COUNT(*) as count
+            SELECT height_cm, COUNT(*) as count
             FROM user_preferences 
-            WHERE height IS NOT NULL AND height != ''
-            GROUP BY height
+            WHERE height_cm IS NOT NULL AND height_cm != ''
+            GROUP BY height_cm
             ORDER BY count DESC
         ");
         
@@ -857,10 +857,10 @@ function getHeightDistribution($pdo) {
 function getWeightDistribution($pdo) {
     try {
         $stmt = $pdo->query("
-            SELECT weight, COUNT(*) as count
+            SELECT weight_kg, COUNT(*) as count
             FROM user_preferences 
-            WHERE weight IS NOT NULL AND weight != ''
-            GROUP BY weight
+            WHERE weight_kg IS NOT NULL AND weight_kg != ''
+            GROUP BY weight_kg
             ORDER BY count DESC
         ");
         
