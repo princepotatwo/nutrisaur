@@ -7856,18 +7856,19 @@ body {
                     data.forEach(item => {
                         totalUsers += item.count;
                         
-                        // Map the risk_level to the correct index
-                        if (item.risk_level === 'Low') riskLevels[0] = item.count;
-                        else if (item.risk_level === 'Moderate') riskLevels[1] = item.count;
-                        else if (item.risk_level === 'High') riskLevels[2] = item.count;
-                        else if (item.risk_level === 'Critical') riskLevels[3] = item.count;
-                        else if (item.risk_level === 'Severe') riskLevels[3] = item.count;
+                        // Map the risk_level to the correct index (case-insensitive)
+                        const riskLevel = item.risk_level.toLowerCase();
+                        if (riskLevel === 'low') riskLevels[0] = item.count;
+                        else if (riskLevel === 'moderate') riskLevels[1] = item.count;
+                        else if (riskLevel === 'high') riskLevels[2] = item.count;
+                        else if (riskLevel === 'critical') riskLevels[3] = item.count;
+                        else if (riskLevel === 'severe') riskLevels[3] = item.count;
                         
                         // Store actual risk scores for each user (using count as proxy)
                         // Since we don't have individual risk scores, we'll use the weighted average approach
-                        const riskScore = item.risk_level === 'Low' ? 10 : 
-                                        item.risk_level === 'Moderate' ? 35 : 
-                                        item.risk_level === 'High' ? 65 : 90;
+                        const riskScore = riskLevel === 'low' ? 10 : 
+                                        riskLevel === 'moderate' ? 35 : 
+                                        riskLevel === 'high' ? 65 : 90;
                         
                         for (let i = 0; i < item.count; i++) {
                             actualRiskScores.push(riskScore);
