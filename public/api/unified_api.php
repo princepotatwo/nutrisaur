@@ -130,6 +130,14 @@ switch ($endpoint) {
         testMunicipality($pdo);
         break;
         
+    case 'check_table_structure':
+        checkTableStructure($pdo);
+        break;
+        
+    case 'test_columns':
+        testColumns($pdo);
+        break;
+        
     default:
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
@@ -770,6 +778,34 @@ function testMunicipality($pdo) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+}
+
+function checkTableStructure($pdo) {
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM user_preferences");
+        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(['success' => true, 'data' => $columns]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error checking table structure: ' . $e->getMessage()]);
+    }
+}
+
+function testColumns($pdo) {
+    try {
+        $columnName = $_GET['column'] ?? '';
+        if (empty($columnName)) {
+            echo json_encode(['success' => false, 'message' => 'Column name parameter required']);
+            return;
+        }
+
+        $stmt = $pdo->query("SELECT DISTINCT $columnName FROM user_preferences LIMIT 10");
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error testing column: ' . $e->getMessage()]);
     }
 }
 ?>
