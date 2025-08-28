@@ -17,6 +17,12 @@ if (strpos($path, '?') !== false) {
 // Define the correct path to sss directory
 $sss_path = __DIR__ . '/../sss/';
 
+// Debug logging for development
+if (isset($_GET['debug'])) {
+    error_log("Requested path: $path");
+    error_log("SSS path: $sss_path");
+}
+
 // Route to appropriate file
 switch ($path) {
     case '':
@@ -64,24 +70,31 @@ switch ($path) {
         
     default:
         // Check if it's an API request
-        if (strpos($path, 'api/') === 0 || strpos($path, 'unified_api') === 0) {
+        if (strpos($path, 'api/') === 0) {
             // Handle API requests
-            if (strpos($path, 'unified_api') === 0) {
-                include_once 'unified_api.php';
-            } else {
-                // Route to api directory
-                $api_path = str_replace('api/', '', $path);
-                if (file_exists($sss_path . "api/$api_path.php")) {
-                    include_once $sss_path . "api/$api_path.php";
-                } else {
-                    http_response_code(404);
-                    echo "API endpoint not found: $api_path";
-                }
+            $api_path = str_replace('api/', '', $path);
+            $api_file = $sss_path . "api/$api_path.php";
+            
+            if (isset($_GET['debug'])) {
+                error_log("API path: $api_path");
+                error_log("API file: $api_file");
+                error_log("File exists: " . (file_exists($api_file) ? 'yes' : 'no'));
             }
+            
+            if (file_exists($api_file)) {
+                include_once $api_file;
+            } else {
+                http_response_code(404);
+                echo "API endpoint not found: $api_path";
+            }
+        } elseif (strpos($path, 'unified_api') === 0) {
+            // Handle unified API requests
+            include_once 'unified_api.php';
         } else {
             // Check if file exists in sss directory
-            if (file_exists($sss_path . "$path.php")) {
-                include_once $sss_path . "$path.php";
+            $file_path = $sss_path . "$path.php";
+            if (file_exists($file_path)) {
+                include_once $file_path;
             } else {
                 // Default to home page
                 include_once $sss_path . 'home.php';
