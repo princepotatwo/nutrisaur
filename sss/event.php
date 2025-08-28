@@ -1350,7 +1350,7 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
         
         // If not found locally, try to get from unified_api.php
         if (!$editEvent) {
-            $apiUrl = 'http://localhost/thesis355/unified_api.php';
+            $apiUrl = 'https://nutrisaur-production.up.railway.app/unified_api.php';
             $postData = [
                 'action' => 'get_event_data',
                 'event_id' => $editId
@@ -5936,7 +5936,7 @@ Sample Event,Workshop,${formatDate(future1)},Sample Location,Sample Organizer,Sa
                 return;
             }
             
-            fetch('http://localhost/thesis355/unified_api.php', {
+            fetch('https://nutrisaur-production.up.railway.app/unified_api.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -6050,7 +6050,7 @@ Sample Event,Workshop,${formatDate(future1)},Sample Location,Sample Organizer,Sa
         function showNotificationPanel() {
             const currentUserEmail = '<?php echo htmlspecialchars($email); ?>';
             
-            fetch('http://localhost/thesis355/unified_api.php', {
+            fetch('https://nutrisaur-production.up.railway.app/unified_api.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
