@@ -6473,8 +6473,8 @@ body {
             }
         });
 
-        // Barangay and Municipality selection handling
-        document.addEventListener('DOMContentLoaded', function() {
+        // Barangay and Municipality selection handling - will be called from main DOMContentLoaded
+        function setupBarangaySelection() {
             console.log('Setting up barangay selection handlers...');
             
             // Set up click handlers for option items
@@ -6526,7 +6526,7 @@ body {
             }
             
             console.log('Barangay selection handlers setup complete');
-        });
+        }
 
         // Global variable to store the currently selected barangay
         let currentSelectedBarangay = '';
@@ -8721,6 +8721,10 @@ body {
             };
             
             console.log('Dropdown elements status:', dropdownElements);
+            
+            // Set up barangay selection handlers after ensuring elements exist
+            console.log('Setting up barangay selection...');
+            setupBarangaySelection();
             
             // Test API connection first
             console.log('Testing API connection...');
