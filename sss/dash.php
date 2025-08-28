@@ -3233,11 +3233,6 @@ header .user-info {
     border-left-color: var(--color-danger);
 }
 
-.light-theme .alert-item.warning {
-    background-color: rgba(255, 193, 7, 0.05);
-    border-left-color: var(--color-warning);
-}
-
 .light-theme .alert-item.success {
     background-color: rgba(76, 175, 80, 0.05);
     border-left-color: var(--color-highlight);
@@ -5158,7 +5153,6 @@ header .user-info {
     background: rgba(0, 0, 0, 0.08);
     transform: translateY(-1px);
     box-shadow: 0 4px 20px rgba(161, 180, 84, 0.15), 0 2px 12px rgba(161, 180, 84, 0.1);
-    border: 1px solid rgba(161, 180, 84, 0.2);
 }
 
 .response-answer-item:last-child {
@@ -7407,30 +7401,40 @@ body {
             const card = document.createElement('div');
             card.className = 'program-card';
             
+            // Add null checks and default values to prevent undefined display
+            const foodName = program.food_name || 'Unnamed Program';
+            const foodDescription = program.food_description || 'No description available';
+            const foodEmoji = program.food_emoji || '🍽️';
+            const nutritionalPriority = program.nutritional_priority || 'Medium';
+            const nutritionalImpactScore = program.nutritional_impact_score || 50;
+            const ingredients = program.ingredients || 'Ingredients not specified';
+            const benefits = program.benefits || 'Benefits not specified';
+            const aiReasoning = program.ai_reasoning || 'AI reasoning not available';
+            
             // Determine priority class based on nutritional impact score
             let priorityClass = 'priority-medium';
-            if (program.nutritional_impact_score >= 85) priorityClass = 'priority-immediate';
-            else if (program.nutritional_impact_score >= 70) priorityClass = 'priority-high';
+            if (nutritionalImpactScore >= 85) priorityClass = 'priority-immediate';
+            else if (nutritionalImpactScore >= 70) priorityClass = 'priority-high';
             
             card.innerHTML = `
                 <div class="program-content">
-                    <div class="program-title">${program.food_emoji} ${program.food_name}</div>
-                    <div class="program-description">${program.food_description}</div>
+                    <div class="program-title">${foodEmoji} ${foodName}</div>
+                    <div class="program-description">${foodDescription}</div>
                     <div class="program-meta">
-                        <span class="priority-tag ${priorityClass}">${getPriorityLabel(program.nutritional_impact_score)}</span>
+                        <span class="priority-tag ${priorityClass}">${getPriorityLabel(nutritionalImpactScore)}</span>
                         <div class="program-details" style="margin-top: 6px; font-size: 11px; opacity: 0.8;">
-                            <div><strong>Priority:</strong> ${program.nutritional_priority}</div>
-                            <div><strong>Impact Score:</strong> ${program.nutritional_impact_score}/100</div>
-                            <div><strong>Ingredients:</strong> ${program.ingredients}</div>
+                            <div><strong>Priority:</strong> ${nutritionalPriority}</div>
+                            <div><strong>Impact Score:</strong> ${nutritionalImpactScore}/100</div>
+                            <div><strong>Ingredients:</strong> ${ingredients}</div>
                             <div class="target-location" style="background: rgba(161, 180, 84, 0.2); padding: 4px 8px; border-radius: 6px; margin-top: 4px; border-left: 3px solid var(--color-highlight);">
-                                <strong style="color: #4CAF50;">Benefits:</strong> ${program.benefits}
+                                <strong style="color: #4CAF50;">Benefits:</strong> ${benefits}
                             </div>
                         </div>
                         <div style="display: flex; gap: 10px; margin-top: 8px;">
-                            <button class="show-reasoning-btn" onclick="showAIReasoning('${program.food_name}', '${program.ai_reasoning}')">
+                            <button class="show-reasoning-btn" onclick="showAIReasoning('${foodName.replace(/'/g, "\\'")}', '${aiReasoning.replace(/'/g, "\\'")}')">
                                 Show AI Reasoning
                             </button>
-                            <button class="create-this-program-btn" onclick="createProgramFromCard('${program.food_name}', '${program.nutritional_priority}', '${program.nutritional_priority}', '${program.food_description}', '${getPriorityLabel(program.nutritional_impact_score)}')">
+                            <button class="create-this-program-btn" onclick="createProgramFromCard('${foodName.replace(/'/g, "\\'")}', '${nutritionalPriority}', '${nutritionalPriority}', '${foodDescription.replace(/'/g, "\\'")}', '${getPriorityLabel(nutritionalImpactScore)}')">
                                 Create This Program
                             </button>
                         </div>
@@ -7459,8 +7463,6 @@ body {
             
             return card;
         }
-
-
 
         // Function to get proper priority labels
         function getPriorityLabel(priority) {
@@ -7545,8 +7547,6 @@ body {
                 console.error('Critical alerts container NOT found!');
             }
         }
-
-
 
         // Track current alerts state to prevent unnecessary updates
         let currentAlertsState = { hasAlerts: false, lastContent: '' };
@@ -7751,54 +7751,6 @@ body {
                 }
             }
         }
-
-        // Time frame button handling - DISABLED FOR NOW
-        /*
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Setting up time frame button handlers...');
-            const timeButtons = document.querySelectorAll('.time-btn');
-            console.log('Found time buttons:', timeButtons.length);
-            
-            if (timeButtons.length === 0) {
-                console.error('No time buttons found!');
-                } else {
-                timeButtons.forEach((button, index) => {
-                    console.log(`Setting up time button ${index}:`, button.textContent);
-                    button.addEventListener('click', function() {
-                        // Remove active class from all buttons
-                        timeButtons.forEach(btn => btn.classList.remove('active'));
-                        
-                        // Add active class to clicked button
-                        this.classList.add('active');
-                        
-                        // Get the selected time frame
-                        const timeFrame = this.textContent;
-                        console.log('Selected time frame:', timeFrame);
-                        
-                        // Update data based on time frame (you can implement time-based filtering here)
-                        updateDashboardForTimeFrame(timeFrame);
-                    });
-                });
-            }
-            
-            console.log('Time frame button handlers setup complete');
-        });
-        */
-
-        // Function to update dashboard data based on time frame - DISABLED FOR NOW
-        /*
-        function updateDashboardForTimeFrame(timeFrame) {
-            console.log('=== UPDATING DASHBOARD FOR TIME FRAME ===');
-            console.log('Time frame parameter:', timeFrame);
-            console.log('Time frame type:', typeof timeFrame);
-            
-            // You can implement time-based data filtering here
-            // For example, showing data for the last day, week, month, etc.
-            
-            console.log('Time frame update complete (placeholder implementation)');
-            console.log('=== TIME FRAME UPDATE COMPLETE ===');
-        }
-        */
 
         // API Connection and Data Fetching Functions
         const API_BASE_URL = window.location.origin + '/unified_api.php';
