@@ -76,6 +76,9 @@ switch ($path) {
             // Handle API requests
             $api_path = str_replace('api/', '', $path);
             
+            // Remove .php extension if present
+            $api_path = str_replace('.php', '', $api_path);
+            
             // First check if file exists in public/api directory
             $public_api_file = $public_api_path . "$api_path.php";
             $sss_api_file = $sss_path . "api/$api_path.php";
