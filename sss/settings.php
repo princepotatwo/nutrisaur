@@ -5381,14 +5381,6 @@ optgroup option {
             console.error('Error deleting user:', error);
             showAlert('danger', 'Error deleting user: ' + error.message);
         }
-
-        
-        xhr.onerror = function() {
-            console.error('Network error during delete');
-            showAlert('danger', 'Network error while deleting user');
-        };
-        
-        xhr.send(JSON.stringify(deleteData));
     }
 
             // Function to edit a user
