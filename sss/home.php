@@ -6,7 +6,7 @@ session_start();
 $isLoggedIn = isset($_SESSION['user_id']);
 if ($isLoggedIn) {
     // Redirect to dashboard if already logged in
-    header("Location: dash.php");
+    header("Location: /dash");
     exit;
 }
 

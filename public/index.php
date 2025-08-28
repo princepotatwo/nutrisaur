@@ -82,6 +82,21 @@ switch ($path) {
         include_once $sss_path . 'debug.php';
         break;
         
+    case 'logo.png':
+        // Serve logo as static file
+        $logoPath = __DIR__ . '/logo.png';
+        if (file_exists($logoPath)) {
+            header('Content-Type: image/png');
+            header('Cache-Control: public, max-age=31536000');
+            readfile($logoPath);
+            exit;
+        } else {
+            http_response_code(404);
+            echo 'Logo not found';
+            exit;
+        }
+        break;
+        
     default:
         // Check if it's an API request
         if (strpos($path, 'api/') === 0) {
