@@ -238,6 +238,10 @@ switch ($endpoint) {
         handleCreateEvent($pdo);
         break;
         
+    case 'debug_programs_table':
+        debugProgramsTable($pdo);
+        break;
+        
     case 'add_user':
         handleAddUser($pdo);
         break;
@@ -2331,6 +2335,28 @@ function handleCreateEvent($pdo) {
         error_log("General error creating event: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Error creating event: ' . $e->getMessage()]);
+    }
+}
+
+// Debug function to check programs table structure
+function debugProgramsTable($pdo) {
+    try {
+        // Get table structure
+        $stmt = $pdo->query("DESCRIBE programs");
+        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Get sample data
+        $stmt = $pdo->query("SELECT * FROM programs LIMIT 1");
+        $sampleData = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        echo json_encode([
+            'success' => true,
+            'table_structure' => $columns,
+            'sample_data' => $sampleData
+        ]);
+        
+    } catch(PDOException $e) {
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
     }
 }
 ?>
