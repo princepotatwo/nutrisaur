@@ -74,18 +74,17 @@ try {
     // Get community health data
     $query = "
         SELECT 
-            up.user_id,
+            up.id,
             up.age,
             up.gender,
             up.risk_score,
-            up.whz_score,
+            up.bmi,
             up.muac,
             up.barangay,
-            up.municipality,
-            up.dietary_diversity_score,
+            up.dietary_diversity,
             up.swelling,
-            up.weight_loss_status,
-            up.feeding_behavior_status
+            up.weight_loss,
+            up.feeding_behavior
         FROM user_preferences up
         $whereClause
         ORDER BY up.risk_score DESC, up.created_at DESC
@@ -136,10 +135,10 @@ function generateIntelligentRecommendations($users) {
     
     foreach ($users as $user) {
         if ($user['risk_score'] >= 50) $highRiskCount++;
-        if ($user['whz_score'] < -3) $samCount++;
+        if ($user['bmi'] < 18.5) $samCount++; // Using BMI < 18.5 as underweight indicator
         if ($user['age'] < 18) $childrenCount++;
         if ($user['age'] > 65) $elderlyCount++;
-        if ($user['dietary_diversity_score'] < 5) $lowDietaryDiversity++;
+        if ($user['dietary_diversity'] < 5) $lowDietaryDiversity++;
         $totalRiskScore += $user['risk_score'];
     }
     
@@ -162,13 +161,13 @@ function generateIntelligentRecommendations($users) {
     if ($samCount > 0) {
         $recommendations[] = [
             'food_emoji' => '🥛',
-            'food_name' => 'Therapeutic Milk Formula',
-            'food_description' => 'High-energy therapeutic milk for severe acute malnutrition cases',
+            'food_name' => 'High-Energy Nutritional Supplement',
+            'food_description' => 'High-energy nutritional supplement for underweight individuals (BMI < 18.5)',
             'nutritional_priority' => 'Critical',
             'nutritional_impact_score' => 95,
             'ingredients' => 'Fortified milk powder, vegetable oil, sugar, vitamins, minerals',
             'benefits' => 'High energy density, complete protein, essential vitamins and minerals',
-            'ai_reasoning' => "Critical intervention for {$samCount} SAM cases (WHZ < -3). Therapeutic milk provides concentrated nutrition for rapid recovery."
+            'ai_reasoning' => "Critical intervention for {$samCount} underweight individuals (BMI < 18.5). High-energy supplements provide concentrated nutrition for weight gain and recovery."
         ];
     }
     
