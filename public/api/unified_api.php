@@ -2304,13 +2304,19 @@ function handleCreateEvent($pdo) {
             }
         }
         
-        // Insert event into database
+        // Get the next available program_id
+        $stmt = $pdo->query("SELECT MAX(program_id) as max_id FROM programs");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $nextId = ($result['max_id'] ?? 0) + 1;
+        
+        // Insert event into database with explicit program_id
         $stmt = $pdo->prepare("
-            INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO programs (program_id, title, type, description, date_time, location, organizer, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
         
         $stmt->execute([
+            $nextId,
             $data['title'],
             $data['type'],
             $data['description'],
