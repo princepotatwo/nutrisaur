@@ -254,7 +254,36 @@ switch ($endpoint) {
         debugAddUser($pdo);
         break;
         
+    case 'usm':
+        getUSMData($pdo);
+        break;
+        
     default:
+        // Check if this is a POST request with actions (like localapi.php)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $input = file_get_contents('php://input');
+            $postData = json_decode($input, true);
+            
+            if ($postData && isset($postData['action'])) {
+                $action = $postData['action'];
+                
+                if ($action === 'save_screening') {
+                    handleSaveScreening($pdo, $postData);
+                    exit;
+                }
+                
+                if ($action === 'get_screening_data') {
+                    handleGetScreeningData($pdo, $postData);
+                    exit;
+                }
+                
+                if ($action === 'add_user_csv') {
+                    handleAddUser($pdo);
+                    exit;
+                }
+            }
+        }
+        
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
         break;
@@ -2224,6 +2253,130 @@ function debugAddUser($pdo) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Debug error: ' . $e->getMessage()]);
+    }
+}
+
+// Functions from localapi.php
+function handleSaveScreening($pdo, $postData) {
+    try {
+        // Extract screening data
+        $userEmail = $postData['user_email'] ?? $postData['email'] ?? '';
+        $screeningData = $postData['screening_data'] ?? [];
+        $riskScore = $postData['risk_score'] ?? 0;
+        
+        if (!$userEmail) {
+            echo json_encode(['error' => 'User email is required']);
+            exit;
+        }
+        
+        // Check if user exists, if not create basic record
+        $stmt = $pdo->prepare("SELECT id FROM user_preferences WHERE user_email = ?");
+        $stmt->execute([$userEmail]);
+        $existingUser = $stmt->fetch();
+        
+        if ($existingUser) {
+            // Update existing user
+            $stmt = $pdo->prepare("
+                UPDATE user_preferences SET 
+                    screening_answers = ?,
+                    risk_score = ?,
+                    updated_at = NOW()
+                WHERE user_email = ?
+            ");
+            $stmt->execute([json_encode($screeningData), $riskScore, $userEmail]);
+        } else {
+            // Create new user record
+            $stmt = $pdo->prepare("
+                INSERT INTO user_preferences (
+                    user_email, screening_answers, risk_score, created_at, updated_at
+                ) VALUES (?, ?, ?, NOW(), NOW())
+            ");
+            $stmt->execute([$userEmail, json_encode($screeningData), $riskScore]);
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Screening data saved successfully',
+            'user_email' => $userEmail,
+            'risk_score' => $riskScore
+        ]);
+        
+    } catch(PDOException $e) {
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+function handleGetScreeningData($pdo, $postData) {
+    try {
+        $userEmail = $postData['user_email'] ?? $postData['email'] ?? '';
+        
+        if (!$userEmail) {
+            echo json_encode(['error' => 'User email is required']);
+            exit;
+        }
+        
+        $stmt = $pdo->prepare("
+            SELECT 
+                screening_answers, 
+                risk_score, 
+                created_at, 
+                updated_at,
+                gender,
+                barangay,
+                income,
+                weight_kg as weight,
+                height_cm as height,
+                bmi,
+                muac,
+                name,
+                birthday,
+                allergies,
+                diet_prefs,
+                avoid_foods
+            FROM user_preferences 
+            WHERE user_email = ?
+        ");
+        $stmt->execute([$userEmail]);
+        $screeningData = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($screeningData) {
+            // Parse the screening answers JSON
+            $screeningAnswersRaw = $screeningData['screening_answers'];
+            $screeningAnswers = json_decode($screeningAnswersRaw, true) ?: [];
+            
+            // Create a comprehensive user data object
+            $userData = array_merge($screeningAnswers, [
+                'user_email' => $userEmail,
+                'risk_score' => $screeningData['risk_score'],
+                'created_at' => $screeningData['created_at'],
+                'updated_at' => $screeningData['updated_at'],
+                'gender' => $screeningData['gender'],
+                'barangay' => $screeningData['barangay'],
+                'income' => $screeningData['income'],
+                'weight' => $screeningData['weight'],
+                'height' => $screeningData['height'],
+                'bmi' => $screeningData['bmi'],
+                'muac' => $screeningData['muac'],
+                'name' => $screeningData['name'],
+                'birthday' => $screeningData['birthday'],
+                'allergies' => $screeningData['allergies'],
+                'diet_prefs' => $screeningData['diet_prefs'],
+                'avoid_foods' => $screeningData['avoid_foods']
+            ]);
+            
+            echo json_encode([
+                'success' => true,
+                'data' => $userData
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No screening data found for this user'
+            ]);
+        }
+        
+    } catch(PDOException $e) {
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
     }
 }
 
