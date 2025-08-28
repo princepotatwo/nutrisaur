@@ -14,49 +14,52 @@ if (strpos($path, '?') !== false) {
     $path = substr($path, 0, strpos($path, '?'));
 }
 
+// Define the correct path to sss directory
+$sss_path = __DIR__ . '/../sss/';
+
 // Route to appropriate file
 switch ($path) {
     case '':
     case 'home':
         // Route to home page
-        include_once '../sss/home.php';
+        include_once $sss_path . 'home.php';
         break;
         
     case 'dash':
     case 'dashboard':
         // Route to dashboard
-        include_once '../sss/dash.php';
+        include_once $sss_path . 'dash.php';
         break;
         
     case 'settings':
         // Route to settings
-        include_once '../sss/settings.php';
+        include_once $sss_path . 'settings.php';
         break;
         
     case 'ai':
         // Route to AI page
-        include_once '../sss/AI.php';
+        include_once $sss_path . 'AI.php';
         break;
         
     case 'event':
     case 'events':
         // Route to events page
-        include_once '../sss/event.php';
+        include_once $sss_path . 'event.php';
         break;
         
     case 'logout':
         // Route to logout
-        include_once '../sss/logout.php';
+        include_once $sss_path . 'logout.php';
         break;
         
     case 'NR':
         // Route to NR page
-        include_once '../sss/NR.php';
+        include_once $sss_path . 'NR.php';
         break;
         
     case 'FPM':
         // Route to FPM page
-        include_once '../sss/FPM.php';
+        include_once $sss_path . 'FPM.php';
         break;
         
     default:
@@ -68,8 +71,8 @@ switch ($path) {
             } else {
                 // Route to api directory
                 $api_path = str_replace('api/', '', $path);
-                if (file_exists("../sss/api/$api_path.php")) {
-                    include_once "../sss/api/$api_path.php";
+                if (file_exists($sss_path . "api/$api_path.php")) {
+                    include_once $sss_path . "api/$api_path.php";
                 } else {
                     http_response_code(404);
                     echo "API endpoint not found: $api_path";
@@ -77,11 +80,11 @@ switch ($path) {
             }
         } else {
             // Check if file exists in sss directory
-            if (file_exists("../sss/$path.php")) {
-                include_once "../sss/$path.php";
+            if (file_exists($sss_path . "$path.php")) {
+                include_once $sss_path . "$path.php";
             } else {
                 // Default to home page
-                include_once '../sss/home.php';
+                include_once $sss_path . 'home.php';
             }
         }
         break;
