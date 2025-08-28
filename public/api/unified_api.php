@@ -138,6 +138,50 @@ switch ($endpoint) {
         testColumns($pdo);
         break;
         
+    case 'height_distribution':
+        getHeightDistribution($pdo);
+        break;
+        
+    case 'weight_distribution':
+        getWeightDistribution($pdo);
+        break;
+        
+    case 'bmi_distribution':
+        getBMIDistribution($pdo);
+        break;
+        
+    case 'malnutrition_risk_distribution':
+        getMalnutritionRiskDistribution($pdo);
+        break;
+        
+    case 'income_distribution':
+        getIncomeDistribution($pdo);
+        break;
+        
+    case 'swelling_distribution':
+        getSwellingDistribution($pdo);
+        break;
+        
+    case 'weight_loss_distribution':
+        getWeightLossDistribution($pdo);
+        break;
+        
+    case 'feeding_behavior_distribution':
+        getFeedingBehaviorDistribution($pdo);
+        break;
+        
+    case 'physical_signs_distribution':
+        getPhysicalSignsDistribution($pdo);
+        break;
+        
+    case 'dietary_diversity_distribution':
+        getDietaryDiversityDistribution($pdo);
+        break;
+        
+    case 'clinical_risk_factors_distribution':
+        getClinicalRiskFactorsDistribution($pdo);
+        break;
+        
     default:
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
@@ -789,6 +833,204 @@ function testColumns($pdo) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Error testing column: ' . $e->getMessage()]);
+    }
+}
+
+function getHeightDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT height, COUNT(*) as count
+            FROM user_preferences 
+            WHERE height IS NOT NULL AND height != ''
+            GROUP BY height
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching height distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getWeightDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT weight, COUNT(*) as count
+            FROM user_preferences 
+            WHERE weight IS NOT NULL AND weight != ''
+            GROUP BY weight
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching weight distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getBMIDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT bmi, COUNT(*) as count
+            FROM user_preferences 
+            WHERE bmi IS NOT NULL AND bmi != ''
+            GROUP BY bmi
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching BMI distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getMalnutritionRiskDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT malnutrition_risk, COUNT(*) as count
+            FROM user_preferences 
+            WHERE malnutrition_risk IS NOT NULL AND malnutrition_risk != ''
+            GROUP BY malnutrition_risk
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching malnutrition risk distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getIncomeDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT income_level, COUNT(*) as count
+            FROM user_preferences 
+            WHERE income_level IS NOT NULL AND income_level != ''
+            GROUP BY income_level
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching income distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getSwellingDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT swelling, COUNT(*) as count
+            FROM user_preferences 
+            WHERE swelling IS NOT NULL AND swelling != ''
+            GROUP BY swelling
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching swelling distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getWeightLossDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT weight_loss, COUNT(*) as count
+            FROM user_preferences 
+            WHERE weight_loss IS NOT NULL AND weight_loss != ''
+            GROUP BY weight_loss
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching weight loss distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getFeedingBehaviorDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT feeding_behavior, COUNT(*) as count
+            FROM user_preferences 
+            WHERE feeding_behavior IS NOT NULL AND feeding_behavior != ''
+            GROUP BY feeding_behavior
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching feeding behavior distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getPhysicalSignsDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT physical_signs, COUNT(*) as count
+            FROM user_preferences 
+            WHERE physical_signs IS NOT NULL AND physical_signs != ''
+            GROUP BY physical_signs
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching physical signs distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getDietaryDiversityDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT dietary_diversity, COUNT(*) as count
+            FROM user_preferences 
+            WHERE dietary_diversity IS NOT NULL AND dietary_diversity != ''
+            GROUP BY dietary_diversity
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching dietary diversity distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getClinicalRiskFactorsDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT clinical_risk_factors, COUNT(*) as count
+            FROM user_preferences 
+            WHERE clinical_risk_factors IS NOT NULL AND clinical_risk_factors != ''
+            GROUP BY clinical_risk_factors
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching clinical risk factors distribution: ' . $e->getMessage()]);
     }
 }
 ?>
