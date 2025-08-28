@@ -182,6 +182,10 @@ switch ($endpoint) {
         getClinicalRiskFactorsDistribution($pdo);
         break;
         
+    case 'generate_test_data':
+        generateTestData($pdo);
+        break;
+        
     default:
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid endpoint']);
@@ -1031,6 +1035,81 @@ function getClinicalRiskFactorsDistribution($pdo) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Error fetching clinical risk factors distribution: ' . $e->getMessage()]);
+    }
+}
+
+function generateTestData($pdo) {
+    try {
+        // This function will generate test data for the user_preferences table
+        // It will insert a large number of dummy records to simulate real data
+        // For demonstration, we'll insert 10000 dummy records
+        $numRecords = 10000;
+        $barangays = ['Barangay A', 'Barangay B', 'Barangay C', 'MUNICIPALITY_City X', 'MUNICIPALITY_City Y'];
+        $genders = ['Male', 'Female'];
+        $incomeLevels = ['Low', 'Medium', 'High'];
+        $malnutritionRisks = ['Yes', 'No'];
+        $swellings = ['Yes', 'No'];
+        $weightLosses = ['Yes', 'No'];
+        $feedingBehaviors = ['Normal', 'Poor', 'Good'];
+        $physicalSigns = ['Yes', 'No'];
+        $dietaryDiversities = ['Yes', 'No'];
+        $clinicalRiskFactors = ['Yes', 'No'];
+
+        $sql = "INSERT INTO user_preferences (
+            user_email, age, gender, risk_score, bmi, barangay, malnutrition_risk,
+            income_level, swelling, weight_loss, feeding_behavior, physical_signs,
+            dietary_diversity, clinical_risk_factors, created_at
+        ) VALUES (
+            CONCAT('test_user_', LPAD(FLOOR(RAND() * 1000), 4, '0')),
+            FLOOR(RAND() * 70) + 1, -- Age between 1 and 70
+            :gender,
+            FLOOR(RAND() * 100), -- Risk score between 0 and 100
+            ROUND(RAND() * 40 + 10, 1), -- BMI between 10 and 50
+            :barangay,
+            :malnutritionRisk,
+            :incomeLevel,
+            :swelling,
+            :weightLoss,
+            :feedingBehavior,
+            :physicalSigns,
+            :dietaryDiversity,
+            :clinicalRiskFactors,
+            NOW()
+        )";
+
+        $stmt = $pdo->prepare($sql);
+
+        for ($i = 0; $i < $numRecords; $i++) {
+            $gender = $genders[array_rand($genders)];
+            $barangay = $barangays[array_rand($barangays)];
+            $malnutritionRisk = $malnutritionRisks[array_rand($malnutritionRisks)];
+            $incomeLevel = $incomeLevels[array_rand($incomeLevels)];
+            $swelling = $swellings[array_rand($swellings)];
+            $weightLoss = $weightLosses[array_rand($weightLosses)];
+            $feedingBehavior = $feedingBehaviors[array_rand($feedingBehaviors)];
+            $physicalSigns = $physicalSigns[array_rand($physicalSigns)];
+            $dietaryDiversity = $dietaryDiversities[array_rand($dietaryDiversities)];
+            $clinicalRiskFactors = $clinicalRiskFactors[array_rand($clinicalRiskFactors)];
+
+            $stmt->execute([
+                ':gender' => $gender,
+                ':barangay' => $barangay,
+                ':malnutritionRisk' => $malnutritionRisk,
+                ':incomeLevel' => $incomeLevel,
+                ':swelling' => $swelling,
+                ':weightLoss' => $weightLoss,
+                ':feedingBehavior' => $feedingBehavior,
+                ':physicalSigns' => $physicalSigns,
+                ':dietaryDiversity' => $dietaryDiversity,
+                ':clinicalRiskFactors' => $clinicalRiskFactors
+            ]);
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Generated ' . $numRecords . ' test data records.']);
+    } catch (Exception $e) {
+        error_log("Error generating test data: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error generating test data: ' . $e->getMessage()]);
     }
 }
 ?>
