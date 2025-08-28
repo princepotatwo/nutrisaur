@@ -71,16 +71,20 @@ try {
         $params[':municipality'] = $municipality;
     }
     
-    // Get community health data
+    // Get community health data - using correct column names from working queries
     $query = "
         SELECT 
             up.id,
             up.age,
             up.gender,
             up.risk_score,
-            up.bmi,
+            up.whz_score,
+            up.muac,
             up.barangay,
-            up.dietary_diversity,
+            up.dietary_diversity_score,
+            up.swelling,
+            up.weight_loss,
+            up.feeding_behavior,
             up.created_at
         FROM user_preferences up
         $whereClause
@@ -124,18 +128,14 @@ function generateIntelligentRecommendations($users) {
     
     // Analyze community health patterns
     $highRiskCount = 0;
-    $samCount = 0;
-    $childrenCount = 0;
-    $elderlyCount = 0;
-    $lowDietaryDiversity = 0;
     $totalRiskScore = 0;
     
     foreach ($users as $user) {
         if ($user['risk_score'] >= 50) $highRiskCount++;
-        if ($user['bmi'] < 18.5 && $user['bmi'] > 0) $samCount++; // Using BMI < 18.5 as underweight indicator
+        if ($user['whz_score'] < -3 && $user['whz_score'] !== null) $samCount++; // Using WHZ < -3 as SAM indicator
         if ($user['age'] < 18 && $user['age'] > 0) $childrenCount++;
         if ($user['age'] > 65) $elderlyCount++;
-        if ($user['dietary_diversity'] < 5 && $user['dietary_diversity'] > 0) $lowDietaryDiversity++;
+        if ($user['dietary_diversity_score'] < 5 && $user['dietary_diversity_score'] > 0) $lowDietaryDiversity++;
         $totalRiskScore += $user['risk_score'] ?? 0;
     }
     
@@ -158,13 +158,13 @@ function generateIntelligentRecommendations($users) {
     if ($samCount > 0) {
         $recommendations[] = [
             'food_emoji' => '🥛',
-            'food_name' => 'High-Energy Nutritional Supplement',
-            'food_description' => 'High-energy nutritional supplement for underweight individuals (BMI < 18.5)',
+            'food_name' => 'Therapeutic Milk Formula',
+            'food_description' => 'High-energy therapeutic milk for severe acute malnutrition cases (WHZ < -3)',
             'nutritional_priority' => 'Critical',
             'nutritional_impact_score' => 95,
             'ingredients' => 'Fortified milk powder, vegetable oil, sugar, vitamins, minerals',
             'benefits' => 'High energy density, complete protein, essential vitamins and minerals',
-            'ai_reasoning' => "Critical intervention for {$samCount} underweight individuals (BMI < 18.5). High-energy supplements provide concentrated nutrition for weight gain and recovery."
+            'ai_reasoning' => "Critical intervention for {$samCount} SAM cases (WHZ < -3). Therapeutic milk provides concentrated nutrition for rapid recovery."
         ];
     }
     
