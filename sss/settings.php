@@ -6861,14 +6861,13 @@ optgroup option {
             let deletedCount = 0;
             const deletePromises = usersArray.map(async (user) => {
                 try {
-                    const response = await fetch('API_BASE_URL + "/unified_api.php"', {
+                    const response = await fetch(API_BASE_URL + "/unified_api.php?endpoint=delete_user", {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            action: 'delete_user',
-                            email: user.email
+                            user_email: user.email
                         })
                     });
                     
