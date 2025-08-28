@@ -1478,21 +1478,18 @@ function getUSMData($pdo) {
         $sql = "
             SELECT 
                 up.id,
-                up.name,
                 up.user_email as email,
-                up.birthday,
+                up.age,
                 up.gender,
-                up.weight,
-                up.height,
-                up.bmi,
-                up.muac,
                 up.barangay,
-                up.income,
+                up.municipality,
+                up.province,
+                up.weight_kg as weight,
+                up.height_cm as height,
+                up.bmi,
                 up.risk_score,
-                up.screening_answers,
-                up.allergies,
-                up.diet_prefs,
-                up.avoid_foods,
+                up.malnutrition_risk,
+                up.screening_date,
                 up.created_at,
                 up.updated_at
             FROM user_preferences up
@@ -1511,42 +1508,21 @@ function getUSMData($pdo) {
         // Format users data for USM
         $usersData = [];
         foreach ($users as $user) {
-            // Extract additional fields from screening_answers JSON if available
-            $screeningAnswers = [];
-            if ($user['screening_answers']) {
-                try {
-                    $screeningAnswers = json_decode($user['screening_answers'], true) ?: [];
-                } catch (Exception $e) {
-                    $screeningAnswers = [];
-                }
-            }
-            
             $usersData[] = [
                 'id' => intval($user['id']),
-                'username' => $user['name'] ?: 'User ' . $user['id'],
+                'username' => 'User ' . $user['id'],
                 'email' => $user['email'],
-                'birthday' => $user['birthday'],
+                'age' => $user['age'],
                 'gender' => $user['gender'],
                 'weight' => $user['weight'],
                 'height' => $user['height'],
                 'bmi' => $user['bmi'],
-                'muac' => $user['muac'],
                 'barangay' => $user['barangay'],
-                'income' => $user['income'],
+                'municipality' => $user['municipality'],
+                'province' => $user['province'],
                 'risk_score' => $user['risk_score'],
-                'swelling' => $screeningAnswers['swelling'] ?? null,
-                'weight_loss' => $screeningAnswers['weight_loss'] ?? null,
-                'dietary_diversity' => $screeningAnswers['dietary_diversity'] ?? null,
-                'feeding_behavior' => $screeningAnswers['feeding_behavior'] ?? null,
-                'screening_answers' => $user['screening_answers'],
-                'allergies' => $user['allergies'],
-                'diet_prefs' => $user['diet_prefs'],
-                'avoid_foods' => $user['avoid_foods'],
-                'has_recent_illness' => $screeningAnswers['has_recent_illness'] ?? false,
-                'has_eating_difficulty' => $screeningAnswers['has_eating_difficulty'] ?? false,
-                'has_food_insecurity' => $screeningAnswers['has_food_insecurity'] ?? false,
-                'has_micronutrient_deficiency' => $screeningAnswers['has_micronutrient_deficiency'] ?? false,
-                'has_functional_decline' => $screeningAnswers['has_functional_decline'] ?? false,
+                'malnutrition_risk' => $user['malnutrition_risk'],
+                'screening_date' => $user['screening_date'],
                 'created_at' => $user['created_at'],
                 'updated_at' => $user['updated_at']
             ];
