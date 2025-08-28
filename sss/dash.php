@@ -8906,20 +8906,7 @@ body {
         // Test municipality filtering
         async function testMunicipalityFiltering(barangay) {
             console.log('Testing municipality filtering for:', barangay);
-            try {        // Barangay and Municipality selection handling
-                    document.addEventListener('DOMContentLoaded', function() {
-                    });
-                            const response = await fetch('http://localhost/thesis355/unified_api.php?test=1');
-                            const response = await fetch(`http://localhost/thesis355/unified_api.php?endpoint=test_municipality&barangay=${encodeURIComponent(barangay)}`);
-                            const response = await fetch('http://localhost/thesis355/unified_api.php?endpoint=intelligent_programs');
-                            const barangayResponse = await fetch('http://localhost/thesis355/unified_api.php?endpoint=intelligent_programs&barangay=Bangkal');
-                            const response = await fetch(`http://localhost/thesis355/unified_api.php?endpoint=check_user_data&email=${encodeURIComponent(email)}`);
-                            const response = await fetch('http://localhost/thesis355/unified_api.php?endpoint=screening_responses');
-                            const response1 = await fetch('http://localhost/thesis355/debug_db.php');
-                            const response2 = await fetch('http://localhost/thesis355/debug_table.php?table=user_preferences');
-                            const response1 = await fetch('http://localhost/thesis355/unified_api.php?endpoint=screening_responses');
-                                updateDashboardByLocation(selectedValue);
-            
+            try {
                 const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=test_municipality&barangay=${encodeURIComponent(barangay)}`);
                 if (response.ok) {
                     const data = await response.json();
