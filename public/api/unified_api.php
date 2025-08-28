@@ -231,7 +231,7 @@ switch ($endpoint) {
         break;
         
     case 'add_user':
-        handleAddUser($pdo);
+        handleAddUserNew($pdo);
         break;
         
     case 'update_user':
@@ -2218,6 +2218,61 @@ function debugAddUser($pdo) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Debug error: ' . $e->getMessage()]);
+    }
+}
+
+// NEW SIMPLE FUNCTION TO TEST
+function handleAddUserNew($pdo) {
+    try {
+        error_log("handleAddUserNew function called - SIMPLE VERSION");
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Invalid JSON data']);
+            return;
+        }
+        
+        error_log("handleAddUserNew received data: " . json_encode($data));
+        
+        // Simple insert with just basic fields
+        $stmt = $pdo->prepare("
+            INSERT INTO user_preferences (
+                user_email, name, age, gender, barangay
+            ) VALUES (?, ?, ?, ?, ?)
+        ");
+        
+        $values = [
+            $data['user_email'] ?? null,
+            $data['name'] ?? null,
+            $data['age'] ?? null,
+            $data['gender'] ?? null,
+            $data['barangay'] ?? null
+        ];
+        
+        error_log("handleAddUserNew values count: " . count($values));
+        error_log("handleAddUserNew values: " . json_encode($values));
+        
+        $stmt->execute($values);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'User added successfully (simple version)',
+            'user_id' => $pdo->lastInsertId()
+        ]);
+        
+    } catch (Exception $e) {
+        error_log("handleAddUserNew error: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
     }
 }
 ?>
