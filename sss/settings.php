@@ -3791,7 +3791,7 @@ optgroup option {
         <div class="navbar-header">
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
-                    <img src="../sss/logo.png" alt="Logo" style="width: 40px; height: 40px;">
+                    <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
                 </div>
                 <div class="navbar-logo-text">NutriSaur</div>
             </div>
