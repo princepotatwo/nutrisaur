@@ -126,6 +126,10 @@ switch ($endpoint) {
         checkUserData($pdo);
         break;
         
+    case 'mobile_signup':
+        handleMobileSignup($pdo);
+        break;
+        
     case 'test_municipality':
         testMunicipality($pdo);
         break;
@@ -1563,6 +1567,171 @@ function getUSMData($pdo) {
         error_log("Error in getUSMData: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(['error' => 'Error: ' . $e->getMessage()]);
+    }
+}
+
+// Handle Mobile App Signup and Profile Updates
+function handleMobileSignup($pdo) {
+    try {
+        // Check if it's a POST request
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            return;
+        }
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
+            return;
+        }
+        
+        $action = $data['action'] ?? '';
+        
+        if ($action === 'save_screening') {
+            handleSaveScreening($pdo, $data);
+        } elseif ($action === 'get_screening_data') {
+            handleGetScreeningData($pdo, $data);
+        } else {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid action: ' . $action]);
+        }
+        
+    } catch (Exception $e) {
+        error_log("Error in handleMobileSignup: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Request failed: ' . $e->getMessage()]);
+    }
+}
+
+// Handle saving screening data from mobile app
+function handleSaveScreening($pdo, $data) {
+    try {
+        $userEmail = $data['email'] ?? '';
+        $screeningData = $data['screening_data'] ?? '';
+        $riskScore = $data['risk_score'] ?? 0;
+        
+        if (!$userEmail) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Email is required']);
+            return;
+        }
+        
+        // Check if user exists in user_preferences
+        $stmt = $pdo->prepare("SELECT id FROM user_preferences WHERE user_email = ?");
+        $stmt->execute([$userEmail]);
+        $existingUser = $stmt->fetch();
+        
+        if ($existingUser) {
+            // Update existing user
+            $stmt = $pdo->prepare("
+                UPDATE user_preferences SET 
+                    screening_answers = ?,
+                    risk_score = ?,
+                    updated_at = NOW()
+                WHERE user_email = ?
+            ");
+            $stmt->execute([$screeningData, $riskScore, $userEmail]);
+        } else {
+            // Create new user record
+            $stmt = $pdo->prepare("
+                INSERT INTO user_preferences (
+                    user_email, screening_answers, risk_score, created_at, updated_at
+                ) VALUES (?, ?, ?, NOW(), NOW())
+            ");
+            $stmt->execute([$userEmail, $screeningData, $riskScore]);
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Screening data saved successfully',
+            'user_email' => $userEmail,
+            'risk_score' => $riskScore
+        ]);
+        
+    } catch (Exception $e) {
+        error_log("Error in handleSaveScreening: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Failed to save screening data: ' . $e->getMessage()]);
+    }
+}
+
+// Handle getting screening data for mobile app
+function handleGetScreeningData($pdo, $data) {
+    try {
+        $userEmail = $data['email'] ?? '';
+        
+        if (!$userEmail) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Email is required']);
+            return;
+        }
+        
+        $stmt = $pdo->prepare("
+            SELECT 
+                screening_answers, 
+                risk_score, 
+                created_at, 
+                updated_at,
+                gender,
+                barangay,
+                income,
+                weight_kg as weight,
+                height_cm as height,
+                bmi,
+                age,
+                malnutrition_risk
+            FROM user_preferences 
+            WHERE user_email = ?
+        ");
+        $stmt->execute([$userEmail]);
+        $screeningData = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($screeningData) {
+            // Parse the screening answers JSON if it exists
+            $screeningAnswers = [];
+            if ($screeningData['screening_answers']) {
+                try {
+                    $screeningAnswers = json_decode($screeningData['screening_answers'], true) ?: [];
+                } catch (Exception $e) {
+                    $screeningAnswers = [];
+                }
+            }
+            
+            // Create a comprehensive user data object that matches what the mobile app expects
+            $userData = array_merge($screeningAnswers, [
+                'user_email' => $userEmail,
+                'risk_score' => $screeningData['risk_score'],
+                'created_at' => $screeningData['created_at'],
+                'updated_at' => $screeningData['updated_at'],
+                'gender' => $screeningData['gender'],
+                'barangay' => $screeningData['barangay'],
+                'income' => $screeningData['income'],
+                'weight' => $screeningData['weight'],
+                'height' => $screeningData['height'],
+                'bmi' => $screeningData['bmi'],
+                'age' => $screeningData['age'],
+                'malnutrition_risk' => $screeningData['malnutrition_risk']
+            ]);
+            
+            echo json_encode([
+                'success' => true,
+                'data' => $userData
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'No screening data found for this user'
+            ]);
+        }
+        
+    } catch (Exception $e) {
+        error_log("Error in handleGetScreeningData: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Failed to get screening data: ' . $e->getMessage()]);
     }
 }
 ?>
