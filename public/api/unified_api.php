@@ -182,6 +182,38 @@ switch ($endpoint) {
         getClinicalRiskFactorsDistribution($pdo);
         break;
         
+    case 'income_level_distribution':
+        getIncomeLevelDistribution($pdo);
+        break;
+        
+    case 'muac_distribution':
+        getMuacDistribution($pdo);
+        break;
+        
+    case 'whz_distribution':
+        getWhzDistribution($pdo);
+        break;
+        
+    case 'swelling_distribution':
+        getSwellingDistribution($pdo);
+        break;
+        
+    case 'weight_loss_distribution':
+        getWeightLossDistribution($pdo);
+        break;
+        
+    case 'feeding_behavior_distribution':
+        getFeedingBehaviorDistribution($pdo);
+        break;
+        
+    case 'physical_signs_distribution':
+        getPhysicalSignsDistribution($pdo);
+        break;
+        
+    case 'dietary_diversity_distribution':
+        getDietaryDiversityDistribution($pdo);
+        break;
+        
     case 'generate_test_data':
         generateTestData($pdo);
         break;
@@ -1039,6 +1071,150 @@ function getClinicalRiskFactorsDistribution($pdo) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Error fetching clinical risk factors distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getIncomeLevelDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT income_level, COUNT(*) as count
+            FROM user_preferences 
+            WHERE income_level IS NOT NULL AND income_level != ''
+            GROUP BY income_level
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching income level distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getMuacDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT muac, COUNT(*) as count
+            FROM user_preferences 
+            WHERE muac IS NOT NULL AND muac != ''
+            GROUP BY muac
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching MUAC distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getWhzDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT whz_score, COUNT(*) as count
+            FROM user_preferences 
+            WHERE whz_score IS NOT NULL AND whz_score != ''
+            GROUP BY whz_score
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching WHZ distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getSwellingDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT swelling, COUNT(*) as count
+            FROM user_preferences 
+            WHERE swelling IS NOT NULL AND swelling != ''
+            GROUP BY swelling
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching swelling distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getWeightLossDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT weight_loss, COUNT(*) as count
+            FROM user_preferences 
+            WHERE weight_loss IS NOT NULL AND weight_loss != ''
+            GROUP BY weight_loss
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching weight loss distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getFeedingBehaviorDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT feeding_behavior, COUNT(*) as count
+            FROM user_preferences 
+            WHERE feeding_behavior IS NOT NULL AND feeding_behavior != ''
+            GROUP BY feeding_behavior
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching feeding behavior distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getPhysicalSignsDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT physical_signs, COUNT(*) as count
+            FROM user_preferences 
+            WHERE physical_signs IS NOT NULL AND physical_signs != ''
+            GROUP BY physical_signs
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching physical signs distribution: ' . $e->getMessage()]);
+    }
+}
+
+function getDietaryDiversityDistribution($pdo) {
+    try {
+        $stmt = $pdo->query("
+            SELECT dietary_diversity, COUNT(*) as count
+            FROM user_preferences 
+            WHERE dietary_diversity IS NOT NULL AND dietary_diversity != ''
+            GROUP BY dietary_diversity
+            ORDER BY count DESC
+        ");
+        
+        $data = $stmt->fetchAll();
+        echo json_encode(['success' => true, 'data' => $data]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error fetching dietary diversity distribution: ' . $e->getMessage()]);
     }
 }
 
