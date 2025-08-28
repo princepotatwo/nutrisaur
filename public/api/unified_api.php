@@ -2307,7 +2307,7 @@ function handleCreateEvent($pdo) {
         // Insert event into database
         $stmt = $pdo->prepare("
             INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, NOW())
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         ");
         
         $stmt->execute([
@@ -2316,7 +2316,8 @@ function handleCreateEvent($pdo) {
             $data['description'],
             $data['date_time'],
             $data['location'],
-            $data['organizer']
+            $data['organizer'],
+            time() * 1000 // Convert to milliseconds for bigint created_at
         ]);
         
         $eventId = $pdo->lastInsertId();
