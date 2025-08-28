@@ -70,6 +70,18 @@ switch ($path) {
         include_once $sss_path . 'FPM.php';
         break;
         
+    case 'health':
+    case 'health.php':
+        // Route to health check
+        include_once $sss_path . 'health.php';
+        break;
+        
+    case 'debug':
+    case 'debug.php':
+        // Route to debug endpoint
+        include_once $sss_path . 'debug.php';
+        break;
+        
     default:
         // Check if it's an API request
         if (strpos($path, 'api/') === 0) {
