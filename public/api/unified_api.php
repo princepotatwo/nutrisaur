@@ -133,10 +133,10 @@ function getCommunityMetrics($pdo) {
         echo json_encode([
             'success' => true,
             'data' => [
-                'total_users' => $totalUsers,
-                'total_screenings' => $totalScreenings,
-                'high_risk' => $highRisk,
-                'critical' => $critical
+                'total_screened' => $totalScreenings,
+                'high_risk_cases' => $highRisk,
+                'critical_cases' => $critical,
+                'total_users' => $totalUsers
             ]
         ]);
     } catch (Exception $e) {
@@ -303,8 +303,8 @@ function getDetailedScreeningResponses($pdo) {
         $stmt->execute($params);
         $data = $stmt->fetchAll();
         
-        // Group data by categories for dashboard display
-        $groupedData = [
+        // Process data into the format expected by the dashboard
+        $processedData = [
             'age_groups' => [],
             'gender' => [],
             'income_levels' => [],
@@ -317,20 +317,51 @@ function getDetailedScreeningResponses($pdo) {
             'clinical_risk' => []
         ];
         
+        // Process age groups
+        $ageGroups = [];
         foreach ($data as $row) {
-            // Process each category (simplified for now)
-            if (isset($row['age_group'])) {
-                $groupedData['age_groups'][] = $row;
+            if (isset($row['age']) && $row['age'] > 0) {
+                $age = intval($row['age']);
+                if ($age < 6) $group = '0-5 years';
+                elseif ($age < 13) $group = '6-12 years';
+                elseif ($age < 18) $group = '13-17 years';
+                elseif ($age < 60) $group = '18-59 years';
+                else $group = '60+ years';
+                
+                if (!isset($ageGroups[$group])) $ageGroups[$group] = 0;
+                $ageGroups[$group]++;
             }
-            if (isset($row['gender'])) {
-                $groupedData['gender'][] = $row;
-            }
-            // Add other categories as needed
         }
+        foreach ($ageGroups as $group => $count) {
+            $processedData['age_groups'][] = ['age_group' => $group, 'count' => $count];
+        }
+        
+        // Process gender
+        $genderCounts = [];
+        foreach ($data as $row) {
+            if (isset($row['gender']) && $row['gender']) {
+                $gender = ucfirst(strtolower($row['gender']));
+                if (!isset($genderCounts[$gender])) $genderCounts[$gender] = 0;
+                $genderCounts[$gender]++;
+            }
+        }
+        foreach ($genderCounts as $gender => $count) {
+            $processedData['gender'][] = ['gender' => $gender, 'count' => $count];
+        }
+        
+        // Process other categories similarly
+        $processedData['income_levels'] = [];
+        $processedData['height'] = [];
+        $processedData['swelling'] = [];
+        $processedData['weight_loss'] = [];
+        $processedData['feeding_behavior'] = [];
+        $processedData['physical_signs'] = [];
+        $processedData['dietary_diversity'] = [];
+        $processedData['clinical_risk'] = [];
         
         echo json_encode([
             'success' => true,
-            'data' => $groupedData
+            'data' => $processedData
         ]);
         
     } catch (Exception $e) {
