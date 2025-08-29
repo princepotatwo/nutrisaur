@@ -2215,7 +2215,7 @@ function handleAddUserNew($pdo) {
 // Events endpoint function
 function getEventsData($pdo) {
     try {
-        // Get all upcoming programs/events
+        // Get all programs/events
         $stmt = $pdo->prepare("
             SELECT 
                 p.program_id,
@@ -2227,8 +2227,7 @@ function getEventsData($pdo) {
                 p.organizer,
                 p.created_at
             FROM programs p
-            WHERE p.date_time >= NOW()
-            ORDER BY p.date_time ASC
+            ORDER BY p.date_time DESC
         ");
         $stmt->execute();
         $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
