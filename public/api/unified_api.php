@@ -1892,9 +1892,34 @@ function handleDeleteUser($pdo) {
             return;
         }
         
+        $userEmail = $data['user_email'];
+        
+        // Debug: Check if user exists before deleting
+        $checkStmt = $pdo->prepare("SELECT COUNT(*) as count FROM user_preferences WHERE user_email = ?");
+        $checkStmt->execute([$userEmail]);
+        $userExists = $checkStmt->fetch()['count'] > 0;
+        
+        if (!$userExists) {
+            // Debug: Check what emails actually exist
+            $allEmailsStmt = $pdo->query("SELECT user_email FROM user_preferences LIMIT 5");
+            $allEmails = $allEmailsStmt->fetchAll(PDO::FETCH_COLUMN);
+            
+            http_response_code(404);
+            echo json_encode([
+                'success' => false, 
+                'error' => 'User not found',
+                'debug' => [
+                    'requested_email' => $userEmail,
+                    'user_exists' => $userExists,
+                    'sample_emails_in_db' => $allEmails
+                ]
+            ]);
+            return;
+        }
+        
         // Delete user
         $stmt = $pdo->prepare("DELETE FROM user_preferences WHERE user_email = ?");
-        $stmt->execute([$data['user_email']]);
+        $stmt->execute([$userEmail]);
         
         if ($stmt->rowCount() > 0) {
             echo json_encode([
