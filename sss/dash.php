@@ -8266,46 +8266,7 @@ body {
         }
 
         
-        async function debugAPIResponse() {
-            try {
-                const response = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses');
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    if (data.success && data.data) {
-                        Object.keys(data.data).forEach(key => {
-                            const section = data.data[key];
-                            
-                            if (Array.isArray(section)) {
-                                section.forEach((item, index) => {
-                                    if (item.label) {
-                                    }
-                                    if (item.value !== undefined) {
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-            } catch (error) {
-            }
-        }
         
-        async function debugDatabaseDirectly() {
-            try {
-                if (response1.ok) {
-                    const data1 = await response1.text();
-                }
-            } catch (error) {
-            }
-            
-            try {
-                if (response2.ok) {
-                    const data2 = await response2.text();
-                }
-            } catch (error) {
-            }
-        }
         
 
         // Function to create new program - redirects to event.php in same tab
@@ -8336,10 +8297,6 @@ body {
 
         
         // Expose functions globally for console testing
-        window.testRiskCalculation = testRiskCalculation;
-        window.testScreeningResponsesAPI = testScreeningResponsesAPI;
-        window.debugDatabaseDirectly = debugDatabaseDirectly;
-        window.debugAPIResponse = debugAPIResponse;
         
         // Screening Responses Functions
         async function loadScreeningResponses(barangay = '') {
