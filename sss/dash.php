@@ -6742,6 +6742,7 @@ body {
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
+                }
                 const data = await fetchDataFromAPI('geographic_distribution', params);
                 if (data && data.success) {
                     updateGeographicChartDisplay(data.data);
@@ -7902,12 +7903,6 @@ body {
                         segmentPercentages.push({ index: 3, percentage: severeRiskPercentage, count: severeRiskCount });
                         totalCalculatedPercentage += severeRiskPercentage;
                     }
-                    
-                        lowRisk: { count: lowRiskCount, percentage: lowRiskPercentage.toFixed(1) },
-                        moderateRisk: { count: moderateRiskCount, percentage: moderateRiskPercentage.toFixed(1) },
-                        highRisk: { count: highRiskCount, percentage: highRiskPercentage.toFixed(1) },
-                        severeRisk: { count: severeRiskCount, percentage: severeRiskPercentage.toFixed(1) }
-                    });
                 } else {
                     // Fallback to count-based calculation if no risk scores available
                     riskLevels.forEach((count, index) => {
