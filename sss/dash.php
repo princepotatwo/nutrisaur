@@ -6345,10 +6345,8 @@ body {
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
-                    testMunicipalityFiltering(value);
+                    // Municipality filtering handled by updateDashboardForBarangay
                 }
-                
-                testUserDataConsistency('hwheh@ushs.dijs'); // Test with the user from logs
                 
                 // Update selected state
                 document.querySelectorAll('.option-item').forEach(item => {
@@ -6539,7 +6537,6 @@ body {
             setTimeout(() => {
                 loadScreeningResponses(barangay);
             }, 1000);
-        }
         }
 
         // Function to calculate total programs across all areas
@@ -8170,7 +8167,6 @@ body {
             };
             
             setupBarangaySelection();
-            testAPIConnection();
             
             const barangayRestored = restoreSelectedBarangay();
             
@@ -8199,7 +8195,6 @@ body {
             }, 3000);
             
             initializeAlertsState();
-            testIntelligentProgramsAPI();
         });
         
         document.addEventListener('DOMContentLoaded', function() {
