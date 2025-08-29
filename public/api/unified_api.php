@@ -258,6 +258,10 @@ switch ($endpoint) {
         checkUsersTable($pdo);
         break;
         
+    case 'create_users_table':
+        createUsersTable($pdo);
+        break;
+        
     case 'add_user':
         handleAddUser($pdo);
         break;
@@ -2609,6 +2613,50 @@ function checkUsersTable($pdo) {
         echo json_encode([
             'success' => false,
             'error' => 'Failed to check users table: ' . $e->getMessage()
+        ]);
+    }
+}
+
+function createUsersTable($pdo) {
+    try {
+        // Drop the existing users table if it exists
+        $pdo->exec("DROP TABLE IF EXISTS users");
+        
+        // Create the users table with proper structure
+        $sql = "CREATE TABLE `users` (
+            `user_id` int(11) NOT NULL AUTO_INCREMENT,
+            `username` varchar(50) NOT NULL,
+            `email` varchar(100) NOT NULL,
+            `password` varchar(255) NOT NULL,
+            `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `last_login` timestamp NULL DEFAULT NULL,
+            `is_active` tinyint(1) DEFAULT 1,
+            PRIMARY KEY (`user_id`),
+            UNIQUE KEY `username` (`username`),
+            UNIQUE KEY `email` (`email`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+        
+        $pdo->exec($sql);
+        
+        // Insert a default admin user for testing
+        $adminPassword = password_hash('admin123', PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, is_active) VALUES (?, ?, ?, ?)");
+        $stmt->execute(['admin', 'admin@nutrisaur.com', $adminPassword, 1]);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Users table created successfully with default admin user',
+            'admin_credentials' => [
+                'username' => 'admin',
+                'password' => 'admin123'
+            ]
+        ]);
+        
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Failed to create users table: ' . $e->getMessage()
         ]);
     }
 }
