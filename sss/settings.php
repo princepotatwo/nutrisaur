@@ -4801,7 +4801,7 @@ optgroup option {
                         console.log('Final users value after fallback checks:', users);
                         console.log('Final users length:', users ? users.length : 'null/undefined');
                         
-                        if (!users || (Array.isArray(users) && users.length === 0) || (typeof users === 'object' && Object.keys(users).length === 0)) {
+                        if (!users || (Array.isArray(users) && users.length === 0)) {
                             console.warn('No users data received from API');
                             
                             // Check if this might be a timing issue after CSV import
