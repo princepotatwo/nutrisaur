@@ -5948,7 +5948,6 @@ Sample Event,Workshop,${formatDate(future1)},Sample Location,Sample Organizer,Sa
             
             const formData = new FormData();
             formData.append('csvFile', file);
-            formData.append('import_csv', '1');
             
             // Show loading state
             const importBtn = document.getElementById('importBtn');
@@ -5959,20 +5958,21 @@ Sample Event,Workshop,${formatDate(future1)},Sample Location,Sample Organizer,Sa
             importBtn.innerHTML = '🔄 Uploading...';
             importStatus.style.display = 'block';
             
-            fetch('event.php', {
+            fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=import_csv', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text())
+            .then(response => response.json())
             .then(data => {
-                console.log('Upload response received');
-                // Check if the response contains success indicators
-                if (data.includes('imported=') || data.includes('success')) {
-                    // Reload the page to show the imported data
-                    window.location.reload();
+                console.log('Upload response received:', data);
+                if (data.success) {
+                    alert('Successfully imported ' + data.imported_count + ' events!');
+                    if (data.errors && data.errors.length > 0) {
+                        console.log('Import errors:', data.errors);
+                    }
+                    location.reload(); // Refresh to show new events
                 } else {
-                    // Show error message
-                    alert('Upload failed. Please check the file format and try again.');
+                    alert('Upload failed: ' + (data.error || 'Unknown error'));
                     importBtn.disabled = false;
                     importBtn.innerHTML = originalText;
                     importStatus.style.display = 'none';
