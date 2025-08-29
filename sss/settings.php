@@ -22,7 +22,50 @@ $email = $_SESSION['email'];
     <title>NutriSaur Dashboard</title>
 
     <!-- External CSS file -->
-    <link rel="stylesheet" href="consolidated_styles.css">
+    <link rel="stylesheet" href="./consolidated_styles.css?v=1.0">
+    
+    <!-- Fallback CSS to ensure basic styling works -->
+    <style>
+    /* Critical fallback styles */
+    body {
+        background-color: #1A211A !important;
+        color: #E8F0D6 !important;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding-left: 320px;
+        line-height: 1.6;
+        letter-spacing: 0.2px;
+    }
+    
+    .dashboard {
+        max-width: calc(100% - 60px);
+        width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #1A211A;
+        color: #E8F0D6;
+    }
+    
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 320px;
+        height: 100vh;
+        background-color: #2A3326;
+        box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+        padding: 0;
+        box-sizing: border-box;
+        overflow-y: auto;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        backdrop-filter: blur(10px);
+    }
+    </style>
     
     <!-- Original CSS commented out - now using external file -->
     <!--
