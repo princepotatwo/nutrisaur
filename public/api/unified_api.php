@@ -254,6 +254,10 @@ switch ($endpoint) {
         listAllTables($pdo);
         break;
         
+    case 'check_users_table':
+        checkUsersTable($pdo);
+        break;
+        
     case 'add_user':
         handleAddUser($pdo);
         break;
@@ -2586,6 +2590,25 @@ function listAllTables($pdo) {
         echo json_encode([
             'success' => false,
             'error' => 'Failed to list tables: ' . $e->getMessage()
+        ]);
+    }
+}
+
+function checkUsersTable($pdo) {
+    try {
+        $stmt = $pdo->query("DESCRIBE users");
+        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode([
+            'success' => true,
+            'table' => 'users',
+            'columns' => $columns
+        ]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Failed to check users table: ' . $e->getMessage()
         ]);
     }
 }
