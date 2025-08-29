@@ -21,8 +21,8 @@ $email = $_SESSION['email'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NutriSaur Dashboard</title>
 
-    <!-- External CSS file -->
-    <link rel="stylesheet" href="./optimized_styles.css?v=1.0">
+    <!-- External CSS file - temporarily commented out to avoid conflicts -->
+    <!-- <link rel="stylesheet" href="./optimized_styles.css?v=1.0"> -->
     
     <!-- Full CSS embedded temporarily to ensure styling works -->
     <style>
