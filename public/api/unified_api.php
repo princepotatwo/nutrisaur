@@ -435,10 +435,10 @@ function getRiskDistribution($pdo) {
         $stmt = $pdo->query("
             SELECT 
                 CASE 
-                    WHEN risk_score < 30 THEN 'Low Risk'
-                    WHEN risk_score < 50 THEN 'Moderate Risk'
-                    WHEN risk_score < 70 THEN 'High Risk'
-                    ELSE 'Critical Risk'
+                    WHEN risk_score < 30 THEN 'low risk'
+                    WHEN risk_score < 50 THEN 'moderate risk'
+                    WHEN risk_score < 70 THEN 'high risk'
+                    ELSE 'critical risk'
                 END as risk_level,
                 COUNT(*) as count
             FROM user_preferences 
@@ -446,10 +446,10 @@ function getRiskDistribution($pdo) {
             GROUP BY risk_level
             ORDER BY 
                 CASE risk_level
-                    WHEN 'Low Risk' THEN 1
-                    WHEN 'Moderate Risk' THEN 2
-                    WHEN 'High Risk' THEN 3
-                    WHEN 'Critical Risk' THEN 4
+                    WHEN 'low risk' THEN 1
+                    WHEN 'moderate risk' THEN 2
+                    WHEN 'high risk' THEN 3
+                    WHEN 'critical risk' THEN 4
                 END
         ");
         
