@@ -21,6 +21,11 @@ $email = $_SESSION['email'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NutriSaur Dashboard</title>
 
+    <!-- External CSS file -->
+    <link rel="stylesheet" href="consolidated_styles.css">
+    
+    <!-- Original CSS commented out - now using external file -->
+    <!--
     <style>
 /* CSS Variables - Applied to root for global access */
 :root {
@@ -3784,6 +3789,7 @@ optgroup option {
 }
 
 
+    -->
     </style>
 </head>
 <body class="dark-theme">
