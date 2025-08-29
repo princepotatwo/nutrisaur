@@ -4782,6 +4782,11 @@ optgroup option {
                         
                         // Check if users exist in different possible locations
                         let users = data.users;
+                        console.log('Initial users value:', users);
+                        console.log('Users type:', typeof users);
+                        console.log('Users is array:', Array.isArray(users));
+                        console.log('Users length:', users ? users.length : 'null/undefined');
+                        
                         if (!users && data.data) {
                             users = data.data; // The API returns users directly in data.data
                             console.log('Found users in data.data');
@@ -4792,6 +4797,9 @@ optgroup option {
                             users = data.response.users;
                             console.log('Found users in data.response.users');
                         }
+                        
+                        console.log('Final users value after fallback checks:', users);
+                        console.log('Final users length:', users ? users.length : 'null/undefined');
                         
                         if (!users || (Array.isArray(users) && users.length === 0) || (typeof users === 'object' && Object.keys(users).length === 0)) {
                             console.warn('No users data received from API');
