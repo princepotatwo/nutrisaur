@@ -24,7 +24,7 @@ $email = $_SESSION['email'];
     <!-- External CSS file -->
     <link rel="stylesheet" href="./consolidated_styles.css?v=1.0">
     
-    <!-- CSS embedded temporarily while external file connection is fixed -->
+    <!-- Full CSS embedded temporarily to ensure styling works -->
     <style>
 /* ===== NUTRISAUR CONSOLIDATED STYLES ===== */
 /* This file consolidates all styles from the PHP files for better maintainability */
@@ -1176,9 +1176,101 @@ body {
         opacity: 1;
     }
 }
-    </style>
     
+    <!-- Original CSS commented out - now using external file -->
+    <!--
+    <style>
+/* CSS Variables - Applied to root for global access */
+:root {
+    --color-bg: #1A211A;
+    --color-card: #2A3326;
+    --color-highlight: #A1B454;
+    --color-text: #E8F0D6;
+    --color-accent1: #8CA86E;
+    --color-accent2: #B5C88D;
+    --color-accent3: #546048;
+    --color-accent4: #C9D8AA;
+    --color-danger: #CF8686;
+    --color-warning: #E0C989;
+    --color-border: rgba(161, 180, 84, 0.2);
+    --color-shadow: rgba(0, 0, 0, 0.1);
+    
+    /* Spacing variables */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    
+    /* Border radius variables */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+}
 
+/* Ensure CSS variables are applied to html element */
+html {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+/* Dark Theme (Default) - Softer colors */
+.dark-theme {
+    --color-bg: #1A211A !important;
+    --color-card: #2A3326 !important;
+    --color-highlight: #A1B454 !important;
+    --color-text: #E8F0D6 !important;
+    --color-accent1: #8CA86E !important;
+    --color-accent2: #B5C88D !important;
+    --color-accent3: #546048 !important;
+    --color-accent4: #C9D8AA !important;
+    --color-danger: #CF8686 !important;
+    --color-warning: #E0C989 !important;
+    --color-border: rgba(161, 180, 84, 0.2) !important;
+    --color-shadow: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Light Theme - Light Greenish Colors */
+.light-theme {
+    --color-bg: #F0F7F0 !important;
+    --color-card: #FFFFFF !important;
+    --color-highlight: #66BB6A !important;
+    --color-text: #1B3A1B !important;
+    --color-accent1: #81C784 !important;
+    --color-accent2: #4CAF50 !important;
+    --color-accent3: #2E7D32 !important;
+    --color-accent4: #A5D6A7 !important;
+    --color-danger: #E57373 !important;
+    --color-warning: #FFB74D !important;
+    --color-border: #C8E6C9 !important;
+    --color-shadow: rgba(76, 175, 80, 0.1) !important;
+    --color-hover: rgba(76, 175, 80, 0.08) !important;
+    --color-active: rgba(76, 175, 80, 0.15) !important;
+}
+
+/* Apply theme colors to body and main elements */
+body {
+    background-color: var(--color-bg) !important;
+    color: var(--color-text) !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Force body background and text colors for each theme */
+body.dark-theme {
+    background-color: #1A211A !important;
+    color: #E8F0D6 !important;
+}
+
+body.light-theme {
+    background-color: #F0F7F0 !important;
+    color: #1B3A1B !important;
+}
+
+/* Ensure all elements use CSS variables */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
 
 /* Base body styles - match dash.php exactly */
 body {
@@ -4850,6 +4942,8 @@ optgroup option {
 }
 
 
+    -->
+    </style>
 </head>
 <body class="dark-theme">
     <div class="navbar">
