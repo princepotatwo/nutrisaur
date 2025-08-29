@@ -4135,6 +4135,10 @@ optgroup option {
                             <span class="btn-icon">🗑️</span>
                             <span class="btn-text">Delete All Users</span>
                         </button>
+                        <button class="btn btn-primary" onclick="refreshTableImmediately()" title="Refresh table data">
+                            <span class="btn-icon">🔄</span>
+                            <span class="btn-text">Refresh Table</span>
+                        </button>
 
 
 
@@ -5223,7 +5227,26 @@ optgroup option {
         deleteUsersByLocationFromDatabase(locationFilter)
             .then(result => {
                 showAlert('success', `Successfully deleted ${result.deleted_count || 0} users from ${locationFilter}`);
-                loadUsers(); // Refresh the table
+                
+                // Immediately remove users from the specified location for better UX
+                const tbody = document.querySelector('#usersTableBody');
+                if (tbody) {
+                    const rows = tbody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const locationCell = row.querySelector('td:nth-child(5)'); // Location column
+                        if (locationCell && locationCell.textContent.trim() === locationFilter) {
+                            row.remove();
+                        }
+                    });
+                    
+                    // If no rows left, show no users message
+                    if (tbody.children.length === 0) {
+                        tbody.innerHTML = '<tr data-no-users><td colspan="6" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
+                    }
+                }
+                
+                // Also refresh from server to ensure consistency
+                loadUsers();
             })
             .catch(error => {
                 console.error('Error deleting users by location:', error);
@@ -5241,7 +5264,15 @@ optgroup option {
         deleteAllUsersFromDatabase()
             .then(result => {
                 showAlert('success', `Successfully deleted ${result.deleted_count || 0} users`);
-                loadUsers(); // Refresh the table
+                
+                // Immediately clear the table for better UX
+                const tbody = document.querySelector('#usersTableBody');
+                if (tbody) {
+                    tbody.innerHTML = '<tr data-no-users><td colspan="6" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
+                }
+                
+                // Also refresh from server to ensure consistency
+                loadUsers();
             })
             .catch(error => {
                 console.error('Error deleting all users:', error);
@@ -5373,7 +5404,26 @@ optgroup option {
             const result = await deleteUserFromDatabase(email);
             if (result.success) {
                 showAlert('success', 'User deleted successfully');
-                loadUsers(); // Refresh the table
+                
+                // Immediately remove the user row from the table for better UX
+                const tbody = document.querySelector('#usersTableBody');
+                if (tbody) {
+                    const rows = tbody.querySelectorAll('tr');
+                    rows.forEach(row => {
+                        const deleteBtn = row.querySelector('.btn-delete');
+                        if (deleteBtn && deleteBtn.getAttribute('data-email') === email) {
+                            row.remove();
+                        }
+                    });
+                    
+                    // If no rows left, show no users message
+                    if (tbody.children.length === 0) {
+                        tbody.innerHTML = '<tr data-no-users><td colspan="6" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
+                    }
+                }
+                
+                // Also refresh from server to ensure consistency
+                loadUsers();
             } else {
                 showAlert('danger', 'Error deleting user: ' + result.error);
             }
@@ -8516,6 +8566,47 @@ jane_smith@example.com,Jane Smith,1985-05-15,female,60,165,Pilar,PHP 12,031–20
                 }
             }
         }
+        
+        // Real-time table refresh function
+        function refreshTableImmediately() {
+            console.log('Refreshing table immediately...');
+            
+            // Clear the table first for immediate visual feedback
+            const tbody = document.querySelector('#usersTableBody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">🔄 Refreshing data...</td></tr>';
+            }
+            
+            // Force a fresh load from the server
+            setTimeout(() => {
+                loadUsers();
+            }, 100);
+        }
+        
+        // Enhanced auto-refresh with change detection
+        function setupEnhancedAutoRefresh() {
+            let lastUserCount = 0;
+            let lastUserHash = '';
+            
+            setInterval(() => {
+                // Check if there are any changes in the user data
+                const currentUsers = window.currentUsers || [];
+                const currentCount = Array.isArray(currentUsers) ? currentUsers.length : Object.keys(currentUsers).length;
+                const currentHash = JSON.stringify(currentUsers);
+                
+                if (currentCount !== lastUserCount || currentHash !== lastUserHash) {
+                    console.log('User data changed, refreshing table...');
+                    lastUserCount = currentCount;
+                    lastUserHash = currentHash;
+                    refreshTableImmediately();
+                }
+            }, 5000); // Check every 5 seconds
+        }
+        
+        // Initialize enhanced auto-refresh when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEnhancedAutoRefresh();
+        });
     </script>
 </body>
 </html>
