@@ -34,6 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     try {
+        // Get database connection
+        $conn = getDatabaseConnection();
+        
+        if (!$conn) {
+            echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+            exit;
+        }
+        
         // Start transaction
         $conn->beginTransaction();
         
@@ -85,7 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
     } catch (Exception $e) {
         // Rollback the transaction if something failed
-        $conn->rollBack();
+        if (isset($conn) && $conn) {
+            $conn->rollBack();
+        }
         echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
     }
 } else {
