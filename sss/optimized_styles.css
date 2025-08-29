@@ -1,3 +1,4 @@
+<style>
 /* ===== NUTRISAUR CONSOLIDATED STYLES ===== */
 /* This file consolidates all styles from the PHP files for better maintainability */
 
@@ -1148,7 +1149,9 @@ body {
         opacity: 1;
     }
 }
-
+    
+   
+    <style>
 /* CSS Variables - Applied to root for global access */
 :root {
     --color-bg: #1A211A;
@@ -4909,3 +4912,7 @@ optgroup option {
 .light-theme .user-info-content {
     background-color: rgba(142, 185, 110, 0.1);
 }
+
+
+    
+    </style>
