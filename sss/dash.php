@@ -6988,24 +6988,32 @@ body {
         // Function to update critical alerts
         async function updateCriticalAlerts(barangay = '') {
             try {
-                console.log('updateCriticalAlerts called with barangay:', barangay);
+                // Debounce rapid successive calls to prevent flickering
+                if (updateCriticalAlerts.debounceTimer) {
+                    clearTimeout(updateCriticalAlerts.debounceTimer);
+                }
                 
-                const params = {};
-                if (barangay && barangay !== '') {
-                    params.barangay = barangay;
-                    console.log('Added barangay to critical alerts params:', barangay);
-                } else {
-                    console.log('No barangay filter for critical alerts');
-                }
+                updateCriticalAlerts.debounceTimer = setTimeout(async () => {
+                    console.log('updateCriticalAlerts executing with barangay:', barangay);
+                    
+                    const params = {};
+                    if (barangay && barangay !== '') {
+                        params.barangay = barangay;
+                        console.log('Added barangay to critical alerts params:', barangay);
+                    } else {
+                        console.log('No barangay filter for critical alerts');
+                    }
 
-                console.log('Critical alerts params:', params);
-                const data = await fetchDataFromAPI('critical_alerts', params);
-                if (data && data.success) {
-                    console.log('Critical alerts data received:', data);
-                    updateCriticalAlertsDisplay(data.data);
-                } else {
-                    console.log('Critical alerts failed or no data:', data);
-                }
+                    console.log('Critical alerts params:', params);
+                    const data = await fetchDataFromAPI('critical_alerts', params);
+                    if (data && data.success) {
+                        console.log('Critical alerts data received:', data);
+                        updateCriticalAlertsDisplay(data.data);
+                    } else {
+                        console.log('Critical alerts failed or no data:', data);
+                    }
+                }, 300); // 300ms debounce delay
+                
             } catch (error) {
                 console.error('Error updating critical alerts:', error);
             }
@@ -9520,15 +9528,15 @@ body {
             console.log('Updating clinical risk factors...');
             updateResponseSection('clinical-risk-responses', data.clinical_risk || [], 'Clinical Risk Factor', data.total_screened);
             
-            // Update critical alerts
-            console.log('Updating critical alerts...');
-            updateCriticalAlerts(data);
+            // Update critical alerts from screening data
+            console.log('Updating critical alerts from screening data...');
+            updateCriticalAlertsFromScreeningData(data);
             
             console.log('=== updateScreeningResponsesDisplay complete ===');
         }
         
-        // Function to update critical alerts based on new data
-        function updateCriticalAlerts(data) {
+        // Function to update critical alerts based on screening response data
+        function updateCriticalAlertsFromScreeningData(data) {
             const alertsContainer = document.getElementById('critical-alerts');
             if (!alertsContainer) return;
             

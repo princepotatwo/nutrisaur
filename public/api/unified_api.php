@@ -506,14 +506,22 @@ function getGeographicDistribution($pdo) {
 
 function getCriticalAlerts($pdo) {
     try {
+        // Lower threshold to include high-risk users (risk_score >= 50 instead of > 80)
         $stmt = $pdo->query("
             SELECT * FROM user_preferences 
-            WHERE risk_score > 80
+            WHERE risk_score >= 50
             ORDER BY risk_score DESC, created_at DESC
             LIMIT 10
         ");
         
         $data = $stmt->fetchAll();
+        
+        // Add debug logging
+        error_log("Critical alerts query returned " . count($data) . " users with risk_score >= 50");
+        if (count($data) > 0) {
+            error_log("Highest risk score: " . $data[0]['risk_score']);
+        }
+        
         echo json_encode(['success' => true, 'data' => $data]);
     } catch (Exception $e) {
         http_response_code(500);

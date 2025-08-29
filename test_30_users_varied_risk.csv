@@ -1,0 +1,31 @@
+user_email,name,birthday,gender,weight,height,barangay,income,risk_score
+john.smith@test.com,John Smith,2000-01-15,male,70.5,175.0,Central,medium,15
+maria.garcia@test.com,Maria Garcia,1993-03-22,female,58.2,162.0,Bagumbayan,high,28
+carlos.rodriguez@test.com,Carlos Rodriguez,2006-07-10,male,65.0,170.0,Cupang Proper,low,35
+ana.martinez@test.com,Ana Martinez,1980-11-05,female,72.8,168.0,Dangcol (Bernabe),medium,42
+luis.hernandez@test.com,Luis Hernandez,1997-09-18,male,68.5,172.0,Ibayo,high,18
+isabella.lopez@test.com,Isabella Lopez,1989-12-03,female,55.0,160.0,Malabia,medium,32
+miguel.torres@test.com,Miguel Torres,2003-04-25,male,75.2,178.0,Poblacion,high,25
+sofia.ramirez@test.com,Sofia Ramirez,1984-06-12,female,69.8,165.0,Pto. Rivas Ibaba,low,48
+diego.morales@test.com,Diego Morales,1996-02-28,male,71.5,173.0,Pto. Rivas Itaas,medium,22
+valentina.castro@test.com,Valentina Castro,1987-08-14,female,61.2,163.0,San Jose,high,38
+alejandro.silva@test.com,Alejandro Silva,2001-10-30,male,73.8,176.0,Sibacan,medium,20
+camila.vargas@test.com,Camila Vargas,1992-05-07,female,56.5,161.0,Camacho,low,30
+gabriel.ruiz@test.com,Gabriel Ruiz,1998-01-20,male,69.2,171.0,Talisay,high,26
+lucia.jimenez@test.com,Lucia Jimenez,1986-12-08,female,64.8,164.0,Tanato,medium,44
+mateo.herrera@test.com,Mateo Herrera,2004-03-15,male,76.5,179.0,Tenejero,low,19
+adriana.luna@test.com,Adriana Luna,1990-07-25,female,59.2,162.0,Tortugas,high,36
+javier.ortega@test.com,Javier Ortega,1999-11-12,male,70.8,174.0,Tuyo,medium,24
+carmen.reyes@test.com,Carmen Reyes,1982-04-18,female,67.5,166.0,Bagong Silang,low,52
+rafael.mendoza@test.com,Rafael Mendoza,1994-06-30,male,74.2,177.0,Cupang North,high,29
+elena.santos@test.com,Elena Santos,1988-09-05,female,62.8,163.0,Doña Francisca,medium,40
+fernando.cruz@test.com,Fernando Cruz,2002-12-22,male,77.5,180.0,Lote,low,21
+rosa.flores@test.com,Rosa Flores,1985-01-28,female,66.2,165.0,Bangkal,high,55
+roberto.moreno@test.com,Roberto Moreno,1995-08-14,male,72.8,175.0,Calaylayan (Pob.),medium,27
+patricia.gonzalez@test.com,Patricia Gonzalez,1991-03-11,female,58.5,161.0,Capitangan,low,33
+ricardo.perez@test.com,Ricardo Perez,2000-10-05,male,71.2,173.0,Gabon,high,23
+monica.chavez@test.com,Monica Chavez,1983-07-19,female,68.8,167.0,Laon (Pob.),medium,58
+hector.rios@test.com,Hector Rios,1997-05-03,male,73.5,176.0,Mabatang,low,26
+gloria.vega@test.com,Gloria Vega,1989-11-26,female,60.2,162.0,Omboy,high,37
+manuel.acosta@test.com,Manuel Acosta,2005-02-09,male,78.2,181.0,Salian,medium,17
+teresa.medina@test.com,Teresa Medina,1981-04-17,female,65.5,164.0,Wawa (Pob.),low,62
