@@ -4459,7 +4459,7 @@ header:hover {
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" id="eventLocation" name="eventLocation" value="">
+                    <input type="hidden" id="eventLocation" name="eventLocation" value="All Locations">
                 </div>
                 
                 <div class="form-group">
@@ -4952,6 +4952,12 @@ header:hover {
                         location: formData.get('eventLocation'),
                         organizer: formData.get('eventOrganizer')
                     };
+                    
+                    // Validate required fields
+                    if (!eventData.title || !eventData.type || !eventData.description || !eventData.date_time || !eventData.location || !eventData.organizer) {
+                        alert('Please fill in all required fields, including selecting a location from the dropdown.');
+                        return;
+                    }
                     
                     // Send AJAX request
                     fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=create_event', {
