@@ -6320,67 +6320,34 @@ body {
     <script>
         // Custom Dropdown Functions
         function toggleDropdown() {
-            console.log('toggleDropdown called');
             const dropdown = document.getElementById('dropdown-content');
             const arrow = document.querySelector('.dropdown-arrow');
             const selectHeader = document.querySelector('.select-header');
             
-            console.log('Dropdown elements found:', { 
-                dropdown: !!dropdown, 
-                arrow: !!arrow, 
-                selectHeader: !!selectHeader 
-            });
-            
             if (dropdown && arrow) {
                 dropdown.classList.toggle('active');
                 arrow.classList.toggle('active');
-                console.log('Dropdown toggled, active state:', dropdown.classList.contains('active'));
-                
-                // Log the current state
-                if (dropdown.classList.contains('active')) {
-                    console.log('Dropdown is now OPEN');
-                    console.log('Dropdown content:', dropdown.innerHTML);
-                } else {
-                    console.log('Dropdown is now CLOSED');
-                }
-            } else {
-                console.error('Dropdown elements not found:', { dropdown: !!dropdown, arrow: !!arrow });
             }
         }
 
         function selectOption(value, text) {
-            console.log('selectOption called with:', { value, text });
-            
             const selectedOption = document.getElementById('selected-option');
             const dropdownContent = document.getElementById('dropdown-content');
             const dropdownArrow = document.querySelector('.dropdown-arrow');
-            
-            console.log('Elements found:', { 
-                selectedOption: !!selectedOption, 
-                dropdownContent: !!dropdownContent, 
-                dropdownArrow: !!dropdownArrow 
-            });
             
             if (selectedOption && dropdownContent && dropdownArrow) {
                 selectedOption.textContent = text;
                 dropdownContent.classList.remove('active');
                 dropdownArrow.classList.remove('active');
                 
-                console.log('Updated selected option to:', text);
-                console.log('Closed dropdown');
-                
                 // Update dashboard data based on selected barangay or municipality
-                console.log('Calling updateDashboardForBarangay with value:', value);
                 updateDashboardForBarangay(value);
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
-                    console.log('Testing municipality filtering...');
                     testMunicipalityFiltering(value);
                 }
                 
-                // Test user data consistency for debugging
-                console.log('Testing user data consistency...');
                 testUserDataConsistency('hwheh@ushs.dijs'); // Test with the user from logs
                 
                 // Update selected state
@@ -6392,18 +6359,12 @@ body {
                 const clickedItem = document.querySelector(`[data-value="${value}"]`);
                 if (clickedItem) {
                     clickedItem.classList.add('selected');
-                    console.log('Marked item as selected:', clickedItem.textContent);
-                } else {
-                    console.error('Could not find clicked item to mark as selected');
                 }
                 
                 // If "All Barangays" is selected, clear the localStorage
                 if (!value || value === '') {
                     localStorage.removeItem('selectedBarangay');
-                    console.log('Cleared barangay selection from localStorage (All Barangays selected)');
                 }
-            } else {
-                console.error('Required elements not found for selectOption');
             }
         }
 
@@ -6412,109 +6373,64 @@ body {
             const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
             const optionItems = document.querySelectorAll('.option-item');
             
-            console.log('filterOptions called');
-            console.log('Search input element:', !!searchInput);
-            console.log('Search term:', searchTerm);
-            console.log('Total option items:', optionItems.length);
-            
             if (optionItems.length === 0) {
-                console.error('No option items found for filtering!');
                 return;
             }
             
-            let visibleCount = 0;
-            optionItems.forEach((item, index) => {
+            optionItems.forEach((item) => {
                 const text = item.textContent.toLowerCase();
                 const matches = text.includes(searchTerm);
                 
                 if (matches) {
                     item.style.display = 'block';
-                    visibleCount++;
-                    console.log(`Option ${index} visible:`, text);
                 } else {
                     item.style.display = 'none';
-                    console.log(`Option ${index} hidden:`, text);
                 }
             });
-            
-            console.log('Visible options after filtering:', visibleCount);
         }
 
         // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
-            console.log('Document click event:', event.target);
-            
             const container = document.querySelector('.custom-select-container');
-            console.log('Container found:', !!container);
             
             if (container && !container.contains(event.target)) {
-                console.log('Click outside container detected');
                 const dropdown = document.getElementById('dropdown-content');
                 const arrow = document.querySelector('.dropdown-arrow');
                 
                 if (dropdown && arrow) {
                     dropdown.classList.remove('active');
                     arrow.classList.remove('active');
-                    console.log('Dropdown closed by outside click');
-                } else {
-                    console.error('Dropdown elements not found for outside click close');
                 }
             }
         });
 
         // Barangay and Municipality selection handling - will be called from main DOMContentLoaded
         function setupBarangaySelection() {
-            console.log('Setting up barangay selection handlers...');
-            
             // Set up click handlers for option items
             const optionItems = document.querySelectorAll('.option-item');
-            console.log('Found option items:', optionItems.length);
             
             if (optionItems.length === 0) {
-                console.error('No option items found! This means the dropdown is not working properly.');
-                console.log('Checking if dropdown container exists...');
-                const dropdownContainer = document.querySelector('.dropdown-content');
-                console.log('Dropdown container:', dropdownContainer);
-                
-                if (dropdownContainer) {
-                    console.log('Dropdown container HTML:', dropdownContainer.innerHTML);
-                }
-                
                 // Try to find option items with a different selector
                 const alternativeOptions = document.querySelectorAll('[data-value]');
-                console.log('Alternative options found:', alternativeOptions.length);
                 
                 if (alternativeOptions.length > 0) {
-                    console.log('Using alternative options...');
-                    alternativeOptions.forEach((item, index) => {
-                        const value = item.getAttribute('data-value');
-                        const text = item.textContent;
-                        console.log(`Alternative option ${index}:`, { value, text });
-                        
+                    alternativeOptions.forEach((item) => {
                         item.addEventListener('click', function() {
                             const value = this.getAttribute('data-value');
                             const text = this.textContent;
-                            console.log('Alternative barangay selected:', { value, text });
                             selectOption(value, text);
                         });
                     });
                 }
             } else {
-                optionItems.forEach((item, index) => {
-                    const value = item.getAttribute('data-value');
-                    const text = item.textContent;
-                    console.log(`Setting up option ${index}:`, { value, text });
-                    
+                optionItems.forEach((item) => {
                     item.addEventListener('click', function() {
                         const value = this.getAttribute('data-value');
                         const text = this.textContent;
-                        console.log('Barangay selected:', { value, text });
                         selectOption(value, text);
                     });
                 });
             }
-            
-            console.log('Barangay selection handlers setup complete');
         }
 
         // Global variable to store the currently selected barangay
@@ -6525,7 +6441,6 @@ body {
             try {
                 const savedBarangay = localStorage.getItem('selectedBarangay');
                 if (savedBarangay) {
-                    console.log('Found saved barangay in localStorage:', savedBarangay);
                     currentSelectedBarangay = savedBarangay;
                     
                     // Update the dropdown display to show the saved selection
@@ -6535,9 +6450,6 @@ body {
                         const optionItem = document.querySelector(`[data-value="${savedBarangay}"]`);
                         if (optionItem) {
                             selectedOptionElement.textContent = optionItem.textContent;
-                            console.log('Restored dropdown display to:', optionItem.textContent);
-                        } else {
-                            console.log('Could not find option item for saved value:', savedBarangay);
                         }
                     }
                     
@@ -6546,18 +6458,14 @@ body {
                         item.classList.remove('selected');
                         if (item.getAttribute('data-value') === savedBarangay) {
                             item.classList.add('selected');
-                            console.log('Marked saved option as selected:', item.textContent);
                         }
                     });
                     
-                    console.log('Successfully restored barangay selection:', savedBarangay);
                     return true; // Indicate successful restoration
                 } else {
-                    console.log('No saved barangay found in localStorage');
                     return false; // Indicate no restoration needed
                 }
             } catch (error) {
-                console.error('Error restoring barangay selection:', error);
                 return false; // Indicate restoration failed
             }
         }
@@ -6566,7 +6474,6 @@ body {
         function clearBarangaySelection() {
             currentSelectedBarangay = '';
             localStorage.removeItem('selectedBarangay');
-            console.log('Cleared barangay selection');
             
             // Reset dropdown display
             const selectedOptionElement = document.getElementById('selected-option');
@@ -6595,61 +6502,44 @@ body {
         
         // Function to update dashboard data based on selected barangay
         function updateDashboardForBarangay(barangay) {
-            console.log('=== UPDATING DASHBOARD FOR BARANGAY ===');
-            console.log('Barangay parameter:', barangay);
-            console.log('Barangay type:', typeof barangay);
-            console.log('Barangay length:', barangay ? barangay.length : 0);
-            
             // Store the selected barangay globally
             if (barangay !== undefined && barangay !== null) {
                 currentSelectedBarangay = barangay;
-                console.log('Stored current barangay:', currentSelectedBarangay);
                 
                 // Also store in localStorage for persistence across page refreshes
                 if (barangay !== '') {
                     localStorage.setItem('selectedBarangay', barangay);
-                    console.log('Saved barangay to localStorage:', barangay);
                 } else {
                     localStorage.removeItem('selectedBarangay');
-                    console.log('Cleared barangay from localStorage (All Barangays selected)');
                 }
             }
             
             // Update the "Programs in Barangay" metric
-            console.log('Calling updateProgramsMetric...');
             updateProgramsMetric(barangay);
             
             // Update all charts and metrics for the selected barangay
-            console.log('Calling updateCommunityMetrics...');
             updateCommunityMetrics(barangay);
             
             // Update all charts and metrics for the selected barangay
-            console.log('Calling updateCharts...');
             updateCharts(barangay);
             
             // Update analysis section
-            console.log('Calling updateAnalysisSection...');
             updateAnalysisSection(barangay);
             
             // Update geographic distribution chart
-            console.log('Calling updateGeographicChart...');
             updateGeographicChart(barangay);
             
             // Update critical alerts
-            console.log('Calling updateCriticalAlerts...');
             updateCriticalAlerts(barangay);
             
             // Automatically refresh intelligent programs for the selected location
-            console.log('Calling updateIntelligentPrograms...');
             updateIntelligentPrograms(barangay);
             
             // Update screening responses for the selected barangay
-            console.log('Calling loadScreeningResponses...');
             setTimeout(() => {
                 loadScreeningResponses(barangay);
             }, 1000);
-            
-            console.log('=== DASHBOARD UPDATE COMPLETE ===');
+        }
         }
 
         // Function to calculate total programs across all areas
@@ -6665,30 +6555,22 @@ body {
                     return 0;
                 }
             } catch (error) {
-                console.error('Error calculating total programs:', error);
                 return 0;
             }
         }
 
         // Function to update programs metric
         async function updateProgramsMetric(barangay) {
-            console.log('updateProgramsMetric called with barangay:', barangay);
-            
             const programsElement = document.getElementById('programs-in-barangay');
             const programsChangeElement = document.getElementById('programs-change');
             
             if (programsElement && programsChangeElement) {
-                console.log('Programs elements found, updating...');
                 
                 if (barangay && barangay !== '') {
-                    console.log('Processing specific barangay/municipality:', barangay);
-                    
                     // Handle municipality selections
                     if (barangay.startsWith('MUNICIPALITY_')) {
                         const municipality = barangay.replace('MUNICIPALITY_', '');
                         let programCount = 0;
-                        
-                        console.log('Processing municipality:', municipality);
                         
                         // Calculate total programs for the entire municipality
                         switch (municipality) {
@@ -6732,12 +6614,10 @@ body {
                                 programCount = 0;
                         }
                         
-                        console.log(`Municipality ${municipality} has ${programCount} programs`);
                         programsElement.textContent = programCount;
                         programsChangeElement.textContent = 'Municipality';
                     } else {
                         // Handle individual barangay selections
-                        console.log('Processing individual barangay:', barangay);
                         let programCount = 0;
                         // Since we removed duplicate municipality names, we can use simpler logic
                         if (barangay.includes('Bagumbayan') || barangay.includes('Poblacion') || barangay.includes('Central')) {
@@ -6748,58 +6628,33 @@ body {
                             programCount = 1; // Basic programs
                         }
                         
-                        console.log(`Barangay ${barangay} has ${programCount} programs`);
                         programsElement.textContent = programCount;
                         programsChangeElement.textContent = 'Active';
                     }
                 } else {
                     // Show total programs across all barangays
-                    console.log('No barangay selected, showing total programs');
                     // Calculate total programs based on actual data instead of hardcoded value
                     const totalPrograms = await calculateTotalPrograms();
                     programsElement.textContent = totalPrograms;
                     programsChangeElement.textContent = 'All areas';
                 }
-            } else {
-                console.error('Programs elements not found:', { programsElement: !!programsElement, programsChangeElement: !!programsChangeElement });
             }
         }
 
         // Function to update community metrics
         async function updateCommunityMetrics(barangay = '') {
             try {
-                console.log('updateCommunityMetrics called with barangay:', barangay);
-                console.log('Barangay type:', typeof barangay);
-                console.log('Barangay truthy check:', !!barangay);
-                console.log('Barangay empty check:', barangay !== '');
-                
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
-                    console.log('Added barangay to params:', barangay);
                     
-                    // Add debugging for municipality filtering
                     if (barangay.startsWith('MUNICIPALITY_')) {
                         const municipality = barangay.replace('MUNICIPALITY_', '');
-                        console.log('Municipality selected:', municipality);
-                        console.log('This should filter for all barangays in:', municipality);
                     }
-                } else {
-                    console.log('No barangay filter applied');
                 }
-
-                console.log('Final params object:', params);
-                console.log('Fetching community metrics with params:', params);
                 const data = await fetchDataFromAPI('community_metrics', params);
                 
                 if (data && data.success) {
-                    console.log('Community metrics data received:', data);
-                    console.log('Total screened:', data.data.total_screenings);
-                    console.log('High risk cases:', data.data.risk_distribution.high);
-                    console.log('Moderate risk cases:', data.data.risk_distribution.moderate);
-                    console.log('Low risk cases:', data.data.risk_distribution.low);
-                    console.log('Recent screenings:', data.data.recent_activity.screenings_this_week);
-                    
                     // Update Total Screened
                     const totalScreened = document.getElementById('community-total-screened');
                     const screenedChange = document.getElementById('community-screened-change');
@@ -6831,115 +6686,71 @@ body {
                     
                     // Store the average risk score globally for use in charts
                     window.globalAverageRiskScore = avgRiskScore;
-                    console.log('Stored global average risk score:', window.globalAverageRiskScore);
                     
                     // Update the risk chart center text immediately if it exists
                     const riskCenterText = document.getElementById('risk-center-text');
                     if (riskCenterText && window.globalAverageRiskScore > 0) {
                         riskCenterText.textContent = Math.round(window.globalAverageRiskScore) + '%';
-                        console.log('Updated risk chart center text to:', riskCenterText.textContent);
                     }
                     
-                    // Update critical alerts with the new community metrics data
-                    console.log('Updating critical alerts with community metrics data...');
-                    console.log('Data being passed to critical alerts:', data);
                     // Note: Critical alerts are now handled by updateCriticalAlerts() function
-                } else {
-                    console.error('Failed to fetch community metrics:', data);
                 }
             } catch (error) {
-                console.error('Error updating community metrics:', error);
+                // Error handling for community metrics update
             }
         }
 
         // Function to update charts
         async function updateCharts(barangay = '') {
             try {
-                console.log('updateCharts called with barangay:', barangay);
-                
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
-                    console.log('Added barangay to chart params:', barangay);
-                } else {
-                    console.log('No barangay filter for charts');
                 }
 
-                console.log('Chart params object:', params);
-                console.log('Updating charts with barangay filter:', barangay);
-
                 // Update Risk Distribution Chart
-                console.log('Fetching risk distribution...');
                 const riskData = await fetchDataFromAPI('risk_distribution', params);
                 if (riskData && riskData.success) {
-                    console.log('Risk distribution data:', riskData);
                     updateRiskChart(riskData.data);
-                } else {
-                    console.log('Risk distribution failed or no data:', riskData);
                 }
 
                 // Update Screening Responses (Age, Gender, Income, Height, Swelling, Weight Loss, Feeding, Physical Signs, Dietary, Clinical)
-                console.log('Fetching screening responses...');
                 const screeningData = await fetchDataFromAPI('detailed_screening_responses', params);
-                console.log('Screening responses API response:', screeningData);
                 if (screeningData && screeningData.success) {
-                    console.log('Screening responses data:', screeningData.data);
                     updateScreeningResponsesDisplay(screeningData.data);
-                } else {
-                    console.log('Screening responses failed or no data:', screeningData);
                 }
 
                 // Update Geographic Distribution Chart
-                console.log('Fetching geographic distribution...');
                 const geoData = await fetchDataFromAPI('geographic_distribution', params);
                 if (geoData && geoData.success) {
-                    console.log('Geographic data received:', geoData);
                     updateGeographicChartDisplay(geoData.data);
-                } else {
-                    console.log('Geographic data failed or no data:', geoData);
                 }
 
                 // Update Critical Alerts
-                console.log('Fetching critical alerts...');
                 const alertsData = await fetchDataFromAPI('critical_alerts', params);
                 if (alertsData && alertsData.success) {
-                    console.log('Critical alerts data received:', alertsData);
                     updateCriticalAlertsDisplay(alertsData.data);
-                } else {
-                    console.log('Critical alerts failed or no data:', alertsData);
                 }
                 
                 // Update Nutritional Status Overview Card
-                console.log('Updating Nutritional Status Overview Card...');
                 updateNutritionalStatusCard([], []);
             } catch (error) {
-                console.error('Error updating charts:', error);
+                // Error handling for charts update
             }
         }
 
         // Function to update geographic distribution
         async function updateGeographicChart(barangay = '') {
             try {
-                console.log('updateGeographicChart called with barangay:', barangay);
-                
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
-                    console.log('Added barangay to geographic params:', barangay);
-                } else {
-                    console.log('No barangay filter for geographic chart');
-                }
-
-                console.log('Geographic chart params:', params);
                 const data = await fetchDataFromAPI('geographic_distribution', params);
                 if (data && data.success) {
-                    console.log('Geographic data received:', data);
                     updateGeographicChartDisplay(data.data);
-                } else {
-                    console.log('Geographic data failed or no data:', data);
                 }
             } catch (error) {
-                console.error('Error updating geographic chart:', error);
+                // Error handling for geographic chart update
             }
         }
 
@@ -6994,28 +6805,19 @@ body {
                 }
                 
                 updateCriticalAlerts.debounceTimer = setTimeout(async () => {
-                    console.log('updateCriticalAlerts executing with barangay:', barangay);
-                    
                     const params = {};
                     if (barangay && barangay !== '') {
                         params.barangay = barangay;
-                        console.log('Added barangay to critical alerts params:', barangay);
-                    } else {
-                        console.log('No barangay filter for critical alerts');
                     }
 
-                    console.log('Critical alerts params:', params);
                     const data = await fetchDataFromAPI('critical_alerts', params);
                     if (data && data.success) {
-                        console.log('Critical alerts data received:', data);
                         updateCriticalAlertsDisplay(data.data);
-                    } else {
-                        console.log('Critical alerts failed or no data:', data);
                     }
                 }, 300); // 300ms debounce delay
                 
             } catch (error) {
-                console.error('Error updating critical alerts:', error);
+                // Error handling for critical alerts update
             }
         }
 
@@ -7023,7 +6825,6 @@ body {
         async function generateIntelligentPrograms(barangay = null) {
             // Use passed barangay parameter or fall back to currently selected barangay
             const targetBarangay = barangay !== null ? barangay : currentSelectedBarangay;
-            console.log('generateIntelligentPrograms called with barangay:', targetBarangay);
             await updateIntelligentPrograms(targetBarangay);
         }
 
@@ -7236,7 +7037,6 @@ body {
                 }
                 
             } catch (error) {
-                console.error('Error sending notification:', error);
                 showNotificationError('Error sending notification. Please try again.');
             }
         }
@@ -7310,7 +7110,6 @@ body {
         // Function to update intelligent programs
         async function updateIntelligentPrograms(barangay = '') {
             try {
-                console.log('updateIntelligentPrograms called with barangay:', barangay);
                 
                 // Show loading state
                 const loadingElement = document.getElementById('programs-loading');
@@ -7328,16 +7127,12 @@ body {
                     } else {
                         params.barangay = barangay;
                     }
-                    console.log('Added location to intelligent programs params:', params);
                 } else {
-                    console.log('No location filter for intelligent programs');
                 }
 
-                console.log('Intelligent programs params:', params);
                 const data = await fetchDataFromAPI('ai_food_recommendations', params);
                 
                 if (data && data.success) {
-                    console.log('Intelligent programs data received:', data);
                     // Map AI food recommendations to programs format
                     const programs = data.data || [];
                     const analysis = {
@@ -7353,12 +7148,10 @@ body {
                     };
                     updateIntelligentProgramsDisplay(programs, analysis);
                 } else {
-                    console.log('Intelligent programs failed or no data:', data);
                     // Show appropriate no-data message
                     showFallbackPrograms();
                 }
             } catch (error) {
-                console.error('Error updating intelligent programs:', error);
                 // Show fallback programs on error
                 showFallbackPrograms();
             }
@@ -7372,7 +7165,6 @@ body {
             const debugContent = document.getElementById('debug-content');
             
             if (!loadingElement || !programsContainer) {
-                console.error('Intelligent programs elements not found');
                 return;
             }
             
@@ -7380,7 +7172,6 @@ body {
             loadingElement.style.display = 'none';
             programsContainer.style.display = 'block';
             
-            // Show debug information if available
             if (debugElement && debugContent && analysis) {
                 debugElement.style.display = 'block';
                 
@@ -7427,7 +7218,6 @@ body {
                 `;
                 
                 programsContainer.appendChild(noDataCard);
-                console.log('Displayed no-data message');
                 return;
             }
             
@@ -7437,9 +7227,7 @@ body {
                     programsContainer.appendChild(programCard);
                 });
                 
-                console.log(`Generated ${programs.length} intelligent program cards`);
             } else {
-                console.log('No programs to display');
                 showFallbackPrograms();
             }
         }
@@ -7568,33 +7356,9 @@ body {
             programsContainer.innerHTML = '';
             programsContainer.appendChild(noDataCard);
             
-            console.log('Showing no-data message instead of fallback programs');
         }
 
-        // Test function for critical alerts - can be called from console
-        function testCriticalAlerts() {
-            console.log('=== TESTING CRITICAL ALERTS ===');
-            const container = document.getElementById('critical-alerts');
-            if (container) {
-                console.log('Critical alerts container found:', container);
-                console.log('Current innerHTML length:', container.innerHTML.length);
-                console.log('Current innerHTML:', container.innerHTML);
-                
-                // Test with sample data (1 user with both SAM and high risk)
-                const testData = {
-                    sam_cases: 1,
-                    high_risk_cases: 1,
-                    critical_muac: 0,
-                    latest_update: 'now'
-                };
-                
-                console.log('Testing with sample data:', testData);
-                console.log('This should show 2 separate alerts (original design)');
-                // Note: Test function updated to use new critical alerts system
-            } else {
-                console.error('Critical alerts container NOT found!');
-            }
-        }
+
 
         // Track current alerts state to prevent unnecessary updates
         let currentAlertsState = { hasAlerts: false, lastContent: '' };
@@ -7606,15 +7370,12 @@ body {
                 const hasExistingAlerts = container.querySelector('.alert-item:not(.no-alerts-item)');
                 currentAlertsState.hasAlerts = !!hasExistingAlerts;
                 currentAlertsState.lastContent = container.innerHTML;
-                console.log('Initialized alerts state:', currentAlertsState.hasAlerts);
             }
         }
         
-        // Function to force clear alerts state (for debugging or manual reset)
         function clearAlertsState() {
             currentAlertsState.hasAlerts = false;
             currentAlertsState.lastContent = '';
-            console.log('Cleared alerts state');
         }
 
         // Function to update critical alerts display (legacy - kept for compatibility)
@@ -7639,7 +7400,6 @@ body {
             // If we currently have alerts and the new data has no alerts, keep the current alerts
             // This prevents the flickering from "alerts" -> "no alerts" -> "alerts"
             if (currentlyHasAlerts && !hasNewAlerts) {
-                console.log('Keeping current alerts to prevent flicker');
                 return;
             }
             
@@ -7691,31 +7451,24 @@ body {
         // Function to update analysis section
         async function updateAnalysisSection(barangay = '') {
             try {
-                console.log('updateAnalysisSection called with barangay:', barangay);
                 
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
-                    console.log('Added barangay to analysis params:', barangay);
                 } else {
-                    console.log('No barangay filter for analysis section');
                 }
 
-                console.log('Analysis section params:', params);
                 const data = await fetchDataFromAPI('analysis_data', params);
                 
                 if (data && data.success) {
-                    console.log('Analysis data received:', data);
                     // Update risk analysis
                     updateRiskAnalysis(data.risk_analysis);
                     
                     // Update demographics
                     updateDemographics(data.demographics);
                 } else {
-                    console.log('Analysis data failed or no data:', data);
                 }
             } catch (error) {
-                console.error('Error updating analysis section:', error);
             }
         }
 
@@ -7811,22 +7564,16 @@ body {
                 const queryString = new URLSearchParams(allParams).toString();
                 const url = `${API_BASE_URL}?${queryString}`;
                 
-                console.log(`Fetching data from: ${url}`);
-                console.log(`Endpoint: ${endpoint}, Params:`, params);
-                console.log(`Full URL: ${url}`);
                 
                 const response = await fetch(url);
-                console.log(`Response status: ${response.status}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const data = await response.json();
-                console.log(`API Response for ${endpoint}:`, data);
                 return data;
             } catch (error) {
-                console.error(`Error fetching data for ${endpoint}:`, error);
                 return null;
             }
         }
@@ -7840,14 +7587,12 @@ body {
                 const segments = document.getElementById('risk-segments');
                 
                 if (!chartBg || !centerText || !segments) {
-                    console.error('Risk chart elements not found:', { chartBg: !!chartBg, centerText: !!centerText, segments: !!segments });
                     return;
                 }
                 
                 // Add loading state to prevent flickering
                 chartBg.style.opacity = '0.8';
 
-                console.log('Updating risk chart with data:', data);
                 
                 // Preserve existing segments for smooth transitions
                 const existingSegments = segments.querySelectorAll('.segment');
@@ -7870,8 +7615,6 @@ body {
                     '#D32F2F'       // Dark Red for Severe Risk
                 ];
                 
-                console.log('Theme:', isDarkTheme ? 'Dark' : 'Light');
-                console.log('Colors array:', colors);
                 
                 const labels = [
                     'Low Risk',
@@ -7951,34 +7694,19 @@ body {
                     // Use the global average risk score from community metrics (more accurate)
                     if (window.globalAverageRiskScore !== undefined && window.globalAverageRiskScore > 0) {
                         averageRisk = Math.round(window.globalAverageRiskScore);
-                        console.log('Using global average risk score from community metrics:', averageRisk);
                     } else if (actualRiskScores.length > 0) {
                         // Fallback to actual risk scores from chart data if available
                         const sum = actualRiskScores.reduce((total, score) => total + score, 0);
                         averageRisk = Math.round(sum / actualRiskScores.length);
-                        console.log('Using actual risk scores from chart data:', actualRiskScores);
-                        console.log('Calculated average from actual scores:', averageRisk);
                     } else {
                         // Final fallback to weighted average if no actual scores available
                         // For 1 user with 100% risk, this should give 100
                         // Updated to match Android app risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)
                         const weightedSum = (riskLevels[0] * 10) + (riskLevels[1] * 35) + (riskLevels[2] * 65) + (riskLevels[3] * 90);
                         averageRisk = Math.round(weightedSum / totalUsers);
-                        console.log('Using fallback weighted average calculation');
-                        console.log('Note: API should provide risk_score field for accurate calculations');
-                        console.log('Risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)');
                     }
                 }
                 
-                console.log('Risk levels distribution:', riskLevels);
-                console.log('Risk levels array details:', riskLevels.map((count, index) => `${labels[index]}: ${count}`));
-                console.log('Total users:', totalUsers);
-                console.log('At risk percentage:', atRiskPercentage);
-                console.log('Average risk score:', averageRisk);
-                console.log('Global average risk score available:', window.globalAverageRiskScore);
-                console.log('Actual risk scores from API:', actualRiskScores);
-                console.log('Raw API data received:', data);
-                console.log('Risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)');
                 
                 // Update center text with average risk score (this is what you want)
                 if (centerText.textContent !== averageRisk + '%') {
@@ -8025,14 +7753,11 @@ body {
                     }
                 });
                 
-                console.log('Final gradient string:', gradientString);
-                console.log('Total percentage calculated:', calculatedTotalPercentage);
                 
                 // Apply the conic gradient to the background
                 if (gradientString.trim()) {
                     chartBg.style.background = `conic-gradient(${gradientString})`;
                     chartBg.style.opacity = '1';
-                    console.log('Applied conic gradient:', gradientString);
                 } else {
                     // Fallback if no data
                     chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
@@ -8101,7 +7826,6 @@ body {
                                 labelDiv.style.transform = 'translate(-50%, -50%) scale(1)';
                                 labelDiv.style.transition = 'none';
                                 
-                                console.log(`Created percentage label: ${segment.label} - ${segment.percentage.toFixed(1)}% at angle ${angleInDegrees.toFixed(1)}°`);
                             }
                         });
                     } else {
@@ -8182,7 +7906,6 @@ body {
                         totalCalculatedPercentage += severeRiskPercentage;
                     }
                     
-                    console.log('Risk score-based distribution:', {
                         lowRisk: { count: lowRiskCount, percentage: lowRiskPercentage.toFixed(1) },
                         moderateRisk: { count: moderateRiskCount, percentage: moderateRiskPercentage.toFixed(1) },
                         highRisk: { count: highRiskCount, percentage: highRiskPercentage.toFixed(1) },
@@ -8254,17 +7977,14 @@ body {
                     segmentDiv.style.opacity = '1';
                     segmentDiv.style.transition = 'none';
                     
-                    console.log(`Updated segment: ${labels[index]} - ${count} (${percentage.toFixed(1)}%)`);
                 });
                 
                 // Set chart background to visible immediately - no flickering
                 chartBg.style.opacity = '1';
                 chartBg.style.transition = 'none';
                 
-                console.log('Risk chart updated successfully');
                 
             } catch (error) {
-                console.error('Error updating risk chart:', error);
             }
         }
 
@@ -8274,7 +7994,6 @@ body {
 
         // Function to update Nutritional Status Overview Card
         function updateNutritionalStatusCard(whzData, muacData) {
-            console.log('updateNutritionalStatusCard called with:', { whzData, muacData });
             
             try {
                 // Update WHZ Categories
@@ -8327,9 +8046,7 @@ body {
                 // Update Summary Statistics
                 updateNutritionalSummary(whzData, muacData);
                 
-                console.log('Nutritional Status Overview Card updated successfully');
             } catch (error) {
-                console.error('Error updating Nutritional Status Overview Card:', error);
             }
         }
         
@@ -8386,23 +8103,19 @@ body {
                 }
                 
             } catch (error) {
-                console.error('Error updating Nutritional Summary:', error);
             }
         }
 
         // Helper function to create line path (copied from dashold.php design)
         function createLinePath(data) {
-            console.log('createLinePath called with data:', data);
             
             if (!data || data.length === 0) {
-                console.log('No data provided to createLinePath, returning empty string');
                 return '';
             }
             
             const width = 1000;
             const height = 500;
             
-            console.log('Chart dimensions:', { width, height });
             
             const maxValue = Math.max(...data.map(d => d.value));
             
@@ -8411,14 +8124,12 @@ body {
                 const x = width / 2; // Center horizontally
                 const y = height - (data[0].value / maxValue) * height;
                 const path = `M ${x},${y} L ${x},${y}`; // Single point as small line
-                console.log('Single data point path:', path);
                 return path;
             }
             
             const xStep = width / (data.length - 1);
             const yScale = height / maxValue;
             
-            console.log('Path calculation:', { maxValue, xStep, yScale, dataLength: data.length });
             
             // Create path from left to right (like dashold.php)
             let pathString = `M 0,${height - data[0].value * yScale}`;
@@ -8434,8 +8145,6 @@ body {
             // Close the area path to the bottom (like dashold.php)
             areaString += ` L ${width},${height} L 0,${height} Z`;
             
-            console.log('Generated path:', pathString);
-            console.log('Generated area:', areaString);
             
             return { path: pathString, area: areaString };
         }
@@ -8476,7 +8185,6 @@ body {
                     generateIntelligentPrograms(currentSelectedBarangay);
                 }
             } catch (error) {
-                console.error('Error loading initial data:', error);
             }
             
             setInterval(() => {
@@ -8487,7 +8195,6 @@ body {
                         updateCriticalAlerts(currentSelectedBarangay);
                     });
                 } catch (error) {
-                    console.error('Error in auto-refresh:', error);
                 }
             }, 3000);
             
@@ -8516,44 +8223,8 @@ body {
             }, 1000);
         });
 
-        async function testAPIConnection() {
-            try {
-                const response = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?test=1');
-                if (response.ok) {
-                    const data = await response.text();
-                }
-            } catch (error) {
-                console.error('API Connection failed:', error);
-            }
-        }
         
-        async function testMunicipalityFiltering(barangay) {
-            try {
-                const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=test_municipality&barangay=${encodeURIComponent(barangay)}`);
-                if (response.ok) {
-                    const data = await response.json();
-                }
-            } catch (error) {
-                console.error('Error testing municipality filtering:', error);
-            }
-        }
         
-        async function testIntelligentProgramsAPI() {
-            try {
-                const response = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=intelligent_programs');
-                if (response.ok) {
-                    const data = await response.json();
-                }
-                
-                const barangayResponse = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=intelligent_programs&barangay=Bangkal');
-                if (barangayResponse.ok) {
-                    const barangayData = await barangayResponse.json();
-                }
-                
-            } catch (error) {
-                console.error('Error testing intelligent programs API:', error);
-            }
-        }
 
         async function debugProgramGeneration() {
             try {
@@ -8601,26 +8272,9 @@ body {
                     
                 }
             } catch (error) {
-                console.error('Error debugging program generation:', error);
             }
         }
 
-        async function testUserDataConsistency(email) {
-            try {
-                const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_user_data&email=${encodeURIComponent(email)}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        if (!data.comparison.barangay_match) {
-                            console.warn('BARANGAY MISMATCH DETECTED!');
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error testing user data consistency:', error);
-            }
-        }
         
         async function debugAPIResponse() {
             try {
@@ -8635,10 +8289,8 @@ body {
                             if (Array.isArray(section)) {
                                 section.forEach((item, index) => {
                                     if (item.label) {
-                                        console.log(`Label: "${item.label}" (Type: ${typeof item.label})`);
                                     }
                                     if (item.value !== undefined) {
-                                        console.log(`Value: ${item.value} (Type: ${typeof item.value})`);
                                     }
                                 });
                             }
@@ -8646,96 +8298,34 @@ body {
                     }
                 }
             } catch (error) {
-                console.error('Debug API error:', error);
             }
         }
         
         async function debugDatabaseDirectly() {
             try {
-                const response1 = await fetch('https://nutrisaur-production.up.railway.app/debug_db.php');
                 if (response1.ok) {
                     const data1 = await response1.text();
                 }
             } catch (error) {
-                console.error('Database test error:', error);
             }
             
             try {
-                const response2 = await fetch('https://nutrisaur-production.up.railway.app/debug_table.php');
                 if (response2.ok) {
                     const data2 = await response2.text();
                 }
             } catch (error) {
-                console.error('Table check error:', error);
             }
         }
         
-        async function testScreeningResponsesAPI() {
-            try {
-                const response1 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses');
-                if (response1.ok) {
-                    const data1 = await response1.json();
-                }
-            } catch (error) {
-                console.error('Test 1 failed:', error);
-            }
-            
-            try {
-                const response2 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses&barangay=Bangkal');
-                if (response2.ok) {
-                    const data2 = await response2.json();
-                }
-            } catch (error) {
-                console.error('Test 2 failed:', error);
-            }
-            
-            try {
-                const response3 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?test=1');
-                if (response3.ok) {
-                    const data3 = await response3.text();
-                }
-            } catch (error) {
-                console.error('Test 3 failed:', error);
-            }
-            
-            try {
-                const response4 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_table_structure&table=user_preferences');
-                if (response4.ok) {
-                    const data4 = await response4.json();
-                }
-            } catch (error) {
-                console.error('Test 4 failed:', error);
-            }
-            
-            try {
-                const response5 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_sample_data&table=user_preferences&limit=5');
-                if (response5.ok) {
-                    const data5 = await response5.json();
-                }
-            } catch (error) {
-                console.error('Test 5 failed:', error);
-            }
-            
-            try {
-                const response6 = await fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=check_raw_data&table=user_preferences&limit=10');
-                if (response6.ok) {
-                    const data6 = await response6.json();
-                }
-            } catch (error) {
-                console.error('Test 6 failed:', error);
-            }
-        }
 
         // Function to create new program - redirects to event.php in same tab
         function createNewProgram() {
-            console.log('createNewProgram called');
             // Redirect to event.php in the same tab
                             window.location.href = '/event';
         }
 
         // Function to create program from card - redirects to event.php with pre-filled data
         function createProgramFromCard(title, type, location, description, urgency) {
-            console.log('createProgramFromCard called with:', { title, type, location, description, urgency });
             
             // Create URL parameters with proper encoding
             const params = new URLSearchParams({
@@ -8747,43 +8337,11 @@ body {
             });
             
             const url = `event.php?${params.toString()}`;
-            console.log('Redirecting to:', url);
             
             // Redirect to event.php in the same tab with pre-filled form data
             window.location.href = url;
         }
 
-        // Function to test risk calculation (for debugging)
-        function testRiskCalculation() {
-            console.log('=== TESTING RISK CALCULATION ===');
-            console.log('Global average risk score:', window.globalAverageRiskScore);
-            
-            // Test with sample data
-            const sampleData = [
-                { label: 'Low Risk', value: 1, risk_scores: [51] }
-            ];
-            
-            console.log('Sample data:', sampleData);
-            
-            // Simulate the risk calculation
-            let actualRiskScores = [];
-            sampleData.forEach(item => {
-                if (item.risk_scores && Array.isArray(item.risk_scores)) {
-                    actualRiskScores.push(...item.risk_scores);
-                }
-            });
-            
-            if (actualRiskScores.length > 0) {
-                const sum = actualRiskScores.reduce((total, score) => total + score, 0);
-                const calculatedAverage = Math.round(sum / actualRiskScores.length);
-                console.log('Calculated average from sample data:', calculatedAverage);
-                console.log('Expected: 51%');
-                console.log('Actual: ' + calculatedAverage + '%');
-                console.log('Match:', calculatedAverage === 51 ? '✅ YES' : '❌ NO');
-            }
-            
-            console.log('=== RISK CALCULATION TEST COMPLETE ===');
-        }
         
 
         
@@ -8801,8 +8359,6 @@ body {
                     url += `&barangay=${encodeURIComponent(barangay)}`;
                 }
                 
-                console.log('Loading screening responses for barangay:', barangay || 'All Barangays');
-                console.log('API URL:', url);
                 
                 const response = await fetch(url);
                 
@@ -8816,11 +8372,9 @@ body {
                     }
                 } else {
                     const errorText = await response.text();
-                    console.error('Failed to fetch screening responses:', response.status);
                     showScreeningResponsesError(`HTTP ${response.status}: ${errorText}`);
                 }
             } catch (error) {
-                console.error('Network/parsing error:', error);
                 showScreeningResponsesError(`Connection error: ${error.message}`);
             }
         }
@@ -8828,31 +8382,23 @@ body {
 
         
         function updateResponseSection(elementId, data, labelType, totalScreened = null) {
-            console.log(`=== updateResponseSection called for ${elementId} ===`);
-            console.log('Parameters:', { elementId, data, labelType, totalScreened });
             
             const element = document.getElementById(elementId);
             if (!element) {
-                console.error(`Element ${elementId} not found in DOM`);
                 return;
             }
             
-            console.log(`Element found:`, element);
-            console.log(`Element HTML:`, element.innerHTML);
             
             // Find the data container (after the headers)
             const dataContainer = element.querySelector('.response-data-container');
-            console.log(`Data container found:`, dataContainer);
             
             if (!dataContainer) {
-                console.warn(`Data container not found in ${elementId}, creating one after the headers`);
                 // If no data container exists, create one after the headers
                 const headers = element.querySelector('.column-headers');
                 if (headers) {
                     const newDataContainer = document.createElement('div');
                     newDataContainer.className = 'response-data-container';
                     element.appendChild(newDataContainer);
-                    console.log(`Created new data container for ${elementId}`);
                 }
             }
             
@@ -8867,7 +8413,6 @@ body {
             
             // Debug: Show raw data if something goes wrong
             if (data.length > 0 && !data[0].count && !data[0].value) {
-                console.warn(`Raw data for ${elementId}:`, { data, labelType });
                 const debugHtml = `
                     <div class="no-data-message">
                         <div>Raw data received:</div>
@@ -8886,14 +8431,12 @@ body {
             // Use provided total or calculate from data
             const total = totalScreened || data.reduce((sum, item) => sum + (item.count || item.value || 0), 0);
             
-            console.log(`Total for ${elementId}:`, total);
             
             data.forEach((item, index) => {
                 const count = item.count || item.value || 0;
                 const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
                 const displayLabel = getDisplayLabel(item, labelType);
                 
-                console.log(`Item ${index}:`, { item, count, percentage, displayLabel });
                 
                 html += `
                     <div class="response-answer-item">
@@ -8904,7 +8447,6 @@ body {
                 `;
             });
             
-            console.log(`Generated HTML for ${elementId}:`, html);
             if (dataContainer) {
                 dataContainer.innerHTML = html;
                 } else {
@@ -8914,7 +8456,6 @@ body {
         
         // Function to get proper display labels for different data types
         function getDisplayLabel(item, labelType) {
-            console.log(`getDisplayLabel called with:`, { item, labelType });
             
             // Handle different field name patterns from API
             let label = '';
@@ -8922,43 +8463,30 @@ body {
             // Check for different field name patterns
             if (item.label !== undefined) {
                 label = item.label;
-                console.log(`Found label field: "${label}"`);
             } else if (item.swelling_status !== undefined) {
                 label = item.swelling_status;
-                console.log(`Found swelling_status field: "${label}"`);
             } else if (item.weight_loss_status !== undefined) {
                 label = item.weight_loss_status;
-                console.log(`Found weight_loss_status field: "${label}"`);
             } else if (item.feeding_behavior_status !== undefined) {
                 label = item.feeding_behavior_status;
-                console.log(`Found feeding_behavior_status field: "${label}"`);
             } else if (item.dietary_diversity_level !== undefined) {
                 label = item.dietary_diversity_level;
-                console.log(`Found dietary_diversity_level field: "${label}"`);
             } else if (item.age_group !== undefined) {
                 label = item.age_group;
-                console.log(`Found age_group field: "${label}"`);
             } else if (item.gender !== undefined) {
                 label = item.gender;
-                console.log(`Found gender field: "${label}"`);
             } else if (item.income_level !== undefined) {
                 label = item.income_level;
-                console.log(`Found income_level field: "${label}"`);
             } else if (item.height_range !== undefined) {
                 label = item.height_range;
-                console.log(`Found height_range field: "${label}"`);
             } else if (item.value !== undefined) {
                 label = item.value;
-                console.log(`Found value field: "${label}"`);
             } else if (item.count !== undefined) {
                 label = item.count;
-                console.log(`Found count field: "${label}"`);
             } else if (item.name !== undefined) {
                 label = item.name;
-                console.log(`Found name field: "${label}"`);
             }
             
-            console.log(`Final label extracted: "${label}"`);
             
             // Handle null, undefined, empty strings, and common database "unknown" values
             if (!label || 
@@ -9318,21 +8846,17 @@ body {
         // Time frame button functionality - DISABLED FOR NOW
         /*
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== DOM CONTENT LOADED ===');
             
             // Initialize dashboard with default data (1 day)
-            console.log('Initializing dashboard with default time frame...');
             updateDashboardByTimeFrame('1d');
             
             // Initialize Intelligent Programs
-            console.log('Initializing Intelligent Programs...');
             generateIntelligentPrograms();
             
             const timeButtons = document.querySelectorAll('.time-btn');
             
             timeButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    console.log('Time frame button clicked:', this.getAttribute('data-timeframe'));
                     
                     // Remove active class from all buttons
                     timeButtons.forEach(btn => btn.classList.remove('active'));
@@ -9355,7 +8879,6 @@ body {
                     const selectedValue = this.getAttribute('data-value');
                     const selectedText = this.textContent;
                     
-                    console.log('Barangay selected:', selectedValue, selectedText);
                     
                     // Update the selected option display
                     document.getElementById('selected-option').textContent = selectedText;
@@ -9381,7 +8904,6 @@ body {
         // Function to update dashboard based on selected time frame - DISABLED FOR NOW
         /*
         function updateDashboardByTimeFrame(timeFrame) {
-            console.log('Updating dashboard for time frame:', timeFrame);
             
             // Get selected time frame
             const selectedBarangay = document.getElementById('selected-option').getAttribute('data-value') || '';
@@ -9398,28 +8920,21 @@ body {
         /*
         async function fetchTimeFrameData(timeFrame, barangay) {
             try {
-                console.log(`Fetching time frame data: ${timeFrame}, barangay: ${barangay}`);
                 const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=time_frame_data&time_frame=${timeFrame}&barangay=${encodeURIComponent(barangay)}`);
                 
                 if (response.ok) {
                     const responseData = await response.json();
-                    console.log('=== API RESPONSE ===');
-                    console.log('Full response:', responseData);
                     
                     if (responseData.success) {
-                        console.log('Success response, data:', responseData.data);
                         updateDashboardWithData(responseData.data);
                     } else {
-                        console.error('Failed to fetch time frame data:', responseData.message);
                         hideDashboardLoading();
                     }
                 } else {
-                    console.error('HTTP error:', response.status);
                     hideDashboardLoading();
                     }
                 }
             } catch (error) {
-                console.error('Network error:', error);
                 hideDashboardLoading();
             }
         }
@@ -9428,9 +8943,6 @@ body {
         // Function to update dashboard with new data - DISABLED FOR NOW
         /*
         function updateDashboardWithData(data) {
-            console.log('=== UPDATE DASHBOARD WITH DATA ===');
-            console.log('Raw data received:', data);
-            console.log('Data types:', {
                 total_screened: typeof data.total_screened,
                 high_risk_cases: typeof data.high_risk_cases,
                 sam_cases: typeof data.sam_cases,
@@ -9443,7 +8955,6 @@ body {
             const samCases = data.sam_cases || 0;
             const criticalMuac = data.critical_muac || 0;
             
-            console.log('Values to set:', {
                 totalScreened,
                 highRiskCases,
                 samCases,
@@ -9459,10 +8970,8 @@ body {
             const dateRangeElement = document.getElementById('date-range-display');
             if (dateRangeElement) {
                 const dateRangeText = `${data.start_date_formatted} - ${data.end_date_formatted}`;
-                console.log('Setting date range to:', dateRangeText);
                 dateRangeElement.textContent = dateRangeText;
             } else {
-                console.warn('Date range element not found');
             }
             
             // Update metric change displays
@@ -9479,60 +8988,45 @@ body {
             // Hide loading state
             hideDashboardLoading();
             
-            console.log('Dashboard updated with new data:', data);
         }
         */
         
         // Function to update screening responses display with new data
         function updateScreeningResponsesDisplay(data) {
-            console.log('=== updateScreeningResponsesDisplay called ===');
-            console.log('Data received:', data);
             
             // Update age groups
-            console.log('Updating age groups...');
             updateResponseSection('age-group-responses', data.age_groups || [], 'Age Group', data.total_screened);
             
             // Update gender distribution
-            console.log('Updating gender distribution...');
             updateResponseSection('gender-responses', data.gender || [], 'Gender', data.total_screened);
             
             // Update income levels
-            console.log('Updating income levels...');
             updateResponseSection('income-responses', data.income_levels || [], 'Income Level', data.total_screened);
             
             // Update height distribution
-            console.log('Updating height distribution...');
             updateResponseSection('height-responses', data.height || [], 'Height Range', data.total_screened);
             
             // Update swelling distribution
-            console.log('Updating swelling distribution...');
             updateResponseSection('swelling-responses', data.swelling || [], 'Swelling Status', data.total_screened);
             
             // Update weight loss distribution
-            console.log('Updating weight loss distribution...');
             updateResponseSection('weight-loss-responses', data.weight_loss || [], 'Weight Loss Status', data.total_screened);
             
             // Update feeding behavior distribution
-            console.log('Updating feeding behavior distribution...');
             updateResponseSection('feeding-behavior-responses', data.feeding_behavior || [], 'Feeding Behavior', data.total_screened);
             
             // Update physical signs
-            console.log('Updating physical signs...');
             updateResponseSection('physical-signs-responses', data.physical_signs || [], 'Physical Sign', data.total_screened);
             
             // Update dietary diversity distribution
-            console.log('Updating dietary diversity distribution...');
             updateResponseSection('dietary-diversity-responses', data.dietary_diversity || [], 'Dietary Diversity Score', data.total_screened);
             
             // Update clinical risk factors
-            console.log('Updating clinical risk factors...');
             updateResponseSection('clinical-risk-responses', data.clinical_risk || [], 'Clinical Risk Factor', data.total_screened);
             
             // Update critical alerts from screening data
-            console.log('Updating critical alerts from screening data...');
             updateCriticalAlertsFromScreeningData(data);
             
-            console.log('=== updateScreeningResponsesDisplay complete ===');
         }
         
         // Function to update critical alerts based on screening response data
@@ -9596,7 +9090,6 @@ body {
             if (!hasRealAlerts) {
                 // If we currently have alerts displayed, keep them instead of showing "no alerts"
                 if (currentlyHasAlerts) {
-                    console.log('Keeping current alerts to prevent "no alerts" flicker');
                     return;
                 }
                 
@@ -9714,9 +9207,7 @@ body {
             }
             
             // Add click event to new theme toggle button
-            console.log('Setting up new theme toggle event listener');
             newToggleBtn.addEventListener('click', newToggleTheme);
-            console.log('New theme toggle event listener added successfully');
             
             // Initialize dropdown functionality
             initializeDropdown();
