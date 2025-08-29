@@ -242,6 +242,10 @@ switch ($endpoint) {
         handleDeleteAllEvents($pdo);
         break;
         
+    case 'import_csv':
+        handleImportCSV($pdo);
+        break;
+        
     case 'debug_programs_table':
         debugProgramsTable($pdo);
         break;
@@ -2400,6 +2404,166 @@ function debugProgramsTable($pdo) {
         
     } catch(PDOException $e) {
         echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+// Handle CSV import for events
+function handleImportCSV($pdo) {
+    try {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            http_response_code(405);
+            echo json_encode(["success" => false, "error" => "Method not allowed"]);
+            return;
+        }
+        
+        // Check if file was uploaded
+        if (!isset($_FILES["csvFile"]) || $_FILES["csvFile"]["error"] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            echo json_encode(["success" => false, "error" => "No CSV file uploaded or upload error"]);
+            return;
+        }
+        
+        $file = $_FILES["csvFile"];
+        
+        // Validate file type
+        if ($file["type"] !== "text/csv" && pathinfo($file["name"], PATHINFO_EXTENSION) !== "csv") {
+            http_response_code(400);
+            echo json_encode(["success" => false, "error" => "Invalid file type. Please upload a CSV file"]);
+            return;
+        }
+        
+        // Validate file size (max 5MB)
+        if ($file["size"] > 5 * 1024 * 1024) {
+            http_response_code(400);
+            echo json_encode(["success" => false, "error" => "File too large. Maximum size is 5MB"]);
+            return;
+        }
+        
+        // Read CSV file
+        $handle = fopen($file["tmp_name"], "r");
+        if (!$handle) {
+            http_response_code(500);
+            echo json_encode(["success" => false, "error" => "Failed to read CSV file"]);
+            return;
+        }
+        
+        // Get headers (first row)
+        $headers = fgetcsv($handle);
+        if (!$headers) {
+            http_response_code(400);
+            echo json_encode(["success" => false, "error" => "Invalid CSV format - no headers found"]);
+            return;
+        }
+        
+        // Expected columns based on programs table
+        $expectedColumns = ["title", "type", "description", "date_time", "location", "organizer"];
+        $columnMap = [];
+        
+        // Map CSV headers to database columns
+        foreach ($expectedColumns as $expected) {
+            $found = false;
+            foreach ($headers as $index => $headerName) {
+                if (strtolower(trim($headerName)) === strtolower($expected)) {
+                    $columnMap[$expected] = $index;
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                http_response_code(400);
+                echo json_encode(["success" => false, "error" => "Missing required column: $expected"]);
+                return;
+            }
+        }
+        
+        $importedCount = 0;
+        $errors = [];
+        $rowNumber = 1; // Start from 1 since we already read headers
+        
+        // Get the next available program_id
+        $stmt = $pdo->query("SELECT MAX(program_id) as max_id FROM programs");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $nextId = ($result["max_id"] ?? 0) + 1;
+        
+        // Begin transaction
+        $pdo->beginTransaction();
+        
+        try {
+            // Process each row
+            while (($row = fgetcsv($handle)) !== false) {
+                $rowNumber++;
+                
+                // Skip empty rows
+                if (empty(array_filter($row))) {
+                    continue;
+                }
+                
+                // Extract data using column mapping
+                $title = trim($row[$columnMap["title"]] ?? "");
+                $type = trim($row[$columnMap["type"]] ?? "");
+                $description = trim($row[$columnMap["description"]] ?? "");
+                $dateTime = trim($row[$columnMap["date_time"]] ?? "");
+                $location = trim($row[$columnMap["location"]] ?? "");
+                $organizer = trim($row[$columnMap["organizer"]] ?? "");
+                
+                // Validate required fields
+                if (empty($title) || empty($type) || empty($description) || empty($dateTime) || empty($location) || empty($organizer)) {
+                    $errors[] = "Row $rowNumber: Missing required fields";
+                    continue;
+                }
+                
+                // Validate date format (expecting YYYY-MM-DD HH:MM:SS or similar)
+                $timestamp = strtotime($dateTime);
+                if ($timestamp === false) {
+                    $errors[] = "Row $rowNumber: Invalid date format: $dateTime";
+                    continue;
+                }
+                
+                // Insert event into database
+                $stmt = $pdo->prepare("INSERT INTO programs (program_id, title, type, description, date_time, location, organizer, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                
+                $stmt->execute([
+                    $nextId,
+                    $title,
+                    $type,
+                    $description,
+                    $dateTime,
+                    $location,
+                    $organizer,
+                    time() * 1000 // Convert to milliseconds for bigint created_at
+                ]);
+                
+                $importedCount++;
+                $nextId++;
+            }
+            
+            // Commit transaction
+            $pdo->commit();
+            
+            fclose($handle);
+            
+            echo json_encode([
+                "success" => true,
+                "message" => "Successfully imported $importedCount events",
+                "imported_count" => $importedCount,
+                "errors" => $errors
+            ]);
+            
+        } catch (Exception $e) {
+            // Rollback transaction on error
+            $pdo->rollBack();
+            fclose($handle);
+            throw $e;
+        }
+        
+    } catch(PDOException $e) {
+        error_log("Database error importing CSV: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(["success" => false, "error" => "Database error: " . $e->getMessage()]);
+    } catch(Exception $e) {
+        error_log("General error importing CSV: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(["success" => false, "error" => "Error importing CSV: " . $e->getMessage()]);
     }
 }
 ?>
