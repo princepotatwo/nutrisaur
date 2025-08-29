@@ -5514,8 +5514,8 @@ header:hover {
                 return `${year}-${month}-${day} ${hours}:${minutes}`;
             };
             
-            const csvContent = `Event Title,Type,Date & Time,Location,Organizer,Description,Notification Type,Recipient Group
-Sample Event,Workshop,${formatDate(future1)},Sample Location,Sample Organizer,Sample description,email,All Users`;
+            const csvContent = `title,type,description,date_time,location,organizer
+Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,Sample Organizer`;
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
@@ -7073,8 +7073,8 @@ Sample Event,Workshop,${formatDate(future1)},Sample Location,Sample Organizer,Sa
                 return `${year}-${month}-${day} ${hours}:${minutes}`;
             };
             
-            const csvContent = `Event Title,Type,Date & Time,Location,Organizer,Description,Notification Type,Recipient Group
-Sample Event,Workshop,${formatDate(future1)},Sample Location,Sample Organizer,Sample description,email,All Users`;
+            const csvContent = `title,type,description,date_time,location,organizer
+Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,Sample Organizer`;
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
