@@ -24,7 +24,8 @@ $email = $_SESSION['email'];
     <!-- External CSS file -->
     <link rel="stylesheet" href="./consolidated_styles.css?v=1.0">
     
-
+    <!-- CSS embedded temporarily while external file connection is fixed -->
+    <style>
 /* ===== NUTRISAUR CONSOLIDATED STYLES ===== */
 /* This file consolidates all styles from the PHP files for better maintainability */
 
@@ -1175,6 +1176,7 @@ body {
         opacity: 1;
     }
 }
+    </style>
     
     <!-- Original CSS commented out - now using external file -->
     <!--
