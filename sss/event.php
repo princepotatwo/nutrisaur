@@ -4518,7 +4518,7 @@ header:hover {
                         <option value="upcoming">Upcoming</option>
                         <option value="past">Past Events</option>
                     </select>
-                    <button onclick="confirmDeleteAll()" class="btn btn-danger">Delete All Events</button>
+                    <button onclick="confirmDeleteAllEvents()" class="btn btn-danger">Delete All Events</button>
                 </div>
             </div>
             
@@ -4982,6 +4982,35 @@ header:hover {
 
 
         // Toggle training groups (only if they exist)
+        
+        // NEW FUNCTION: Delete all events using AJAX
+        function confirmDeleteAllEvents() {
+            if (confirm('WARNING: This will delete ALL events permanently!\n\nAre you absolutely sure you want to continue?')) {
+                if (confirm('FINAL WARNING: This action cannot be undone!\n\nClick OK to delete ALL events.')) {
+                    // Use AJAX instead of redirecting
+                    fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=delete_all_events', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Successfully deleted ' + data.deleted_count + ' events!');
+                            location.reload(); // Refresh to show empty table
+                        } else {
+                            alert('Error deleting events: ' + (data.error || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error deleting events. Please try again.');
+                    });
+                }
+            }
+        }
     </script>
     
     <script>
