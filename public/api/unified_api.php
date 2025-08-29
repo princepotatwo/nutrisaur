@@ -238,6 +238,10 @@ switch ($endpoint) {
         handleCreateEvent($pdo);
         break;
         
+    case 'delete_all_events':
+        handleDeleteAllEvents($pdo);
+        break;
+        
     case 'debug_programs_table':
         debugProgramsTable($pdo);
         break;
@@ -2273,6 +2277,38 @@ function handleGetUserNotifications($pdo, $postData) {
         
     } catch(PDOException $e) {
         echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+// Handle delete all events
+function handleDeleteAllEvents($pdo) {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+            return;
+        }
+        
+        // Delete all events from programs table
+        $stmt = $pdo->prepare("DELETE FROM programs");
+        $stmt->execute();
+        
+        $deletedCount = $stmt->rowCount();
+        
+        echo json_encode([
+            'success' => true,
+            'message' => "Successfully deleted $deletedCount events",
+            'deleted_count' => $deletedCount
+        ]);
+        
+    } catch(PDOException $e) {
+        error_log("Database error deleting all events: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+    } catch(Exception $e) {
+        error_log("General error deleting all events: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Error deleting all events: ' . $e->getMessage()]);
     }
 }
 
