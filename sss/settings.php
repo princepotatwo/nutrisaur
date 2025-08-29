@@ -24,8 +24,7 @@ $email = $_SESSION['email'];
     <!-- External CSS file -->
     <link rel="stylesheet" href="./consolidated_styles.css?v=1.0">
     
-    <!-- Full CSS embedded temporarily to ensure styling works -->
-    <style>
+
 /* ===== NUTRISAUR CONSOLIDATED STYLES ===== */
 /* This file consolidates all styles from the PHP files for better maintainability */
 
@@ -4942,8 +4941,6 @@ optgroup option {
 }
 
 
-    -->
-    </style>
 </head>
 <body class="dark-theme">
     <div class="navbar">
