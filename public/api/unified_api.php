@@ -358,10 +358,10 @@ function getCommunityMetrics($pdo) {
         $riskSql = "
             SELECT 
                 CASE 
-                    WHEN risk_score < 30 THEN 'low'
-                    WHEN risk_score < 50 THEN 'moderate'
-                    WHEN risk_score < 70 THEN 'high'
-                    ELSE 'critical'
+                    WHEN risk_score < 30 THEN 'low risk'
+                    WHEN risk_score < 50 THEN 'moderate risk'
+                    WHEN risk_score < 70 THEN 'high risk'
+                    ELSE 'critical risk'
                 END as risk_level,
                 COUNT(*) as count
             FROM user_preferences 
@@ -377,7 +377,7 @@ function getCommunityMetrics($pdo) {
         $riskData = $stmt->fetchAll();
         
         // Convert to expected format
-        $riskDistribution = ['low' => 0, 'moderate' => 0, 'high' => 0, 'critical' => 0];
+        $riskDistribution = ['low risk' => 0, 'moderate risk' => 0, 'high risk' => 0, 'critical risk' => 0];
         foreach ($riskData as $risk) {
             $riskDistribution[$risk['risk_level']] = $risk['count'];
         }
