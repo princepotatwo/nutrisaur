@@ -2232,6 +2232,12 @@ function getEventsData($pdo) {
         $stmt->execute();
         $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
+        // Debug logging
+        error_log("getEventsData: Found " . count($events) . " events");
+        if (count($events) > 0) {
+            error_log("getEventsData: First event: " . json_encode($events[0]));
+        }
+        
         // Format events data
         $eventsData = [];
         foreach ($events as $event) {
@@ -2254,7 +2260,11 @@ function getEventsData($pdo) {
         ]);
         
     } catch(PDOException $e) {
+        error_log("getEventsData PDO error: " . $e->getMessage());
         echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    } catch(Exception $e) {
+        error_log("getEventsData general error: " . $e->getMessage());
+        echo json_encode(['error' => 'General error: ' . $e->getMessage()]);
     }
 }
 
