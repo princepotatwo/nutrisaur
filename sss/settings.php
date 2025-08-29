@@ -22,7 +22,7 @@ $email = $_SESSION['email'];
     <title>NutriSaur Dashboard</title>
 
     <!-- External CSS file -->
-    <link rel="stylesheet" href="consolidated_styles.css?v=1.0">
+    <link rel="stylesheet" href="sss/consolidated_styles.css?v=1.0">
 </head>
     border: none;
     background: transparent;
