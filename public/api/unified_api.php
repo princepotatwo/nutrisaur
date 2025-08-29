@@ -250,6 +250,10 @@ switch ($endpoint) {
         debugProgramsTable($pdo);
         break;
         
+    case 'list_tables':
+        listAllTables($pdo);
+        break;
+        
     case 'add_user':
         handleAddUser($pdo);
         break;
@@ -2565,6 +2569,24 @@ function handleImportCSV($pdo) {
         error_log("General error importing CSV: " . $e->getMessage());
         http_response_code(500);
         echo json_encode(["success" => false, "error" => "Error importing CSV: " . $e->getMessage()]);
+    }
+}
+
+function listAllTables($pdo) {
+    try {
+        $stmt = $pdo->query("SHOW TABLES");
+        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        echo json_encode([
+            'success' => true,
+            'tables' => $tables
+        ]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Failed to list tables: ' . $e->getMessage()
+        ]);
     }
 }
 ?>
