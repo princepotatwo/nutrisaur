@@ -86,9 +86,15 @@ function sendFCMNotification($tokens, $notificationData) {
             error_log("Private key starts with: " . substr($privateKey, 0, 50));
             error_log("Private key ends with: " . substr($privateKey, -50));
             
+            // Validate project ID format
+            $projectId = $_ENV['FIREBASE_PROJECT_ID'];
+            error_log("Raw project ID from env: '" . $projectId . "'");
+            error_log("Project ID length: " . strlen($projectId));
+            error_log("Project ID contains spaces: " . (strpos($projectId, ' ') !== false ? 'yes' : 'no'));
+            
             $firebaseCredentials = [
                 'type' => 'service_account',
-                'project_id' => $_ENV['FIREBASE_PROJECT_ID'],
+                'project_id' => trim($projectId), // Remove any whitespace
                 'private_key_id' => $_ENV['FIREBASE_PRIVATE_KEY_ID'],
                 'private_key' => $privateKey,
                 'client_email' => $_ENV['FIREBASE_CLIENT_EMAIL'],
@@ -189,6 +195,9 @@ function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials
             // Use Firebase HTTP v1 API
             $projectId = $serviceAccount['project_id'];
             $fcmUrl = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
+            
+            error_log("FCM URL: " . $fcmUrl);
+            error_log("Project ID: " . $projectId);
             
             // Send FCM message using cURL with Admin SDK
             $ch = curl_init();
