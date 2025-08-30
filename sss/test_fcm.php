@@ -4,13 +4,38 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Include database configuration
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../public/config.php';
+
+// Get database connection
+$conn = getDatabaseConnection();
+
+// Function to safely execute database queries
+function safeDbQuery($conn, $query, $params = []) {
+    try {
+        if ($conn instanceof PDO) {
+            $stmt = $conn->prepare($query);
+            $stmt->execute($params);
+            return $stmt;
+        } else {
+            // Fallback for mysqli
+            $stmt = $conn->prepare($query);
+            if (!empty($params)) {
+                $stmt->bind_param(str_repeat('s', count($params)), ...$params);
+            }
+            $stmt->execute();
+            return $stmt;
+        }
+    } catch (Exception $e) {
+        error_log("Database query error: " . $e->getMessage());
+        return false;
+    }
+}
 
 // Function to send FCM notification
 function sendFCMNotification($tokens, $notificationData) {
     try {
         // Use Firebase Admin SDK JSON file
-        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
+        $adminSdkPath = __DIR__ . '/../public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
         
         if (file_exists($adminSdkPath)) {
             return sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath);
@@ -280,7 +305,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         }
         
         // Check Firebase Admin SDK file
-        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
+        $adminSdkPath = __DIR__ . '/../public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
         $debugInfo['firebase_admin_sdk_exists'] = file_exists($adminSdkPath);
         $debugInfo['firebase_admin_sdk_path'] = $adminSdkPath;
         
