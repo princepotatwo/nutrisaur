@@ -76,6 +76,11 @@ switch ($path) {
         include_once $sss_path . 'health.php';
         break;
         
+    case 'test_fcm':
+        // Route to FCM test page
+        include_once $sss_path . 'test_fcm.php';
+        break;
+        
     case 'debug':
     case 'debug.php':
         // Route to debug endpoint
