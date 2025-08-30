@@ -86,7 +86,10 @@ function sendFCMNotification($tokens, $notificationData) {
         }
         
         if ($firebaseCredentials) {
-            return sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials);
+            error_log("Firebase credentials found, attempting to send FCM notification");
+            $result = sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials);
+            error_log("FCM sendFCMWithCredentials result: " . ($result ? 'true' : 'false'));
+            return $result;
         } else {
             error_log("Firebase credentials not found in any location");
             error_log("Current directory: " . __DIR__);
@@ -111,11 +114,13 @@ function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials
         }
         
         // Generate access token using service account credentials
+        error_log("Attempting to generate Firebase access token");
         $accessToken = generateAccessToken($serviceAccount);
         if (!$accessToken) {
             error_log("Failed to generate access token");
             return false;
         }
+        error_log("Firebase access token generated successfully");
         
         $successCount = 0;
         $failureCount = 0;
@@ -323,7 +328,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             ];
         } else {
             error_log("FCM notification failed - sendFCMNotification returned false");
-            throw new Exception('Failed to send FCM notification - check error logs for details');
+            // Get the last few error log entries to help debug
+            $errorLogs = [];
+            if (function_exists('error_get_last')) {
+                $errorLogs[] = error_get_last();
+            }
+            throw new Exception('Failed to send FCM notification - check error logs for details. Error logs: ' . json_encode($errorLogs));
         }
         
     } catch (Exception $e) {
