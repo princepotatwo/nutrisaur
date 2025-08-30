@@ -34,7 +34,10 @@ function safeDbQuery($conn, $query, $params = []) {
 // Function to send FCM notification
 function sendFCMNotification($tokens, $notificationData) {
     try {
-        // Try multiple possible paths for Firebase Admin SDK JSON file
+        // Try to get Firebase credentials from multiple sources
+        $firebaseCredentials = null;
+        
+        // Method 1: Try to find Firebase Admin SDK JSON file
         $possiblePaths = [
             __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
             __DIR__ . '/../public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
@@ -56,23 +59,39 @@ function sendFCMNotification($tokens, $notificationData) {
         error_log("Searching for Firebase Admin SDK in directories: " . implode(', ', $searchDirs));
         error_log("Dynamic Firebase files found: " . implode(', ', $dynamicPaths));
         
-        $adminSdkPath = null;
+        // Try to find existing file
         foreach ($allPaths as $path) {
             if (file_exists($path)) {
-                $adminSdkPath = $path;
-                error_log("Firebase Admin SDK file found at: $adminSdkPath");
+                $firebaseCredentials = json_decode(file_get_contents($path), true);
+                error_log("Firebase Admin SDK file found at: $path");
                 break;
-            } else {
-                error_log("Firebase Admin SDK file not found at: $path");
             }
         }
         
-        if ($adminSdkPath) {
-            return sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath);
+        // Method 2: Try to get from environment variables (Railway)
+        if (!$firebaseCredentials && isset($_ENV['FIREBASE_PROJECT_ID'])) {
+            error_log("Using Firebase credentials from Railway environment variables");
+            $firebaseCredentials = [
+                'type' => 'service_account',
+                'project_id' => $_ENV['FIREBASE_PROJECT_ID'],
+                'private_key_id' => $_ENV['FIREBASE_PRIVATE_KEY_ID'],
+                'private_key' => $_ENV['FIREBASE_PRIVATE_KEY'],
+                'client_email' => $_ENV['FIREBASE_CLIENT_EMAIL'],
+                'client_id' => $_ENV['FIREBASE_CLIENT_ID'],
+                'auth_uri' => 'https://accounts.google.com/o/oauth2/auth',
+                'token_uri' => 'https://oauth2.googleapis.com/token',
+                'auth_provider_x509_cert_url' => 'https://www.googleapis.com/oauth2/v1/certs',
+                'client_x509_cert_url' => $_ENV['FIREBASE_CLIENT_CERT_URL'] ?? ''
+            ];
+        }
+        
+        if ($firebaseCredentials) {
+            return sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials);
         } else {
-            error_log("Firebase Admin SDK JSON file not found in any of the expected locations");
+            error_log("Firebase credentials not found in any location");
             error_log("Current directory: " . __DIR__);
             error_log("Tried paths: " . implode(', ', $allPaths));
+            error_log("Environment variables checked: FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY_ID, FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL, FIREBASE_CLIENT_ID");
             return false;
         }
     } catch (Exception $e) {
@@ -81,13 +100,13 @@ function sendFCMNotification($tokens, $notificationData) {
     }
 }
 
-// Function to send FCM using Firebase Admin SDK
-function sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath) {
+// Function to send FCM using Firebase credentials (from file or environment)
+function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials) {
     try {
-        // Read the service account JSON file
-        $serviceAccount = json_decode(file_get_contents($adminSdkPath), true);
+        // Use the provided Firebase credentials
+        $serviceAccount = $firebaseCredentials;
         if (!$serviceAccount || !isset($serviceAccount['project_id'])) {
-            error_log("Invalid Firebase service account JSON file");
+            error_log("Invalid Firebase credentials");
             return false;
         }
         
@@ -338,7 +357,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
             $debugInfo['active_fcm_tokens'] = $stmt ? $stmt->fetchColumn() : 'Database error';
         }
         
-        // Check Firebase Admin SDK file with multiple possible paths
+        // Check Firebase credentials from multiple sources
+        $firebaseCredentials = null;
+        $credentialSource = 'none';
+        
+        // Method 1: Check for Firebase Admin SDK JSON file
         $possiblePaths = [
             __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
             __DIR__ . '/../public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
@@ -357,22 +380,35 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         }
         
         $allPaths = array_merge($possiblePaths, $dynamicPaths);
-        $debugInfo['all_search_directories'] = $searchDirs;
-        $debugInfo['dynamic_firebase_files_found'] = $dynamicPaths;
         
-        $adminSdkPath = null;
+        // Check for existing file
         foreach ($allPaths as $path) {
             if (file_exists($path)) {
-                $adminSdkPath = $path;
+                $firebaseCredentials = json_decode(file_get_contents($path), true);
+                $credentialSource = 'file';
                 break;
             }
         }
         
-        $debugInfo['firebase_admin_sdk_exists'] = $adminSdkPath !== null;
-        $debugInfo['firebase_admin_sdk_path'] = $adminSdkPath ?: 'Not found in any location';
+        // Method 2: Check for Railway environment variables
+        if (!$firebaseCredentials && isset($_ENV['FIREBASE_PROJECT_ID'])) {
+            $credentialSource = 'environment';
+            $firebaseCredentials = [
+                'project_id' => $_ENV['FIREBASE_PROJECT_ID'],
+                'client_email' => $_ENV['FIREBASE_CLIENT_EMAIL'] ?? 'not_set'
+            ];
+        }
+        
+        $debugInfo['firebase_credentials_available'] = $firebaseCredentials !== null;
+        $debugInfo['firebase_credential_source'] = $credentialSource;
+        $debugInfo['firebase_project_id'] = $firebaseCredentials['project_id'] ?? 'not_found';
+        $debugInfo['firebase_client_email'] = $firebaseCredentials['client_email'] ?? 'not_found';
+        $debugInfo['all_search_directories'] = $searchDirs;
+        $debugInfo['dynamic_firebase_files_found'] = $dynamicPaths;
         $debugInfo['firebase_admin_sdk_paths_tried'] = $allPaths;
         $debugInfo['current_working_directory'] = getcwd();
         $debugInfo['script_directory'] = __DIR__;
+        $debugInfo['environment_variables_checked'] = ['FIREBASE_PROJECT_ID', 'FIREBASE_PRIVATE_KEY_ID', 'FIREBASE_PRIVATE_KEY', 'FIREBASE_CLIENT_EMAIL', 'FIREBASE_CLIENT_ID'];
         
         header('Content-Type: application/json');
         echo json_encode([
