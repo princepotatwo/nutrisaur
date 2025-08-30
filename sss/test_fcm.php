@@ -34,16 +34,31 @@ function safeDbQuery($conn, $query, $params = []) {
 // Function to send FCM notification
 function sendFCMNotification($tokens, $notificationData) {
     try {
-        // Use Firebase Admin SDK JSON file
-        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
+        // Try multiple possible paths for Firebase Admin SDK JSON file
+        $possiblePaths = [
+            __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
+            __DIR__ . '/../public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
+            '/var/www/html/sss/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
+            '/var/www/html/public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json'
+        ];
         
-        if (file_exists($adminSdkPath)) {
-            error_log("Firebase Admin SDK file found at: $adminSdkPath");
+        $adminSdkPath = null;
+        foreach ($possiblePaths as $path) {
+            if (file_exists($path)) {
+                $adminSdkPath = $path;
+                error_log("Firebase Admin SDK file found at: $adminSdkPath");
+                break;
+            } else {
+                error_log("Firebase Admin SDK file not found at: $path");
+            }
+        }
+        
+        if ($adminSdkPath) {
             return sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath);
         } else {
-            error_log("Firebase Admin SDK JSON file not found at: $adminSdkPath");
+            error_log("Firebase Admin SDK JSON file not found in any of the expected locations");
             error_log("Current directory: " . __DIR__);
-            error_log("File exists check failed for: $adminSdkPath");
+            error_log("Tried paths: " . implode(', ', $possiblePaths));
             return false;
         }
     } catch (Exception $e) {
@@ -309,10 +324,25 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
             $debugInfo['active_fcm_tokens'] = $stmt ? $stmt->fetchColumn() : 'Database error';
         }
         
-        // Check Firebase Admin SDK file
-        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
-        $debugInfo['firebase_admin_sdk_exists'] = file_exists($adminSdkPath);
-        $debugInfo['firebase_admin_sdk_path'] = $adminSdkPath;
+        // Check Firebase Admin SDK file with multiple possible paths
+        $possiblePaths = [
+            __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
+            __DIR__ . '/../public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
+            '/var/www/html/sss/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
+            '/var/www/html/public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json'
+        ];
+        
+        $adminSdkPath = null;
+        foreach ($possiblePaths as $path) {
+            if (file_exists($path)) {
+                $adminSdkPath = $path;
+                break;
+            }
+        }
+        
+        $debugInfo['firebase_admin_sdk_exists'] = $adminSdkPath !== null;
+        $debugInfo['firebase_admin_sdk_path'] = $adminSdkPath ?: 'Not found in any location';
+        $debugInfo['firebase_admin_sdk_paths_tried'] = $possiblePaths;
         
         header('Content-Type: application/json');
         echo json_encode([
