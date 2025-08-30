@@ -71,11 +71,26 @@ function sendFCMNotification($tokens, $notificationData) {
         // Method 2: Try to get from environment variables (Railway)
         if (!$firebaseCredentials && isset($_ENV['FIREBASE_PROJECT_ID'])) {
             error_log("Using Firebase credentials from Railway environment variables");
+            
+            // Fix the private key format - convert \n back to actual newlines
+            $privateKey = $_ENV['FIREBASE_PRIVATE_KEY'] ?? '';
+            $privateKey = str_replace('\\n', "\n", $privateKey);
+            
+            // Ensure the private key has proper formatting
+            if (!str_contains($privateKey, '-----BEGIN PRIVATE KEY-----')) {
+                error_log("Private key format issue - missing BEGIN marker");
+                $privateKey = "-----BEGIN PRIVATE KEY-----\n" . $privateKey . "\n-----END PRIVATE KEY-----";
+            }
+            
+            error_log("Private key length: " . strlen($privateKey));
+            error_log("Private key starts with: " . substr($privateKey, 0, 50));
+            error_log("Private key ends with: " . substr($privateKey, -50));
+            
             $firebaseCredentials = [
                 'type' => 'service_account',
                 'project_id' => $_ENV['FIREBASE_PROJECT_ID'],
                 'private_key_id' => $_ENV['FIREBASE_PRIVATE_KEY_ID'],
-                'private_key' => $_ENV['FIREBASE_PRIVATE_KEY'],
+                'private_key' => $privateKey,
                 'client_email' => $_ENV['FIREBASE_CLIENT_EMAIL'],
                 'client_id' => $_ENV['FIREBASE_CLIENT_ID'],
                 'auth_uri' => 'https://accounts.google.com/o/oauth2/auth',
