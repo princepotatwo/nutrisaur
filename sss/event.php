@@ -251,7 +251,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             }
             
             // Check Firebase Admin SDK file
-            $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-8dc50fb07f.json';
+            $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
             $debugInfo['firebase_admin_sdk_exists'] = file_exists($adminSdkPath);
             $debugInfo['firebase_admin_sdk_path'] = $adminSdkPath;
             
@@ -514,7 +514,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
 function sendFCMNotification($tokens, $notificationData, $targetLocation = null) {
     try {
         // Use Firebase Admin SDK JSON file (recommended approach)
-        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-8dc50fb07f.json';
+        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
         
         if (file_exists($adminSdkPath)) {
             return sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath, $targetLocation);
