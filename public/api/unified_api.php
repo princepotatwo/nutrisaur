@@ -2670,4 +2670,325 @@ function createUsersTable($pdo) {
         ]);
     }
 }
+
+// ========================================
+// FCM (Firebase Cloud Messaging) Functions
+// ========================================
+
+// Function to send FCM notification using Firebase Admin SDK
+function sendFCMNotification($tokens, $notificationData) {
+    try {
+        // Use Firebase Admin SDK JSON file (recommended approach)
+        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
+        
+        if (file_exists($adminSdkPath)) {
+            return sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath);
+        } else {
+            error_log("Firebase Admin SDK JSON file not found at: $adminSdkPath");
+            return false;
+        }
+    } catch (Exception $e) {
+        error_log("Error in sendFCMNotification: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to send FCM using Firebase Admin SDK
+function sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath) {
+    try {
+        // Read the service account JSON file
+        $serviceAccount = json_decode(file_get_contents($adminSdkPath), true);
+        if (!$serviceAccount || !isset($serviceAccount['project_id'])) {
+            error_log("Invalid Firebase service account JSON file");
+            return false;
+        }
+        
+        // Generate access token using service account credentials
+        $accessToken = generateAccessToken($serviceAccount);
+        if (!$accessToken) {
+            error_log("Failed to generate access token");
+            return false;
+        }
+        
+        $successCount = 0;
+        $failureCount = 0;
+        
+        foreach ($tokens as $token) {
+            // Prepare the FCM message payload for HTTP v1 API
+            $fcmPayload = [
+                'message' => [
+                    'token' => $token,
+                    'notification' => [
+                        'title' => $notificationData['title'],
+                        'body' => $notificationData['body']
+                    ],
+                    'data' => $notificationData['data'] ?? [],
+                    'android' => [
+                        'priority' => 'high',
+                        'notification' => [
+                            'sound' => 'default',
+                            'default_sound' => true,
+                            'default_vibrate_timings' => true,
+                            'default_light_settings' => true,
+                            'icon' => 'ic_launcher',
+                            'color' => '#4CAF50',
+                            'channel_id' => 'nutrisaur_events'
+                        ]
+                    ],
+                    'apns' => [
+                        'payload' => [
+                            'aps' => [
+                                'sound' => 'default',
+                                'badge' => 1
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+            
+            // Use Firebase HTTP v1 API
+            $projectId = $serviceAccount['project_id'];
+            $fcmUrl = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
+            
+            // Send FCM message using cURL with Admin SDK
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $fcmUrl);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $accessToken,
+                'Content-Type: application/json'
+            ]);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmPayload));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
+            curl_close($ch);
+            
+            if ($curlError) {
+                $failureCount++;
+                continue;
+            }
+            
+            if ($httpCode == 200) {
+                $responseData = json_decode($response, true);
+                if (isset($responseData['name'])) {
+                    $successCount++;
+                } else {
+                    $failureCount++;
+                }
+            } else {
+                $failureCount++;
+            }
+        }
+        
+        return $successCount > 0;
+        
+    } catch (Exception $e) {
+        error_log("Error in sendFCMWithAdminSDK: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Function to generate access token using service account
+function generateAccessToken($serviceAccount) {
+    try {
+        // Check if we have a cached token that's still valid
+        $cacheFile = __DIR__ . '/fcm_token_cache.json';
+        if (file_exists($cacheFile)) {
+            $cached = json_decode(file_get_contents($cacheFile), true);
+            if ($cached && isset($cached['expires_at']) && $cached['expires_at'] > time()) {
+                return $cached['access_token'];
+            }
+        }
+        
+        $header = [
+            'alg' => 'RS256',
+            'typ' => 'JWT'
+        ];
+        
+        $time = time();
+        $payload = [
+            'iss' => $serviceAccount['client_email'],
+            'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
+            'aud' => 'https://oauth2.googleapis.com/token',
+            'exp' => $time + 3600,
+            'iat' => $time
+        ];
+        
+        $headerEncoded = base64url_encode(json_encode($header));
+        $payloadEncoded = base64url_encode(json_encode($payload));
+        
+        $signature = '';
+        openssl_sign(
+            $headerEncoded . '.' . $payloadEncoded,
+            $signature,
+            $serviceAccount['private_key'],
+            'SHA256'
+        );
+        
+        $signatureEncoded = base64url_encode($signature);
+        $jwt = $headerEncoded . '.' . $payloadEncoded . '.' . $signatureEncoded;
+        
+        // Exchange JWT for access token
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/token');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $jwt
+        ]));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+        
+        if ($curlError) {
+            error_log("cURL error in generateAccessToken: " . $curlError);
+            return false;
+        }
+        
+        if ($httpCode == 200) {
+            $tokenData = json_decode($response, true);
+            if (isset($tokenData['access_token'])) {
+                // Cache the token for reuse
+                $cacheData = [
+                    'access_token' => $tokenData['access_token'],
+                    'expires_at' => time() + 3500, // Cache for 58 minutes (token valid for 1 hour)
+                    'created_at' => time()
+                ];
+                file_put_contents($cacheFile, json_encode($cacheData));
+                
+                return $tokenData['access_token'];
+            }
+        }
+        
+        error_log("Failed to generate access token. HTTP Code: " . $httpCode . " Response: " . $response);
+        return false;
+        
+    } catch (Exception $e) {
+        error_log("Error generating access token: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Helper function for base64url encoding
+function base64url_encode($data) {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+}
+
+// Function to get FCM tokens by location
+function getFCMTokensByLocation($pdo, $targetLocation = null) {
+    try {
+        if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '') {
+            // Get all active FCM tokens
+            $stmt = $pdo->prepare("
+                SELECT ft.fcm_token, ft.user_email, ft.user_barangay
+                FROM fcm_tokens ft
+                WHERE ft.is_active = TRUE 
+                AND ft.fcm_token IS NOT NULL 
+                AND ft.fcm_token != ''
+                AND ft.user_barangay IS NOT NULL 
+                AND ft.user_barangay != ''
+            ");
+            $stmt->execute();
+        } else {
+            // Check if it's a municipality (starts with MUNICIPALITY_)
+            if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
+                // Get tokens for all barangays in the municipality
+                $stmt = $pdo->prepare("
+                    SELECT ft.fcm_token, ft.user_email, ft.user_barangay
+                    FROM fcm_tokens ft
+                    WHERE ft.is_active = TRUE 
+                    AND ft.fcm_token IS NOT NULL 
+                    AND ft.fcm_token != ''
+                    AND ft.user_barangay IS NOT NULL 
+                    AND ft.user_barangay != ''
+                    AND (ft.user_barangay = ? OR ft.user_barangay LIKE ?)
+                ");
+                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                $stmt->execute([$targetLocation, $municipalityName . '%']);
+            } else {
+                // Get tokens for specific barangay
+                $stmt = $pdo->prepare("
+                    SELECT ft.fcm_token, ft.user_email, ft.user_barangay
+                    FROM fcm_tokens ft
+                    WHERE ft.is_active = TRUE 
+                    AND ft.fcm_token IS NOT NULL 
+                    AND ft.fcm_token != ''
+                    AND ft.user_barangay IS NOT NULL 
+                    AND ft.user_barangay != ''
+                    AND ft.user_barangay = ?
+                ");
+                $stmt->execute([$targetLocation]);
+            }
+        }
+        
+        $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $tokens;
+        
+    } catch (Exception $e) {
+        error_log("Error getting FCM tokens by location: " . $e->getMessage());
+        return [];
+    }
+}
+
+// Function to register FCM token
+function registerFCMToken($pdo, $fcmToken, $deviceName, $userEmail, $userBarangay, $appVersion) {
+    try {
+        // Check if token already exists
+        $stmt = $pdo->prepare("SELECT id FROM fcm_tokens WHERE fcm_token = ?");
+        $stmt->execute([$fcmToken]);
+        
+        if ($stmt->fetch()) {
+            // Update existing token
+            $stmt = $pdo->prepare("
+                UPDATE fcm_tokens 
+                SET device_name = ?, user_email = ?, user_barangay = ?, app_version = ?, 
+                    platform = ?, updated_at = NOW(), is_active = TRUE
+                WHERE fcm_token = ?
+            ");
+            $stmt->execute([
+                $deviceName, $userEmail, $userBarangay, 
+                $appVersion, 'Android', $fcmToken
+            ]);
+            
+            return [
+                'success' => true,
+                'action' => 'updated',
+                'message' => 'FCM token updated successfully'
+            ];
+        } else {
+            // Insert new token
+            $stmt = $pdo->prepare("
+                INSERT INTO fcm_tokens (fcm_token, device_name, user_email, user_barangay, app_version, platform, created_at, is_active) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW(), TRUE)
+            ");
+            $stmt->execute([
+                $fcmToken, $deviceName, $userEmail, $userBarangay, 
+                $appVersion, 'Android'
+            ]);
+            
+            return [
+                'success' => true,
+                'action' => 'registered',
+                'message' => 'FCM token registered successfully'
+            ];
+        }
+        
+    } catch(PDOException $e) {
+        error_log("Error registering FCM token: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => 'Database error: ' . $e->getMessage()
+        ];
+    }
+}
 ?>
