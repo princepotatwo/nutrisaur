@@ -42,8 +42,22 @@ function sendFCMNotification($tokens, $notificationData) {
             '/var/www/html/public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json'
         ];
         
+        // Also try to find any firebase admin SDK file dynamically
+        $dynamicPaths = [];
+        $searchDirs = [__DIR__, __DIR__ . '/../public/api', '/var/www/html/sss', '/var/www/html/public/api'];
+        foreach ($searchDirs as $dir) {
+            if (is_dir($dir)) {
+                $files = glob($dir . '/*firebase*admin*.json');
+                $dynamicPaths = array_merge($dynamicPaths, $files);
+            }
+        }
+        
+        $allPaths = array_merge($possiblePaths, $dynamicPaths);
+        error_log("Searching for Firebase Admin SDK in directories: " . implode(', ', $searchDirs));
+        error_log("Dynamic Firebase files found: " . implode(', ', $dynamicPaths));
+        
         $adminSdkPath = null;
-        foreach ($possiblePaths as $path) {
+        foreach ($allPaths as $path) {
             if (file_exists($path)) {
                 $adminSdkPath = $path;
                 error_log("Firebase Admin SDK file found at: $adminSdkPath");
@@ -58,7 +72,7 @@ function sendFCMNotification($tokens, $notificationData) {
         } else {
             error_log("Firebase Admin SDK JSON file not found in any of the expected locations");
             error_log("Current directory: " . __DIR__);
-            error_log("Tried paths: " . implode(', ', $possiblePaths));
+            error_log("Tried paths: " . implode(', ', $allPaths));
             return false;
         }
     } catch (Exception $e) {
@@ -332,8 +346,22 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
             '/var/www/html/public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json'
         ];
         
+        // Also try to find any firebase admin SDK file dynamically
+        $dynamicPaths = [];
+        $searchDirs = [__DIR__, __DIR__ . '/../public/api', '/var/www/html/sss', '/var/www/html/public/api'];
+        foreach ($searchDirs as $dir) {
+            if (is_dir($dir)) {
+                $files = glob($dir . '/*firebase*admin*.json');
+                $dynamicPaths = array_merge($dynamicPaths, $files);
+            }
+        }
+        
+        $allPaths = array_merge($possiblePaths, $dynamicPaths);
+        $debugInfo['all_search_directories'] = $searchDirs;
+        $debugInfo['dynamic_firebase_files_found'] = $dynamicPaths;
+        
         $adminSdkPath = null;
-        foreach ($possiblePaths as $path) {
+        foreach ($allPaths as $path) {
             if (file_exists($path)) {
                 $adminSdkPath = $path;
                 break;
@@ -342,7 +370,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         
         $debugInfo['firebase_admin_sdk_exists'] = $adminSdkPath !== null;
         $debugInfo['firebase_admin_sdk_path'] = $adminSdkPath ?: 'Not found in any location';
-        $debugInfo['firebase_admin_sdk_paths_tried'] = $possiblePaths;
+        $debugInfo['firebase_admin_sdk_paths_tried'] = $allPaths;
+        $debugInfo['current_working_directory'] = getcwd();
+        $debugInfo['script_directory'] = __DIR__;
         
         header('Content-Type: application/json');
         echo json_encode([
