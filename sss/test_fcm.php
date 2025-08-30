@@ -102,9 +102,19 @@ function sendFCMNotification($tokens, $notificationData) {
         
         if ($firebaseCredentials) {
             error_log("Firebase credentials found, attempting to send FCM notification");
-            $result = sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials);
-            error_log("FCM sendFCMWithCredentials result: " . ($result ? 'true' : 'false'));
-            return $result;
+            try {
+                $result = sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials);
+                error_log("FCM sendFCMWithCredentials result: " . ($result ? 'true' : 'false'));
+                return $result;
+            } catch (Exception $e) {
+                error_log("Exception in sendFCMWithCredentials: " . $e->getMessage());
+                error_log("Exception trace: " . $e->getTraceAsString());
+                return false;
+            } catch (Error $e) {
+                error_log("Error in sendFCMWithCredentials: " . $e->getMessage());
+                error_log("Error trace: " . $e->getTraceAsString());
+                return false;
+            }
         } else {
             error_log("Firebase credentials not found in any location");
             error_log("Current directory: " . __DIR__);
@@ -120,6 +130,9 @@ function sendFCMNotification($tokens, $notificationData) {
 
 // Function to send FCM using Firebase credentials (from file or environment)
 function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials) {
+    error_log("sendFCMWithCredentials called with " . count($tokens) . " tokens");
+    error_log("Firebase credentials keys: " . implode(', ', array_keys($firebaseCredentials)));
+    
     try {
         // Use the provided Firebase credentials
         $serviceAccount = $firebaseCredentials;
