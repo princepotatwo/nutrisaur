@@ -35,12 +35,15 @@ function safeDbQuery($conn, $query, $params = []) {
 function sendFCMNotification($tokens, $notificationData) {
     try {
         // Use Firebase Admin SDK JSON file
-        $adminSdkPath = __DIR__ . '/../public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
+        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
         
         if (file_exists($adminSdkPath)) {
+            error_log("Firebase Admin SDK file found at: $adminSdkPath");
             return sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath);
         } else {
             error_log("Firebase Admin SDK JSON file not found at: $adminSdkPath");
+            error_log("Current directory: " . __DIR__);
+            error_log("File exists check failed for: $adminSdkPath");
             return false;
         }
     } catch (Exception $e) {
@@ -252,6 +255,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         $fcmTokens = array_column($tokens, 'fcm_token');
         
         // Send test notification
+        error_log("Attempting to send FCM notification to " . count($fcmTokens) . " tokens");
         $notificationSent = sendFCMNotification($fcmTokens, [
             'title' => '🧪 FCM Test Notification',
             'body' => 'This is a test notification from Nutrisaur FCM system! 🚀',
@@ -270,7 +274,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 'timestamp' => date('Y-m-d H:i:s')
             ];
         } else {
-            throw new Exception('Failed to send FCM notification');
+            error_log("FCM notification failed - sendFCMNotification returned false");
+            throw new Exception('Failed to send FCM notification - check error logs for details');
         }
         
     } catch (Exception $e) {
@@ -305,7 +310,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         }
         
         // Check Firebase Admin SDK file
-        $adminSdkPath = __DIR__ . '/../public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
+        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
         $debugInfo['firebase_admin_sdk_exists'] = file_exists($adminSdkPath);
         $debugInfo['firebase_admin_sdk_path'] = $adminSdkPath;
         
