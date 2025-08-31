@@ -3990,7 +3990,7 @@ header:hover {
 
             
             <!-- 🚨 COMPLETELY NEW CREATE EVENT FORM - NO REDIRECTS, NO DASHBOARD -->
-            <form class="event-form" id="newCreateEventForm" onsubmit="handleNewEventCreation(event)">
+            <form class="event-form" id="newCreateEventForm">
                 <div class="form-group">
                     <label for="eventTitle">Event Title</label>
                     <input type="text" id="eventTitle" name="eventTitle" placeholder="e.g., Nutrition Seminar in Barangay Hall" value="<?php echo htmlspecialchars($recommended_program); ?>" required>
@@ -4358,7 +4358,7 @@ header:hover {
                 </div>
                 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-add">
+                    <button type="button" onclick="handleNewEventCreation()" class="btn btn-add">
                         <span class="btn-text">Create Event</span>
                     </button>
                 </div>
@@ -7449,16 +7449,12 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         }
         
         // 🚨 COMPLETELY NEW EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
-        async function handleNewEventCreation(event) {
-            // Prevent form submission completely
-            event.preventDefault();
-            event.stopPropagation();
-            
+        async function handleNewEventCreation() {
             console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
-            console.log('Form submission prevented:', event.defaultPrevented);
             
-            // Get form data
-            const formData = new FormData(event.target);
+            // Get form data from the form element
+            const form = document.getElementById('newCreateEventForm');
+            const formData = new FormData(form);
             const eventData = {
                 title: formData.get('eventTitle'),
                 type: formData.get('eventType'),
@@ -7480,7 +7476,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             
             try {
                 // Show loading state
-                const submitBtn = event.target.querySelector('button[type="submit"]');
+                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
                 submitBtn.disabled = true;
@@ -7509,7 +7505,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 
                 if (result.success) {
                     // Reset form
-                    event.target.reset();
+                    form.reset();
                     
                     // Show success message
                     showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully! ${result.message}`);
@@ -7526,11 +7522,8 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 showNotificationError('Error creating event. Please try again.');
             } finally {
                 // Restore button state
-                const submitBtn = event.target.querySelector('button[type="submit"]');
+                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             }
-            
-            // Ensure we don't continue with form submission
-            return false;
         }
