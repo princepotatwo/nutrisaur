@@ -114,59 +114,8 @@ switch ($path) {
         include '../sss/logout.php';
         break;
         
-    case 'test_db_connection':
-        include 'test_db_connection.php';
-        break;
-        
     case 'import_database':
         include 'import_database.php';
-        break;
-        
-    case 'simple_db_test':
-        include 'simple_db_test.php';
-        break;
-        
-    case 'minimal_test':
-        include 'minimal_test.php';
-        break;
-        
-    case 'debug_config':
-        include 'debug_config.php';
-        break;
-        
-    case 'test_config':
-        include 'test_config.php';
-        break;
-        
-    case 'test_dash':
-        include 'test_dash.php';
-        break;
-        
-    case 'test_dashboard':
-        if (file_exists("../sss/dash.php")) {
-            echo "✅ dash.php exists in sss directory\n";
-            echo "📁 Current working directory: " . getcwd() . "\n";
-            echo "🔍 Trying to include dash.php...\n";
-            include "../sss/dash.php";
-        } else {
-            echo "❌ dash.php not found in sss directory\n";
-        }
-        break;
-        
-    case 'test_dashboard_db':
-        include 'test_dashboard_db.php';
-        break;
-        
-    case 'test_api_endpoint':
-        include 'test_api_endpoint.php';
-        break;
-        
-    case 'debug_routing':
-        include 'debug_routing.php';
-        break;
-        
-    case 'debug_env':
-        include 'debug_env.php';
         break;
         
     case 'health':

@@ -4012,8 +4012,7 @@ header .user-avatar {
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Dashboard initialized - DOM loaded');
             
-            // Test API connection first
-            testAPIConnection();
+
             
             // Load initial data with error handling
             try {
@@ -4038,23 +4037,7 @@ header .user-avatar {
             }, 3000);
         });
 
-        // Test API connection
-        async function testAPIConnection() {
-            console.log('Testing API connection...');
-            try {
-                const response = await fetch('http://localhost/thesis355/unified_api.php?test=1');
-                console.log('API Response status:', response.status);
-                if (response.ok) {
-                    const data = await response.text();
-                    console.log('API Response:', data);
-                } else {
-                    console.error('API not responding properly');
-                }
-            } catch (error) {
-                console.error('API Connection failed:', error);
-                console.log('Please check if unified_api.php exists and XAMPP is running');
-            }
-        }
+
 
         // Enhanced barangay selection function
         function updateDashboardForBarangay(barangay) {

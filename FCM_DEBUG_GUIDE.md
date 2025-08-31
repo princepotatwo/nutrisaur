@@ -11,15 +11,10 @@ This guide helps diagnose and fix Firebase Cloud Messaging (FCM) notification is
 - Improved error categorization and logging
 
 ### 2. Better Debugging Tools
-- **Enhanced FCM Test Dashboard** (`sss/test_fcm.php`)
-  - Added diagnostic section with detailed system information
-  - Improved error reporting with structured data
-  - Better environment variable validation
-
-- **Command-line Debug Script** (`sss/debug_fcm.php`)
-  - Run from terminal: `php debug_fcm.php`
-  - Comprehensive system health check
-  - FCM functionality testing
+- **Health Check Endpoint** (`public/health`)
+  - Railway health check with FCM status
+  - Environment variable validation
+  - Service status monitoring
 
 - **Health Check Endpoint** (`public/health`)
   - Railway health check with FCM status
@@ -39,10 +34,7 @@ This guide helps diagnose and fix Firebase Cloud Messaging (FCM) notification is
 **Solutions**:
 1. **Check Environment Variables**:
    ```bash
-   # Run the debug script
-   php sss/debug_fcm.php
-   
-   # Or check the health endpoint
+   # Check the health endpoint
    curl https://your-domain.railway.app/health
    ```
 
@@ -80,7 +72,7 @@ This guide helps diagnose and fix Firebase Cloud Messaging (FCM) notification is
 **Solutions**:
 1. **Check Database Connection**:
    ```bash
-   php sss/debug_fcm.php
+   curl https://your-domain.railway.app/health
    ```
 
 2. **Verify FCM Tokens Table**:
@@ -92,15 +84,14 @@ This guide helps diagnose and fix Firebase Cloud Messaging (FCM) notification is
 
 ### Step 1: Run Basic Diagnostics
 ```bash
-# From the project root
-php sss/debug_fcm.php
+# Check the health endpoint
+curl https://your-domain.railway.app/health
 ```
 
-### Step 2: Check Web Dashboard
-1. Navigate to `sss/test_fcm.php`
-2. Click "Run Diagnostic" for detailed system information
-3. Click "Check Status" for FCM system status
-4. Click "Send Test Notification" to test FCM functionality
+### Step 2: Check Health Endpoint
+```bash
+curl https://your-domain.railway.app/health
+```
 
 ### Step 3: Check Health Endpoint
 ```bash
@@ -145,11 +136,7 @@ FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFA
 php sss/debug_fcm.php
 ```
 
-### Test from API
-```bash
-curl -X POST https://your-domain.railway.app/sss/test_fcm.php \
-  -d "action=test_fcm"
-```
+
 
 ## Monitoring and Logs
 

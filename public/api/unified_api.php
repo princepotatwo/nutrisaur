@@ -130,97 +130,7 @@ switch ($endpoint) {
         handleMobileSignup($pdo);
         break;
         
-    case 'test_municipality':
-        testMunicipality($pdo);
-        break;
-        
-    case 'check_table_structure':
-        checkTableStructure($pdo);
-        break;
-        
-    case 'test_columns':
-        testColumns($pdo);
-        break;
-        
-    case 'height_distribution':
-        getHeightDistribution($pdo);
-        break;
-        
-    case 'weight_distribution':
-        getWeightDistribution($pdo);
-        break;
-        
-    case 'bmi_distribution':
-        getBMIDistribution($pdo);
-        break;
-        
-    case 'malnutrition_risk_distribution':
-        getMalnutritionRiskDistribution($pdo);
-        break;
-        
-    case 'income_distribution':
-        getIncomeDistribution($pdo);
-        break;
-        
-    case 'swelling_distribution':
-        getSwellingDistribution($pdo);
-        break;
-        
-    case 'weight_loss_distribution':
-        getWeightLossDistribution($pdo);
-        break;
-        
-    case 'feeding_behavior_distribution':
-        getFeedingBehaviorDistribution($pdo);
-        break;
-        
-    case 'physical_signs_distribution':
-        getPhysicalSignsDistribution($pdo);
-        break;
-        
-    case 'dietary_diversity_distribution':
-        getDietaryDiversityDistribution($pdo);
-        break;
-        
-    case 'clinical_risk_factors_distribution':
-        getClinicalRiskFactorsDistribution($pdo);
-        break;
-        
-    case 'income_level_distribution':
-        getIncomeLevelDistribution($pdo);
-        break;
-        
-    case 'muac_distribution':
-        getMuacDistribution($pdo);
-        break;
-        
-    case 'whz_distribution':
-        getWhzDistribution($pdo);
-        break;
-        
-    case 'swelling_distribution':
-        getSwellingDistribution($pdo);
-        break;
-        
-    case 'weight_loss_distribution':
-        getWeightLossDistribution($pdo);
-        break;
-        
-    case 'feeding_behavior_distribution':
-        getFeedingBehaviorDistribution($pdo);
-        break;
-        
-    case 'physical_signs_distribution':
-        getPhysicalSignsDistribution($pdo);
-        break;
-        
-    case 'dietary_diversity_distribution':
-        getDietaryDiversityDistribution($pdo);
-        break;
-        
-    case 'generate_test_data':
-        generateTestData($pdo);
-        break;
+
         
     case 'add_missing_columns':
         addMissingColumns($pdo);
@@ -1034,74 +944,11 @@ function checkUserData($pdo) {
     }
 }
 
-function testMunicipality($pdo) {
-    try {
-        $barangay = $_GET['barangay'] ?? '';
-        
-        if (empty($barangay)) {
-            echo json_encode(['success' => false, 'message' => 'Barangay parameter required']);
-            return;
-        }
-        
-        $whereClause = "";
-        $params = [];
-        
-        if (strpos($barangay, 'MUNICIPALITY_') === 0) {
-            $municipality = str_replace('MUNICIPALITY_', '', $barangay);
-            $whereClause = "WHERE barangay LIKE ?";
-            $params = ["%$municipality%"];
-        } else {
-            $whereClause = "WHERE barangay = ?";
-            $params = [$barangay];
-        }
-        
-        $sql = "SELECT COUNT(*) as count FROM user_preferences " . $whereClause;
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $count = $stmt->fetch()['count'];
-        
-        echo json_encode([
-            'success' => true,
-            'data' => [
-                'barangay' => $barangay,
-                'user_count' => $count,
-                'test_result' => 'success'
-            ]
-        ]);
-        
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
-    }
-}
 
-function checkTableStructure($pdo) {
-    try {
-        $stmt = $pdo->query("SHOW COLUMNS FROM user_preferences");
-        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode(['success' => true, 'data' => $columns]);
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Error checking table structure: ' . $e->getMessage()]);
-    }
-}
 
-function testColumns($pdo) {
-    try {
-        $columnName = $_GET['column'] ?? '';
-        if (empty($columnName)) {
-            echo json_encode(['success' => false, 'message' => 'Column name parameter required']);
-            return;
-        }
 
-        $stmt = $pdo->query("SELECT DISTINCT $columnName FROM user_preferences LIMIT 10");
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode(['success' => true, 'data' => $data]);
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Error testing column: ' . $e->getMessage()]);
-    }
-}
+
+
 
 function getHeightDistribution($pdo) {
     try {
