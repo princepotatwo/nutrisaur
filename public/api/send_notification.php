@@ -297,9 +297,9 @@ function sendFCMNotification($fcmTokens, $notificationData) {
             "universe_domain" => "googleapis.com"
         ];
         
-        // Use Firebase Admin SDK with embedded service account
-        error_log("FCM Debug: Using Firebase Admin SDK with embedded service account");
-        return sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountData);
+        // Use legacy FCM API to avoid Sender ID mismatch issues
+        error_log("FCM Debug: Using legacy FCM API to avoid Sender ID mismatch");
+        return sendFCMViaCurl($fcmTokens, $notificationData);
         
 
         
