@@ -2,14 +2,38 @@
 // Simple script to show FCM tokens
 header('Content-Type: application/json');
 
-// Database connection
-$host = 'localhost';
-$dbname = 'nutrisaur_db';
-$username = 'root';
-$password = '';
+// Database connection details - Updated for Railway
+$mysql_host = 'mainline.proxy.rlwy.net';
+$mysql_port = 26063;
+$mysql_user = 'root';
+$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+$mysql_database = 'railway';
+
+// If MYSQL_PUBLIC_URL is set (Railway sets this), parse it
+if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
+    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
+    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
+    if (preg_match($pattern, $mysql_url, $matches)) {
+        $mysql_user = $matches[1];
+        $mysql_password = $matches[2];
+        $mysql_host = $matches[3];
+        $mysql_port = $matches[4];
+        $mysql_database = $matches[5];
+    }
+}
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
+    $pdoOptions = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_TIMEOUT => 30,
+        PDO::ATTR_PERSISTENT => false,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
+        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+    ];
+    
+    $conn = new PDO($dsn, $mysql_user, $mysql_password, $pdoOptions);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Get FCM tokens

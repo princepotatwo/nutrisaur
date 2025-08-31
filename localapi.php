@@ -715,10 +715,19 @@ if ($endpoint === 'critical_alerts') {
         // Format data for alerts - match the dashboard format
         $alertData = [];
         foreach ($alerts as $alert) {
+            // Determine the specific risk factor
+            $riskFactors = [];
+            if ($alert['risk_score'] >= 70) $riskFactors[] = 'High Risk Score (' . $alert['risk_score'] . ')';
+            if ($alert['bmi'] < 16) $riskFactors[] = 'Low BMI (' . $alert['bmi'] . ')';
+            if ($alert['muac'] < 11.5) $riskFactors[] = 'Critical MUAC (' . $alert['muac'] . 'cm)';
+            
+            $riskDescription = implode(', ', $riskFactors);
+            
             $alertData[] = [
                 'type' => 'critical',
-                'message' => 'High malnutrition risk detected',
+                'message' => 'High malnutrition risk: ' . $riskDescription,
                 'user' => $alert['name'] ?: $alert['user_email'] ?: 'User ' . $alert['id'],
+                'user_email' => $alert['user_email'], // Add user_email for notifications
                 'time' => date('M j, Y', strtotime($alert['created_at']))
             ];
         }

@@ -384,7 +384,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         $clinicalQuery = "
             SELECT 
                 CASE 
-                    WHEN up.diarrhea = 'yes' THEN 'Diarrhea'
+                        WHEN up.diarrhea = 'yes' THEN 'Diarrhea'
                     WHEN up.fever = 'yes' THEN 'Fever'
                     WHEN up.cough = 'yes' THEN 'Cough'
                     ELSE 'No Clinical Risk Factors'
