@@ -123,6 +123,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  */
 function sendFCMNotification($fcmTokens, $notificationData) {
     try {
+        // TEMPORARILY DISABLED: Enhanced Firebase Admin SDK method
+        // Use basic FCM method for immediate testing
+        error_log("FCM Debug: Enhanced method temporarily disabled, using basic FCM method");
+        return sendFCMViaCurl($fcmTokens, $notificationData);
+        
+        /*
         // Firebase Admin SDK configuration - Multiple path fallbacks for Railway
         $possiblePaths = [
             __DIR__ . '/../../sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json',
@@ -161,6 +167,7 @@ function sendFCMNotification($fcmTokens, $notificationData) {
             // Basic cURL fallback
             return sendFCMViaCurl($fcmTokens, $notificationData);
         }
+        */
         
     } catch (Exception $e) {
         error_log("FCM Notification error: " . $e->getMessage());
