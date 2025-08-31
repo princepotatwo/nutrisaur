@@ -383,11 +383,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
             
             error_log("✅ Event created successfully with ID: $eventId");
             
-            // Send notifications
-            $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer);
-            
-            // Set success message (NO REDIRECTS)
-            $successMessage = "🎉 Event '$title' created successfully! " . $notificationResult['message'];
+            // Send notifications (simplified to prevent errors)
+            try {
+                $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer);
+                $successMessage = "🎉 Event '$title' created successfully! " . $notificationResult['message'];
+            } catch (Exception $e) {
+                error_log("❌ Notification error: " . $e->getMessage());
+                $successMessage = "🎉 Event '$title' created successfully! (Notification error: " . $e->getMessage() . ")";
+            }
             
             error_log("✅ Event creation completed successfully");
             
@@ -399,6 +402,79 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
     
     // IMPORTANT: NO REDIRECTS, NO EXIT - Just set messages and continue
     error_log("Event creation logic completed - staying on same page");
+}
+
+// 🚨 COMPLETELY NEW AJAX EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'create_new_event') {
+    error_log("=== NEW AJAX EVENT CREATION STARTED ===");
+    
+    // Check if it's an AJAX request
+    if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid request']);
+        exit;
+    }
+    
+    // Get form data
+    $title = $_POST['title'] ?? '';
+    $type = $_POST['type'] ?? '';
+    $description = $_POST['description'] ?? '';
+    $date_time = $_POST['date_time'] ?? '';
+    $location = $_POST['location'] ?? 'all';
+    $organizer = $_POST['organizer'] ?? '';
+    $notificationType = $_POST['notificationType'] ?? 'push';
+    $recipientGroup = $_POST['recipientGroup'] ?? 'All Users';
+    
+    error_log("AJAX Event data: Title=$title, Type=$type, Location=$location, Organizer=$organizer");
+    
+    // Validate required fields
+    if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
+        echo json_encode(['success' => false, 'message' => 'Please fill in all required fields']);
+        exit;
+    }
+    
+    try {
+        // Insert event into database
+        $stmt = $conn->prepare("
+            INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, NOW())
+        ");
+        
+        $stmt->execute([$title, $type, $description, $date_time, $location, $organizer]);
+        $eventId = $conn->lastInsertId();
+        
+        error_log("✅ AJAX Event created successfully with ID: $eventId");
+        
+        // Send notifications based on notification type
+        $notificationMessage = '';
+        if ($notificationType !== 'none') {
+            try {
+                $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer);
+                $notificationMessage = $notificationResult['message'];
+            } catch (Exception $e) {
+                error_log("❌ AJAX Notification error: " . $e->getMessage());
+                $notificationMessage = 'Event created but notification failed: ' . $e->getMessage();
+            }
+        } else {
+            $notificationMessage = 'Event created without notifications';
+        }
+        
+        // Return success response
+        echo json_encode([
+            'success' => true,
+            'message' => $notificationMessage,
+            'event_id' => $eventId
+        ]);
+        
+        error_log("✅ AJAX Event creation completed successfully");
+        
+    } catch (Exception $e) {
+        error_log("❌ AJAX Event creation failed: " . $e->getMessage());
+        echo json_encode(['success' => false, 'message' => 'Error creating event: ' . $e->getMessage()]);
+    }
+    
+    // IMPORTANT: EXIT HERE FOR AJAX - NO REDIRECTS, NO CONTINUATION
+    exit;
 }
 
 // 🚨 NEW SIMPLIFIED NOTIFICATION FUNCTION
@@ -4030,7 +4106,8 @@ header:hover {
             
 
             
-            <form class="event-form" name="createEventForm" method="POST" action="event.php">
+            <!-- 🚨 COMPLETELY NEW CREATE EVENT FORM - NO REDIRECTS, NO DASHBOARD -->
+            <form class="event-form" id="newCreateEventForm" onsubmit="handleNewEventCreation(event)">
                 <div class="form-group">
                     <label for="eventTitle">Event Title</label>
                     <input type="text" id="eventTitle" name="eventTitle" placeholder="e.g., Nutrition Seminar in Barangay Hall" value="<?php echo htmlspecialchars($recommended_program); ?>" required>
@@ -4398,7 +4475,7 @@ header:hover {
                 </div>
                 
                 <div class="form-actions">
-                    <button type="submit" name="create_event" class="btn btn-add">
+                    <button type="submit" class="btn btn-add">
                         <span class="btn-text">Create Event</span>
                     </button>
                 </div>
@@ -7454,4 +7531,86 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                     }, 300);
                 }
             }, 5000);
+        }
+        
+        // 🚨 COMPLETELY NEW EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
+        async function handleNewEventCreation(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
+            
+            // Get form data
+            const formData = new FormData(event.target);
+            const eventData = {
+                title: formData.get('eventTitle'),
+                type: formData.get('eventType'),
+                description: formData.get('eventDescription'),
+                date_time: formData.get('eventDate'),
+                location: formData.get('eventLocation'),
+                organizer: formData.get('eventOrganizer'),
+                notificationType: formData.get('notificationType'),
+                recipientGroup: formData.get('recipientGroup')
+            };
+            
+            console.log('Event data:', eventData);
+            
+            // Validate required fields
+            if (!eventData.title || !eventData.type || !eventData.description || !eventData.date_time || !eventData.organizer) {
+                showNotificationError('Please fill in all required fields');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                const submitBtn = event.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
+                submitBtn.disabled = true;
+                
+                // Send event creation request via AJAX
+                const response = await fetch('event.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        'action': 'create_new_event',
+                        'title': eventData.title,
+                        'type': eventData.type,
+                        'description': eventData.description,
+                        'date_time': eventData.date_time,
+                        'location': eventData.location,
+                        'organizer': eventData.organizer,
+                        'notificationType': eventData.notificationType,
+                        'recipientGroup': eventData.recipientGroup
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully! ${result.message}`);
+                    
+                    // Reset form
+                    event.target.reset();
+                    
+                    // Refresh the events table
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                    
+                } else {
+                    showNotificationError(`Failed to create event: ${result.message}`);
+                }
+                
+            } catch (error) {
+                console.error('Error creating event:', error);
+                showNotificationError('Error creating event. Please try again.');
+            } finally {
+                // Restore button state
+                const submitBtn = event.target.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
         }
