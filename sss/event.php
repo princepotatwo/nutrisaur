@@ -401,6 +401,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
     error_log("Event creation logic completed - staying on same page");
 }
 
+// 🚨 NEW SIMPLE EVENT CREATION LOGIC - NO PUSH NOTIFICATIONS, NO COMPLEX LOGIC
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_event'])) {
+    error_log("=== SIMPLE ADD EVENT LOGIC STARTED ===");
+    
+    // Get form data
+    $title = $_POST['eventTitle'] ?? '';
+    $type = $_POST['eventType'] ?? '';
+    $description = $_POST['eventDescription'] ?? '';
+    $date_time = $_POST['eventDate'] ?? '';
+    $location = $_POST['eventLocation'] ?? '';
+    $organizer = $_POST['eventOrganizer'] ?? '';
+    
+    error_log("Simple form data received: Title=$title, Type=$type, Location=$location, Organizer=$organizer");
+    
+    // Validate required fields
+    if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($location) || empty($organizer)) {
+        $errorMessage = "Please fill in all required fields.";
+        error_log("Simple validation failed: Missing required fields");
+    } else {
+        try {
+            // Insert event into database
+            $stmt = $conn->prepare("
+                INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW())
+            ");
+            
+            $stmt->execute([$title, $type, $description, $date_time, $location, $organizer]);
+            $eventId = $conn->lastInsertId();
+            
+            error_log("✅ Simple event created successfully with ID: $eventId");
+            
+            // Set success message (NO NOTIFICATIONS, NO REDIRECTS)
+            $successMessage = "🎉 Event '$title' added successfully!";
+            
+            error_log("✅ Simple event creation completed successfully");
+            
+        } catch (Exception $e) {
+            $errorMessage = "Error adding event: " . $e->getMessage();
+            error_log("❌ Simple event creation failed: " . $e->getMessage());
+        }
+    }
+    
+    // IMPORTANT: NO REDIRECTS, NO EXIT - Just set messages and continue
+    error_log("Simple event creation logic completed - staying on same page");
+}
+
 // 🚨 NEW SIMPLIFIED NOTIFICATION FUNCTION
 function sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer) {
     global $conn;
@@ -4398,8 +4444,8 @@ header:hover {
                 </div>
                 
                 <div class="form-actions">
-                    <button type="submit" name="create_event" class="btn btn-add">
-                        <span class="btn-text">Create Event</span>
+                    <button type="button" onclick="openAddEventModal()" class="btn btn-add">
+                        <span class="btn-text">Add Event</span>
                     </button>
                 </div>
                 
@@ -4683,7 +4729,59 @@ header:hover {
         </div>
     </div>
 
-
+    <!-- Add Event Modal -->
+    <div id="addEventModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Event</h3>
+                <span class="close" onclick="closeAddEventModal()">&times;</span>
+            </div>
+            <form id="addEventForm" method="POST" action="event.php">
+                <input type="hidden" name="add_event" value="1">
+                
+                <div class="form-group">
+                    <label for="add_eventTitle">Event Title</label>
+                    <input type="text" id="add_eventTitle" name="eventTitle" placeholder="e.g., Nutrition Seminar" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventType">Event Type</label>
+                    <select id="add_eventType" name="eventType" required>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Seminar">Seminar</option>
+                        <option value="Webinar">Webinar</option>
+                        <option value="Demo">Demo</option>
+                        <option value="Training">Training</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventDate">Date & Time</label>
+                    <input type="datetime-local" id="add_eventDate" name="eventDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventLocation">Location</label>
+                    <input type="text" id="add_eventLocation" name="eventLocation" placeholder="e.g., Barangay Hall" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventOrganizer">Person in Charge</label>
+                    <input type="text" id="add_eventOrganizer" name="eventOrganizer" placeholder="Name of organizer" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventDescription">Event Description</label>
+                    <textarea id="add_eventDescription" name="eventDescription" placeholder="Brief description of the event..." required></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-add">Add Event</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddEventModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         // NEW SIMPLE THEME TOGGLE - Optimized to prevent flickering!
@@ -6538,6 +6636,31 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             document.getElementById('duplicateWarningModal').style.display = 'none';
         }
         
+        // Add Event Modal Functions
+        function openAddEventModal() {
+            // Reset form values
+            document.getElementById('add_eventTitle').value = '';
+            document.getElementById('add_eventType').value = 'Workshop';
+            document.getElementById('add_eventDate').value = '';
+            document.getElementById('add_eventLocation').value = '';
+            document.getElementById('add_eventOrganizer').value = '';
+            document.getElementById('add_eventDescription').value = '';
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(9, 0, 0, 0); // 9:00 AM
+            const formattedDate = tomorrow.toISOString().slice(0, 16);
+            document.getElementById('add_eventDate').value = formattedDate;
+            
+            // Show modal
+            document.getElementById('addEventModal').style.display = 'block';
+        }
+        
+        function closeAddEventModal() {
+            document.getElementById('addEventModal').style.display = 'none';
+        }
+        
 
         
         function showDuplicateWarningModal(duplicates) {
@@ -6595,10 +6718,13 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         // Close modal when clicking outside
         window.onclick = function(event) {
             const editModal = document.getElementById('editModal');
+            const addModal = document.getElementById('addEventModal');
             const duplicateModal = document.getElementById('duplicateWarningModal');
             
             if (event.target === editModal) {
                 closeEditModal();
+            } else if (event.target === addModal) {
+                closeAddEventModal();
             } else if (event.target === duplicateModal) {
                 closeDuplicateWarningModal();
             }
