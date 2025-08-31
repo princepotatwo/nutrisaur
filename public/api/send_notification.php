@@ -88,8 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         
-        // Validate FCM token format (should be 140+ characters, alphanumeric + :_-)
-        if (strlen($fcmToken) < 140 || !preg_match('/^[a-zA-Z0-9:_-]+$/', $fcmToken)) {
+        // Validate FCM token format (should be 140+ characters, alphanumeric + :_-. and other valid characters)
+        if (strlen($fcmToken) < 140 || !preg_match('/^[a-zA-Z0-9:_\-\.]+$/', $fcmToken)) {
             error_log("Invalid FCM token format for user: " . $targetUser . " - token: " . substr($fcmToken, 0, 50) . "...");
             echo json_encode([
                 'success' => false,
