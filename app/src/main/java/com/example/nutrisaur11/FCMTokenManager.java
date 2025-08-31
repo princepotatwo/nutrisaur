@@ -33,7 +33,7 @@ public class FCMTokenManager {
     private static final String KEY_USER_BARANGAY = "user_barangay";
     
     // Server endpoint for FCM token registration
-    private static final String SERVER_URL = Constants.API_BASE_URL + "sss/api/register_fcm_token.php";
+    private static final String SERVER_URL = Constants.API_BASE_URL + "api/register_fcm_token.php";
     
     // Registration intervals
     private static final long REGISTRATION_INTERVAL = TimeUnit.HOURS.toMillis(24); // 24 hours (daily sync)
@@ -61,7 +61,7 @@ public class FCMTokenManager {
      */
     private boolean tokenExistsOnServer(String token) {
         try {
-            okhttp3.HttpUrl url = okhttp3.HttpUrl.parse(Constants.API_BASE_URL + "sss/api/auto_register_fcm.php")
+            okhttp3.HttpUrl url = okhttp3.HttpUrl.parse(Constants.API_BASE_URL + "api/auto_register_fcm.php")
                 .newBuilder()
                 .addQueryParameter("fcm_token", token)
                 .build();
