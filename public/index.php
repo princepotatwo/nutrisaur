@@ -93,6 +93,12 @@ switch ($path) {
         include_once 'fcm_diagnostic.php';
         break;
         
+    case 'test_jwt':
+    case 'test_jwt.php':
+        // Route to JWT test endpoint
+        include_once 'api/test_jwt.php';
+        break;
+        
     case 'logo.png':
         // Serve logo as static file
         $logoPath = __DIR__ . '/logo.png';

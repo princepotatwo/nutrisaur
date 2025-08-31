@@ -597,6 +597,103 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
             'error_reporting' => ini_get('error_reporting')
         ];
         
+        // Test JWT generation and OAuth token exchange
+        $diagnosticInfo['jwt_test'] = [];
+        
+        try {
+            // Test JWT generation
+            $header = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
+            $time = time();
+            $payload = base64_encode(json_encode([
+                'iss' => $_ENV['FIREBASE_CLIENT_EMAIL'],
+                'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
+                'aud' => 'https://oauth2.googleapis.com/token',
+                'exp' => $time + 3600,
+                'iat' => $time
+            ]));
+            
+            $privateKey = str_replace('\\n', "\n", $_ENV['FIREBASE_PRIVATE_KEY']);
+            if (!str_contains($privateKey, '-----BEGIN PRIVATE KEY-----')) {
+                $privateKey = "-----BEGIN PRIVATE KEY-----\n" . $privateKey . "\n-----END PRIVATE KEY-----";
+            }
+            
+            $signature = '';
+            if (openssl_sign($header . '.' . $payload, $signature, $privateKey, 'SHA256')) {
+                $signature = base64_encode($signature);
+                $jwt = $header . '.' . $payload . '.' . $signature;
+                
+                $diagnosticInfo['jwt_test']['jwt_generation'] = [
+                    'success' => true,
+                    'jwt_length' => strlen($jwt),
+                    'jwt_starts_with' => substr($jwt, 0, 50) . '...'
+                ];
+                
+                // Test OAuth token exchange
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/token');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                    'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                    'assertion' => $jwt
+                ]));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                
+                $response = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $curlError = curl_error($ch);
+                curl_close($ch);
+                
+                if ($curlError) {
+                    $diagnosticInfo['jwt_test']['oauth_exchange'] = [
+                        'success' => false,
+                        'error' => 'cURL error: ' . $curlError
+                    ];
+                } else {
+                    $diagnosticInfo['jwt_test']['oauth_exchange'] = [
+                        'success' => $httpCode === 200,
+                        'http_code' => $httpCode,
+                        'response_length' => strlen($response),
+                        'response_preview' => substr($response, 0, 200)
+                    ];
+                    
+                    if ($httpCode === 200) {
+                        $tokenData = json_decode($response, true);
+                        if (isset($tokenData['access_token'])) {
+                            $diagnosticInfo['jwt_test']['access_token'] = [
+                                'received' => true,
+                                'token_length' => strlen($tokenData['access_token']),
+                                'token_starts_with' => substr($tokenData['access_token'], 0, 20) . '...',
+                                'expires_in' => $tokenData['expires_in'] ?? 'not_set',
+                                'token_type' => $tokenData['token_type'] ?? 'not_set'
+                            ];
+                        } else {
+                            $diagnosticInfo['jwt_test']['access_token'] = [
+                                'received' => false,
+                                'response_keys' => array_keys($tokenData)
+                            ];
+                        }
+                    }
+                }
+                
+            } else {
+                $diagnosticInfo['jwt_test']['jwt_generation'] = [
+                    'success' => false,
+                    'error' => 'Failed to sign JWT with OpenSSL'
+                ];
+                
+                // Get OpenSSL error details
+                $opensslErrors = [];
+                while ($error = openssl_error_string()) {
+                    $opensslErrors[] = $error;
+                }
+                $diagnosticInfo['jwt_test']['openssl_errors'] = $opensslErrors;
+            }
+        } catch (Exception $e) {
+            $diagnosticInfo['jwt_test']['error'] = $e->getMessage();
+        }
+        
         header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
