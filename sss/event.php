@@ -4730,13 +4730,13 @@ header:hover {
                 return;
             }
             
+            // Show loading state
+            const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
+            submitBtn.disabled = true;
+            
             try {
-                // Show loading state
-                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
-                submitBtn.disabled = true;
-                
                 // Send event creation request via AJAX
                 const response = await fetch('event.php', {
                     method: 'POST',
@@ -4756,6 +4756,15 @@ header:hover {
                         'recipientGroup': eventData.recipientGroup
                     })
                 });
+                
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    // Server returned HTML instead of JSON (probably an error)
+                    const responseText = await response.text();
+                    console.error('Server returned HTML instead of JSON:', responseText);
+                    throw new Error('Server error: Received HTML instead of JSON response');
+                }
                 
                 const result = await response.json();
                 
