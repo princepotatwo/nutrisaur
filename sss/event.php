@@ -4,6 +4,14 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// 🚨 TEST AJAX ENDPOINT - Add this first to debug the issue
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'test_ajax') {
+    error_log("=== TEST AJAX ENDPOINT CALLED ===");
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'message' => 'AJAX is working!']);
+    exit;
+}
+
 // Start the session only if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -369,13 +377,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
 // 🚨 COMPLETELY NEW AJAX EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'create_new_event') {
     error_log("=== NEW AJAX EVENT CREATION STARTED ===");
+    error_log("POST data received: " . print_r($_POST, true));
     
     // Check if it's an AJAX request
     if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+        error_log("❌ Not an AJAX request - HTTP_X_REQUESTED_WITH: " . ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? 'NOT SET'));
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid request']);
         exit;
     }
+    
+    error_log("✅ AJAX request validated successfully");
     
     // Get form data
     $title = $_POST['title'] ?? '';
