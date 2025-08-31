@@ -202,11 +202,10 @@ function sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountDa
                         'body' => $notificationData['body']
                     ],
                     'data' => $notificationData['data'] ?? [],
+                    'priority' => 'high',
                     'android' => [
-                        'priority' => 'high',
                         'notification' => [
-                            'sound' => 'default',
-                            'priority' => 'high'
+                            'sound' => 'default'
                         ]
                     ],
                     'apns' => [
