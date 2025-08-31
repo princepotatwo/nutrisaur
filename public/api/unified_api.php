@@ -136,9 +136,13 @@ switch ($endpoint) {
     addMissingColumns($pdo);
     break;
     
-case 'fix_column_sizes':
-    fixColumnSizes($pdo);
-    break;
+        case 'fix_column_sizes':
+            fixColumnSizes($pdo);
+            break;
+            
+        case 'add_missing_columns':
+            addMissingColumns($pdo);
+            break;
         
     case 'usm':
         getUSMData($pdo);
@@ -1444,20 +1448,7 @@ function fixColumnSizes($pdo) {
             'birthday' => 'DATE',           // Ensure proper DATE type
             'allergies' => 'TEXT',          // Ensure enough space for allergy lists
             'diet_prefs' => 'TEXT',         // Ensure enough space for diet preferences
-            'avoid_foods' => 'TEXT',        // Ensure enough space for avoid foods
-            'swelling' => 'VARCHAR(50)',    // For swelling assessment
-            'weight_loss' => 'VARCHAR(100)', // For weight loss percentage
-            'dietary_diversity' => 'INT',   // For dietary diversity score
-            'feeding_behavior' => 'VARCHAR(200)', // For feeding behavior description
-            'physical_thin' => 'BOOLEAN',   // For physical signs - thin
-            'physical_shorter' => 'BOOLEAN', // For physical signs - shorter
-            'physical_weak' => 'BOOLEAN',   // For physical signs - weak
-            'physical_none' => 'BOOLEAN',   // For physical signs - none
-            'has_recent_illness' => 'BOOLEAN', // For clinical risk factors
-            'has_eating_difficulty' => 'BOOLEAN', // For clinical risk factors
-            'has_food_insecurity' => 'BOOLEAN', // For clinical risk factors
-            'has_micronutrient_deficiency' => 'BOOLEAN', // For clinical risk factors
-            'has_functional_decline' => 'BOOLEAN' // For clinical risk factors
+            'avoid_foods' => 'TEXT'         // Ensure enough space for avoid foods
         ];
         
         $modifiedColumns = [];
@@ -1483,6 +1474,51 @@ function fixColumnSizes($pdo) {
             'message' => 'Column sizes fixed successfully',
             'modified_columns' => $modifiedColumns,
             'total_columns_modified' => count($modifiedColumns)
+        ]);
+        
+    } catch (PDOException $e) {
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    }
+}
+
+function addMissingColumns($pdo) {
+    try {
+        // Add missing columns for comprehensive screening data
+        $missingColumns = [
+            'swelling' => 'VARCHAR(50)',    // For swelling assessment
+            'weight_loss' => 'VARCHAR(100)', // For weight loss percentage
+            'dietary_diversity' => 'INT',   // For dietary diversity score
+            'feeding_behavior' => 'VARCHAR(200)', // For feeding behavior description
+            'physical_thin' => 'BOOLEAN',   // For physical signs - thin
+            'physical_shorter' => 'BOOLEAN', // For physical signs - shorter
+            'physical_weak' => 'BOOLEAN',   // For physical signs - weak
+            'physical_none' => 'BOOLEAN',   // For physical signs - none
+            'has_recent_illness' => 'BOOLEAN', // For clinical risk factors
+            'has_eating_difficulty' => 'BOOLEAN', // For clinical risk factors
+            'has_food_insecurity' => 'BOOLEAN', // For clinical risk factors
+            'has_micronutrient_deficiency' => 'BOOLEAN', // For clinical risk factors
+            'has_functional_decline' => 'BOOLEAN' // For clinical risk factors
+        ];
+        
+        $addedColumns = [];
+        foreach ($missingColumns as $columnName => $columnType) {
+            try {
+                $sql = "ALTER TABLE user_preferences ADD COLUMN $columnName $columnType";
+                $pdo->exec($sql);
+                $addedColumns[] = $columnName;
+            } catch (PDOException $e) {
+                // Column might already exist, skip
+                if (strpos($e->getMessage(), 'Duplicate column name') === false) {
+                    $addedColumns[] = $columnName . " (error: " . $e->getMessage() . ")";
+                }
+            }
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Missing columns added successfully',
+            'added_columns' => $addedColumns,
+            'total_columns_added' => count($addedColumns)
         ]);
         
     } catch (PDOException $e) {
