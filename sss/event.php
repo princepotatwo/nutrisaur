@@ -4611,9 +4611,10 @@ header:hover {
                 <div class="form-group">
                     <label for="notificationType">Notification Type</label>
                     <select id="notificationType" name="notificationType">
-                        <option value="email">Email</option>
-                        <option value="sms">Text Message</option>
-                        <option value="both">Both Email and Text</option>
+                        <option value="push">Push Notification (Recommended)</option>
+                        <option value="email">Email Only</option>
+                        <option value="both">Push + Email</option>
+                        <option value="none">No Notifications</option>
                     </select>
                 </div>
                 
@@ -4625,6 +4626,16 @@ header:hover {
                         <option value="Health Workers">Health Workers</option>
                         <option value="Barangay Officials">Barangay Officials</option>
                     </select>
+                </div>
+                
+                <!-- Notification Preview Section -->
+                <div id="notificationPreview" style="margin-top: 20px; display: none;">
+                    <div style="background: rgba(161, 180, 84, 0.05); padding: 15px; border-radius: 10px; border-left: 4px solid var(--color-highlight);">
+                        <h4 style="margin: 0 0 10px 0; color: var(--color-highlight);">📱 Notification Preview</h4>
+                        <div id="notificationPreviewContent">
+                            <div style="text-align: center; opacity: 0.7;">Select a location to see notification preview</div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="form-actions">
@@ -4645,83 +4656,7 @@ header:hover {
             </form>
         </div>
         
-        <!-- Location Notification Section -->
-        <div class="location-notification-container" style="margin-top: 30px;">
-            <div class="section-header">
-                <h2>📍 Send Location-Based Notifications</h2>
-                <p>Send notifications to users in specific barangays or municipalities</p>
-            </div>
-            
-            <div class="location-notification-form">
-                <div class="form-group">
-                    <label for="notificationLocation">Target Location</label>
-                    <div class="custom-select-container">
-                        <div class="select-header" onclick="toggleNotificationLocationDropdown()">
-                            <span id="selected-notification-location">Select Location</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </div>
-                        <div class="dropdown-content" id="notification-location-dropdown">
-                            <div class="search-container">
-                                <input type="text" id="notification-location-search" placeholder="Search barangay or municipality..." onkeyup="filterNotificationLocationOptions()">
-                            </div>
-                            <div class="options-container">
-                                <!-- Municipality Options -->
-                                <div class="option-group">
-                                    <div class="option-header">Municipalities</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_ABUCAY" onclick="selectNotificationLocation('MUNICIPALITY_ABUCAY', 'ABUCAY (All Barangays)')">ABUCAY (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_BAGAC" onclick="selectNotificationLocation('MUNICIPALITY_BAGAC', 'BAGAC (All Barangays)')">BAGAC (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_BALANGA" onclick="selectNotificationLocation('MUNICIPALITY_BALANGA', 'CITY OF BALANGA (All Barangays)')">CITY OF BALANGA (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_DINALUPIHAN" onclick="selectNotificationLocation('MUNICIPALITY_DINALUPIHAN', 'DINALUPIHAN (All Barangays)')">DINALUPIHAN (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_HERMOSA" onclick="selectNotificationLocation('MUNICIPALITY_HERMOSA', 'HERMOSA (All Barangays)')">HERMOSA (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_LIMAY" onclick="selectNotificationLocation('MUNICIPALITY_LIMAY', 'LIMAY (All Barangays)')">LIMAY (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_MARIVELES" onclick="selectNotificationLocation('MUNICIPALITY_MARIVELES', 'MARIVELES (All Barangays)')">MARIVELES (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_MORONG" onclick="selectNotificationLocation('MUNICIPALITY_MORONG', 'MORONG (All Barangays)')">MORONG (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_ORANI" onclick="selectNotificationLocation('MUNICIPALITY_ORANI', 'ORANI (All Barangays)')">ORANI (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_ORION" onclick="selectNotificationLocation('MUNICIPALITY_ORION', 'ORION (All Barangays)')">ORION (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_PILAR" onclick="selectNotificationLocation('MUNICIPALITY_PILAR', 'PILAR (All Barangays)')">PILAR (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_SAMAL" onclick="selectNotificationLocation('MUNICIPALITY_SAMAL', 'SAMAL (All Barangays)')">SAMAL (All Barangays)</div>
-                                </div>
-                                
-                                <!-- Individual Barangays -->
-                                <div class="option-group">
-                                    <div class="option-header">Popular Barangays</div>
-                                    <div class="option-item" data-value="A. Rivera (Pob.)" onclick="selectNotificationLocation('A. Rivera (Pob.)', 'A. Rivera (Pob.)')">A. Rivera (Pob.)</div>
-                                    <div class="option-item" data-value="Bagumbayan" onclick="selectNotificationLocation('Bagumbayan', 'Bagumbayan')">Bagumbayan</div>
-                                    <div class="option-item" data-value="Central" onclick="selectNotificationLocation('Central', 'Central')">Central</div>
-                                    <div class="option-item" data-value="Poblacion" onclick="selectNotificationLocation('Poblacion', 'Poblacion')">Poblacion</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="notificationTitle">Notification Title</label>
-                    <input type="text" id="notificationTitle" placeholder="e.g., Important Health Update" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="notificationMessage">Message</label>
-                    <textarea id="notificationMessage" placeholder="Enter your notification message..." rows="4" required></textarea>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" onclick="sendLocationNotificationFromForm()" class="btn btn-add">
-                        📱 Send Location Notification
-                    </button>
-                </div>
-                
-                <!-- Location Preview for Notifications -->
-                <div id="notificationLocationPreview" style="margin-top: 20px; display: none;">
-                    <div style="background: rgba(161, 180, 84, 0.05); padding: 15px; border-radius: 10px; border-left: 4px solid var(--color-highlight);">
-                        <h4 style="margin: 0 0 10px 0; color: var(--color-highlight);">Location Preview</h4>
-                        <div id="notificationLocationPreviewContent">
-                            <div style="text-align: center; opacity: 0.7;">Select a location to see which users would receive notifications</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         
         <div class="events-table-container">
             <div class="table-header">
@@ -5922,12 +5857,20 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         function showLocationPreview(locationValue, locationText) {
             const previewDiv = document.getElementById('locationPreview');
             const contentDiv = document.getElementById('locationPreviewContent');
+            const notificationPreviewDiv = document.getElementById('notificationPreview');
+            const notificationContentDiv = document.getElementById('notificationPreviewContent');
             
             if (!previewDiv || !contentDiv) return;
             
             // Show loading state
             previewDiv.style.display = 'block';
             contentDiv.innerHTML = '<div style="text-align: center; opacity: 0.7;">🔄 Loading location preview...</div>';
+            
+            // Show notification preview loading state
+            if (notificationPreviewDiv && notificationContentDiv) {
+                notificationPreviewDiv.style.display = 'block';
+                notificationContentDiv.innerHTML = '<div style="text-align: center; opacity: 0.7;">🔄 Loading notification preview...</div>';
+            }
             
             // Fetch users for this location
             fetch('event.php', {
@@ -5944,16 +5887,26 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                     const result = JSON.parse(data);
                     if (result.success) {
                         displayLocationPreview(result.users, locationText);
+                        displayNotificationPreview(result.users, locationText);
                     } else {
                         contentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error loading preview: ' + (result.message || 'Unknown error') + '</div>';
+                        if (notificationContentDiv) {
+                            notificationContentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error loading preview</div>';
+                        }
                     }
                 } catch (e) {
                     contentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error parsing response</div>';
+                    if (notificationContentDiv) {
+                        notificationContentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error parsing response</div>';
+                    }
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 contentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error loading preview</div>';
+                if (notificationContentDiv) {
+                    notificationContentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error loading preview</div>';
+                }
             });
         }
         
@@ -6006,6 +5959,72 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             
             html += '</div>';
             contentDiv.innerHTML = html;
+        }
+        
+        // Function to display notification preview
+        function displayNotificationPreview(users, locationText) {
+            const notificationContentDiv = document.getElementById('notificationPreviewContent');
+            
+            if (!notificationContentDiv) return;
+            
+            if (!users || users.length === 0) {
+                notificationContentDiv.innerHTML = `
+                    <div style="text-align: center; opacity: 0.7;">
+                        <div style="margin-bottom: 10px;"><strong>📱 Notification Preview</strong></div>
+                        <div>No users to notify in this location</div>
+                        <div style="font-size: 12px; margin-top: 5px;">Users need to complete screening to receive notifications</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const eventTitle = document.getElementById('eventTitle')?.value || 'Event Title';
+            const eventDate = document.getElementById('eventDate')?.value || 'Event Date';
+            const notificationType = document.getElementById('notificationType')?.value || 'push';
+            
+            let html = `
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: bold; margin-bottom: 5px;"><strong>📱 Notification Preview</strong></div>
+                    <div style="font-size: 14px; opacity: 0.8;">${users.length} user(s) will receive ${notificationType} notifications</div>
+                </div>
+                <div style="background: rgba(161, 180, 84, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">📋 Sample Notification:</div>
+                    <div style="font-size: 13px; line-height: 1.4;">
+                        <div><strong>Title:</strong> New Event: ${eventTitle}</div>
+                        <div><strong>Message:</strong> ${eventTitle} at ${locationText} on ${eventDate}</div>
+                        <div><strong>Type:</strong> ${notificationType === 'push' ? 'Push Notification' : notificationType === 'both' ? 'Push + Email' : 'Email Only'}</div>
+                    </div>
+                </div>
+                <div style="max-height: 150px; overflow-y: auto;">
+            `;
+            
+            users.forEach(user => {
+                const hasToken = user.fcm_token && user.is_active;
+                const statusIcon = hasToken ? '📱' : '📧';
+                const statusText = hasToken ? 'Push Ready' : 'Email Only';
+                const statusColor = hasToken ? 'var(--color-highlight)' : 'var(--color-warning)';
+                
+                html += `
+                    <div style="
+                        padding: 8px; 
+                        margin-bottom: 8px; 
+                        background: rgba(161, 180, 84, 0.05); 
+                        border-radius: 6px; 
+                        border-left: 3px solid ${statusColor};
+                        font-size: 12px;
+                    ">
+                        <div style="font-weight: bold; margin-bottom: 4px;">
+                            ${statusIcon} ${user.user_email}
+                        </div>
+                        <div style="opacity: 0.8;">
+                            ${user.barangay} | ${statusText}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            notificationContentDiv.innerHTML = html;
         }
         
         // Function to debug FCM status
@@ -7402,9 +7421,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             }
         });
         
-        // Global variables for location notification
-        let selectedNotificationLocation = '';
-        let selectedNotificationLocationText = '';
+
         
         // Function to toggle notification location dropdown
         function toggleNotificationLocationDropdown() {
