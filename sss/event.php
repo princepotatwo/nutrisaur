@@ -725,16 +725,16 @@ function getFCMTokensByLocation($targetLocation = null) {
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '') {
             error_log("Processing 'all locations' case - getting all FCM tokens");
-            // Get all active FCM tokens with user barangay from user_preferences
+            // Get all active FCM tokens with user barangay from preferences table
             $stmt = $conn->prepare("
-                SELECT ft.fcm_token, ft.user_email, up.barangay as user_barangay
+                SELECT ft.fcm_token, ft.user_email, p.barangay as user_barangay
                 FROM fcm_tokens ft
-                INNER JOIN user_preferences up ON ft.user_email = up.user_email
+                INNER JOIN preferences p ON ft.user_email = p.user_email
                 WHERE ft.is_active = TRUE 
                 AND ft.fcm_token IS NOT NULL 
                 AND ft.fcm_token != ''
-                AND up.barangay IS NOT NULL 
-                AND up.barangay != ''
+                AND p.barangay IS NOT NULL 
+                AND p.barangay != ''
             ");
             $stmt->execute();
         } else {
@@ -743,15 +743,15 @@ function getFCMTokensByLocation($targetLocation = null) {
                 error_log("Processing municipality case: $targetLocation");
                 // Get tokens for all barangays in the municipality
                 $stmt = $conn->prepare("
-                    SELECT ft.fcm_token, ft.user_email, up.barangay as user_barangay
+                    SELECT ft.fcm_token, ft.user_email, p.barangay as user_barangay
                     FROM fcm_tokens ft
-                    INNER JOIN user_preferences up ON ft.user_email = up.user_email
+                    INNER JOIN preferences p ON ft.user_email = p.user_email
                     WHERE ft.is_active = TRUE 
                     AND ft.fcm_token IS NOT NULL 
                     AND ft.fcm_token != ''
-                    AND up.barangay IS NOT NULL 
-                    AND up.barangay != ''
-                    AND (up.barangay = ? OR up.barangay LIKE ?)
+                    AND p.barangay IS NOT NULL 
+                    AND p.barangay != ''
+                    AND (p.barangay = ? OR p.barangay LIKE ?)
                 ");
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $stmt->execute([$targetLocation, $municipalityName . '%']);
@@ -759,15 +759,15 @@ function getFCMTokensByLocation($targetLocation = null) {
                 error_log("Processing barangay case: $targetLocation");
                 // Get tokens for specific barangay
                 $stmt = $conn->prepare("
-                    SELECT ft.fcm_token, ft.user_email, up.barangay as user_barangay
+                    SELECT ft.fcm_token, ft.user_email, p.barangay as user_barangay
                     FROM fcm_tokens ft
-                    INNER JOIN user_preferences up ON ft.user_email = up.user_email
+                    INNER JOIN preferences p ON ft.user_email = p.user_email
                     WHERE ft.is_active = TRUE 
                     AND ft.fcm_token IS NOT NULL 
                     AND ft.fcm_token != ''
-                    AND up.barangay IS NOT NULL 
-                    AND up.barangay != ''
-                    AND up.barangay = ?
+                    AND p.barangay IS NOT NULL 
+                    AND p.barangay != ''
+                    AND p.barangay = ?
                 ");
                 $stmt->execute([$targetLocation]);
             }
@@ -777,14 +777,14 @@ function getFCMTokensByLocation($targetLocation = null) {
         
         // Log the targeting results
         $targetType = empty($targetLocation) ? 'all' : (strpos($targetLocation, 'MUNICIPALITY_') === 0 ? 'municipality' : 'barangay');
-        error_log("FCM targeting using user_preferences: $targetType '$targetLocation' - Found " . count($tokens) . " tokens");
+        error_log("FCM targeting using preferences table: $targetType '$targetLocation' - Found " . count($tokens) . " tokens");
         
         // Additional debug info for empty results
         if (count($tokens) === 0) {
             error_log("No FCM tokens found. Checking if there are any users with preferences...");
             
             // Check if there are any users with preferences
-            $checkStmt = $conn->prepare("SELECT COUNT(*) as total FROM user_preferences WHERE barangay IS NOT NULL AND barangay != ''");
+            $checkStmt = $conn->prepare("SELECT COUNT(*) as total FROM preferences WHERE barangay IS NOT NULL AND barangay != ''");
             $checkStmt->execute();
             $userCount = $checkStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
