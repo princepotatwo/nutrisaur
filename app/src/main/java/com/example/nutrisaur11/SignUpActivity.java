@@ -181,6 +181,7 @@ public class SignUpActivity extends AppCompatActivity {
             profileValues.put(UserPreferencesDbHelper.COL_USER_BMI, 0.0); // Will be calculated
             profileValues.put(UserPreferencesDbHelper.COL_USER_GENDER, "Not specified");
             profileValues.put(UserPreferencesDbHelper.COL_USER_GOAL, "Healthy Nutrition");
+            profileValues.put(UserPreferencesDbHelper.COL_USER_BARANGAY, "Not specified"); // Will be set during screening
             
             long profileResult = db.insertWithOnConflict(
                 UserPreferencesDbHelper.TABLE_NAME,
@@ -201,6 +202,8 @@ public class SignUpActivity extends AppCompatActivity {
                     json.put("username", username);
                     json.put("screening_data", new org.json.JSONObject().toString());
                     json.put("risk_score", 0);
+                    json.put("barangay", "Not specified"); // Will be set during screening
+                    json.put("municipality", "Not specified"); // Will be set during screening
                     
                     okhttp3.RequestBody body = okhttp3.RequestBody.create(
                         json.toString(), 
@@ -247,6 +250,8 @@ public class SignUpActivity extends AppCompatActivity {
                 json.put("diet_prefs", new org.json.JSONArray()); // No diet preferences by default
                 json.put("avoid_foods", ""); // No foods to avoid by default
                 json.put("risk_score", 0); // Default risk score until screening is completed
+                json.put("barangay", "Not specified"); // Will be set during screening
+                json.put("municipality", "Not specified"); // Will be set during screening
                 
                 okhttp3.RequestBody body = okhttp3.RequestBody.create(
                     json.toString(), 

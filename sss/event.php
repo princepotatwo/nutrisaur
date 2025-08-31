@@ -4008,15 +4008,15 @@ header:hover {
                                 <!-- Individual Barangays by Municipality -->
                                 <div class="option-group">
                                     <div class="option-header">ABUCAY</div>
-                                    <div class="option-item" data-value="Bangkal">Bangkal</div>
-                                    <div class="option-item" data-value="Calaylayan (Pob.)">Calaylayan (Pob.)</div>
-                                    <div class="option-item" data-value="Capitangan">Capitangan</div>
-                                    <div class="option-item" data-value="Gabon">Gabon</div>
-                                    <div class="option-item" data-value="Laon (Pob.)">Laon (Pob.)</div>
-                                    <div class="option-item" data-value="Mabatang">Mabatang</div>
-                                    <div class="option-item" data-value="Omboy">Omboy</div>
-                                    <div class="option-item" data-value="Salian">Salian</div>
-                                    <div class="option-item" data-value="Wawa (Pob.)">Wawa (Pob.)</div>
+                                    <div class="option-item" data-value="Bangkal" onclick="selectEventLocation('Bangkal', 'Bangkal')">Bangkal</div>
+                                    <div class="option-item" data-value="Calaylayan (Pob.)" onclick="selectEventLocation('Calaylayan (Pob.)', 'Calaylayan (Pob.)')">Calaylayan (Pob.)</div>
+                                    <div class="option-item" data-value="Capitangan" onclick="selectEventLocation('Capitangan', 'Capitangan')">Capitangan</div>
+                                    <div class="option-item" data-value="Gabon" onclick="selectEventLocation('Gabon', 'Gabon')">Gabon</div>
+                                    <div class="option-item" data-value="Laon (Pob.)" onclick="selectEventLocation('Laon (Pob.)', 'Laon (Pob.)')">Laon (Pob.)</div>
+                                    <div class="option-item" data-value="Mabatang" onclick="selectEventLocation('Mabatang', 'Mabatang')">Mabatang</div>
+                                    <div class="option-item" data-value="Omboy" onclick="selectEventLocation('Omboy', 'Omboy')">Omboy</div>
+                                    <div class="option-item" data-value="Salian" onclick="selectEventLocation('Salian', 'Salian')">Salian</div>
+                                    <div class="option-item" data-value="Wawa (Pob.)" onclick="selectEventLocation('Wawa (Pob.)', 'Wawa (Pob.)')">Wawa (Pob.)</div>
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">BAGAC</div>
