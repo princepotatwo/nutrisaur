@@ -127,27 +127,27 @@ function getTimeFrameData($conn, $timeFrame, $barangay = null) {
     
     try {
         // Build the query based on barangay filter
-        $whereClause = "WHERE (up.created_at BETWEEN :start_date AND :end_date) OR (up.updated_at BETWEEN :start_date AND :end_date)";
+        $whereClause = "WHERE (p.created_at BETWEEN :start_date AND :end_date) OR (p.updated_at BETWEEN :start_date AND :end_date)";
         $params = [':start_date' => $startDateStr, ':end_date' => $endDateStr];
         
         if ($barangay && $barangay !== '') {
-            $whereClause .= " AND up.barangay = :barangay";
+            $whereClause .= " AND p.barangay = :barangay";
             $params[':barangay'] = $barangay;
         }
         
         $query = "
             SELECT 
                 COUNT(*) as total_screened,
-                SUM(CASE WHEN up.risk_score >= 50 THEN 1 ELSE 0 END) as high_risk_cases,
-                SUM(CASE WHEN up.whz_score < -3 THEN 1 ELSE 0 END) as sam_cases,
-                SUM(CASE WHEN up.muac < 11.5 THEN 1 ELSE 0 END) as critical_muac,
-                AVG(up.risk_score) as avg_risk_score,
-                AVG(up.whz_score) as avg_whz_score,
-                AVG(up.muac) as avg_muac,
-                COUNT(DISTINCT up.barangay) as barangays_covered,
-                MIN(up.created_at) as earliest_screening,
-                MAX(up.updated_at) as latest_update
-            FROM user_preferences up
+                SUM(CASE WHEN p.risk_score >= 50 THEN 1 ELSE 0 END) as high_risk_cases,
+                SUM(CASE WHEN p.whz_score < -3 THEN 1 ELSE 0 END) as sam_cases,
+                SUM(CASE WHEN p.muac < 11.5 THEN 1 ELSE 0 END) as critical_muac,
+                AVG(p.risk_score) as avg_risk_score,
+                AVG(p.whz_score) as avg_whz_score,
+                AVG(p.muac) as avg_muac,
+                COUNT(DISTINCT p.barangay) as barangays_covered,
+                MIN(p.created_at) as earliest_screening,
+                MAX(p.updated_at) as latest_update
+            FROM preferences p
             $whereClause
         ";
         
@@ -212,11 +212,11 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
     $endDateStr = $now->format('Y-m-d H:i:s');
     
     try {
-        $whereClause = "WHERE (up.created_at BETWEEN :start_date AND :end_date) OR (up.updated_at BETWEEN :start_date AND :end_date)";
+        $whereClause = "WHERE (p.created_at BETWEEN :start_date AND :end_date) OR (p.updated_at BETWEEN :start_date AND :end_date)";
         $params = [':start_date' => $startDateStr, ':end_date' => $endDateStr];
         
         if ($barangay && $barangay !== '') {
-            $whereClause .= " AND up.barangay = :barangay";
+            $whereClause .= " AND p.barangay = :barangay";
             $params[':barangay'] = $barangay;
         }
         
@@ -224,22 +224,22 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         $ageQuery = "
             SELECT 
                 CASE 
-                    WHEN up.age < 1 THEN 'Under 1 year'
-                    WHEN up.age < 6 THEN '1-5 years'
-                    WHEN up.age < 12 THEN '6-11 years'
-                    WHEN up.age < 18 THEN '12-17 years'
-                    WHEN up.age < 25 THEN '18-24 years'
-                    WHEN up.age < 35 THEN '25-34 years'
-                    WHEN up.age < 45 THEN '35-44 years'
-                    WHEN up.age < 55 THEN '45-54 years'
-                    WHEN up.age < 65 THEN '55-64 years'
+                    WHEN p.age < 1 THEN 'Under 1 year'
+                    WHEN p.age < 6 THEN '1-5 years'
+                    WHEN p.age < 12 THEN '6-11 years'
+                    WHEN p.age < 18 THEN '12-17 years'
+                    WHEN p.age < 25 THEN '18-24 years'
+                    WHEN p.age < 35 THEN '25-34 years'
+                    WHEN p.age < 45 THEN '35-44 years'
+                    WHEN p.age < 55 THEN '45-54 years'
+                    WHEN p.age < 65 THEN '55-64 years'
                     ELSE '65+ years'
                 END as age_group,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
             GROUP BY age_group
-            ORDER BY MIN(up.age)
+            ORDER BY MIN(p.age)
         ";
         
         $stmt = $conn->prepare($ageQuery);
@@ -249,11 +249,11 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         // Get gender distribution
         $genderQuery = "
             SELECT 
-                up.gender,
+                p.gender,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
-            GROUP BY up.gender
+            GROUP BY p.gender
         ";
         
         $stmt = $conn->prepare($genderQuery);
@@ -263,11 +263,11 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         // Get income levels
         $incomeQuery = "
             SELECT 
-                up.income,
+                p.income,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
-            GROUP BY up.income
+            GROUP BY p.income
         ";
         
         $stmt = $conn->prepare($incomeQuery);
@@ -278,18 +278,18 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         $heightQuery = "
             SELECT 
                 CASE 
-                    WHEN up.height < 100 THEN 'Under 100 cm'
-                    WHEN up.height < 120 THEN '100-119 cm'
-                    WHEN up.height < 140 THEN '120-139 cm'
-                    WHEN up.height < 160 THEN '140-159 cm'
-                    WHEN up.height < 180 THEN '160-179 cm'
+                    WHEN p.height < 100 THEN 'Under 100 cm'
+                    WHEN p.height < 120 THEN '100-119 cm'
+                    WHEN p.height < 140 THEN '120-139 cm'
+                    WHEN p.height < 160 THEN '140-159 cm'
+                    WHEN p.height < 180 THEN '160-179 cm'
                     ELSE '180+ cm'
                 END as height_range,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
             GROUP BY height_range
-            ORDER BY MIN(up.height)
+            ORDER BY MIN(p.height)
         ";
         
         $stmt = $conn->prepare($heightQuery);
@@ -299,11 +299,11 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         // Get swelling distribution
         $swellingQuery = "
             SELECT 
-                up.swelling,
+                p.swelling,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
-            GROUP BY up.swelling
+            GROUP BY p.swelling
         ";
         
         $stmt = $conn->prepare($swellingQuery);
@@ -313,11 +313,11 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         // Get weight loss distribution
         $weightLossQuery = "
             SELECT 
-                up.weight_loss,
+                p.weight_loss,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
-            GROUP BY up.weight_loss
+            GROUP BY p.weight_loss
         ";
         
         $stmt = $conn->prepare($weightLossQuery);
@@ -327,11 +327,11 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         // Get feeding behavior distribution
         $feedingQuery = "
             SELECT 
-                up.feeding_behavior,
+                p.feeding_behavior,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
-            GROUP BY up.feeding_behavior
+            GROUP BY p.feeding_behavior
         ";
         
         $stmt = $conn->prepare($feedingQuery);
@@ -342,14 +342,14 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         $physicalQuery = "
             SELECT 
                 CASE 
-                    WHEN up.physical_thin = 'yes' THEN 'Thin Appearance'
-                    WHEN up.physical_shorter = 'yes' THEN 'Shorter Stature'
-                    WHEN up.physical_weak = 'yes' THEN 'Weak Physical Condition'
-                    WHEN up.physical_none = 'yes' THEN 'No Physical Signs'
+                    WHEN p.physical_thin = 'yes' THEN 'Thin Appearance'
+                    WHEN p.physical_shorter = 'yes' THEN 'Shorter Stature'
+                    WHEN p.physical_weak = 'yes' THEN 'Weak Physical Condition'
+                    WHEN p.physical_none = 'yes' THEN 'No Physical Signs'
                     ELSE 'Not Assessed'
                 END as physical_sign,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
             GROUP BY physical_sign
         ";
@@ -362,18 +362,18 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         $dietaryQuery = "
             SELECT 
                 CASE 
-                    WHEN up.dietary_diversity_score = 0 THEN 'No Food Groups (0)'
-                    WHEN up.dietary_diversity_score <= 2 THEN 'Very Low Diversity (1-2 food groups)'
-                    WHEN up.dietary_diversity_score <= 4 THEN 'Low Diversity (3-4 food groups)'
-                    WHEN up.dietary_diversity_score <= 6 THEN 'Medium Diversity (5-6 food groups)'
-                    WHEN up.dietary_diversity_score <= 8 THEN 'Good Diversity (7-8 food groups)'
+                    WHEN p.dietary_diversity_score = 0 THEN 'No Food Groups (0)'
+                    WHEN p.dietary_diversity_score <= 2 THEN 'Very Low Diversity (1-2 food groups)'
+                    WHEN p.dietary_diversity_score <= 4 THEN 'Low Diversity (3-4 food groups)'
+                    WHEN p.dietary_diversity_score <= 6 THEN 'Medium Diversity (5-6 food groups)'
+                    WHEN p.dietary_diversity_score <= 8 THEN 'Good Diversity (7-8 food groups)'
                     ELSE 'High Diversity (9-10 food groups)'
                 END as dietary_diversity_level,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
             GROUP BY dietary_diversity_level
-            ORDER BY MIN(up.dietary_diversity_score)
+            ORDER BY MIN(p.dietary_diversity_score)
         ";
         
         $stmt = $conn->prepare($dietaryQuery);
@@ -384,13 +384,13 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
         $clinicalQuery = "
             SELECT 
                 CASE 
-                    WHEN up.diarrhea = 'yes' THEN 'Diarrhea'
-                    WHEN up.fever = 'yes' THEN 'Fever'
-                    WHEN up.cough = 'yes' THEN 'Cough'
+                    WHEN p.diarrhea = 'yes' THEN 'Diarrhea'
+                    WHEN p.fever = 'yes' THEN 'Fever'
+                    WHEN p.cough = 'yes' THEN 'Cough'
                     ELSE 'No Clinical Risk Factors'
                 END as clinical_risk_factor,
                 COUNT(*) as count
-            FROM user_preferences up
+            FROM preferences p
             $whereClause
             GROUP BY clinical_risk_factor
         ";
@@ -430,9 +430,9 @@ $role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user';
 $profile = null;
 try {
     $stmt = $conn->prepare("
-        SELECT u.*, up.* 
+        SELECT u.*, p.* 
         FROM users u 
-        LEFT JOIN user_preferences up ON u.email = up.user_email 
+        LEFT JOIN preferences p ON u.email = p.user_email 
         WHERE u.user_id = :user_id
     ");
     $stmt->bindParam(':user_id', $userId);
