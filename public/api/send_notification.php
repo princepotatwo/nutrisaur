@@ -66,64 +66,120 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Missing required notification data');
         }
         
-        // Get FCM token for the specific user
-        $stmt = $pdo->prepare("
-            SELECT ft.fcm_token 
-            FROM fcm_tokens ft
-            WHERE ft.user_email = ? AND ft.is_active = TRUE 
-            AND ft.fcm_token IS NOT NULL AND ft.fcm_token != ''
-        ");
-        $stmt->execute([$targetUser]);
-        $fcmToken = $stmt->fetchColumn();
-        
-        // Check if user has a valid FCM token
-        if (!$fcmToken) {
-            error_log("No valid FCM token found for user: " . $targetUser . " - skipping notification");
-            echo json_encode([
-                'success' => false,
-                'message' => 'No valid FCM token found for user: ' . $userName,
-                'target_user' => $targetUser,
-                'reason' => 'no_fcm_token'
+        // 🚨 NEW: Handle "all" users case for events
+        if ($targetUser === 'all') {
+            error_log("🚨 SENDING TO ALL USERS - Event notification");
+            
+            // Get ALL active FCM tokens
+            $stmt = $pdo->prepare("
+                SELECT ft.fcm_token, ft.user_email
+                FROM fcm_tokens ft
+                WHERE ft.is_active = TRUE 
+                AND ft.fcm_token IS NOT NULL AND ft.fcm_token != ''
+            ");
+            $stmt->execute();
+            $allTokens = $stmt->fetchAll();
+            
+            if (empty($allTokens)) {
+                error_log("❌ No active FCM tokens found for any users");
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'No active FCM tokens found for any users',
+                    'target_user' => 'all',
+                    'reason' => 'no_fcm_tokens_found'
+                ]);
+                exit;
+            }
+            
+            error_log("✅ Found " . count($allTokens) . " active FCM tokens for mass notification");
+            
+            // Extract just the tokens
+            $fcmTokens = array_column($allTokens, 'fcm_token');
+            
+            // Send FCM notification to ALL users
+            $notificationSent = sendFCMNotification($fcmTokens, [
+                'title' => $title,
+                'body' => $body,
+                'data' => [
+                    'notification_type' => 'event_notification',
+                    'target_user' => 'all',
+                    'alert_type' => $notificationData['alert_type'] ?? 'event_notification',
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
+                ]
             ]);
-            exit;
-        }
-        
-        // Validate FCM token format (should be 140+ characters, alphanumeric + :_-. and other valid characters)
-        if (strlen($fcmToken) < 140 || !preg_match('/^[a-zA-Z0-9:_\-\.]+$/', $fcmToken)) {
-            error_log("Invalid FCM token format for user: " . $targetUser . " - token: " . substr($fcmToken, 0, 50) . "...");
-            echo json_encode([
-                'success' => false,
-                'message' => 'Invalid FCM token format for user: ' . $userName,
-                'target_user' => $targetUser,
-                'reason' => 'invalid_token_format'
-            ]);
-            exit;
-        }
-        
-        error_log("Using valid FCM token for user: " . $targetUser . " - token: " . substr($fcmToken, 0, 20) . "...");
-        
-        // Send FCM notification
-        $notificationSent = sendFCMNotification([$fcmToken], [
-            'title' => $title,
-            'body' => $body,
-            'data' => [
-                'notification_type' => 'critical_alert',
-                'target_user' => $targetUser,
-                'user_name' => $userName,
-                'alert_type' => $notificationData['alert_type'] ?? 'critical_notification',
-                'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
-            ]
-        ]);
-        
-        if ($notificationSent) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Personal notification sent successfully to ' . $userName,
-                'target_user' => $targetUser,
-                'devices_notified' => 1
-            ]);
+            
+            if ($notificationSent) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Mass notification sent successfully to ' . count($fcmTokens) . ' users',
+                    'target_user' => 'all',
+                    'devices_notified' => count($fcmTokens)
+                ]);
+            } else {
+                throw new Exception('Failed to send mass FCM notification');
+            }
+            
         } else {
-            throw new Exception('Failed to send FCM notification');
+            // 🚨 ORIGINAL LOGIC: Single user notification
+            // Get FCM token for the specific user
+            $stmt = $pdo->prepare("
+                SELECT ft.fcm_token 
+                FROM fcm_tokens ft
+                WHERE ft.user_email = ? AND ft.is_active = TRUE 
+                AND ft.fcm_token IS NOT NULL AND ft.fcm_token != ''
+            ");
+            $stmt->execute([$targetUser]);
+            $fcmToken = $stmt->fetchColumn();
+            
+            // Check if user has a valid FCM token
+            if (!$fcmToken) {
+                error_log("No valid FCM token found for user: " . $targetUser . " - skipping notification");
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'No valid FCM token found for user: ' . $userName,
+                    'target_user' => $targetUser,
+                    'reason' => 'no_fcm_token'
+                ]);
+                exit;
+            }
+            
+            // Validate FCM token format (should be 140+ characters, alphanumeric + :_-. and other valid characters)
+            if (strlen($fcmToken) < 140 || !preg_match('/^[a-zA-Z0-9:_\-\.]+$/', $fcmToken)) {
+                error_log("Invalid FCM token format for user: " . $targetUser . " - token: " . substr($fcmToken, 0, 50) . "...");
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid FCM token format for user: ' . $userName,
+                    'target_user' => $targetUser,
+                    'reason' => 'invalid_token_format'
+                ]);
+                exit;
+            }
+            
+            error_log("Using valid FCM token for user: " . $targetUser . " - token: " . substr($fcmToken, 0, 20) . "...");
+            
+            // Send FCM notification
+            $notificationSent = sendFCMNotification([$fcmToken], [
+                'title' => $title,
+                'body' => $body,
+                'data' => [
+                    'notification_type' => 'critical_alert',
+                    'target_user' => $targetUser,
+                    'user_name' => $userName,
+                    'alert_type' => $notificationData['alert_type'] ?? 'critical_notification',
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
+                ]
+            ]);
+            
+            if ($notificationSent) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Personal notification sent successfully to ' . $userName,
+                    'target_user' => $targetUser,
+                    'devices_notified' => 1
+                ]);
+            } else {
+                throw new Exception('Failed to send FCM notification');
+            }
         }
         
     } catch (Exception $e) {
