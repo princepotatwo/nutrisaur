@@ -297,9 +297,14 @@ function sendFCMNotification($fcmTokens, $notificationData) {
             "universe_domain" => "googleapis.com"
         ];
         
-        // Use legacy FCM API to avoid Sender ID mismatch issues
-        error_log("FCM Debug: Using legacy FCM API to avoid Sender ID mismatch");
-        return sendFCMViaCurl($fcmTokens, $notificationData);
+        // Try Firebase Admin SDK first, fallback to legacy API
+        error_log("FCM Debug: Trying Firebase Admin SDK first");
+        $result = sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountData);
+        if (!$result) {
+            error_log("FCM Debug: Firebase Admin SDK failed, trying legacy FCM API");
+            return sendFCMViaCurl($fcmTokens, $notificationData);
+        }
+        return $result;
         
 
         
@@ -408,8 +413,9 @@ function sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountDa
  */
 function sendFCMViaCurl($fcmTokens, $notificationData) {
     try {
-        // FCM Server Key from your new Firebase project
-        $serverKey = 'AIzaSyBGArwSy8j6_pQwR4ozFudKFcM5jHHXwTA'; // From your google-services.json
+        // FCM Server Key from Firebase Console (Project Settings > Cloud Messaging)
+        // You need to get this from Firebase Console > Project Settings > Cloud Messaging > Server key
+        $serverKey = 'AIzaSyBGArwSy8j6_pQwR4ozFudKFcM5jHHXwTA'; // This might be the API key, not server key
         
         $url = 'https://fcm.googleapis.com/fcm/send';
         
