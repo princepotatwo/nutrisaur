@@ -112,44 +112,7 @@ $recommended_program = isset($_GET['program']) ? $_GET['program'] : '';
             echo "<script>console.log('PHP: Location parameter received:', '" . addslashes($recommended_location) . "');</script>";
         }
 
-// Handle test notification request
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['send_test_notification'])) {
-    $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-              strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-    
-    try {
-        $result = sendTestNotification('Test notification from NutriSaur! Testing push notifications...');
-        
-        if ($isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'success' => $result,
-                'message' => $result ? 'Test notification sent successfully' : 'Failed to send test notification'
-            ]);
-            exit;
-        } else {
-            // TEMPORARILY DISABLED REDIRECT FOR TESTING
-            // $redirectUrl = "event.php?test=" . ($result ? "1" : "0");
-            // header("Location: " . $redirectUrl);
-            // exit;
-        }
-        
-    } catch (Exception $e) {
-        $errorMessage = "Error sending test notification: " . $e->getMessage();
-        error_log($errorMessage);
-        
-        if ($isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $errorMessage]);
-            exit;
-        } else {
-            // TEMPORARILY DISABLED REDIRECT FOR TESTING
-            // $redirectUrl = "event.php?test=0&error=" . urlencode($errorMessage);
-            // header("Location: " . $redirectUrl);
-            // exit;
-        }
-    }
-}
+
 
 // Handle location preview request
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'get_location_preview') {
@@ -429,7 +392,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     
     // Validate required fields
     if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
-        echo json_encode(['success' => false, 'message' => 'Please fill in all required fields']);
+        echo json_encode(['success' => false, 'message' => 'Invalid request']);
         exit;
     }
     
@@ -475,6 +438,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     
     // IMPORTANT: EXIT HERE FOR AJAX - NO REDIRECTS, NO CONTINUATION
     exit;
+}
 }
 
 // 🚨 NEW SIMPLIFIED NOTIFICATION FUNCTION
@@ -4760,7 +4724,59 @@ header:hover {
         </div>
     </div>
 
-
+    <!-- Add Event Modal -->
+    <div id="addEventModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Event</h3>
+                <span class="close" onclick="closeAddEventModal()">&times;</span>
+            </div>
+            <form id="addEventForm" method="POST" action="event.php">
+                <input type="hidden" name="add_event" value="1">
+                
+                <div class="form-group">
+                    <label for="add_eventTitle">Event Title</label>
+                    <input type="text" id="add_eventTitle" name="eventTitle" placeholder="e.g., Nutrition Seminar" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventType">Event Type</label>
+                    <select id="add_eventType" name="eventType" required>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Seminar">Seminar</option>
+                        <option value="Webinar">Webinar</option>
+                        <option value="Demo">Demo</option>
+                        <option value="Training">Training</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventDate">Date & Time</label>
+                    <input type="datetime-local" id="add_eventDate" name="eventDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventLocation">Location</label>
+                    <input type="text" id="add_eventLocation" name="eventLocation" placeholder="e.g., Barangay Hall" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventOrganizer">Person in Charge</label>
+                    <input type="text" id="add_eventOrganizer" name="eventOrganizer" placeholder="Name of organizer" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="add_eventDescription">Event Description</label>
+                    <textarea id="add_eventDescription" name="eventDescription" placeholder="Brief description of the event..." required></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-add">Add Event</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAddEventModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         // NEW SIMPLE THEME TOGGLE - Optimized to prevent flickering!
@@ -6615,6 +6631,31 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             document.getElementById('duplicateWarningModal').style.display = 'none';
         }
         
+        // Add Event Modal Functions
+        function openAddEventModal() {
+            // Reset form values
+            document.getElementById('add_eventTitle').value = '';
+            document.getElementById('add_eventType').value = 'Workshop';
+            document.getElementById('add_eventDate').value = '';
+            document.getElementById('add_eventLocation').value = '';
+            document.getElementById('add_eventOrganizer').value = '';
+            document.getElementById('add_eventDescription').value = '';
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(9, 0, 0, 0); // 9:00 AM
+            const formattedDate = tomorrow.toISOString().slice(0, 16);
+            document.getElementById('add_eventDate').value = formattedDate;
+            
+            // Show modal
+            document.getElementById('addEventModal').style.display = 'block';
+        }
+        
+        function closeAddEventModal() {
+            document.getElementById('addEventModal').style.display = 'none';
+        }
+        
 
         
         function showDuplicateWarningModal(duplicates) {
@@ -6672,10 +6713,13 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         // Close modal when clicking outside
         window.onclick = function(event) {
             const editModal = document.getElementById('editModal');
+            const addModal = document.getElementById('addEventModal');
             const duplicateModal = document.getElementById('duplicateWarningModal');
             
             if (event.target === editModal) {
                 closeEditModal();
+            } else if (event.target === addModal) {
+                closeAddEventModal();
             } else if (event.target === duplicateModal) {
                 closeDuplicateWarningModal();
             }
