@@ -523,7 +523,7 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
         }
         
         // Use Firebase Admin SDK JSON file
-        $adminSdkPath = __DIR__ . '/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json';
+        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
         
         if (!file_exists($adminSdkPath)) {
             error_log("Firebase Admin SDK JSON file not found at: $adminSdkPath");
