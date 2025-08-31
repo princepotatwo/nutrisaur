@@ -9,18 +9,17 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// AUTHENTICATION COMPLETELY DISABLED FOR TESTING
-// Set test user session directly
-$_SESSION['user_id'] = 1;
-$_SESSION['username'] = 'kevinpingol';
-$_SESSION['email'] = 'kevinpingol@example.com';
-
-// Skip all authentication checks for testing
-
 // Get user info from session
-$userId = $_SESSION['user_id'];
-$username = $_SESSION['username'];
-$email = $_SESSION['email'];
+$userId = $_SESSION['user_id'] ?? null;
+$username = $_SESSION['username'] ?? null;
+$email = $_SESSION['email'] ?? null;
+
+// Check if user is authenticated
+if (!$userId || !$username || !$email) {
+    // Redirect to login if not authenticated
+    header("Location: /login");
+    exit;
+}
 
 // Create a safe database wrapper that won't crash the page
 function safeDbQuery($conn, $sql, $params = []) {
@@ -439,7 +438,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     // IMPORTANT: EXIT HERE FOR AJAX - NO REDIRECTS, NO CONTINUATION
     exit;
 }
-}
 
 // 🚨 NEW SIMPLIFIED NOTIFICATION FUNCTION
 function sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer) {
@@ -803,75 +801,7 @@ function getUserLocationStats() {
     }
 }
 
-// Simple test notification function for debugging - using the working API
-function sendTestNotification($message = 'Test notification from NutriSaur!') {
-    global $conn;
-    
-    try {
-        // Get all active FCM tokens with barangay from fcm_tokens table (direct lookup like dash.php)
-        $stmt = $conn->prepare("
-            SELECT ft.fcm_token, ft.user_email
-            FROM fcm_tokens ft
-            WHERE ft.is_active = TRUE 
-            AND ft.fcm_token IS NOT NULL 
-            AND ft.fcm_token != ''
-            AND ft.user_barangay IS NOT NULL 
-            AND ft.user_barangay != ''
-        ");
-        $stmt->execute();
-        $tokenData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        if (empty($tokenData)) {
-            error_log("No FCM tokens with barangay found for test notification");
-            return false;
-        }
-        
-        error_log("Sending test notification to " . count($tokenData) . " tokens with barangay data");
-        
-        $successCount = 0;
-        
-        foreach ($tokenData as $token) {
-            $notificationPayload = [
-                'title' => 'Test Notification',
-                'body' => $message,
-                'target_user' => $token['user_email'],
-                'user_name' => $token['user_email'],
-                'alert_type' => 'test_notification'
-            ];
-            
-            // Send via the working notification API
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/send_notification.php');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'notification_data' => json_encode($notificationPayload)
-            ]));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-            
-            if ($httpCode === 200) {
-                $responseData = json_decode($response, true);
-                if (isset($responseData['success']) && $responseData['success']) {
-                    $successCount++;
-                }
-            }
-        }
-        
-        // Log the test attempt
-        logNotificationAttempt(0, 'test', 'all', 'all', count($tokenData), $successCount > 0);
-        
-        return $successCount > 0;
-        
-    } catch (Exception $e) {
-        error_log("Error sending test notification: " . $e->getMessage());
-        return false;
-    }
-}
+
 
 // Function to get detailed user list for a specific location (for debugging) - using direct lookup like dash.php
 function getUsersForLocation($targetLocation) {
@@ -1121,9 +1051,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             $stmt->execute();
                             $programs = $stmt->fetchAll();
                             
-                            // TEMPORARILY DISABLED REDIRECT FOR TESTING
-                            // header("Location: event.php?imported=$importedCount&errors=" . count($errors));
-                            // exit;
+
                             $successMessage = "CSV imported successfully! $importedCount events imported.";
                             if (count($errors) > 0) {
                                 $successMessage .= " However, " . count($errors) . " rows had errors.";
@@ -1156,10 +1084,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
         $stmt->bindParam(':id', $programId);
         $stmt->execute();
         
-        // TEMPORARILY DISABLED REDIRECT FOR TESTING
-        // Redirect to refresh page with success message
-        // header("Location: event.php?deleted=1&deleted_id=" . $programId);
-        // exit;
+
         $successMessage = "Event deleted successfully!";
     } catch(PDOException $e) {
         $errorMessage = "Error deleting program: " . $e->getMessage();
@@ -1172,10 +1097,7 @@ if (isset($_GET['delete_all']) && $_GET['delete_all'] === '1') {
         $stmt = $conn->prepare("DELETE FROM programs");
         $stmt->execute();
         
-        // TEMPORARILY DISABLED REDIRECT FOR TESTING
-        // Redirect to refresh page
-        // header("Location: event.php?deleted_all=1");
-        // exit;
+
         $successMessage = "All events deleted successfully!";
     } catch(PDOException $e) {
         $errorMessage = "Error deleting all programs: " . $e->getMessage();
@@ -1255,10 +1177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
             logNotificationAttempt($programId, 'event_updated', 'barangay', $location, 0, false, $e->getMessage());
         }
         
-        // TEMPORARILY DISABLED REDIRECT FOR TESTING
-        // Redirect to refresh page
-        // header("Location: event.php?updated=1");
-        // exit;
+
         $successMessage = "Event updated successfully!";
     } catch(PDOException $e) {
         $errorMessage = "Error updating program: " . $e->getMessage();
@@ -1316,7 +1235,7 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚨 DEPLOYMENT TEST - NutriSaur Event Form Fixed - All Redirects Disabled</title>
+    <title>NutriSaur Event Form</title>
     
 </head>
 <style>
@@ -4989,8 +4908,7 @@ header:hover {
             //     });
             // }
             
-            // FOR TESTING: Allow normal form submission to event.php
-            console.log('AJAX form interception disabled - form will submit normally to event.php');
+
         });
 
 
@@ -5013,8 +4931,7 @@ header:hover {
                     .then(data => {
                         if (data.success) {
                             alert('Successfully deleted ' + data.deleted_count + ' events!');
-                            // TEMPORARILY DISABLED REFRESH FOR TESTING
-                            // location.reload(); // Refresh to show empty table
+
                         } else {
                             alert('Error deleting events: ' + (data.error || 'Unknown error'));
                         }
@@ -6414,53 +6331,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             loadNotificationStats();
         }
         
-        // Function to send test notification
-        function sendTestNotification() {
-            const button = event.target;
-            const originalText = button.innerHTML;
-            
-            button.disabled = true;
-            button.innerHTML = '🔄 Sending...';
-            
-            fetch('event.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: 'send_test_notification=1'
-            })
-            .then(response => response.text())
-            .then(data => {
-                try {
-                    const result = JSON.parse(data);
-                    if (result.success) {
-                        showAlert('success', 'Test notification sent successfully! Check your phone.');
-                    } else {
-                        showAlert('danger', 'Test notification failed: ' + result.message);
-                    }
-                } catch (e) {
-                    if (data.includes('success')) {
-                        showAlert('success', 'Test notification sent successfully! Check your phone.');
-                    } else {
-                        showAlert('danger', 'Test notification failed. Check server logs for details.');
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('danger', 'Error sending test notification. Please try again.');
-            })
-            .finally(() => {
-                button.disabled = false;
-                button.innerHTML = originalText;
-                
-                // Refresh stats after test
-                setTimeout(() => {
-                    refreshNotificationStats();
-                }, 2000);
-            });
-        }
+
         
         // Function to load recent notification logs
         function loadRecentLogs() {
