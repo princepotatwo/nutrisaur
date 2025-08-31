@@ -5493,7 +5493,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         }
 
         function selectEventLocation(value, text) {
-            console.log('selectEventLocation called with value:', value, 'text:', text);
+            console.log('🔍 selectEventLocation called with value:', value, 'text:', text);
             console.log('Value type:', typeof value, 'Value length:', value ? value.length : 0);
             
             const selectedOption = document.getElementById('selected-event-location');
@@ -5501,7 +5501,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             const dropdownArrow = document.querySelector('.select-header .dropdown-arrow');
             const hiddenInput = document.getElementById('eventLocation');
             
-            console.log('Found elements:', {
+            console.log('🔍 Found elements:', {
                 selectedOption: !!selectedOption,
                 dropdownContent: !!dropdownContent,
                 dropdownArrow: !!dropdownArrow,
@@ -5512,8 +5512,8 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 selectedOption.textContent = text;
                 hiddenInput.value = value;
                 
-                console.log('Set hidden input value to:', hiddenInput.value);
-                console.log('Hidden input value after setting:', document.getElementById('eventLocation').value);
+                console.log('✅ Set hidden input value to:', hiddenInput.value);
+                console.log('✅ Hidden input value after setting:', document.getElementById('eventLocation').value);
                 
                 dropdownContent.classList.remove('active');
                 dropdownArrow.classList.remove('active');
@@ -5526,23 +5526,43 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 const clickedItem = document.querySelector(`#event-location-dropdown [data-value="${value}"]`);
                 if (clickedItem) {
                     clickedItem.classList.add('selected');
+                    console.log('✅ Updated selected state for item:', clickedItem);
                 }
                 
                 // Show location preview
+                console.log('🔄 Calling showLocationPreview with:', value, text);
                 showLocationPreview(value, text);
             } else {
-                console.error('Some required elements not found for location selection');
+                console.error('❌ Some required elements not found for location selection');
+                console.error('Missing elements:', {
+                    selectedOption: !selectedOption ? 'MISSING' : 'FOUND',
+                    dropdownContent: !dropdownContent ? 'MISSING' : 'FOUND',
+                    dropdownArrow: !dropdownArrow ? 'MISSING' : 'FOUND',
+                    hiddenInput: !hiddenInput ? 'MISSING' : 'FOUND'
+                });
             }
         }
         
         // Function to show location preview
         function showLocationPreview(locationValue, locationText) {
+            console.log('🔍 showLocationPreview called with:', locationValue, locationText);
+            
             const previewDiv = document.getElementById('locationPreview');
             const contentDiv = document.getElementById('locationPreviewContent');
             const notificationPreviewDiv = document.getElementById('notificationPreview');
             const notificationContentDiv = document.getElementById('notificationPreviewContent');
             
-            if (!previewDiv || !contentDiv) return;
+            console.log('🔍 Preview elements found:', {
+                previewDiv: !!previewDiv,
+                contentDiv: !!contentDiv,
+                notificationPreviewDiv: !!notificationPreviewDiv,
+                notificationContentDiv: !!notificationContentDiv
+            });
+            
+            if (!previewDiv || !contentDiv) {
+                console.error('❌ Required preview elements not found');
+                return;
+            }
             
             // Show loading state
             previewDiv.style.display = 'block';
@@ -5555,6 +5575,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             }
             
             // Fetch users for this location
+            console.log('🔄 Fetching location preview for:', locationValue);
             fetch('event.php', {
                 method: 'POST',
                 headers: {
