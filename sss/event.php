@@ -675,31 +675,31 @@ function generateAccessToken($serviceAccount) {
             $serviceAccount['private_key'],
             'SHA256'
         )) {
-            $signatureEncoded = base64url_encode($signature);
-            $jwt = $headerEncoded . '.' . $payloadEncoded . '.' . $signatureEncoded;
-            
-            // Exchange JWT for access token
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/token');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-                'assertion' => $jwt
-            ]));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-            
+        $signatureEncoded = base64url_encode($signature);
+        $jwt = $headerEncoded . '.' . $payloadEncoded . '.' . $signatureEncoded;
+        
+        // Exchange JWT for access token
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/token');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $jwt
+        ]));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
             if ($httpCode === 200) {
-                $tokenData = json_decode($response, true);
-                if (isset($tokenData['access_token'])) {
-                    return $tokenData['access_token'];
-                }
+            $tokenData = json_decode($response, true);
+            if (isset($tokenData['access_token'])) {
+                return $tokenData['access_token'];
             }
-            
+        }
+        
             error_log("Failed to get access token. HTTP: $httpCode, Response: $response");
         }
         
@@ -715,7 +715,7 @@ function base64url_encode($data) {
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
-// Function to get FCM tokens based on location targeting using user_preferences table
+// Function to get FCM tokens based on location targeting using preferences table
 function getFCMTokensByLocation($targetLocation = null) {
     global $conn;
     
@@ -838,10 +838,10 @@ function getUserLocationStats() {
     try {
         $stats = [];
         
-        // Count total users with barangay in user_preferences
+                // Count total users with barangay in preferences table
         $stmt = $conn->prepare("
             SELECT COUNT(*) as total_users_with_barangay
-            FROM user_preferences 
+            FROM preferences
             WHERE barangay IS NOT NULL AND barangay != ''
         ");
         $stmt->execute();
@@ -856,16 +856,16 @@ function getUserLocationStats() {
         $stmt->execute();
         $stats['total_fcm_tokens'] = $stmt->fetchColumn();
         
-        // Count FCM tokens with barangay from user_preferences
+        // Count FCM tokens with barangay from preferences table
         $stmt = $conn->prepare("
             SELECT COUNT(*) as fcm_tokens_with_barangay
             FROM fcm_tokens ft
-            INNER JOIN user_preferences up ON ft.user_email = up.user_email
+            INNER JOIN preferences p ON ft.user_email = p.user_email
             WHERE ft.is_active = TRUE 
             AND ft.fcm_token IS NOT NULL 
             AND ft.fcm_token != ''
-            AND up.barangay IS NOT NULL 
-            AND up.barangay != ''
+            AND p.barangay IS NOT NULL 
+            AND p.barangay != ''
         ");
         $stmt->execute();
         $stats['fcm_tokens_with_barangay'] = $stmt->fetchColumn();
@@ -895,16 +895,16 @@ function sendTestNotification($message = 'Test notification from NutriSaur!') {
     global $conn;
     
     try {
-        // Get all active FCM tokens with barangay from user_preferences
+        // Get all active FCM tokens with barangay from preferences table
         $stmt = $conn->prepare("
             SELECT ft.fcm_token 
             FROM fcm_tokens ft
-            INNER JOIN user_preferences up ON ft.user_email = up.user_email
+            INNER JOIN preferences p ON ft.user_email = p.user_email
             WHERE ft.is_active = TRUE 
             AND ft.fcm_token IS NOT NULL 
             AND ft.fcm_token != ''
-            AND up.barangay IS NOT NULL 
-            AND up.barangay != ''
+            AND p.barangay IS NOT NULL 
+            AND p.barangay != ''
         ");
         $stmt->execute();
         $tokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -946,33 +946,33 @@ function getUsersForLocation($targetLocation) {
     try {
         if (empty($targetLocation) || $targetLocation === 'all') {
             $stmt = $conn->prepare("
-                SELECT up.user_email, up.barangay, ft.fcm_token, ft.is_active
-                FROM user_preferences up
-                LEFT JOIN fcm_tokens ft ON up.user_email = ft.user_email
-                WHERE up.barangay IS NOT NULL AND up.barangay != ''
-                ORDER BY up.barangay, up.user_email
+                SELECT p.user_email, p.barangay, ft.fcm_token, ft.is_active
+                FROM preferences p
+                LEFT JOIN fcm_tokens ft ON p.user_email = ft.user_email
+                WHERE p.barangay IS NOT NULL AND p.barangay != ''
+                ORDER BY p.barangay, p.user_email
             ");
             $stmt->execute();
         } else {
             // Check if it's a municipality
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 $stmt = $conn->prepare("
-                    SELECT up.user_email, up.barangay, ft.fcm_token, ft.is_active
-                    FROM user_preferences up
-                    LEFT JOIN fcm_tokens ft ON up.user_email = ft.user_email
-                    WHERE up.barangay IS NOT NULL AND up.barangay != ''
-                    AND (up.barangay = ? OR up.barangay LIKE ?)
-                    ORDER BY up.barangay, up.user_email
+                    SELECT p.user_email, p.barangay, ft.fcm_token, ft.is_active
+                    FROM preferences p
+                    LEFT JOIN fcm_tokens ft ON p.user_email = ft.user_email
+                    WHERE p.barangay IS NOT NULL AND p.barangay != ''
+                    AND (p.barangay = ? OR p.barangay LIKE ?)
+                    ORDER BY p.barangay, p.user_email
                 ");
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $stmt->execute([$targetLocation, $municipalityName . '%']);
             } else {
                 $stmt = $conn->prepare("
-                    SELECT up.user_email, up.barangay, ft.fcm_token, ft.is_active
-                    FROM user_preferences up
-                    LEFT JOIN fcm_tokens ft ON up.user_email = ft.user_email
-                    WHERE up.barangay = ?
-                    ORDER BY up.user_email
+                    SELECT p.user_email, p.barangay, ft.fcm_token, ft.is_active
+                    FROM preferences p
+                    LEFT JOIN fcm_tokens ft ON p.user_email = ft.user_email
+                    WHERE p.barangay = ?
+                    ORDER BY p.user_email
                 ");
                 $stmt->execute([$targetLocation]);
             }
