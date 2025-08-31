@@ -52,6 +52,8 @@ function sendFCMNotification($tokens, $notificationData) {
 // Function to send FCM using Firebase Admin SDK (working implementation from localevent.php)
 function sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath) {
     try {
+        error_log("sendFCMWithAdminSDK called with " . count($tokens) . " tokens");
+        
         // Read the service account JSON file
         $serviceAccount = json_decode(file_get_contents($adminSdkPath), true);
         if (!$serviceAccount || !isset($serviceAccount['project_id'])) {
@@ -59,17 +61,24 @@ function sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath) {
             return false;
         }
         
+        error_log("Service account loaded, project_id: " . $serviceAccount['project_id']);
+        
         // Generate access token using service account credentials
+        error_log("Generating access token...");
         $accessToken = generateAccessToken($serviceAccount);
         if (!$accessToken) {
             error_log("Failed to generate access token");
             return false;
         }
         
+        error_log("Access token generated successfully, length: " . strlen($accessToken));
+        
         $successCount = 0;
         $failureCount = 0;
         
         foreach ($tokens as $token) {
+            error_log("Processing token: " . substr($token, 0, 20) . "...");
+            
             // Prepare the FCM message payload for HTTP v1 API
             $fcmPayload = [
                 'message' => [
@@ -106,6 +115,8 @@ function sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath) {
             $projectId = $serviceAccount['project_id'];
             $fcmUrl = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
             
+            error_log("Sending FCM to URL: " . $fcmUrl);
+            
             // Send FCM message using cURL with Admin SDK
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $fcmUrl);
@@ -124,7 +135,13 @@ function sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath) {
             $curlError = curl_error($ch);
             curl_close($ch);
             
+            error_log("FCM response - HTTP Code: $httpCode, cURL Error: " . ($curlError ?: 'none'));
+            if ($response) {
+                error_log("FCM response body: " . substr($response, 0, 200));
+            }
+            
             if ($curlError) {
+                error_log("cURL error: $curlError");
                 $failureCount++;
                 continue;
             }
@@ -133,18 +150,27 @@ function sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath) {
                 $responseData = json_decode($response, true);
                 if (isset($responseData['name'])) {
                     $successCount++;
+                    error_log("FCM success for token, response name: " . $responseData['name']);
                 } else {
                     $failureCount++;
+                    error_log("FCM response missing 'name' field");
                 }
             } else {
                 $failureCount++;
+                error_log("FCM HTTP error $httpCode");
             }
         }
         
+        error_log("FCM processing complete - Success: $successCount, Failures: $failureCount");
         return $successCount > 0;
         
     } catch (Exception $e) {
+        error_log("Exception in sendFCMWithAdminSDK: " . $e->getMessage());
+        error_log("Exception trace: " . $e->getTraceAsString());
+        return false;
+    } catch (Error $e) {
         error_log("Error in sendFCMWithAdminSDK: " . $e->getMessage());
+        error_log("Error trace: " . $e->getTraceAsString());
         return false;
     }
 }
