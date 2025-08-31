@@ -1,0 +1,42 @@
+<?php
+// Health check endpoint for Railway
+header('Content-Type: application/json');
+
+$healthStatus = [
+    'status' => 'healthy',
+    'timestamp' => date('Y-m-d H:i:s'),
+    'environment' => $_ENV['RAILWAY_ENVIRONMENT'] ?? 'unknown',
+    'service' => $_ENV['RAILWAY_SERVICE_NAME'] ?? 'unknown',
+    'port' => $_ENV['PORT'] ?? 'unknown'
+];
+
+// Check FCM environment variables
+$fcmStatus = [
+    'FIREBASE_PROJECT_ID' => $_ENV['FIREBASE_PROJECT_ID'] ?? 'not_set',
+    'FIREBASE_CLIENT_EMAIL' => $_ENV['FIREBASE_CLIENT_EMAIL'] ?? 'not_set',
+    'FIREBASE_PRIVATE_KEY_ID' => $_ENV['FIREBASE_PRIVATE_KEY_ID'] ?? 'not_set',
+    'FIREBASE_CLIENT_ID' => $_ENV['FIREBASE_CLIENT_ID'] ?? 'not_set',
+    'FIREBASE_PRIVATE_KEY' => isset($_ENV['FIREBASE_PRIVATE_KEY']) ? 'set(' . strlen($_ENV['FIREBASE_PRIVATE_KEY']) . ' chars)' : 'not_set'
+];
+
+$healthStatus['fcm_environment'] = $fcmStatus;
+
+// Check if all required FCM variables are set
+$requiredVars = ['FIREBASE_PROJECT_ID', 'FIREBASE_CLIENT_EMAIL', 'FIREBASE_PRIVATE_KEY_ID', 'FIREBASE_CLIENT_ID', 'FIREBASE_PRIVATE_KEY'];
+$missingVars = [];
+foreach ($requiredVars as $var) {
+    if (!isset($_ENV[$var]) || empty($_ENV[$var])) {
+        $missingVars[] = $var;
+    }
+}
+
+if (!empty($missingVars)) {
+    $healthStatus['status'] = 'degraded';
+    $healthStatus['fcm_issues'] = [
+        'missing_variables' => $missingVars,
+        'message' => 'FCM environment variables are missing or empty'
+    ];
+}
+
+echo json_encode($healthStatus, JSON_PRETTY_PRINT);
+?>

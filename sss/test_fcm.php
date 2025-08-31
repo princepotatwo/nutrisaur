@@ -122,10 +122,20 @@ function sendFCMNotification($tokens, $notificationData) {
                 return false;
             }
         } else {
-            error_log("Firebase credentials not found in any location");
-            error_log("Current directory: " . __DIR__);
-            error_log("Tried paths: " . implode(', ', $allPaths));
-            error_log("Environment variables checked: FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY_ID, FIREBASE_PRIVATE_KEY, FIREBASE_CLIENT_EMAIL, FIREBASE_CLIENT_ID");
+            $errorDetails = [
+                'error_type' => 'firebase_credentials_not_found',
+                'current_directory' => __DIR__,
+                'tried_paths' => $allPaths,
+                'environment_variables_checked' => ['FIREBASE_PROJECT_ID', 'FIREBASE_PRIVATE_KEY_ID', 'FIREBASE_PRIVATE_KEY', 'FIREBASE_CLIENT_EMAIL', 'FIREBASE_CLIENT_ID'],
+                'env_firebase_project_id' => $_ENV['FIREBASE_PROJECT_ID'] ?? 'not_set',
+                'env_firebase_client_email' => $_ENV['FIREBASE_CLIENT_EMAIL'] ?? 'not_set',
+                'env_firebase_private_key_id' => $_ENV['FIREBASE_PRIVATE_KEY_ID'] ?? 'not_set',
+                'env_firebase_client_id' => $_ENV['FIREBASE_CLIENT_ID'] ?? 'not_set',
+                'env_firebase_private_key_length' => isset($_ENV['FIREBASE_PRIVATE_KEY']) ? strlen($_ENV['FIREBASE_PRIVATE_KEY']) : 'not_set',
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
+            
+            error_log("Firebase credentials not found in any location. Error details: " . json_encode($errorDetails));
             return false;
         }
     } catch (Exception $e) {
@@ -143,7 +153,15 @@ function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials
         // Use the provided Firebase credentials
         $serviceAccount = $firebaseCredentials;
         if (!$serviceAccount || !isset($serviceAccount['project_id'])) {
-            error_log("Invalid Firebase credentials");
+            $errorDetails = [
+                'error_type' => 'invalid_firebase_credentials',
+                'credentials_provided' => $firebaseCredentials ? 'yes' : 'no',
+                'credentials_keys' => $firebaseCredentials ? array_keys($firebaseCredentials) : 'none',
+                'project_id_exists' => isset($serviceAccount['project_id']) ? 'yes' : 'no',
+                'project_id_value' => $serviceAccount['project_id'] ?? 'not_set',
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
+            error_log("Invalid Firebase credentials. Error details: " . json_encode($errorDetails));
             return false;
         }
         
@@ -151,7 +169,16 @@ function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials
         error_log("Attempting to generate Firebase access token");
         $accessToken = generateAccessToken($serviceAccount);
         if (!$accessToken) {
-            error_log("Failed to generate access token");
+            $errorDetails = [
+                'error_type' => 'access_token_generation_failed',
+                'service_account_keys' => array_keys($serviceAccount),
+                'project_id' => $serviceAccount['project_id'],
+                'client_email' => $serviceAccount['client_email'] ?? 'not_set',
+                'private_key_exists' => isset($serviceAccount['private_key']) ? 'yes' : 'no',
+                'private_key_length' => isset($serviceAccount['private_key']) ? strlen($serviceAccount['private_key']) : 'not_set',
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
+            error_log("Failed to generate access token. Error details: " . json_encode($errorDetails));
             return false;
         }
         error_log("Firebase access token generated successfully");
@@ -368,9 +395,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             // Get the last few error log entries to help debug
             $errorLogs = [];
             if (function_exists('error_get_last')) {
-                $errorLogs[] = error_get_last();
+                $lastError = error_get_last();
+                if ($lastError !== null) {
+                    $errorLogs[] = $lastError;
+                }
             }
-            throw new Exception('Failed to send FCM notification - check error logs for details. Error logs: ' . json_encode($errorLogs));
+            
+            // Get more detailed error information
+            $errorDetails = [
+                'sendFCMNotification_returned' => false,
+                'last_error' => $errorLogs,
+                'current_time' => date('Y-m-d H:i:s'),
+                'memory_usage' => memory_get_usage(true),
+                'peak_memory' => memory_get_peak_usage(true)
+            ];
+            
+            throw new Exception('Failed to send FCM notification - check error logs for details. Error details: ' . json_encode($errorDetails));
         }
         
     } catch (Exception $e) {
@@ -474,6 +514,105 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         exit;
     }
 }
+
+// Diagnostic action to help debug FCM issues
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'diagnose') {
+    try {
+        $diagnosticInfo = [];
+        
+        // Check environment variables
+        $diagnosticInfo['environment'] = [
+            'FIREBASE_PROJECT_ID' => $_ENV['FIREBASE_PROJECT_ID'] ?? 'not_set',
+            'FIREBASE_CLIENT_EMAIL' => $_ENV['FIREBASE_CLIENT_EMAIL'] ?? 'not_set',
+            'FIREBASE_PRIVATE_KEY_ID' => $_ENV['FIREBASE_PRIVATE_KEY_ID'] ?? 'not_set',
+            'FIREBASE_CLIENT_ID' => $_ENV['FIREBASE_CLIENT_ID'] ?? 'not_set',
+            'FIREBASE_PRIVATE_KEY_length' => isset($_ENV['FIREBASE_PRIVATE_KEY']) ? strlen($_ENV['FIREBASE_PRIVATE_KEY']) : 'not_set',
+            'FIREBASE_PRIVATE_KEY_starts_with' => isset($_ENV['FIREBASE_PRIVATE_KEY']) ? substr($_ENV['FIREBASE_PRIVATE_KEY'], 0, 50) : 'not_set',
+            'FIREBASE_PRIVATE_KEY_ends_with' => isset($_ENV['FIREBASE_PRIVATE_KEY']) ? substr($_ENV['FIREBASE_PRIVATE_KEY'], -50) : 'not_set'
+        ];
+        
+        // Check file system
+        $diagnosticInfo['file_system'] = [
+            'current_directory' => getcwd(),
+            'script_directory' => __DIR__,
+            'script_exists' => file_exists(__FILE__),
+            'config_exists' => file_exists(__DIR__ . '/../public/config.php')
+        ];
+        
+        // Check Firebase Admin SDK files
+        $firebaseFiles = [];
+        $searchDirs = [__DIR__, __DIR__ . '/../public/api', '/var/www/html/sss', '/var/www/html/public/api'];
+        foreach ($searchDirs as $dir) {
+            if (is_dir($dir)) {
+                $files = glob($dir . '/*firebase*admin*.json');
+                foreach ($files as $file) {
+                    $firebaseFiles[] = [
+                        'path' => $file,
+                        'exists' => file_exists($file),
+                        'readable' => is_readable($file),
+                        'size' => file_exists($file) ? filesize($file) : 'N/A'
+                    ];
+                }
+            }
+        }
+        $diagnosticInfo['firebase_files'] = $firebaseFiles;
+        
+        // Check database connection
+        $diagnosticInfo['database'] = [
+            'connected' => $conn ? true : false,
+            'connection_type' => $conn ? get_class($conn) : 'none'
+        ];
+        
+        // Check FCM tokens
+        if ($conn) {
+            try {
+                $stmt = $conn->prepare("SELECT COUNT(*) as count FROM fcm_tokens WHERE is_active = TRUE");
+                $stmt->execute();
+                $diagnosticInfo['fcm_tokens'] = [
+                    'active_count' => $stmt->fetchColumn(),
+                    'table_exists' => true
+                ];
+            } catch (Exception $e) {
+                $diagnosticInfo['fcm_tokens'] = [
+                    'error' => $e->getMessage(),
+                    'table_exists' => false
+                ];
+            }
+        }
+        
+        // Check PHP extensions
+        $diagnosticInfo['php_extensions'] = [
+            'curl' => extension_loaded('curl'),
+            'openssl' => extension_loaded('openssl'),
+            'json' => extension_loaded('json'),
+            'pdo' => extension_loaded('pdo'),
+            'pdo_mysql' => extension_loaded('pdo_mysql')
+        ];
+        
+        // Check PHP version and settings
+        $diagnosticInfo['php_info'] = [
+            'version' => PHP_VERSION,
+            'memory_limit' => ini_get('memory_limit'),
+            'max_execution_time' => ini_get('max_execution_time'),
+            'error_reporting' => ini_get('error_reporting')
+        ];
+        
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'diagnostic_info' => $diagnosticInfo,
+            'timestamp' => date('Y-m-d H:i:s')
+        ]);
+        exit;
+    } catch (Exception $e) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Error during diagnosis: ' . $e->getMessage()
+        ]);
+        exit;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -509,6 +648,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         }
         .test-section {
             background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .diagnostic-section {
+            background: #fff3cd;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
@@ -567,6 +712,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
             <div id="statusResult" class="result" style="display: none;"></div>
         </div>
         
+        <div class="diagnostic-section">
+            <h2>🔍 FCM Diagnostic</h2>
+            <p>Detailed diagnostic information for troubleshooting FCM issues</p>
+            <button class="btn" onclick="runDiagnostic()">Run Diagnostic</button>
+            <div id="diagnosticResult" class="result" style="display: none;"></div>
+        </div>
+        
         <div class="test-section">
             <h2>🚀 Test FCM Notification</h2>
             <p>Send a test notification to all registered devices</p>
@@ -603,6 +755,36 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Check Status';
+            }
+        }
+        
+        async function runDiagnostic() {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'Running...';
+            
+            try {
+                const response = await fetch('?action=diagnose');
+                const data = await response.json();
+                
+                const resultDiv = document.getElementById('diagnosticResult');
+                resultDiv.style.display = 'block';
+                
+                if (data.success) {
+                    resultDiv.className = 'result info';
+                    resultDiv.textContent = JSON.stringify(data.diagnostic_info, null, 2);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                const resultDiv = document.getElementById('diagnosticResult');
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Network error: ' + error.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Run Diagnostic';
             }
         }
         

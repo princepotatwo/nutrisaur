@@ -87,6 +87,12 @@ switch ($path) {
         include_once $sss_path . 'debug.php';
         break;
         
+    case 'fcm_diagnostic':
+    case 'fcm_diagnostic.php':
+        // Route to FCM diagnostic endpoint
+        include_once 'fcm_diagnostic.php';
+        break;
+        
     case 'logo.png':
         // Serve logo as static file
         $logoPath = __DIR__ . '/logo.png';
