@@ -7450,9 +7450,12 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         
         // 🚨 COMPLETELY NEW EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
         async function handleNewEventCreation(event) {
-            event.preventDefault(); // Prevent form submission
+            // Prevent form submission completely
+            event.preventDefault();
+            event.stopPropagation();
             
             console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
+            console.log('Form submission prevented:', event.defaultPrevented);
             
             // Get form data
             const formData = new FormData(event.target);
@@ -7505,15 +7508,14 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 const result = await response.json();
                 
                 if (result.success) {
-                    showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully! ${result.message}`);
-                    
                     // Reset form
                     event.target.reset();
                     
-                    // Refresh the events table
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 2000);
+                    // Show success message
+                    showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully! ${result.message}`);
+                    
+                    // Optionally refresh events table if needed (without page reload)
+                    // You can implement a function to refresh just the events table here
                     
                 } else {
                     showNotificationError(`Failed to create event: ${result.message}`);
@@ -7528,4 +7530,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             }
+            
+            // Ensure we don't continue with form submission
+            return false;
         }
