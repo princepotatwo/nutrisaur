@@ -99,7 +99,7 @@ try {
             up.whz_score,
             up.muac,
             up.barangay,
-            up.dietary_diversity_score,
+            up.dietary_diversity,
             up.swelling,
             up.weight_loss,
             up.feeding_behavior,
@@ -157,7 +157,7 @@ function generateIntelligentRecommendations($users) {
         if ($user['whz_score'] < -3 && $user['whz_score'] !== null) $samCount++; // Using WHZ < -3 as SAM indicator
         if ($user['age'] < 18 && $user['age'] > 0) $childrenCount++;
         if ($user['age'] > 65) $elderlyCount++;
-        if ($user['dietary_diversity_score'] < 5 && $user['dietary_diversity_score'] > 0) $lowDietaryDiversity++;
+        if ($user['dietary_diversity'] < 5 && $user['dietary_diversity'] > 0) $lowDietaryDiversity++;
         $totalRiskScore += $user['risk_score'] ?? 0;
     }
     
