@@ -282,23 +282,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  */
 function sendFCMNotification($fcmTokens, $notificationData) {
     try {
-        // Firebase Admin SDK configuration - Use your correct nutrisaur-ebf29 project
+        // Firebase Admin SDK configuration - Use the correct project that matches the FCM tokens
         $serviceAccountData = [
             "type" => "service_account",
             "project_id" => "nutrisaur-ebf29",
-            "private_key_id" => "152a242b3b3d1fd2a41fc3f22f188a517377b1f6",
-            "private_key" => "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCYjO00aaKgKo9K\nlCIShWR27+fiQubXdeGpEl9a1VbkB9mA537FXiDwHcTVi5odcVpt1P8neoeTTCAZ\nY9LyzEmPrvN6KhgvscLg7bNftdjWowGy6BCxLDKMxjo9rvz0twZJPeyhfcgIg3a4\nOUBawhI3wJ9AJal2x2dovn7r2dH3rQx17lG4Lp8x/0ccARVDXgKTBBp8Wz6qV6dM\nyINFMRV21za0a9D74v99iMRylTR+BbHmBNSFpBnsEHRncxMrOAmBDUxDKgFP9SQQ\nWIuoLZdUcl4myFutYgxPNOLPrK09SqFGkllXsTOaXpPoMjkUT05q+o6zlFSMfdhf\nr3Pc9v+BAgMBAAECggEABjctvgY00lZRls4Q0lTdikwNlGY57hr3OhKN0I9jNjDM\nr6ge/e8vI+FuoO3KdnslHlcAm2zuY7XFFAvBb1OcBq7v7DEVYbIaONxug86OunYT\nTmUOsw1UNPCptFQyKc1gQ/EyOEU99nzWxDxO7zO7lspyIqS2Mij/QWELnlP2bmMu\nRXb9sEzw2YbddUgpV5G1A0z9ZKKqoR5DgqD9Fyt8Im4Jxm/tqFKjY/mS5vWtQCTG\nnj1AkiLfcHQY6gAs7DiM/WxqKQL/sgI3HE7GcKYiqZ6CUu6S07TOaTknat7gSTqC\nWXVRDOZV6wv0dYZLaGZ3ZGH9arqFpjExy9G4diRnbQKBgQDFvQPpht3zWBQS2BB3\nv5E6tJoC0JKyB6+kuvlTYOj6w834tIOj946kQd51xOURvjMXELkuDsv+v593PFDK\nQzk+uZnBzaYHO22nS3jEMgrcoypKQsRM7NWf6l005f9ZywQZoElgKpw/yy9hj4fA\nHEHyIWbxQ9YepKpN+JNtbsFWRQKBgQDFf3zV46WljQJuLnQK9CHbyQjusrRRsfth\ntUH+6QtE0aZ/yyiFMb59Qake6E5BTS6j1/fmqSJNnlUy8Vzq17MhKVhOL+XXbAtS\noacGDHRVbZqg07QfylatJu1tuYWGP4HkACX6wt4VZkP553c2P3bc11VdqUWFPg2w\nB+hlQqAGDQKBgQCDznOeJXUrMSnoSbfoanx/GkWS3L78Bt2Qu8VYS7/g78YLIyCg\nmnKtkO6dqApdYmAh3tbhGaHnBIpia4Ua3eZ5pjQUmGU0auuz2T394bGV0vlsmMbK\n1A+t0gYhLbKhgw8PmeVvQdf3OhQyPv9pEizvHk7FQcenk3GmGa0EBBDB1QKBgQCq\nLu5KfSzrGDRE74CNQ8u9UWGCFrmtQBonGwLwfq54MdQwgMa8552G38K04Gc2fCS5\niMuUlp/5lHtEN5niv9YauD7guQNseyzSmnuLicXhK144QdUQI9JGyKmFiH0Xrrfl\n2X7gs3Sdqg7fVGZ0d4GcUW29FLTUWSGAU4AdaajtLQKBgCXK629zzUE/7op7Zl9p\nEp/s+xn5lhrpo8ZXho0D/ajfQkjrDbMmpWdUMIwtAK75WMn16TRA/+RIynAV5Z5B\nte0wbxwkXAXtAcp2qH+1fe/9w7hTQLP1808HP/VnG9fLnWECIxRxrsP33am3hUHo\n2q8Bsx0vioPXrYNHzr3K1hRH\n-----END PRIVATE KEY-----\n",
-            "client_email" => "firebase-adminsdk-fbsvc@nutrisaur-ebf29.iam.gserviceaccount.com",
+            "private_key_id" => "188c79990a07fcaa6a2cd859c75a9ec56617f451",
+            "private_key" => "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCODaJoauDtMbr/\n2WOnjFrQ3jzX2DYDTB2n/JX38emkYP+wNsqLnpWHtiKWWj3Lf83zpuDB/Z7egGZA\nsHk32Q7m27PFg0yQ4Ara7xxk0LPTC5MRtG9wc9wNlYtnhbx0yebqp9kTI+VIGtr0\nICqaBGSaqqSZ30GakdiDZLOjnXiovhEh/Uzke7DWRf5AIoOuC18CXwH25Tyhdb8N\nHlFOBBKLlDbTDIfgG7WnBkeXhUOjMiJCUaTxOI88GN8btby8AA7IXjzF9lpDELiz\n8RYkiHb+J+a5I0CPOEOK1c3B5z+UTVnUsTe5axCrSM7W4HXcZ7hMD9FwAs2EN7Vg\nQhH6bqDlAgMBAAECggEAM2XChBZbwObT+tuMv6Q8fcNTb2OXE3VYa54sIvTALU49\nZWRFv+PGxb5EYHNRVY6uFYElZHtgHrCFjtVrXqYmSqhmsMnTi73Mn6+RbfbHgc53\nzZmkEqORFMctk+zjJbyh1PibRd4giQjSfS8gSu7Y+c9RVC1f3s3zcYMfrkz9ScxF\nb+rv+aAHTDlEvBZKkOb7i5jIdWKPocWe7UrGEOJrNDdzj5Q8bUUs1EVKejPjJ02g\nO1UXRPVk0OLU1SKbykRNmdnfIJZzGoWak5hKBKomBETHyQgnjisj92209rCPbK8r\namw8Szs42vbe5NnwWS7KBoG7BMwcK25WTNvdV6nt1wKBgQDFltEdMwPvEo/Fo/+r\neMRoiw4sa56pizdY2iiIZfjkBrTjs3gVXMBT4/f9XNG+bkjyBzGO0IW6DwT2V5wx\nYFluT6zjDYGJRubBXG58EaunvrExICDbaQBl4shBKGvzHtRm7aLX1G685OwBuxOg\nTw/UnqApu42QTzy0Ia6AhSCDpwKBgQC4C/b6ujfJO4vvBURoXAopCJ2Q6uEf2i1x\nJElCzWIVRssxTJcvHRihEfqH1jKJaN/YFmeZFoboAFOoP+BhYQ8FJzn8G+GVe7M9\n18oj6XrNM/UWMQSBOecRMh77AuNYBMyOrU0lQwTCCwntYt85FwHHPNYprBQxuvmS\nZ77EJSW4kwKBgQCc5MfBXsvl3yBIeJPATZHvzVMA1KfUypW1OO1seUQrlGO4Vr6o\nf9C8DE3TYguuIZZMkIe6djtpZRm0nhaJYo9At4V5eTT9k04SBdo5LDLYbOP4NSHB\n91t4i54llvo4v6c638EpjiYsWb5JFYpdBcp1M0vMN4AOMczq37/Xj14lCwKBgGq0\n3Sw/PUrZ0GbzadcLzgQ+b4Ru+blK+N/JRwSJKZ3mXraljl4Ng5MXZmbNRJ2whV+2\nlbgHfI4Uamx5JHGxIVE+jfrie2b8wk5Px24M11sUDbwhDViTJqosohOsd/03QxZR\n2hGJir+qQMY2de+WrDxExHKCx26R1lMQ/WShmP4rAoGBAJmOvxXO2ja8LJsggB0U\nO9iqmBxkfEAS7kaat1SyPv3TwjQwIuFXKF2GQnPCvvTPNgt7aFDTxOgyjI9LtMn+\nln5ALaJY+oQGqroLCUk8GYz7NO6x9ybqJXx139KfgH/dMjggMK8aIGHENp2FhLM0\nLxwPQho1qyobPGDKFSH4tWvi\n-----END PRIVATE KEY-----\n",
+            "client_email" => "firebase-adminsdk-fbsvc@nutrisaur-notifications.iam.gserviceaccount.com",
             "client_id" => "115564910409083368011",
             "auth_uri" => "https://accounts.google.com/o/oauth2/auth",
             "token_uri" => "https://oauth2.googleapis.com/token",
             "auth_provider_x509_cert_url" => "https://www.googleapis.com/oauth2/v1/certs",
-            "client_x509_cert_url" => "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40nutrisaur-ebf29.iam.gserviceaccount.com",
+            "client_x509_cert_url" => "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40nutrisaur-notifications.iam.gserviceaccount.com",
             "universe_domain" => "googleapis.com"
         ];
         
-        // Skip Firebase Admin SDK due to SenderId mismatch, use legacy FCM API directly
-        error_log("FCM Debug: Using legacy FCM API to avoid SenderId mismatch issues");
+        // Try Firebase Admin SDK first with correct project configuration
+        error_log("FCM Debug: Attempting Firebase Admin SDK with correct project");
+        $result = sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountData);
+        if ($result) {
+            return $result;
+        }
+        
+        // Fallback to legacy FCM API if Admin SDK fails
+        error_log("FCM Debug: Firebase Admin SDK failed, falling back to legacy API");
         return sendFCMViaCurl($fcmTokens, $notificationData);
         
 
