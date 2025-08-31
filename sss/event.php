@@ -1,5 +1,6 @@
 <?php
 // Enable error reporting for debugging
+// TRIGGERING NEW DEPLOYMENT - Testing event.php notifications
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
