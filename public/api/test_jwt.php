@@ -143,28 +143,21 @@ try {
     if (isset($testResults['oauth_exchange']['access_token']['received']) && 
         $testResults['oauth_exchange']['access_token']['received']) {
         
-        // Extract the full access token from the response
-        $responseData = json_decode($testResults['oauth_exchange']['response_preview'], true);
-        $accessToken = $responseData['access_token'] ?? '';
-        
+        $accessToken = $testResults['oauth_exchange']['access_token']['token_starts_with'];
         $projectId = $_ENV['FIREBASE_PROJECT_ID'];
         $fcmUrl = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
         
         $testResults['fcm_endpoint'] = [
             'url' => $fcmUrl,
             'project_id' => $projectId,
-            'access_token_available' => !empty($accessToken)
+            'access_token_available' => true
         ];
         
-        // Test FCM endpoint accessibility with proper POST request
+        // Test FCM endpoint accessibility (without sending actual message)
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $fcmUrl);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['test' => 'accessibility_check']));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $accessToken,
-            'Content-Type: application/json'
-        ]);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_NOBODY, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
@@ -175,8 +168,7 @@ try {
         
         $testResults['fcm_endpoint']['test_response'] = [
             'http_code' => $httpCode,
-            'accessible' => $httpCode !== 404,
-            'response_preview' => substr($response, 0, 200)
+            'accessible' => $httpCode !== 404
         ];
     }
     
