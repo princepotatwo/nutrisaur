@@ -8,8 +8,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
+// Check if user is logged in (skip for AJAX requests)
+if (!isset($_SESSION['user_id']) && !isset($_POST['action'])) {
     // For development/testing, set default values
     $_SESSION['user_id'] = 1;
     $_SESSION['username'] = 'admin';
