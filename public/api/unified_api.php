@@ -1910,19 +1910,19 @@ function handleSaveScreening($pdo, $postData) {
         $screeningData = $postData['screening_data'] ?? [];
         $riskScore = $postData['risk_score'] ?? 0;
         
-        // Extract individual fields from screening data
-        $gender = $screeningData['gender'] ?? null;
-        $barangay = $screeningData['barangay'] ?? null;
-        $income = $screeningData['income'] ?? null;
-        $weight = $screeningData['weight'] ?? null;
-        $height = $screeningData['height'] ?? null;
-        $bmi = $screeningData['bmi'] ?? null;
-        $muac = $screeningData['muac'] ?? null;
-        $name = $screeningData['name'] ?? null;
-        $birthday = $screeningData['birthday'] ?? null;
-        $allergies = $screeningData['allergies'] ?? null;
-        $dietPrefs = $screeningData['diet_prefs'] ?? null;
-        $avoidFoods = $screeningData['avoid_foods'] ?? null;
+        // Extract individual fields from screening data OR root level (Android app format)
+        $gender = $screeningData['gender'] ?? $postData['gender'] ?? null;
+        $barangay = $screeningData['barangay'] ?? $postData['barangay'] ?? null;
+        $income = $screeningData['income'] ?? $postData['income'] ?? null;
+        $weight = $screeningData['weight'] ?? $postData['weight'] ?? null;
+        $height = $screeningData['height'] ?? $postData['height'] ?? null;
+        $bmi = $screeningData['bmi'] ?? $postData['bmi'] ?? null;
+        $muac = $screeningData['muac'] ?? $postData['muac'] ?? null;
+        $name = $screeningData['name'] ?? $postData['name'] ?? null;
+        $birthday = $screeningData['birthday'] ?? $postData['birthday'] ?? null;
+        $allergies = $screeningData['allergies'] ?? $postData['allergies'] ?? null;
+        $dietPrefs = $screeningData['diet_prefs'] ?? $postData['diet_prefs'] ?? null;
+        $avoidFoods = $screeningData['avoid_foods'] ?? $postData['avoid_foods'] ?? null;
         
         if (!$userEmail) {
             echo json_encode(['error' => 'User email is required']);
