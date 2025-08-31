@@ -2049,8 +2049,13 @@ function handleGetScreeningData($pdo, $postData) {
         
         if ($screeningData) {
             // Parse the screening answers JSON
-            $screeningAnswersRaw = $screeningData['screening_answers'];
-            $screeningAnswers = json_decode($screeningAnswersRaw, true) ?: [];
+            $screeningAnswersRaw = $screeningData['screening_answers'] ?? '{}';
+            $screeningAnswers = json_decode($screeningAnswersRaw, true);
+            
+            // Ensure screeningAnswers is always an array
+            if (!is_array($screeningAnswers)) {
+                $screeningAnswers = [];
+            }
             
             // Create a comprehensive user data object
             $userData = array_merge($screeningAnswers, [
