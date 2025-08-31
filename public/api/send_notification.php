@@ -297,14 +297,9 @@ function sendFCMNotification($fcmTokens, $notificationData) {
             "universe_domain" => "googleapis.com"
         ];
         
-        // Try Firebase Admin SDK first, fallback to legacy API
-        error_log("FCM Debug: Trying Firebase Admin SDK first");
-        $result = sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountData);
-        if (!$result) {
-            error_log("FCM Debug: Firebase Admin SDK failed, trying legacy FCM API");
-            return sendFCMViaCurl($fcmTokens, $notificationData);
-        }
-        return $result;
+        // Skip Firebase Admin SDK due to SenderId mismatch, use legacy FCM API directly
+        error_log("FCM Debug: Using legacy FCM API to avoid SenderId mismatch issues");
+        return sendFCMViaCurl($fcmTokens, $notificationData);
         
 
         
