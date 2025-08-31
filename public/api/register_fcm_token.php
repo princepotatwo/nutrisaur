@@ -68,8 +68,8 @@ function logFCMOperation($message, $data = null) {
 
 // Function to validate FCM token format
 function isValidFCMToken($token) {
-    // FCM tokens are typically 140+ characters long and contain alphanumeric characters
-    return strlen($token) >= 140 && preg_match('/^[a-zA-Z0-9:_-]+$/', $token);
+    // FCM tokens are typically 140+ characters long and can contain alphanumeric characters, dots, and other valid characters
+    return strlen($token) >= 140 && preg_match('/^[a-zA-Z0-9:_\-\.]+$/', $token);
 }
 
 // Function to clean and validate barangay name
