@@ -185,10 +185,10 @@ function sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountDa
         $privateKey = $serviceAccount['private_key'];
         $clientEmail = $serviceAccount['client_email'];
         
-        // Generate JWT token for Firebase authentication
-        $jwtToken = generateFirebaseJWT($projectId, $privateKey, $clientEmail);
-        if (!$jwtToken) {
-            throw new Exception('Failed to generate JWT token');
+        // Get OAuth2 access token for Firebase authentication
+        $accessToken = getFirebaseAccessToken($serviceAccount);
+        if (!$accessToken) {
+            throw new Exception('Failed to get OAuth2 access token');
         }
         
         $url = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
@@ -221,7 +221,7 @@ function sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountDa
             ];
             
             $headers = [
-                'Authorization: Bearer ' . $jwtToken,
+                'Authorization: Bearer ' . $accessToken,
                 'Content-Type: application/json'
             ];
             
@@ -391,6 +391,65 @@ function generateFirebaseJWT($projectId, $privateKey, $clientEmail) {
     } catch (Exception $e) {
         error_log("JWT Error: JWT Generation Error: " . $e->getMessage());
         return false;
+    }
+}
+
+/**
+ * Get Firebase OAuth2 access token using JWT
+ */
+function getFirebaseAccessToken($serviceAccountData) {
+    try {
+        error_log("OAuth Debug: Starting OAuth2 token request");
+        
+        $jwtToken = generateFirebaseJWT(
+            $serviceAccountData['project_id'],
+            $serviceAccountData['private_key'],
+            $serviceAccountData['client_email']
+        );
+        
+        if (!$jwtToken) {
+            throw new Exception("Failed to generate JWT token");
+        }
+        
+        $tokenUrl = 'https://oauth2.googleapis.com/token';
+        $postData = [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $jwtToken
+        ];
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $tokenUrl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/x-www-form-urlencoded'
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+        
+        error_log("OAuth Debug: HTTP Code: " . $httpCode);
+        error_log("OAuth Debug: Response: " . $response);
+        
+        if ($httpCode !== 200) {
+            throw new Exception("OAuth2 token request failed: HTTP $httpCode - $response");
+        }
+        
+        $tokenData = json_decode($response, true);
+        if (!isset($tokenData['access_token'])) {
+            throw new Exception("No access token in OAuth2 response: " . $response);
+        }
+        
+        error_log("OAuth Debug: Access token obtained successfully");
+        return $tokenData['access_token'];
+        
+    } catch (Exception $e) {
+        error_log("OAuth Debug Error: " . $e->getMessage());
+        throw $e;
     }
 }
 
