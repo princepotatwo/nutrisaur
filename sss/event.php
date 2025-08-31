@@ -3989,8 +3989,8 @@ header:hover {
             
 
             
-            <!-- 🚨 COMPLETELY NEW CREATE EVENT FORM - NO REDIRECTS, NO DASHBOARD -->
-            <form class="event-form" id="newCreateEventForm">
+                <!-- 🚨 COMPLETELY NEW CREATE EVENT FORM - NO REDIRECTS, NO DASHBOARD - DEPLOYMENT TRIGGER -->
+    <form class="event-form" id="newCreateEventForm">
                 <div class="form-group">
                     <label for="eventTitle">Event Title</label>
                     <input type="text" id="eventTitle" name="eventTitle" placeholder="e.g., Nutrition Seminar in Barangay Hall" value="<?php echo htmlspecialchars($recommended_program); ?>" required>
