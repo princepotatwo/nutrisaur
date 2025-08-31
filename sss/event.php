@@ -9,17 +9,13 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in - TEMPORARILY DISABLED FOR TESTING
-if (!isset($_SESSION['user_id'])) {
-    // For development/testing, set default values
-    $_SESSION['user_id'] = 1;
-    $_SESSION['username'] = 'kevinpingol';
-    $_SESSION['email'] = 'kevinpingol@example.com';
-    
-    // TEMPORARILY DISABLED FOR TESTING:
-    // header("Location: home.php");
-    // exit;
-}
+// AUTHENTICATION COMPLETELY DISABLED FOR TESTING
+// Set test user session directly
+$_SESSION['user_id'] = 1;
+$_SESSION['username'] = 'kevinpingol';
+$_SESSION['email'] = 'kevinpingol@example.com';
+
+// Skip all authentication checks for testing
 
 // Get user info from session
 $userId = $_SESSION['user_id'];
@@ -132,9 +128,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['send_test_notification
             ]);
             exit;
         } else {
-            $redirectUrl = "event.php?test=" . ($result ? "1" : "0");
-            header("Location: " . $redirectUrl);
-            exit;
+            // TEMPORARILY DISABLED REDIRECT FOR TESTING
+            // $redirectUrl = "event.php?test=" . ($result ? "1" : "0");
+            // header("Location: " . $redirectUrl);
+            // exit;
         }
         
     } catch (Exception $e) {
@@ -146,9 +143,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['send_test_notification
             echo json_encode(['success' => false, 'message' => $errorMessage]);
             exit;
         } else {
-            $redirectUrl = "event.php?test=0&error=" . urlencode($errorMessage);
-            header("Location: " . $redirectUrl);
-            exit;
+            // TEMPORARILY DISABLED REDIRECT FOR TESTING
+            // $redirectUrl = "event.php?test=0&error=" . urlencode($errorMessage);
+            // header("Location: " . $redirectUrl);
+            // exit;
         }
     }
 }
