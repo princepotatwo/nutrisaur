@@ -147,6 +147,10 @@ function generateIntelligentRecommendations($users) {
     // Analyze community health patterns
     $highRiskCount = 0;
     $totalRiskScore = 0;
+    $samCount = 0;
+    $childrenCount = 0;
+    $elderlyCount = 0;
+    $lowDietaryDiversity = 0;
     
     foreach ($users as $user) {
         if ($user['risk_score'] >= 50) $highRiskCount++;
