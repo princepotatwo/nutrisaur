@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "43537903747",
-    "project_id": "nutrisaur-ebf29",
-    "storage_bucket": "nutrisaur-ebf29.firebasestorage.app"
+    "project_number": "996949018910",
+    "project_id": "nutrisaur-notifications",
+    "storage_bucket": "nutrisaur-notifications.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:43537903747:android:a4efa056a2399439846bb6",
+        "mobilesdk_app_id": "1:996949018910:android:3877e31f8d27bd7181210f",
         "android_client_info": {
           "package_name": "com.example.nutrisaur11"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCgztoBeLDMC_z3tD1SZvuXq6PP2t_o3xA"
+          "current_key": "AIzaSyBGArwSy8j6_pQwR4ozFudKFcM5jHHXwTA"
         }
       ],
       "services": {
