@@ -181,7 +181,7 @@ public class SignUpActivity extends AppCompatActivity {
             profileValues.put(UserPreferencesDbHelper.COL_USER_BMI, 0.0); // Will be calculated
             profileValues.put(UserPreferencesDbHelper.COL_USER_GENDER, "Not specified");
             profileValues.put(UserPreferencesDbHelper.COL_USER_GOAL, "Healthy Nutrition");
-            profileValues.put(UserPreferencesDbHelper.COL_USER_BARANGAY, "Not specified"); // Will be set during screening
+            profileValues.put(UserPreferencesDbHelper.COL_BARANGAY, "Not specified"); // Will be set during screening
             
             long profileResult = db.insertWithOnConflict(
                 UserPreferencesDbHelper.TABLE_NAME,
