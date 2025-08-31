@@ -1979,7 +1979,7 @@ function handleGetScreeningData($pdo, $postData) {
                 allergies,
                 diet_prefs,
                 avoid_foods
-            FROM user_preferences 
+            FROM screening_responses 
             WHERE user_email = ?
         ");
         $stmt->execute([$userEmail]);
