@@ -7449,7 +7449,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         }
         
         // 🚨 COMPLETELY NEW EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
-        async function handleNewEventCreation() {
+        window.handleNewEventCreation = async function() {
             console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
             
             // Get form data from the form element
