@@ -4698,6 +4698,89 @@ header:hover {
     </div>
 
     <script>
+        // 🚨 COMPLETELY NEW EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
+        // Define this function early so it's available when the button loads
+        window.handleNewEventCreation = async function() {
+            console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
+            
+            // Get form data from the form element
+            const form = document.getElementById('newCreateEventForm');
+            if (!form) {
+                console.error('Form not found!');
+                return;
+            }
+            
+            const formData = new FormData(form);
+            const eventData = {
+                title: formData.get('eventTitle'),
+                type: formData.get('eventType'),
+                description: formData.get('eventDescription'),
+                date_time: formData.get('eventDate'),
+                location: formData.get('eventLocation'),
+                organizer: formData.get('eventOrganizer'),
+                notificationType: formData.get('notificationType'),
+                recipientGroup: formData.get('recipientGroup')
+            };
+            
+            console.log('Event data:', eventData);
+            
+            // Validate required fields
+            if (!eventData.title || !eventData.type || !eventData.description || !eventData.date_time || !eventData.organizer) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
+                submitBtn.disabled = true;
+                
+                // Send event creation request via AJAX
+                const response = await fetch('event.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        'action': 'create_new_event',
+                        'title': eventData.title,
+                        'type': eventData.type,
+                        'description': eventData.description,
+                        'date_time': eventData.date_time,
+                        'location': eventData.location,
+                        'organizer': eventData.organizer,
+                        'notificationType': eventData.notificationType,
+                        'recipientGroup': eventData.recipientGroup
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Reset form
+                    form.reset();
+                    
+                    // Show success message
+                    alert(`🎉 Event "${eventData.title}" created successfully! ${result.message}`);
+                    
+                } else {
+                    alert(`Failed to create event: ${result.message}`);
+                }
+                
+            } catch (error) {
+                console.error('Error creating event:', error);
+                alert('Error creating event. Please try again.');
+            } finally {
+                // Restore button state
+                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
         // NEW SIMPLE THEME TOGGLE - Optimized to prevent flickering!
         function newToggleTheme() {
             console.log('=== NEW THEME TOGGLE FUNCTION CALLED ===');
