@@ -981,7 +981,13 @@ public class EditProfileDialog extends Dialog {
     private void applyScreeningDataShading(String gender, String swelling, String weightLoss, String feeding, String physicalSigns, String dietaryDiversity, String barangay, String income, 
                                           boolean hasRecentIllness, boolean hasEatingDifficulty, boolean hasFoodInsecurity, boolean hasMicronutrientDeficiency, boolean hasFunctionalDecline,
                                           Boolean physicalThin, Boolean physicalShorter, Boolean physicalWeak, Boolean physicalNone) {
-        Log.d("EditProfileDialog", "applyScreeningDataShading called with - gender: " + gender + ", swelling: " + swelling + ", weight_loss: " + weightLoss + ", feeding: " + feeding + ", physical_signs: " + physicalSigns + ", dietary_diversity: " + dietaryDiversity + ", barangay: " + barangay + ", income: " + income);
+        Log.d("EditProfileDialog", "applyScreeningDataShading called with - gender: '" + gender + "', swelling: '" + swelling + "', weight_loss: '" + weightLoss + "', feeding: '" + feeding + "', physical_signs: '" + physicalSigns + "', dietary_diversity: '" + dietaryDiversity + "', barangay: '" + barangay + "', income: '" + income + "'");
+        
+        // Debug: Log exact values for comparison
+        Log.d("EditProfileDialog", "DEBUG VALUES - gender: '" + gender + "' (length: " + (gender != null ? gender.length() : "null") + ")");
+        Log.d("EditProfileDialog", "DEBUG VALUES - swelling: '" + swelling + "' (length: " + (swelling != null ? swelling.length() : "null") + ")");
+        Log.d("EditProfileDialog", "DEBUG VALUES - weightLoss: '" + weightLoss + "' (length: " + (weightLoss != null ? weightLoss.length() : "null") + ")");
+        Log.d("EditProfileDialog", "DEBUG VALUES - feeding: '" + feeding + "' (length: " + (feeding != null ? feeding.length() : "null") + ")");
         
         // Reset all state variables first
         genderBoySelected = false;
@@ -1009,6 +1015,7 @@ public class EditProfileDialog extends Dialog {
         this.isNone = null;
         
         // Apply gender shading
+        Log.d("EditProfileDialog", "DEBUG: Comparing gender '" + gender + "' with 'boy' and 'girl'");
         if ("boy".equals(gender)) {
             genderBoySelected = true;
             selectedGender = "boy";
@@ -1027,10 +1034,11 @@ public class EditProfileDialog extends Dialog {
             genderGirlBtn.setVisibility(View.VISIBLE);
             setButtonSizeAndShape(genderBoyBtn, false);
             setButtonSizeAndShape(genderGirlBtn, false);
-            Log.d("EditProfileDialog", "No gender shading applied");
+            Log.d("EditProfileDialog", "No gender shading applied - gender value: '" + gender + "'");
         }
         
         // Apply swelling shading
+        Log.d("EditProfileDialog", "DEBUG: Comparing swelling '" + swelling + "' with 'yes' and 'no'");
         if ("yes".equals(swelling)) {
             swellingYesSelected = true;
             updateButtonStates(swellingYesBtn, swellingNoBtn);
@@ -1046,7 +1054,7 @@ public class EditProfileDialog extends Dialog {
             swellingNoBtn.setVisibility(View.VISIBLE);
             setButtonSizeAndShape(swellingYesBtn, false);
             setButtonSizeAndShape(swellingNoBtn, false);
-            Log.d("EditProfileDialog", "No swelling shading applied");
+            Log.d("EditProfileDialog", "No swelling shading applied - swelling value: '" + swelling + "'");
         }
         
         // Apply weight loss shading - Updated to match screening form values
