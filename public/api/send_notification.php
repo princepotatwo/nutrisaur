@@ -76,8 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$targetUser]);
         $fcmToken = $stmt->fetchColumn();
         
+        // TEMPORARY: Use real FCM token for testing if no token found in database
         if (!$fcmToken) {
-            throw new Exception('No active FCM token found for user: ' . $targetUser);
+            // Use the real FCM token you provided for testing
+            $fcmToken = 'dvMeL_TxQzKV_ScrM_I0L5:APA91bFkZfYXi3EYo7NLMP5isEDt5MRSRrVtGh2FojBW8zamrZT3BYRUfO3kTdiyfWtLmcZleotA9PkKnniji02l7OcrM5vdHCf95OHEsLTDsGwpVt_6q3g';
+            error_log("Using test FCM token for user: " . $targetUser);
         }
         
         // Send FCM notification
