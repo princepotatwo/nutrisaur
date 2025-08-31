@@ -142,51 +142,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  */
 function sendFCMNotification($fcmTokens, $notificationData) {
     try {
-        // TEMPORARILY DISABLED: Enhanced Firebase Admin SDK method
-        // Use basic FCM method for immediate testing
-        error_log("FCM Debug: Enhanced method temporarily disabled, using basic FCM method");
-        return sendFCMViaCurl($fcmTokens, $notificationData);
-        
-        /*
-        // Firebase Admin SDK configuration - Multiple path fallbacks for Railway
-        $possiblePaths = [
-            __DIR__ . '/../../sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json',
-            __DIR__ . '/../../../sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json',
-            __DIR__ . '/../../nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json',
-            dirname(__DIR__, 2) . '/sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json',
-            dirname(__DIR__, 3) . '/sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json'
+        // Firebase Admin SDK configuration - Use your correct nutrisaur-ebf29 project
+        $serviceAccountData = [
+            "type" => "service_account",
+            "project_id" => "nutrisaur-ebf29",
+            "private_key_id" => "152a242b3b3d1fd2a41fc3f22f188a517377b1f6",
+            "private_key" => "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCYjO00aaKgKo9K\nlCIShWR27+fiQubXdeGpEl9a1VbkB9mA537FXiDwHcTVi5odcVpt1P8neoeTTCAZ\nY9LyzEmPrvN6KhgvscLg7bNftdjWowGy6BCxLDKMxjo9rvz0twZJPeyhfcgIg3a4\nOUBawhI3wJ9AJal2x2dovn7r2dH3rQx17lG4Lp8x/0ccARVDXgKTBBp8Wz6qV6dM\nyINFMRV21za0a9D74v99iMRylTR+BbHmBNSFpBnsEHRncxMrOAmBDUxDKgFP9SQQ\nWIuoLZdUcl4myFutYgxPNOLPrK09SqFGkllXsTOaXpPoMjkUT05q+o6zlFSMfdhf\nr3Pc9v+BAgMBAAECggEABjctvgY00lZRls4Q0lTdikwNlGY57hr3OhKN0I9jNjDM\nr6ge/e8vI+FuoO3KdnslHlcAm2zuY7XFFAvBb1OcBq7v7DEVYbIaONxug86OunYT\nTmUOsw1UNPCptFQyKc1gQ/EyOEU99nzWxDxO7zO7lspyIqS2Mij/QWELnlP2bmMu\nRXb9sEzw2YbddUgpV5G1A0z9ZKKqoR5DgqD9Fyt8Im4Jxm/tqFKjY/mS5vWtQCTG\nnj1AkiLfcHQY6gAs7DiM/WxqKQL/sgI3HE7GcKYiqZ6CUu6S07TOaTknat7gSTqC\nWXVRDOZV6wv0dYZLaGZ3ZGH9arqFpjExy9G4diRnbQKBgQDFvQPpht3zWBQS2BB3\nv5E6tJoC0JKyB6+kuvlTYOj6w834tIOj946kQd51xOURvjMXELkuDsv+v593PFDK\nQzk+uZnBzaYHO22nS3jEMgrcoypKQsRM7NWf6l005f9ZywQZoElgKpw/yy9hj4fA\nHEHyIWbxQ9YepKpN+JNtbsFWRQKBgQDFf3zV46WljQJuLnQK9CHbyQjusrRRsfth\ntUH+6QtE0aZ/yyiFMb59Qake6E5BTS6j1/fmqSJNnlUy8Vzq17MhKVhOL+XXbAtS\noacGDHRVbZqg07QfylatJu1tuYWGP4HkACX6wt4VZkP553c2P3bc11VdqUWFPg2w\nB+hlQqAGDQKBgQCDznOeJXUrMSnoSbfoanx/GkWS3L78Bt2Qu8VYS7/g78YLIyCg\nmnKtkO6dqApdYmAh3tbhGaHnBIpia4Ua3eZ5pjQUmGU0auuz2T394bGV0vlsmMbK\n1A+t0gYhLbKhgw8PmeVvQdf3OhQyPv9pEizvHk7FQcenk3GmGa0EBBDB1QKBgQCq\nLu5KfSzrGDRE74CNQ8u9UWGCFrmtQBonGwLwfq54MdQwgMa8552G38K04Gc2fCS5\niMuUlp/5lHtEN5niv9YauD7guQNseyzSmnuLicXhK144QdUQI9JGyKmFiH0Xrrfl\n2X7gs3Sdqg7fVGZ0d4GcUW29FLTUWSGAU4AdaajtLQKBgCXK629zzUE/7op7Zl9p\nEp/s+xn5lhrpo8ZXho0D/ajfQkjrDbMmpWdUMIwtAK75WMn16TRA/+RIynAV5Z5B\nte0wbxwkXAXtAcp2qH+1fe/9w7hTQLP1808HP/VnG9fLnWECIxRxrsP33am3hUHo\n2q8Bsx0vioPXrYNHzr3K1hRH\n-----END PRIVATE KEY-----\n",
+            "client_email" => "firebase-adminsdk-fbsvc@nutrisaur-ebf29.iam.gserviceaccount.com",
+            "client_id" => "115564910409083368011",
+            "auth_uri" => "https://accounts.google.com/o/oauth2/auth",
+            "token_uri" => "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url" => "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url" => "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40nutrisaur-ebf29.iam.gserviceaccount.com",
+            "universe_domain" => "googleapis.com"
         ];
         
-        $serviceAccountPath = null;
-        foreach ($possiblePaths as $path) {
-            if (file_exists($path)) {
-                $serviceAccountPath = $path;
-                error_log("FCM Debug: Service account file found at: " . $path);
-                break;
-            }
-        }
+        // Use Firebase Admin SDK with embedded service account
+        error_log("FCM Debug: Using Firebase Admin SDK with embedded service account");
+        return sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountData);
         
-        if (!$serviceAccountPath) {
-            error_log("FCM Error: Service account file not found in any of these paths:");
-            foreach ($possiblePaths as $path) {
-                error_log("FCM Debug: Tried path: " . $path . " - Exists: " . (file_exists($path) ? 'YES' : 'NO'));
-            }
-            throw new Exception('Firebase service account file not found in any expected location');
-        }
-        
-        error_log("FCM Debug: Service account file found, size: " . filesize($serviceAccountPath));
-        
-        // Try Firebase Admin SDK first, then fallback to cURL
-        if (function_exists('curl_init')) {
-            error_log("FCM Debug: Using enhanced cURL method");
-            // Use enhanced cURL method with proper Firebase authentication
-            return sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountPath);
-        } else {
-            error_log("FCM Debug: Using basic cURL fallback");
-            // Basic cURL fallback
-            return sendFCMViaCurl($fcmTokens, $notificationData);
-        }
-        */
+
         
     } catch (Exception $e) {
         error_log("FCM Notification error: " . $e->getMessage());
@@ -197,12 +172,12 @@ function sendFCMNotification($fcmTokens, $notificationData) {
 /**
  * Send FCM notification via enhanced cURL with Firebase authentication
  */
-function sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountPath) {
+function sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountData) {
     try {
-        // Read service account details
-        $serviceAccount = json_decode(file_get_contents($serviceAccountPath), true);
+        // Use service account data directly
+        $serviceAccount = $serviceAccountData;
         if (!$serviceAccount) {
-            throw new Exception('Invalid service account file');
+            throw new Exception('Invalid service account data');
         }
         
         // Get project ID and private key
