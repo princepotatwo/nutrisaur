@@ -305,7 +305,8 @@ function sendFCMNotification($fcmTokens, $notificationData) {
         }
         
         // Fallback to legacy FCM API if Admin SDK fails
-        error_log("FCM Debug: Firebase Admin SDK failed, falling back to legacy API");
+        error_log("FCM Debug: Firebase Admin SDK failed due to SenderId mismatch, falling back to legacy API");
+        error_log("FCM Debug: Need correct FCM Server Key for project number 43537903747");
         return sendFCMViaCurl($fcmTokens, $notificationData);
         
 
