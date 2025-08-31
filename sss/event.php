@@ -4020,97 +4020,97 @@ header:hover {
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">BAGAC</div>
-                                    <div class="option-item" data-value="Bagumbayan (Pob.)">Bagumbayan (Pob.)</div>
-                                    <div class="option-item" data-value="Banawang">Banawang</div>
-                                    <div class="option-item" data-value="Binuangan">Binuangan</div>
-                                    <div class="option-item" data-value="Binukawan">Binukawan</div>
-                                    <div class="option-item" data-value="Ibaba">Ibaba</div>
-                                    <div class="option-item" data-value="Ibis">Ibis</div>
-                                    <div class="option-item" data-value="Pag-asa (Wawa-Sibacan)">Pag-asa (Wawa-Sibacan)</div>
-                                    <div class="option-item" data-value="Parang">Parang</div>
-                                    <div class="option-item" data-value="Paysawan">Paysawan</div>
-                                    <div class="option-item" data-value="Quinawan">Quinawan</div>
-                                    <div class="option-item" data-value="San Antonio">San Antonio</div>
-                                    <div class="option-item" data-value="Saysain">Saysain</div>
-                                    <div class="option-item" data-value="Tabing-Ilog (Pob.)">Tabing-Ilog (Pob.)</div>
-                                    <div class="option-item" data-value="Atilano L. Ricardo">Atilano L. Ricardo</div>
+                                    <div class="option-item" data-value="Bagumbayan (Pob.)" onclick="selectEventLocation('Bagumbayan (Pob.)', 'Bagumbayan (Pob.)')">Bagumbayan (Pob.)</div>
+                                    <div class="option-item" data-value="Banawang" onclick="selectEventLocation('Banawang', 'Banawang')">Banawang</div>
+                                    <div class="option-item" data-value="Binuangan" onclick="selectEventLocation('Binuangan', 'Binuangan')">Binuangan</div>
+                                    <div class="option-item" data-value="Binukawan" onclick="selectEventLocation('Binukawan', 'Binukawan')">Binukawan</div>
+                                    <div class="option-item" data-value="Ibaba" onclick="selectEventLocation('Ibaba', 'Ibaba')">Ibaba</div>
+                                    <div class="option-item" data-value="Ibis" onclick="selectEventLocation('Ibis', 'Ibis')">Ibis</div>
+                                    <div class="option-item" data-value="Pag-asa (Wawa-Sibacan)" onclick="selectEventLocation('Pag-asa (Wawa-Sibacan)', 'Pag-asa (Wawa-Sibacan)')">Pag-asa (Wawa-Sibacan)</div>
+                                    <div class="option-item" data-value="Parang" onclick="selectEventLocation('Parang', 'Parang')">Parang</div>
+                                    <div class="option-item" data-value="Paysawan" onclick="selectEventLocation('Paysawan', 'Paysawan')">Paysawan</div>
+                                    <div class="option-item" data-value="Quinawan" onclick="selectEventLocation('Quinawan', 'Quinawan')">Quinawan</div>
+                                    <div class="option-item" data-value="San Antonio" onclick="selectEventLocation('San Antonio', 'San Antonio')">San Antonio</div>
+                                    <div class="option-item" data-value="Saysain" onclick="selectEventLocation('Saysain', 'Saysain')">Saysain</div>
+                                    <div class="option-item" data-value="Tabing-Ilog (Pob.)" onclick="selectEventLocation('Tabing-Ilog (Pob.)', 'Tabing-Ilog (Pob.)')">Tabing-Ilog (Pob.)</div>
+                                    <div class="option-item" data-value="Atilano L. Ricardo" onclick="selectEventLocation('Atilano L. Ricardo', 'Atilano L. Ricardo')">Atilano L. Ricardo</div>
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">CITY OF BALANGA</div>
-                                    <div class="option-item" data-value="Bagumbayan">Bagumbayan</div>
-                                    <div class="option-item" data-value="Cabog-Cabog">Cabog-Cabog</div>
-                                    <div class="option-item" data-value="Munting Batangas (Cadre)">Munting Batangas (Cadre)</div>
-                                    <div class="option-item" data-value="Cataning">Cataning</div>
-                                    <div class="option-item" data-value="Central">Central</div>
-                                    <div class="option-item" data-value="Cupang Proper">Cupang Proper</div>
-                                    <div class="option-item" data-value="Cupang West">Cupang West</div>
-                                    <div class="option-item" data-value="Dangcol (Bernabe)">Dangcol (Bernabe)</div>
-                                    <div class="option-item" data-value="Ibayo">Ibayo</div>
-                                    <div class="option-item" data-value="Malabia">Malabia</div>
-                                    <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                    <div class="option-item" data-value="Pto. Rivas Ibaba">Pto. Rivas Ibaba</div>
-                                    <div class="option-item" data-value="Pto. Rivas Itaas">Pto. Rivas Itaas</div>
-                                    <div class="option-item" data-value="San Jose">San Jose</div>
-                                    <div class="option-item" data-value="Sibacan">Sibacan</div>
-                                    <div class="option-item" data-value="Camacho">Camacho</div>
-                                    <div class="option-item" data-value="Talisay">Talisay</div>
-                                    <div class="option-item" data-value="Tanato">Tanato</div>
-                                    <div class="option-item" data-value="Tenejero">Tenejero</div>
-                                    <div class="option-item" data-value="Tortugas">Tortugas</div>
-                                    <div class="option-item" data-value="Tuyo">Tuyo</div>
-                                    <div class="option-item" data-value="Bagong Silang">Bagong Silang</div>
-                                    <div class="option-item" data-value="Cupang North">Cupang North</div>
-                                    <div class="option-item" data-value="Doña Francisca">Doña Francisca</div>
-                                    <div class="option-item" data-value="Lote">Lote</div>
+                                    <div class="option-item" data-value="Bagumbayan" onclick="selectEventLocation('Bagumbayan', 'Bagumbayan')">Bagumbayan</div>
+                                    <div class="option-item" data-value="Cabog-Cabog" onclick="selectEventLocation('Cabog-Cabog', 'Cabog-Cabog')">Cabog-Cabog</div>
+                                    <div class="option-item" data-value="Munting Batangas (Cadre)" onclick="selectEventLocation('Munting Batangas (Cadre)', 'Munting Batangas (Cadre)')">Munting Batangas (Cadre)</div>
+                                    <div class="option-item" data-value="Cataning" onclick="selectEventLocation('Cataning', 'Cataning')">Cataning</div>
+                                    <div class="option-item" data-value="Central" onclick="selectEventLocation('Central', 'Central')">Central</div>
+                                    <div class="option-item" data-value="Cupang Proper" onclick="selectEventLocation('Cupang Proper', 'Cupang Proper')">Cupang Proper</div>
+                                    <div class="option-item" data-value="Cupang West" onclick="selectEventLocation('Cupang West', 'Cupang West')">Cupang West</div>
+                                    <div class="option-item" data-value="Dangcol (Bernabe)" onclick="selectEventLocation('Dangcol (Bernabe)', 'Dangcol (Bernabe)')">Dangcol (Bernabe)</div>
+                                    <div class="option-item" data-value="Ibayo" onclick="selectEventLocation('Ibayo', 'Ibayo')">Ibayo</div>
+                                    <div class="option-item" data-value="Malabia" onclick="selectEventLocation('Malabia', 'Malabia')">Malabia</div>
+                                    <div class="option-item" data-value="Poblacion" onclick="selectEventLocation('Poblacion', 'Poblacion')">Poblacion</div>
+                                    <div class="option-item" data-value="Pto. Rivas Ibaba" onclick="selectEventLocation('Pto. Rivas Ibaba', 'Pto. Rivas Ibaba')">Pto. Rivas Ibaba</div>
+                                    <div class="option-item" data-value="Pto. Rivas Itaas" onclick="selectEventLocation('Pto. Rivas Itaas', 'Pto. Rivas Itaas')">Pto. Rivas Itaas</div>
+                                    <div class="option-item" data-value="San Jose" onclick="selectEventLocation('San Jose', 'San Jose')">San Jose</div>
+                                    <div class="option-item" data-value="Sibacan" onclick="selectEventLocation('Sibacan', 'Sibacan')">Sibacan</div>
+                                    <div class="option-item" data-value="Camacho" onclick="selectEventLocation('Camacho', 'Camacho')">Camacho</div>
+                                    <div class="option-item" data-value="Talisay" onclick="selectEventLocation('Talisay', 'Talisay')">Talisay</div>
+                                    <div class="option-item" data-value="Tanato" onclick="selectEventLocation('Tanato', 'Tanato')">Tanato</div>
+                                    <div class="option-item" data-value="Tenejero" onclick="selectEventLocation('Tenejero', 'Tenejero')">Tenejero</div>
+                                    <div class="option-item" data-value="Tortugas" onclick="selectEventLocation('Tortugas', 'Tortugas')">Tortugas</div>
+                                    <div class="option-item" data-value="Tuyo" onclick="selectEventLocation('Tuyo', 'Tuyo')">Tuyo</div>
+                                    <div class="option-item" data-value="Bagong Silang" onclick="selectEventLocation('Bagong Silang', 'Bagong Silang')">Bagong Silang</div>
+                                    <div class="option-item" data-value="Cupang North" onclick="selectEventLocation('Cupang North', 'Cupang North')">Cupang North</div>
+                                    <div class="option-item" data-value="Doña Francisca" onclick="selectEventLocation('Doña Francisca', 'Doña Francisca')">Doña Francisca</div>
+                                    <div class="option-item" data-value="Lote" onclick="selectEventLocation('Lote', 'Lote')">Lote</div>
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">DINALUPIHAN</div>
-                                    <div class="option-item" data-value="Bangal">Bangal</div>
-                                    <div class="option-item" data-value="Bonifacio (Pob.)">Bonifacio (Pob.)</div>
-                                    <div class="option-item" data-value="Burgos (Pob.)">Burgos (Pob.)</div>
-                                    <div class="option-item" data-value="Colo">Colo</div>
-                                    <div class="option-item" data-value="Daang Bago">Daang Bago</div>
-                                    <div class="option-item" data-value="Dalao">Dalao</div>
-                                    <div class="option-item" data-value="Del Pilar (Pob.)">Del Pilar (Pob.)</div>
-                                    <div class="option-item" data-value="Gen. Luna (Pob.)">Gen. Luna (Pob.)</div>
-                                    <div class="option-item" data-value="Gomez (Pob.)">Gomez (Pob.)</div>
-                                    <div class="option-item" data-value="Happy Valley">Happy Valley</div>
-                                    <div class="option-item" data-value="Kataasan">Kataasan</div>
-                                    <div class="option-item" data-value="Layac">Layac</div>
-                                    <div class="option-item" data-value="Luacan">Luacan</div>
-                                    <div class="option-item" data-value="Mabini Proper (Pob.)">Mabini Proper (Pob.)</div>
-                                    <div class="option-item" data-value="Mabini Ext. (Pob.)">Mabini Ext. (Pob.)</div>
-                                    <div class="option-item" data-value="Magsaysay">Magsaysay</div>
-                                    <div class="option-item" data-value="Naparing">Naparing</div>
-                                    <div class="option-item" data-value="New San Jose">New San Jose</div>
-                                    <div class="option-item" data-value="Old San Jose">Old San Jose</div>
-                                    <div class="option-item" data-value="Padre Dandan (Pob.)">Padre Dandan (Pob.)</div>
-                                    <div class="option-item" data-value="Pag-asa">Pag-asa</div>
-                                    <div class="option-item" data-value="Pagalanggang">Pagalanggang</div>
-                                    <div class="option-item" data-value="Pinulot">Pinulot</div>
-                                    <div class="option-item" data-value="Pita">Pita</div>
-                                    <div class="option-item" data-value="Rizal (Pob.)">Rizal (Pob.)</div>
-                                    <div class="option-item" data-value="Roosevelt">Roosevelt</div>
-                                    <div class="option-item" data-value="Roxas (Pob.)">Roxas (Pob.)</div>
-                                    <div class="option-item" data-value="Saguing">Saguing</div>
-                                    <div class="option-item" data-value="San Benito">San Benito</div>
-                                    <div class="option-item" data-value="San Isidro (Pob.)">San Isidro (Pob.)</div>
-                                    <div class="option-item" data-value="San Pablo (Bulate)">San Pablo (Bulate)</div>
-                                    <div class="option-item" data-value="San Ramon">San Ramon</div>
-                                    <div class="option-item" data-value="San Simon">San Simon</div>
-                                    <div class="option-item" data-value="Santo Niño">Santo Niño</div>
-                                    <div class="option-item" data-value="Sapang Balas">Sapang Balas</div>
-                                    <div class="option-item" data-value="Santa Isabel (Tabacan)">Santa Isabel (Tabacan)</div>
-                                    <div class="option-item" data-value="Torres Bugauen (Pob.)">Torres Bugauen (Pob.)</div>
-                                    <div class="option-item" data-value="Tucop">Tucop</div>
-                                    <div class="option-item" data-value="Zamora (Pob.)">Zamora (Pob.)</div>
-                                    <div class="option-item" data-value="Aquino">Aquino</div>
-                                    <div class="option-item" data-value="Bayan-bayanan">Bayan-bayanan</div>
-                                    <div class="option-item" data-value="Maligaya">Maligaya</div>
-                                    <div class="option-item" data-value="Payangan">Payangan</div>
-                                    <div class="option-item" data-value="Pentor">Pentor</div>
-                                    <div class="option-item" data-value="Tubo-tubo">Tubo-tubo</div>
-                                    <div class="option-item" data-value="Jose C. Payumo, Jr.">Jose C. Payumo, Jr.</div>
+                                    <div class="option-item" data-value="Bangal" onclick="selectEventLocation('Bangal', 'Bangal')">Bangal</div>
+                                    <div class="option-item" data-value="Bonifacio (Pob.)" onclick="selectEventLocation('Bonifacio (Pob.)', 'Bonifacio (Pob.)')">Bonifacio (Pob.)</div>
+                                    <div class="option-item" data-value="Burgos (Pob.)" onclick="selectEventLocation('Burgos (Pob.)', 'Burgos (Pob.)')">Burgos (Pob.)</div>
+                                    <div class="option-item" data-value="Colo" onclick="selectEventLocation('Colo', 'Colo')">Colo</div>
+                                    <div class="option-item" data-value="Daang Bago" onclick="selectEventLocation('Daang Bago', 'Daang Bago')">Daang Bago</div>
+                                    <div class="option-item" data-value="Dalao" onclick="selectEventLocation('Dalao', 'Dalao')">Dalao</div>
+                                    <div class="option-item" data-value="Del Pilar (Pob.)" onclick="selectEventLocation('Del Pilar (Pob.)', 'Del Pilar (Pob.)')">Del Pilar (Pob.)</div>
+                                    <div class="option-item" data-value="Gen. Luna (Pob.)" onclick="selectEventLocation('Gen. Luna (Pob.)', 'Gen. Luna (Pob.)')">Gen. Luna (Pob.)</div>
+                                    <div class="option-item" data-value="Gomez (Pob.)" onclick="selectEventLocation('Gomez (Pob.)', 'Gomez (Pob.)')">Gomez (Pob.)</div>
+                                    <div class="option-item" data-value="Happy Valley" onclick="selectEventLocation('Happy Valley', 'Happy Valley')">Happy Valley</div>
+                                    <div class="option-item" data-value="Kataasan" onclick="selectEventLocation('Kataasan', 'Kataasan')">Kataasan</div>
+                                    <div class="option-item" data-value="Layac" onclick="selectEventLocation('Layac', 'Layac')">Layac</div>
+                                    <div class="option-item" data-value="Luacan" onclick="selectEventLocation('Luacan', 'Luacan')">Luacan</div>
+                                    <div class="option-item" data-value="Mabini Proper (Pob.)" onclick="selectEventLocation('Mabini Proper (Pob.)', 'Mabini Proper (Pob.)')">Mabini Proper (Pob.)</div>
+                                    <div class="option-item" data-value="Mabini Ext. (Pob.)" onclick="selectEventLocation('Mabini Ext. (Pob.)', 'Mabini Ext. (Pob.)')">Mabini Ext. (Pob.)</div>
+                                    <div class="option-item" data-value="Magsaysay" onclick="selectEventLocation('Magsaysay', 'Magsaysay')">Magsaysay</div>
+                                    <div class="option-item" data-value="Naparing" onclick="selectEventLocation('Naparing', 'Naparing')">Naparing</div>
+                                    <div class="option-item" data-value="New San Jose" onclick="selectEventLocation('New San Jose', 'New San Jose')">New San Jose</div>
+                                    <div class="option-item" data-value="Old San Jose" onclick="selectEventLocation('Old San Jose', 'Old San Jose')">Old San Jose</div>
+                                    <div class="option-item" data-value="Padre Dandan (Pob.)" onclick="selectEventLocation('Padre Dandan (Pob.)', 'Padre Dandan (Pob.)')">Padre Dandan (Pob.)</div>
+                                    <div class="option-item" data-value="Pag-asa" onclick="selectEventLocation('Pag-asa', 'Pag-asa')">Pag-asa</div>
+                                    <div class="option-item" data-value="Pagalanggang" onclick="selectEventLocation('Pagalanggang', 'Pagalanggang')">Pagalanggang</div>
+                                    <div class="option-item" data-value="Pinulot" onclick="selectEventLocation('Pinulot', 'Pinulot')">Pinulot</div>
+                                    <div class="option-item" data-value="Pita" onclick="selectEventLocation('Pita', 'Pita')">Pita</div>
+                                    <div class="option-item" data-value="Rizal (Pob.)" onclick="selectEventLocation('Rizal (Pob.)', 'Rizal (Pob.)')">Rizal (Pob.)</div>
+                                    <div class="option-item" data-value="Roosevelt" onclick="selectEventLocation('Roosevelt', 'Roosevelt')">Roosevelt</div>
+                                    <div class="option-item" data-value="Roxas (Pob.)" onclick="selectEventLocation('Roxas (Pob.)', 'Roxas (Pob.)')">Roxas (Pob.)</div>
+                                    <div class="option-item" data-value="Saguing" onclick="selectEventLocation('Saguing', 'Saguing')">Saguing</div>
+                                    <div class="option-item" data-value="San Benito" onclick="selectEventLocation('San Benito', 'San Benito')">San Benito</div>
+                                    <div class="option-item" data-value="San Isidro (Pob.)" onclick="selectEventLocation('San Isidro (Pob.)', 'San Isidro (Pob.)')">San Isidro (Pob.)</div>
+                                    <div class="option-item" data-value="San Pablo (Bulate)" onclick="selectEventLocation('San Pablo (Bulate)', 'San Pablo (Bulate)')">San Pablo (Bulate)</div>
+                                    <div class="option-item" data-value="San Ramon" onclick="selectEventLocation('San Ramon', 'San Ramon')">San Ramon</div>
+                                    <div class="option-item" data-value="San Simon" onclick="selectEventLocation('San Simon', 'San Simon')">San Simon</div>
+                                    <div class="option-item" data-value="Santo Niño" onclick="selectEventLocation('Santo Niño', 'Santo Niño')">Santo Niño</div>
+                                    <div class="option-item" data-value="Sapang Balas" onclick="selectEventLocation('Sapang Balas', 'Sapang Balas')">Sapang Balas</div>
+                                    <div class="option-item" data-value="Santa Isabel (Tabacan)" onclick="selectEventLocation('Santa Isabel (Tabacan)', 'Santa Isabel (Tabacan)')">Santa Isabel (Tabacan)</div>
+                                    <div class="option-item" data-value="Torres Bugauen (Pob.)" onclick="selectEventLocation('Torres Bugauen (Pob.)', 'Torres Bugauen (Pob.)')">Torres Bugauen (Pob.)</div>
+                                    <div class="option-item" data-value="Tucop" onclick="selectEventLocation('Tucop', 'Tucop')">Tucop</div>
+                                    <div class="option-item" data-value="Zamora (Pob.)" onclick="selectEventLocation('Zamora (Pob.)', 'Zamora (Pob.)')">Zamora (Pob.)</div>
+                                    <div class="option-item" data-value="Aquino" onclick="selectEventLocation('Aquino', 'Aquino')">Aquino</div>
+                                    <div class="option-item" data-value="Bayan-bayanan" onclick="selectEventLocation('Bayan-bayanan', 'Bayan-bayanan')">Bayan-bayanan</div>
+                                    <div class="option-item" data-value="Maligaya" onclick="selectEventLocation('Maligaya', 'Maligaya')">Maligaya</div>
+                                    <div class="option-item" data-value="Payangan" onclick="selectEventLocation('Payangan', 'Payangan')">Payangan</div>
+                                    <div class="option-item" data-value="Pentor" onclick="selectEventLocation('Pentor', 'Pentor')">Pentor</div>
+                                    <div class="option-item" data-value="Tubo-tubo" onclick="selectEventLocation('Tubo-tubo', 'Tubo-tubo')">Tubo-tubo</div>
+                                    <div class="option-item" data-value="Jose C. Payumo, Jr." onclick="selectEventLocation('Jose C. Payumo, Jr.', 'Jose C. Payumo, Jr.')">Jose C. Payumo, Jr.</div>
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">HERMOSA</div>
@@ -4160,119 +4160,119 @@ header:hover {
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">MARIVELES</div>
-                                    <div class="option-item" data-value="Alion">Alion</div>
-                                    <div class="option-item" data-value="Balon-Anito">Balon-Anito</div>
-                                    <div class="option-item" data-value="Baseco">Baseco</div>
-                                    <div class="option-item" data-value="Batan">Batan</div>
-                                    <div class="option-item" data-value="Biaan">Biaan</div>
-                                    <div class="option-item" data-value="Cabcaben">Cabcaben</div>
-                                    <div class="option-item" data-value="Camaya">Camaya</div>
-                                    <div class="option-item" data-value="Iba">Iba</div>
-                                    <div class="option-item" data-value="Lamao">Lamao</div>
-                                    <div class="option-item" data-value="Lucanin">Lucanin</div>
-                                    <div class="option-item" data-value="Mabayo">Mabayo</div>
-                                    <div class="option-item" data-value="Malusak">Malusak</div>
-                                    <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                    <div class="option-item" data-value="San Carlos">San Carlos</div>
-                                    <div class="option-item" data-value="San Isidro">San Isidro</div>
-                                    <div class="option-item" data-value="Sisiman">Sisiman</div>
-                                    <div class="option-item" data-value="Townsite">Townsite</div>
+                                    <div class="option-item" data-value="Alion" onclick="selectEventLocation('Alion', 'Alion')">Alion</div>
+                                    <div class="option-item" data-value="Balon-Anito" onclick="selectEventLocation('Balon-Anito', 'Balon-Anito')">Balon-Anito</div>
+                                    <div class="option-item" data-value="Baseco" onclick="selectEventLocation('Baseco', 'Baseco')">Baseco</div>
+                                    <div class="option-item" data-value="Batan" onclick="selectEventLocation('Batan', 'Batan')">Batan</div>
+                                    <div class="option-item" data-value="Biaan" onclick="selectEventLocation('Biaan', 'Biaan')">Biaan</div>
+                                    <div class="option-item" data-value="Cabcaben" onclick="selectEventLocation('Cabcaben', 'Cabcaben')">Cabcaben</div>
+                                    <div class="option-item" data-value="Camaya" onclick="selectEventLocation('Camaya', 'Camaya')">Camaya</div>
+                                    <div class="option-item" data-value="Iba" onclick="selectEventLocation('Iba', 'Iba')">Iba</div>
+                                    <div class="option-item" data-value="Lamao" onclick="selectEventLocation('Lamao', 'Lamao')">Lamao</div>
+                                    <div class="option-item" data-value="Lucanin" onclick="selectEventLocation('Lucanin', 'Lucanin')">Lucanin</div>
+                                    <div class="option-item" data-value="Mabayo" onclick="selectEventLocation('Mabayo', 'Mabayo')">Mabayo</div>
+                                    <div class="option-item" data-value="Malusak" onclick="selectEventLocation('Malusak', 'Malusak')">Malusak</div>
+                                    <div class="option-item" data-value="Poblacion" onclick="selectEventLocation('Poblacion', 'Poblacion')">Poblacion</div>
+                                    <div class="option-item" data-value="San Carlos" onclick="selectEventLocation('San Carlos', 'San Carlos')">San Carlos</div>
+                                    <div class="option-item" data-value="San Isidro" onclick="selectEventLocation('San Isidro', 'San Isidro')">San Isidro</div>
+                                    <div class="option-item" data-value="Sisiman" onclick="selectEventLocation('Sisiman', 'Sisiman')">Sisiman</div>
+                                    <div class="option-item" data-value="Townsite" onclick="selectEventLocation('Townsite', 'Townsite')">Townsite</div>
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">MORONG</div>
-                                    <div class="option-item" data-value="Binaritan">Binaritan</div>
-                                    <div class="option-item" data-value="Mabayo">Mabayo</div>
-                                    <div class="option-item" data-value="Nagbalayong">Nagbalayong</div>
-                                    <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                    <div class="option-item" data-value="Sabang">Sabang</div>
-                                    <div class="option-item" data-value="San Jose">San Jose</div>
+                                    <div class="option-item" data-value="Binaritan" onclick="selectEventLocation('Binaritan', 'Binaritan')">Binaritan</div>
+                                    <div class="option-item" data-value="Mabayo" onclick="selectEventLocation('Mabayo', 'Mabayo')">Mabayo</div>
+                                    <div class="option-item" data-value="Nagbalayong" onclick="selectEventLocation('Nagbalayong', 'Nagbalayong')">Nagbalayong</div>
+                                    <div class="option-item" data-value="Poblacion" onclick="selectEventLocation('Poblacion', 'Poblacion')">Poblacion</div>
+                                    <div class="option-item" data-value="Sabang" onclick="selectEventLocation('Sabang', 'Sabang')">Sabang</div>
+                                    <div class="option-item" data-value="San Jose" onclick="selectEventLocation('San Jose', 'San Jose')">San Jose</div>
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">ORANI</div>
-                                    <div class="option-item" data-value="Bagong Paraiso">Bagong Paraiso</div>
-                                    <div class="option-item" data-value="Balut">Balut</div>
-                                    <div class="option-item" data-value="Bayorbor">Bayorbor</div>
-                                    <div class="option-item" data-value="Calungusan">Calungusan</div>
-                                    <div class="option-item" data-value="Camacho">Camacho</div>
-                                    <div class="option-item" data-value="Daang Bago">Daang Bago</div>
-                                    <div class="option-item" data-value="Dona">Dona</div>
-                                    <div class="option-item" data-value="Kaparangan">Kaparangan</div>
-                                    <div class="option-item" data-value="Mabayo">Mabayo</div>
-                                    <div class="option-item" data-value="Masagana">Masagana</div>
-                                    <div class="option-item" data-value="Mulawin">Mulawin</div>
-                                    <div class="option-item" data-value="Paglalaban">Paglalaban</div>
-                                    <div class="option-item" data-value="Palawe">Palawe</div>
-                                    <div class="option-item" data-value="Pantalan Bago">Pantalan Bago</div>
-                                    <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                    <div class="option-item" data-value="Saguing">Saguing</div>
-                                    <div class="option-item" data-value="Tagumpay">Tagumpay</div>
-                                    <div class="option-item" data-value="Tala">Tala</div>
-                                    <div class="option-item" data-value="Tapulao">Tapulao</div>
-                                    <div class="option-item" data-value="Tenejero">Tenejero</div>
-                                    <div class="option-item" data-value="Wawa">Wawa</div>
+                                    <div class="option-item" data-value="Bagong Paraiso" onclick="selectEventLocation('Bagong Paraiso', 'Bagong Paraiso')">Bagong Paraiso</div>
+                                    <div class="option-item" data-value="Balut" onclick="selectEventLocation('Balut', 'Balut')">Balut</div>
+                                    <div class="option-item" data-value="Bayorbor" onclick="selectEventLocation('Bayorbor', 'Bayorbor')">Bayorbor</div>
+                                    <div class="option-item" data-value="Calungusan" onclick="selectEventLocation('Calungusan', 'Calungusan')">Calungusan</div>
+                                    <div class="option-item" data-value="Camacho" onclick="selectEventLocation('Camacho', 'Camacho')">Camacho</div>
+                                    <div class="option-item" data-value="Daang Bago" onclick="selectEventLocation('Daang Bago', 'Daang Bago')">Daang Bago</div>
+                                    <div class="option-item" data-value="Dona" onclick="selectEventLocation('Dona', 'Dona')">Dona</div>
+                                    <div class="option-item" data-value="Kaparangan" onclick="selectEventLocation('Kaparangan', 'Kaparangan')">Kaparangan</div>
+                                    <div class="option-item" data-value="Mabayo" onclick="selectEventLocation('Mabayo', 'Mabayo')">Mabayo</div>
+                                    <div class="option-item" data-value="Masagana" onclick="selectEventLocation('Masagana', 'Masagana')">Masagana</div>
+                                    <div class="option-item" data-value="Mulawin" onclick="selectEventLocation('Mulawin', 'Mulawin')">Mulawin</div>
+                                    <div class="option-item" data-value="Paglalaban" onclick="selectEventLocation('Paglalaban', 'Paglalaban')">Paglalaban</div>
+                                    <div class="option-item" data-value="Palawe" onclick="selectEventLocation('Palawe', 'Palawe')">Palawe</div>
+                                    <div class="option-item" data-value="Pantalan Bago" onclick="selectEventLocation('Pantalan Bago', 'Pantalan Bago')">Pantalan Bago</div>
+                                    <div class="option-item" data-value="Poblacion" onclick="selectEventLocation('Poblacion', 'Poblacion')">Poblacion</div>
+                                    <div class="option-item" data-value="Saguing" onclick="selectEventLocation('Saguing', 'Saguing')">Saguing</div>
+                                    <div class="option-item" data-value="Tagumpay" onclick="selectEventLocation('Tagumpay', 'Tagumpay')">Tagumpay</div>
+                                    <div class="option-item" data-value="Tala" onclick="selectEventLocation('Tala', 'Tala')">Tala</div>
+                                    <div class="option-item" data-value="Tapulao" onclick="selectEventLocation('Tapulao', 'Tapulao')">Tapulao</div>
+                                    <div class="option-item" data-value="Tenejero" onclick="selectEventLocation('Tenejero', 'Tenejero')">Tenejero</div>
+                                    <div class="option-item" data-value="Wawa" onclick="selectEventLocation('Wawa', 'Wawa')">Wawa</div>
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">ORION</div>
-                                    <div class="option-item" data-value="Balut">Balut</div>
-                                    <div class="option-item" data-value="Bantan">Bantan</div>
-                                    <div class="option-item" data-value="Burgos">Burgos</div>
-                                    <div class="option-item" data-value="Calungusan">Calungusan</div>
-                                    <div class="option-item" data-value="Camacho">Camacho</div>
-                                    <div class="option-item" data-value="Capunitan">Capunitan</div>
-                                    <div class="option-item" data-value="Daan Bilolo">Daan Bilolo</div>
-                                    <div class="option-item" data-value="Daan Pare">Daan Pare</div>
-                                    <div class="option-item" data-value="General Lim">General Lim</div>
-                                    <div class="option-item" data-value="Kapunitan">Kapunitan</div>
-                                    <div class="option-item" data-value="Lati">Lati</div>
-                                    <div class="option-item" data-value="Luyahan">Luyahan</div>
-                                    <div class="option-item" data-value="Mabayo">Mabayo</div>
-                                    <div class="option-item" data-value="Maligaya">Maligaya</div>
-                                    <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                    <div class="option-item" data-value="Sabatan">Sabatan</div>
-                                    <div class="option-item" data-value="San Vicente">San Vicente</div>
-                                    <div class="option-item" data-value="Santo Domingo">Santo Domingo</div>
-                                    <div class="option-item" data-value="Villa Angeles">Villa Angeles</div>
-                                    <div class="option-item" data-value="Wawa">Wawa</div>
+                                    <div class="option-item" data-value="Balut" onclick="selectEventLocation('Balut', 'Balut')">Balut</div>
+                                    <div class="option-item" data-value="Bantan" onclick="selectEventLocation('Bantan', 'Bantan')">Bantan</div>
+                                    <div class="option-item" data-value="Burgos" onclick="selectEventLocation('Burgos', 'Burgos')">Burgos</div>
+                                    <div class="option-item" data-value="Calungusan" onclick="selectEventLocation('Calungusan', 'Calungusan')">Calungusan</div>
+                                    <div class="option-item" data-value="Camacho" onclick="selectEventLocation('Camacho', 'Camacho')">Camacho</div>
+                                    <div class="option-item" data-value="Capunitan" onclick="selectEventLocation('Capunitan', 'Capunitan')">Capunitan</div>
+                                    <div class="option-item" data-value="Daan Bilolo" onclick="selectEventLocation('Daan Bilolo', 'Daan Bilolo')">Daan Bilolo</div>
+                                    <div class="option-item" data-value="Daan Pare" onclick="selectEventLocation('Daan Pare', 'Daan Pare')">Daan Pare</div>
+                                    <div class="option-item" data-value="General Lim" onclick="selectEventLocation('General Lim', 'General Lim')">General Lim</div>
+                                    <div class="option-item" data-value="Kapunitan" onclick="selectEventLocation('Kapunitan', 'Kapunitan')">Kapunitan</div>
+                                    <div class="option-item" data-value="Lati" onclick="selectEventLocation('Lati', 'Lati')">Lati</div>
+                                    <div class="option-item" data-value="Luyahan" onclick="selectEventLocation('Luyahan', 'Luyahan')">Luyahan</div>
+                                    <div class="option-item" data-value="Mabayo" onclick="selectEventLocation('Mabayo', 'Mabayo')">Mabayo</div>
+                                    <div class="option-item" data-value="Maligaya" onclick="selectEventLocation('Maligaya', 'Maligaya')">Maligaya</div>
+                                    <div class="option-item" data-value="Poblacion" onclick="selectEventLocation('Poblacion', 'Poblacion')">Poblacion</div>
+                                    <div class="option-item" data-value="Sabatan" onclick="selectEventLocation('Sabatan', 'Sabatan')">Sabatan</div>
+                                    <div class="option-item" data-value="San Vicente" onclick="selectEventLocation('San Vicente', 'San Vicente')">San Vicente</div>
+                                    <div class="option-item" data-value="Santo Domingo" onclick="selectEventLocation('Santo Domingo', 'Santo Domingo')">Santo Domingo</div>
+                                    <div class="option-item" data-value="Villa Angeles" onclick="selectEventLocation('Villa Angeles', 'Villa Angeles')">Villa Angeles</div>
+                                    <div class="option-item" data-value="Wawa" onclick="selectEventLocation('Wawa', 'Wawa')">Wawa</div>
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">PILAR</div>
-                                    <div class="option-item" data-value="Bagumbayan">Bagumbayan</div>
-                                    <div class="option-item" data-value="Balanoy">Balanoy</div>
-                                    <div class="option-item" data-value="Bantan Munti">Bantan Munti</div>
-                                    <div class="option-item" data-value="Bantan Grande">Bantan Grande</div>
-                                    <div class="option-item" data-value="Burgos">Burgos</div>
-                                    <div class="option-item" data-value="Del Rosario">Del Rosario</div>
-                                    <div class="option-item" data-value="Diwa">Diwa</div>
-                                    <div class="option-item" data-value="Fatima">Fatima</div>
-                                    <div class="option-item" data-value="Landing">Landing</div>
-                                    <div class="option-item" data-value="Liwa-liwa">Liwa-liwa</div>
-                                    <div class="option-item" data-value="Nagwaling">Nagwaling</div>
-                                    <div class="option-item" data-value="Panilao">Panilao</div>
-                                    <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                    <div class="option-item" data-value="Rizal">Rizal</div>
-                                    <div class="option-item" data-value="Santo Niño">Santo Niño</div>
-                                    <div class="option-item" data-value="Wawa">Wawa</div>
+                                    <div class="option-item" data-value="Bagumbayan" onclick="selectEventLocation('Bagumbayan', 'Bagumbayan')">Bagumbayan</div>
+                                    <div class="option-item" data-value="Balanoy" onclick="selectEventLocation('Balanoy', 'Balanoy')">Balanoy</div>
+                                    <div class="option-item" data-value="Bantan Munti" onclick="selectEventLocation('Bantan Munti', 'Bantan Munti')">Bantan Munti</div>
+                                    <div class="option-item" data-value="Bantan Grande" onclick="selectEventLocation('Bantan Grande', 'Bantan Grande')">Bantan Grande</div>
+                                    <div class="option-item" data-value="Burgos" onclick="selectEventLocation('Burgos', 'Burgos')">Burgos</div>
+                                    <div class="option-item" data-value="Del Rosario" onclick="selectEventLocation('Del Rosario', 'Del Rosario')">Del Rosario</div>
+                                    <div class="option-item" data-value="Diwa" onclick="selectEventLocation('Diwa', 'Diwa')">Diwa</div>
+                                    <div class="option-item" data-value="Fatima" onclick="selectEventLocation('Fatima', 'Fatima')">Fatima</div>
+                                    <div class="option-item" data-value="Landing" onclick="selectEventLocation('Landing', 'Landing')">Landing</div>
+                                    <div class="option-item" data-value="Liwa-liwa" onclick="selectEventLocation('Liwa-liwa', 'Liwa-liwa')">Liwa-liwa</div>
+                                    <div class="option-item" data-value="Nagwaling" onclick="selectEventLocation('Nagwaling', 'Nagwaling')">Nagwaling</div>
+                                    <div class="option-item" data-value="Panilao" onclick="selectEventLocation('Panilao', 'Panilao')">Panilao</div>
+                                    <div class="option-item" data-value="Poblacion" onclick="selectEventLocation('Poblacion', 'Poblacion')">Poblacion</div>
+                                    <div class="option-item" data-value="Rizal" onclick="selectEventLocation('Rizal', 'Rizal')">Rizal</div>
+                                    <div class="option-item" data-value="Santo Niño" onclick="selectEventLocation('Santo Niño', 'Santo Niño')">Santo Niño</div>
+                                    <div class="option-item" data-value="Wawa" onclick="selectEventLocation('Wawa', 'Wawa')">Wawa</div>
                                 </div>
                                 <div class="option-group">
                                     <div class="option-header">SAMAL</div>
-                                    <div class="option-item" data-value="Bagong Silang">Bagong Silang</div>
-                                    <div class="option-item" data-value="Bangkong">Bangkong</div>
-                                    <div class="option-item" data-value="Burgos">Burgos</div>
-                                    <div class="option-item" data-value="Calaguiman">Calaguiman</div>
-                                    <div class="option-item" data-value="Calantas">Calantas</div>
-                                    <div class="option-item" data-value="Daan Bilolo">Daan Bilolo</div>
-                                    <div class="option-item" data-value="Daang Pare">Daang Pare</div>
-                                    <div class="option-item" data-value="Del Pilar">Del Pilar</div>
-                                    <div class="option-item" data-value="General Lim">General Lim</div>
-                                    <div class="option-item" data-value="Imelda">Imelda</div>
-                                    <div class="option-item" data-value="Lourdes">Lourdes</div>
-                                    <div class="option-item" data-value="Mabatang">Mabatang</div>
-                                    <div class="option-item" data-value="Maligaya">Maligaya</div>
-                                    <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                    <div class="option-item" data-value="San Juan">San Juan</div>
-                                    <div class="option-item" data-value="San Roque">San Roque</div>
-                                    <div class="option-item" data-value="Santo Niño">Santo Niño</div>
-                                    <div class="option-item" data-value="Sulong">Sulong</div>
+                                    <div class="option-item" data-value="Bagong Silang" onclick="selectEventLocation('Bagong Silang', 'Bagong Silang')">Bagong Silang</div>
+                                    <div class="option-item" data-value="Bangkong" onclick="selectEventLocation('Bangkong', 'Bangkong')">Bangkong</div>
+                                    <div class="option-item" data-value="Burgos" onclick="selectEventLocation('Burgos', 'Burgos')">Burgos</div>
+                                    <div class="option-item" data-value="Calaguiman" onclick="selectEventLocation('Calaguiman', 'Calaguiman')">Calaguiman</div>
+                                    <div class="option-item" data-value="Calantas" onclick="selectEventLocation('Calantas', 'Calantas')">Calantas</div>
+                                    <div class="option-item" data-value="Daan Bilolo" onclick="selectEventLocation('Daan Bilolo', 'Daan Bilolo')">Daan Bilolo</div>
+                                    <div class="option-item" data-value="Daang Pare" onclick="selectEventLocation('Daang Pare', 'Daang Pare')">Daang Pare</div>
+                                    <div class="option-item" data-value="Del Pilar" onclick="selectEventLocation('Del Pilar', 'Del Pilar')">Del Pilar</div>
+                                    <div class="option-item" data-value="General Lim" onclick="selectEventLocation('General Lim', 'General Lim')">General Lim</div>
+                                    <div class="option-item" data-value="Imelda" onclick="selectEventLocation('Imelda', 'Imelda')">Imelda</div>
+                                    <div class="option-item" data-value="Lourdes" onclick="selectEventLocation('Lourdes', 'Lourdes')">Lourdes</div>
+                                    <div class="option-item" data-value="Mabatang" onclick="selectEventLocation('Mabatang', 'Mabatang')">Mabatang</div>
+                                    <div class="option-item" data-value="Maligaya" onclick="selectEventLocation('Maligaya', 'Maligaya')">Maligaya</div>
+                                    <div class="option-item" data-value="Poblacion" onclick="selectEventLocation('Poblacion', 'Poblacion')">Poblacion</div>
+                                    <div class="option-item" data-value="San Juan" onclick="selectEventLocation('San Juan', 'San Juan')">San Juan</div>
+                                    <div class="option-item" data-value="San Roque" onclick="selectEventLocation('San Roque', 'San Roque')">San Roque</div>
+                                    <div class="option-item" data-value="Santo Niño" onclick="selectEventLocation('Santo Niño', 'Santo Niño')">Santo Niño</div>
+                                    <div class="option-item" data-value="Sulong" onclick="selectEventLocation('Sulong', 'Sulong')">Sulong</div>
                                 </div>
                             </div>
                         </div>
