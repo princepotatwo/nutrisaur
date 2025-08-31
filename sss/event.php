@@ -7693,6 +7693,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 }
                 
                 // 🚨 STEP 2: SEND NOTIFICATION USING THE SAME EXTERNAL API AS DASH.PHP
+                // 🎯 RESPECT LOCATION SELECTION - Don't send to everyone!
                 const notificationResponse = await fetch('/api/send_notification.php', {
                     method: 'POST',
                     headers: {
@@ -7703,7 +7704,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                         notification_data: JSON.stringify({
                             title: `🎉 New Event: ${eventData.title}`,
                             body: `A new ${eventData.type} event has been created: ${eventData.description}`,
-                            target_user: 'all', // Send to all users
+                            target_user: eventData.location === 'all' ? 'all' : eventData.location, // Respect location selection!
                             alert_type: 'new_event',
                             event_title: eventData.title,
                             event_type: eventData.type,

@@ -119,6 +119,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception('Failed to send mass FCM notification');
             }
             
+        } else if (strpos($targetUser, 'MUNICIPALITY_') === 0 || strpos($targetUser, 'ABUCAY') !== false || strpos($targetUser, 'BAGAC') !== false || strpos($targetUser, 'MARIVELES') !== false || strpos($targetUser, 'MORONG') !== false || strpos($targetUser, 'ORANI') !== false || strpos($targetUser, 'PILAR') !== false || strpos($targetUser, 'SAMAL') !== false) {
+            // 🚨 NEW: Handle location-based targeting for events
+            error_log("🚨 SENDING TO LOCATION: $targetUser - Event notification");
+            
+            // Extract municipality name from target
+            $municipality = '';
+            if (strpos($targetUser, 'MUNICIPALITY_') === 0) {
+                $municipality = str_replace('MUNICIPALITY_', '', $targetUser);
+            } else if (strpos($targetUser, 'ABUCAY') !== false) {
+                $municipality = 'ABUCAY';
+            } else if (strpos($targetUser, 'BAGAC') !== false) {
+                $municipality = 'BAGAC';
+            } else if (strpos($targetUser, 'MARIVELES') !== false) {
+                $municipality = 'MARIVELES';
+            } else if (strpos($targetUser, 'MORONG') !== false) {
+                $municipality = 'MORONG';
+            } else if (strpos($targetUser, 'ORANI') !== false) {
+                $municipality = 'ORANI';
+            } else if (strpos($targetUser, 'PILAR') !== false) {
+                $municipality = 'PILAR';
+            } else if (strpos($targetUser, 'SAMAL') !== false) {
+                $municipality = 'SAMAL';
+            }
+            
+            // Get FCM tokens for users in this municipality
+            $stmt = $pdo->prepare("
+                SELECT ft.fcm_token, ft.user_email, ft.user_barangay
+                FROM fcm_tokens ft
+                WHERE ft.is_active = TRUE 
+                AND ft.fcm_token IS NOT NULL AND ft.fcm_token != ''
+                AND ft.user_barangay IS NOT NULL 
+                AND ft.user_barangay != ''
+                AND (
+                    ft.user_barangay LIKE ? 
+                    OR ft.user_barangay LIKE ?
+                    OR ft.user_barangay LIKE ?
+                )
+            ");
+            $stmt->execute([
+                "%$municipality%",
+                "%$targetUser%",
+                "%" . strtolower($municipality) . "%"
+            ]);
+            $locationTokens = $stmt->fetchAll();
+            
+            if (empty($locationTokens)) {
+                error_log("❌ No active FCM tokens found for location: $targetUser");
+                echo json_encode([
+                    'success' => false,
+                    'message' => "No active FCM tokens found for location: $targetUser",
+                    'target_user' => $targetUser,
+                    'reason' => 'no_fcm_tokens_for_location'
+                ]);
+                exit;
+            }
+            
+            error_log("✅ Found " . count($locationTokens) . " active FCM tokens for location: $targetUser");
+            
+            // Extract just the tokens
+            $fcmTokens = array_column($locationTokens, 'fcm_token');
+            
+            // Send FCM notification to users in this location
+            $notificationSent = sendFCMNotification($fcmTokens, [
+                'title' => $title,
+                'body' => $body,
+                'data' => [
+                    'notification_type' => 'event_notification',
+                    'target_user' => $targetUser,
+                    'alert_type' => $notificationData['alert_type'] ?? 'event_notification',
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
+                ]
+            ]);
+            
+            if ($notificationSent) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Location-based notification sent successfully to ' . count($fcmTokens) . ' users in ' . $targetUser,
+                    'target_user' => $targetUser,
+                    'devices_notified' => count($fcmTokens)
+                ]);
+            } else {
+                throw new Exception('Failed to send location-based FCM notification');
+            }
+            
         } else {
             // 🚨 ORIGINAL LOGIC: Single user notification
             // Get FCM token for the specific user
