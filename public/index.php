@@ -114,17 +114,6 @@ switch ($path) {
         }
         break;
         
-    case (preg_match('/^api\/(.+)$/', $path, $matches) ? true : false):
-        // Route API calls to sss/api directory
-        $api_file = $sss_path . 'api/' . $matches[1];
-        if (file_exists($api_file)) {
-            include_once $api_file;
-        } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'API endpoint not found']);
-        }
-        break;
-        
     default:
         // Check if it's an API request
         if (strpos($path, 'api/') === 0) {
@@ -152,7 +141,7 @@ switch ($path) {
                 include_once $sss_api_file;
             } else {
                 http_response_code(404);
-                echo "API endpoint not found: $api_path";
+                echo json_encode(['error' => 'API endpoint not found']);
             }
         } elseif (strpos($path, 'unified_api') === 0) {
             // Handle unified API requests
