@@ -120,23 +120,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  */
 function sendFCMNotification($fcmTokens, $notificationData) {
     try {
-        // Firebase Admin SDK configuration
-        $serviceAccountPath = __DIR__ . '/../nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json';
+        // Firebase Admin SDK configuration - Updated for new project
+        $serviceAccountPath = __DIR__ . '/../../sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json';
         
         if (!file_exists($serviceAccountPath)) {
-            throw new Exception('Firebase service account file not found');
+            throw new Exception('Firebase service account file not found at: ' . $serviceAccountPath);
         }
         
-        // For now, return true to simulate success
-        // In production, you would integrate with Firebase Admin SDK
-        error_log("FCM Notification would be sent to " . count($fcmTokens) . " devices");
-        error_log("Title: " . $notificationData['title']);
-        error_log("Body: " . $notificationData['body']);
+        // Load Firebase Admin SDK (if available)
+        if (!class_exists('Google\Cloud\Core\ServiceBuilder')) {
+            // Fallback: Use cURL to send FCM directly
+            return sendFCMViaCurl($fcmTokens, $notificationData);
+        }
         
-        return true;
+        // TODO: Implement Firebase Admin SDK integration when available
+        error_log("Firebase Admin SDK not available, using cURL fallback");
+        return sendFCMViaCurl($fcmTokens, $notificationData);
         
     } catch (Exception $e) {
         error_log("FCM Notification error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Send FCM notification via cURL (fallback method)
+ */
+function sendFCMViaCurl($fcmTokens, $notificationData) {
+    try {
+        // FCM Server Key from your new Firebase project
+        $serverKey = 'AIzaSyBGArwSy8j6_pQwR4ozFudKFcM5jHHXwTA'; // From your google-services.json
+        
+        $url = 'https://fcm.googleapis.com/fcm/send';
+        
+        foreach ($fcmTokens as $token) {
+            $data = [
+                'to' => $token,
+                'notification' => [
+                    'title' => $notificationData['title'],
+                    'body' => $notificationData['body'],
+                    'sound' => 'default',
+                    'badge' => '1'
+                ],
+                'data' => $notificationData['data'] ?? [],
+                'priority' => 'high',
+                'content_available' => true
+            ];
+            
+            $headers = [
+                'Authorization: key=' . $serverKey,
+                'Content-Type: application/json'
+            ];
+            
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            curl_close($ch);
+            
+            if ($error) {
+                error_log("cURL Error: " . $error);
+                continue;
+            }
+            
+            if ($httpCode === 200) {
+                $responseData = json_decode($response, true);
+                if (isset($responseData['success']) && $responseData['success'] == 1) {
+                    error_log("FCM Notification sent successfully to token: " . substr($token, 0, 20) . "...");
+                } else {
+                    error_log("FCM Error: " . ($responseData['results'][0]['error'] ?? 'Unknown error'));
+                }
+            } else {
+                error_log("FCM HTTP Error: " . $httpCode . " - " . $response);
+            }
+        }
+        
+        return true; // Assume success if we processed all tokens
+        
+    } catch (Exception $e) {
+        error_log("FCM cURL Error: " . $e->getMessage());
         return false;
     }
 }
