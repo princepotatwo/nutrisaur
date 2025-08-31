@@ -1444,7 +1444,20 @@ function fixColumnSizes($pdo) {
             'birthday' => 'DATE',           // Ensure proper DATE type
             'allergies' => 'TEXT',          // Ensure enough space for allergy lists
             'diet_prefs' => 'TEXT',         // Ensure enough space for diet preferences
-            'avoid_foods' => 'TEXT'         // Ensure enough space for avoid foods
+            'avoid_foods' => 'TEXT',        // Ensure enough space for avoid foods
+            'swelling' => 'VARCHAR(50)',    // For swelling assessment
+            'weight_loss' => 'VARCHAR(100)', // For weight loss percentage
+            'dietary_diversity' => 'INT',   // For dietary diversity score
+            'feeding_behavior' => 'VARCHAR(200)', // For feeding behavior description
+            'physical_thin' => 'BOOLEAN',   // For physical signs - thin
+            'physical_shorter' => 'BOOLEAN', // For physical signs - shorter
+            'physical_weak' => 'BOOLEAN',   // For physical signs - weak
+            'physical_none' => 'BOOLEAN',   // For physical signs - none
+            'has_recent_illness' => 'BOOLEAN', // For clinical risk factors
+            'has_eating_difficulty' => 'BOOLEAN', // For clinical risk factors
+            'has_food_insecurity' => 'BOOLEAN', // For clinical risk factors
+            'has_micronutrient_deficiency' => 'BOOLEAN', // For clinical risk factors
+            'has_functional_decline' => 'BOOLEAN' // For clinical risk factors
         ];
         
         $modifiedColumns = [];
@@ -1976,6 +1989,21 @@ function handleSaveScreening($pdo, $postData) {
         $dietPrefs = $screeningData['diet_prefs'] ?? $postData['diet_prefs'] ?? null;
         $avoidFoods = $screeningData['avoid_foods'] ?? $postData['avoid_foods'] ?? null;
         
+        // Extract additional screening fields that Android app sends
+        $swelling = $screeningData['swelling'] ?? $postData['swelling'] ?? null;
+        $weightLoss = $screeningData['weight_loss'] ?? $postData['weight_loss'] ?? null;
+        $dietaryDiversity = $screeningData['dietary_diversity'] ?? $postData['dietary_diversity'] ?? null;
+        $feedingBehavior = $screeningData['feeding_behavior'] ?? $postData['feeding_behavior'] ?? null;
+        $physicalThin = $screeningData['physical_thin'] ?? $postData['physical_thin'] ?? null;
+        $physicalShorter = $screeningData['physical_shorter'] ?? $postData['physical_shorter'] ?? null;
+        $physicalWeak = $screeningData['physical_weak'] ?? $postData['physical_weak'] ?? null;
+        $physicalNone = $screeningData['physical_none'] ?? $postData['physical_none'] ?? null;
+        $hasRecentIllness = $screeningData['has_recent_illness'] ?? $postData['has_recent_illness'] ?? null;
+        $hasEatingDifficulty = $screeningData['has_eating_difficulty'] ?? $postData['has_eating_difficulty'] ?? null;
+        $hasFoodInsecurity = $screeningData['has_food_insecurity'] ?? $postData['has_food_insecurity'] ?? null;
+        $hasMicronutrientDeficiency = $screeningData['has_micronutrient_deficiency'] ?? $postData['has_micronutrient_deficiency'] ?? null;
+        $hasFunctionalDecline = $screeningData['has_functional_decline'] ?? $postData['has_functional_decline'] ?? null;
+        
         if (!$userEmail) {
             echo json_encode(['error' => 'User email is required']);
             exit;
@@ -2004,6 +2032,19 @@ function handleSaveScreening($pdo, $postData) {
                     allergies = ?,
                     diet_prefs = ?,
                     avoid_foods = ?,
+                    swelling = ?,
+                    weight_loss = ?,
+                    dietary_diversity = ?,
+                    feeding_behavior = ?,
+                    physical_thin = ?,
+                    physical_shorter = ?,
+                    physical_weak = ?,
+                    physical_none = ?,
+                    has_recent_illness = ?,
+                    has_eating_difficulty = ?,
+                    has_food_insecurity = ?,
+                    has_micronutrient_deficiency = ?,
+                    has_functional_decline = ?,
                     updated_at = NOW()
                 WHERE user_email = ?
             ");
@@ -2022,6 +2063,19 @@ function handleSaveScreening($pdo, $postData) {
                 $allergies, 
                 $dietPrefs, 
                 $avoidFoods, 
+                $swelling, 
+                $weightLoss, 
+                $dietaryDiversity, 
+                $feedingBehavior, 
+                $physicalThin, 
+                $physicalShorter, 
+                $physicalWeak, 
+                $physicalNone, 
+                $hasRecentIllness, 
+                $hasEatingDifficulty, 
+                $hasFoodInsecurity, 
+                $hasMicronutrientDeficiency, 
+                $hasFunctionalDecline, 
                 $userEmail
             ]);
         } else {
@@ -2030,8 +2084,12 @@ function handleSaveScreening($pdo, $postData) {
                 INSERT INTO user_preferences (
                     user_email, screening_answers, risk_score, gender, barangay, income, 
                     weight_kg, height_cm, bmi, muac, name, birthday, allergies, 
-                    diet_prefs, avoid_foods, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+                    diet_prefs, avoid_foods, swelling, weight_loss, dietary_diversity, 
+                    feeding_behavior, physical_thin, physical_shorter, physical_weak, 
+                    physical_none, has_recent_illness, has_eating_difficulty, 
+                    has_food_insecurity, has_micronutrient_deficiency, has_functional_decline, 
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
             ");
             $stmt->execute([
                 $userEmail, 
@@ -2048,7 +2106,20 @@ function handleSaveScreening($pdo, $postData) {
                 $birthday, 
                 $allergies, 
                 $dietPrefs, 
-                $avoidFoods
+                $avoidFoods, 
+                $swelling, 
+                $weightLoss, 
+                $dietaryDiversity, 
+                $feedingBehavior, 
+                $physicalThin, 
+                $physicalShorter, 
+                $physicalWeak, 
+                $physicalNone, 
+                $hasRecentIllness, 
+                $hasEatingDifficulty, 
+                $hasFoodInsecurity, 
+                $hasMicronutrientDeficiency, 
+                $hasFunctionalDecline
             ]);
         }
         
@@ -2092,7 +2163,20 @@ function handleGetScreeningData($pdo, $postData) {
                 birthday,
                 allergies,
                 diet_prefs,
-                avoid_foods
+                avoid_foods,
+                swelling,
+                weight_loss,
+                dietary_diversity,
+                feeding_behavior,
+                physical_thin,
+                physical_shorter,
+                physical_weak,
+                physical_none,
+                has_recent_illness,
+                has_eating_difficulty,
+                has_food_insecurity,
+                has_micronutrient_deficiency,
+                has_functional_decline
             FROM user_preferences 
             WHERE user_email = ?
         ");
