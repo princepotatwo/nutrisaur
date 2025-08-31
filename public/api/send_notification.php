@@ -76,12 +76,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$targetUser]);
         $fcmToken = $stmt->fetchColumn();
         
-        // TEMPORARY: Use real FCM token for testing if no token found in database
+        // Check if user has a valid FCM token
         if (!$fcmToken) {
-            // Use the real FCM token you provided for testing
-            $fcmToken = 'dvMeL_TxQzKV_ScrM_I0L5:APA91bFkZfYXi3EYo7NLMP5isEDt5MRSRrVtGh2FojBW8zamrZT3BYRUfO3kTdiyfWtLmcZleotA9PkKnniji02l7OcrM5vdHCf95OHEsLTDsGwpVt_6q3g';
-            error_log("Using test FCM token for user: " . $targetUser);
+            error_log("No valid FCM token found for user: " . $targetUser . " - skipping notification");
+            echo json_encode([
+                'success' => false,
+                'message' => 'No valid FCM token found for user: ' . $userName,
+                'target_user' => $targetUser,
+                'reason' => 'no_fcm_token'
+            ]);
+            exit;
         }
+        
+        // Validate FCM token format (should be 140+ characters, alphanumeric + :_-)
+        if (strlen($fcmToken) < 140 || !preg_match('/^[a-zA-Z0-9:_-]+$/', $fcmToken)) {
+            error_log("Invalid FCM token format for user: " . $targetUser . " - token: " . substr($fcmToken, 0, 50) . "...");
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid FCM token format for user: ' . $userName,
+                'target_user' => $targetUser,
+                'reason' => 'invalid_token_format'
+            ]);
+            exit;
+        }
+        
+        error_log("Using valid FCM token for user: " . $targetUser . " - token: " . substr($fcmToken, 0, 20) . "...");
         
         // Send FCM notification
         $notificationSent = sendFCMNotification([$fcmToken], [
