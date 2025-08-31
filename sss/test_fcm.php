@@ -34,108 +34,13 @@ function safeDbQuery($conn, $query, $params = []) {
 // Function to send FCM notification
 function sendFCMNotification($tokens, $notificationData) {
     try {
-        // Try to get Firebase credentials from multiple sources
-        $firebaseCredentials = null;
+        // Use Firebase Admin SDK JSON file (working approach from localevent.php)
+        $adminSdkPath = __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-8dc50fb07f.json';
         
-        // Method 1: Try to find Firebase Admin SDK JSON file
-        $possiblePaths = [
-            __DIR__ . '/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
-            __DIR__ . '/../public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
-            '/var/www/html/sss/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json',
-            '/var/www/html/public/api/nutrisaur-ebf29-firebase-adminsdk-fbsvc-152a242b3b.json'
-        ];
-        
-        // Also try to find any firebase admin SDK file dynamically
-        $dynamicPaths = [];
-        $searchDirs = [__DIR__, __DIR__ . '/../public/api', '/var/www/html/sss', '/var/www/html/public/api'];
-        foreach ($searchDirs as $dir) {
-            if (is_dir($dir)) {
-                $files = glob($dir . '/*firebase*admin*.json');
-                $dynamicPaths = array_merge($dynamicPaths, $files);
-            }
-        }
-        
-        $allPaths = array_merge($possiblePaths, $dynamicPaths);
-        error_log("Searching for Firebase Admin SDK in directories: " . implode(', ', $searchDirs));
-        error_log("Dynamic Firebase files found: " . implode(', ', $dynamicPaths));
-        
-        // Try to find existing file
-        foreach ($allPaths as $path) {
-            if (file_exists($path)) {
-                $firebaseCredentials = json_decode(file_get_contents($path), true);
-                error_log("Firebase Admin SDK file found at: $path");
-                break;
-            }
-        }
-        
-        // Method 2: Try to get from environment variables (Railway)
-        if (!$firebaseCredentials && isset($_ENV['FIREBASE_PROJECT_ID'])) {
-            error_log("Using Firebase credentials from Railway environment variables");
-            
-            // Fix the private key format - convert \n back to actual newlines
-            $privateKey = $_ENV['FIREBASE_PRIVATE_KEY'] ?? '';
-            $privateKey = str_replace('\\n', "\n", $privateKey);
-            
-            // Ensure the private key has proper formatting
-            if (!str_contains($privateKey, '-----BEGIN PRIVATE KEY-----')) {
-                error_log("Private key format issue - missing BEGIN marker");
-                $privateKey = "-----BEGIN PRIVATE KEY-----\n" . $privateKey . "\n-----END PRIVATE KEY-----";
-            }
-            
-            error_log("Private key length: " . strlen($privateKey));
-            error_log("Private key starts with: " . substr($privateKey, 0, 50));
-            error_log("Private key ends with: " . substr($privateKey, -50));
-            
-            // Validate project ID format
-            $projectId = $_ENV['FIREBASE_PROJECT_ID'];
-            error_log("Raw project ID from env: '" . $projectId . "'");
-            error_log("Project ID length: " . strlen($projectId));
-            error_log("Project ID contains spaces: " . (strpos($projectId, ' ') !== false ? 'yes' : 'no'));
-            
-            $firebaseCredentials = [
-                'type' => 'service_account',
-                'project_id' => trim($projectId), // Remove any whitespace
-                'private_key_id' => $_ENV['FIREBASE_PRIVATE_KEY_ID'],
-                'private_key' => $privateKey,
-                'client_email' => $_ENV['FIREBASE_CLIENT_EMAIL'],
-                'client_id' => $_ENV['FIREBASE_CLIENT_ID'],
-                'auth_uri' => 'https://accounts.google.com/o/oauth2/auth',
-                'token_uri' => 'https://oauth2.googleapis.com/token',
-                'auth_provider_x509_cert_url' => 'https://www.googleapis.com/oauth2/v1/certs',
-                'client_x509_cert_url' => $_ENV['FIREBASE_CLIENT_CERT_URL'] ?? ''
-            ];
-        }
-        
-        if ($firebaseCredentials) {
-            error_log("Firebase credentials found, attempting to send FCM notification");
-            try {
-                $result = sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials);
-                error_log("FCM sendFCMWithCredentials result: " . ($result ? 'true' : 'false'));
-                return $result;
-            } catch (Exception $e) {
-                error_log("Exception in sendFCMWithCredentials: " . $e->getMessage());
-                error_log("Exception trace: " . $e->getTraceAsString());
-                return false;
-            } catch (Error $e) {
-                error_log("Error in sendFCMWithCredentials: " . $e->getMessage());
-                error_log("Error trace: " . $e->getTraceAsString());
-                return false;
-            }
+        if (file_exists($adminSdkPath)) {
+            return sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath);
         } else {
-            $errorDetails = [
-                'error_type' => 'firebase_credentials_not_found',
-                'current_directory' => __DIR__,
-                'tried_paths' => $allPaths,
-                'environment_variables_checked' => ['FIREBASE_PROJECT_ID', 'FIREBASE_PRIVATE_KEY_ID', 'FIREBASE_PRIVATE_KEY', 'FIREBASE_CLIENT_EMAIL', 'FIREBASE_CLIENT_ID'],
-                'env_firebase_project_id' => $_ENV['FIREBASE_PROJECT_ID'] ?? 'not_set',
-                'env_firebase_client_email' => $_ENV['FIREBASE_CLIENT_EMAIL'] ?? 'not_set',
-                'env_firebase_private_key_id' => $_ENV['FIREBASE_PRIVATE_KEY_ID'] ?? 'not_set',
-                'env_firebase_client_id' => $_ENV['FIREBASE_CLIENT_ID'] ?? 'not_set',
-                'env_firebase_private_key_length' => isset($_ENV['FIREBASE_PRIVATE_KEY']) ? strlen($_ENV['FIREBASE_PRIVATE_KEY']) : 'not_set',
-                'timestamp' => date('Y-m-d H:i:s')
-            ];
-            
-            error_log("Firebase credentials not found in any location. Error details: " . json_encode($errorDetails));
+            error_log("Firebase Admin SDK JSON file not found at: $adminSdkPath");
             return false;
         }
     } catch (Exception $e) {
@@ -144,44 +49,22 @@ function sendFCMNotification($tokens, $notificationData) {
     }
 }
 
-// Function to send FCM using Firebase credentials (from file or environment)
-function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials) {
-    error_log("sendFCMWithCredentials called with " . count($tokens) . " tokens");
-    error_log("Firebase credentials keys: " . implode(', ', array_keys($firebaseCredentials)));
-    
+// Function to send FCM using Firebase Admin SDK (working implementation from localevent.php)
+function sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath) {
     try {
-        // Use the provided Firebase credentials
-        $serviceAccount = $firebaseCredentials;
+        // Read the service account JSON file
+        $serviceAccount = json_decode(file_get_contents($adminSdkPath), true);
         if (!$serviceAccount || !isset($serviceAccount['project_id'])) {
-            $errorDetails = [
-                'error_type' => 'invalid_firebase_credentials',
-                'credentials_provided' => $firebaseCredentials ? 'yes' : 'no',
-                'credentials_keys' => $firebaseCredentials ? array_keys($firebaseCredentials) : 'none',
-                'project_id_exists' => isset($serviceAccount['project_id']) ? 'yes' : 'no',
-                'project_id_value' => $serviceAccount['project_id'] ?? 'not_set',
-                'timestamp' => date('Y-m-d H:i:s')
-            ];
-            error_log("Invalid Firebase credentials. Error details: " . json_encode($errorDetails));
+            error_log("Invalid Firebase service account JSON file");
             return false;
         }
         
         // Generate access token using service account credentials
-        error_log("Attempting to generate Firebase access token");
         $accessToken = generateAccessToken($serviceAccount);
         if (!$accessToken) {
-            $errorDetails = [
-                'error_type' => 'access_token_generation_failed',
-                'service_account_keys' => array_keys($serviceAccount),
-                'project_id' => $serviceAccount['project_id'],
-                'client_email' => $serviceAccount['client_email'] ?? 'not_set',
-                'private_key_exists' => isset($serviceAccount['private_key']) ? 'yes' : 'no',
-                'private_key_length' => isset($serviceAccount['private_key']) ? strlen($serviceAccount['private_key']) : 'not_set',
-                'timestamp' => date('Y-m-d H:i:s')
-            ];
-            error_log("Failed to generate access token. Error details: " . json_encode($errorDetails));
+            error_log("Failed to generate access token");
             return false;
         }
-        error_log("Firebase access token generated successfully");
         
         $successCount = 0;
         $failureCount = 0;
@@ -223,9 +106,6 @@ function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials
             $projectId = $serviceAccount['project_id'];
             $fcmUrl = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
             
-            error_log("FCM URL: " . $fcmUrl);
-            error_log("Project ID: " . $projectId);
-            
             // Send FCM message using cURL with Admin SDK
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $fcmUrl);
@@ -245,34 +125,23 @@ function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials
             curl_close($ch);
             
             if ($curlError) {
-                error_log("cURL error for token: $curlError");
                 $failureCount++;
                 continue;
             }
             
-            if ($httpCode === 200) {
+            if ($httpCode == 200) {
                 $responseData = json_decode($response, true);
                 if (isset($responseData['name'])) {
                     $successCount++;
-                    error_log("FCM success for token: " . $responseData['name']);
                 } else {
-                    error_log("FCM response missing 'name'. Response: " . substr($response, 0, 200));
                     $failureCount++;
                 }
             } else {
-                error_log("FCM HTTP error $httpCode. Response: " . substr($response, 0, 200));
                 $failureCount++;
             }
         }
         
-        if ($successCount > 0) {
-            error_log("FCM notification sent successfully to $successCount out of " . count($tokens) . " devices");
-            return true;
-        } else {
-            $errorMsg = "FCM notification failed to send to any devices. Success: $successCount, Failures: $failureCount";
-            error_log($errorMsg);
-            return false;
-        }
+        return $successCount > 0;
         
     } catch (Exception $e) {
         error_log("Error in sendFCMWithAdminSDK: " . $e->getMessage());
@@ -280,38 +149,45 @@ function sendFCMWithCredentials($tokens, $notificationData, $firebaseCredentials
     }
 }
 
-// Function to generate access token from service account
+// Function to generate access token using service account (working from localevent.php)
 function generateAccessToken($serviceAccount) {
     try {
-        // Check if we have a cached token
+        // Check if we have a cached token that's still valid
         $cacheFile = __DIR__ . '/fcm_token_cache.json';
         if (file_exists($cacheFile)) {
             $cached = json_decode(file_get_contents($cacheFile), true);
-            if ($cached && isset($cached['expires']) && $cached['expires'] > time()) {
-                return $cached['token'];
+            if ($cached && isset($cached['expires_at']) && $cached['expires_at'] > time()) {
+                return $cached['access_token'];
             }
         }
         
-        // Generate new token
-        $header = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
+        $header = [
+            'alg' => 'RS256',
+            'typ' => 'JWT'
+        ];
         
         $time = time();
-        $payload = base64_encode(json_encode([
+        $payload = [
             'iss' => $serviceAccount['client_email'],
             'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
             'aud' => 'https://oauth2.googleapis.com/token',
             'exp' => $time + 3600,
             'iat' => $time
-        ]));
+        ];
+        
+        $headerEncoded = base64url_encode(json_encode($header));
+        $payloadEncoded = base64url_encode(json_encode($payload));
         
         $signature = '';
-        if (openssl_sign($header . '.' . $payload, $signature, $serviceAccount['private_key'], 'SHA256')) {
-            $signature = base64_encode($signature);
-        } else {
-            throw new Exception('Failed to sign JWT');
-        }
+        openssl_sign(
+            $headerEncoded . '.' . $payloadEncoded,
+            $signature,
+            $serviceAccount['private_key'],
+            'SHA256'
+        );
         
-        $jwt = $header . '.' . $payload . '.' . $signature;
+        $signatureEncoded = base64url_encode($signature);
+        $jwt = $headerEncoded . '.' . $payloadEncoded . '.' . $signatureEncoded;
         
         // Exchange JWT for access token
         $ch = curl_init();
@@ -323,18 +199,26 @@ function generateAccessToken($serviceAccount) {
         ]));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
         curl_close($ch);
         
-        if ($httpCode === 200) {
+        if ($curlError) {
+            error_log("cURL error in generateAccessToken: " . $curlError);
+            return false;
+        }
+        
+        if ($httpCode == 200) {
             $tokenData = json_decode($response, true);
             if (isset($tokenData['access_token'])) {
-                // Cache the token
+                // Cache the token for reuse
                 $cacheData = [
-                    'token' => $tokenData['access_token'],
-                    'expires' => $time + 3500 // Cache for slightly less than 1 hour
+                    'access_token' => $tokenData['access_token'],
+                    'expires_at' => time() + 3500, // Cache for 58 minutes (token valid for 1 hour)
+                    'created_at' => time()
                 ];
                 file_put_contents($cacheFile, json_encode($cacheData));
                 
@@ -342,12 +226,18 @@ function generateAccessToken($serviceAccount) {
             }
         }
         
-        throw new Exception('Failed to get access token. HTTP: ' . $httpCode . ', Response: ' . $response);
+        error_log("Failed to generate access token. HTTP Code: " . $httpCode . " Response: " . $response);
+        return false;
         
     } catch (Exception $e) {
         error_log("Error generating access token: " . $e->getMessage());
         return false;
     }
+}
+
+// Helper function for base64url encoding (from localevent.php)
+function base64url_encode($data) {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
 // Handle test notification request
