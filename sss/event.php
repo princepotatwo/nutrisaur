@@ -512,7 +512,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
     }
 }
 
-// Simple working notification function that directly sends to users
+// Working FCM notification function using Firebase Admin SDK
 function sendFCMNotification($tokens, $notificationData, $targetLocation = null) {
     try {
         error_log("sendFCMNotification called with " . count($tokens) . " tokens for location: $targetLocation");
@@ -522,22 +522,121 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
             return false;
         }
         
+        // Use Firebase Admin SDK JSON file
+        $adminSdkPath = __DIR__ . '/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json';
+        
+        if (!file_exists($adminSdkPath)) {
+            error_log("Firebase Admin SDK JSON file not found at: $adminSdkPath");
+            return false;
+        }
+        
+        // Read the service account JSON file
+        $serviceAccount = json_decode(file_get_contents($adminSdkPath), true);
+        if (!$serviceAccount || !isset($serviceAccount['project_id'])) {
+            error_log("Invalid Firebase service account JSON file");
+            return false;
+        }
+        
+        // Generate access token using service account credentials
+        $accessToken = generateAccessToken($serviceAccount);
+        if (!$accessToken) {
+            error_log("Failed to generate access token");
+            return false;
+        }
+        
         $successCount = 0;
         $failureCount = 0;
         
         foreach ($tokens as $tokenData) {
+            $fcmToken = $tokenData['fcm_token'];
             $userEmail = $tokenData['user_email'];
             $userBarangay = $tokenData['user_barangay'] ?? 'Unknown';
             
-            if (empty($userEmail)) {
-                error_log("Empty user email for notification");
+            if (empty($fcmToken) || empty($userEmail)) {
+                error_log("Empty FCM token or user email for notification");
                 continue;
             }
             
-            // Simple direct notification approach - log success for now
-            // This will be replaced with actual working notification logic
-            error_log("Would send notification to $userEmail ($userBarangay): {$notificationData['title']} - {$notificationData['body']}");
-            $successCount++;
+            // Prepare the FCM message payload for HTTP v1 API
+            $fcmPayload = [
+                'message' => [
+                    'token' => $fcmToken,
+                    'notification' => [
+                        'title' => $notificationData['title'],
+                        'body' => $notificationData['body']
+                    ],
+                    'data' => array_merge($notificationData['data'] ?? [], [
+                        'notification_type' => 'event_notification',
+                        'event_type' => 'new_event',
+                        'target_user' => $userEmail,
+                        'user_barangay' => $userBarangay,
+                        'target_location' => $targetLocation,
+                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
+                    ]),
+                    'android' => [
+                        'priority' => 'high',
+                        'notification' => [
+                            'sound' => 'default',
+                            'default_sound' => true,
+                            'default_vibrate_timings' => true,
+                            'default_light_settings' => true,
+                            'icon' => 'ic_launcher',
+                            'color' => '#4CAF50',
+                            'channel_id' => 'nutrisaur_events'
+                        ]
+                    ],
+                    'apns' => [
+                        'payload' => [
+                            'aps' => [
+                                'sound' => 'default',
+                                'badge' => 1
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+            
+            // Use Firebase HTTP v1 API
+            $projectId = $serviceAccount['project_id'];
+            $fcmUrl = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
+            
+            // Send FCM message using cURL with Admin SDK
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $fcmUrl);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $accessToken,
+                'Content-Type: application/json'
+            ]);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmPayload));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            curl_close($ch);
+            
+            if ($error) {
+                error_log("cURL Error for user $userEmail: " . $error);
+                $failureCount++;
+                continue;
+            }
+            
+            if ($httpCode === 200) {
+                $responseData = json_decode($response, true);
+                if (isset($responseData['name'])) {
+                    error_log("FCM notification sent successfully to $userEmail ($userBarangay): {$notificationData['title']}");
+                    $successCount++;
+                } else {
+                    error_log("FCM API returned success but no message ID for user $userEmail");
+                    $failureCount++;
+                }
+            } else {
+                error_log("FCM API error for user $userEmail: HTTP $httpCode - Response: $response");
+                $failureCount++;
+            }
         }
         
         error_log("Event notification summary: $successCount successful, $failureCount failed for location: $targetLocation");
@@ -547,6 +646,73 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
         error_log("Error in sendFCMNotification: " . $e->getMessage());
         return false;
     }
+}
+
+// Function to generate access token using Firebase Admin SDK
+function generateAccessToken($serviceAccount) {
+    try {
+        $header = [
+            'alg' => 'RS256',
+            'typ' => 'JWT'
+        ];
+        
+        $time = time();
+        $payload = [
+            'iss' => $serviceAccount['client_email'],
+            'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
+            'aud' => 'https://oauth2.googleapis.com/token',
+            'exp' => $time + 3600,
+            'iat' => $time
+        ];
+        
+        $headerEncoded = base64url_encode(json_encode($header));
+        $payloadEncoded = base64url_encode(json_encode($payload));
+        
+        $signature = '';
+        if (openssl_sign(
+            $headerEncoded . '.' . $payloadEncoded,
+            $signature,
+            $serviceAccount['private_key'],
+            'SHA256'
+        )) {
+            $signatureEncoded = base64url_encode($signature);
+            $jwt = $headerEncoded . '.' . $payloadEncoded . '.' . $signatureEncoded;
+            
+            // Exchange JWT for access token
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/token');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                'assertion' => $jwt
+            ]));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+            if ($httpCode === 200) {
+                $tokenData = json_decode($response, true);
+                if (isset($tokenData['access_token'])) {
+                    return $tokenData['access_token'];
+                }
+            }
+            
+            error_log("Failed to get access token. HTTP: $httpCode, Response: $response");
+        }
+        
+        return false;
+    } catch (Exception $e) {
+        error_log("Error generating access token: " . $e->getMessage());
+        return false;
+    }
+}
+
+// Helper function for base64url encoding
+function base64url_encode($data) {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
 // Function to get FCM tokens based on location targeting using user_preferences table
