@@ -312,6 +312,8 @@ function sendFCMViaCurl($fcmTokens, $notificationData) {
  */
 function generateFirebaseJWT($projectId, $privateKey, $clientEmail) {
     try {
+        error_log("JWT Debug: Starting JWT generation");
+        
         // JWT header
         $header = [
             'alg' => 'RS256',
@@ -329,21 +331,28 @@ function generateFirebaseJWT($projectId, $privateKey, $clientEmail) {
             'scope' => 'https://www.googleapis.com/auth/firebase.messaging'
         ];
         
+        error_log("JWT Debug: Header and payload created");
+        
         // Create JWT
         $headerEncoded = base64url_encode(json_encode($header));
         $payloadEncoded = base64url_encode(json_encode($payload));
+        
+        error_log("JWT Debug: Header and payload encoded");
         
         // Sign the JWT
         $signature = '';
         if (openssl_sign($headerEncoded . '.' . $payloadEncoded, $signature, $privateKey, OPENSSL_ALGO_SHA256)) {
             $signatureEncoded = base64url_encode($signature);
-            return $headerEncoded . '.' . $payloadEncoded . '.' . $signatureEncoded;
+            $jwt = $headerEncoded . '.' . $payloadEncoded . '.' . $signatureEncoded;
+            error_log("JWT Debug: JWT generated successfully, length: " . strlen($jwt));
+            return $jwt;
+        } else {
+            error_log("JWT Error: Failed to sign JWT with openssl_sign");
+            return false;
         }
         
-        return false;
-        
     } catch (Exception $e) {
-        error_log("JWT Generation Error: " . $e->getMessage());
+        error_log("JWT Error: JWT Generation Error: " . $e->getMessage());
         return false;
     }
 }
