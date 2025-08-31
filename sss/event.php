@@ -12,6 +12,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     exit;
 }
 
+// 🚨 NEW ACTION: SAVE EVENT ONLY (no notifications, no redirects)
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'save_event_only') {
+    error_log("=== SAVE EVENT ONLY CALLED ===");
+    
+    // Check if it's an AJAX request
+    if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid request']);
+        exit;
+    }
+    
+    try {
+        // Get form data
+        $title = $_POST['title'] ?? '';
+        $type = $_POST['type'] ?? '';
+        $description = $_POST['description'] ?? '';
+        $date_time = $_POST['date_time'] ?? '';
+        $location = $_POST['location'] ?? '';
+        $organizer = $_POST['organizer'] ?? '';
+        
+        // Validate required fields
+        if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
+            echo json_encode(['success' => false, 'message' => 'All required fields must be filled']);
+            exit;
+        }
+        
+        // Insert into programs table
+        $stmt = $conn->prepare("INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$title, $type, $description, $date_time, $location, $organizer]);
+        
+        $eventId = $conn->lastInsertId();
+        
+        error_log("✅ Event saved successfully with ID: $eventId");
+        
+        // Return success response
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'message' => 'Event saved successfully',
+            'event_id' => $eventId
+        ]);
+        exit;
+        
+    } catch (Exception $e) {
+        error_log("❌ Error saving event: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+        exit;
+    }
+}
+
 // Start the session only if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -4778,23 +4829,26 @@ header:hover {
             submitBtn.disabled = true;
             
             try {
-                // Send event creation request via AJAX
-                const response = await fetch('event.php', {
+                // 🚨 USE THE SAME EXTERNAL API APPROACH AS DASH.PHP - NO INTERNAL AJAX HANDLING!
+                const response = await fetch('/api/send_notification.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: new URLSearchParams({
-                        'action': 'create_new_event',
-                        'title': eventData.title,
-                        'type': eventData.type,
-                        'description': eventData.description,
-                        'date_time': eventData.date_time,
-                        'location': eventData.location,
-                        'organizer': eventData.organizer,
-                        'notificationType': eventData.notificationType,
-                        'recipientGroup': eventData.recipientGroup
+                        notification_data: JSON.stringify({
+                            title: `🎉 New Event: ${eventData.title}`,
+                            body: `A new ${eventData.type} event has been created: ${eventData.description}`,
+                            target_user: 'all', // Send to all users
+                            alert_type: 'new_event',
+                            event_title: eventData.title,
+                            event_type: eventData.type,
+                            event_description: eventData.description,
+                            event_date: eventData.date_time,
+                            event_location: eventData.location,
+                            event_organizer: eventData.organizer
+                        })
                     })
                 });
                 
@@ -4814,7 +4868,7 @@ header:hover {
                     form.reset();
                     
                     // Show success message
-                    alert(`🎉 Event "${eventData.title}" created successfully! ${result.message}`);
+                    alert(`🎉 Event "${eventData.title}" created successfully! Notification sent to all users!`);
                     
                 } else {
                     alert(`Failed to create event: ${result.message}`);
@@ -7614,40 +7668,67 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
                 submitBtn.disabled = true;
                 
-                // Send event creation request via AJAX
-                const response = await fetch('event.php', {
+                // 🚨 STEP 1: SAVE EVENT TO DATABASE FIRST (using the working PHP logic)
+                const saveResponse = await fetch('event.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: new URLSearchParams({
-                        'action': 'create_new_event',
+                        'action': 'save_event_only', // New action for just saving, no notifications
                         'title': eventData.title,
                         'type': eventData.type,
                         'description': eventData.description,
                         'date_time': eventData.date_time,
                         'location': eventData.location,
-                        'organizer': eventData.organizer,
-                        'notificationType': eventData.notificationType,
-                        'recipientGroup': eventData.recipientGroup
+                        'organizer': eventData.organizer
                     })
                 });
                 
-                const result = await response.json();
+                const saveResult = await saveResponse.json();
                 
-                if (result.success) {
+                if (!saveResult.success) {
+                    throw new Error(`Failed to save event: ${saveResult.message}`);
+                }
+                
+                // 🚨 STEP 2: SEND NOTIFICATION USING THE SAME EXTERNAL API AS DASH.PHP
+                const notificationResponse = await fetch('/api/send_notification.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        notification_data: JSON.stringify({
+                            title: `🎉 New Event: ${eventData.title}`,
+                            body: `A new ${eventData.type} event has been created: ${eventData.description}`,
+                            target_user: 'all', // Send to all users
+                            alert_type: 'new_event',
+                            event_title: eventData.title,
+                            event_type: eventData.type,
+                            event_description: eventData.description,
+                            event_date: eventData.date_time,
+                            event_location: eventData.location,
+                            event_organizer: eventData.organizer
+                        })
+                    })
+                });
+                
+                const notificationResult = await notificationResponse.json();
+                
+                if (notificationResult.success) {
                     // Reset form
                     form.reset();
                     
                     // Show success message
-                    showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully! ${result.message}`);
+                    showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully! Notification sent to all users!`);
                     
                     // Optionally refresh events table if needed (without page reload)
                     // You can implement a function to refresh just the events table here
                     
                 } else {
-                    showNotificationError(`Failed to create event: ${result.message}`);
+                    showNotificationSuccess(`Event saved but notification failed: ${notificationResult.message}`);
                 }
                 
             } catch (error) {
