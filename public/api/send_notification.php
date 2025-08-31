@@ -280,6 +280,9 @@ function sendFCMViaCurl($fcmTokens, $notificationData) {
         
         $url = 'https://fcm.googleapis.com/fcm/send';
         
+        $successCount = 0;
+        $totalTokens = count($fcmTokens);
+        
         foreach ($fcmTokens as $token) {
             $data = [
                 'to' => $token,
@@ -321,15 +324,25 @@ function sendFCMViaCurl($fcmTokens, $notificationData) {
                 $responseData = json_decode($response, true);
                 if (isset($responseData['success']) && $responseData['success'] == 1) {
                     error_log("FCM Notification sent successfully via basic cURL to token: " . substr($token, 0, 20) . "...");
+                    $successCount++;
                 } else {
-                    error_log("FCM Error: " . ($responseData['results'][0]['error'] ?? 'Unknown error'));
+                    $errorMsg = $responseData['results'][0]['error'] ?? 'Unknown error';
+                    error_log("FCM Error: " . $errorMsg);
+                    error_log("FCM Response: " . $response);
                 }
             } else {
                 error_log("FCM HTTP Error: " . $httpCode . " - " . $response);
             }
         }
         
-        return true;
+        // Only return true if at least one notification was sent successfully
+        if ($successCount > 0) {
+            error_log("FCM Summary: {$successCount}/{$totalTokens} notifications sent successfully");
+            return true;
+        } else {
+            error_log("FCM Summary: 0/{$totalTokens} notifications sent successfully - returning false");
+            return false;
+        }
         
     } catch (Exception $e) {
         error_log("Basic FCM cURL Error: " . $e->getMessage());
