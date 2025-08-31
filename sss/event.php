@@ -4398,7 +4398,7 @@ header:hover {
                 </div>
                 
                 <div class="form-actions">
-                    <button type="button" onclick="openCreateEventModal()" class="btn btn-add">
+                    <button type="submit" name="create_event" class="btn btn-add">
                         <span class="btn-text">Create Event</span>
                     </button>
                 </div>
@@ -4683,144 +4683,7 @@ header:hover {
         </div>
     </div>
 
-    <!-- Create Event Modal -->
-    <div id="createEventModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Create New Event</h3>
-                <span class="close" onclick="closeCreateEventModal()">&times;</span>
-            </div>
-            <form method="POST" action="event.php">
-                <input type="hidden" name="create_event" value="1">
-                
-                <div class="form-group">
-                    <label for="create_eventTitle">Event Title</label>
-                    <input type="text" id="create_eventTitle" name="eventTitle" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create_eventType">Event Type</label>
-                    <select id="create_eventType" name="eventType" required>
-                        <option value="Workshop">Workshop</option>
-                        <option value="Seminar">Seminar</option>
-                        <option value="Webinar">Webinar</option>
-                        <option value="Demo">Demo</option>
-                        <option value="Training">Training</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create_eventDate">Date & Time</label>
-                    <input type="datetime-local" id="create_eventDate" name="eventDate" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create_eventLocation">Location</label>
-                    <div class="custom-select-container">
-                        <div class="select-header" onclick="toggleCreateEventLocationDropdown()">
-                            <span id="selected-create-event-location">All Locations</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </div>
-                        <div class="dropdown-content" id="create-event-location-dropdown">
-                            <div class="search-container">
-                                <input type="text" id="create-event-location-search" placeholder="Search barangay or municipality..." onkeyup="filterCreateEventLocationOptions()">
-                            </div>
-                            <div class="options-container">
-                                <div class="option-group">
-                                    <div class="option-header">Municipalities</div>
-                                    <div class="option-item" data-value="" onclick="selectCreateEventLocation('', 'All Locations')">All Locations</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_ABUCAY" onclick="selectCreateEventLocation('MUNICIPALITY_ABUCAY', 'ABUCAY (All Barangays)')">ABUCAY (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_BAGAC" onclick="selectCreateEventLocation('MUNICIPALITY_BAGAC', 'BAGAC (All Barangays)')">BAGAC (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_BALANGA" onclick="selectCreateEventLocation('MUNICIPALITY_BALANGA', 'CITY OF BALANGA (All Barangays)')">CITY OF BALANGA (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_DINALUPIHAN" onclick="selectCreateEventLocation('MUNICIPALITY_DINALUPIHAN', 'DINALUPIHAN (All Barangays)')">DINALUPIHAN (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_HERMOSA" onclick="selectCreateEventLocation('MUNICIPALITY_HERMOSA', 'HERMOSA (All Barangays)')">HERMOSA (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_LIMAY" onclick="selectCreateEventLocation('MUNICIPALITY_LIMAY', 'LIMAY (All Barangays)')">LIMAY (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_MARIVELES" onclick="selectCreateEventLocation('MUNICIPALITY_MARIVELES', 'MARIVELES (All Barangays)')">MARIVELES (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_MORONG" onclick="selectCreateEventLocation('MUNICIPALITY_MORONG', 'MORONG (All Barangays)')">MORONG (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_ORANI" onclick="selectCreateEventLocation('MUNICIPALITY_ORANI', 'ORANI (All Barangays)')">ORANI (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_ORION" onclick="selectCreateEventLocation('MUNICIPALITY_ORION', 'ORION (All Barangays)')">ORION (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_PILAR" onclick="selectCreateEventLocation('MUNICIPALITY_PILAR', 'PILAR (All Barangays)')">PILAR (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_SAMAL" onclick="selectCreateEventLocation('MUNICIPALITY_SAMAL', 'SAMAL (All Barangays)')">SAMAL (All Barangays)</div>
-                                </div>
-                                <div class="option-group">
-                                    <div class="option-header">HERMOSA</div>
-                                    <div class="option-item" data-value="A. Rivera (Pob.)" onclick="selectCreateEventLocation('A. Rivera (Pob.)', 'A. Rivera (Pob.)')">A. Rivera (Pob.)</div>
-                                    <div class="option-item" data-value="Almacen" onclick="selectCreateEventLocation('Almacen', 'Almacen')">Almacen</div>
-                                    <div class="option-item" data-value="Bacong" onclick="selectCreateEventLocation('Bacong', 'Bacong')">Bacong</div>
-                                    <div class="option-item" data-value="Balsic" onclick="selectCreateEventLocation('Balsic', 'Balsic')">Balsic</div>
-                                    <div class="option-item" data-value="Bamban" onclick="selectCreateEventLocation('Bamban', 'Bamban')">Bamban</div>
-                                    <div class="option-item" data-value="Burgos-Soliman (Pob.)" onclick="selectCreateEventLocation('Burgos-Soliman (Pob.)', 'Burgos-Soliman (Pob.)')">Burgos-Soliman (Pob.)</div>
-                                    <div class="option-item" data-value="Cataning (Pob.)" onclick="selectCreateEventLocation('Cataning (Pob.)', 'Cataning (Pob.)')">Cataning (Pob.)</div>
-                                    <div class="option-item" data-value="Culis" onclick="selectCreateEventLocation('Culis', 'Culis')">Culis</div>
-                                    <div class="option-item" data-value="Daungan (Pob.)" onclick="selectCreateEventLocation('Daungan (Pob.)', 'Daungan (Pob.)')">Daungan (Pob.)</div>
-                                    <div class="option-item" data-value="Mabiga" onclick="selectCreateEventLocation('Mabiga', 'Mabiga')">Mabiga</div>
-                                    <div class="option-item" data-value="Mabuco" onclick="selectCreateEventLocation('Mabuco', 'Mabuco')">Mabuco</div>
-                                    <div class="option-item" data-value="Maite" onclick="selectCreateEventLocation('Maite', 'Maite')">Maite</div>
-                                    <div class="option-item" data-value="Mambog - Mandama" onclick="selectCreateEventLocation('Mambog - Mandama', 'Mambog - Mandama')">Mambog - Mandama</div>
-                                    <div class="option-item" data-value="Palihan" onclick="selectCreateEventLocation('Palihan', 'Palihan')">Palihan</div>
-                                    <div class="option-item" data-value="Pandatung" onclick="selectCreateEventLocation('Pandatung', 'Pandatung')">Pandatung</div>
-                                    <div class="option-item" data-value="Pulo" onclick="selectCreateEventLocation('Pulo', 'Pulo')">Pulo</div>
-                                    <div class="option-item" data-value="Saba" onclick="selectCreateEventLocation('Saba', 'Saba')">Saba</div>
-                                    <div class="option-item" data-value="San Pedro" onclick="selectCreateEventLocation('San Pedro', 'San Pedro')">San Pedro</div>
-                                    <div class="option-item" data-value="Sumalo" onclick="selectCreateEventLocation('Sumalo', 'Sumalo')">Sumalo</div>
-                                    <div class="option-item" data-value="Tipo" onclick="selectCreateEventLocation('Tipo', 'Tipo')">Tipo</div>
-                                </div>
-                                <div class="option-group">
-                                    <div class="option-header">LIMAY</div>
-                                    <div class="option-item" data-value="Alas-asin" onclick="selectCreateEventLocation('Alas-asin', 'Alas-asin')">Alas-asin</div>
-                                    <div class="option-item" data-value="Anonang" onclick="selectCreateEventLocation('Anonang', 'Anonang')">Anonang</div>
-                                    <div class="option-item" data-value="Bataan" onclick="selectCreateEventLocation('Bataan', 'Bataan')">Bataan</div>
-                                    <div class="option-item" data-value="Bayan-bayanan" onclick="selectCreateEventLocation('Bayan-bayanan', 'Bayan-bayanan')">Bayan-bayanan</div>
-                                    <div class="option-item" data-value="Binuangan" onclick="selectCreateEventLocation('Binuangan', 'Binuangan')">Binuangan</div>
-                                    <div class="option-item" data-value="Cacabasan" onclick="selectCreateEventLocation('Cacabasan', 'Cacabasan')">Cacabasan</div>
-                                    <div class="option-item" data-value="Duale" onclick="selectCreateEventLocation('Duale', 'Duale')">Duale</div>
-                                    <div class="option-item" data-value="Kitang 2" onclick="selectCreateEventLocation('Kitang 2', 'Kitang 2')">Kitang 2</div>
-                                    <div class="option-item" data-value="Kitang 2 & Luz" onclick="selectCreateEventLocation('Kitang 2 & Luz', 'Kitang 2 & Luz')">Kitang 2 & Luz</div>
-                                    <div class="option-item" data-value="Lamao" onclick="selectCreateEventLocation('Lamao', 'Lamao')">Lamao</div>
-                                    <div class="option-item" data-value="Luz" onclick="selectCreateEventLocation('Luz', 'Luz')">Luz</div>
-                                    <div class="option-item" data-value="Mabayo" onclick="selectCreateEventLocation('Mabayo', 'Mabayo')">Mabayo</div>
-                                    <div class="option-item" data-value="Malaya" onclick="selectCreateEventLocation('Malaya', 'Malaya')">Malaya</div>
-                                    <div class="option-item" data-value="Mountain View" onclick="selectCreateEventLocation('Mountain View', 'Mountain View')">Mountain View</div>
-                                    <div class="option-item" data-value="Poblacion" onclick="selectCreateEventLocation('Poblacion', 'Poblacion')">Poblacion</div>
-                                    <div class="option-item" data-value="Reformista" onclick="selectCreateEventLocation('Reformista', 'Reformista')">Reformista</div>
-                                    <div class="option-item" data-value="San Isidro" onclick="selectCreateEventLocation('San Isidro', 'San Isidro')">San Isidro</div>
-                                    <div class="option-item" data-value="Santiago" onclick="selectCreateEventLocation('Santiago', 'Santiago')">Santiago</div>
-                                    <div class="option-item" data-value="Tuyan" onclick="selectCreateEventLocation('Tuyan', 'Tuyan')">Tuyan</div>
-                                    <div class="option-item" data-value="Villa Angeles" onclick="selectCreateEventLocation('Villa Angeles', 'Villa Angeles')">Villa Angeles</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="create_eventLocation" name="eventLocation" value="All Locations">
-                </div>
-                
-                <div class="form-group">
-                    <label for="create_eventOrganizer">Person in Charge</label>
-                    <input type="text" id="create_eventOrganizer" name="eventOrganizer" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create_eventDescription">Event Description</label>
-                    <textarea id="create_eventDescription" name="eventDescription" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="create_notificationType">Notification Type</label>
-                    <select id="create_notificationType" name="notificationType">
-                        <option value="push">Push Notification (Recommended)</option>
-                        <option value="email">Email Only</option>
-                        <option value="both">Push + Email</option>
-                        <option value="none">No Notifications</option>
-                    </select>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-add">Create Event</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeCreateEventModal()">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
+
 
     <script>
         // NEW SIMPLE THEME TOGGLE - Optimized to prevent flickering!
@@ -6675,73 +6538,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             document.getElementById('duplicateWarningModal').style.display = 'none';
         }
         
-        // Create Event Modal Functions
-        function openCreateEventModal() {
-            // Reset form values
-            document.getElementById('create_eventTitle').value = '';
-            document.getElementById('create_eventType').value = 'Workshop';
-            document.getElementById('create_eventDate').value = '';
-            document.getElementById('create_eventLocation').value = 'All Locations';
-            document.getElementById('selected-create-event-location').textContent = 'All Locations';
-            document.getElementById('create_eventOrganizer').value = '';
-            document.getElementById('create_eventDescription').value = '';
-            document.getElementById('create_notificationType').value = 'push';
-            
-            // Set default date to tomorrow
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(9, 0, 0, 0); // 9:00 AM
-            const formattedDate = tomorrow.toISOString().slice(0, 16);
-            document.getElementById('create_eventDate').value = formattedDate;
-            
-            // Show modal
-            document.getElementById('createEventModal').style.display = 'block';
-        }
-        
-        function closeCreateEventModal() {
-            document.getElementById('createEventModal').style.display = 'none';
-        }
-        
-        // Create Event Location Dropdown Functions
-        function toggleCreateEventLocationDropdown() {
-            const dropdown = document.getElementById('create-event-location-dropdown');
-            const arrow = document.querySelector('#create-event-location-dropdown').previousElementSibling.querySelector('.dropdown-arrow');
-            
-            if (dropdown.classList.contains('active')) {
-                dropdown.classList.remove('active');
-                arrow.classList.remove('active');
-            } else {
-                // Close other dropdowns first
-                document.querySelectorAll('.dropdown-content').forEach(dd => dd.classList.remove('active'));
-                document.querySelectorAll('.dropdown-arrow').forEach(ar => ar.classList.remove('active'));
-                
-                dropdown.classList.add('active');
-                arrow.classList.add('active');
-            }
-        }
-        
-        function selectCreateEventLocation(value, displayText) {
-            document.getElementById('create_eventLocation').value = value;
-            document.getElementById('selected-create-event-location').textContent = displayText;
-            
-            // Close dropdown
-            document.getElementById('create-event-location-dropdown').classList.remove('active');
-            document.querySelector('#create-event-location-dropdown').previousElementSibling.querySelector('.dropdown-arrow').classList.remove('active');
-        }
-        
-        function filterCreateEventLocationOptions() {
-            const searchTerm = document.getElementById('create-event-location-search').value.toLowerCase();
-            const options = document.querySelectorAll('#create-event-location-dropdown .option-item');
-            
-            options.forEach(option => {
-                const text = option.textContent.toLowerCase();
-                if (text.includes(searchTerm)) {
-                    option.style.display = 'block';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
-        }
+
         
         function showDuplicateWarningModal(duplicates) {
             const modal = document.getElementById('duplicateWarningModal');
@@ -6798,13 +6595,10 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         // Close modal when clicking outside
         window.onclick = function(event) {
             const editModal = document.getElementById('editModal');
-            const createModal = document.getElementById('createEventModal');
             const duplicateModal = document.getElementById('duplicateWarningModal');
             
             if (event.target === editModal) {
                 closeEditModal();
-            } else if (event.target === createModal) {
-                closeCreateEventModal();
             } else if (event.target === duplicateModal) {
                 closeDuplicateWarningModal();
             }
