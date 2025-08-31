@@ -414,8 +414,7 @@ function sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountDa
 function sendFCMViaCurl($fcmTokens, $notificationData) {
     try {
         // FCM Server Key from Firebase Console (Project Settings > Cloud Messaging)
-        // You need to get this from Firebase Console > Project Settings > Cloud Messaging > Server key
-        $serverKey = 'AIzaSyBGArwSy8j6_pQwR4ozFudKFcM5jHHXwTA'; // This might be the API key, not server key
+        $serverKey = 'bd84948ddfa90284244e7abc7fdafb0b3f92b364';
         
         $url = 'https://fcm.googleapis.com/fcm/send';
         
