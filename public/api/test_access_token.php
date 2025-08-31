@@ -14,7 +14,7 @@ if (!$conn) {
 
 try {
     // Test Firebase Admin SDK file access
-    $adminSdkPath = __DIR__ . '/../sss/nutrisaur-ebf29-firebase-adminsdk-fbsvc-8dc50fb07f.json';
+    $adminSdkPath = __DIR__ . '/../../sss/nutrisaur-ebf29-firebase-adminsdk-fbsvc-8dc50fb07f.json';
     if (!file_exists($adminSdkPath)) {
         throw new Exception("Firebase Admin SDK file not found at: $adminSdkPath");
     }
