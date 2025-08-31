@@ -1,2 +1,0 @@
-name,user_email,age,gender,barangay,municipality,province,weight_kg,height_cm,bmi,risk_score,malnutrition_risk,screening_date
-Test User,test@example.com,25,male,Test Location,Test Municipality,Test Province,70.00,175.00,22.86,15,low,2025-01-20
