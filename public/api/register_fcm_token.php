@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Include database configuration
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../config.php';
 
 // Function to log FCM operations
 function logFCMOperation($message, $data = null) {
