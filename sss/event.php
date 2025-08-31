@@ -1,6 +1,6 @@
 <?php
 // Enable error reporting for debugging
-// 🚨 FORCE NEW DEPLOYMENT - All redirects disabled, form submission fixed, location dropdown working
+// 🚨 COMPLETELY REWRITTEN EVENT CREATION LOGIC - NO REDIRECTS, NO DASHBOARD GOING BACK
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -352,167 +352,163 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 
 
 
-// Handle form submission for creating new program
+// 🚨 COMPLETELY REWRITTEN EVENT CREATION LOGIC - NO REDIRECTS
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
-    // Debug logging for all POST data
-    error_log("=== EVENT CREATION DEBUG ===");
-    error_log("POST data received: " . print_r($_POST, true));
-    error_log("Request method: " . $_SERVER["REQUEST_METHOD"]);
-    error_log("Content-Type: " . ($_SERVER["CONTENT_TYPE"] ?? 'not set'));
+    error_log("=== NEW EVENT CREATION LOGIC STARTED ===");
     
-    $title = $_POST['eventTitle'];
-    $type = $_POST['eventType'];
-    $description = $_POST['eventDescription'];
-    $date_time = $_POST['eventDate'];
-    $location = $_POST['eventLocation'];
-    $organizer = $_POST['eventOrganizer'];
+    // Get form data
+    $title = $_POST['eventTitle'] ?? '';
+    $type = $_POST['eventType'] ?? '';
+    $description = $_POST['eventDescription'] ?? '';
+    $date_time = $_POST['eventDate'] ?? '';
+    $location = $_POST['eventLocation'] ?? 'all';
+    $organizer = $_POST['eventOrganizer'] ?? '';
     
-    // Debug logging for location
-    error_log("Creating event with location: '$location' (length: " . strlen($location) . ")");
-    error_log("Location value type: " . gettype($location));
-    error_log("Location is empty: " . (empty($location) ? 'YES' : 'NO'));
-    error_log("Location === '': " . ($location === '' ? 'YES' : 'NO'));
-    error_log("Location === null: " . ($location === null ? 'YES' : 'NO'));
+    error_log("Form data received: Title=$title, Type=$type, Location=$location, Organizer=$organizer");
     
-    try {
-        // First, insert the event directly into the database
-        $stmt = $conn->prepare("
-            INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, NOW())
-        ");
-        
-        $stmt->execute([$title, $type, $description, $date_time, $location, $organizer]);
-        $eventId = $conn->lastInsertId();
-        
-        error_log("Event created successfully with ID: $eventId");
-        
-        // Now send FCM notification with location-based targeting
-        $notificationSent = false;
-        $notificationMessage = '';
-        $devicesNotified = 0;
-        
+    // Validate required fields
+    if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
+        $errorMessage = "Please fill in all required fields.";
+        error_log("Validation failed: Missing required fields");
+    } else {
         try {
-            // Get FCM tokens based on event location
-            $fcmTokenData = getFCMTokensByLocation($location);
-            $fcmTokens = array_column($fcmTokenData, 'fcm_token');
+            // Insert event into database
+            $stmt = $conn->prepare("
+                INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW())
+            ");
             
-            error_log("FCM tokens found: " . count($fcmTokens) . " for location: '$location'");
+            $stmt->execute([$title, $type, $description, $date_time, $location, $organizer]);
+            $eventId = $conn->lastInsertId();
             
-            if (!empty($fcmTokens)) {
-                $devicesNotified = count($fcmTokens);
-                
-                // Determine target type for logging
-                $targetType = 'all';
-                $targetValue = 'all';
-                if (!empty($location)) {
-                    if (strpos($location, 'MUNICIPALITY_') === 0) {
-                        $targetType = 'municipality';
-                        $targetValue = $location;
-                    } else {
-                        $targetType = 'barangay';
-                        $targetValue = $location;
-                    }
-                }
-                
-                // Create notification body with proper location handling
-                $locationText = empty($location) ? 'All Locations' : $location;
-                $notificationBody = "New event: $title at $locationText on " . date('M j, Y g:i A', strtotime($date_time));
-                
-                // Send FCM notification using the working API
-                $notificationSent = sendFCMNotification($fcmTokenData, [
-                    'title' => $title,
-                    'body' => $notificationBody,
-                    'data' => [
-                        'event_id' => $eventId,
-                        'event_title' => $title,
-                        'event_type' => $type,
-                        'event_description' => $description,
-                        'event_date' => $date_time,
-                        'event_location' => $location,
-                        'event_organizer' => $organizer,
-                        'notification_type' => 'new_event',
-                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
-                    ]
-                ], $location);
-                
-                // Log the notification attempt
-                logNotificationAttempt($eventId, 'new_event', $targetType, $targetValue, $devicesNotified, $notificationSent);
-                
-                if ($notificationSent) {
-                    $notificationMessage = "Event created and notification sent to $devicesNotified devices in " . 
-                        ($targetType === 'municipality' ? 'municipality' : ($targetType === 'barangay' ? 'barangay' : 'all areas')) . 
-                        " ($locationText)!";
-                } else {
-                    $notificationMessage = "Event created but notification failed to send to $devicesNotified devices.";
-                }
-            } else {
-                $notificationSent = false;
-                $locationText = empty($location) ? 'All Locations' : $location;
-                $notificationMessage = "Event created but no FCM tokens found for location '$locationText'. No notifications sent.";
-                
-                // Log the attempt with no tokens found
-                logNotificationAttempt($eventId, 'new_event', 'all', 'all', 0, false, 'No FCM tokens found for location');
-            }
+            error_log("✅ Event created successfully with ID: $eventId");
             
-        } catch (Exception $notificationError) {
-            error_log("Error sending FCM notification: " . $notificationError->getMessage());
-            $notificationSent = false;
-            $notificationMessage = "❌ Event created but notification error: " . $notificationError->getMessage();
+            // Send notifications
+            $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer);
             
-            // Log the error
-            logNotificationAttempt($eventId, 'new_event', 'all', 'all', 0, false, $notificationError->getMessage());
-        }
-        
-        // Check if this is an AJAX request
-        $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-                  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-        
-        if ($isAjax) {
-            // Return success for AJAX request
-            header('Content-Type: application/json');
-            echo json_encode([
-                'success' => true, 
-                'message' => 'Event created successfully',
-                'event_id' => $eventId,
-                'notification_sent' => $notificationSent,
-                'devices_notified' => $devicesNotified,
-                'notification_message' => $notificationMessage
-            ]);
-            exit;
-        } else {
-            // TEMPORARILY DISABLED REDIRECT FOR TESTING
-            // Redirect with success message
-            // $redirectUrl = "event.php?success=1&event_id=" . $eventId;
-            // if ($notificationSent) {
-            //     $redirectUrl .= "&notification=1&devices=" . $devicesNotified;
-            // }
-            // $redirectUrl .= "&message=" . urlencode($notificationMessage);
-            // header("Location: " . $redirectUrl);
-            // exit;
+            // Set success message (NO REDIRECTS)
+            $successMessage = "🎉 Event '$title' created successfully! " . $notificationResult['message'];
             
-            // For testing, just show the message
-            $successMessage = "Event created successfully! " . $notificationMessage;
-        }
-        
-    } catch(PDOException $e) {
-        $errorMessage = "Database error: " . $e->getMessage();
-        error_log("Database error creating event: " . $e->getMessage());
-        
-        if (isset($isAjax) && $isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $errorMessage]);
-            exit;
-        }
-    } catch(Exception $e) {
-        $errorMessage = "Error creating event: " . $e->getMessage();
-        error_log("General error creating event: " . $e->getMessage());
-        
-        if (isset($isAjax) && $isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'message' => $errorMessage]);
-            exit;
+            error_log("✅ Event creation completed successfully");
+            
+        } catch (Exception $e) {
+            $errorMessage = "Error creating event: " . $e->getMessage();
+            error_log("❌ Event creation failed: " . $e->getMessage());
         }
     }
+    
+    // IMPORTANT: NO REDIRECTS, NO EXIT - Just set messages and continue
+    error_log("Event creation logic completed - staying on same page");
+}
+
+// 🚨 NEW SIMPLIFIED NOTIFICATION FUNCTION
+function sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer) {
+    global $conn;
+    
+    try {
+        error_log("🚨 sendEventNotifications called for event: $title");
+        
+        // Get FCM tokens based on location
+        $fcmTokenData = getFCMTokensByLocation($location);
+        $fcmTokens = array_column($fcmTokenData, 'fcm_token');
+        
+        error_log("📱 FCM tokens found: " . count($fcmTokens) . " for location: '$location'");
+        
+        if (empty($fcmTokens)) {
+            error_log("⚠️ No FCM tokens found for location: $location");
+            return [
+                'success' => false,
+                'message' => 'No users found for this location. Event created but no notifications sent.',
+                'devices_notified' => 0
+            ];
+        }
+        
+        // Create notification body
+        $locationText = ($location === 'all' || empty($location)) ? 'All Locations' : $location;
+        $notificationBody = "New event: $title at $locationText on " . date('M j, Y g:i A', strtotime($date_time));
+        
+        // Send notifications using the working API
+        $successCount = 0;
+        $failureCount = 0;
+        
+        foreach ($fcmTokenData as $tokenData) {
+            $fcmToken = $tokenData['fcm_token'];
+            $userEmail = $tokenData['user_email'];
+            
+            if (empty($fcmToken) || empty($userEmail)) {
+                $failureCount++;
+                continue;
+            }
+            
+            // Use the working notification API
+            $notificationPayload = [
+                'title' => "🎯 Event: " . $title,
+                'body' => $notificationBody,
+                'target_user' => $userEmail,
+                'user_name' => $userEmail,
+                'alert_type' => 'event_notification'
+            ];
+            
+            $result = sendNotificationViaAPI($notificationPayload);
+            if ($result['success']) {
+                $successCount++;
+            } else {
+                $failureCount++;
+            }
+        }
+        
+        error_log("📤 Notifications sent: $successCount successful, $failureCount failed");
+        
+        // Log the attempt
+        logNotificationAttempt($eventId, 'new_event', 'location', $location, $successCount, $successCount > 0);
+        
+        if ($successCount > 0) {
+            return [
+                'success' => true,
+                'message' => "Notification sent to $successCount users in $locationText",
+                'devices_notified' => $successCount
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => "Event created but failed to send notifications",
+                'devices_notified' => 0
+            ];
+        }
+        
+    } catch (Exception $e) {
+        error_log("❌ Error in sendEventNotifications: " . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => "Error sending notifications: " . $e->getMessage(),
+            'devices_notified' => 0
+        ];
+    }
+}
+
+// Helper function to send notification via API
+function sendNotificationViaAPI($notificationData) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/send_notification.php');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+        'notification_data' => json_encode($notificationData)
+    ]));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+    
+    if ($error) {
+        return ['success' => false, 'error' => $error];
+    }
+    
+    $responseData = json_decode($response, true);
+    return $responseData ?: ['success' => false, 'error' => 'Invalid response'];
 }
 
 // Use the SAME working FCM system that dash.php uses
