@@ -1866,16 +1866,14 @@ if (isset($_GET['logout'])) {
                 
                 console.log('Notification data:', notificationData);
                 
-                // Send to the event.php notification system
-                const response = await fetch('event.php', {
+                // Send to the dedicated notification API
+                const response = await fetch('/api/send_notification.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    credentials: 'include',
                     body: new URLSearchParams({
-                        action: 'send_personal_notification',
                         notification_data: JSON.stringify(notificationData)
                     })
                 });
