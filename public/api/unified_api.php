@@ -1910,6 +1910,20 @@ function handleSaveScreening($pdo, $postData) {
         $screeningData = $postData['screening_data'] ?? [];
         $riskScore = $postData['risk_score'] ?? 0;
         
+        // Extract individual fields from screening data
+        $gender = $screeningData['gender'] ?? null;
+        $barangay = $screeningData['barangay'] ?? null;
+        $income = $screeningData['income'] ?? null;
+        $weight = $screeningData['weight'] ?? null;
+        $height = $screeningData['height'] ?? null;
+        $bmi = $screeningData['bmi'] ?? null;
+        $muac = $screeningData['muac'] ?? null;
+        $name = $screeningData['name'] ?? null;
+        $birthday = $screeningData['birthday'] ?? null;
+        $allergies = $screeningData['allergies'] ?? null;
+        $dietPrefs = $screeningData['diet_prefs'] ?? null;
+        $avoidFoods = $screeningData['avoid_foods'] ?? null;
+        
         if (!$userEmail) {
             echo json_encode(['error' => 'User email is required']);
             exit;
@@ -1921,30 +1935,78 @@ function handleSaveScreening($pdo, $postData) {
         $existingUser = $stmt->fetch();
         
         if ($existingUser) {
-            // Update existing user
+            // Update existing user with all individual fields
             $stmt = $pdo->prepare("
                 UPDATE user_preferences SET 
                     screening_answers = ?,
                     risk_score = ?,
+                    gender = ?,
+                    barangay = ?,
+                    income = ?,
+                    weight_kg = ?,
+                    height_cm = ?,
+                    bmi = ?,
+                    muac = ?,
+                    name = ?,
+                    birthday = ?,
+                    allergies = ?,
+                    diet_prefs = ?,
+                    avoid_foods = ?,
                     updated_at = NOW()
                 WHERE user_email = ?
             ");
-            $stmt->execute([json_encode($screeningData), $riskScore, $userEmail]);
+            $stmt->execute([
+                json_encode($screeningData), 
+                $riskScore, 
+                $gender, 
+                $barangay, 
+                $income, 
+                $weight, 
+                $height, 
+                $bmi, 
+                $muac, 
+                $name, 
+                $birthday, 
+                $allergies, 
+                $dietPrefs, 
+                $avoidFoods, 
+                $userEmail
+            ]);
         } else {
-            // Create new user record
+            // Create new user record with all individual fields
             $stmt = $pdo->prepare("
                 INSERT INTO user_preferences (
-                    user_email, screening_answers, risk_score, created_at, updated_at
-                ) VALUES (?, ?, ?, NOW(), NOW())
+                    user_email, screening_answers, risk_score, gender, barangay, income, 
+                    weight_kg, height_cm, bmi, muac, name, birthday, allergies, 
+                    diet_prefs, avoid_foods, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
             ");
-            $stmt->execute([$userEmail, json_encode($screeningData), $riskScore]);
+            $stmt->execute([
+                $userEmail, 
+                json_encode($screeningData), 
+                $riskScore, 
+                $gender, 
+                $barangay, 
+                $income, 
+                $weight, 
+                $height, 
+                $bmi, 
+                $muac, 
+                $name, 
+                $birthday, 
+                $allergies, 
+                $dietPrefs, 
+                $avoidFoods
+            ]);
         }
         
         echo json_encode([
             'success' => true,
             'message' => 'Screening data saved successfully',
             'user_email' => $userEmail,
-            'risk_score' => $riskScore
+            'risk_score' => $riskScore,
+            'barangay' => $barangay,
+            'gender' => $gender
         ]);
         
     } catch(PDOException $e) {
@@ -1979,7 +2041,7 @@ function handleGetScreeningData($pdo, $postData) {
                 allergies,
                 diet_prefs,
                 avoid_foods
-            FROM screening_responses 
+            FROM user_preferences 
             WHERE user_email = ?
         ");
         $stmt->execute([$userEmail]);
