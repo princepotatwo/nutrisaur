@@ -4088,35 +4088,81 @@ if (isset($_GET['logout'])) {
             });
         }
     
-        // Function to test notification system with sample data
-        function testNotificationSystem() {
-            const alertsContainer = document.getElementById('critical-alerts');
-            if (!alertsContainer) return;
+        // Function to test notification system by sending to everyone
+        async function testNotificationSystem() {
+            console.log('🧪 Starting mass notification test...');
             
-            // Create sample critical alert for testing
-            const sampleAlert = `
-                <li class="alert-item critical">
-                    <div class="alert-content">
-                        <h4>High malnutrition risk: High Risk Score (75), Low BMI (15.2)</h4>
-                        <p>Test User - Requires immediate attention</p>
-                    </div>
-                    <div class="alert-actions">
-                        <div class="alert-time">Just now</div>
-                        <div class="alert-buttons">
-                            <span class="alert-badge badge-critical">Critical</span>
-                            <button class="notify-btn" onclick="openNotificationModal('Test User', 'test@example.com', 'High malnutrition risk: High Risk Score (75), Low BMI (15.2)')" title="Send notification to this user">
-                                📱 Notify
-                            </button>
-                        </div>
-                    </div>
-                </li>
-            `;
-            
-            alertsContainer.innerHTML = sampleAlert;
-            currentAlertsState.hasAlerts = true;
-            currentAlertsState.lastContent = sampleAlert;
-            
-            console.log('Test critical alert created. Click the Notify button to test the notification system.');
+            try {
+                // Get all critical alerts data
+                const response = await fetch('/api/critical_alerts.php');
+                const data = await response.json();
+                
+                if (!data.success || !data.data || data.data.length === 0) {
+                    console.log('No critical alerts found for testing');
+                    return;
+                }
+                
+                console.log(`Found ${data.data.length} critical alerts to test notifications`);
+                
+                // Send test notification to each user
+                let successCount = 0;
+                let failCount = 0;
+                
+                for (const alert of data.data) {
+                    const userName = alert.user || 'Unknown User';
+                    const userEmail = alert.user_email || 'test@example.com';
+                    const alertTitle = alert.message || 'Test Alert';
+                    
+                    console.log(`Testing notification for: ${userName} (${userEmail})`);
+                    
+                    try {
+                        const notificationData = {
+                            title: '🧪 Test Notification - Nutrisaur System',
+                            body: `This is a test notification for ${userName}. Your alert: ${alertTitle}`,
+                            target_user: userEmail,
+                            alert_type: 'test_notification',
+                            user_name: userName
+                        };
+                        
+                        const notificationResponse = await fetch('/api/send_notification.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: new URLSearchParams({
+                                notification_data: JSON.stringify(notificationData)
+                            })
+                        });
+                        
+                        const result = await notificationResponse.json();
+                        
+                        if (result.success) {
+                            console.log(`✅ Notification sent successfully to ${userName}`);
+                            successCount++;
+                        } else {
+                            console.log(`❌ Failed to send notification to ${userName}: ${result.message}`);
+                            failCount++;
+                        }
+                        
+                        // Small delay between notifications to avoid overwhelming the system
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        
+                    } catch (error) {
+                        console.error(`❌ Error sending notification to ${userName}:`, error);
+                        failCount++;
+                    }
+                }
+                
+                // Show results
+                const message = `🧪 Test Complete!\n✅ Successfully sent: ${successCount}\n❌ Failed: ${failCount}\n\nCheck your device for notifications!`;
+                console.log(message);
+                alert(message);
+                
+            } catch (error) {
+                console.error('❌ Error during mass notification test:', error);
+                alert('❌ Error during mass notification test. Check console for details.');
+            }
         }
         
         // Add test button to the dashboard for easy testing
@@ -4140,6 +4186,83 @@ if (isset($_GET['logout'])) {
                 
                 testBtn.addEventListener('click', testNotificationSystem);
                 dashboardHeader.appendChild(testBtn);
+            }
+        }
+
+        // Function to test notification system by sending to everyone
+        async function testNotificationSystem() {
+            console.log('🧪 Starting mass notification test...');
+            
+            try {
+                // Get all critical alerts data
+                const response = await fetch('/api/critical_alerts.php');
+                const data = await response.json();
+                
+                if (!data.success || !data.data || data.data.length === 0) {
+                    console.log('No critical alerts found for testing');
+                    return;
+                }
+                
+                console.log(`Found ${data.data.length} critical alerts to test notifications`);
+                
+                // Send test notification to each user
+                let successCount = 0;
+                let failCount = 0;
+                
+                for (const alert of data.data) {
+                    const userName = alert.user || 'Unknown User';
+                    const userEmail = alert.user_email || 'test@example.com';
+                    const alertTitle = alert.message || 'Test Alert';
+                    
+                    console.log(`Testing notification for: ${userName} (${userEmail})`);
+                    
+                    try {
+                        const notificationData = {
+                            title: '🧪 Test Notification - Nutrisaur System',
+                            body: `This is a test notification for ${userName}. Your alert: ${alertTitle}`,
+                            target_user: userEmail,
+                            alert_type: 'test_notification',
+                            user_name: userName
+                        };
+                        
+                        const notificationResponse = await fetch('/api/send_notification.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: new URLSearchParams({
+                                notification_data: JSON.stringify(notificationData)
+                            })
+                        });
+                        
+                        const result = await notificationResponse.json();
+                        
+                        if (result.success) {
+                            console.log(`✅ Notification sent successfully to ${userName}`);
+                            successCount++;
+                        } else {
+                            console.log(`❌ Failed to send notification to ${userName}: ${result.message}`);
+                            failCount++;
+                        }
+                        
+                        // Small delay between notifications to avoid overwhelming the system
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        
+                    } catch (error) {
+                        console.error(`❌ Error sending notification to ${userName}:`, error);
+                        failCount++;
+                    }
+                }
+                
+                // Show results
+                const message = `🧪 Test Complete!\n✅ Successfully sent: ${successCount}\n❌ Failed: ${failCount}\n\nCheck your device for notifications!`;
+                console.log(message);
+                alert(message);
+                
+            } catch (error) {
+                console.error('❌ Error during mass notification test:', error);
+                alert('❌ Error during mass notification test. Check console for details.');
             }
         }
     </script>
