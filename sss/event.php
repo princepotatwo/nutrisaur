@@ -419,8 +419,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
                 $locationText = empty($location) ? 'All Locations' : $location;
                 $notificationBody = "New event: $title at $locationText on " . date('M j, Y g:i A', strtotime($date_time));
                 
-                // Send FCM notification using Firebase Admin SDK
-                $notificationSent = sendFCMNotification($fcmTokens, [
+                // Send FCM notification using the working API
+                $notificationSent = sendFCMNotification($fcmTokenData, [
                     'title' => $title,
                     'body' => $notificationBody,
                     'data' => [
@@ -1032,7 +1032,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                         }
                                     }
                                     
-                                    $notificationSent = sendFCMNotification($fcmTokens, [
+                                    $notificationSent = sendFCMNotification($fcmTokenData, [
                                         'title' => $event['title'],
                                         'body' => "New event imported: $event[title] at $event[location] on " . date('M j, Y g:i A', strtotime($event['date_time'])),
                                         'data' => [
@@ -1171,7 +1171,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
                     }
                 }
                 
-                $notificationSent = sendFCMNotification($fcmTokens, [
+                $notificationSent = sendFCMNotification($fcmTokenData, [
                     'title' => "Event Updated: $title",
                     'body' => "Event details have been updated. Check the new information.",
                     'data' => [
