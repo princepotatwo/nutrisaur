@@ -1873,6 +1873,7 @@ if (isset($_GET['logout'])) {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
+                    credentials: 'include',
                     body: new URLSearchParams({
                         action: 'send_personal_notification',
                         notification_data: JSON.stringify(notificationData)
