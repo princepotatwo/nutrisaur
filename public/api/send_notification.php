@@ -127,15 +127,14 @@ function sendFCMNotification($fcmTokens, $notificationData) {
             throw new Exception('Firebase service account file not found at: ' . $serviceAccountPath);
         }
         
-        // Load Firebase Admin SDK (if available)
-        if (!class_exists('Google\Cloud\Core\ServiceBuilder')) {
-            // Fallback: Use cURL to send FCM directly
+        // Try Firebase Admin SDK first, then fallback to cURL
+        if (function_exists('curl_init')) {
+            // Use enhanced cURL method with proper Firebase authentication
+            return sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountPath);
+        } else {
+            // Basic cURL fallback
             return sendFCMViaCurl($fcmTokens, $notificationData);
         }
-        
-        // TODO: Implement Firebase Admin SDK integration when available
-        error_log("Firebase Admin SDK not available, using cURL fallback");
-        return sendFCMViaCurl($fcmTokens, $notificationData);
         
     } catch (Exception $e) {
         error_log("FCM Notification error: " . $e->getMessage());
@@ -144,7 +143,102 @@ function sendFCMNotification($fcmTokens, $notificationData) {
 }
 
 /**
- * Send FCM notification via cURL (fallback method)
+ * Send FCM notification via enhanced cURL with Firebase authentication
+ */
+function sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountPath) {
+    try {
+        // Read service account details
+        $serviceAccount = json_decode(file_get_contents($serviceAccountPath), true);
+        if (!$serviceAccount) {
+            throw new Exception('Invalid service account file');
+        }
+        
+        // Get project ID and private key
+        $projectId = $serviceAccount['project_id'];
+        $privateKey = $serviceAccount['private_key'];
+        $clientEmail = $serviceAccount['client_email'];
+        
+        // Generate JWT token for Firebase authentication
+        $jwtToken = generateFirebaseJWT($projectId, $privateKey, $clientEmail);
+        if (!$jwtToken) {
+            throw new Exception('Failed to generate JWT token');
+        }
+        
+        $url = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
+        
+        foreach ($fcmTokens as $token) {
+            $data = [
+                'message' => [
+                    'token' => $token,
+                    'notification' => [
+                        'title' => $notificationData['title'],
+                        'body' => $notificationData['body']
+                    ],
+                    'data' => $notificationData['data'] ?? [],
+                    'android' => [
+                        'priority' => 'high',
+                        'notification' => [
+                            'sound' => 'default',
+                            'priority' => 'high'
+                        ]
+                    ],
+                    'apns' => [
+                        'payload' => [
+                            'aps' => [
+                                'sound' => 'default',
+                                'badge' => 1
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+            
+            $headers = [
+                'Authorization: Bearer ' . $jwtToken,
+                'Content-Type: application/json'
+            ];
+            
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            curl_close($ch);
+            
+            if ($error) {
+                error_log("Enhanced cURL Error: " . $error);
+                continue;
+            }
+            
+            if ($httpCode === 200) {
+                $responseData = json_decode($response, true);
+                if (isset($responseData['name'])) {
+                    error_log("FCM Notification sent successfully via Firebase Admin SDK to token: " . substr($token, 0, 20) . "...");
+                } else {
+                    error_log("FCM Response: " . $response);
+                }
+            } else {
+                error_log("FCM HTTP Error: " . $httpCode . " - " . $response);
+            }
+        }
+        
+        return true;
+        
+    } catch (Exception $e) {
+        error_log("Enhanced FCM Error: " . $e->getMessage());
+        // Fallback to basic cURL
+        return sendFCMViaCurl($fcmTokens, $notificationData);
+    }
+}
+
+/**
+ * Send FCM notification via basic cURL (fallback method)
  */
 function sendFCMViaCurl($fcmTokens, $notificationData) {
     try {
@@ -186,14 +280,14 @@ function sendFCMViaCurl($fcmTokens, $notificationData) {
             curl_close($ch);
             
             if ($error) {
-                error_log("cURL Error: " . $error);
+                error_log("Basic cURL Error: " . $error);
                 continue;
             }
             
             if ($httpCode === 200) {
                 $responseData = json_decode($response, true);
                 if (isset($responseData['success']) && $responseData['success'] == 1) {
-                    error_log("FCM Notification sent successfully to token: " . substr($token, 0, 20) . "...");
+                    error_log("FCM Notification sent successfully via basic cURL to token: " . substr($token, 0, 20) . "...");
                 } else {
                     error_log("FCM Error: " . ($responseData['results'][0]['error'] ?? 'Unknown error'));
                 }
@@ -202,11 +296,59 @@ function sendFCMViaCurl($fcmTokens, $notificationData) {
             }
         }
         
-        return true; // Assume success if we processed all tokens
+        return true;
         
     } catch (Exception $e) {
-        error_log("FCM cURL Error: " . $e->getMessage());
+        error_log("Basic FCM cURL Error: " . $e->getMessage());
         return false;
     }
+}
+
+/**
+ * Generate Firebase JWT token for authentication
+ */
+function generateFirebaseJWT($projectId, $privateKey, $clientEmail) {
+    try {
+        // JWT header
+        $header = [
+            'alg' => 'RS256',
+            'typ' => 'JWT'
+        ];
+        
+        // JWT payload
+        $now = time();
+        $payload = [
+            'iss' => $clientEmail,
+            'sub' => $clientEmail,
+            'aud' => 'https://oauth2.googleapis.com/token',
+            'iat' => $now,
+            'exp' => $now + 3600, // 1 hour
+            'scope' => 'https://www.googleapis.com/auth/firebase.messaging'
+        ];
+        
+        // Create JWT
+        $headerEncoded = base64url_encode(json_encode($header));
+        $payloadEncoded = base64url_encode(json_encode($payload));
+        
+        // Sign the JWT
+        $signature = '';
+        if (openssl_sign($headerEncoded . '.' . $payloadEncoded, $signature, $privateKey, OPENSSL_ALGO_SHA256)) {
+            $signatureEncoded = base64url_encode($signature);
+            return $headerEncoded . '.' . $payloadEncoded . '.' . $signatureEncoded;
+        }
+        
+        return false;
+        
+    } catch (Exception $e) {
+        error_log("JWT Generation Error: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Base64URL encode function
+ */
+function base64url_encode($data) {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 ?>
