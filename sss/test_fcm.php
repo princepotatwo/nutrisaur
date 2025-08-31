@@ -482,16 +482,18 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         // Check FCM tokens
         if ($conn) {
             try {
-                $stmt = $conn->prepare("SELECT COUNT(*) as count FROM fcm_tokens WHERE is_active = TRUE");
+                $stmt = $conn->prepare("SELECT COUNT(*) as count FROM user_fcm_tokens WHERE fcm_token IS NOT NULL AND fcm_token != ''");
                 $stmt->execute();
                 $diagnosticInfo['fcm_tokens'] = [
                     'active_count' => $stmt->fetchColumn(),
-                    'table_exists' => true
+                    'table_exists' => true,
+                    'table_name' => 'user_fcm_tokens'
                 ];
             } catch (Exception $e) {
                 $diagnosticInfo['fcm_tokens'] = [
                     'error' => $e->getMessage(),
-                    'table_exists' => false
+                    'table_exists' => false,
+                    'table_name' => 'user_fcm_tokens'
                 ];
             }
         }
