@@ -715,7 +715,7 @@ function base64url_encode($data) {
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
-// Function to get FCM tokens based on location targeting using preferences table
+// Function to get FCM tokens based on location targeting using direct fcm_tokens lookup (like dash.php)
 function getFCMTokensByLocation($targetLocation = null) {
     global $conn;
     
@@ -725,49 +725,46 @@ function getFCMTokensByLocation($targetLocation = null) {
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '') {
             error_log("Processing 'all locations' case - getting all FCM tokens");
-            // Get all active FCM tokens with user barangay from preferences table
+            // Get all active FCM tokens directly from fcm_tokens table (like dash.php does)
             $stmt = $conn->prepare("
-                SELECT ft.fcm_token, ft.user_email, p.barangay as user_barangay
-                FROM fcm_tokens ft
-                INNER JOIN preferences p ON ft.user_email = p.user_email
-                WHERE ft.is_active = TRUE 
-                AND ft.fcm_token IS NOT NULL 
-                AND ft.fcm_token != ''
-                AND p.barangay IS NOT NULL 
-                AND p.barangay != ''
+                SELECT fcm_token, user_email, user_barangay
+                FROM fcm_tokens
+                WHERE is_active = TRUE 
+                AND fcm_token IS NOT NULL 
+                AND fcm_token != ''
+                AND user_barangay IS NOT NULL 
+                AND user_barangay != ''
             ");
             $stmt->execute();
         } else {
             // Check if it's a municipality (starts with MUNICIPALITY_)
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 error_log("Processing municipality case: $targetLocation");
-                // Get tokens for all barangays in the municipality
+                // Get tokens for all barangays in the municipality (direct lookup like dash.php)
                 $stmt = $conn->prepare("
-                    SELECT ft.fcm_token, ft.user_email, p.barangay as user_barangay
-                    FROM fcm_tokens ft
-                    INNER JOIN preferences p ON ft.user_email = p.user_email
-                    WHERE ft.is_active = TRUE 
-                    AND ft.fcm_token IS NOT NULL 
-                    AND ft.fcm_token != ''
-                    AND p.barangay IS NOT NULL 
-                    AND p.barangay != ''
-                    AND (p.barangay = ? OR p.barangay LIKE ?)
+                    SELECT fcm_token, user_email, user_barangay
+                    FROM fcm_tokens
+                    WHERE is_active = TRUE 
+                    AND fcm_token IS NOT NULL 
+                    AND fcm_token != ''
+                    AND user_barangay IS NOT NULL 
+                    AND user_barangay != ''
+                    AND (user_barangay = ? OR user_barangay LIKE ?)
                 ");
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $stmt->execute([$targetLocation, $municipalityName . '%']);
             } else {
                 error_log("Processing barangay case: $targetLocation");
-                // Get tokens for specific barangay
+                // Get tokens for specific barangay (direct lookup like dash.php)
                 $stmt = $conn->prepare("
-                    SELECT ft.fcm_token, ft.user_email, p.barangay as user_barangay
-                    FROM fcm_tokens ft
-                    INNER JOIN preferences p ON ft.user_email = p.user_email
-                    WHERE ft.is_active = TRUE 
-                    AND ft.fcm_token IS NOT NULL 
-                    AND ft.fcm_token != ''
-                    AND p.barangay IS NOT NULL 
-                    AND p.barangay != ''
-                    AND p.barangay = ?
+                    SELECT fcm_token, user_email, user_barangay
+                    FROM fcm_tokens
+                    WHERE is_active = TRUE 
+                    AND fcm_token IS NOT NULL 
+                    AND fcm_token != ''
+                    AND user_barangay IS NOT NULL 
+                    AND user_barangay != ''
+                    AND user_barangay = ?
                 ");
                 $stmt->execute([$targetLocation]);
             }
@@ -777,23 +774,23 @@ function getFCMTokensByLocation($targetLocation = null) {
         
         // Log the targeting results
         $targetType = empty($targetLocation) ? 'all' : (strpos($targetLocation, 'MUNICIPALITY_') === 0 ? 'municipality' : 'barangay');
-        error_log("FCM targeting using preferences table: $targetType '$targetLocation' - Found " . count($tokens) . " tokens");
+        error_log("FCM targeting using direct fcm_tokens lookup (like dash.php): $targetType '$targetLocation' - Found " . count($tokens) . " tokens");
         
         // Additional debug info for empty results
         if (count($tokens) === 0) {
-            error_log("No FCM tokens found. Checking if there are any users with preferences...");
+            error_log("No FCM tokens found. Checking if there are any FCM tokens with barangay data...");
             
-            // Check if there are any users with preferences
-            $checkStmt = $conn->prepare("SELECT COUNT(*) as total FROM preferences WHERE barangay IS NOT NULL AND barangay != ''");
+            // Check if there are any FCM tokens with barangay data (direct lookup)
+            $checkStmt = $conn->prepare("SELECT COUNT(*) as total FROM fcm_tokens WHERE user_barangay IS NOT NULL AND user_barangay != '' AND is_active = TRUE");
             $checkStmt->execute();
-            $userCount = $checkStmt->fetch(PDO::FETCH_ASSOC)['total'];
+            $tokenWithBarangayCount = $checkStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // Check if there are any active FCM tokens
             $tokenStmt = $conn->prepare("SELECT COUNT(*) as total FROM fcm_tokens WHERE is_active = TRUE AND fcm_token IS NOT NULL AND fcm_token != ''");
             $tokenStmt->execute();
             $tokenCount = $tokenStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
-            error_log("Total users with barangay preferences: $userCount, Total active FCM tokens: $tokenCount");
+            error_log("Total FCM tokens with barangay data: $tokenWithBarangayCount, Total active FCM tokens: $tokenCount");
         }
         
         return $tokens;
