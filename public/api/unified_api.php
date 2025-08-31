@@ -2030,15 +2030,20 @@ function handleSaveScreening($pdo, $postData) {
         $weightLoss = $screeningData['weight_loss'] ?? $postData['weight_loss'] ?? null;
         $dietaryDiversity = $screeningData['dietary_diversity'] ?? $postData['dietary_diversity'] ?? null;
         $feedingBehavior = $screeningData['feeding_behavior'] ?? $postData['feeding_behavior'] ?? null;
-        $physicalThin = $screeningData['physical_thin'] ?? $postData['physical_thin'] ?? null;
-        $physicalShorter = $screeningData['physical_shorter'] ?? $postData['physical_shorter'] ?? null;
-        $physicalWeak = $screeningData['physical_weak'] ?? $postData['physical_weak'] ?? null;
-        $physicalNone = $screeningData['physical_none'] ?? $postData['physical_none'] ?? null;
-        $hasRecentIllness = $screeningData['has_recent_illness'] ?? $postData['has_recent_illness'] ?? null;
-        $hasEatingDifficulty = $screeningData['has_eating_difficulty'] ?? $postData['has_eating_difficulty'] ?? null;
-        $hasFoodInsecurity = $screeningData['has_food_insecurity'] ?? $postData['has_food_insecurity'] ?? null;
-        $hasMicronutrientDeficiency = $screeningData['has_micronutrient_deficiency'] ?? $postData['has_micronutrient_deficiency'] ?? null;
-        $hasFunctionalDecline = $screeningData['has_functional_decline'] ?? $postData['has_functional_decline'] ?? null;
+        
+        // Build composite fields for existing database structure
+        $physicalSigns = [];
+        if (isset($postData['physical_thin'])) $physicalSigns['thin'] = $postData['physical_thin'];
+        if (isset($postData['physical_shorter'])) $physicalSigns['shorter'] = $postData['physical_shorter'];
+        if (isset($postData['physical_weak'])) $physicalSigns['weak'] = $postData['physical_weak'];
+        if (isset($postData['physical_none'])) $physicalSigns['none'] = $postData['physical_none'];
+        
+        $clinicalRiskFactors = [];
+        if (isset($postData['has_recent_illness'])) $clinicalRiskFactors['illness'] = $postData['has_recent_illness'];
+        if (isset($postData['has_eating_difficulty'])) $clinicalRiskFactors['eating'] = $postData['has_eating_difficulty'];
+        if (isset($postData['has_food_insecurity'])) $clinicalRiskFactors['food'] = $postData['has_food_insecurity'];
+        if (isset($postData['has_micronutrient_deficiency'])) $clinicalRiskFactors['micronutrient'] = $postData['has_micronutrient_deficiency'];
+        if (isset($postData['has_functional_decline'])) $clinicalRiskFactors['functional'] = $postData['has_functional_decline'];
         
         if (!$userEmail) {
             echo json_encode(['error' => 'User email is required']);
@@ -2072,15 +2077,8 @@ function handleSaveScreening($pdo, $postData) {
                     weight_loss = ?,
                     dietary_diversity = ?,
                     feeding_behavior = ?,
-                    physical_thin = ?,
-                    physical_shorter = ?,
-                    physical_weak = ?,
-                    physical_none = ?,
-                    has_recent_illness = ?,
-                    has_eating_difficulty = ?,
-                    has_food_insecurity = ?,
-                    has_micronutrient_deficiency = ?,
-                    has_functional_decline = ?,
+                    physical_signs = ?,
+                    clinical_risk_factors = ?,
                     updated_at = NOW()
                 WHERE user_email = ?
             ");
@@ -2103,15 +2101,8 @@ function handleSaveScreening($pdo, $postData) {
                 $weightLoss, 
                 $dietaryDiversity, 
                 $feedingBehavior, 
-                $physicalThin, 
-                $physicalShorter, 
-                $physicalWeak, 
-                $physicalNone, 
-                $hasRecentIllness, 
-                $hasEatingDifficulty, 
-                $hasFoodInsecurity, 
-                $hasMicronutrientDeficiency, 
-                $hasFunctionalDecline, 
+                json_encode($physicalSigns), 
+                json_encode($clinicalRiskFactors), 
                 $userEmail
             ]);
         } else {
@@ -2121,11 +2112,9 @@ function handleSaveScreening($pdo, $postData) {
                     user_email, screening_answers, risk_score, gender, barangay, income, 
                     weight_kg, height_cm, bmi, muac, name, birthday, allergies, 
                     diet_prefs, avoid_foods, swelling, weight_loss, dietary_diversity, 
-                    feeding_behavior, physical_thin, physical_shorter, physical_weak, 
-                    physical_none, has_recent_illness, has_eating_difficulty, 
-                    has_food_insecurity, has_micronutrient_deficiency, has_functional_decline, 
+                    feeding_behavior, physical_signs, clinical_risk_factors, 
                     created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
             ");
             $stmt->execute([
                 $userEmail, 
@@ -2147,15 +2136,8 @@ function handleSaveScreening($pdo, $postData) {
                 $weightLoss, 
                 $dietaryDiversity, 
                 $feedingBehavior, 
-                $physicalThin, 
-                $physicalShorter, 
-                $physicalWeak, 
-                $physicalNone, 
-                $hasRecentIllness, 
-                $hasEatingDifficulty, 
-                $hasFoodInsecurity, 
-                $hasMicronutrientDeficiency, 
-                $hasFunctionalDecline
+                json_encode($physicalSigns), 
+                json_encode($clinicalRiskFactors)
             ]);
         }
         
@@ -2204,15 +2186,8 @@ function handleGetScreeningData($pdo, $postData) {
                 weight_loss,
                 dietary_diversity,
                 feeding_behavior,
-                physical_thin,
-                physical_shorter,
-                physical_weak,
-                physical_none,
-                has_recent_illness,
-                has_eating_difficulty,
-                has_food_insecurity,
-                has_micronutrient_deficiency,
-                has_functional_decline
+                physical_signs,
+                clinical_risk_factors
             FROM user_preferences 
             WHERE user_email = ?
         ");
