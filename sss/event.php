@@ -2239,53 +2239,58 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
             loadSavedTheme();
             console.log('Theme loaded, current body classes:', document.body.className);
             
+            // TEMPORARILY DISABLED AJAX FORM INTERCEPTION FOR TESTING
             // Add form submission handler for event creation
-            const eventForm = document.querySelector('form[name="createEventForm"]');
-            if (eventForm) {
-                eventForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    console.log('Event form submitted, handling via AJAX...');
-                    
-                    const formData = new FormData(eventForm);
-                    const eventData = {
-                        title: formData.get('eventTitle'),
-                        type: formData.get('eventType'),
-                        description: formData.get('eventDescription'),
-                        date_time: formData.get('eventDate'),
-                        location: formData.get('eventLocation'),
-                        organizer: formData.get('eventOrganizer')
-                    };
-                    
-                    // Validate required fields
-                    if (!eventData.title || !eventData.type || !eventData.description || !eventData.date_time || !eventData.location || !eventData.organizer) {
-                        alert('Please fill in all required fields, including selecting a location from the dropdown.');
-                        return;
-                    }
-                    
-                    // Send AJAX request
-                    fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=create_event', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: JSON.stringify(eventData)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Event created successfully!');
-                            location.reload(); // Refresh to show new event
-                        } else {
-                            alert('Error creating event: ' + (data.message || 'Unknown error'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error creating event. Please try again.');
-                    });
-                });
-            }
+            // const eventForm = document.querySelector('form[name="createEventForm"]');
+            // if (eventForm) {
+            //     eventForm.addEventListener('submit', function(e) {
+            //         e.preventDefault();
+            //         console.log('Event form submitted, handling via AJAX...');
+            //         
+            //         const formData = new FormData(eventForm);
+            //         const eventData = {
+            //             title: formData.get('eventTitle'),
+            //             type: formData.get('eventType'),
+            //             description: formData.get('eventDescription'),
+            //             date_time: formData.get('eventDate'),
+            //             location: formData.get('eventLocation'),
+            //             organizer: formData.get('eventOrganizer')
+            //         };
+            //         
+            //         // Validate required fields
+            //         if (!eventData.title || !eventData.type || !eventData.description || !eventData.date_time || !eventData.location || !eventData.organizer) {
+            //             alert('Please fill in all required fields, including selecting a location from the dropdown.');
+            //             return;
+            //         }
+            //         
+            //         // Send AJAX request
+            //         fetch('https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=create_event', {
+            //             method: 'POST',
+            //             headers: {
+            //                 'Content-Type': 'application/json',
+            //                 'X-Requested-With': 'XMLHttpRequest'
+            //             },
+            //             body: JSON.stringify(eventData)
+            //         })
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             if (data.success) {
+            //                 alert('Event created successfully!');
+            //                 // TEMPORARILY DISABLED REFRESH FOR TESTING
+            //                 // location.reload(); // Refresh to show new event
+            //             } else {
+            //                 alert('Error creating event: ' + (data.message || 'Unknown error'));
+            //             }
+            //         })
+            //         .catch(error => {
+            //             console.error('Error:', error);
+            //             alert('Error creating event. Please try again.');
+            //             });
+            //     });
+            // }
+            
+            // FOR TESTING: Allow normal form submission to event.php
+            console.log('AJAX form interception disabled - form will submit normally to event.php');
         });
 
 
@@ -2308,7 +2313,8 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
                     .then(data => {
                         if (data.success) {
                             alert('Successfully deleted ' + data.deleted_count + ' events!');
-                            location.reload(); // Refresh to show empty table
+                            // TEMPORARILY DISABLED REFRESH FOR TESTING
+                            // location.reload(); // Refresh to show empty table
                         } else {
                             alert('Error deleting events: ' + (data.error || 'Unknown error'));
                         }
