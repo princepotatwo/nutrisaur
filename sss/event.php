@@ -1462,7 +1462,7 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
                                 <!-- Municipality Options -->
                                 <div class="option-group">
                                     <div class="option-header">Municipalities</div>
-                                    <div class="option-item" data-value="" onclick="selectEventLocation('', 'All Locations')">All Locations</div>
+                                    <div class="option-item" data-value="all" onclick="selectEventLocation('all', 'All Locations')">All Locations</div>
                                     <div class="option-item" data-value="MUNICIPALITY_ABUCAY" onclick="selectEventLocation('MUNICIPALITY_ABUCAY', 'ABUCAY (All Barangays)')">ABUCAY (All Barangays)</div>
                                     <div class="option-item" data-value="MUNICIPALITY_BAGAC" onclick="selectEventLocation('MUNICIPALITY_BAGAC', 'BAGAC (All Barangays)')">BAGAC (All Barangays)</div>
                                     <div class="option-item" data-value="MUNICIPALITY_BALANGA" onclick="selectEventLocation('MUNICIPALITY_BALANGA', 'CITY OF BALANGA (All Barangays)')">CITY OF BALANGA (All Barangays)</div>
