@@ -16,19 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Include database configuration
-require_once __DIR__ . '/../config.php';
-
-// Get database connection
-$conn = getDatabaseConnection();
-if (!$conn) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'Database connection failed',
-        'error_code' => 'DB_CONNECTION_FAILED'
-    ]);
-    exit();
-}
+require_once __DIR__ . '/config.php';
 
 // Function to log FCM operations
 function logFCMOperation($message, $data = null) {
@@ -282,4 +270,3 @@ try {
     ]);
 }
 ?>
-// Force rebuild - Sun Aug 31 10:12:06 PST 2025

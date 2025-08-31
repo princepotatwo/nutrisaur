@@ -2414,7 +2414,7 @@ if (isset($_GET['logout'])) {
         }
 
         // API Connection and Data Fetching Functions
-        const API_BASE_URL = window.location.origin + '/sss/api/';
+        const API_BASE_URL = window.location.origin + '/api/';
 
         // Function to fetch data from API
         async function fetchDataFromAPI(endpoint, params = {}) {

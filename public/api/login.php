@@ -1,41 +1,8 @@
 <?php
-/**
- * Login API
- * Handles user authentication
- */
-
-// Start session if not already started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Set JSON content type
 header('Content-Type: application/json');
+session_start();
 
-// Check if it's a POST request
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
-    exit;
-}
-
-// Get JSON input
-$input = json_decode(file_get_contents('php://input'), true);
-
-if (!$input) {
-    // Try POST data as fallback
-    $input = $_POST;
-}
-
-$username = $input['username'] ?? '';
-$password = $input['password'] ?? '';
-
-if (empty($username) || empty($password)) {
-    echo json_encode(['success' => false, 'message' => 'Username and password are required']);
-    exit;
-}
-
-// Database connection - Use the same working approach
+// Use direct database connection like the working API
 $mysql_host = 'mainline.proxy.rlwy.net';
 $mysql_port = 26063;
 $mysql_user = 'root';
@@ -56,126 +23,144 @@ if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
 }
 
 try {
-    // Create database connection
     $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-    $pdo = new PDO($dsn, $mysql_user, $mysql_password, [
+    $conn = new PDO($dsn, $mysql_user, $mysql_password, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_TIMEOUT => 10
     ]);
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Database connection failed: ' . $e->getMessage()]);
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
     
-    // Check if input is email or username
-    $isEmail = filter_var($username, FILTER_VALIDATE_EMAIL);
-    
-    // First check in users table
-    if ($isEmail) {
-        $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE email = :email");
-        $stmt->bindParam(':email', $username);
-    } else {
-        $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE username = :username");
-        $stmt->bindParam(':username', $username);
+    if (!$data) {
+        echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
+        exit;
     }
     
-    $stmt->execute();
+    $usernameOrEmail = $data['username'] ?? '';
+    $password = $data['password'] ?? '';
     
-    if ($stmt->rowCount() > 0) {
-        $user = $stmt->fetch();
-        
-        if (password_verify($password, $user['password'])) {
-            // Password is correct, start a new session
-            session_regenerate_id();
-            
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['is_admin'] = false;
-            
-            // Check if user is also in admin table
-            $adminStmt = $pdo->prepare("SELECT admin_id, role FROM admin WHERE email = :email");
-            $adminStmt->bindParam(':email', $user['email']);
-            $adminStmt->execute();
-            
-            if ($adminStmt->rowCount() > 0) {
-                $adminData = $adminStmt->fetch();
-                $_SESSION['is_admin'] = true;
-                $_SESSION['admin_id'] = $adminData['admin_id'];
-                $_SESSION['role'] = $adminData['role'];
-            }
-            
-            // Update last login time
-            $updateStmt = $pdo->prepare("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE user_id = :user_id");
-            $updateStmt->bindParam(':user_id', $user['user_id']);
-            $updateStmt->execute();
-            
-            echo json_encode([
-                'success' => true,
-                'message' => 'Login successful',
-                'user' => [
-                    'user_id' => $user['user_id'],
-                    'username' => $user['username'],
-                    'email' => $user['email'],
-                    'is_admin' => $_SESSION['is_admin']
-                ]
-            ]);
-            exit;
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid password']);
-            exit;
-        }
-    } else {
-        // If not found in users table, check admin table directly
+    if (empty($usernameOrEmail) || empty($password)) {
+        echo json_encode(['success' => false, 'message' => 'Please enter both username/email and password']);
+        exit;
+    }
+    
+    // Check if input is email or username
+    $isEmail = filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL);
+    
+    try {
+        // First check in users table
         if ($isEmail) {
-            $stmt = $pdo->prepare("SELECT admin_id, username, email, password, role FROM admin WHERE email = :email");
-            $stmt->bindParam(':email', $username);
+            $stmt = $conn->prepare("SELECT user_id, username, email, password FROM users WHERE email = :email");
+            $stmt->bindParam(':email', $usernameOrEmail);
         } else {
-            $stmt = $pdo->prepare("SELECT admin_id, username, email, password, role FROM admin WHERE username = :username");
-            $stmt->bindParam(':username', $username);
+            $stmt = $conn->prepare("SELECT user_id, username, email, password FROM users WHERE username = :username");
+            $stmt->bindParam(':username', $usernameOrEmail);
         }
         
         $stmt->execute();
         
         if ($stmt->rowCount() > 0) {
-            $admin = $stmt->fetch();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            if (password_verify($password, $admin['password'])) {
+            if (password_verify($password, $user['password'])) {
                 // Password is correct, start a new session
                 session_regenerate_id();
                 
-                $_SESSION['admin_id'] = $admin['admin_id'];
-                $_SESSION['username'] = $admin['username'];
-                $_SESSION['email'] = $admin['email'];
-                $_SESSION['is_admin'] = true;
-                $_SESSION['role'] = $admin['role'];
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['email'] = $user['email'];
+                
+                // Check if user is also in admin table
+                $adminStmt = $conn->prepare("SELECT admin_id, role FROM admin WHERE email = :email");
+                $adminStmt->bindParam(':email', $user['email']);
+                $adminStmt->execute();
+                
+                if ($adminStmt->rowCount() > 0) {
+                    $adminData = $adminStmt->fetch(PDO::FETCH_ASSOC);
+                    $_SESSION['is_admin'] = true;
+                    $_SESSION['admin_id'] = $adminData['admin_id'];
+                    $_SESSION['role'] = $adminData['role'];
+                } else {
+                    $_SESSION['is_admin'] = false;
+                }
+                
+                // Update last login time
+                $updateStmt = $conn->prepare("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE user_id = :user_id");
+                $updateStmt->bindParam(':user_id', $user['user_id']);
+                $updateStmt->execute();
                 
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Admin login successful',
-                    'user' => [
-                        'admin_id' => $admin['admin_id'],
-                        'username' => $admin['username'],
-                        'email' => $admin['email'],
-                        'is_admin' => true,
-                        'role' => $admin['role']
+                    'message' => 'Login successful!',
+                    'data' => [
+                        'user_id' => $user['user_id'],
+                        'username' => $user['username'],
+                        'email' => $user['email'],
+                        'is_admin' => $_SESSION['is_admin']
                     ]
                 ]);
-                exit;
             } else {
                 echo json_encode(['success' => false, 'message' => 'Invalid password']);
-                exit;
             }
         } else {
-            echo json_encode(['success' => false, 'message' => 'User not found']);
-            exit;
+            // If not found in users table, check admin table directly
+            if ($isEmail) {
+                $stmt = $conn->prepare("SELECT admin_id, username, email, password, role FROM admin WHERE email = :email");
+                $stmt->bindParam(':email', $usernameOrEmail);
+            } else {
+                $stmt = $conn->prepare("SELECT admin_id, username, email, password, role FROM admin WHERE username = :username");
+                $stmt->bindParam(':username', $usernameOrEmail);
+            }
+            
+            $stmt->execute();
+            
+            if ($stmt->rowCount() > 0) {
+                $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (password_verify($password, $admin['password'])) {
+                    // Password is correct, start a new session
+                    session_regenerate_id();
+                    
+                    $_SESSION['admin_id'] = $admin['admin_id'];
+                    $_SESSION['username'] = $admin['username'];
+                    $_SESSION['email'] = $admin['email'];
+                    $_SESSION['is_admin'] = true;
+                    $_SESSION['role'] = $admin['role'];
+                    
+                    // Update last login time
+                    $updateStmt = $conn->prepare("UPDATE admin SET last_login = CURRENT_TIMESTAMP WHERE admin_id = :admin_id");
+                    $updateStmt->bindParam(':admin_id', $admin['admin_id']);
+                    $updateStmt->execute();
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Login successful!',
+                        'data' => [
+                            'admin_id' => $admin['admin_id'],
+                            'username' => $admin['username'],
+                            'email' => $admin['email'],
+                            'is_admin' => true,
+                            'role' => $admin['role']
+                        ]
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid password']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'User not found']);
+            }
         }
+    } catch(PDOException $e) {
+        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
     }
-    
-} catch (PDOException $e) {
-    error_log("Database error: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
-    exit;
-} catch (Exception $e) {
-    error_log("Login error: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'An error occurred during login']);
-    exit;
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
-?>
+?> 
