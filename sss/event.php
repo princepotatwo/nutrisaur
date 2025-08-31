@@ -351,70 +351,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     }
 }
 
-// Handle location-based notification requests
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'send_location_notification') {
-    try {
-        $location = $_POST['location'] ?? '';
-        $title = $_POST['title'] ?? 'Location Notification';
-        $message = $_POST['message'] ?? '';
-        
-        if (empty($location)) {
-            throw new Exception('Location is required');
-        }
-        
-        if (empty($message)) {
-            throw new Exception('Message is required');
-        }
-        
-        // Get FCM tokens for the specified location
-        $fcmTokenData = getFCMTokensByLocation($location);
-        
-        if (empty($fcmTokenData)) {
-            throw new Exception("No users found with FCM tokens for location: $location");
-        }
-        
-        // Send notification to all users in the location
-        $notificationData = [
-            'title' => $title,
-            'body' => $message,
-            'data' => [
-                'notification_type' => 'location_notification',
-                'target_location' => $location,
-                'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
-            ]
-        ];
-        
-        $notificationSent = sendFCMNotification($fcmTokenData, $notificationData, $location);
-        
-        if ($notificationSent) {
-            $usersNotified = count($fcmTokenData);
-            
-            // Log the notification attempt
-            logNotificationAttempt(0, 'location_notification', 'location', $location, $usersNotified, true);
-            
-            header('Content-Type: application/json');
-            echo json_encode([
-                'success' => true,
-                'message' => "Location notification sent successfully to $usersNotified users in $location",
-                'location' => $location,
-                'users_notified' => $usersNotified,
-                'target_location' => $location
-            ]);
-        } else {
-            throw new Exception('Failed to send location notification');
-        }
-        
-    } catch (Exception $e) {
-        error_log("Error sending location notification: " . $e->getMessage());
-        
-        header('Content-Type: application/json');
-        echo json_encode([
-            'success' => false,
-            'message' => 'Error sending location notification: ' . $e->getMessage()
-        ]);
-    }
-    exit;
-}
+
 
 // Handle form submission for creating new program
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
@@ -603,11 +540,12 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
                 'title' => $notificationData['title'],
                 'body' => $notificationData['body'],
                 'target_user' => $userEmail,
-                'alert_type' => 'location_notification',
+                'alert_type' => 'event_notification',
                 'user_name' => $userEmail,
                 'data' => array_merge($notificationData['data'] ?? [], [
                     'location' => $targetLocation,
-                    'user_barangay' => $userBarangay
+                    'user_barangay' => $userBarangay,
+                    'event_type' => 'new_event'
                 ])
             ];
             
@@ -642,10 +580,10 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
             if ($httpCode === 200) {
                 $result = json_decode($response, true);
                 if ($result && $result['success']) {
-                    error_log("Location notification sent successfully to $userEmail ($userBarangay)");
+                    error_log("Event notification sent successfully to $userEmail ($userBarangay)");
                     $successCount++;
                 } else {
-                    error_log("Location notification failed for $userEmail: " . ($result['message'] ?? 'Unknown error'));
+                    error_log("Event notification failed for $userEmail: " . ($result['message'] ?? 'Unknown error'));
                     $failureCount++;
                 }
             } else {
@@ -654,7 +592,7 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
             }
         }
         
-        error_log("Location notification summary: $successCount successful, $failureCount failed for location: $targetLocation");
+        error_log("Event notification summary: $successCount successful, $failureCount failed for location: $targetLocation");
         return $successCount > 0;
         
     } catch (Exception $e) {
@@ -778,7 +716,7 @@ function logNotificationAttempt($eventId, $notificationType, $targetType, $targe
 }
 
 // Function to send FCM using Firebase Admin SDK (simplified and fixed)
-function sendFCMWithAdminSDK($tokens, $notificationData, $adminSdkPath, $targetLocation = null) {
+
     try {
         // Read the service account JSON file
         $serviceAccount = json_decode(file_get_contents($adminSdkPath), true);
@@ -7575,7 +7513,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: new URLSearchParams({
-                        'action': 'send_location_notification',
+
                         'location': location,
                         'title': title,
                         'message': message
