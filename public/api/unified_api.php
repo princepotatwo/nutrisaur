@@ -2098,6 +2098,23 @@ function handleSaveScreening($pdo, $postData) {
             ]);
         }
         
+        // Update FCM token's user_barangay field if barangay data was provided
+        if ($barangay) {
+            try {
+                $updateFcmStmt = $pdo->prepare("
+                    UPDATE fcm_tokens 
+                    SET user_barangay = ?, updated_at = NOW() 
+                    WHERE user_email = ? AND is_active = TRUE
+                ");
+                $updateFcmStmt->execute([$barangay, $userEmail]);
+                
+                $fcmUpdateCount = $updateFcmStmt->rowCount();
+                error_log("Updated FCM token user_barangay for $userEmail to '$barangay' - $fcmUpdateCount rows affected");
+            } catch (Exception $e) {
+                error_log("Warning: Failed to update FCM token user_barangay: " . $e->getMessage());
+            }
+        }
+        
         echo json_encode([
             'success' => true,
             'message' => 'Screening data saved successfully',
