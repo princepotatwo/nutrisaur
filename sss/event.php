@@ -480,14 +480,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
             ]);
             exit;
         } else {
+            // TEMPORARILY DISABLED REDIRECT FOR TESTING
             // Redirect with success message
-            $redirectUrl = "event.php?success=1&event_id=" . $eventId;
-            if ($notificationSent) {
-                $redirectUrl .= "&notification=1&devices=" . $devicesNotified;
-            }
-            $redirectUrl .= "&message=" . urlencode($notificationMessage);
-            header("Location: " . $redirectUrl);
-            exit;
+            // $redirectUrl = "event.php?success=1&event_id=" . $eventId;
+            // if ($notificationSent) {
+            //     $redirectUrl .= "&notification=1&devices=" . $devicesNotified;
+            // }
+            // $redirectUrl .= "&message=" . urlencode($notificationMessage);
+            // header("Location: " . $redirectUrl);
+            // exit;
+            
+            // For testing, just show the message
+            $successMessage = "Event created successfully! " . $notificationMessage;
         }
         
     } catch(PDOException $e) {
@@ -1081,8 +1085,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             $stmt->execute();
                             $programs = $stmt->fetchAll();
                             
-                            header("Location: event.php?imported=$importedCount&errors=" . count($errors));
-                            exit;
+                            // TEMPORARILY DISABLED REDIRECT FOR TESTING
+                            // header("Location: event.php?imported=$importedCount&errors=" . count($errors));
+                            // exit;
+                            $successMessage = "CSV imported successfully! $importedCount events imported.";
+                            if (count($errors) > 0) {
+                                $successMessage .= " However, " . count($errors) . " rows had errors.";
+                            }
                         } else {
                             $errorMessage = "No events were imported. " . implode("; ", $errors);
                         }
@@ -1111,9 +1120,11 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
         $stmt->bindParam(':id', $programId);
         $stmt->execute();
         
+        // TEMPORARILY DISABLED REDIRECT FOR TESTING
         // Redirect to refresh page with success message
-        header("Location: event.php?deleted=1&deleted_id=" . $programId);
-        exit;
+        // header("Location: event.php?deleted=1&deleted_id=" . $programId);
+        // exit;
+        $successMessage = "Event deleted successfully!";
     } catch(PDOException $e) {
         $errorMessage = "Error deleting program: " . $e->getMessage();
     }
@@ -1125,9 +1136,11 @@ if (isset($_GET['delete_all']) && $_GET['delete_all'] === '1') {
         $stmt = $conn->prepare("DELETE FROM programs");
         $stmt->execute();
         
+        // TEMPORARILY DISABLED REDIRECT FOR TESTING
         // Redirect to refresh page
-        header("Location: event.php?deleted_all=1");
-        exit;
+        // header("Location: event.php?deleted_all=1");
+        // exit;
+        $successMessage = "All events deleted successfully!";
     } catch(PDOException $e) {
         $errorMessage = "Error deleting all programs: " . $e->getMessage();
     }
@@ -1206,9 +1219,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
             logNotificationAttempt($programId, 'event_updated', 'barangay', $location, 0, false, $e->getMessage());
         }
         
+        // TEMPORARILY DISABLED REDIRECT FOR TESTING
         // Redirect to refresh page
-        header("Location: event.php?updated=1");
-        exit;
+        // header("Location: event.php?updated=1");
+        // exit;
+        $successMessage = "Event updated successfully!";
     } catch(PDOException $e) {
         $errorMessage = "Error updating program: " . $e->getMessage();
     }
@@ -1334,6 +1349,12 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
             <?php if(isset($errorMessage)): ?>
                 <div class="alert alert-danger">
                     <?php echo htmlspecialchars($errorMessage); ?>
+                </div>
+            <?php endif; ?>
+            
+            <?php if(isset($successMessage)): ?>
+                <div class="alert alert-success">
+                    <?php echo htmlspecialchars($successMessage); ?>
                 </div>
             <?php endif; ?>
             
