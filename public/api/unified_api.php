@@ -133,8 +133,12 @@ switch ($endpoint) {
 
         
     case 'add_missing_columns':
-        addMissingColumns($pdo);
-        break;
+    addMissingColumns($pdo);
+    break;
+    
+case 'fix_column_sizes':
+    fixColumnSizes($pdo);
+    break;
         
     case 'usm':
         getUSMData($pdo);
@@ -1422,6 +1426,54 @@ function addMissingColumns($pdo) {
             'success' => false, 
             'message' => 'Error updating database schema: ' . $e->getMessage()
         ]);
+    }
+}
+
+function fixColumnSizes($pdo) {
+    try {
+        // Fix column sizes to accommodate the data being sent
+        $columnFixes = [
+            'gender' => 'VARCHAR(10)',      // Was probably VARCHAR(1), need space for "boy"/"girl"
+            'barangay' => 'VARCHAR(100)',   // Ensure enough space for location names
+            'income' => 'VARCHAR(200)',     // Ensure enough space for income descriptions
+            'weight_kg' => 'DECIMAL(5,2)',  // Ensure proper decimal for weight
+            'height_cm' => 'DECIMAL(5,2)',  // Ensure proper decimal for height
+            'bmi' => 'DECIMAL(4,2)',        // Ensure proper decimal for BMI
+            'muac' => 'VARCHAR(50)',        // Ensure enough space for MUAC values
+            'name' => 'VARCHAR(100)',       // Ensure enough space for names
+            'birthday' => 'DATE',           // Ensure proper DATE type
+            'allergies' => 'TEXT',          // Ensure enough space for allergy lists
+            'diet_prefs' => 'TEXT',         // Ensure enough space for diet preferences
+            'avoid_foods' => 'TEXT'         // Ensure enough space for avoid foods
+        ];
+        
+        $modifiedColumns = [];
+        foreach ($columnFixes as $columnName => $newType) {
+            try {
+                $sql = "ALTER TABLE user_preferences MODIFY COLUMN $columnName $newType";
+                $pdo->exec($sql);
+                $modifiedColumns[] = $columnName;
+            } catch (PDOException $e) {
+                // Column might not exist yet, try to add it
+                try {
+                    $sql = "ALTER TABLE user_preferences ADD COLUMN $columnName $newType";
+                    $pdo->exec($sql);
+                    $modifiedColumns[] = $columnName . " (added)";
+                } catch (PDOException $e2) {
+                    // Skip if both operations fail
+                }
+            }
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Column sizes fixed successfully',
+            'modified_columns' => $modifiedColumns,
+            'total_columns_modified' => count($modifiedColumns)
+        ]);
+        
+    } catch (PDOException $e) {
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
     }
 }
 
