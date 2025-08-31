@@ -123,18 +123,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  */
 function sendFCMNotification($fcmTokens, $notificationData) {
     try {
-        // Firebase Admin SDK configuration - Updated for new project
-        $serviceAccountPath = __DIR__ . '/../../sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json';
+        // Firebase Admin SDK configuration - Multiple path fallbacks for Railway
+        $possiblePaths = [
+            __DIR__ . '/../../sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json',
+            __DIR__ . '/../../../sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json',
+            __DIR__ . '/../../nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json',
+            dirname(__DIR__, 2) . '/sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json',
+            dirname(__DIR__, 3) . '/sss/nutrisaur-notifications-firebase-adminsdk-fbsvc-188c79990a.json'
+        ];
         
-        if (!file_exists($serviceAccountPath)) {
-            throw new Exception('Firebase service account file not found at: ' . $serviceAccountPath);
+        $serviceAccountPath = null;
+        foreach ($possiblePaths as $path) {
+            if (file_exists($path)) {
+                $serviceAccountPath = $path;
+                error_log("FCM Debug: Service account file found at: " . $path);
+                break;
+            }
         }
+        
+        if (!$serviceAccountPath) {
+            error_log("FCM Error: Service account file not found in any of these paths:");
+            foreach ($possiblePaths as $path) {
+                error_log("FCM Debug: Tried path: " . $path . " - Exists: " . (file_exists($path) ? 'YES' : 'NO'));
+            }
+            throw new Exception('Firebase service account file not found in any expected location');
+        }
+        
+        error_log("FCM Debug: Service account file found, size: " . filesize($serviceAccountPath));
         
         // Try Firebase Admin SDK first, then fallback to cURL
         if (function_exists('curl_init')) {
+            error_log("FCM Debug: Using enhanced cURL method");
             // Use enhanced cURL method with proper Firebase authentication
             return sendFCMViaEnhancedCurl($fcmTokens, $notificationData, $serviceAccountPath);
         } else {
+            error_log("FCM Debug: Using basic cURL fallback");
             // Basic cURL fallback
             return sendFCMViaCurl($fcmTokens, $notificationData);
         }
