@@ -1,6 +1,6 @@
 <?php
 // Enable error reporting for debugging
-// TRIGGERING NEW DEPLOYMENT - Testing event.php notifications
+// 🚨 FORCE NEW DEPLOYMENT - All redirects disabled, form submission fixed, location dropdown working
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -1280,7 +1280,7 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriSaur - Chatbot & AI Training Logs</title>
+    <title>🚨 DEPLOYMENT TEST - NutriSaur Event Form Fixed - All Redirects Disabled</title>
     
 </head>
 
