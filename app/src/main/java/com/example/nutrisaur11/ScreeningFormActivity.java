@@ -26,6 +26,8 @@ import java.util.Calendar;
 import java.util.Locale;
 import org.json.JSONObject;
 import org.json.JSONArray;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class ScreeningFormActivity extends AppCompatActivity {
@@ -41,9 +43,10 @@ public class ScreeningFormActivity extends AppCompatActivity {
     private Button prevButton, nextButton;
     
     // Section 1: Basic Information
-    private Spinner municipalitySpinner, barangaySpinner;
-    private EditText ageInput;
-    private EditText monthsInput; // For children < 1 year
+    private Spinner locationSpinner;
+    private Button birthdatePickerBtn;
+    private String selectedBirthdate = "";
+    private int calculatedAge = 0;
     // Sex and pregnancy selection now use buttons instead of radio groups
     private String selectedMunicipality = "";
     private String selectedBarangay = "";
@@ -57,7 +60,11 @@ public class ScreeningFormActivity extends AppCompatActivity {
     private TextView bmiCategory;
     
     // Section 3: Meal Assessment (24-Hour Recall)
-    private EditText mealRecallInput;
+    // Food checkboxes for meal assessment
+    private CheckBox foodRice, foodBread, foodNoodles, foodCorn;
+    private CheckBox foodMeat, foodFish, foodEggs, foodBeans;
+    private CheckBox foodVegetables, foodFruits;
+    private CheckBox foodMilk, foodCheese;
     private TextView mealAssessmentResult;
     
     // Section 4: Family History
@@ -77,12 +84,8 @@ public class ScreeningFormActivity extends AppCompatActivity {
     private String selectedLifestyle = "";
     
     // Section 6: Immunization (Children ≤ 12 years old)
-    private RadioGroup bcgRadioGroup;
-    private RadioGroup dptRadioGroup;
-    private RadioGroup polioRadioGroup;
-    private RadioGroup measlesRadioGroup;
-    private RadioGroup hepatitisRadioGroup;
-    private RadioGroup vitaminARadioGroup;
+    // Immunization checkboxes
+    private CheckBox immBcg, immDpt, immPolio, immMeasles, immHepatitis, immVitaminA;
     
     // Section 7: Final Assessment (System Generated)
     private TextView finalAssessmentText;
@@ -148,10 +151,8 @@ public class ScreeningFormActivity extends AppCompatActivity {
         questionCards[6] = findViewById(R.id.section_7_card);  // Final Assessment
         
         // Section 1: Basic Information
-        municipalitySpinner = findViewById(R.id.municipality_spinner);
-        barangaySpinner = findViewById(R.id.barangay_spinner);
-        ageInput = findViewById(R.id.age_input);
-        monthsInput = findViewById(R.id.months_input);
+        locationSpinner = findViewById(R.id.location_spinner);
+        birthdatePickerBtn = findViewById(R.id.birthdate_picker_btn);
         // Sex and pregnancy selection now use buttons instead of radio groups
         
         // Section 2: Anthropometric Assessment
@@ -161,7 +162,19 @@ public class ScreeningFormActivity extends AppCompatActivity {
         bmiCategory = findViewById(R.id.bmi_category);
         
         // Section 3: Meal Assessment
-        mealRecallInput = findViewById(R.id.meal_recall_input);
+        // Food checkboxes
+        foodRice = findViewById(R.id.food_rice);
+        foodBread = findViewById(R.id.food_bread);
+        foodNoodles = findViewById(R.id.food_noodles);
+        foodCorn = findViewById(R.id.food_corn);
+        foodMeat = findViewById(R.id.food_meat);
+        foodFish = findViewById(R.id.food_fish);
+        foodEggs = findViewById(R.id.food_eggs);
+        foodBeans = findViewById(R.id.food_beans);
+        foodVegetables = findViewById(R.id.food_vegetables);
+        foodFruits = findViewById(R.id.food_fruits);
+        foodMilk = findViewById(R.id.food_milk);
+        foodCheese = findViewById(R.id.food_cheese);
         mealAssessmentResult = findViewById(R.id.meal_assessment_result);
         
         // Section 4: Family History
@@ -180,12 +193,13 @@ public class ScreeningFormActivity extends AppCompatActivity {
         otherLifestyleInput = findViewById(R.id.other_lifestyle_input);
         
         // Section 6: Immunization
-        bcgRadioGroup = findViewById(R.id.bcg_radio_group);
-        dptRadioGroup = findViewById(R.id.dpt_radio_group);
-        polioRadioGroup = findViewById(R.id.polio_radio_group);
-        measlesRadioGroup = findViewById(R.id.measles_radio_group);
-        hepatitisRadioGroup = findViewById(R.id.hepatitis_radio_group);
-        vitaminARadioGroup = findViewById(R.id.vitamin_a_radio_group);
+        // Immunization checkboxes
+        immBcg = findViewById(R.id.imm_bcg);
+        immDpt = findViewById(R.id.imm_dpt);
+        immPolio = findViewById(R.id.imm_polio);
+        immMeasles = findViewById(R.id.imm_measles);
+        immHepatitis = findViewById(R.id.imm_hepatitis);
+        immVitaminA = findViewById(R.id.imm_vitamin_a);
         
         // Section 7: Final Assessment
         finalAssessmentText = findViewById(R.id.final_assessment_text);
@@ -194,35 +208,10 @@ public class ScreeningFormActivity extends AppCompatActivity {
         interventionText = findViewById(R.id.intervention_text);
         
         // Setup spinners
-        setupMunicipalitySpinner();
-        setupBarangaySpinner();
+        setupLocationSpinner();
         
-        // Setup age input listener for months field visibility
-        ageInput.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(android.text.Editable s) {
-                try {
-                    int age = Integer.parseInt(s.toString());
-                    if (age < 1) {
-                        monthsInput.setVisibility(View.VISIBLE);
-                    } else {
-                        monthsInput.setVisibility(View.GONE);
-                    }
-                    // Show/hide immunization section for children ≤ 12 years
-                    if (age <= 12) {
-                        questionCards[5].setVisibility(View.VISIBLE); // Immunization section
-                    } else {
-                        questionCards[5].setVisibility(View.GONE);
-                    }
-                } catch (NumberFormatException e) {
-                    monthsInput.setVisibility(View.GONE);
-                }
-            }
-        });
+        // Setup birthdate picker
+        birthdatePickerBtn.setOnClickListener(v -> showDatePickerDialog());
         
         // Setup weight/height input listeners for BMI calculation
         weightInput.addTextChangedListener(new android.text.TextWatcher() {
@@ -247,59 +236,89 @@ public class ScreeningFormActivity extends AppCompatActivity {
             }
         });
         
-        // Setup meal recall input listener for assessment
-        mealRecallInput.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override
-            public void afterTextChanged(android.text.Editable s) {
-                assessMealDiversity(s.toString());
-            }
-        });
+        // Setup food checkboxes for meal assessment
+        setupFoodCheckboxes();
     }
 
-    private void setupMunicipalitySpinner() {
+    private void setupLocationSpinner() {
+        // First show municipalities
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
             android.R.layout.simple_spinner_item, BATAAN_MUNICIPALITIES);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        municipalitySpinner.setAdapter(adapter);
+        locationSpinner.setAdapter(adapter);
         
-        municipalitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedMunicipality = (String) parent.getItemAtPosition(position);
-                updateBarangaySpinner();
+                if (isShowingMunicipalities) {
+                    selectedMunicipality = (String) parent.getItemAtPosition(position);
+                    // Switch to barangay list
+                    updateLocationSpinnerToBarangays();
+                } else {
+                    selectedBarangay = (String) parent.getItemAtPosition(position);
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
-    private void setupBarangaySpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
-            android.R.layout.simple_spinner_item, new String[]{});
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        barangaySpinner.setAdapter(adapter);
-        
-        barangaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedBarangay = (String) parent.getItemAtPosition(position);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-    }
+    private boolean isShowingMunicipalities = true;
 
-    private void updateBarangaySpinner() {
+    private void updateLocationSpinnerToBarangays() {
         String[] barangays = MUNICIPALITY_BARANGAYS.get(selectedMunicipality);
         if (barangays != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
                 android.R.layout.simple_spinner_item, barangays);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            barangaySpinner.setAdapter(adapter);
+            locationSpinner.setAdapter(adapter);
+            isShowingMunicipalities = false;
+        }
+    }
+
+    private void showDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, 
+            (view, selectedYear, selectedMonth, selectedDay) -> {
+                Calendar selectedDate = Calendar.getInstance();
+                selectedDate.set(selectedYear, selectedMonth, selectedDay);
+                
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                selectedBirthdate = sdf.format(selectedDate.getTime());
+                birthdatePickerBtn.setText(selectedBirthdate);
+                
+                // Calculate age
+                Calendar today = Calendar.getInstance();
+                calculatedAge = today.get(Calendar.YEAR) - selectedYear;
+                if (today.get(Calendar.DAY_OF_YEAR) < selectedDate.get(Calendar.DAY_OF_YEAR)) {
+                    calculatedAge--;
+                }
+                
+                // Show/hide immunization section for children ≤ 12 years
+                if (calculatedAge <= 12) {
+                    questionCards[5].setVisibility(View.VISIBLE); // Immunization section
+                } else {
+                    questionCards[5].setVisibility(View.GONE);
+                }
+            }, year, month, day);
+        
+        datePickerDialog.show();
+    }
+
+    private void setupFoodCheckboxes() {
+        // Add listeners to all food checkboxes to assess meal diversity
+        CheckBox[] foodCheckboxes = {foodRice, foodBread, foodNoodles, foodCorn, 
+                                   foodMeat, foodFish, foodEggs, foodBeans,
+                                   foodVegetables, foodFruits, foodMilk, foodCheese};
+        
+        for (CheckBox checkbox : foodCheckboxes) {
+            checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                assessMealDiversity();
+            });
         }
     }
 
@@ -314,19 +333,14 @@ public class ScreeningFormActivity extends AppCompatActivity {
             findViewById(R.id.pregnant_section).setVisibility(View.GONE);
         });
         
-        findViewById(R.id.sex_female).setOnClickListener(v -> {
+                findViewById(R.id.sex_female).setOnClickListener(v -> {
             selectedSex = "Female";
             // Show pregnancy question for females 12-50 years
-            try {
-                int age = Integer.parseInt(ageInput.getText().toString());
-                if (age >= 12 && age <= 50) {
-                                            findViewById(R.id.pregnant_section).setVisibility(View.VISIBLE);
-                } else {
-                    findViewById(R.id.pregnant_section).setVisibility(View.GONE);
-                }
-                            } catch (NumberFormatException e) {
-                    findViewById(R.id.pregnant_section).setVisibility(View.GONE);
-                }
+            if (calculatedAge >= 12 && calculatedAge <= 50) {
+                findViewById(R.id.pregnant_section).setVisibility(View.VISIBLE);
+            } else {
+                findViewById(R.id.pregnant_section).setVisibility(View.GONE);
+            }
         });
         
         // Pregnancy selection buttons
@@ -414,40 +428,30 @@ public class ScreeningFormActivity extends AppCompatActivity {
         }
     }
 
-    private void assessMealDiversity(String mealText) {
-        if (mealText.isEmpty()) {
-            mealAssessmentResult.setText("");
-            return;
-        }
+    private void assessMealDiversity() {
+        // Check food groups from checkboxes
+        boolean hasCarbs = foodRice.isChecked() || foodBread.isChecked() || 
+                          foodNoodles.isChecked() || foodCorn.isChecked();
         
-        String lowerMeal = mealText.toLowerCase();
+        boolean hasProtein = foodMeat.isChecked() || foodFish.isChecked() || 
+                           foodEggs.isChecked() || foodBeans.isChecked();
         
-        // Check for food groups
-        boolean hasCarbs = lowerMeal.contains("rice") || lowerMeal.contains("bread") || 
-                          lowerMeal.contains("pasta") || lowerMeal.contains("potato") || 
-                          lowerMeal.contains("corn") || lowerMeal.contains("cereal");
+        boolean hasVeggies = foodVegetables.isChecked() || foodFruits.isChecked();
         
-        boolean hasProtein = lowerMeal.contains("meat") || lowerMeal.contains("fish") || 
-                            lowerMeal.contains("chicken") || lowerMeal.contains("pork") || 
-                            lowerMeal.contains("beef") || lowerMeal.contains("egg") || 
-                            lowerMeal.contains("milk") || lowerMeal.contains("cheese") || 
-                            lowerMeal.contains("beans") || lowerMeal.contains("tofu");
+        boolean hasDairy = foodMilk.isChecked() || foodCheese.isChecked();
         
-        boolean hasVeggies = lowerMeal.contains("vegetable") || lowerMeal.contains("carrot") || 
-                           lowerMeal.contains("broccoli") || lowerMeal.contains("spinach") || 
-                           lowerMeal.contains("lettuce") || lowerMeal.contains("tomato") || 
-                           lowerMeal.contains("onion");
-        
-        boolean hasFruits = lowerMeal.contains("fruit") || lowerMeal.contains("apple") || 
-                          lowerMeal.contains("banana") || lowerMeal.contains("orange") || 
-                          lowerMeal.contains("mango") || lowerMeal.contains("grape");
-        
-        if (hasCarbs && hasProtein && (hasVeggies || hasFruits)) {
-            mealAssessmentResult.setText("✅ Balanced");
+        if (hasCarbs && hasProtein && hasVeggies) {
+            mealAssessmentResult.setText("✅ Balanced meal with all major food groups");
             mealAssessmentResult.setTextColor(0xFF4CAF50); // Green
-        } else {
-            mealAssessmentResult.setText("⚠️ At Risk");
+        } else if (hasCarbs && hasProtein) {
+            mealAssessmentResult.setText("⚠️ Missing vegetables/fruits - recommend adding");
             mealAssessmentResult.setTextColor(0xFFFF9800); // Orange
+        } else if (hasCarbs && hasVeggies) {
+            mealAssessmentResult.setText("⚠️ Missing protein - recommend adding meat/fish/eggs");
+            mealAssessmentResult.setTextColor(0xFFFF9800); // Orange
+        } else {
+            mealAssessmentResult.setText("⚠️ Meal may be missing multiple food groups");
+            mealAssessmentResult.setTextColor(0xFFF44336); // Red
         }
     }
 
@@ -503,8 +507,8 @@ public class ScreeningFormActivity extends AppCompatActivity {
                     Toast.makeText(this, "Please select barangay", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                if (TextUtils.isEmpty(ageInput.getText().toString())) {
-                    ageInput.setError("Age is required");
+                if (TextUtils.isEmpty(selectedBirthdate)) {
+                    Toast.makeText(this, "Please select birthdate", Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 if (TextUtils.isEmpty(selectedSex)) {
@@ -523,8 +527,16 @@ public class ScreeningFormActivity extends AppCompatActivity {
                 }
                 break;
             case 2: // Meal Assessment
-                if (TextUtils.isEmpty(mealRecallInput.getText().toString())) {
-                    mealRecallInput.setError("24-hour meal recall is required");
+                // Check if at least one food item is selected
+                boolean hasFoodSelected = foodRice.isChecked() || foodBread.isChecked() || 
+                                        foodNoodles.isChecked() || foodCorn.isChecked() ||
+                                        foodMeat.isChecked() || foodFish.isChecked() || 
+                                        foodEggs.isChecked() || foodBeans.isChecked() ||
+                                        foodVegetables.isChecked() || foodFruits.isChecked() ||
+                                        foodMilk.isChecked() || foodCheese.isChecked();
+                
+                if (!hasFoodSelected) {
+                    Toast.makeText(this, "Please select at least one food item", Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 break;
@@ -545,22 +557,9 @@ public class ScreeningFormActivity extends AppCompatActivity {
                 }
                 break;
             case 5: // Immunization (only for children ≤ 12 years)
-                try {
-                    int age = Integer.parseInt(ageInput.getText().toString());
-                    if (age <= 12) {
-                        // Validate immunization responses
-                        if (bcgRadioGroup.getCheckedRadioButtonId() == -1 || 
-                            dptRadioGroup.getCheckedRadioButtonId() == -1 || 
-                            polioRadioGroup.getCheckedRadioButtonId() == -1 || 
-                            measlesRadioGroup.getCheckedRadioButtonId() == -1 || 
-                            hepatitisRadioGroup.getCheckedRadioButtonId() == -1 || 
-                            vitaminARadioGroup.getCheckedRadioButtonId() == -1) {
-                            Toast.makeText(this, "Please answer all immunization questions", Toast.LENGTH_SHORT).show();
-                            return false;
-                        }
-                    }
-                } catch (NumberFormatException e) {
-                    // Age not entered, skip validation
+                // Validate immunization for children ≤ 12 years
+                if (calculatedAge <= 12) {
+                    // For checkboxes, no validation needed - users can check or uncheck as needed
                 }
                 break;
         }
@@ -602,7 +601,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
         
         try {
             // Get basic data
-            int age = Integer.parseInt(ageInput.getText().toString());
+            int age = calculatedAge;
             double weight = Double.parseDouble(weightInput.getText().toString());
             double height = Double.parseDouble(heightInput.getText().toString());
             
@@ -634,13 +633,13 @@ public class ScreeningFormActivity extends AppCompatActivity {
             
             // Immunization scoring (for children ≤ 12 years)
             if (age <= 12) {
-                // Check immunization completeness
-                boolean bcgComplete = getRadioGroupValue(bcgRadioGroup).equals("Yes");
-                boolean dptComplete = getRadioGroupValue(dptRadioGroup).equals("Yes");
-                boolean polioComplete = getRadioGroupValue(polioRadioGroup).equals("Yes");
-                boolean measlesComplete = getRadioGroupValue(measlesRadioGroup).equals("Yes");
-                boolean hepatitisComplete = getRadioGroupValue(hepatitisRadioGroup).equals("Yes");
-                boolean vitaminAComplete = getRadioGroupValue(vitaminARadioGroup).equals("Yes");
+                // Check immunization completeness using checkboxes
+                boolean bcgComplete = immBcg.isChecked();
+                boolean dptComplete = immDpt.isChecked();
+                boolean polioComplete = immPolio.isChecked();
+                boolean measlesComplete = immMeasles.isChecked();
+                boolean hepatitisComplete = immHepatitis.isChecked();
+                boolean vitaminAComplete = immVitaminA.isChecked();
                 
                 if (!bcgComplete || !dptComplete || !polioComplete || 
                     !measlesComplete || !hepatitisComplete || !vitaminAComplete) {
@@ -707,7 +706,8 @@ public class ScreeningFormActivity extends AppCompatActivity {
             // Section 1: Basic Information
             screeningData.put("municipality", selectedMunicipality);
             screeningData.put("barangay", selectedBarangay);
-            screeningData.put("age", ageInput.getText().toString());
+            screeningData.put("birthdate", selectedBirthdate);
+            screeningData.put("age", String.valueOf(calculatedAge));
             screeningData.put("sex", selectedSex);
             screeningData.put("pregnant", selectedPregnant);
             
@@ -718,7 +718,20 @@ public class ScreeningFormActivity extends AppCompatActivity {
             screeningData.put("bmi_category", bmiCategory.getText().toString());
             
             // Section 3: Meal Assessment
-            screeningData.put("meal_recall", mealRecallInput.getText().toString());
+            JSONObject foodGroups = new JSONObject();
+            foodGroups.put("rice", foodRice.isChecked());
+            foodGroups.put("bread", foodBread.isChecked());
+            foodGroups.put("noodles", foodNoodles.isChecked());
+            foodGroups.put("corn", foodCorn.isChecked());
+            foodGroups.put("meat", foodMeat.isChecked());
+            foodGroups.put("fish", foodFish.isChecked());
+            foodGroups.put("eggs", foodEggs.isChecked());
+            foodGroups.put("beans", foodBeans.isChecked());
+            foodGroups.put("vegetables", foodVegetables.isChecked());
+            foodGroups.put("fruits", foodFruits.isChecked());
+            foodGroups.put("milk", foodMilk.isChecked());
+            foodGroups.put("cheese", foodCheese.isChecked());
+            screeningData.put("food_groups", foodGroups);
             screeningData.put("meal_assessment", mealAssessmentResult.getText().toString());
             
             // Section 4: Family History
@@ -740,12 +753,12 @@ public class ScreeningFormActivity extends AppCompatActivity {
             
             // Section 6: Immunization
             JSONObject immunization = new JSONObject();
-            immunization.put("bcg", getRadioGroupValue(bcgRadioGroup));
-            immunization.put("dpt", getRadioGroupValue(dptRadioGroup));
-            immunization.put("polio", getRadioGroupValue(polioRadioGroup));
-            immunization.put("measles", getRadioGroupValue(measlesRadioGroup));
-            immunization.put("hepatitis", getRadioGroupValue(hepatitisRadioGroup));
-            immunization.put("vitamin_a", getRadioGroupValue(vitaminARadioGroup));
+            immunization.put("bcg", immBcg.isChecked());
+            immunization.put("dpt", immDpt.isChecked());
+            immunization.put("polio", immPolio.isChecked());
+            immunization.put("measles", immMeasles.isChecked());
+            immunization.put("hepatitis", immHepatitis.isChecked());
+            immunization.put("vitamin_a", immVitaminA.isChecked());
             screeningData.put("immunization", immunization);
             
             // Risk assessment
@@ -791,7 +804,8 @@ public class ScreeningFormActivity extends AppCompatActivity {
             screeningData.put("email", email);
             screeningData.put("municipality", selectedMunicipality);
             screeningData.put("barangay", selectedBarangay);
-            screeningData.put("age", ageInput.getText().toString());
+            screeningData.put("birthdate", selectedBirthdate);
+            screeningData.put("age", String.valueOf(calculatedAge));
             screeningData.put("sex", selectedSex);
             screeningData.put("pregnant", selectedPregnant);
             
@@ -802,7 +816,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
             screeningData.put("bmi_category", bmiCategory.getText().toString());
             
             // Meal assessment
-            screeningData.put("meal_recall", mealRecallInput.getText().toString());
+            // Food groups data is already added above
             screeningData.put("meal_assessment", mealAssessmentResult.getText().toString());
             
             // Family history
@@ -821,12 +835,12 @@ public class ScreeningFormActivity extends AppCompatActivity {
             
             // Immunization
             JSONObject immunization = new JSONObject();
-            immunization.put("bcg", getRadioGroupValue(bcgRadioGroup));
-            immunization.put("dpt", getRadioGroupValue(dptRadioGroup));
-            immunization.put("polio", getRadioGroupValue(polioRadioGroup));
-            immunization.put("measles", getRadioGroupValue(measlesRadioGroup));
-            immunization.put("hepatitis", getRadioGroupValue(hepatitisRadioGroup));
-            immunization.put("vitamin_a", getRadioGroupValue(vitaminARadioGroup));
+            immunization.put("bcg", immBcg.isChecked());
+            immunization.put("dpt", immDpt.isChecked());
+            immunization.put("polio", immPolio.isChecked());
+            immunization.put("measles", immMeasles.isChecked());
+            immunization.put("hepatitis", immHepatitis.isChecked());
+            immunization.put("vitamin_a", immVitaminA.isChecked());
             screeningData.put("immunization", immunization);
             
             // Risk assessment
@@ -942,7 +956,9 @@ public class ScreeningFormActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 try {
                     // Section 1: Basic Information
-                    ageInput.setText("28");
+                    birthdatePickerBtn.setText("Jan 15, 1995");
+                    selectedBirthdate = "Jan 15, 1995";
+                    calculatedAge = 28;
                     selectedSex = "Female";
                     selectedPregnant = "No";
                     
@@ -951,7 +967,10 @@ public class ScreeningFormActivity extends AppCompatActivity {
                     heightInput.setText("158");
                     
                     // Section 3: Meal Assessment
-                    mealRecallInput.setText("Rice, chicken, vegetables, apple");
+                    foodRice.setChecked(true);
+                    foodMeat.setChecked(true);
+                    foodVegetables.setChecked(true);
+                    foodFruits.setChecked(true);
                     
                     // Section 4: Family History
                     hypertensionCheckBox.setChecked(true);

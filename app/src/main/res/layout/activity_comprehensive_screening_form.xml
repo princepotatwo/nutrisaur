@@ -92,11 +92,11 @@
                     android:fontFamily="sans-serif-medium"
                     android:layout_marginBottom="32dp" />
 
-                <!-- Municipality Section -->
+                <!-- Municipality/Barangay Section -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1. Municipality:"
+                    android:text="1. Location:"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -104,7 +104,7 @@
                     android:layout_marginBottom="16dp" />
 
                 <Spinner
-                    android:id="@+id/municipality_spinner"
+                    android:id="@+id/location_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:background="@drawable/question_input_background"
@@ -112,74 +112,34 @@
                     android:paddingEnd="20dp"
                     android:layout_marginBottom="32dp" />
 
-                <!-- Barangay Section -->
+                <!-- Birthdate Section -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2. Barangay:"
+                    android:text="2. Birthdate:"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
                     android:fontFamily="sans-serif-medium"
                     android:layout_marginBottom="16dp" />
 
-                <Spinner
-                    android:id="@+id/barangay_spinner"
+                <Button
+                    android:id="@+id/birthdate_picker_btn"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/question_input_background"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:layout_marginBottom="32dp" />
-
-                <!-- Age Section -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="3. Age (years):"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#212121"
+                    android:text="Select Birthdate"
+                    android:textAllCaps="false"
+                    android:textColor="@color/screening_button_text_selector"
+                    android:background="@drawable/button_state_selector"
                     android:fontFamily="sans-serif-medium"
-                    android:layout_marginBottom="16dp" />
-
-                <EditText
-                    android:id="@+id/age_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:hint="Enter age in years"
                     android:textSize="16sp"
-                    android:textColor="#212121"
-                    android:textColorHint="#9E9E9E"
-                    android:fontFamily="sans-serif"
-                    android:background="@drawable/question_input_background"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:inputType="number"
-                    android:layout_marginBottom="16dp" />
-
-                <!-- Months Input (for children under 1 year) -->
-                <EditText
-                    android:id="@+id/months_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:hint="Enter age in months (if under 1 year)"
-                    android:textSize="16sp"
-                    android:textColor="#212121"
-                    android:textColorHint="#9E9E9E"
-                    android:fontFamily="sans-serif"
-                    android:background="@drawable/question_input_background"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:inputType="number"
-                    android:visibility="gone"
                     android:layout_marginBottom="32dp" />
 
                 <!-- Sex Section -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4. Sex:"
+                    android:text="3. Sex:"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -223,7 +183,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5. Pregnant? (if Female, 12–50 years old):"
+                    android:text="4. Pregnant? (if Female, 12–50 years old):"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -291,7 +251,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="6. Weight (kg):"
+                    android:text="5. Weight (kg):"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -317,7 +277,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="7. Height (cm):"
+                    android:text="6. Height (cm):"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -395,30 +355,148 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="8. What did the participant eat in the last 24 hours?"
+                    android:text="7. What did the participant eat in the last 24 hours?"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
                     android:fontFamily="sans-serif-medium"
                     android:layout_marginBottom="16dp" />
 
-                <EditText
-                    android:id="@+id/meal_recall_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:hint="Describe all foods consumed in the last 24 hours..."
+                <!-- Food Groups Checkboxes -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Carbohydrates:"
                     android:textSize="16sp"
+                    android:textStyle="bold"
                     android:textColor="#212121"
-                    android:textColorHint="#9E9E9E"
-                    android:fontFamily="sans-serif"
-                    android:background="@drawable/question_input_background"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:inputType="textMultiLine"
-                    android:gravity="top"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_rice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rice"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_bread"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bread"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_noodles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Noodles/Pasta"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_corn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Corn"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Protein:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_meat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Meat (Chicken, Pork, Beef)"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_fish"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fish"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_eggs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Eggs"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_beans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Beans/Legumes"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vegetables &amp; Fruits:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_vegetables"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Vegetables"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_fruits"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fruits"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dairy:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#212121"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_milk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Milk"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
+
+                <CheckBox
+                    android:id="@+id/food_cheese"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cheese/Yogurt"
+                    android:textSize="16sp"
+                    android:padding="8dp" />
 
                 <TextView
                     android:id="@+id/meal_assessment_result"
@@ -426,7 +504,8 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textSize="14sp"
-                    android:textColor="#4CAF50" />
+                    android:textColor="#4CAF50"
+                    android:layout_marginTop="16dp" />
             </LinearLayout>
 
             <!-- Section 4: Family History -->
@@ -453,7 +532,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="9. Does the participant or family have a history of any of the following?"
+                    android:text="8. Does the participant or family have a history of any of the following?"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -573,7 +652,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10. What is the participant's lifestyle?"
+                    android:text="9. What is the participant's lifestyle?"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -654,251 +733,61 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="11. Is the child complete in the following vaccines?"
+                    android:text="10. Is the child complete in the following vaccines?"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
                     android:fontFamily="sans-serif-medium"
                     android:layout_marginBottom="16dp" />
 
-                <!-- BCG -->
-                <TextView
+                <!-- Immunization Checkboxes -->
+                <CheckBox
+                    android:id="@+id/imm_bcg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="✅ BCG (Tuberculosis prevention)"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
-                <RadioGroup
-                    android:id="@+id/bcg_radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <RadioButton
-                        android:id="@+id/bcg_yes"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Yes"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/bcg_no"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="No"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/bcg_not_sure"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I'm not sure"
-                        android:textSize="16sp" />
-                </RadioGroup>
-
-                <!-- DPT -->
-                <TextView
+                <CheckBox
+                    android:id="@+id/imm_dpt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="✅ DPT (Diphtheria, Pertussis, Tetanus)"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
-                <RadioGroup
-                    android:id="@+id/dpt_radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <RadioButton
-                        android:id="@+id/dpt_yes"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Yes"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/dpt_no"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="No"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/dpt_not_sure"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I'm not sure"
-                        android:textSize="16sp" />
-                </RadioGroup>
-
-                <!-- Polio -->
-                <TextView
+                <CheckBox
+                    android:id="@+id/imm_polio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="✅ Polio (OPV/IPV)"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
-                <RadioGroup
-                    android:id="@+id/polio_radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <RadioButton
-                        android:id="@+id/polio_yes"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Yes"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/polio_no"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="No"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/polio_not_sure"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I'm not sure"
-                        android:textSize="16sp" />
-                </RadioGroup>
-
-                <!-- Measles -->
-                <TextView
+                <CheckBox
+                    android:id="@+id/imm_measles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="✅ Measles / MMR"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
-                <RadioGroup
-                    android:id="@+id/measles_radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <RadioButton
-                        android:id="@+id/measles_yes"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Yes"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/measles_no"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="No"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/measles_not_sure"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I'm not sure"
-                        android:textSize="16sp" />
-                </RadioGroup>
-
-                <!-- Hepatitis B -->
-                <TextView
+                <CheckBox
+                    android:id="@+id/imm_hepatitis"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="✅ Hepatitis B"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
-                <RadioGroup
-                    android:id="@+id/hepatitis_radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <RadioButton
-                        android:id="@+id/hepatitis_yes"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Yes"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/hepatitis_no"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="No"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/hepatitis_not_sure"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I'm not sure"
-                        android:textSize="16sp" />
-                </RadioGroup>
-
-                <!-- Vitamin A -->
-                <TextView
+                <CheckBox
+                    android:id="@+id/imm_vitamin_a"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="✅ Vitamin A Supplementation"
                     android:textSize="16sp"
                     android:padding="8dp" />
-
-                <RadioGroup
-                    android:id="@+id/vitamin_a_radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/vitamin_a_yes"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Yes"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/vitamin_a_no"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="No"
-                        android:textSize="16sp" />
-
-                    <RadioButton
-                        android:id="@+id/vitamin_a_not_sure"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="I'm not sure"
-                        android:textSize="16sp" />
-                </RadioGroup>
             </LinearLayout>
 
             <!-- Section 7: Final Assessment -->

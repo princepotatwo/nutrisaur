@@ -702,6 +702,28 @@ header {
     display: none !important;
 }
 
+.deck-card {
+    transition: all 0.3s ease;
+    opacity: 1;
+}
+
+.deck-card.hidden {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+}
+
+.no-results-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: var(--color-text);
+    font-style: italic;
+    background: var(--color-card);
+    border-radius: 12px;
+    border: 1px dashed var(--color-border);
+}
+
 .deck-wrapper {
     position: relative;
     overflow: hidden;
@@ -1549,6 +1571,7 @@ header {
                                     <div class="search-box">
                                         <input type="text" id="searchInput" placeholder="Search by name or barangay..." class="search-input">
                                         <button type="button" class="search-btn">🔍</button>
+                                        <button type="button" class="test-search-btn" onclick="testSearch()" style="margin-left: 10px; padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Test Search</button>
                                     </div>
                                     <div class="filter-buttons">
                                         <button type="button" class="filter-btn active" data-filter="all">All</button>
@@ -1671,8 +1694,32 @@ header {
 
         // Initialize form
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing...');
             initializeForm();
             initializeSearchAndFilter();
+            
+            // Test search functionality
+            setTimeout(() => {
+                const searchInput = document.getElementById('searchInput');
+                const cards = document.querySelectorAll('.deck-card');
+                console.log('Test: Found', cards.length, 'cards');
+                console.log('Test: Search input exists:', !!searchInput);
+                
+                if (searchInput && cards.length > 0) {
+                    // Test with first card's name
+                    const firstCard = cards[0];
+                    const nameElement = firstCard.querySelector('.card-header h4');
+                    if (nameElement) {
+                        const testName = nameElement.textContent;
+                        console.log('Test: First card name is:', testName);
+                        
+                        // Simulate search
+                        searchInput.value = testName.substring(0, 3);
+                        searchInput.dispatchEvent(new Event('input'));
+                        console.log('Test: Triggered search with:', testName.substring(0, 3));
+                    }
+                }
+            }, 1000);
         });
 
         function initializeForm() {
@@ -2316,26 +2363,62 @@ header {
             });
         }
 
+        function testSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const cards = document.querySelectorAll('.deck-card');
+            console.log('=== TEST SEARCH FUNCTION ===');
+            console.log('Cards found:', cards.length);
+            
+            if (cards.length > 0) {
+                const firstCard = cards[0];
+                const nameElement = firstCard.querySelector('.card-header h4');
+                const locationElement = firstCard.querySelector('.card-location');
+                const riskElement = firstCard.querySelector('.card-stat .stat-value.risk-low-risk, .card-stat .stat-value.risk-medium-risk, .card-stat .stat-value.risk-high-risk');
+                
+                console.log('First card elements:', {
+                    name: nameElement ? nameElement.textContent : 'NOT FOUND',
+                    location: locationElement ? locationElement.textContent : 'NOT FOUND',
+                    risk: riskElement ? riskElement.textContent : 'NOT FOUND'
+                });
+                
+                if (nameElement) {
+                    searchInput.value = nameElement.textContent.substring(0, 3);
+                    searchInput.dispatchEvent(new Event('input'));
+                    console.log('Test search triggered with:', nameElement.textContent.substring(0, 3));
+                }
+            }
+        }
+
         function initializeSearchAndFilter() {
             const searchInput = document.getElementById('searchInput');
             const filterButtons = document.querySelectorAll('.filter-btn');
             const cards = document.querySelectorAll('.deck-card');
 
+            console.log('Initializing search and filter...');
+            console.log('Found cards:', cards.length);
+            console.log('Found filter buttons:', filterButtons.length);
+
             // Search functionality
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                filterCards(searchTerm, getActiveFilter());
-            });
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    console.log('Search term:', searchTerm);
+                    filterCards(searchTerm, getActiveFilter());
+                });
+            } else {
+                console.error('Search input not found!');
+            }
 
             // Filter functionality
             filterButtons.forEach(button => {
                 button.addEventListener('click', function() {
+                    console.log('Filter button clicked:', this.dataset.filter);
                     // Remove active class from all buttons
                     filterButtons.forEach(btn => btn.classList.remove('active'));
                     // Add active class to clicked button
                     this.classList.add('active');
                     
-                    const searchTerm = searchInput.value.toLowerCase();
+                    const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
                     filterCards(searchTerm, this.dataset.filter);
                 });
             });
@@ -2347,36 +2430,55 @@ header {
 
             function filterCards(searchTerm, filterType) {
                 console.log('Filtering with search:', searchTerm, 'filter:', filterType);
-                cards.forEach(card => {
+                let visibleCount = 0;
+                
+                cards.forEach((card, index) => {
                     // Get card data from the DOM elements
                     const nameElement = card.querySelector('.card-header h4');
                     const locationElement = card.querySelector('.card-location');
-                    const riskLevelElement = card.querySelector('.card-stat:last-child .stat-value');
+                    const riskLevelElement = card.querySelector('.card-stat .stat-value.risk-low-risk, .card-stat .stat-value.risk-medium-risk, .card-stat .stat-value.risk-high-risk');
                     
                     if (!nameElement || !locationElement || !riskLevelElement) {
-                        console.log('Missing elements in card');
+                        console.log('Missing elements in card', index);
                         return;
                     }
 
                     const name = nameElement.textContent.toLowerCase();
                     const barangay = locationElement.textContent.toLowerCase();
-                    const riskLevel = riskLevelElement.textContent.toLowerCase().replace(' ', '-');
+                    const riskLevel = riskLevelElement.textContent.toLowerCase().replace(/\s+/g, '-');
                     
-                    console.log('Card data:', { name, barangay, riskLevel });
+                    console.log(`Card ${index} data:`, { name, barangay, riskLevel });
                     
-                    const matchesSearch = name.includes(searchTerm) || barangay.includes(searchTerm);
+                    const matchesSearch = searchTerm === '' || name.includes(searchTerm) || barangay.includes(searchTerm);
                     const matchesFilter = filterType === 'all' || riskLevel === filterType;
                     
-                    console.log('Matches:', { matchesSearch, matchesFilter });
+                    console.log(`Card ${index} matches:`, { matchesSearch, matchesFilter });
                     
                     if (matchesSearch && matchesFilter) {
-                        card.classList.remove('hidden');
                         card.style.display = 'block';
+                        card.classList.remove('hidden');
+                        visibleCount++;
                     } else {
-                        card.classList.add('hidden');
                         card.style.display = 'none';
+                        card.classList.add('hidden');
                     }
                 });
+                
+                console.log('Visible cards:', visibleCount);
+                
+                // Show/hide no results message
+                const noResultsMessage = document.querySelector('.no-results-message');
+                if (visibleCount === 0) {
+                    if (!noResultsMessage) {
+                        const message = document.createElement('div');
+                        message.className = 'no-results-message';
+                        message.innerHTML = '<p>No results found for your search criteria.</p>';
+                        message.style.cssText = 'text-align: center; padding: 20px; color: var(--color-text); font-style: italic;';
+                        document.querySelector('.deck-cards').appendChild(message);
+                    }
+                } else if (noResultsMessage) {
+                    noResultsMessage.remove();
+                }
             }
         }
     </script>
