@@ -738,7 +738,7 @@ header {
     backdrop-filter: blur(10px);
     overflow: hidden;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .deck-cards {
@@ -756,13 +756,13 @@ header {
 }
 
 .deck-header-section {
-    padding: 20px 24px 10px 24px;
+    padding: 12px 24px 8px 24px;
     border-bottom: 1px solid var(--color-border);
 }
 
 .section-title {
     color: var(--color-highlight);
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
     margin: 0;
     display: flex;
@@ -1738,7 +1738,7 @@ header {
                     <!-- Children Section -->
                     <div class="deck-wrapper">
                         <div class="deck-header-section">
-                            <h3 class="section-title">👶 Children (0-17 years)</h3>
+                            <h3 class="section-title">Children (0-17 years)</h3>
                         </div>
                         <div class="deck-container">
                             <div class="deck-cards children-cards">
@@ -1909,7 +1909,7 @@ header {
                     <!-- Young Adults Section -->
                     <div class="deck-wrapper">
                         <div class="deck-header-section">
-                            <h3 class="section-title">👨‍🎓 Young Adults (18-35 years)</h3>
+                            <h3 class="section-title">Young Adults (18-35 years)</h3>
                         </div>
                         <div class="deck-container">
                             <div class="deck-cards young-adults-cards">
@@ -1958,7 +1958,7 @@ header {
                     <!-- Adults Section -->
                     <div class="deck-wrapper">
                         <div class="deck-header-section">
-                            <h3 class="section-title">👨‍💼 Adults (36-65 years)</h3>
+                            <h3 class="section-title">Adults (36-65 years)</h3>
                         </div>
                         <div class="deck-container">
                             <div class="deck-cards adults-cards">
@@ -2007,7 +2007,7 @@ header {
                     <!-- Seniors Section -->
                     <div class="deck-wrapper">
                         <div class="deck-header-section">
-                            <h3 class="section-title">👴 Seniors (65+ years)</h3>
+                            <h3 class="section-title">Seniors (65+ years)</h3>
                         </div>
                         <div class="deck-container">
                             <div class="deck-cards seniors-cards">
@@ -2050,7 +2050,7 @@ header {
                     <!-- Pregnant Women Section -->
                     <div class="deck-wrapper">
                         <div class="deck-header-section">
-                            <h3 class="section-title">🤰 Pregnant Women</h3>
+                            <h3 class="section-title">Pregnant Women</h3>
                         </div>
                         <div class="deck-container">
                             <div class="deck-cards pregnant-cards">
