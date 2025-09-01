@@ -645,17 +645,45 @@ header {
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
     backdrop-filter: blur(10px);
     overflow: hidden;
+    position: relative;
+}
+
+.deck-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    background: linear-gradient(to right, var(--color-card), transparent);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.deck-container::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    background: linear-gradient(to left, var(--color-card), transparent);
+    z-index: 10;
+    pointer-events: none;
 }
 
 .deck-cards {
     display: flex;
-    gap: 20px;
+    gap: 60px;
     padding: 30px;
     height: 100%;
     align-items: center;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    scroll-behavior: smooth;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 .deck-cards::-webkit-scrollbar {
@@ -804,7 +832,7 @@ header {
 }
 
 .fan-card[data-type="personal"] {
-    transform: rotate(-15deg) translateX(-60px) translateY(-20px);
+    transform: rotate(-15deg) translateX(-80px) translateY(-20px);
     z-index: 20;
 }
 
@@ -814,12 +842,12 @@ header {
 }
 
 .fan-card[data-type="nutritional"] {
-    transform: rotate(15deg) translateX(60px) translateY(-20px);
+    transform: rotate(15deg) translateX(80px) translateY(-20px);
     z-index: 20;
 }
 
 .deck-card:hover .fan-card[data-type="personal"] {
-    transform: rotate(-8deg) translateX(-40px) translateY(-30px);
+    transform: rotate(-8deg) translateX(-60px) translateY(-30px);
 }
 
 .deck-card:hover .fan-card[data-type="anthropometric"] {
@@ -827,7 +855,7 @@ header {
 }
 
 .deck-card:hover .fan-card[data-type="nutritional"] {
-    transform: rotate(8deg) translateX(40px) translateY(-30px);
+    transform: rotate(8deg) translateX(60px) translateY(-30px);
 }
 
 .fan-label {
@@ -897,6 +925,46 @@ header {
 
 .light-theme .fan-label:hover {
     box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+}
+
+/* Scroll Indicators */
+.scroll-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: var(--color-highlight);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-bg);
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.scroll-indicator:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+}
+
+.scroll-indicator.left {
+    left: 10px;
+}
+
+.scroll-indicator.right {
+    right: 10px;
+}
+
+.scroll-indicator.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
         .screening-container {
             max-width: 1200px;
@@ -1561,6 +1629,8 @@ header {
                     
                     <div class="deck-wrapper">
                         <div class="deck-container">
+                            <div class="scroll-indicator left">‹</div>
+                            <div class="scroll-indicator right">›</div>
                             <div class="deck-cards">
                                 <?php
                                 // Sample user data - replace with actual database data later
@@ -2095,6 +2165,38 @@ header {
         // Card Deck Fan Component JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             const deckCards = document.querySelectorAll('.deck-card');
+            const deckContainer = document.querySelector('.deck-cards');
+            const leftIndicator = document.querySelector('.scroll-indicator.left');
+            const rightIndicator = document.querySelector('.scroll-indicator.right');
+            
+            // Scroll functionality
+            if (leftIndicator && rightIndicator && deckContainer) {
+                leftIndicator.addEventListener('click', () => {
+                    deckContainer.scrollBy({
+                        left: -300,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                rightIndicator.addEventListener('click', () => {
+                    deckContainer.scrollBy({
+                        left: 300,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                // Update scroll indicators visibility
+                function updateScrollIndicators() {
+                    const isAtStart = deckContainer.scrollLeft === 0;
+                    const isAtEnd = deckContainer.scrollLeft + deckContainer.clientWidth >= deckContainer.scrollWidth;
+                    
+                    leftIndicator.classList.toggle('hidden', isAtStart);
+                    rightIndicator.classList.toggle('hidden', isAtEnd);
+                }
+                
+                deckContainer.addEventListener('scroll', updateScrollIndicators);
+                updateScrollIndicators(); // Initial check
+            }
             
             deckCards.forEach(card => {
                 const fanCards = card.querySelectorAll('.fan-card');
