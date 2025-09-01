@@ -603,6 +603,301 @@ header {
 .light-theme .new-theme-toggle-btn .new-theme-icon {
     color: #FFFFFF;
 }
+
+/* Card Deck Fan Component Styles */
+.card-deck-container {
+    background: var(--color-card);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-border);
+}
+
+.deck-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.deck-header h3 {
+    color: var(--color-highlight);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.deck-header p {
+    color: var(--color-text);
+    font-size: 16px;
+    opacity: 0.8;
+}
+
+.deck-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.deck-container {
+    position: relative;
+    height: 400px;
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+    background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.deck-cards {
+    display: flex;
+    gap: 20px;
+    padding: 30px;
+    height: 100%;
+    align-items: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.deck-cards::-webkit-scrollbar {
+    display: none;
+}
+
+.deck-card {
+    position: relative;
+    width: 220px;
+    height: 320px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.deck-card:hover {
+    transform: translateY(-10px);
+}
+
+.card-main {
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    border: 1px solid var(--color-border);
+    background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 10;
+}
+
+.deck-card:hover .card-main {
+    transform: scale(0.95);
+    opacity: 0.3;
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.card-header h4 {
+    color: var(--color-highlight);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.card-location {
+    color: var(--color-text);
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.card-stat:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    color: var(--color-text);
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.stat-value {
+    color: var(--color-highlight);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.status-normal-weight {
+    color: #4CAF50 !important;
+}
+
+.status-overweight {
+    color: #FF9800 !important;
+}
+
+.status-underweight {
+    color: #F44336 !important;
+}
+
+.risk-low {
+    color: #4CAF50 !important;
+}
+
+.risk-medium {
+    color: #FF9800 !important;
+}
+
+.risk-high {
+    color: #F44336 !important;
+}
+
+/* Fan Cards */
+.fan-cards {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.deck-card:hover .fan-cards {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.fan-card {
+    position: absolute;
+    width: 220px;
+    height: 320px;
+    border-radius: 16px;
+    border: 1px solid var(--color-highlight);
+    background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.15) 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 35px rgba(161, 180, 84, 0.2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center center;
+}
+
+.fan-card[data-type="personal"] {
+    transform: rotate(-15deg) translateX(-60px) translateY(-20px);
+    z-index: 20;
+}
+
+.fan-card[data-type="anthropometric"] {
+    transform: rotate(0deg) translateX(0) translateY(-40px);
+    z-index: 30;
+}
+
+.fan-card[data-type="nutritional"] {
+    transform: rotate(15deg) translateX(60px) translateY(-20px);
+    z-index: 20;
+}
+
+.deck-card:hover .fan-card[data-type="personal"] {
+    transform: rotate(-8deg) translateX(-40px) translateY(-30px);
+}
+
+.deck-card:hover .fan-card[data-type="anthropometric"] {
+    transform: rotate(0deg) translateX(0) translateY(-50px);
+}
+
+.deck-card:hover .fan-card[data-type="nutritional"] {
+    transform: rotate(8deg) translateX(40px) translateY(-30px);
+}
+
+.fan-label {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--color-highlight) 0%, var(--color-accent1) 100%);
+    color: var(--color-bg);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.fan-label:hover {
+    transform: translateX(-50%) scale(1.1);
+    box-shadow: 0 6px 16px rgba(161, 180, 84, 0.4);
+}
+
+.fan-content {
+    margin-top: 20px;
+    flex: 1;
+}
+
+.fan-content h5 {
+    color: var(--color-highlight);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.fan-content p {
+    color: var(--color-text);
+    font-size: 12px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.fan-content strong {
+    color: var(--color-highlight);
+    font-weight: 600;
+}
+
+/* Light theme adjustments */
+.light-theme .deck-container {
+    background: linear-gradient(135deg, var(--color-card) 0%, rgba(102, 187, 106, 0.05) 100%);
+}
+
+.light-theme .card-main {
+    background: linear-gradient(135deg, var(--color-card) 0%, rgba(102, 187, 106, 0.1) 100%);
+}
+
+.light-theme .fan-card {
+    background: linear-gradient(135deg, var(--color-card) 0%, rgba(102, 187, 106, 0.15) 100%);
+    box-shadow: 0 12px 35px rgba(102, 187, 106, 0.2);
+}
+
+.light-theme .fan-label {
+    background: linear-gradient(135deg, var(--color-highlight) 0%, var(--color-accent1) 100%);
+    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+}
+
+.light-theme .fan-label:hover {
+    box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
+}
         .screening-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -1337,6 +1632,157 @@ header {
                     </div>
                 </div>
 
+                <!-- Card Deck Fan Component -->
+                <div class="card-deck-container">
+                    <div class="deck-header">
+                        <h3>🎴 Community Assessment Cards</h3>
+                        <p>Click on a community member card to view detailed nutritional assessment information</p>
+                    </div>
+                    
+                    <div class="deck-wrapper">
+                        <div class="deck-container">
+                            <div class="deck-cards">
+                                <?php
+                                // Sample user data - replace with actual database data later
+                                $sample_users = [
+                                    [
+                                        'name' => 'Maria Santos',
+                                        'age' => '28',
+                                        'height' => '158 cm',
+                                        'weight' => '55 kg',
+                                        'bmi' => '22.0',
+                                        'location' => 'Bagumbayan, Balanga',
+                                        'risk_score' => '15',
+                                        'status' => 'Normal Weight'
+                                    ],
+                                    [
+                                        'name' => 'Juan Dela Cruz',
+                                        'age' => '45',
+                                        'height' => '170 cm',
+                                        'weight' => '78 kg',
+                                        'bmi' => '27.0',
+                                        'location' => 'Cupang Proper, Balanga',
+                                        'risk_score' => '22',
+                                        'status' => 'Overweight'
+                                    ],
+                                    [
+                                        'name' => 'Ana Reyes',
+                                        'age' => '32',
+                                        'height' => '162 cm',
+                                        'weight' => '48 kg',
+                                        'bmi' => '18.3',
+                                        'location' => 'Poblacion, Balanga',
+                                        'risk_score' => '18',
+                                        'status' => 'Underweight'
+                                    ],
+                                    [
+                                        'name' => 'Pedro Martinez',
+                                        'age' => '38',
+                                        'height' => '175 cm',
+                                        'weight' => '85 kg',
+                                        'bmi' => '27.8',
+                                        'location' => 'Sibacan, Balanga',
+                                        'risk_score' => '25',
+                                        'status' => 'Overweight'
+                                    ],
+                                    [
+                                        'name' => 'Luz Fernandez',
+                                        'age' => '25',
+                                        'height' => '155 cm',
+                                        'weight' => '52 kg',
+                                        'bmi' => '21.6',
+                                        'location' => 'Tenejero, Balanga',
+                                        'risk_score' => '12',
+                                        'status' => 'Normal Weight'
+                                    ]
+                                ];
+                                ?>
+                                
+                                <?php foreach ($sample_users as $index => $user): ?>
+                                <div class="deck-card" data-index="<?php echo $index; ?>">
+                                    <div class="card-main">
+                                        <div class="card-header">
+                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
+                                            <span class="card-location"><?php echo htmlspecialchars($user['location']); ?></span>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="card-stat">
+                                                <span class="stat-label">Age</span>
+                                                <span class="stat-value"><?php echo $user['age']; ?> years</span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Height</span>
+                                                <span class="stat-value"><?php echo $user['height']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Weight</span>
+                                                <span class="stat-value"><?php echo $user['weight']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">BMI</span>
+                                                <span class="stat-value"><?php echo $user['bmi']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Status</span>
+                                                <span class="stat-value status-<?php echo strtolower(str_replace(' ', '-', $user['status'])); ?>"><?php echo $user['status']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Risk Score</span>
+                                                <span class="stat-value risk-<?php echo $user['risk_score'] > 20 ? 'high' : ($user['risk_score'] > 10 ? 'medium' : 'low'); ?>"><?php echo $user['risk_score']; ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Fan cards that appear on hover -->
+                                    <div class="fan-cards">
+                                        <div class="fan-card" data-type="personal">
+                                            <div class="fan-label">Personal Info</div>
+                                            <div class="fan-content">
+                                                <h5>Personal Information</h5>
+                                                <p><strong>Name:</strong> <?php echo htmlspecialchars($user['name']); ?></p>
+                                                <p><strong>Age:</strong> <?php echo $user['age']; ?> years</p>
+                                                <p><strong>Location:</strong> <?php echo htmlspecialchars($user['location']); ?></p>
+                                            </div>
+                                        </div>
+                                        <div class="fan-card" data-type="anthropometric">
+                                            <div class="fan-label">Anthropometric</div>
+                                            <div class="fan-content">
+                                                <h5>Anthropometric Data</h5>
+                                                <p><strong>Height:</strong> <?php echo $user['height']; ?></p>
+                                                <p><strong>Weight:</strong> <?php echo $user['weight']; ?></p>
+                                                <p><strong>BMI:</strong> <?php echo $user['bmi']; ?></p>
+                                                <p><strong>Status:</strong> <?php echo $user['status']; ?></p>
+                                            </div>
+                                        </div>
+                                        <div class="fan-card" data-type="nutritional">
+                                            <div class="fan-label">Nutritional</div>
+                                            <div class="fan-content">
+                                                <h5>Nutritional Assessment</h5>
+                                                <p><strong>Risk Score:</strong> <?php echo $user['risk_score']; ?></p>
+                                                <p><strong>Risk Level:</strong> 
+                                                    <?php 
+                                                    if ($user['risk_score'] > 20) echo 'High Risk';
+                                                    elseif ($user['risk_score'] > 10) echo 'Medium Risk';
+                                                    else echo 'Low Risk';
+                                                    ?>
+                                                </p>
+                                                <p><strong>Recommendation:</strong> 
+                                                    <?php 
+                                                    if ($user['risk_score'] > 20) echo 'Immediate intervention needed';
+                                                    elseif ($user['risk_score'] > 10) echo 'Regular monitoring';
+                                                    else echo 'Maintain current status';
+                                                    ?>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Assessment Results Table -->
                 <div class="assessment-table-container">
                     <div class="table-header">
@@ -1823,6 +2269,141 @@ header {
                 icon.textContent = '🌙';
             }
         });
+
+        // Card Deck Fan Component JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            const deckCards = document.querySelectorAll('.deck-card');
+            
+            deckCards.forEach(card => {
+                const fanCards = card.querySelectorAll('.fan-card');
+                
+                // Add hover effects for fan cards
+                card.addEventListener('mouseenter', function() {
+                    // Add staggered animation to fan cards
+                    fanCards.forEach((fanCard, index) => {
+                        setTimeout(() => {
+                            fanCard.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                        }, index * 100);
+                    });
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    // Reset fan cards position
+                    fanCards.forEach(fanCard => {
+                        fanCard.style.transition = 'all 0.3s ease';
+                    });
+                });
+                
+                // Add click effects for fan labels
+                fanCards.forEach(fanCard => {
+                    const fanLabel = fanCard.querySelector('.fan-label');
+                    
+                    fanLabel.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        
+                        // Add click animation
+                        fanLabel.style.transform = 'translateX(-50%) scale(0.95)';
+                        setTimeout(() => {
+                            fanLabel.style.transform = 'translateX(-50%) scale(1)';
+                        }, 150);
+                        
+                        // Show detailed modal (you can customize this)
+                        showFanCardDetails(fanCard);
+                    });
+                });
+            });
+        });
+
+        function showFanCardDetails(fanCard) {
+            const cardType = fanCard.dataset.type;
+            const content = fanCard.querySelector('.fan-content').innerHTML;
+            
+            // Create modal for detailed view
+            const modal = document.createElement('div');
+            modal.className = 'fan-modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                backdrop-filter: blur(5px);
+            `;
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: var(--color-card);
+                border-radius: 16px;
+                padding: 30px;
+                max-width: 500px;
+                width: 90%;
+                max-height: 80vh;
+                overflow-y: auto;
+                border: 1px solid var(--color-highlight);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                position: relative;
+            `;
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '✕';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 15px;
+                right: 20px;
+                background: none;
+                border: none;
+                color: var(--color-highlight);
+                font-size: 24px;
+                cursor: pointer;
+                padding: 5px;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            `;
+            
+            closeBtn.addEventListener('mouseenter', function() {
+                this.style.background = 'var(--color-highlight)';
+                this.style.color = 'var(--color-bg)';
+            });
+            
+            closeBtn.addEventListener('mouseleave', function() {
+                this.style.background = 'none';
+                this.style.color = 'var(--color-highlight)';
+            });
+            
+            closeBtn.addEventListener('click', function() {
+                modal.remove();
+            });
+            
+            modalContent.innerHTML = `
+                <h3 style="color: var(--color-highlight); margin-bottom: 20px; text-align: center; font-size: 24px;">
+                    ${cardType.charAt(0).toUpperCase() + cardType.slice(1)} Assessment Details
+                </h3>
+                <div style="color: var(--color-text);">
+                    ${content}
+                </div>
+            `;
+            
+            modalContent.appendChild(closeBtn);
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,437 @@
+import { useState, useMemo, useEffect } from "react"
+import { motion } from "framer-motion"
+
+// Deck with fan-style reveal of attributes
+export default function CardDeckFan() {
+  // Which card index is hovered (for deck spread)
+  const [hovered, setHovered] = useState<number | null>(null)
+  // Which card is selected (clicked) to reveal its attributes
+  const [selected, setSelected] = useState<number | null>(null)
+  // Which card is focused (clicked from fan)
+  const [focusedCard, setFocusedCard] = useState<number | null>(null)
+  const [focusedCardData, setFocusedCardData] = useState(null)
+
+  // Card data. useMemo keeps the reference stable so animations behave consistently.
+  const cards = useMemo(
+    () => [
+      {
+        label: "User #1",
+        info: [
+          { label: "Age", value: "22" },
+          { label: "Height", value: "170 cm" },
+          { label: "Weight", value: "64 kg" },
+          { label: "BMI", value: "22.1" },
+          { label: "City", value: "Cebu" },
+        ],
+      },
+      {
+        label: "User #2",
+        info: [
+          { label: "Age", value: "35" },
+          { label: "Height", value: "162 cm" },
+          { label: "Weight", value: "72 kg" },
+          { label: "BMI", value: "27.4" },
+          { label: "City", value: "Davao" },
+        ],
+      },
+      {
+        label: "User #3",
+        info: [
+          { label: "Age", value: "29" },
+          { label: "Height", value: "181 cm" },
+          { label: "Weight", value: "78 kg" },
+          { label: "BMI", value: "23.8" },
+          { label: "City", value: "Makati" },
+        ],
+      },
+      {
+        label: "User #4",
+        info: [
+          { label: "Age", value: "41" },
+          { label: "Height", value: "168 cm" },
+          { label: "Weight", value: "80 kg" },
+          { label: "BMI", value: "28.4" },
+          { label: "City", value: "Baguio" },
+        ],
+      },
+      {
+        label: "User #5",
+        info: [
+          { label: "Age", value: "26" },
+          { label: "Height", value: "175 cm" },
+          { label: "Weight", value: "68 kg" },
+          { label: "BMI", value: "22.2" },
+          { label: "City", value: "Manila" },
+        ],
+      },
+      {
+        label: "User #6",
+        info: [
+          { label: "Age", value: "33" },
+          { label: "Height", value: "165 cm" },
+          { label: "Weight", value: "70 kg" },
+          { label: "BMI", value: "25.7" },
+          { label: "City", value: "Quezon" },
+        ],
+      },
+      {
+        label: "User #7",
+        info: [
+          { label: "Age", value: "38" },
+          { label: "Height", value: "178 cm" },
+          { label: "Weight", value: "85 kg" },
+          { label: "BMI", value: "26.8" },
+          { label: "City", value: "Pasig" },
+        ],
+      },
+      {
+        label: "User #8",
+        info: [
+          { label: "Age", value: "24" },
+          { label: "Height", value: "160 cm" },
+          { label: "Weight", value: "55 kg" },
+          { label: "BMI", value: "21.5" },
+          { label: "City", value: "Taguig" },
+        ],
+      },
+      {
+        label: "User #9",
+        info: [
+          { label: "Age", value: "31" },
+          { label: "Height", value: "172 cm" },
+          { label: "Weight", value: "75 kg" },
+          { label: "BMI", value: "25.4" },
+          { label: "City", value: "Caloocan" },
+        ],
+      },
+    ],
+    []
+  )
+
+  return (
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex items-center justify-center p-6">
+      <div className="w-full max-w-6xl">
+        {/* Page header */}
+        <header className="mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">Deck Fan Demo</h1>
+          <p className="text-slate-300 mt-2">Click a user card to transform it into a fan of attributes.</p>
+        </header>
+
+        {/* Focused card overlay - moved to main component */}
+        {focusedCard !== null && (
+          <div 
+            className="fixed top-0 left-0 w-full h-full bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999]"
+            onClick={() => {
+              setFocusedCard(null)
+              setFocusedCardData(null)
+            }}
+          >
+            <motion.div 
+              className="w-[400px] h-[500px] rounded-2xl border border-cyan-400 bg-gradient-to-b from-slate-700 to-slate-800 backdrop-blur-xl shadow-xl shadow-black/30 p-6 flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            >
+              {/* Header */}
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-cyan-200 mb-2">{focusedCardData?.label || 'Card Details'}</h2>
+                <div className="w-16 h-1 bg-cyan-400 mx-auto rounded-full"></div>
+              </div>
+              
+              {/* Content */}
+              <div className="flex-1 space-y-4">
+                <div className="text-center">
+                  <span className="text-4xl font-bold text-white">{focusedCardData?.value || 'Card Value'}</span>
+                </div>
+                
+                {/* Additional details could go here */}
+                <div className="text-center text-slate-300">
+                  <p>Detailed information for {focusedCardData?.label || 'this card'}</p>
+                </div>
+              </div>
+              
+              {/* Close button */}
+              <button 
+                className="mt-6 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-white font-semibold transition-colors"
+                onClick={() => {
+                  setFocusedCard(null)
+                  setFocusedCardData(null)
+                }}
+              >
+                Close
+              </button>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Deck container */}
+        <div className="relative h-[500px] rounded-3xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden">
+          <div className="flex space-x-3 relative h-full items-center px-6 overflow-x-auto scrollbar-hide">
+            {cards.map((card, i) => {
+              // whether any card is hovered. Used to spread the deck when hovering.
+              const isAnyHovered = hovered !== null
+              // whether this specific card is hovered
+              const isThisHovered = hovered === i
+              // whether this card is selected (transformed into fan)
+              const isSelected = selected === i
+
+              // Default motion values for each deck card
+              let rotate = 0
+              let x = 0
+              let y = 0
+              let scale = 1
+
+              // When a card is hovered, spread cards around the hovered one
+              if (isAnyHovered && !isSelected) {
+                const offset = i - (hovered ?? 0)
+                rotate = offset * 6
+                x = offset * 100
+                y = -Math.abs(offset) * 14
+                scale = isThisHovered ? 1.08 : 0.96
+              }
+
+              // If this card is selected, FORCE it to stay in exact same position
+              if (isSelected) {
+                // Keep the exact same position as when it was hovered
+                const offset = i - (hovered ?? 0)
+                if (isAnyHovered) {
+                  rotate = offset * 6
+                  x = offset * 100
+                  y = -Math.abs(offset) * 14
+                }
+                // Don't change scale or position - keep it exactly where it was
+                scale = isThisHovered ? 1.08 : 0.96
+              }
+
+              return (
+                // motion.div allows smooth animation between states
+                <motion.div
+                  key={i}
+                  onMouseEnter={() => !isSelected && setHovered(i)}
+                  onMouseLeave={() => !isSelected && setHovered(null)}
+                  onClick={() => setSelected(selected === i ? null : i)}
+                  initial={false} // don't apply mount animations
+                  animate={{ rotate, x, y, scale }}
+                  transition={{ type: "spring", stiffness: 260, damping: 24 }}
+                  className="relative"
+                  style={{
+                    // Force the position to stay exactly the same
+                    position: "relative",
+                    transform: "none" // Override any transform changes
+                  }}
+                >
+                  {/* The deck card that transforms into fan cards */}
+                  <TransformingDeckCard 
+                    label={card.label} 
+                    info={card.info}
+                    isSelected={isSelected}
+                    cardIndex={i}
+                    setFocusedCard={setFocusedCard}
+                    setFocusedCardData={setFocusedCardData}
+                  />
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// The deck card that transforms into fan cards
+function TransformingDeckCard({ 
+  label, 
+  info, 
+  isSelected,
+  cardIndex,
+  setFocusedCard,
+  setFocusedCardData
+}) {
+  const [fanHovered, setFanHovered] = useState(false)
+  const [hoveredLabel, setHoveredLabel] = useState(null)
+  const [activeCardIndex, setActiveCardIndex] = useState(2) // Start with middle card
+  const [hoveredCardIndex, setHoveredCardIndex] = useState(null)
+
+
+  // center index used to compute angles and offsets so fan is symmetric
+  const centerIndex = (info.length - 1) / 2
+
+  // Set fanHovered to true when card is first selected
+  useEffect(() => {
+    if (isSelected) {
+      setFanHovered(true)
+    } else {
+      setFanHovered(false)
+      setHoveredLabel(null)
+      setActiveCardIndex(2) // Reset to middle card
+      setHoveredCardIndex(null)
+
+    }
+  }, [isSelected])
+
+  return (
+
+
+      <div
+        className="relative w-[200px] h-[280px] md:w-[220px] md:h-[320px]"
+        onMouseEnter={() => isSelected && setFanHovered(true)}
+        onMouseLeave={() => isSelected && setFanHovered(false)}
+        style={{
+          // Force the container to stay in place
+          position: "relative",
+          transform: "none"
+        }}
+      >
+      {/* Original deck card - stays in place and becomes background */}
+      <motion.div
+        className="w-full h-full rounded-2xl border border-white/20 bg-gradient-to-b from-white/15 to-white/5 backdrop-blur-xl shadow-xl shadow-black/30 p-4 md:p-5 flex items-center justify-center cursor-pointer"
+        animate={{ 
+          opacity: isSelected ? 0.1 : 1,
+          scale: isSelected ? 0.95 : 1
+        }}
+        transition={{ type: "spring", stiffness: 260, damping: 24 }}
+        whileTap={{ scale: 0.95 }}
+        style={{
+          // Force the card to stay in place
+          position: "absolute",
+          top: 0,
+          left: 0,
+          transform: "none"
+        }}
+      >
+        <motion.span 
+          className="text-lg font-semibold text-cyan-300"
+          animate={{ opacity: isSelected ? 0 : 1 }}
+          transition={{ duration: 0.2 }}
+        >
+          {label}
+        </motion.span>
+      </motion.div>
+
+
+
+      {/* Fan cards with hover up/down and label click to center */}
+      {isSelected && info.map((card, i) => {
+        const angleStep = 8 // Reduced spacing for subtler fan
+        const offsetAngle = (i - centerIndex) * angleStep
+        
+        // Show fan shape when hovering, retract when not hovering
+        const angle = fanHovered ? offsetAngle : 0
+
+        // horizontal offset only - no vertical offset to keep cards inline
+        const xOffset = fanHovered ? (i - centerIndex) * 60 : 0
+        
+        // Vertical offset: up when hovered, down when not hovered, center when active
+        let yOffset = 0
+        if (i === activeCardIndex) {
+          yOffset = 0 // Active card stays in center
+        } else if (i === hoveredCardIndex) {
+          yOffset = -30 // Hovered card goes up
+        } else if (fanHovered) {
+          yOffset = -15 // Other cards go up slightly when fan is open
+        } else {
+          yOffset = 20 // Cards go down when not hovered
+        }
+
+        // Determine if this card is active (in center) or hovered
+        const isActive = i === activeCardIndex
+        const isHovered = hoveredCardIndex === i
+
+        return (
+          <motion.div
+            key={i}
+            className={`absolute w-[200px] h-[280px] md:w-[220px] md:h-[320px] rounded-2xl border backdrop-blur-xl shadow-xl shadow-black/30 p-4 md:p-5 flex flex-col items-center justify-center cursor-pointer ${
+              isHovered
+                ? "border-cyan-400 bg-gradient-to-b from-slate-700 to-slate-800" 
+                : "border-white/20 bg-gradient-to-b from-slate-800 to-slate-900"
+            }`}
+            style={{ 
+              transformOrigin: "center center", 
+              zIndex: isHovered ? 200 : (isActive ? 150 : 10 + i),
+              top: 0,
+              left: 0
+            }}
+            onMouseEnter={() => {
+              setHoveredCardIndex(i)
+              setHoveredLabel(i)
+              setFanHovered(true)
+            }}
+            onMouseLeave={() => {
+              setHoveredCardIndex(null)
+              setHoveredLabel(null)
+            }}
+            onClick={() => {
+              setFocusedCard(i)
+              setFocusedCardData(info[i])
+            }}
+            // Cards start from center and animate to fan shape
+            initial={{ 
+              opacity: 0,
+              scale: 0.8,
+              rotate: 0,
+              x: 0,
+              y: 0
+            }}
+            animate={{ 
+              opacity: 1,
+              scale: 1,
+              rotate: angle, 
+              x: xOffset, 
+              y: yOffset
+            }}
+            // Remove exit animations
+            exit={false}
+            transition={{ 
+              type: "spring", 
+              stiffness: 120, 
+              damping: 12,
+              // Stagger the cards appearance for smooth fan effect
+              delay: i * 0.1
+            }}
+          >
+            {/* Bookmark label with more height */}
+            <motion.div
+              className={`absolute -top-12 left-1/2 transform -translate-x-1/2 w-16 h-10 rounded-t-lg border flex items-center justify-center cursor-pointer shadow-lg ${
+                isHovered
+                  ? "bg-gradient-to-b from-cyan-300 to-cyan-500 border-cyan-200" 
+                  : "bg-gradient-to-b from-cyan-400 to-cyan-600 border-cyan-300"
+              }`}
+              onMouseEnter={() => {
+                setHoveredCardIndex(i)
+                setFanHovered(true)
+              }}
+              onMouseLeave={() => {
+                setHoveredCardIndex(null)
+              }}
+              onClick={(e) => {
+                e.stopPropagation()
+                setFocusedCard(i)
+                setFocusedCardData(info[i])
+              }}
+              whileHover={{ scale: 1.1 }}
+              animate={{
+                scale: 1
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <span className="text-xs font-bold text-white">{card.label}</span>
+            </motion.div>
+
+            {/* Card content */}
+            <div className="mt-4 text-center">
+              <span className={`text-lg font-semibold ${isHovered ? "text-cyan-200" : "text-cyan-300"}`}>
+                {card.label}
+              </span>
+              <span className={`text-sm mt-2 block ${isHovered ? "text-white" : "text-slate-300"}`}>
+                {card.value}
+              </span>
+            </div>
+          </motion.div>
+        )
+      })}
+    </div>
+  )
+}
