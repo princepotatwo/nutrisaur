@@ -666,8 +666,8 @@ header {
 
 .deck-card {
     position: relative;
-    width: 280px;
-    height: 320px;
+    width: 200px;
+    height: 280px;
     flex-shrink: 0;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
