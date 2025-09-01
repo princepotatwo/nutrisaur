@@ -651,8 +651,8 @@ header {
 .deck-cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    padding: 35px;
+    gap: 40px;
+    padding: 40px;
     height: 100%;
     overflow-y: auto;
     scrollbar-width: none;
@@ -666,9 +666,8 @@ header {
 
 .deck-card {
     position: relative;
-    width: 200px;
+    width: 100%;
     height: 280px;
-    flex-shrink: 0;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(0px) translateY(0px) scale(1);
