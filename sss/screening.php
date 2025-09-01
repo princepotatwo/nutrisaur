@@ -608,13 +608,11 @@ header {
 .card-deck-container {
     background: var(--color-card);
     border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--color-border);
     width: 100%;
-    max-width: 100%;
-    overflow: hidden;
 }
 
 .deck-header {
@@ -760,56 +758,74 @@ header {
 }
 
 /* Responsive design for card deck */
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
+    .screening-container {
+        max-width: 1200px;
+        padding: 25px;
+    }
+    
     .deck-cards {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        padding: 25px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .screening-container {
+        max-width: 1000px;
+        padding: 20px;
+    }
+    
+    .deck-cards {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .deck-card {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .screening-container {
+        max-width: 100%;
+        padding: 15px;
+    }
+    
+    .deck-cards {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .deck-card {
+        height: 280px;
+    }
+    
+    .deck-container {
+        height: 500px;
+    }
+}
+
+@media (max-width: 480px) {
+    .screening-container {
+        padding: 10px;
+    }
+    
+    .deck-cards {
+        grid-template-columns: 1fr;
         gap: 15px;
         padding: 15px;
     }
     
     .deck-card {
         height: 260px;
-        max-width: 300px;
-    }
-}
-
-@media (max-width: 768px) {
-    .deck-cards {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 10px;
-        padding: 10px;
-    }
-    
-    .deck-card {
-        height: 240px;
-        max-width: 280px;
     }
     
     .deck-container {
-        height: 400px;
-        max-height: 60vh;
-    }
-    
-    .screening-container {
-        padding: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .deck-cards {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        padding: 10px;
-    }
-    
-    .deck-card {
-        height: 220px;
-        max-width: 100%;
-    }
-    
-    .deck-container {
-        height: 350px;
-        max-height: 50vh;
+        height: 450px;
     }
 }
 
@@ -966,12 +982,11 @@ header {
     box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
 }
         .screening-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
             width: 100%;
             box-sizing: border-box;
-            overflow-x: hidden;
         }
 
         .screening-form {

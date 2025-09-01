@@ -61,11 +61,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
     
     // Section 3: Meal Assessment (24-Hour Recall)
     // Food checkboxes for meal assessment
-    private CheckBox foodRice, foodBread, foodNoodles, foodCorn;
-    private CheckBox foodMeat, foodFish, foodEggs, foodBeans;
-    private CheckBox foodVegetables, foodFruits;
-    private CheckBox foodMilk, foodCheese;
-    private TextView mealAssessmentResult;
+    private CheckBox foodCarbs, foodProtein, foodVeggiesFruits, foodDairy;
     
     // Section 4: Family History
     private CheckBox diabetesCheckBox;
@@ -163,19 +159,10 @@ public class ScreeningFormActivity extends AppCompatActivity {
         
         // Section 3: Meal Assessment
         // Food checkboxes
-        foodRice = findViewById(R.id.food_rice);
-        foodBread = findViewById(R.id.food_bread);
-        foodNoodles = findViewById(R.id.food_noodles);
-        foodCorn = findViewById(R.id.food_corn);
-        foodMeat = findViewById(R.id.food_meat);
-        foodFish = findViewById(R.id.food_fish);
-        foodEggs = findViewById(R.id.food_eggs);
-        foodBeans = findViewById(R.id.food_beans);
-        foodVegetables = findViewById(R.id.food_vegetables);
-        foodFruits = findViewById(R.id.food_fruits);
-        foodMilk = findViewById(R.id.food_milk);
-        foodCheese = findViewById(R.id.food_cheese);
-        mealAssessmentResult = findViewById(R.id.meal_assessment_result);
+        foodCarbs = findViewById(R.id.food_carbs);
+        foodProtein = findViewById(R.id.food_protein);
+        foodVeggiesFruits = findViewById(R.id.food_veggies_fruits);
+        foodDairy = findViewById(R.id.food_dairy);
         
         // Section 4: Family History
         diabetesCheckBox = findViewById(R.id.diabetes_checkbox);
@@ -338,28 +325,46 @@ public class ScreeningFormActivity extends AppCompatActivity {
                 }
                 
                 // Update pregnancy section visibility for females
-                if ("Female".equals(selectedSex)) {
-                    if (calculatedAge >= 12 && calculatedAge <= 50) {
-                        findViewById(R.id.pregnant_section).setVisibility(View.VISIBLE);
-                    } else {
-                        findViewById(R.id.pregnant_section).setVisibility(View.GONE);
-                        selectedPregnant = "Not Applicable";
-                    }
-                }
+                updatePregnancyVisibility();
+                updateButtonShading();
             }, year, month, day);
         
         datePickerDialog.show();
     }
 
+    private void updatePregnancyVisibility() {
+        // Only show pregnancy question if both birthdate and sex are selected AND conditions are met
+        if (!TextUtils.isEmpty(selectedBirthdate) && !TextUtils.isEmpty(selectedSex)) {
+            if ("Female".equals(selectedSex) && calculatedAge >= 12 && calculatedAge <= 50) {
+                findViewById(R.id.pregnant_section).setVisibility(View.VISIBLE);
+            } else {
+                findViewById(R.id.pregnant_section).setVisibility(View.GONE);
+                selectedPregnant = "Not Applicable";
+            }
+        } else {
+            // Hide pregnancy question if birthdate or sex not selected yet
+            findViewById(R.id.pregnant_section).setVisibility(View.GONE);
+            selectedPregnant = "Not Applicable";
+        }
+    }
+
+    private void updateButtonShading() {
+        // Update sex button shading
+        findViewById(R.id.sex_male).setSelected("Male".equals(selectedSex));
+        findViewById(R.id.sex_female).setSelected("Female".equals(selectedSex));
+        
+        // Update pregnancy button shading
+        findViewById(R.id.pregnant_yes).setSelected("Yes".equals(selectedPregnant));
+        findViewById(R.id.pregnant_no).setSelected("No".equals(selectedPregnant));
+    }
+
     private void setupFoodCheckboxes() {
-        // Add listeners to all food checkboxes to assess meal diversity
-        CheckBox[] foodCheckboxes = {foodRice, foodBread, foodNoodles, foodCorn, 
-                                   foodMeat, foodFish, foodEggs, foodBeans,
-                                   foodVegetables, foodFruits, foodMilk, foodCheese};
+        // Add listeners to all food checkboxes for shading
+        CheckBox[] foodCheckboxes = {foodCarbs, foodProtein, foodVeggiesFruits, foodDairy};
         
         for (CheckBox checkbox : foodCheckboxes) {
             checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                assessMealDiversity();
+                // Just track selections - no assessment needed
             });
         }
     }
@@ -372,27 +377,25 @@ public class ScreeningFormActivity extends AppCompatActivity {
         // Sex selection buttons
         findViewById(R.id.sex_male).setOnClickListener(v -> {
             selectedSex = "Male";
-            findViewById(R.id.pregnant_section).setVisibility(View.GONE);
+            updatePregnancyVisibility();
+            updateButtonShading();
         });
         
                 findViewById(R.id.sex_female).setOnClickListener(v -> {
             selectedSex = "Female";
-            // Show pregnancy question only for females 12-50 years
-            if (calculatedAge >= 12 && calculatedAge <= 50) {
-                findViewById(R.id.pregnant_section).setVisibility(View.VISIBLE);
-            } else {
-                findViewById(R.id.pregnant_section).setVisibility(View.GONE);
-                selectedPregnant = "Not Applicable"; // Reset pregnancy selection
-            }
+            updatePregnancyVisibility();
+            updateButtonShading();
         });
         
         // Pregnancy selection buttons
         findViewById(R.id.pregnant_yes).setOnClickListener(v -> {
             selectedPregnant = "Yes";
+            updateButtonShading();
         });
         
         findViewById(R.id.pregnant_no).setOnClickListener(v -> {
             selectedPregnant = "No";
+            updateButtonShading();
         });
         
         // Lifestyle selection
@@ -471,32 +474,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
         }
     }
 
-    private void assessMealDiversity() {
-        // Check food groups from checkboxes
-        boolean hasCarbs = foodRice.isChecked() || foodBread.isChecked() || 
-                          foodNoodles.isChecked() || foodCorn.isChecked();
-        
-        boolean hasProtein = foodMeat.isChecked() || foodFish.isChecked() || 
-                           foodEggs.isChecked() || foodBeans.isChecked();
-        
-        boolean hasVeggies = foodVegetables.isChecked() || foodFruits.isChecked();
-        
-        boolean hasDairy = foodMilk.isChecked() || foodCheese.isChecked();
-        
-        if (hasCarbs && hasProtein && hasVeggies) {
-            mealAssessmentResult.setText("✅ Balanced meal with all major food groups");
-            mealAssessmentResult.setTextColor(0xFF4CAF50); // Green
-        } else if (hasCarbs && hasProtein) {
-            mealAssessmentResult.setText("⚠️ Missing vegetables/fruits - recommend adding");
-            mealAssessmentResult.setTextColor(0xFFFF9800); // Orange
-        } else if (hasCarbs && hasVeggies) {
-            mealAssessmentResult.setText("⚠️ Missing protein - recommend adding meat/fish/eggs");
-            mealAssessmentResult.setTextColor(0xFFFF9800); // Orange
-        } else {
-            mealAssessmentResult.setText("⚠️ Meal may be missing multiple food groups");
-            mealAssessmentResult.setTextColor(0xFFF44336); // Red
-        }
-    }
+
 
     private void showQuestion(int question) {
         // Hide all questions
@@ -570,16 +548,12 @@ public class ScreeningFormActivity extends AppCompatActivity {
                 }
                 break;
             case 2: // Meal Assessment
-                // Check if at least one food item is selected
-                boolean hasFoodSelected = foodRice.isChecked() || foodBread.isChecked() || 
-                                        foodNoodles.isChecked() || foodCorn.isChecked() ||
-                                        foodMeat.isChecked() || foodFish.isChecked() || 
-                                        foodEggs.isChecked() || foodBeans.isChecked() ||
-                                        foodVegetables.isChecked() || foodFruits.isChecked() ||
-                                        foodMilk.isChecked() || foodCheese.isChecked();
+                // Check if at least one food group is selected
+                boolean hasFoodSelected = foodCarbs.isChecked() || foodProtein.isChecked() || 
+                                        foodVeggiesFruits.isChecked() || foodDairy.isChecked();
                 
                 if (!hasFoodSelected) {
-                    Toast.makeText(this, "Please select at least one food item", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Please select at least one food group", Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 break;
@@ -658,9 +632,9 @@ public class ScreeningFormActivity extends AppCompatActivity {
             else if (bmi < 30) score += 15;
             else score += 30;
             
-            // Meal assessment scoring
-            String mealAssessment = mealAssessmentResult.getText().toString();
-            if (mealAssessment.contains("At Risk")) score += 15;
+            // Meal assessment scoring - simplified
+            boolean hasBalancedMeal = foodCarbs.isChecked() && foodProtein.isChecked() && foodVeggiesFruits.isChecked();
+            if (!hasBalancedMeal) score += 15;
             
             // Family history scoring
             if (diabetesCheckBox.isChecked()) score += 10;
@@ -762,20 +736,11 @@ public class ScreeningFormActivity extends AppCompatActivity {
             
             // Section 3: Meal Assessment
             JSONObject foodGroups = new JSONObject();
-            foodGroups.put("rice", foodRice.isChecked());
-            foodGroups.put("bread", foodBread.isChecked());
-            foodGroups.put("noodles", foodNoodles.isChecked());
-            foodGroups.put("corn", foodCorn.isChecked());
-            foodGroups.put("meat", foodMeat.isChecked());
-            foodGroups.put("fish", foodFish.isChecked());
-            foodGroups.put("eggs", foodEggs.isChecked());
-            foodGroups.put("beans", foodBeans.isChecked());
-            foodGroups.put("vegetables", foodVegetables.isChecked());
-            foodGroups.put("fruits", foodFruits.isChecked());
-            foodGroups.put("milk", foodMilk.isChecked());
-            foodGroups.put("cheese", foodCheese.isChecked());
+            foodGroups.put("carbohydrates", foodCarbs.isChecked());
+            foodGroups.put("protein", foodProtein.isChecked());
+            foodGroups.put("vegetables_fruits", foodVeggiesFruits.isChecked());
+            foodGroups.put("dairy", foodDairy.isChecked());
             screeningData.put("food_groups", foodGroups);
-            screeningData.put("meal_assessment", mealAssessmentResult.getText().toString());
             
             // Section 4: Family History
             JSONObject familyHistory = new JSONObject();
@@ -860,7 +825,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
             
             // Meal assessment
             // Food groups data is already added above
-            screeningData.put("meal_assessment", mealAssessmentResult.getText().toString());
+            // Meal assessment removed - just track food groups
             
             // Family history
             JSONArray familyHistory = new JSONArray();
@@ -1010,10 +975,9 @@ public class ScreeningFormActivity extends AppCompatActivity {
                     heightInput.setText("158");
                     
                     // Section 3: Meal Assessment
-                    foodRice.setChecked(true);
-                    foodMeat.setChecked(true);
-                    foodVegetables.setChecked(true);
-                    foodFruits.setChecked(true);
+                    foodCarbs.setChecked(true);
+                    foodProtein.setChecked(true);
+                    foodVeggiesFruits.setChecked(true);
                     
                     // Section 4: Family History
                     hypertensionCheckBox.setChecked(true);

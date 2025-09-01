@@ -366,48 +366,24 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Carbohydrates:"
+                    android:text="Carbohydrates (Rice, Bread, Noodles, Corn, etc.):"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
                     android:layout_marginBottom="8dp" />
 
                 <CheckBox
-                    android:id="@+id/food_rice"
+                    android:id="@+id/food_carbs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Rice"
-                    android:textSize="16sp"
-                    android:padding="8dp" />
-
-                <CheckBox
-                    android:id="@+id/food_bread"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Bread"
-                    android:textSize="16sp"
-                    android:padding="8dp" />
-
-                <CheckBox
-                    android:id="@+id/food_noodles"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Noodles/Pasta"
-                    android:textSize="16sp"
-                    android:padding="8dp" />
-
-                <CheckBox
-                    android:id="@+id/food_corn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Corn"
+                    android:text="Carbohydrates"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Protein:"
+                    android:text="Protein (Meat, Fish, Eggs, Beans, etc.):"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -415,41 +391,17 @@
                     android:layout_marginBottom="8dp" />
 
                 <CheckBox
-                    android:id="@+id/food_meat"
+                    android:id="@+id/food_protein"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Meat (Chicken, Pork, Beef)"
-                    android:textSize="16sp"
-                    android:padding="8dp" />
-
-                <CheckBox
-                    android:id="@+id/food_fish"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Fish"
-                    android:textSize="16sp"
-                    android:padding="8dp" />
-
-                <CheckBox
-                    android:id="@+id/food_eggs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Eggs"
-                    android:textSize="16sp"
-                    android:padding="8dp" />
-
-                <CheckBox
-                    android:id="@+id/food_beans"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Beans/Legumes"
+                    android:text="Protein"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Vegetables &amp; Fruits:"
+                    android:text="Vegetables &amp; Fruits (Carrots, Broccoli, Apple, Banana, etc.):"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -457,25 +409,17 @@
                     android:layout_marginBottom="8dp" />
 
                 <CheckBox
-                    android:id="@+id/food_vegetables"
+                    android:id="@+id/food_veggies_fruits"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Vegetables"
-                    android:textSize="16sp"
-                    android:padding="8dp" />
-
-                <CheckBox
-                    android:id="@+id/food_fruits"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Fruits"
+                    android:text="Vegetables &amp; Fruits"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dairy:"
+                    android:text="Dairy (Milk, Cheese, Yogurt, etc.):"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#212121"
@@ -483,29 +427,12 @@
                     android:layout_marginBottom="8dp" />
 
                 <CheckBox
-                    android:id="@+id/food_milk"
+                    android:id="@+id/food_dairy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Milk"
+                    android:text="Dairy"
                     android:textSize="16sp"
                     android:padding="8dp" />
-
-                <CheckBox
-                    android:id="@+id/food_cheese"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Cheese/Yogurt"
-                    android:textSize="16sp"
-                    android:padding="8dp" />
-
-                <TextView
-                    android:id="@+id/meal_assessment_result"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="14sp"
-                    android:textColor="#4CAF50"
-                    android:layout_marginTop="16dp" />
             </LinearLayout>
 
             <!-- Section 4: Family History -->
