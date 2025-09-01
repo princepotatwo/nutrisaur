@@ -731,29 +731,43 @@ header {
 
 .deck-container {
     position: relative;
-    height: auto;
-    min-height: 600px;
+    height: 400px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
     backdrop-filter: blur(10px);
     overflow: hidden;
     width: 100%;
+    margin-bottom: 20px;
 }
 
 .deck-cards {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
     gap: 15px;
     padding: 24px;
-    height: auto;
-    overflow-y: auto;
-    overflow-x: hidden;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
     max-width: 100%;
-    align-items: start;
+    align-items: center;
+}
+
+.deck-header-section {
+    padding: 20px 24px 10px 24px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.section-title {
+    color: var(--color-highlight);
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .deck-cards::-webkit-scrollbar {
@@ -768,13 +782,14 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(4, 1fr);
         gap: 12px;
         padding: 20px;
     }
     
     .deck-card {
+        width: 200px;
         height: 280px;
+        min-width: 200px;
     }
 }
 
@@ -785,7 +800,6 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
         padding: 18px;
     }
@@ -795,7 +809,7 @@ header {
     }
     
     .deck-container {
-        min-height: 500px;
+        height: 350px;
     }
 }
 
@@ -806,7 +820,6 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(2, 1fr);
         gap: 8px;
         padding: 15px;
     }
@@ -816,7 +829,7 @@ header {
     }
     
     .deck-container {
-        min-height: 400px;
+        height: 300px;
     }
 }
 
@@ -826,7 +839,6 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(1, 1fr);
         gap: 6px;
         padding: 12px;
     }
@@ -836,17 +848,19 @@ header {
     }
     
     .deck-container {
-        min-height: 300px;
+        height: 250px;
     }
 }
 
 .deck-card {
     position: relative;
-    width: 100%;
+    width: 220px;
     height: 320px;
+    min-width: 220px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(0px) translateY(0px) scale(1);
+    flex-shrink: 0;
 }
 
 .deck-card:hover {
@@ -1721,9 +1735,13 @@ header {
                                 </div>
                             </div>
                     
+                    <!-- Children Section -->
                     <div class="deck-wrapper">
+                        <div class="deck-header-section">
+                            <h3 class="section-title">👶 Children (0-17 years)</h3>
+                        </div>
                         <div class="deck-container">
-                            <div class="deck-cards">
+                            <div class="deck-cards children-cards">
                                 <?php
                                 // Enhanced sample user data with diverse age groups and pregnancy status - 120 placeholder users
                                 $sample_users = [];
@@ -1842,8 +1860,61 @@ header {
                                 }
                                 ?>
                                 
-                                <?php foreach ($sample_users as $index => $user): ?>
-                                <div class="deck-card" data-index="<?php echo $index; ?>">
+                                <?php 
+                                // Filter users by age groups
+                                $children_users = array_filter($sample_users, function($user) { return $user['age'] >= 0 && $user['age'] <= 17; });
+                                $young_adults_users = array_filter($sample_users, function($user) { return $user['age'] >= 18 && $user['age'] <= 35; });
+                                $adults_users = array_filter($sample_users, function($user) { return $user['age'] >= 36 && $user['age'] <= 65; });
+                                $seniors_users = array_filter($sample_users, function($user) { return $user['age'] >= 65; });
+                                $pregnant_users = array_filter($sample_users, function($user) { return $user['pregnant'] === 'Yes'; });
+                                ?>
+                                
+                                <!-- Children Cards -->
+                                <?php foreach ($children_users as $index => $user): ?>
+                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="children">
+                                    <div class="card-main">
+                                        <div class="card-header">
+                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
+                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="card-stat">
+                                                <span class="stat-label">Age/Sex</span>
+                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">BMI</span>
+                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Diet</span>
+                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Lifestyle</span>
+                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Risk Level</span>
+                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Young Adults Section -->
+                    <div class="deck-wrapper">
+                        <div class="deck-header-section">
+                            <h3 class="section-title">👨‍🎓 Young Adults (18-35 years)</h3>
+                        </div>
+                        <div class="deck-container">
+                            <div class="deck-cards young-adults-cards">
+                                <?php foreach ($young_adults_users as $index => $user): ?>
+                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="young-adults">
                                     <div class="card-main">
                                         <div class="card-header">
                                             <h4><?php echo htmlspecialchars($user['name']); ?></h4>
@@ -1878,8 +1949,145 @@ header {
                                             </div>
                                         </div>
                                     </div>
-                                    
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Adults Section -->
+                    <div class="deck-wrapper">
+                        <div class="deck-header-section">
+                            <h3 class="section-title">👨‍💼 Adults (36-65 years)</h3>
+                        </div>
+                        <div class="deck-container">
+                            <div class="deck-cards adults-cards">
+                                <?php foreach ($adults_users as $index => $user): ?>
+                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="adults">
+                                    <div class="card-main">
+                                        <div class="card-header">
+                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
+                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="card-stat">
+                                                <span class="stat-label">Age/Sex</span>
+                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
+                                            </div>
+                                            <?php if ($user['pregnant'] !== 'Not Applicable'): ?>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Pregnancy</span>
+                                                <span class="stat-value pregnancy-<?php echo strtolower($user['pregnant']); ?>"><?php echo $user['pregnant']; ?></span>
+                                            </div>
+                                            <?php endif; ?>
+                                            <div class="card-stat">
+                                                <span class="stat-label">BMI</span>
+                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Diet</span>
+                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Lifestyle</span>
+                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Risk Level</span>
+                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seniors Section -->
+                    <div class="deck-wrapper">
+                        <div class="deck-header-section">
+                            <h3 class="section-title">👴 Seniors (65+ years)</h3>
+                        </div>
+                        <div class="deck-container">
+                            <div class="deck-cards seniors-cards">
+                                <?php foreach ($seniors_users as $index => $user): ?>
+                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="seniors">
+                                    <div class="card-main">
+                                        <div class="card-header">
+                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
+                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="card-stat">
+                                                <span class="stat-label">Age/Sex</span>
+                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">BMI</span>
+                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Diet</span>
+                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Lifestyle</span>
+                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Risk Level</span>
+                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregnant Women Section -->
+                    <div class="deck-wrapper">
+                        <div class="deck-header-section">
+                            <h3 class="section-title">🤰 Pregnant Women</h3>
+                        </div>
+                        <div class="deck-container">
+                            <div class="deck-cards pregnant-cards">
+                                <?php foreach ($pregnant_users as $index => $user): ?>
+                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="pregnant">
+                                    <div class="card-main">
+                                        <div class="card-header">
+                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
+                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="card-stat">
+                                                <span class="stat-label">Age/Sex</span>
+                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Pregnancy</span>
+                                                <span class="stat-value pregnancy-yes">Yes</span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">BMI</span>
+                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Diet</span>
+                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Lifestyle</span>
+                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Risk Level</span>
+                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <?php endforeach; ?>
                             </div>
