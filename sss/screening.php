@@ -669,7 +669,8 @@ header {
     height: 280px;
     flex-shrink: 0;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: rotate(0deg) translateX(0px) translateY(0px) scale(1);
 }
 
 .deck-card:hover {
@@ -2104,13 +2105,15 @@ header {
                 
                 // Mouse enter - spread deck
                 card.addEventListener('mouseenter', function() {
-                    hoveredCard = index;
-                    spreadDeck();
+                    if (selectedCard === null) {
+                        hoveredCard = index;
+                        spreadDeck();
+                    }
                 });
                 
                 // Mouse leave - retract deck
                 card.addEventListener('mouseleave', function() {
-                    if (!selectedCard) {
+                    if (selectedCard === null) {
                         hoveredCard = null;
                         retractDeck();
                     }
@@ -2130,7 +2133,10 @@ header {
                         }
                         selectedCard = index;
                         card.classList.add('selected');
-                        spreadDeck();
+                        // Keep the spread position when selecting
+                        if (hoveredCard !== null) {
+                            spreadDeck();
+                        }
                     }
                 });
                 
