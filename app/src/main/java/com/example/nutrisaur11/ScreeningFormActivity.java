@@ -34,7 +34,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
 
     // Question flow tracking - Updated for 7 sections
     private int currentQuestion = 0;
-    private static final int TOTAL_QUESTIONS = 7; // 7 sections of Decision Tree Assessment
+    private static final int TOTAL_QUESTIONS = 6; // 6 sections of DOH-Based Malnutrition Assessment
     
     // Question cards - each section gets its own card
     private View questionCards[];
@@ -84,10 +84,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
     private CheckBox immBcg, immDpt, immPolio, immMeasles, immHepatitis, immVitaminA;
     
     // Section 7: Final Assessment (System Generated)
-    private TextView finalAssessmentText;
-    private TextView riskLevelText;
-    private TextView recommendationText;
-    private TextView interventionText;
+
     
     // Bataan Municipalities and Barangays
     private static final String[] BATAAN_MUNICIPALITIES = {
@@ -144,7 +141,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
         questionCards[3] = findViewById(R.id.section_4_card);  // Family History
         questionCards[4] = findViewById(R.id.section_5_card);  // Lifestyle
         questionCards[5] = findViewById(R.id.section_6_card);  // Immunization
-        questionCards[6] = findViewById(R.id.section_7_card);  // Final Assessment
+
         
         // Section 1: Basic Information
         locationSpinner = findViewById(R.id.location_spinner);
@@ -189,10 +186,8 @@ public class ScreeningFormActivity extends AppCompatActivity {
         immVitaminA = findViewById(R.id.imm_vitamin_a);
         
         // Section 7: Final Assessment
-        finalAssessmentText = findViewById(R.id.final_assessment_text);
-        riskLevelText = findViewById(R.id.risk_level_text);
-        recommendationText = findViewById(R.id.recommendation_text);
-        interventionText = findViewById(R.id.intervention_text);
+
+
         
         // Setup spinners
         setupLocationSpinner();
@@ -501,18 +496,13 @@ public class ScreeningFormActivity extends AppCompatActivity {
 
     private void nextQuestion() {
         if (currentQuestion == TOTAL_QUESTIONS - 1) {
-            // Submit form
+            // Submit form and go to MainActivity
             submitForm();
         } else {
             // Validate current question
             if (validateCurrentQuestion()) {
                 currentQuestion++;
                 showQuestion(currentQuestion);
-                
-                // If moving to final assessment section, calculate results
-                if (currentQuestion == TOTAL_QUESTIONS - 1) {
-                    calculateFinalAssessment();
-                }
             }
         }
     }
@@ -583,35 +573,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
         return true;
     }
 
-    private void calculateFinalAssessment() {
-        // Calculate risk score based on all sections
-        int riskScore = calculateRiskScore();
-        
-        // Determine risk level
-        String riskLevel;
-        String recommendation;
-        String intervention;
-        
-        if (riskScore >= 80) {
-            riskLevel = "High Risk";
-            recommendation = "Immediate lifestyle intervention needed";
-            intervention = "Nutrition counseling, physical activity program, regular health monitoring";
-        } else if (riskScore >= 50) {
-            riskLevel = "Medium Risk";
-            recommendation = "Nutrition intervention needed";
-            intervention = "DOH feeding program, nutrition counseling";
-        } else {
-            riskLevel = "Low Risk";
-            recommendation = "Maintain current healthy lifestyle";
-            intervention = "Regular monitoring";
-        }
-        
-        // Update final assessment display
-        finalAssessmentText.setText("Risk Score: " + riskScore + "%");
-        riskLevelText.setText("Risk Level: " + riskLevel);
-        recommendationText.setText("Recommendation: " + recommendation);
-        interventionText.setText("Intervention: " + intervention);
-    }
+
 
     private int calculateRiskScore() {
         int score = 0;
@@ -691,8 +653,11 @@ public class ScreeningFormActivity extends AppCompatActivity {
         // Save to local database
         saveScreeningResults(riskScore);
 
-        // Show result
-        showScreeningResult(riskScore);
+        // Go to MainActivity
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private void saveScreeningResults(int riskScore) {
@@ -771,9 +736,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
             
             // Risk assessment
             screeningData.put("risk_score", riskScore);
-            screeningData.put("risk_level", riskLevelText.getText().toString());
-            screeningData.put("recommendation", recommendationText.getText().toString());
-            screeningData.put("intervention", interventionText.getText().toString());
+            // Risk level, recommendation, and intervention will be calculated on the server side
             
             // Save to database
             android.database.sqlite.SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -853,9 +816,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
             
             // Risk assessment
             screeningData.put("risk_score", riskScore);
-            screeningData.put("risk_level", riskLevelText.getText().toString());
-            screeningData.put("recommendation", recommendationText.getText().toString());
-            screeningData.put("intervention", interventionText.getText().toString());
+            // Risk level, recommendation, and intervention will be calculated on the server side
             
             // Send to API
             sendToComprehensiveScreeningApi(email, riskScore, screeningData);
@@ -922,23 +883,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
         return getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).getString("current_user_email", null);
     }
 
-    private void showScreeningResult(int riskScore) {
-        String riskCategory = riskLevelText.getText().toString();
-        String recommendation = recommendationText.getText().toString();
-        
-        // Create result message
-        String message = riskCategory + ": " + riskScore + "% - " + recommendation;
-        
-        // Show result as toast message
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        
-        // Navigate to main activity after a short delay
-        new android.os.Handler().postDelayed(() -> {
-            Intent intent = new Intent(ScreeningFormActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }, 2000);
-    }
+
 
     private void initializeButtonStates() {
         // Initialize all form elements to default states

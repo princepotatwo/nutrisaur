@@ -11,7 +11,7 @@
         android:id="@+id/header_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="🌿 Decision Tree Nutritional Assessment"
+        android:text="DOH-Based Malnutrition Assessment"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#000000"
@@ -39,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Section 1 of 7"
+            android:text="Section 1 of 6"
             android:textSize="16sp"
             android:textColor="#666666"
             android:gravity="center" />
@@ -672,7 +672,7 @@
                     android:id="@+id/imm_bcg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="✅ BCG (Tuberculosis prevention)"
+                    android:text="BCG (Tuberculosis prevention)"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
@@ -680,7 +680,7 @@
                     android:id="@+id/imm_dpt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="✅ DPT (Diphtheria, Pertussis, Tetanus)"
+                    android:text="DPT (Diphtheria, Pertussis, Tetanus)"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
@@ -688,7 +688,7 @@
                     android:id="@+id/imm_polio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="✅ Polio (OPV/IPV)"
+                    android:text="Polio (OPV/IPV)"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
@@ -696,7 +696,7 @@
                     android:id="@+id/imm_measles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="✅ Measles / MMR"
+                    android:text="Measles / MMR"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
@@ -704,7 +704,7 @@
                     android:id="@+id/imm_hepatitis"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="✅ Hepatitis B"
+                    android:text="Hepatitis B"
                     android:textSize="16sp"
                     android:padding="8dp" />
 
@@ -712,70 +712,12 @@
                     android:id="@+id/imm_vitamin_a"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="✅ Vitamin A Supplementation"
+                    android:text="Vitamin A Supplementation"
                     android:textSize="16sp"
                     android:padding="8dp" />
             </LinearLayout>
 
-            <!-- Section 7: Final Assessment -->
-            <LinearLayout
-                android:id="@+id/section_7_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/question_card_background"
-                android:padding="24dp"
-                android:layout_marginBottom="0dp"
-                android:visibility="gone">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Section 7: Final Assessment (System Generated)"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginBottom="32dp" />
-
-                <!-- Final Assessment Results -->
-                <TextView
-                    android:id="@+id/final_assessment_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#4CAF50"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/risk_level_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#212121"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/recommendation_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="16sp"
-                    android:textColor="#212121"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/intervention_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="16sp"
-                    android:textColor="#212121" />
-            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -731,7 +731,7 @@ header {
 
 .deck-container {
     position: relative;
-    height: 600px;
+    height: 450px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
@@ -742,9 +742,9 @@ header {
 
 .deck-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    padding: 30px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    padding: 20px;
     height: 100%;
     overflow-y: auto;
     scrollbar-width: none;
@@ -765,9 +765,13 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 25px;
-        padding: 25px;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        padding: 20px;
+    }
+    
+    .deck-card {
+        height: 180px;
     }
 }
 
@@ -778,13 +782,17 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 20px;
-        padding: 20px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        padding: 18px;
     }
     
     .deck-card {
-        height: 300px;
+        height: 170px;
+    }
+    
+    .deck-container {
+        height: 400px;
     }
 }
 
@@ -795,17 +803,17 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 15px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
         padding: 15px;
     }
     
     .deck-card {
-        height: 280px;
+        height: 160px;
     }
     
     .deck-container {
-        height: 500px;
+        height: 350px;
     }
 }
 
@@ -815,24 +823,24 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: 1fr;
-        gap: 15px;
-        padding: 15px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 12px;
     }
     
     .deck-card {
-        height: 260px;
+        height: 150px;
     }
     
     .deck-container {
-        height: 450px;
+        height: 300px;
     }
 }
 
 .deck-card {
     position: relative;
     width: 100%;
-    height: 320px;
+    height: 200px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(0px) translateY(0px) scale(1);
@@ -846,11 +854,14 @@ header {
 .card-main {
     width: 100%;
     height: 100%;
-    border-radius: 16px;
+    border-radius: 12px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.1) 100%);
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    box-sizing: border-box;
+}
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -864,27 +875,29 @@ header {
 
 .card-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .card-header h4 {
     color: var(--color-highlight);
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+    line-height: 1.2;
 }
 
 .card-location {
     color: var(--color-text);
-    font-size: 12px;
+    font-size: 11px;
     opacity: 0.7;
+    line-height: 1.2;
 }
 
 .card-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
     overflow: hidden;
 }
 
@@ -892,7 +905,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
+    padding: 4px 0;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -902,14 +915,14 @@ header {
 
 .stat-label {
     color: var(--color-text);
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 500;
     opacity: 0.8;
 }
 
 .stat-value {
     color: var(--color-highlight);
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
 }
 
