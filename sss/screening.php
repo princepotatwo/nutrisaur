@@ -615,22 +615,90 @@ header {
 }
 
 .deck-header {
-    text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-.deck-header h3 {
-    color: var(--color-highlight);
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 3px;
+.search-filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
 }
 
-.deck-header p {
+.search-box {
+    display: flex;
+    align-items: center;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 25px;
+    padding: 8px 15px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
     color: var(--color-text);
+    font-size: 14px;
+    padding: 8px 0;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: var(--color-text);
+    opacity: 0.6;
+}
+
+.search-btn {
+    background: none;
+    border: none;
+    color: var(--color-highlight);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background: rgba(161, 180, 84, 0.1);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-btn {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    padding: 8px 16px;
+    border-radius: 20px;
     font-size: 13px;
-    opacity: 0.8;
-    margin: 0;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(161, 180, 84, 0.1);
+    border-color: var(--color-highlight);
+}
+
+.filter-btn.active {
+    background: var(--color-highlight);
+    color: white;
+    border-color: var(--color-highlight);
+}
+
+.deck-card.hidden {
+    display: none;
 }
 
 .deck-wrapper {
@@ -1472,10 +1540,20 @@ header {
         <div class="screening-container">
                 <!-- Card Deck Fan Component -->
                 <div class="card-deck-container">
-                    <div class="deck-header">
-                        <h3>🎴 Community Assessment Cards</h3>
-                        <p>Click on a community member card to view detailed nutritional assessment information</p>
-                    </div>
+                                                <div class="deck-header">
+                                <div class="search-filter-container">
+                                    <div class="search-box">
+                                        <input type="text" id="searchInput" placeholder="Search by name or barangay..." class="search-input">
+                                        <button type="button" class="search-btn">🔍</button>
+                                    </div>
+                                    <div class="filter-buttons">
+                                        <button type="button" class="filter-btn active" data-filter="all">All</button>
+                                        <button type="button" class="filter-btn" data-filter="low-risk">Low Risk</button>
+                                        <button type="button" class="filter-btn" data-filter="medium-risk">Medium Risk</button>
+                                        <button type="button" class="filter-btn" data-filter="high-risk">High Risk</button>
+                                    </div>
+                                </div>
+                            </div>
                     
                     <div class="deck-wrapper">
                         <div class="deck-container">
@@ -1590,6 +1668,7 @@ header {
         // Initialize form
         document.addEventListener('DOMContentLoaded', function() {
             initializeForm();
+            initializeSearchAndFilter();
         });
 
         function initializeForm() {
@@ -2231,6 +2310,58 @@ header {
                     modal.remove();
                 }
             });
+        }
+
+        function initializeSearchAndFilter() {
+            const searchInput = document.getElementById('searchInput');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const cards = document.querySelectorAll('.deck-card');
+
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                filterCards(searchTerm, getActiveFilter());
+            });
+
+            // Filter functionality
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const searchTerm = searchInput.value.toLowerCase();
+                    filterCards(searchTerm, this.dataset.filter);
+                });
+            });
+
+            function getActiveFilter() {
+                const activeButton = document.querySelector('.filter-btn.active');
+                return activeButton ? activeButton.dataset.filter : 'all';
+            }
+
+            function filterCards(searchTerm, filterType) {
+                cards.forEach(card => {
+                    const cardIndex = card.dataset.index;
+                    const user = cardData[cardIndex];
+                    
+                    if (!user) return;
+
+                    const name = user.name.toLowerCase();
+                    const barangay = user.barangay.toLowerCase();
+                    const riskLevel = user.risk_level.toLowerCase().replace(' ', '-');
+                    
+                    const matchesSearch = name.includes(searchTerm) || barangay.includes(searchTerm);
+                    const matchesFilter = filterType === 'all' || riskLevel === filterType;
+                    
+                    if (matchesSearch && matchesFilter) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            }
         }
     </script>
 </body>
