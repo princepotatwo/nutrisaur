@@ -1539,10 +1539,7 @@ header {
                                                 <span class="stat-label">BMI</span>
                                                 <span class="stat-value"><?php echo $user['bmi']; ?></span>
                                             </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Status</span>
-                                                <span class="stat-value status-<?php echo strtolower(str_replace(' ', '-', $user['status'])); ?>"><?php echo $user['status']; ?></span>
-                                            </div>
+
                                             <div class="card-stat">
                                                 <span class="stat-label">Risk Score</span>
                                                 <span class="stat-value risk-<?php echo $user['risk_score'] > 20 ? 'high' : ($user['risk_score'] > 10 ? 'medium' : 'low'); ?>"><?php echo $user['risk_score']; ?></span>
