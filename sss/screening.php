@@ -731,7 +731,8 @@ header {
 
 .deck-container {
     position: relative;
-    height: 400px;
+    height: auto;
+    min-height: 600px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
@@ -741,17 +742,18 @@ header {
 }
 
 .deck-cards {
-    display: flex;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
     padding: 24px;
-    height: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
     max-width: 100%;
-    align-items: center;
+    align-items: start;
 }
 
 .deck-cards::-webkit-scrollbar {
@@ -766,14 +768,13 @@ header {
     }
     
     .deck-cards {
+        grid-template-columns: repeat(4, 1fr);
         gap: 12px;
         padding: 20px;
     }
     
     .deck-card {
-        width: 200px;
         height: 280px;
-        min-width: 200px;
     }
 }
 
@@ -784,18 +785,17 @@ header {
     }
     
     .deck-cards {
+        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
         padding: 18px;
     }
     
     .deck-card {
-        width: 180px;
         height: 260px;
-        min-width: 180px;
     }
     
     .deck-container {
-        height: 350px;
+        min-height: 500px;
     }
 }
 
@@ -806,18 +806,17 @@ header {
     }
     
     .deck-cards {
+        grid-template-columns: repeat(2, 1fr);
         gap: 8px;
         padding: 15px;
     }
     
     .deck-card {
-        width: 160px;
         height: 240px;
-        min-width: 160px;
     }
     
     .deck-container {
-        height: 300px;
+        min-height: 400px;
     }
 }
 
@@ -827,30 +826,27 @@ header {
     }
     
     .deck-cards {
+        grid-template-columns: repeat(1, 1fr);
         gap: 6px;
         padding: 12px;
     }
     
     .deck-card {
-        width: 140px;
         height: 200px;
-        min-width: 140px;
     }
     
     .deck-container {
-        height: 250px;
+        min-height: 300px;
     }
 }
 
 .deck-card {
     position: relative;
-    width: 220px;
+    width: 100%;
     height: 320px;
-    min-width: 220px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(0px) translateY(0px) scale(1);
-    flex-shrink: 0;
 }
 
 .deck-card:hover {
@@ -1721,11 +1717,6 @@ header {
                                         <button type="button" class="filter-btn" data-filter="low-risk">Low Risk</button>
                                         <button type="button" class="filter-btn" data-filter="medium-risk">Medium Risk</button>
                                         <button type="button" class="filter-btn" data-filter="high-risk">High Risk</button>
-                                        <button type="button" class="filter-btn" data-filter="children">Children (0-17)</button>
-                                        <button type="button" class="filter-btn" data-filter="young-adults">Young Adults (18-35)</button>
-                                        <button type="button" class="filter-btn" data-filter="adults">Adults (36-65)</button>
-                                        <button type="button" class="filter-btn" data-filter="seniors">Seniors (65+)</button>
-                                        <button type="button" class="filter-btn" data-filter="pregnant">Pregnant</button>
                                     </div>
                                 </div>
                             </div>
