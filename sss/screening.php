@@ -639,51 +639,24 @@ header {
 
 .deck-container {
     position: relative;
-    height: 400px;
-    border-radius: 16px;
+    height: 500px;
+    border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
     backdrop-filter: blur(10px);
     overflow: hidden;
-    position: relative;
-}
-
-.deck-container::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 50px;
-    background: linear-gradient(to right, var(--color-card), transparent);
-    z-index: 10;
-    pointer-events: none;
-}
-
-.deck-container::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 50px;
-    background: linear-gradient(to left, var(--color-card), transparent);
-    z-index: 10;
-    pointer-events: none;
 }
 
 .deck-cards {
     display: flex;
-    gap: 60px;
-    padding: 30px;
+    gap: 12px;
+    padding: 24px;
     height: 100%;
     align-items: center;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
-    padding-left: 50px;
-    padding-right: 50px;
 }
 
 .deck-cards::-webkit-scrollbar {
@@ -692,8 +665,8 @@ header {
 
 .deck-card {
     position: relative;
-    width: 220px;
-    height: 320px;
+    width: 200px;
+    height: 280px;
     flex-shrink: 0;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -719,9 +692,9 @@ header {
     z-index: 10;
 }
 
-.deck-card:hover .card-main {
+.deck-card.selected .card-main {
+    opacity: 0.1;
     transform: scale(0.95);
-    opacity: 0.3;
 }
 
 .card-header {
@@ -810,15 +783,15 @@ header {
     transition: opacity 0.3s ease;
 }
 
-.deck-card:hover .fan-cards {
+.deck-card.selected .fan-cards {
     opacity: 1;
     pointer-events: all;
 }
 
 .fan-card {
     position: absolute;
-    width: 220px;
-    height: 320px;
+    width: 200px;
+    height: 280px;
     border-radius: 16px;
     border: 1px solid var(--color-highlight);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.15) 100%);
@@ -832,7 +805,7 @@ header {
 }
 
 .fan-card[data-type="personal"] {
-    transform: rotate(-15deg) translateX(-80px) translateY(-20px);
+    transform: rotate(-15deg) translateX(-60px) translateY(-20px);
     z-index: 20;
 }
 
@@ -842,20 +815,20 @@ header {
 }
 
 .fan-card[data-type="nutritional"] {
-    transform: rotate(15deg) translateX(80px) translateY(-20px);
+    transform: rotate(15deg) translateX(60px) translateY(-20px);
     z-index: 20;
 }
 
-.deck-card:hover .fan-card[data-type="personal"] {
-    transform: rotate(-8deg) translateX(-60px) translateY(-30px);
+.deck-card.selected .fan-card[data-type="personal"] {
+    transform: rotate(-8deg) translateX(-40px) translateY(-30px);
 }
 
-.deck-card:hover .fan-card[data-type="anthropometric"] {
+.deck-card.selected .fan-card[data-type="anthropometric"] {
     transform: rotate(0deg) translateX(0) translateY(-50px);
 }
 
-.deck-card:hover .fan-card[data-type="nutritional"] {
-    transform: rotate(8deg) translateX(60px) translateY(-30px);
+.deck-card.selected .fan-card[data-type="nutritional"] {
+    transform: rotate(8deg) translateX(40px) translateY(-30px);
 }
 
 .fan-label {
@@ -925,46 +898,6 @@ header {
 
 .light-theme .fan-label:hover {
     box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
-}
-
-/* Scroll Indicators */
-.scroll-indicator {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background: var(--color-highlight);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-bg);
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 20;
-    transition: all 0.3s ease;
-    opacity: 0.8;
-}
-
-.scroll-indicator:hover {
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
-}
-
-.scroll-indicator.left {
-    left: 10px;
-}
-
-.scroll-indicator.right {
-    right: 10px;
-}
-
-.scroll-indicator.hidden {
-    opacity: 0;
-    pointer-events: none;
 }
         .screening-container {
             max-width: 1200px;
@@ -1629,8 +1562,6 @@ header {
                     
                     <div class="deck-wrapper">
                         <div class="deck-container">
-                            <div class="scroll-indicator left">‹</div>
-                            <div class="scroll-indicator right">›</div>
                             <div class="deck-cards">
                                 <?php
                                 // Sample user data - replace with actual database data later
@@ -2165,57 +2096,42 @@ header {
         // Card Deck Fan Component JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             const deckCards = document.querySelectorAll('.deck-card');
-            const deckContainer = document.querySelector('.deck-cards');
-            const leftIndicator = document.querySelector('.scroll-indicator.left');
-            const rightIndicator = document.querySelector('.scroll-indicator.right');
+            let selectedCard = null;
+            let hoveredCard = null;
             
-            // Scroll functionality
-            if (leftIndicator && rightIndicator && deckContainer) {
-                leftIndicator.addEventListener('click', () => {
-                    deckContainer.scrollBy({
-                        left: -300,
-                        behavior: 'smooth'
-                    });
-                });
-                
-                rightIndicator.addEventListener('click', () => {
-                    deckContainer.scrollBy({
-                        left: 300,
-                        behavior: 'smooth'
-                    });
-                });
-                
-                // Update scroll indicators visibility
-                function updateScrollIndicators() {
-                    const isAtStart = deckContainer.scrollLeft === 0;
-                    const isAtEnd = deckContainer.scrollLeft + deckContainer.clientWidth >= deckContainer.scrollWidth;
-                    
-                    leftIndicator.classList.toggle('hidden', isAtStart);
-                    rightIndicator.classList.toggle('hidden', isAtEnd);
-                }
-                
-                deckContainer.addEventListener('scroll', updateScrollIndicators);
-                updateScrollIndicators(); // Initial check
-            }
-            
-            deckCards.forEach(card => {
+            deckCards.forEach((card, index) => {
                 const fanCards = card.querySelectorAll('.fan-card');
                 
-                // Add hover effects for fan cards
+                // Mouse enter - spread deck
                 card.addEventListener('mouseenter', function() {
-                    // Add staggered animation to fan cards
-                    fanCards.forEach((fanCard, index) => {
-                        setTimeout(() => {
-                            fanCard.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                        }, index * 100);
-                    });
+                    hoveredCard = index;
+                    spreadDeck();
                 });
                 
+                // Mouse leave - retract deck
                 card.addEventListener('mouseleave', function() {
-                    // Reset fan cards position
-                    fanCards.forEach(fanCard => {
-                        fanCard.style.transition = 'all 0.3s ease';
-                    });
+                    if (!selectedCard) {
+                        hoveredCard = null;
+                        retractDeck();
+                    }
+                });
+                
+                // Click - select/deselect card
+                card.addEventListener('click', function() {
+                    if (selectedCard === index) {
+                        // Deselect
+                        selectedCard = null;
+                        card.classList.remove('selected');
+                        retractDeck();
+                    } else {
+                        // Select new card
+                        if (selectedCard !== null) {
+                            deckCards[selectedCard].classList.remove('selected');
+                        }
+                        selectedCard = index;
+                        card.classList.add('selected');
+                        spreadDeck();
+                    }
                 });
                 
                 // Add click effects for fan labels
@@ -2231,11 +2147,41 @@ header {
                             fanLabel.style.transform = 'translateX(-50%) scale(1)';
                         }, 150);
                         
-                        // Show detailed modal (you can customize this)
+                        // Show detailed modal
                         showFanCardDetails(fanCard);
                     });
                 });
             });
+            
+            function spreadDeck() {
+                deckCards.forEach((card, i) => {
+                    if (selectedCard !== null && selectedCard !== i) {
+                        // If a card is selected, other cards move away
+                        const offset = i - selectedCard;
+                        const rotate = offset * 6;
+                        const x = offset * 100;
+                        const y = -Math.abs(offset) * 14;
+                        const scale = 0.96;
+                        
+                        card.style.transform = `rotate(${rotate}deg) translateX(${x}px) translateY(${y}px) scale(${scale})`;
+                    } else if (hoveredCard !== null && selectedCard === null) {
+                        // If hovering and no card selected, spread around hovered card
+                        const offset = i - hoveredCard;
+                        const rotate = offset * 6;
+                        const x = offset * 100;
+                        const y = -Math.abs(offset) * 14;
+                        const scale = i === hoveredCard ? 1.08 : 0.96;
+                        
+                        card.style.transform = `rotate(${rotate}deg) translateX(${x}px) translateY(${y}px) scale(${scale})`;
+                    }
+                });
+            }
+            
+            function retractDeck() {
+                deckCards.forEach(card => {
+                    card.style.transform = 'rotate(0deg) translateX(0px) translateY(0px) scale(1)';
+                });
+            }
         });
 
         function showFanCardDetails(fanCard) {
