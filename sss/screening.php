@@ -747,27 +747,47 @@ header {
     font-weight: 600;
 }
 
-.status-normal-weight {
+.bmi-normal {
     color: #4CAF50 !important;
 }
 
-.status-overweight {
+.bmi-overweight {
     color: #FF9800 !important;
 }
 
-.status-underweight {
+.bmi-underweight {
     color: #F44336 !important;
 }
 
-.risk-low {
+.bmi-obese {
+    color: #D32F2F !important;
+}
+
+.diet-balanced {
     color: #4CAF50 !important;
 }
 
-.risk-medium {
+.diet-at-risk {
     color: #FF9800 !important;
 }
 
-.risk-high {
+.lifestyle-active {
+    color: #4CAF50 !important;
+}
+
+.lifestyle-sedentary {
+    color: #FF9800 !important;
+}
+
+.risk-low-risk {
+    color: #4CAF50 !important;
+}
+
+.risk-medium-risk {
+    color: #FF9800 !important;
+}
+
+.risk-high-risk {
     color: #F44336 !important;
 }
 
@@ -1460,57 +1480,112 @@ header {
                         <div class="deck-container">
                             <div class="deck-cards">
                                 <?php
-                                // Sample user data - replace with actual database data later
+                                // Sample user data based on Decision Tree Nutritional Assessment
                                 $sample_users = [
                                     [
                                         'name' => 'Maria Santos',
                                         'age' => '28',
-                                        'height' => '158 cm',
-                                        'weight' => '55 kg',
+                                        'sex' => 'Female',
+                                        'pregnant' => 'No',
+                                        'municipality' => 'Balanga',
+                                        'barangay' => 'Bagumbayan',
+                                        'height' => '158',
+                                        'weight' => '55',
                                         'bmi' => '22.0',
-                                        'location' => 'Bagumbayan, Balanga',
-                                        'risk_score' => '15',
-                                        'status' => 'Normal Weight'
+                                        'bmi_category' => 'Normal',
+                                        'meal_assessment' => 'Balanced',
+                                        'family_history' => ['Hypertension'],
+                                        'lifestyle' => 'Active',
+                                        'immunization_status' => 'Complete',
+                                        'risk_factors' => ['Family History: Hypertension'],
+                                        'risk_score' => '8',
+                                        'risk_level' => 'Low Risk',
+                                        'recommendation' => 'Maintain current healthy lifestyle',
+                                        'intervention' => 'Regular monitoring'
                                     ],
                                     [
                                         'name' => 'Juan Dela Cruz',
                                         'age' => '45',
-                                        'height' => '170 cm',
-                                        'weight' => '78 kg',
+                                        'sex' => 'Male',
+                                        'pregnant' => 'Not Applicable',
+                                        'municipality' => 'Balanga',
+                                        'barangay' => 'Cupang Proper',
+                                        'height' => '170',
+                                        'weight' => '78',
                                         'bmi' => '27.0',
-                                        'location' => 'Cupang Proper, Balanga',
+                                        'bmi_category' => 'Overweight',
+                                        'meal_assessment' => 'At Risk',
+                                        'family_history' => ['Diabetes', 'Hypertension'],
+                                        'lifestyle' => 'Sedentary',
+                                        'immunization_status' => 'Complete',
+                                        'risk_factors' => ['BMI: Overweight', 'Unbalanced Diet', 'Sedentary Lifestyle', 'Family History: Diabetes, Hypertension'],
                                         'risk_score' => '22',
-                                        'status' => 'Overweight'
+                                        'risk_level' => 'High Risk',
+                                        'recommendation' => 'Immediate lifestyle intervention needed',
+                                        'intervention' => 'Nutrition counseling, physical activity program, regular health monitoring'
                                     ],
                                     [
                                         'name' => 'Ana Reyes',
                                         'age' => '32',
-                                        'height' => '162 cm',
-                                        'weight' => '48 kg',
+                                        'sex' => 'Female',
+                                        'pregnant' => 'No',
+                                        'municipality' => 'Balanga',
+                                        'barangay' => 'Poblacion',
+                                        'height' => '162',
+                                        'weight' => '48',
                                         'bmi' => '18.3',
-                                        'location' => 'Poblacion, Balanga',
+                                        'bmi_category' => 'Underweight',
+                                        'meal_assessment' => 'At Risk',
+                                        'family_history' => ['Malnutrition'],
+                                        'lifestyle' => 'Active',
+                                        'immunization_status' => 'Complete',
+                                        'risk_factors' => ['BMI: Underweight', 'Unbalanced Diet', 'Family History: Malnutrition'],
                                         'risk_score' => '18',
-                                        'status' => 'Underweight'
+                                        'risk_level' => 'Medium Risk',
+                                        'recommendation' => 'Nutrition intervention needed',
+                                        'intervention' => 'DOH feeding program, nutrition counseling'
                                     ],
                                     [
                                         'name' => 'Pedro Martinez',
                                         'age' => '38',
-                                        'height' => '175 cm',
-                                        'weight' => '85 kg',
+                                        'sex' => 'Male',
+                                        'pregnant' => 'Not Applicable',
+                                        'municipality' => 'Balanga',
+                                        'barangay' => 'Sibacan',
+                                        'height' => '175',
+                                        'weight' => '85',
                                         'bmi' => '27.8',
-                                        'location' => 'Sibacan, Balanga',
+                                        'bmi_category' => 'Overweight',
+                                        'meal_assessment' => 'Balanced',
+                                        'family_history' => ['Heart Disease'],
+                                        'lifestyle' => 'Sedentary',
+                                        'immunization_status' => 'Complete',
+                                        'risk_factors' => ['BMI: Overweight', 'Sedentary Lifestyle', 'Family History: Heart Disease'],
                                         'risk_score' => '25',
-                                        'status' => 'Overweight'
+                                        'risk_level' => 'High Risk',
+                                        'recommendation' => 'Immediate intervention needed',
+                                        'intervention' => 'Cardiac consultation, weight management program, physical activity'
                                     ],
                                     [
                                         'name' => 'Luz Fernandez',
                                         'age' => '25',
-                                        'height' => '155 cm',
-                                        'weight' => '52 kg',
+                                        'sex' => 'Female',
+                                        'pregnant' => 'No',
+                                        'municipality' => 'Balanga',
+                                        'barangay' => 'Tenejero',
+                                        'height' => '155',
+                                        'weight' => '52',
                                         'bmi' => '21.6',
-                                        'location' => 'Tenejero, Balanga',
-                                        'risk_score' => '12',
-                                        'status' => 'Normal Weight'
+                                        'bmi_category' => 'Normal',
+                                        'meal_assessment' => 'Balanced',
+                                        'family_history' => ['None'],
+                                        'lifestyle' => 'Active',
+                                        'immunization_status' => 'Complete',
+                                        'risk_factors' => ['None'],
+                                        'risk_score' => '5',
+                                        'risk_level' => 'Low Risk',
+                                        'recommendation' => 'Maintain current status',
+                                        'intervention' => 'Regular health monitoring'
                                     ]
                                 ];
                                 ?>
@@ -1520,29 +1595,28 @@ header {
                                     <div class="card-main">
                                         <div class="card-header">
                                             <h4><?php echo htmlspecialchars($user['name']); ?></h4>
-                                            <span class="card-location"><?php echo htmlspecialchars($user['location']); ?></span>
+                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
                                         </div>
                                         <div class="card-content">
                                             <div class="card-stat">
-                                                <span class="stat-label">Age</span>
-                                                <span class="stat-value"><?php echo $user['age']; ?> years</span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Height</span>
-                                                <span class="stat-value"><?php echo $user['height']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Weight</span>
-                                                <span class="stat-value"><?php echo $user['weight']; ?></span>
+                                                <span class="stat-label">Age/Sex</span>
+                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
                                             </div>
                                             <div class="card-stat">
                                                 <span class="stat-label">BMI</span>
-                                                <span class="stat-value"><?php echo $user['bmi']; ?></span>
+                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
                                             </div>
-
                                             <div class="card-stat">
-                                                <span class="stat-label">Risk Score</span>
-                                                <span class="stat-value risk-<?php echo $user['risk_score'] > 20 ? 'high' : ($user['risk_score'] > 10 ? 'medium' : 'low'); ?>"><?php echo $user['risk_score']; ?></span>
+                                                <span class="stat-label">Diet</span>
+                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Lifestyle</span>
+                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
+                                            </div>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Risk Level</span>
+                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
                                             </div>
                                         </div>
                                     </div>
@@ -2047,31 +2121,61 @@ header {
                 
                 modalContent.innerHTML = `
                     <h2 style="color: var(--color-highlight); margin-bottom: 25px; text-align: center; font-size: 28px;">
-                        ${user.name} - Nutritional Assessment
+                        ${user.name} - Decision Tree Assessment
                     </h2>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
-                        <div style="background: rgba(161, 180, 84, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--color-border);">
-                            <h3 style="color: var(--color-highlight); margin-bottom: 15px; font-size: 18px;">Personal Information</h3>
-                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Name:</strong> ${user.name}</p>
-                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Age:</strong> ${user.age} years</p>
-                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Location:</strong> ${user.location}</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
+                            <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">📋 Basic Information</h3>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Name:</strong> ${user.name}</p>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Age:</strong> ${user.age} years</p>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Sex:</strong> ${user.sex}</p>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Pregnant:</strong> ${user.pregnant}</p>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Location:</strong> ${user.barangay}, ${user.municipality}</p>
                         </div>
                         
-                        <div style="background: rgba(161, 180, 84, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--color-border);">
-                            <h3 style="color: var(--color-highlight); margin-bottom: 15px; font-size: 18px;">Anthropometric Data</h3>
-                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Height:</strong> ${user.height}</p>
-                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Weight:</strong> ${user.weight}</p>
-                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>BMI:</strong> ${user.bmi}</p>
-                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Status:</strong> <span style="color: ${user.status === 'Normal Weight' ? '#4CAF50' : user.status === 'Overweight' ? '#FF9800' : '#F44336'}">${user.status}</span></p>
+                        <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
+                            <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">📏 Anthropometric Data</h3>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Height:</strong> ${user.height} cm</p>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Weight:</strong> ${user.weight} kg</p>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>BMI:</strong> ${user.bmi}</p>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Category:</strong> <span style="color: ${user.bmi_category === 'Normal' ? '#4CAF50' : user.bmi_category === 'Overweight' ? '#FF9800' : user.bmi_category === 'Underweight' ? '#F44336' : '#D32F2F'}">${user.bmi_category}</span></p>
                         </div>
                     </div>
                     
-                    <div style="background: rgba(161, 180, 84, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--color-border); margin-bottom: 25px;">
-                        <h3 style="color: var(--color-highlight); margin-bottom: 15px; font-size: 18px;">Nutritional Assessment</h3>
-                        <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Risk Score:</strong> ${user.risk_score}</p>
-                        <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Risk Level:</strong> <span style="color: ${riskColor}">${riskLevel}</span></p>
-                        <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Recommendation:</strong> ${recommendation}</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
+                            <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">🍽️ Meal Assessment</h3>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>24-Hour Recall:</strong> <span style="color: ${user.meal_assessment === 'Balanced' ? '#4CAF50' : '#FF9800'}">${user.meal_assessment}</span></p>
+                        </div>
+                        
+                        <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
+                            <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">🏃 Lifestyle</h3>
+                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Activity Level:</strong> <span style="color: ${user.lifestyle === 'Active' ? '#4CAF50' : '#FF9800'}">${user.lifestyle}</span></p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border); margin-bottom: 20px;">
+                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">👨‍👩‍👧‍👦 Family History</h3>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Conditions:</strong> ${user.family_history.join(', ')}</p>
+                    </div>
+                    
+                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border); margin-bottom: 20px;">
+                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">💉 Immunization Status</h3>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Status:</strong> <span style="color: ${user.immunization_status === 'Complete' ? '#4CAF50' : '#FF9800'}">${user.immunization_status}</span></p>
+                    </div>
+                    
+                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border); margin-bottom: 20px;">
+                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">⚠️ Risk Factors</h3>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Identified:</strong> ${user.risk_factors.join(', ')}</p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Risk Score:</strong> ${user.risk_score}</p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Risk Level:</strong> <span style="color: ${riskColor}">${user.risk_level}</span></p>
+                    </div>
+                    
+                    <div style="background: rgba(161, 180, 84, 0.15); padding: 15px; border-radius: 12px; border: 1px solid var(--color-highlight);">
+                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">💡 Decision Tree Recommendation</h3>
+                        <p style="color: var(--color-text); margin-bottom: 8px; font-size: 14px;"><strong>Assessment:</strong> ${user.recommendation}</p>
+                        <p style="color: var(--color-text); margin-bottom: 0; font-size: 14px;"><strong>Intervention:</strong> ${user.intervention}</p>
                     </div>
                 `;
                 
