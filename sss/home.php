@@ -6,7 +6,7 @@ session_start();
 $isLoggedIn = isset($_SESSION['user_id']);
 if ($isLoggedIn) {
     // Redirect to dashboard if already logged in
-    header("Location: /dash");
+    header("Location: dash.php");
     exit;
 }
 
@@ -498,6 +498,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             background-color: rgba(161, 180, 84, 0.1);
             color: var(--color-highlight);
             border: 1px solid rgba(161, 180, 84, 0.3);
+        }
+
+        .info {
+            background-color: rgba(66, 133, 244, 0.1);
+            color: #4285F4;
+            border: 1px solid rgba(66, 133, 244, 0.3);
         }
 
         /* Responsive design */
@@ -1007,6 +1013,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         });
 
         // Authentication related code
+        console.log('Setting up authentication elements...');
         const authForm = document.getElementById('auth-form');
         const registerForm = document.getElementById('register-form');
         const authTitle = document.getElementById('auth-title');
@@ -1019,11 +1026,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         const passwordInput = document.getElementById('password');
         const messageDiv = document.getElementById('message');
 
+        // Debug element existence
+        console.log('Element check:', {
+            authForm: !!authForm,
+            registerForm: !!registerForm,
+            authTitle: !!authTitle,
+            authBtn: !!authBtn,
+            toggleLink: !!toggleLink,
+            toggleLinkRegister: !!toggleLinkRegister,
+            emailGroup: !!emailGroup,
+            usernameInput: !!usernameInput,
+            emailInput: !!emailInput,
+            passwordInput: !!passwordInput,
+            messageDiv: !!messageDiv
+        });
+
         let isLoginMode = true;
 
         // Toggle between login and register mode
         toggleLink.addEventListener('click', (e) => {
             e.preventDefault();
+            console.log('Switching to register mode');
             authForm.style.display = 'none';
             registerForm.style.display = 'block';
             authTitle.textContent = 'Register';
@@ -1031,6 +1054,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         
         toggleLinkRegister.addEventListener('click', (e) => {
             e.preventDefault();
+            console.log('Switching to login mode');
             registerForm.style.display = 'none';
             authForm.style.display = 'block';
             authTitle.textContent = 'Login';
@@ -1039,6 +1063,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         // Form submission handler
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('Login form submitted');
             clearMessage();
             
             // Always in login mode for auth-form
@@ -1053,6 +1078,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         // Register form submission handler
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('Register form submitted');
             clearMessage();
 
             // Validate form
@@ -1099,7 +1125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                     
                     // Redirect to dashboard after a short delay
                     setTimeout(() => {
-                        window.location.href = '/dash';
+                        window.location.href = 'dash.php';
                     }, 1000);
                 } else {
                     showMessage(data.message || 'Login failed. Please try again.', 'error');
@@ -1155,7 +1181,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                                 showMessage('Login successful! Redirecting to dashboard...', 'success');
                                 // Redirect to dashboard after successful auto-login
                                 setTimeout(() => {
-                                    window.location.href = '/dash';
+                                    window.location.href = 'dash.php';
                                 }, 1000);
                             } else {
                                 // If auto-login fails, show error and switch to login mode
@@ -1169,12 +1195,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                         }
                     }, 1500);
                 } else {
-                        showMessage(data.message || 'Registration failed. Please try again.', 'error');
-                        // Stay on registration form
-                        isLoginMode = false;
-                        registerForm.style.display = 'block';
-                        authForm.style.display = 'none';
-                    }
+                    showMessage(data.message || 'Registration failed. Please try again.', 'error');
+                    // Stay on registration form
+                    isLoginMode = false;
+                    registerForm.style.display = 'block';
+                    authForm.style.display = 'none';
                 }
             } catch (error) {
                 showMessage('An error occurred. Please try again later.', 'error');
@@ -1184,6 +1209,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
 
         // Show message in message div
         function showMessage(message, type) {
+            console.log('Showing message:', message, 'Type:', type);
             messageDiv.textContent = message;
             messageDiv.className = `message ${type}`;
             messageDiv.style.display = 'block';

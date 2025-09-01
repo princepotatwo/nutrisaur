@@ -6,6 +6,9 @@ session_start();
 if (isset($_SESSION['user_id'])) {
     echo json_encode([
         'success' => true,
+        'logged_in' => true,
+        'user_id' => $_SESSION['user_id'],
+        'admin_id' => $_SESSION['admin_id'] ?? null,
         'data' => [
             'user_id' => $_SESSION['user_id'],
             'username' => $_SESSION['username'] ?? '',
@@ -16,6 +19,7 @@ if (isset($_SESSION['user_id'])) {
 } else {
     echo json_encode([
         'success' => false,
+        'logged_in' => false,
         'message' => 'User not logged in'
     ]);
 }
