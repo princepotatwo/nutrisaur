@@ -733,22 +733,20 @@ header {
 
 .deck-container {
     position: relative;
-    height: 500px;
-    max-height: 70vh;
+    height: 600px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
     backdrop-filter: blur(10px);
     overflow: hidden;
     width: 100%;
-    max-width: 100%;
 }
 
 .deck-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 30px;
     height: 100%;
     overflow-y: auto;
     scrollbar-width: none;
@@ -818,13 +816,11 @@ header {
 .deck-card {
     position: relative;
     width: 100%;
-    height: 280px;
-    max-width: 320px;
+    height: 320px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(0px) translateY(0px) scale(1);
     min-width: 0;
-    margin: 0 auto;
 }
 
 .deck-card:hover {

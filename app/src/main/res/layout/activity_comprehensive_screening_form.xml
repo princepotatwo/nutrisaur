@@ -183,7 +183,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4. Pregnant? (if Female, 12–50 years old):"
+                    android:text="4. Are you pregnant?"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#212121"

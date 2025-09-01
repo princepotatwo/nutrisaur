@@ -251,22 +251,28 @@ public class ScreeningFormActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpinner.setAdapter(adapter);
         
-        locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (isShowingMunicipalities) {
-                    if (position > 0) { // Skip "Select Municipality" prompt
-                        selectedMunicipality = (String) parent.getItemAtPosition(position);
-                        // Switch to barangay list
-                        updateLocationSpinnerToBarangays();
+                    locationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (isShowingMunicipalities) {
+                        if (position > 0) { // Skip "Select Municipality" prompt
+                            selectedMunicipality = (String) parent.getItemAtPosition(position);
+                            // Switch to barangay list
+                            updateLocationSpinnerToBarangays();
+                        }
+                    } else {
+                        if (position == 1) { // "← Change Municipality" selected
+                            // Go back to municipality selection
+                            resetLocationSpinnerToMunicipalities();
+                            selectedBarangay = "";
+                        } else if (position > 1) { // Skip "Select Barangay" and "← Change Municipality"
+                            selectedBarangay = (String) parent.getItemAtPosition(position);
+                        }
                     }
-                } else {
-                    selectedBarangay = (String) parent.getItemAtPosition(position);
                 }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
+            });
     }
 
     private boolean isShowingMunicipalities = true;
@@ -274,10 +280,11 @@ public class ScreeningFormActivity extends AppCompatActivity {
     private void updateLocationSpinnerToBarangays() {
         String[] barangays = MUNICIPALITY_BARANGAYS.get(selectedMunicipality);
         if (barangays != null) {
-            // Add "Select Barangay" prompt
-            String[] barangayOptions = new String[barangays.length + 1];
+            // Add "Select Barangay" prompt and "Change Municipality" option
+            String[] barangayOptions = new String[barangays.length + 2];
             barangayOptions[0] = "Select Barangay";
-            System.arraycopy(barangays, 0, barangayOptions, 1, barangays.length);
+            barangayOptions[1] = "← Change Municipality";
+            System.arraycopy(barangays, 0, barangayOptions, 2, barangays.length);
             
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
                 android.R.layout.simple_spinner_item, barangayOptions);
@@ -285,6 +292,20 @@ public class ScreeningFormActivity extends AppCompatActivity {
             locationSpinner.setAdapter(adapter);
             isShowingMunicipalities = false;
         }
+    }
+
+    private void resetLocationSpinnerToMunicipalities() {
+        // Reset to municipality selection
+        String[] municipalityOptions = new String[BATAAN_MUNICIPALITIES.length + 1];
+        municipalityOptions[0] = "Select Municipality";
+        System.arraycopy(BATAAN_MUNICIPALITIES, 0, municipalityOptions, 1, BATAAN_MUNICIPALITIES.length);
+        
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_spinner_item, municipalityOptions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        locationSpinner.setAdapter(adapter);
+        isShowingMunicipalities = true;
+        selectedMunicipality = ""; // Reset municipality selection
     }
 
     private void showDatePickerDialog() {
@@ -525,7 +546,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
                     Toast.makeText(this, "Please select municipality", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                if (TextUtils.isEmpty(selectedBarangay) || "Select Barangay".equals(selectedBarangay)) {
+                if (TextUtils.isEmpty(selectedBarangay) || "Select Barangay".equals(selectedBarangay) || "← Change Municipality".equals(selectedBarangay)) {
                     Toast.makeText(this, "Please select barangay", Toast.LENGTH_SHORT).show();
                     return false;
                 }
