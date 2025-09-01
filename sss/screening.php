@@ -640,7 +640,7 @@ header {
 
 .deck-container {
     position: relative;
-    height: 450px;
+    height: 550px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
@@ -808,30 +808,30 @@ header {
 }
 
 .fan-card[data-type="personal"] {
-    transform: rotate(-15deg) translateX(-120px) translateY(-60px);
+    transform: rotate(-15deg) translateX(-200px) translateY(-120px);
     z-index: 20;
 }
 
 .fan-card[data-type="anthropometric"] {
-    transform: rotate(0deg) translateX(0) translateY(-80px);
+    transform: rotate(0deg) translateX(0) translateY(-150px);
     z-index: 30;
 }
 
 .fan-card[data-type="nutritional"] {
-    transform: rotate(15deg) translateX(120px) translateY(-60px);
+    transform: rotate(15deg) translateX(200px) translateY(-120px);
     z-index: 20;
 }
 
 .deck-card.selected .fan-card[data-type="personal"] {
-    transform: rotate(-8deg) translateX(-100px) translateY(-70px);
+    transform: rotate(-8deg) translateX(-180px) translateY(-140px);
 }
 
 .deck-card.selected .fan-card[data-type="anthropometric"] {
-    transform: rotate(0deg) translateX(0) translateY(-90px);
+    transform: rotate(0deg) translateX(0) translateY(-170px);
 }
 
 .deck-card.selected .fan-card[data-type="nutritional"] {
-    transform: rotate(8deg) translateX(100px) translateY(-70px);
+    transform: rotate(8deg) translateX(180px) translateY(-140px);
 }
 
 .fan-label {
@@ -2136,8 +2136,8 @@ header {
                         selectedCard = index;
                         card.classList.add('selected');
                         
-                        // Auto-scroll to center the selected card
-                        scrollToCenterCard(index);
+                        // Force center the selected card immediately
+                        forceCenterCard(index);
                         
                         // Keep the spread position when selecting
                         if (hoveredCard !== null) {
@@ -2193,22 +2193,31 @@ header {
                 });
             }
             
-            function scrollToCenterCard(cardIndex) {
+            function forceCenterCard(cardIndex) {
                 const deckContainer = document.querySelector('.deck-cards');
                 const card = deckCards[cardIndex];
                 
                 if (deckContainer && card) {
-                    const containerWidth = deckContainer.clientWidth;
+                    // Calculate the exact position to center the card
                     const cardWidth = card.offsetWidth;
                     const cardLeft = card.offsetLeft;
+                    const containerWidth = deckContainer.clientWidth;
                     const cardCenter = cardLeft + (cardWidth / 2);
                     const containerCenter = containerWidth / 2;
                     const scrollLeft = cardCenter - containerCenter;
                     
-                    deckContainer.scrollTo({
-                        left: scrollLeft,
-                        behavior: 'smooth'
-                    });
+                    // Force scroll to center
+                    deckContainer.scrollLeft = scrollLeft;
+                    
+                    // Double-check and adjust if needed
+                    setTimeout(() => {
+                        const newCardRect = card.getBoundingClientRect();
+                        const newContainerRect = deckContainer.getBoundingClientRect();
+                        const newCardCenter = newCardRect.left + (newCardRect.width / 2);
+                        const newContainerCenter = newContainerRect.left + (newContainerRect.width / 2);
+                        const adjustment = newCardCenter - newContainerCenter;
+                        deckContainer.scrollLeft += adjustment;
+                    }, 50);
                 }
             }
         });
