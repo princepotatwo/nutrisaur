@@ -241,9 +241,13 @@ public class ScreeningFormActivity extends AppCompatActivity {
     }
 
     private void setupLocationSpinner() {
-        // First show municipalities
+        // First show "Select Municipality" prompt
+        String[] municipalityOptions = new String[BATAAN_MUNICIPALITIES.length + 1];
+        municipalityOptions[0] = "Select Municipality";
+        System.arraycopy(BATAAN_MUNICIPALITIES, 0, municipalityOptions, 1, BATAAN_MUNICIPALITIES.length);
+        
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
-            android.R.layout.simple_spinner_item, BATAAN_MUNICIPALITIES);
+            android.R.layout.simple_spinner_item, municipalityOptions);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpinner.setAdapter(adapter);
         
@@ -251,9 +255,11 @@ public class ScreeningFormActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (isShowingMunicipalities) {
-                    selectedMunicipality = (String) parent.getItemAtPosition(position);
-                    // Switch to barangay list
-                    updateLocationSpinnerToBarangays();
+                    if (position > 0) { // Skip "Select Municipality" prompt
+                        selectedMunicipality = (String) parent.getItemAtPosition(position);
+                        // Switch to barangay list
+                        updateLocationSpinnerToBarangays();
+                    }
                 } else {
                     selectedBarangay = (String) parent.getItemAtPosition(position);
                 }
@@ -268,8 +274,13 @@ public class ScreeningFormActivity extends AppCompatActivity {
     private void updateLocationSpinnerToBarangays() {
         String[] barangays = MUNICIPALITY_BARANGAYS.get(selectedMunicipality);
         if (barangays != null) {
+            // Add "Select Barangay" prompt
+            String[] barangayOptions = new String[barangays.length + 1];
+            barangayOptions[0] = "Select Barangay";
+            System.arraycopy(barangays, 0, barangayOptions, 1, barangays.length);
+            
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
-                android.R.layout.simple_spinner_item, barangays);
+                android.R.layout.simple_spinner_item, barangayOptions);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             locationSpinner.setAdapter(adapter);
             isShowingMunicipalities = false;
@@ -304,6 +315,16 @@ public class ScreeningFormActivity extends AppCompatActivity {
                 } else {
                     questionCards[5].setVisibility(View.GONE);
                 }
+                
+                // Update pregnancy section visibility for females
+                if ("Female".equals(selectedSex)) {
+                    if (calculatedAge >= 12 && calculatedAge <= 50) {
+                        findViewById(R.id.pregnant_section).setVisibility(View.VISIBLE);
+                    } else {
+                        findViewById(R.id.pregnant_section).setVisibility(View.GONE);
+                        selectedPregnant = "Not Applicable";
+                    }
+                }
             }, year, month, day);
         
         datePickerDialog.show();
@@ -335,11 +356,12 @@ public class ScreeningFormActivity extends AppCompatActivity {
         
                 findViewById(R.id.sex_female).setOnClickListener(v -> {
             selectedSex = "Female";
-            // Show pregnancy question for females 12-50 years
+            // Show pregnancy question only for females 12-50 years
             if (calculatedAge >= 12 && calculatedAge <= 50) {
                 findViewById(R.id.pregnant_section).setVisibility(View.VISIBLE);
             } else {
                 findViewById(R.id.pregnant_section).setVisibility(View.GONE);
+                selectedPregnant = "Not Applicable"; // Reset pregnancy selection
             }
         });
         
@@ -499,11 +521,11 @@ public class ScreeningFormActivity extends AppCompatActivity {
     private boolean validateCurrentQuestion() {
         switch (currentQuestion) {
             case 0: // Basic Information
-                if (TextUtils.isEmpty(selectedMunicipality)) {
+                if (TextUtils.isEmpty(selectedMunicipality) || "Select Municipality".equals(selectedMunicipality)) {
                     Toast.makeText(this, "Please select municipality", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                if (TextUtils.isEmpty(selectedBarangay)) {
+                if (TextUtils.isEmpty(selectedBarangay) || "Select Barangay".equals(selectedBarangay)) {
                     Toast.makeText(this, "Please select barangay", Toast.LENGTH_SHORT).show();
                     return false;
                 }

@@ -613,6 +613,8 @@ header {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--color-border);
     width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .deck-header {
@@ -731,38 +733,98 @@ header {
 
 .deck-container {
     position: relative;
-    height: 600px;
+    height: 500px;
+    max-height: 70vh;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
     backdrop-filter: blur(10px);
     overflow: hidden;
+    width: 100%;
+    max-width: 100%;
 }
 
 .deck-cards {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 50px;
-    padding: 50px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
     height: 100%;
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
+    max-width: 100%;
 }
 
 .deck-cards::-webkit-scrollbar {
     display: none;
 }
 
+/* Responsive design for card deck */
+@media (max-width: 1200px) {
+    .deck-cards {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .deck-card {
+        height: 260px;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .deck-cards {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .deck-card {
+        height: 240px;
+        max-width: 280px;
+    }
+    
+    .deck-container {
+        height: 400px;
+        max-height: 60vh;
+    }
+    
+    .screening-container {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .deck-cards {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .deck-card {
+        height: 220px;
+        max-width: 100%;
+    }
+    
+    .deck-container {
+        height: 350px;
+        max-height: 50vh;
+    }
+}
+
 .deck-card {
     position: relative;
     width: 100%;
-    height: 320px;
+    height: 280px;
+    max-width: 320px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(0px) translateY(0px) scale(1);
     min-width: 0;
+    margin: 0 auto;
 }
 
 .deck-card:hover {
@@ -909,11 +971,11 @@ header {
 }
         .screening-container {
             max-width: 1200px;
-            margin: 0;
+            margin: 0 auto;
             padding: 20px;
-            margin-left: 0;
-            margin-right: 0;
             width: 100%;
+            box-sizing: border-box;
+            overflow-x: hidden;
         }
 
         .screening-form {
