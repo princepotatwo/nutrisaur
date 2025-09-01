@@ -113,4 +113,33 @@ public class ScreeningResultStore {
     private static Context getContext() {
         return context;
     }
+    
+    public static void saveScreeningData(Context context, String screeningData) {
+        Log.d("ScreeningResultStore", "Saving screening data: " + screeningData);
+        String email = getCurrentUserEmail();
+        if (email == null) {
+            Log.e("ScreeningResultStore", "No user email found");
+            return;
+        }
+        
+        UserPreferencesDbHelper dbHelper = new UserPreferencesDbHelper(context);
+        Cursor cursor = dbHelper.getReadableDatabase().rawQuery("SELECT * FROM " + UserPreferencesDbHelper.TABLE_NAME + " WHERE " + UserPreferencesDbHelper.COL_USER_EMAIL + "=?", new String[]{email});
+        
+        if (cursor.getCount() > 0) {
+            Log.d("ScreeningResultStore", "Updating existing record with screening data");
+            android.content.ContentValues values = new android.content.ContentValues();
+            values.put(UserPreferencesDbHelper.COL_SCREENING_ANSWERS, screeningData);
+            int updateResult = dbHelper.getWritableDatabase().update(UserPreferencesDbHelper.TABLE_NAME, values, UserPreferencesDbHelper.COL_USER_EMAIL + "=?", new String[]{email});
+            Log.d("ScreeningResultStore", "Update result: " + updateResult);
+        } else {
+            Log.d("ScreeningResultStore", "Inserting new record with screening data");
+            android.content.ContentValues values = new android.content.ContentValues();
+            values.put(UserPreferencesDbHelper.COL_USER_EMAIL, email);
+            values.put(UserPreferencesDbHelper.COL_SCREENING_ANSWERS, screeningData);
+            long insertResult = dbHelper.getWritableDatabase().insert(UserPreferencesDbHelper.TABLE_NAME, null, values);
+            Log.d("ScreeningResultStore", "Insert result: " + insertResult);
+        }
+        cursor.close();
+        dbHelper.close();
+    }
 }
