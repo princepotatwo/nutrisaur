@@ -44,8 +44,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
     private Spinner municipalitySpinner, barangaySpinner;
     private EditText ageInput;
     private EditText monthsInput; // For children < 1 year
-    private RadioGroup sexRadioGroup;
-    private RadioGroup pregnantRadioGroup;
+    // Sex and pregnancy selection now use buttons instead of radio groups
     private String selectedMunicipality = "";
     private String selectedBarangay = "";
     private String selectedSex = "";
@@ -153,8 +152,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
         barangaySpinner = findViewById(R.id.barangay_spinner);
         ageInput = findViewById(R.id.age_input);
         monthsInput = findViewById(R.id.months_input);
-        sexRadioGroup = findViewById(R.id.sex_radio_group);
-        pregnantRadioGroup = findViewById(R.id.pregnant_radio_group);
+        // Sex and pregnancy selection now use buttons instead of radio groups
         
         // Section 2: Anthropometric Assessment
         weightInput = findViewById(R.id.weight_input);
@@ -310,36 +308,34 @@ public class ScreeningFormActivity extends AppCompatActivity {
         prevButton.setOnClickListener(v -> previousQuestion());
         nextButton.setOnClickListener(v -> nextQuestion());
         
-        // Sex selection
-        sexRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.sex_female) {
-                selectedSex = "Female";
-                // Show pregnancy question for females 12-50 years
-                try {
-                    int age = Integer.parseInt(ageInput.getText().toString());
-                    if (age >= 12 && age <= 50) {
-                        pregnantRadioGroup.setVisibility(View.VISIBLE);
-                    } else {
-                        pregnantRadioGroup.setVisibility(View.GONE);
-                    }
-                } catch (NumberFormatException e) {
-                    pregnantRadioGroup.setVisibility(View.GONE);
-                }
-            } else {
-                selectedSex = "Male";
-                pregnantRadioGroup.setVisibility(View.GONE);
-            }
+        // Sex selection buttons
+        findViewById(R.id.sex_male).setOnClickListener(v -> {
+            selectedSex = "Male";
+            findViewById(R.id.pregnant_section).setVisibility(View.GONE);
         });
         
-        // Pregnancy selection
-        pregnantRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.pregnant_yes) {
-                selectedPregnant = "Yes";
-            } else if (checkedId == R.id.pregnant_no) {
-                selectedPregnant = "No";
-            } else {
-                selectedPregnant = "Not Applicable";
-            }
+        findViewById(R.id.sex_female).setOnClickListener(v -> {
+            selectedSex = "Female";
+            // Show pregnancy question for females 12-50 years
+            try {
+                int age = Integer.parseInt(ageInput.getText().toString());
+                if (age >= 12 && age <= 50) {
+                                            findViewById(R.id.pregnant_section).setVisibility(View.VISIBLE);
+                } else {
+                    findViewById(R.id.pregnant_section).setVisibility(View.GONE);
+                }
+                            } catch (NumberFormatException e) {
+                    findViewById(R.id.pregnant_section).setVisibility(View.GONE);
+                }
+        });
+        
+        // Pregnancy selection buttons
+        findViewById(R.id.pregnant_yes).setOnClickListener(v -> {
+            selectedPregnant = "Yes";
+        });
+        
+        findViewById(R.id.pregnant_no).setOnClickListener(v -> {
+            selectedPregnant = "No";
         });
         
         // Lifestyle selection
