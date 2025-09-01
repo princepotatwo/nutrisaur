@@ -731,7 +731,7 @@ header {
 
 .deck-container {
     position: relative;
-    height: 450px;
+    height: 400px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
@@ -741,16 +741,17 @@ header {
 }
 
 .deck-cards {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
-    padding: 20px;
+    display: flex;
+    gap: 12px;
+    padding: 24px;
     height: 100%;
-    overflow-y: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
     max-width: 100%;
+    align-items: center;
 }
 
 .deck-cards::-webkit-scrollbar {
@@ -765,13 +766,14 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(5, 1fr);
         gap: 12px;
         padding: 20px;
     }
     
     .deck-card {
-        height: 180px;
+        width: 200px;
+        height: 280px;
+        min-width: 200px;
     }
 }
 
@@ -782,17 +784,18 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
+        gap: 10px;
         padding: 18px;
     }
     
     .deck-card {
-        height: 170px;
+        width: 180px;
+        height: 260px;
+        min-width: 180px;
     }
     
     .deck-container {
-        height: 400px;
+        height: 350px;
     }
 }
 
@@ -803,17 +806,18 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
+        gap: 8px;
         padding: 15px;
     }
     
     .deck-card {
-        height: 160px;
+        width: 160px;
+        height: 240px;
+        min-width: 160px;
     }
     
     .deck-container {
-        height: 350px;
+        height: 300px;
     }
 }
 
@@ -823,28 +827,30 @@ header {
     }
     
     .deck-cards {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        gap: 6px;
         padding: 12px;
     }
     
     .deck-card {
-        height: 150px;
+        width: 140px;
+        height: 200px;
+        min-width: 140px;
     }
     
     .deck-container {
-        height: 300px;
+        height: 250px;
     }
 }
 
 .deck-card {
     position: relative;
-    width: 100%;
-    height: 200px;
+    width: 220px;
+    height: 320px;
+    min-width: 220px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(0px) translateY(0px) scale(1);
-    min-width: 0;
+    flex-shrink: 0;
 }
 
 .deck-card:hover {
@@ -854,13 +860,20 @@ header {
 .card-main {
     width: 100%;
     height: 100%;
-    border-radius: 12px;
-    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.1) 100%);
     backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    padding: 16px;
     box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.card-main:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    border-color: var(--color-highlight);
 }
     padding: 20px;
     display: flex;
@@ -880,15 +893,15 @@ header {
 
 .card-header h4 {
     color: var(--color-highlight);
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     line-height: 1.2;
 }
 
 .card-location {
     color: var(--color-text);
-    font-size: 11px;
+    font-size: 12px;
     opacity: 0.7;
     line-height: 1.2;
 }
@@ -897,7 +910,7 @@ header {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     overflow: hidden;
 }
 
@@ -905,7 +918,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 4px 0;
+    padding: 6px 0;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -915,31 +928,47 @@ header {
 
 .stat-label {
     color: var(--color-text);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
     opacity: 0.8;
 }
 
 .stat-value {
     color: var(--color-highlight);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
 }
 
 .bmi-normal {
     color: #4CAF50 !important;
+    background: rgba(76, 175, 80, 0.1);
+    padding: 1px 4px;
+    border-radius: 6px;
+    font-weight: 600;
 }
 
 .bmi-overweight {
     color: #FF9800 !important;
+    background: rgba(255, 152, 0, 0.1);
+    padding: 1px 4px;
+    border-radius: 6px;
+    font-weight: 600;
 }
 
 .bmi-underweight {
     color: #F44336 !important;
+    background: rgba(244, 67, 54, 0.1);
+    padding: 1px 4px;
+    border-radius: 6px;
+    font-weight: 600;
 }
 
 .bmi-obese {
     color: #D32F2F !important;
+    background: rgba(211, 47, 47, 0.1);
+    padding: 1px 4px;
+    border-radius: 6px;
+    font-weight: 600;
 }
 
 .diet-balanced {
@@ -960,14 +989,26 @@ header {
 
 .risk-low-risk {
     color: #4CAF50 !important;
+    background: rgba(76, 175, 80, 0.1);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 700;
 }
 
 .risk-medium-risk {
     color: #FF9800 !important;
+    background: rgba(255, 152, 0, 0.1);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 700;
 }
 
 .risk-high-risk {
     color: #F44336 !important;
+    background: rgba(244, 67, 54, 0.1);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 700;
 }
 
 
