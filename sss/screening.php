@@ -608,28 +608,29 @@ header {
 .card-deck-container {
     background: var(--color-card);
     border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 30px;
+    padding: 20px;
+    margin-bottom: 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--color-border);
 }
 
 .deck-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .deck-header h3 {
     color: var(--color-highlight);
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
 }
 
 .deck-header p {
     color: var(--color-text);
-    font-size: 16px;
+    font-size: 14px;
     opacity: 0.8;
+    margin: 0;
 }
 
 .deck-wrapper {
@@ -639,7 +640,7 @@ header {
 
 .deck-container {
     position: relative;
-    height: 500px;
+    height: 400px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
