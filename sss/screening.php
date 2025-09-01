@@ -612,6 +612,7 @@ header {
     margin-bottom: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--color-border);
+    width: 100%;
 }
 
 .deck-header {
@@ -698,7 +699,7 @@ header {
 }
 
 .deck-card.hidden {
-    display: none;
+    display: none !important;
 }
 
 .deck-wrapper {
@@ -890,6 +891,7 @@ header {
             padding: 20px;
             margin-left: 0;
             margin-right: 0;
+            width: 100%;
         }
 
         .screening-form {
@@ -2344,25 +2346,35 @@ header {
             }
 
             function filterCards(searchTerm, filterType) {
+                console.log('Filtering with search:', searchTerm, 'filter:', filterType);
                 cards.forEach(card => {
                     // Get card data from the DOM elements
                     const nameElement = card.querySelector('.card-header h4');
                     const locationElement = card.querySelector('.card-location');
                     const riskLevelElement = card.querySelector('.card-stat:last-child .stat-value');
                     
-                    if (!nameElement || !locationElement || !riskLevelElement) return;
+                    if (!nameElement || !locationElement || !riskLevelElement) {
+                        console.log('Missing elements in card');
+                        return;
+                    }
 
                     const name = nameElement.textContent.toLowerCase();
                     const barangay = locationElement.textContent.toLowerCase();
                     const riskLevel = riskLevelElement.textContent.toLowerCase().replace(' ', '-');
                     
+                    console.log('Card data:', { name, barangay, riskLevel });
+                    
                     const matchesSearch = name.includes(searchTerm) || barangay.includes(searchTerm);
                     const matchesFilter = filterType === 'all' || riskLevel === filterType;
                     
+                    console.log('Matches:', { matchesSearch, matchesFilter });
+                    
                     if (matchesSearch && matchesFilter) {
                         card.classList.remove('hidden');
+                        card.style.display = 'block';
                     } else {
                         card.classList.add('hidden');
+                        card.style.display = 'none';
                     }
                 });
             }
