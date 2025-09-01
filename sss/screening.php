@@ -1552,12 +1552,6 @@ header {
         </header>
 
         <div class="screening-container">
-            <!-- Assessment Results Display -->
-            <div class="assessment-results">
-
-
-
-
                 <!-- Card Deck Fan Component -->
                 <div class="card-deck-container">
                     <div class="deck-header">
@@ -1709,105 +1703,7 @@ header {
                     </div>
                 </div>
 
-                <!-- Assessment Results Table -->
-                <div class="assessment-table-container">
-                    <div class="table-header">
-                        <h3>📋 Community Nutritional Assessments</h3>
-                        <div class="table-controls">
-                            <input type="text" id="searchAssessments" placeholder="Search assessments..." class="search-input">
-                            <select id="filterRisk" class="filter-select">
-                                <option value="">All Risk Levels</option>
-                                <option value="low">Low Risk (0-10)</option>
-                                <option value="medium">Medium Risk (11-20)</option>
-                                <option value="high">High Risk (21+)</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <?php if (empty($screening_assessments)): ?>
-                        <div class="no-data">
-                            <div class="no-data-icon">🏥</div>
-                            <h3>No Community Assessments Yet</h3>
-                            <p>Community nutritional assessments will appear here once MHO staff complete screenings via the mobile assessment module.</p>
-                            <div class="mobile-app-info">
-                                <h4>🏥 MHO Assessment Module</h4>
-                                <p>MHO Staff can conduct comprehensive nutritional assessments using the NutriSaur mobile module:</p>
-                                <ul>
-                                    <li>Decision Tree algorithm-based assessment</li>
-                                    <li>7-section comprehensive screening</li>
-                                    <li>Real-time BMI calculation and risk analysis</li>
-                                    <li>Automated nutritional status classification</li>
-                                    <li>Data syncs automatically to this MHO dashboard</li>
-                                </ul>
-                            </div>
-                        </div>
-                    <?php else: ?>
-                        <div class="table-wrapper">
-                            <table class="assessment-table">
-                                <thead>
-                                    <tr>
-                                        <th>Assessment Date</th>
-                                        <th>Community Location</th>
-                                        <th>Age</th>
-                                        <th>Sex</th>
-                                        <th>BMI Status</th>
-                                        <th>Decision Tree Score</th>
-                                        <th>Nutritional Risk</th>
-                                        <th>MHO Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($screening_assessments as $assessment): ?>
-                                        <tr class="assessment-row" data-risk="<?php echo $assessment['risk_score']; ?>">
-                                            <td><?php echo date('M j, Y g:i A', strtotime($assessment['created_at'])); ?></td>
-                                            <td><?php echo htmlspecialchars($assessment['barangay'] . ', ' . $assessment['municipality']); ?></td>
-                                            <td>
-                                                <?php 
-                                                $age_display = $assessment['age'] . ' years';
-                                                if ($assessment['age'] < 1 && !empty($assessment['age_months'])) {
-                                                    $age_display = $assessment['age_months'] . ' months';
-                                                }
-                                                echo $age_display;
-                                                ?>
-                                            </td>
-                                            <td><?php echo htmlspecialchars($assessment['sex']); ?></td>
-                                            <td>
-                                                <span class="bmi-value"><?php echo $assessment['bmi'] ? $assessment['bmi'] : 'N/A'; ?></span>
-                                                <?php if ($assessment['bmi']): ?>
-                                                    <span class="bmi-category"><?php 
-                                                        if ($assessment['bmi'] < 18.5) echo 'Underweight';
-                                                        elseif ($assessment['bmi'] < 25) echo 'Normal';
-                                                        elseif ($assessment['bmi'] < 30) echo 'Overweight';
-                                                        else echo 'Obese';
-                                                    ?></span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <span class="risk-score"><?php echo $assessment['risk_score']; ?></span>
-                                            </td>
-                                            <td>
-                                                <span class="risk-level <?php 
-                                                    if ($assessment['risk_score'] <= 10) echo 'low';
-                                                    elseif ($assessment['risk_score'] <= 20) echo 'medium';
-                                                    else echo 'high';
-                                                ?>">
-                                                    <?php 
-                                                    if ($assessment['risk_score'] <= 10) echo 'Low';
-                                                    elseif ($assessment['risk_score'] <= 20) echo 'Medium';
-                                                    else echo 'High';
-                                                    ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <button onclick="viewAssessmentDetails(<?php echo $assessment['id']; ?>)" class="btn-view">Review Assessment</button>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php endif; ?>
-                </div>
         </div>
     </div>
 
