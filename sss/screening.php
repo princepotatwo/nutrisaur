@@ -1554,83 +1554,9 @@ header {
         <div class="screening-container">
             <!-- Assessment Results Display -->
             <div class="assessment-results">
-                <div class="results-header">
-                    <h2>🏥 MHO Nutritional Assessment Module</h2>
-                    <p>Enabling MHO Staff to assess the nutritional status of registered community members through a Decision Tree algorithm-based assessment module</p>
-                </div>
 
-                <!-- Assessment Summary Cards -->
-                <div class="summary-cards">
-                    <div class="summary-card">
-                        <div class="card-icon">🏥</div>
-                        <div class="card-content">
-                            <h3>Community Assessments</h3>
-                            <div class="card-value"><?php echo count($screening_assessments); ?></div>
-                        </div>
-                    </div>
-                    
-                    <div class="summary-card">
-                        <div class="card-icon">⚠️</div>
-                        <div class="card-content">
-                            <h3>High Risk Cases</h3>
-                            <div class="card-value"><?php 
-                                $high_risk_count = 0;
-                                foreach ($screening_assessments as $assessment) {
-                                    if ($assessment['risk_score'] > 20) $high_risk_count++;
-                                }
-                                echo $high_risk_count;
-                            ?></div>
-                        </div>
-                    </div>
-                    
-                    <div class="summary-card">
-                        <div class="card-icon">📊</div>
-                        <div class="card-content">
-                            <h3>Decision Tree Score</h3>
-                            <div class="card-value"><?php 
-                                if (count($screening_assessments) > 0) {
-                                    $total_score = 0;
-                                    foreach ($screening_assessments as $assessment) {
-                                        $total_score += $assessment['risk_score'];
-                                    }
-                                    echo round($total_score / count($screening_assessments), 1);
-                                } else {
-                                    echo "0";
-                                }
-                            ?></div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- MHO Assessment Module Description -->
-                <div class="mho-description">
-                    <div class="description-card">
-                        <h3>🏥 MHO Nutritional Assessment Module</h3>
-                        <p>This module enables Municipal Health Office (MHO) Staff to conduct comprehensive nutritional assessments of registered community members using a sophisticated Decision Tree algorithm-based assessment system.</p>
-                        
-                        <div class="assessment-features">
-                            <h4>Key Features:</h4>
-                            <ul>
-                                <li><strong>Decision Tree Algorithm:</strong> Automated nutritional status classification based on multiple assessment criteria</li>
-                                <li><strong>Comprehensive Screening:</strong> 7-section assessment covering anthropometric, dietary, and health factors</li>
-                                <li><strong>Real-time Analysis:</strong> Instant BMI calculation and risk factor identification</li>
-                                <li><strong>Community Tracking:</strong> Monitor nutritional trends across different barangays and municipalities</li>
-                                <li><strong>MHO Dashboard:</strong> Centralized view of all community assessments for health planning</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="assessment-process">
-                            <h4>Assessment Process:</h4>
-                            <ol>
-                                <li>MHO Staff conducts mobile assessment using the NutriSaur app</li>
-                                <li>Decision Tree algorithm analyzes all input data</li>
-                                <li>System generates nutritional risk score and classification</li>
-                                <li>Assessment data syncs to this MHO dashboard</li>
-                                <li>Health officers can review and plan interventions</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
+
 
                 <!-- Card Deck Fan Component -->
                 <div class="card-deck-container">
