@@ -886,8 +886,10 @@ header {
 }
         .screening-container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0;
             padding: 20px;
+            margin-left: 0;
+            margin-right: 0;
         }
 
         .screening-form {
