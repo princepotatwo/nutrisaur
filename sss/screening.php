@@ -2345,14 +2345,16 @@ header {
 
             function filterCards(searchTerm, filterType) {
                 cards.forEach(card => {
-                    const cardIndex = card.dataset.index;
-                    const user = cardData[cardIndex];
+                    // Get card data from the DOM elements
+                    const nameElement = card.querySelector('.card-header h4');
+                    const locationElement = card.querySelector('.card-location');
+                    const riskLevelElement = card.querySelector('.card-stat:last-child .stat-value');
                     
-                    if (!user) return;
+                    if (!nameElement || !locationElement || !riskLevelElement) return;
 
-                    const name = user.name.toLowerCase();
-                    const barangay = user.barangay.toLowerCase();
-                    const riskLevel = user.risk_level.toLowerCase().replace(' ', '-');
+                    const name = nameElement.textContent.toLowerCase();
+                    const barangay = locationElement.textContent.toLowerCase();
+                    const riskLevel = riskLevelElement.textContent.toLowerCase().replace(' ', '-');
                     
                     const matchesSearch = name.includes(searchTerm) || barangay.includes(searchTerm);
                     const matchesFilter = filterType === 'all' || riskLevel === filterType;
