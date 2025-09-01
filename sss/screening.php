@@ -695,10 +695,7 @@ header {
     z-index: 10;
 }
 
-.deck-card.selected .card-main {
-    opacity: 0.1;
-    transform: scale(0.95);
-}
+
 
 .card-header {
     text-align: center;
@@ -774,111 +771,7 @@ header {
     color: #F44336 !important;
 }
 
-/* Fan Cards */
-.fan-cards {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
 
-.deck-card.selected .fan-cards {
-    opacity: 1;
-    pointer-events: all;
-}
-
-.fan-card {
-    position: absolute;
-    width: 200px;
-    height: 280px;
-    border-radius: 16px;
-    border: 1px solid var(--color-highlight);
-    background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.15) 100%);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 12px 35px rgba(161, 180, 84, 0.2);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center center;
-}
-
-.fan-card[data-type="personal"] {
-    transform: rotate(-15deg) translateX(-200px) translateY(-120px);
-    z-index: 20;
-}
-
-.fan-card[data-type="anthropometric"] {
-    transform: rotate(0deg) translateX(0) translateY(-150px);
-    z-index: 30;
-}
-
-.fan-card[data-type="nutritional"] {
-    transform: rotate(15deg) translateX(200px) translateY(-120px);
-    z-index: 20;
-}
-
-.deck-card.selected .fan-card[data-type="personal"] {
-    transform: rotate(-8deg) translateX(-180px) translateY(-140px);
-}
-
-.deck-card.selected .fan-card[data-type="anthropometric"] {
-    transform: rotate(0deg) translateX(0) translateY(-170px);
-}
-
-.deck-card.selected .fan-card[data-type="nutritional"] {
-    transform: rotate(8deg) translateX(180px) translateY(-140px);
-}
-
-.fan-label {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(135deg, var(--color-highlight) 0%, var(--color-accent1) 100%);
-    color: var(--color-bg);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.fan-label:hover {
-    transform: translateX(-50%) scale(1.1);
-    box-shadow: 0 6px 16px rgba(161, 180, 84, 0.4);
-}
-
-.fan-content {
-    margin-top: 20px;
-    flex: 1;
-}
-
-.fan-content h5 {
-    color: var(--color-highlight);
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.fan-content p {
-    color: var(--color-text);
-    font-size: 12px;
-    margin-bottom: 8px;
-    line-height: 1.4;
-}
-
-.fan-content strong {
-    color: var(--color-highlight);
-    font-weight: 600;
-}
 
 /* Light theme adjustments */
 .light-theme .deck-container {
@@ -1657,49 +1550,7 @@ header {
                                         </div>
                                     </div>
                                     
-                                    <!-- Fan cards that appear on hover -->
-                                    <div class="fan-cards">
-                                        <div class="fan-card" data-type="personal">
-                                            <div class="fan-label">Personal Info</div>
-                                            <div class="fan-content">
-                                                <h5>Personal Information</h5>
-                                                <p><strong>Name:</strong> <?php echo htmlspecialchars($user['name']); ?></p>
-                                                <p><strong>Age:</strong> <?php echo $user['age']; ?> years</p>
-                                                <p><strong>Location:</strong> <?php echo htmlspecialchars($user['location']); ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="fan-card" data-type="anthropometric">
-                                            <div class="fan-label">Anthropometric</div>
-                                            <div class="fan-content">
-                                                <h5>Anthropometric Data</h5>
-                                                <p><strong>Height:</strong> <?php echo $user['height']; ?></p>
-                                                <p><strong>Weight:</strong> <?php echo $user['weight']; ?></p>
-                                                <p><strong>BMI:</strong> <?php echo $user['bmi']; ?></p>
-                                                <p><strong>Status:</strong> <?php echo $user['status']; ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="fan-card" data-type="nutritional">
-                                            <div class="fan-label">Nutritional</div>
-                                            <div class="fan-content">
-                                                <h5>Nutritional Assessment</h5>
-                                                <p><strong>Risk Score:</strong> <?php echo $user['risk_score']; ?></p>
-                                                <p><strong>Risk Level:</strong> 
-                                                    <?php 
-                                                    if ($user['risk_score'] > 20) echo 'High Risk';
-                                                    elseif ($user['risk_score'] > 10) echo 'Medium Risk';
-                                                    else echo 'Low Risk';
-                                                    ?>
-                                                </p>
-                                                <p><strong>Recommendation:</strong> 
-                                                    <?php 
-                                                    if ($user['risk_score'] > 20) echo 'Immediate intervention needed';
-                                                    elseif ($user['risk_score'] > 10) echo 'Regular monitoring';
-                                                    else echo 'Maintain current status';
-                                                    ?>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
                                 <?php endforeach; ?>
                             </div>
@@ -2096,129 +1947,147 @@ header {
             }
         });
 
-        // Card Deck Fan Component JavaScript
+        // Card Deck Modal JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             const deckCards = document.querySelectorAll('.deck-card');
-            let selectedCard = null;
-            let hoveredCard = null;
             
             deckCards.forEach((card, index) => {
-                const fanCards = card.querySelectorAll('.fan-card');
-                
-                // Mouse enter - spread deck
-                card.addEventListener('mouseenter', function() {
-                    if (selectedCard === null) {
-                        hoveredCard = index;
-                        spreadDeck();
-                    }
-                });
-                
-                // Mouse leave - retract deck
-                card.addEventListener('mouseleave', function() {
-                    if (selectedCard === null) {
-                        hoveredCard = null;
-                        retractDeck();
-                    }
-                });
-                
-                // Click - select/deselect card
+                // Click to show modal
                 card.addEventListener('click', function() {
-                    if (selectedCard === index) {
-                        // Deselect
-                        selectedCard = null;
-                        card.classList.remove('selected');
-                        retractDeck();
-                    } else {
-                        // Select new card
-                        if (selectedCard !== null) {
-                            deckCards[selectedCard].classList.remove('selected');
-                        }
-                        selectedCard = index;
-                        card.classList.add('selected');
-                        
-                        // Force center the selected card immediately
-                        forceCenterCard(index);
-                        
-                        // Keep the spread position when selecting
-                        if (hoveredCard !== null) {
-                            spreadDeck();
-                        }
-                    }
-                });
-                
-                // Add click effects for fan labels
-                fanCards.forEach(fanCard => {
-                    const fanLabel = fanCard.querySelector('.fan-label');
-                    
-                    fanLabel.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        
-                        // Add click animation
-                        fanLabel.style.transform = 'translateX(-50%) scale(0.95)';
-                        setTimeout(() => {
-                            fanLabel.style.transform = 'translateX(-50%) scale(1)';
-                        }, 150);
-                        
-                        // Show detailed modal
-                        showFanCardDetails(fanCard);
-                    });
+                    showCardModal(index);
                 });
             });
             
-            function spreadDeck() {
-                deckCards.forEach((card, i) => {
-                    if (selectedCard !== null && selectedCard !== i) {
-                        // If a card is selected, other cards move away
-                        const offset = i - selectedCard;
-                        const x = offset * 100;
-                        const y = -Math.abs(offset) * 14;
-                        const scale = 0.96;
+            function showCardModal(cardIndex) {
+                const card = deckCards[cardIndex];
+                const cardData = <?php echo json_encode($sample_users); ?>;
+                const user = cardData[cardIndex];
+                
+                // Create modal
+                const modal = document.createElement('div');
+                modal.className = 'card-modal';
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.7);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 9999;
+                    backdrop-filter: blur(5px);
+                `;
+                
+                const modalContent = document.createElement('div');
+                modalContent.style.cssText = `
+                    background: var(--color-card);
+                    border-radius: 16px;
+                    padding: 30px;
+                    max-width: 600px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    border: 1px solid var(--color-highlight);
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                    position: relative;
+                `;
+                
+                const closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '✕';
+                closeBtn.style.cssText = `
+                    position: absolute;
+                    top: 15px;
+                    right: 20px;
+                    background: none;
+                    border: none;
+                    color: var(--color-highlight);
+                    font-size: 24px;
+                    cursor: pointer;
+                    padding: 5px;
+                    border-radius: 50%;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                `;
+                
+                closeBtn.addEventListener('mouseenter', function() {
+                    this.style.background = 'var(--color-highlight)';
+                    this.style.color = 'var(--color-bg)';
+                });
+                
+                closeBtn.addEventListener('mouseleave', function() {
+                    this.style.background = 'none';
+                    this.style.color = 'var(--color-highlight)';
+                });
+                
+                closeBtn.addEventListener('click', function() {
+                    modal.remove();
+                });
+                
+                // Risk level calculation
+                let riskLevel = 'Low Risk';
+                let riskColor = '#4CAF50';
+                if (user.risk_score > 20) {
+                    riskLevel = 'High Risk';
+                    riskColor = '#F44336';
+                } else if (user.risk_score > 10) {
+                    riskLevel = 'Medium Risk';
+                    riskColor = '#FF9800';
+                }
+                
+                // Recommendation
+                let recommendation = 'Maintain current status';
+                if (user.risk_score > 20) {
+                    recommendation = 'Immediate intervention needed';
+                } else if (user.risk_score > 10) {
+                    recommendation = 'Regular monitoring';
+                }
+                
+                modalContent.innerHTML = `
+                    <h2 style="color: var(--color-highlight); margin-bottom: 25px; text-align: center; font-size: 28px;">
+                        ${user.name} - Nutritional Assessment
+                    </h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
+                        <div style="background: rgba(161, 180, 84, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--color-border);">
+                            <h3 style="color: var(--color-highlight); margin-bottom: 15px; font-size: 18px;">Personal Information</h3>
+                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Name:</strong> ${user.name}</p>
+                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Age:</strong> ${user.age} years</p>
+                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Location:</strong> ${user.location}</p>
+                        </div>
                         
-                        card.style.transform = `translateX(${x}px) translateY(${y}px) scale(${scale})`;
-                    } else if (hoveredCard !== null && selectedCard === null) {
-                        // If hovering and no card selected, spread around hovered card
-                        const offset = i - hoveredCard;
-                        const x = offset * 100;
-                        const y = -Math.abs(offset) * 14;
-                        const scale = i === hoveredCard ? 1.08 : 0.96;
-                        
-                        card.style.transform = `translateX(${x}px) translateY(${y}px) scale(${scale})`;
+                        <div style="background: rgba(161, 180, 84, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--color-border);">
+                            <h3 style="color: var(--color-highlight); margin-bottom: 15px; font-size: 18px;">Anthropometric Data</h3>
+                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Height:</strong> ${user.height}</p>
+                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Weight:</strong> ${user.weight}</p>
+                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>BMI:</strong> ${user.bmi}</p>
+                            <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Status:</strong> <span style="color: ${user.status === 'Normal Weight' ? '#4CAF50' : user.status === 'Overweight' ? '#FF9800' : '#F44336'}">${user.status}</span></p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(161, 180, 84, 0.1); padding: 20px; border-radius: 12px; border: 1px solid var(--color-border); margin-bottom: 25px;">
+                        <h3 style="color: var(--color-highlight); margin-bottom: 15px; font-size: 18px;">Nutritional Assessment</h3>
+                        <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Risk Score:</strong> ${user.risk_score}</p>
+                        <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Risk Level:</strong> <span style="color: ${riskColor}">${riskLevel}</span></p>
+                        <p style="color: var(--color-text); margin-bottom: 8px;"><strong>Recommendation:</strong> ${recommendation}</p>
+                    </div>
+                `;
+                
+                modalContent.appendChild(closeBtn);
+                modal.appendChild(modalContent);
+                document.body.appendChild(modal);
+                
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.remove();
                     }
                 });
-            }
-            
-            function retractDeck() {
-                deckCards.forEach(card => {
-                    card.style.transform = 'translateX(0px) translateY(0px) scale(1)';
-                });
-            }
-            
-            function forceCenterCard(cardIndex) {
-                const deckContainer = document.querySelector('.deck-cards');
-                const card = deckCards[cardIndex];
-                
-                if (deckContainer && card) {
-                    // Calculate the exact position to center the card
-                    const cardWidth = card.offsetWidth;
-                    const cardLeft = card.offsetLeft;
-                    const containerWidth = deckContainer.clientWidth;
-                    const cardCenter = cardLeft + (cardWidth / 2);
-                    const containerCenter = containerWidth / 2;
-                    const scrollLeft = cardCenter - containerCenter;
-                    
-                    // Force scroll to center
-                    deckContainer.scrollLeft = scrollLeft;
-                    
-                    // Double-check and adjust if needed
-                    setTimeout(() => {
-                        const newCardRect = card.getBoundingClientRect();
-                        const newContainerRect = deckContainer.getBoundingClientRect();
-                        const newCardCenter = newCardRect.left + (newCardRect.width / 2);
-                        const newContainerCenter = newContainerRect.left + (newContainerRect.width / 2);
-                        const adjustment = newCardCenter - newContainerCenter;
-                        deckContainer.scrollLeft += adjustment;
-                    }, 50);
-                }
             }
         });
 
