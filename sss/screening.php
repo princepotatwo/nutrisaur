@@ -1011,6 +1011,22 @@ header {
     font-weight: 700;
 }
 
+.pregnancy-yes {
+    color: #E91E63 !important;
+    background: rgba(233, 30, 99, 0.1);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.pregnancy-no {
+    color: #4CAF50 !important;
+    background: rgba(76, 175, 80, 0.1);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
 
 
 /* Light theme adjustments */
@@ -1705,6 +1721,11 @@ header {
                                         <button type="button" class="filter-btn" data-filter="low-risk">Low Risk</button>
                                         <button type="button" class="filter-btn" data-filter="medium-risk">Medium Risk</button>
                                         <button type="button" class="filter-btn" data-filter="high-risk">High Risk</button>
+                                        <button type="button" class="filter-btn" data-filter="children">Children (0-17)</button>
+                                        <button type="button" class="filter-btn" data-filter="young-adults">Young Adults (18-35)</button>
+                                        <button type="button" class="filter-btn" data-filter="adults">Adults (36-65)</button>
+                                        <button type="button" class="filter-btn" data-filter="seniors">Seniors (65+)</button>
+                                        <button type="button" class="filter-btn" data-filter="pregnant">Pregnant</button>
                                     </div>
                                 </div>
                             </div>
@@ -1713,10 +1734,26 @@ header {
                         <div class="deck-container">
                             <div class="deck-cards">
                                 <?php
-                                // Sample user data based on Decision Tree Nutritional Assessment - 60 placeholder users
+                                // Enhanced sample user data with diverse age groups and pregnancy status - 120 placeholder users
                                 $sample_users = [];
                                 
-                                $names = ['Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales', 'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas', 'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon', 'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios', 'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez', 'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas', 'Adriana Luna', 'Ricardo Salazar'];
+                                // Extended names list for more variety
+                                $names = [
+                                    // Children and Teens (0-17)
+                                    'Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales',
+                                    'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
+                                    'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
+                                    'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
+                                    'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
+                                    // Young Adults (18-35)
+                                    'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
+                                    'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
+                                    // Adults (36-65)
+                                    'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
+                                    'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
+                                    // Seniors (65+)
+                                    'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas'
+                                ];
                                 
                                 $barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose', 'Munting Batangas', 'Cataning', 'Central', 'Dangcol', 'Dona Francisca', 'Lote', 'Malabia', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Juan', 'Talisay', 'Tanato', 'Tortugas', 'Wawa'];
                                 
@@ -1725,17 +1762,59 @@ header {
                                 $lifestyles = ['Active', 'Sedentary'];
                                 $risk_levels = ['Low Risk', 'Medium Risk', 'High Risk'];
                                 
-                                for ($i = 0; $i < 60; $i++) {
+                                // Create diverse age groups and pregnancy status
+                                for ($i = 0; $i < 120; $i++) {
                                     $bmi_category = $bmi_categories[array_rand($bmi_categories)];
                                     $meal_assessment = $meal_assessments[array_rand($meal_assessments)];
                                     $lifestyle = $lifestyles[array_rand($lifestyles)];
                                     $risk_level = $risk_levels[array_rand($risk_levels)];
                                     
-                                    // Generate realistic data based on risk level
+                                    // Generate age based on groups for diversity
+                                    $age_group = $i % 4; // 0-3 for different age groups
+                                    if ($age_group === 0) {
+                                        // Children and Teens (0-17)
+                                        $age = rand(5, 17);
+                                        $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                        $pregnant = 'Not Applicable';
+                                    } elseif ($age_group === 1) {
+                                        // Young Adults (18-35) - High pregnancy chance
+                                        $age = rand(18, 35);
+                                        $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                        $pregnant = $sex === 'Female' ? (rand(0, 3) === 0 ? 'Yes' : 'No') : 'Not Applicable';
+                                    } elseif ($age_group === 2) {
+                                        // Adults (36-65) - Medium pregnancy chance
+                                        $age = rand(36, 65);
+                                        $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                        $pregnant = $sex === 'Female' && $age <= 50 ? (rand(0, 5) === 0 ? 'Yes' : 'No') : 'Not Applicable';
+                                    } else {
+                                        // Seniors (65+)
+                                        $age = rand(65, 85);
+                                        $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                        $pregnant = 'Not Applicable';
+                                    }
+                                    
+                                    // Generate realistic data based on age and risk level
                                     $risk_score = $risk_level === 'Low Risk' ? rand(5, 12) : ($risk_level === 'Medium Risk' ? rand(13, 20) : rand(21, 30));
-                                    $age = rand(18, 65);
-                                    $height = rand(150, 180);
-                                    $weight = $bmi_category === 'Normal' ? rand(50, 70) : ($bmi_category === 'Overweight' ? rand(75, 90) : ($bmi_category === 'Underweight' ? rand(40, 50) : rand(95, 120)));
+                                    
+                                    // Adjust height and weight based on age
+                                    if ($age < 18) {
+                                        // Children and teens
+                                        $height = rand(100, 170);
+                                        $weight = $bmi_category === 'Normal' ? rand(20, 60) : ($bmi_category === 'Overweight' ? rand(65, 80) : ($bmi_category === 'Underweight' ? rand(15, 25) : rand(85, 100)));
+                                    } elseif ($age < 36) {
+                                        // Young adults
+                                        $height = rand(150, 180);
+                                        $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
+                                    } elseif ($age < 66) {
+                                        // Adults
+                                        $height = rand(150, 180);
+                                        $weight = $bmi_category === 'Normal' ? rand(50, 80) : ($bmi_category === 'Overweight' ? rand(85, 100) : ($bmi_category === 'Underweight' ? rand(40, 55) : rand(105, 140)));
+                                    } else {
+                                        // Seniors
+                                        $height = rand(145, 175);
+                                        $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
+                                    }
+                                    
                                     $bmi = round($weight / pow($height/100, 2), 1);
                                     
                                     $family_history_options = [['None'], ['Hypertension'], ['Diabetes'], ['Heart Disease'], ['Hypertension', 'Diabetes'], ['Obesity'], ['Malnutrition'], ['Tuberculosis'], ['Kidney Disease']];
@@ -1751,8 +1830,8 @@ header {
                                     $sample_users[] = [
                                         'name' => $names[$i % count($names)],
                                         'age' => (string)$age,
-                                        'sex' => $i % 2 === 0 ? 'Female' : 'Male',
-                                        'pregnant' => $i % 2 === 0 && $age >= 12 && $age <= 50 ? (rand(0, 1) ? 'Yes' : 'No') : 'Not Applicable',
+                                        'sex' => $sex,
+                                        'pregnant' => $pregnant,
                                         'municipality' => 'Balanga',
                                         'barangay' => $barangays[$i % count($barangays)],
                                         'height' => (string)$height,
@@ -1784,6 +1863,12 @@ header {
                                                 <span class="stat-label">Age/Sex</span>
                                                 <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
                                             </div>
+                                            <?php if ($user['pregnant'] !== 'Not Applicable'): ?>
+                                            <div class="card-stat">
+                                                <span class="stat-label">Pregnancy</span>
+                                                <span class="stat-value pregnancy-<?php echo strtolower($user['pregnant']); ?>"><?php echo $user['pregnant']; ?></span>
+                                            </div>
+                                            <?php endif; ?>
                                             <div class="card-stat">
                                                 <span class="stat-label">BMI</span>
                                                 <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
@@ -2564,8 +2649,10 @@ header {
                     const nameElement = card.querySelector('.card-header h4');
                     const locationElement = card.querySelector('.card-location');
                     const riskLevelElement = card.querySelector('.card-stat .stat-value.risk-low-risk, .card-stat .stat-value.risk-medium-risk, .card-stat .stat-value.risk-high-risk');
+                    const ageSexElement = card.querySelector('.card-stat .stat-value');
+                    const pregnancyElement = card.querySelector('.card-stat .stat-value.pregnancy-yes, .card-stat .stat-value.pregnancy-no');
                     
-                    if (!nameElement || !locationElement || !riskLevelElement) {
+                    if (!nameElement || !locationElement || !riskLevelElement || !ageSexElement) {
                         console.log('Missing elements in card', index);
                         return;
                     }
@@ -2573,11 +2660,33 @@ header {
                     const name = nameElement.textContent.toLowerCase();
                     const barangay = locationElement.textContent.toLowerCase();
                     const riskLevel = riskLevelElement.textContent.toLowerCase().replace(/\s+/g, '-');
+                    const ageSex = ageSexElement.textContent.toLowerCase();
+                    const isPregnant = pregnancyElement && pregnancyElement.textContent.toLowerCase() === 'yes';
                     
-                    console.log(`Card ${index} data:`, { name, barangay, riskLevel });
+                    // Extract age from age/sex text (e.g., "25y, female")
+                    const ageMatch = ageSex.match(/(\d+)y/);
+                    const age = ageMatch ? parseInt(ageMatch[1]) : 0;
+                    
+                    console.log(`Card ${index} data:`, { name, barangay, riskLevel, age, isPregnant });
                     
                     const matchesSearch = searchTerm === '' || name.includes(searchTerm) || barangay.includes(searchTerm);
-                    const matchesFilter = filterType === 'all' || riskLevel === filterType;
+                    
+                    // Enhanced filter logic
+                    let matchesFilter = filterType === 'all';
+                    
+                    if (filterType === 'low-risk' || filterType === 'medium-risk' || filterType === 'high-risk') {
+                        matchesFilter = riskLevel === filterType;
+                    } else if (filterType === 'children') {
+                        matchesFilter = age >= 0 && age <= 17;
+                    } else if (filterType === 'young-adults') {
+                        matchesFilter = age >= 18 && age <= 35;
+                    } else if (filterType === 'adults') {
+                        matchesFilter = age >= 36 && age <= 65;
+                    } else if (filterType === 'seniors') {
+                        matchesFilter = age >= 65;
+                    } else if (filterType === 'pregnant') {
+                        matchesFilter = isPregnant;
+                    }
                     
                     console.log(`Card ${index} matches:`, { matchesSearch, matchesFilter });
                     
