@@ -640,7 +640,7 @@ header {
 
 .deck-container {
     position: relative;
-    height: 350px;
+    height: 600px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
@@ -649,13 +649,12 @@ header {
 }
 
 .deck-cards {
-    display: flex;
-    gap: 12px;
-    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 25px;
     height: 100%;
-    align-items: center;
-    justify-content: center;
-    overflow-x: auto;
+    overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
@@ -667,8 +666,8 @@ header {
 
 .deck-card {
     position: relative;
-    width: 200px;
-    height: 280px;
+    width: 280px;
+    height: 320px;
     flex-shrink: 0;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1480,114 +1479,63 @@ header {
                         <div class="deck-container">
                             <div class="deck-cards">
                                 <?php
-                                // Sample user data based on Decision Tree Nutritional Assessment
-                                $sample_users = [
-                                    [
-                                        'name' => 'Maria Santos',
-                                        'age' => '28',
-                                        'sex' => 'Female',
-                                        'pregnant' => 'No',
+                                // Sample user data based on Decision Tree Nutritional Assessment - 60 placeholder users
+                                $sample_users = [];
+                                
+                                $names = ['Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales', 'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas', 'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon', 'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios', 'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez', 'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas', 'Adriana Luna', 'Ricardo Salazar'];
+                                
+                                $barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose', 'Munting Batangas', 'Cataning', 'Central', 'Dangcol', 'Dona Francisca', 'Lote', 'Malabia', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Juan', 'Talisay', 'Tanato', 'Tortugas', 'Wawa'];
+                                
+                                $bmi_categories = ['Normal', 'Overweight', 'Underweight', 'Obese'];
+                                $meal_assessments = ['Balanced', 'At Risk'];
+                                $lifestyles = ['Active', 'Sedentary'];
+                                $risk_levels = ['Low Risk', 'Medium Risk', 'High Risk'];
+                                
+                                for ($i = 0; $i < 60; $i++) {
+                                    $bmi_category = $bmi_categories[array_rand($bmi_categories)];
+                                    $meal_assessment = $meal_assessments[array_rand($meal_assessments)];
+                                    $lifestyle = $lifestyles[array_rand($lifestyles)];
+                                    $risk_level = $risk_levels[array_rand($risk_levels)];
+                                    
+                                    // Generate realistic data based on risk level
+                                    $risk_score = $risk_level === 'Low Risk' ? rand(5, 12) : ($risk_level === 'Medium Risk' ? rand(13, 20) : rand(21, 30));
+                                    $age = rand(18, 65);
+                                    $height = rand(150, 180);
+                                    $weight = $bmi_category === 'Normal' ? rand(50, 70) : ($bmi_category === 'Overweight' ? rand(75, 90) : ($bmi_category === 'Underweight' ? rand(40, 50) : rand(95, 120)));
+                                    $bmi = round($weight / pow($height/100, 2), 1);
+                                    
+                                    $family_history_options = [['None'], ['Hypertension'], ['Diabetes'], ['Heart Disease'], ['Hypertension', 'Diabetes'], ['Obesity'], ['Malnutrition'], ['Tuberculosis'], ['Kidney Disease']];
+                                    $family_history = $family_history_options[array_rand($family_history_options)];
+                                    
+                                    $risk_factors = [];
+                                    if ($bmi_category !== 'Normal') $risk_factors[] = 'BMI: ' . $bmi_category;
+                                    if ($meal_assessment === 'At Risk') $risk_factors[] = 'Unbalanced Diet';
+                                    if ($lifestyle === 'Sedentary') $risk_factors[] = 'Sedentary Lifestyle';
+                                    if ($family_history[0] !== 'None') $risk_factors[] = 'Family History: ' . implode(', ', $family_history);
+                                    if (empty($risk_factors)) $risk_factors[] = 'None';
+                                    
+                                    $sample_users[] = [
+                                        'name' => $names[$i % count($names)],
+                                        'age' => (string)$age,
+                                        'sex' => $i % 2 === 0 ? 'Female' : 'Male',
+                                        'pregnant' => $i % 2 === 0 && $age >= 12 && $age <= 50 ? (rand(0, 1) ? 'Yes' : 'No') : 'Not Applicable',
                                         'municipality' => 'Balanga',
-                                        'barangay' => 'Bagumbayan',
-                                        'height' => '158',
-                                        'weight' => '55',
-                                        'bmi' => '22.0',
-                                        'bmi_category' => 'Normal',
-                                        'meal_assessment' => 'Balanced',
-                                        'family_history' => ['Hypertension'],
-                                        'lifestyle' => 'Active',
+                                        'barangay' => $barangays[$i % count($barangays)],
+                                        'height' => (string)$height,
+                                        'weight' => (string)$weight,
+                                        'bmi' => (string)$bmi,
+                                        'bmi_category' => $bmi_category,
+                                        'meal_assessment' => $meal_assessment,
+                                        'family_history' => $family_history,
+                                        'lifestyle' => $lifestyle,
                                         'immunization_status' => 'Complete',
-                                        'risk_factors' => ['Family History: Hypertension'],
-                                        'risk_score' => '8',
-                                        'risk_level' => 'Low Risk',
-                                        'recommendation' => 'Maintain current healthy lifestyle',
-                                        'intervention' => 'Regular monitoring'
-                                    ],
-                                    [
-                                        'name' => 'Juan Dela Cruz',
-                                        'age' => '45',
-                                        'sex' => 'Male',
-                                        'pregnant' => 'Not Applicable',
-                                        'municipality' => 'Balanga',
-                                        'barangay' => 'Cupang Proper',
-                                        'height' => '170',
-                                        'weight' => '78',
-                                        'bmi' => '27.0',
-                                        'bmi_category' => 'Overweight',
-                                        'meal_assessment' => 'At Risk',
-                                        'family_history' => ['Diabetes', 'Hypertension'],
-                                        'lifestyle' => 'Sedentary',
-                                        'immunization_status' => 'Complete',
-                                        'risk_factors' => ['BMI: Overweight', 'Unbalanced Diet', 'Sedentary Lifestyle', 'Family History: Diabetes, Hypertension'],
-                                        'risk_score' => '22',
-                                        'risk_level' => 'High Risk',
-                                        'recommendation' => 'Immediate lifestyle intervention needed',
-                                        'intervention' => 'Nutrition counseling, physical activity program, regular health monitoring'
-                                    ],
-                                    [
-                                        'name' => 'Ana Reyes',
-                                        'age' => '32',
-                                        'sex' => 'Female',
-                                        'pregnant' => 'No',
-                                        'municipality' => 'Balanga',
-                                        'barangay' => 'Poblacion',
-                                        'height' => '162',
-                                        'weight' => '48',
-                                        'bmi' => '18.3',
-                                        'bmi_category' => 'Underweight',
-                                        'meal_assessment' => 'At Risk',
-                                        'family_history' => ['Malnutrition'],
-                                        'lifestyle' => 'Active',
-                                        'immunization_status' => 'Complete',
-                                        'risk_factors' => ['BMI: Underweight', 'Unbalanced Diet', 'Family History: Malnutrition'],
-                                        'risk_score' => '18',
-                                        'risk_level' => 'Medium Risk',
-                                        'recommendation' => 'Nutrition intervention needed',
-                                        'intervention' => 'DOH feeding program, nutrition counseling'
-                                    ],
-                                    [
-                                        'name' => 'Pedro Martinez',
-                                        'age' => '38',
-                                        'sex' => 'Male',
-                                        'pregnant' => 'Not Applicable',
-                                        'municipality' => 'Balanga',
-                                        'barangay' => 'Sibacan',
-                                        'height' => '175',
-                                        'weight' => '85',
-                                        'bmi' => '27.8',
-                                        'bmi_category' => 'Overweight',
-                                        'meal_assessment' => 'Balanced',
-                                        'family_history' => ['Heart Disease'],
-                                        'lifestyle' => 'Sedentary',
-                                        'immunization_status' => 'Complete',
-                                        'risk_factors' => ['BMI: Overweight', 'Sedentary Lifestyle', 'Family History: Heart Disease'],
-                                        'risk_score' => '25',
-                                        'risk_level' => 'High Risk',
-                                        'recommendation' => 'Immediate intervention needed',
-                                        'intervention' => 'Cardiac consultation, weight management program, physical activity'
-                                    ],
-                                    [
-                                        'name' => 'Luz Fernandez',
-                                        'age' => '25',
-                                        'sex' => 'Female',
-                                        'pregnant' => 'No',
-                                        'municipality' => 'Balanga',
-                                        'barangay' => 'Tenejero',
-                                        'height' => '155',
-                                        'weight' => '52',
-                                        'bmi' => '21.6',
-                                        'bmi_category' => 'Normal',
-                                        'meal_assessment' => 'Balanced',
-                                        'family_history' => ['None'],
-                                        'lifestyle' => 'Active',
-                                        'immunization_status' => 'Complete',
-                                        'risk_factors' => ['None'],
-                                        'risk_score' => '5',
-                                        'risk_level' => 'Low Risk',
-                                        'recommendation' => 'Maintain current status',
-                                        'intervention' => 'Regular health monitoring'
-                                    ]
-                                ];
+                                        'risk_factors' => $risk_factors,
+                                        'risk_score' => (string)$risk_score,
+                                        'risk_level' => $risk_level,
+                                        'recommendation' => $risk_level === 'Low Risk' ? 'Maintain current healthy lifestyle' : ($risk_level === 'Medium Risk' ? 'Nutrition intervention needed' : 'Immediate lifestyle intervention needed'),
+                                        'intervention' => $risk_level === 'Low Risk' ? 'Regular monitoring' : ($risk_level === 'Medium Risk' ? 'DOH feeding program, nutrition counseling' : 'Nutrition counseling, physical activity program, regular health monitoring')
+                                    ];
+                                }
                                 ?>
                                 
                                 <?php foreach ($sample_users as $index => $user): ?>
