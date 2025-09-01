@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import com.example.nutrisaur11.ScreeningResultStore;
 import com.example.nutrisaur11.Constants;
-// Removed WebViewAPIClient - using direct HTTP requests
 
 import java.util.List;
 import java.util.ArrayList;
@@ -30,97 +29,102 @@ import java.util.concurrent.CompletableFuture;
 
 public class ScreeningFormActivity extends AppCompatActivity {
 
-    // Question flow tracking
+    // Question flow tracking - Updated for 7 sections
     private int currentQuestion = 0;
-    private static final int TOTAL_QUESTIONS = 2; // Total number of pages
+    private static final int TOTAL_QUESTIONS = 7; // 7 sections of Decision Tree Assessment
     
-    // Question cards - each page gets its own card
+    // Question cards - each section gets its own card
     private View questionCards[];
     
     // Navigation buttons
     private Button prevButton, nextButton;
     
-    // Section A - Basic Info
-    private EditText childWeightInput;
-    private EditText childHeightInput;
-    private EditText dietaryDiversityInput;
-    private EditText muacInput; // MUAC input for children 6-59 months
-    private TextView muacLabel; // MUAC label for children 6-59 months
-    private TextView muacSubtitle; // MUAC subtitle for children 6-59 months
-    private Button genderBoy, genderGirl;
-    private String selectedGender = "";
-    private Button swellingYes, swellingNo;
-    private Boolean hasSwelling = null;
-    private Button weightLoss10Plus, weightLoss5To10, weightLossLess5;
-    private String weightLossStatus = "";
-    private Button feedingGood, feedingModerate, feedingPoor;
-    private String feedingBehavior = "";
-    
-    // Physical Signs Assessment
-    private Button physicalThin, physicalShorter, physicalWeak, physicalNone;
-    private Boolean isThin = null, isShorter = null, isWeak = null, isNone = null;
-    
-    // Additional Clinical Risk Factors
-    private Button illnessYes, illnessNo;
-    private Button eatingDifficultyYes, eatingDifficultyNo;
-    private Button foodInsecurityYes, foodInsecurityNo;
-    private Button micronutrientYes, micronutrientNo;
-    private Button functionalDeclineYes, functionalDeclineNo;
-    private TextView functionalDeclineLabel;
-    private TextView functionalDeclineSubtitle;
-    private LinearLayout functionalDeclineButtons;
-    
-    private Boolean hasRecentIllness = null;
-    private Boolean hasEatingDifficulty = null;
-    private Boolean hasFoodInsecurity = null;
-    private Boolean hasMicronutrientDeficiency = null;
-    private Boolean hasFunctionalDecline = null;
-
-    private Button birthdayPickerBtn;
-
-    private java.util.Calendar selectedBirthday;
-
-    // 1. Add fields
-    private Spinner barangaySpinner, incomeSpinner;
+    // Section 1: Basic Information
+    private Spinner municipalitySpinner, barangaySpinner;
+    private EditText ageInput;
+    private EditText monthsInput; // For children < 1 year
+    private RadioGroup sexRadioGroup;
+    private RadioGroup pregnantRadioGroup;
+    private String selectedMunicipality = "";
     private String selectedBarangay = "";
-    private String selectedIncome = "";
-
-    private static final String[] BATAAN_BARANGAYS = {
-        // Abucay
-        "ABUCAY", "Bangkal", "Calaylayan (Pob.)", "Capitangan", "Gabon", "Laon (Pob.)", "Mabatang", "Omboy", "Salian", "Wawa (Pob.)",
-        // Bagac
-        "BAGAC", "Bagumbayan (Pob.)", "Banawang", "Binuangan", "Binukawan", "Ibaba", "Ibis", "Pag-asa (Wawa-Sibacan)", "Parang", "Paysawan", "Quinawan", "San Antonio", "Saysain", "Tabing-Ilog (Pob.)", "Atilano L. Ricardo",
-        // Balanga City
-        "CITY OF BALANGA (Capital)", "Bagumbayan", "Cabog-Cabog", "Munting Batangas (Cadre)", "Cataning", "Central", "Cupang Proper", "Cupang West", "Dangcol (Bernabe)", "Ibayo", "Malabia", "Poblacion", "Pto. Rivas Ibaba", "Pto. Rivas Itaas", "San Jose", "Sibacan", "Camacho", "Talisay", "Tanato", "Tenejero", "Tortugas", "Tuyo", "Bagong Silang", "Cupang North", "Doña Francisca", "Lote",
-        // Dinalupihan
-        "DINALUPIHAN", "Bangal", "Bonifacio (Pob.)", "Burgos (Pob.)", "Colo", "Daang Bago", "Dalao", "Del Pilar (Pob.)", "Gen. Luna (Pob.)", "Gomez (Pob.)", "Happy Valley", "Kataasan", "Layac", "Luacan", "Mabini Proper (Pob.)", "Mabini Ext. (Pob.)", "Magsaysay", "Naparing", "New San Jose", "Old San Jose", "Padre Dandan (Pob.)", "Pag-asa", "Pagalanggang", "Pinulot", "Pita", "Rizal (Pob.)", "Roosevelt", "Roxas (Pob.)", "Saguing", "San Benito", "San Isidro (Pob.)", "San Pablo (Bulate)", "San Ramon", "San Simon", "Santo Niño", "Sapang Balas", "Santa Isabel (Tabacan)", "Torres Bugauen (Pob.)", "Tucop", "Zamora (Pob.)", "Aquino", "Bayan-bayanan", "Maligaya", "Payangan", "Pentor", "Tubo-tubo", "Jose C. Payumo, Jr.",
-        // Hermosa
-        "HERMOSA", "A. Rivera (Pob.)", "Almacen", "Bacong", "Balsic", "Bamban", "Burgos-Soliman (Pob.)", "Cataning (Pob.)", "Culis", "Daungan (Pob.)", "Mabiga", "Mabuco", "Maite", "Mambog - Mandama", "Palihan", "Pandatung", "Pulo", "Saba", "San Pedro (Pob.)", "Santo Cristo (Pob.)", "Sumalo", "Tipo", "Judge Roman Cruz Sr. (Mandama)", "Sacrifice Valley",
-        // Limay
-        "LIMAY", "Alangan", "Kitang I", "Kitang 2 & Luz", "Lamao", "Landing", "Poblacion", "Reformista", "Townsite", "Wawa", "Duale", "San Francisco de Asis", "St. Francis II",
-        // Mariveles
-        "MARIVELES", "Alas-asin", "Alion", "Batangas II", "Cabcaben", "Lucanin", "Baseco Country (Nassco)", "Poblacion", "San Carlos", "San Isidro", "Sisiman", "Balon-Anito", "Biaan", "Camaya", "Ipag", "Malaya", "Maligaya", "Mt. View", "Townsite",
-        // Morong
-        "MORONG", "Binaritan", "Mabayo", "Nagbalayong", "Poblacion", "Sabang",
-        // Orani
-        "ORANI", "Bagong Paraiso (Pob.)", "Balut (Pob.)", "Bayan (Pob.)", "Calero (Pob.)", "Paking-Carbonero (Pob.)", "Centro II (Pob.)", "Dona", "Kaparangan", "Masantol", "Mulawin", "Pag-asa", "Palihan (Pob.)", "Pantalan Bago (Pob.)", "Pantalan Luma (Pob.)", "Parang Parang (Pob.)", "Centro I (Pob.)", "Sibul", "Silahis", "Tala", "Talimundoc", "Tapulao", "Tenejero (Pob.)", "Tugatog", "Wawa (Pob.)", "Apollo", "Kabalutan", "Maria Fe", "Puksuan", "Tagumpay",
-        // Orion
-        "ORION", "Arellano (Pob.)", "Bagumbayan (Pob.)", "Balagtas (Pob.)", "Balut (Pob.)", "Bantan", "Bilolo", "Calungusan", "Camachile", "Daang Bago (Pob.)", "Daang Bilolo (Pob.)", "Daang Pare", "General Lim (Kaput)", "Kapunitan", "Lati (Pob.)", "Lusungan (Pob.)", "Puting Buhangin", "Sabatan", "San Vicente (Pob.)", "Santo Domingo", "Villa Angeles (Pob.)", "Wakas (Pob.)", "Wawa (Pob.)", "Santa Elena",
-        // Pilar
-        "PILAR", "Ala-uli", "Bagumbayan", "Balut I", "Balut II", "Bantan Munti", "Burgos", "Del Rosario (Pob.)", "Diwa", "Landing", "Liyang", "Nagwaling", "Panilao", "Pantingan", "Poblacion", "Rizal (Pob.)", "Santa Rosa", "Wakas North", "Wakas South", "Wawa",
-        // Samal
-        "SAMAL", "East Calaguiman (Pob.)", "East Daang Bago (Pob.)", "Ibaba (Pob.)", "Imelda", "Lalawigan", "Palili", "San Juan (Pob.)", "San Roque (Pob.)", "Santa Lucia", "Sapa", "Tabing Ilog", "Gugo", "West Calaguiman (Pob.)", "West Daang Bago (Pob.)"
+    private String selectedSex = "";
+    private String selectedPregnant = "";
+    
+    // Section 2: Anthropometric Assessment
+    private EditText weightInput;
+    private EditText heightInput;
+    private TextView bmiResult;
+    private TextView bmiCategory;
+    
+    // Section 3: Meal Assessment (24-Hour Recall)
+    private EditText mealRecallInput;
+    private TextView mealAssessmentResult;
+    
+    // Section 4: Family History
+    private CheckBox diabetesCheckBox;
+    private CheckBox hypertensionCheckBox;
+    private CheckBox heartDiseaseCheckBox;
+    private CheckBox kidneyDiseaseCheckBox;
+    private CheckBox tuberculosisCheckBox;
+    private CheckBox obesityCheckBox;
+    private CheckBox malnutritionCheckBox;
+    private EditText otherConditionInput;
+    private CheckBox noneCheckBox;
+    
+    // Section 5: Lifestyle
+    private RadioGroup lifestyleRadioGroup;
+    private EditText otherLifestyleInput;
+    private String selectedLifestyle = "";
+    
+    // Section 6: Immunization (Children ≤ 12 years old)
+    private RadioGroup bcgRadioGroup;
+    private RadioGroup dptRadioGroup;
+    private RadioGroup polioRadioGroup;
+    private RadioGroup measlesRadioGroup;
+    private RadioGroup hepatitisRadioGroup;
+    private RadioGroup vitaminARadioGroup;
+    
+    // Section 7: Final Assessment (System Generated)
+    private TextView finalAssessmentText;
+    private TextView riskLevelText;
+    private TextView recommendationText;
+    private TextView interventionText;
+    
+    // Bataan Municipalities and Barangays
+    private static final String[] BATAAN_MUNICIPALITIES = {
+        "ABUCAY", "BAGAC", "CITY OF BALANGA (Capital)", "DINALUPIHAN", 
+        "HERMOSA", "LIMAY", "MARIVELES", "MORONG", "ORANI", "ORION", "PILAR", "SAMAL"
     };
-    private static final String[] INCOME_BRACKETS = {"Below PHP 12,030/month (Below poverty line)", "PHP 12,031–20,000/month (Low)", "PHP 20,001–40,000/month (Middle)", "Above PHP 40,000/month (High)"};
+    
+    private static final Map<String, String[]> MUNICIPALITY_BARANGAYS = new HashMap<>();
+    static {
+        MUNICIPALITY_BARANGAYS.put("ABUCAY", new String[]{
+            "Bangkal", "Calaylayan (Pob.)", "Capitangan", "Gabon", "Laon (Pob.)", 
+            "Mabatang", "Omboy", "Salian", "Wawa (Pob.)"
+        });
+        MUNICIPALITY_BARANGAYS.put("BAGAC", new String[]{
+            "Bagumbayan (Pob.)", "Banawang", "Binuangan", "Binukawan", "Ibaba", 
+            "Ibis", "Pag-asa (Wawa-Sibacan)", "Parang", "Paysawan", "Quinawan", 
+            "San Antonio", "Saysain", "Tabing-Ilog (Pob.)", "Atilano L. Ricardo"
+        });
+        MUNICIPALITY_BARANGAYS.put("CITY OF BALANGA (Capital)", new String[]{
+            "Bagumbayan", "Cabog-Cabog", "Munting Batangas (Cadre)", "Cataning", 
+            "Central", "Cupang Proper", "Cupang West", "Dangcol (Bernabe)", "Ibayo", 
+            "Malabia", "Poblacion", "Pto. Rivas Ibaba", "Pto. Rivas Itaas", "San Jose", 
+            "Sibacan", "Camacho", "Talisay", "Tanato", "Tenejero", "Tortugas", "Tuyo", 
+            "Bagong Silang", "Cupang North", "Doña Francisca", "Lote"
+        });
+        // Add other municipalities...
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_screening_form);
+        setContentView(R.layout.activity_comprehensive_screening_form);
         ScreeningResultStore.init(this);
         initializeViews();
         setupClickListeners();
-        initializeButtonStates(); // Initialize button states
+        initializeButtonStates();
         
         // Handle test mode - pre-fill with demo data
         handleTestMode();
@@ -135,58 +139,151 @@ public class ScreeningFormActivity extends AppCompatActivity {
         
         // Initialize question cards array
         questionCards = new View[TOTAL_QUESTIONS];
-        questionCards[0] = findViewById(R.id.question_1_card);  // Birthday
-        questionCards[1] = findViewById(R.id.question_2_card);  // Weight & Height
+        questionCards[0] = findViewById(R.id.section_1_card);  // Basic Information
+        questionCards[1] = findViewById(R.id.section_2_card);  // Anthropometric Assessment
+        questionCards[2] = findViewById(R.id.section_3_card);  // Meal Assessment
+        questionCards[3] = findViewById(R.id.section_4_card);  // Family History
+        questionCards[4] = findViewById(R.id.section_5_card);  // Lifestyle
+        questionCards[5] = findViewById(R.id.section_6_card);  // Immunization
+        questionCards[6] = findViewById(R.id.section_7_card);  // Final Assessment
         
-        // Section A
-        childWeightInput = findViewById(R.id.child_weight_input);
-        childHeightInput = findViewById(R.id.child_height_input);
-        dietaryDiversityInput = findViewById(R.id.dietary_diversity_input);
-        muacInput = findViewById(R.id.muac_input);
-        muacLabel = findViewById(R.id.muac_label);
-        muacSubtitle = findViewById(R.id.muac_subtitle);
-        genderBoy = findViewById(R.id.gender_boy);
-        genderGirl = findViewById(R.id.gender_girl);
-        swellingYes = findViewById(R.id.swelling_yes);
-        swellingNo = findViewById(R.id.swelling_no);
-        weightLoss10Plus = findViewById(R.id.weightloss_10plus);
-        weightLoss5To10 = findViewById(R.id.weightloss_5to10);
-        weightLossLess5 = findViewById(R.id.weightloss_less5);
-        feedingGood = findViewById(R.id.feeding_good);
-        feedingModerate = findViewById(R.id.feeding_moderate);
-        feedingPoor = findViewById(R.id.feeding_poor);
-        birthdayPickerBtn = findViewById(R.id.birthday_picker_btn);
-        
-        // Additional Clinical Risk Factors
-        illnessYes = findViewById(R.id.illness_yes);
-        illnessNo = findViewById(R.id.illness_no);
-        eatingDifficultyYes = findViewById(R.id.eating_difficulty_yes);
-        eatingDifficultyNo = findViewById(R.id.eating_difficulty_no);
-        foodInsecurityYes = findViewById(R.id.food_insecurity_yes);
-        foodInsecurityNo = findViewById(R.id.food_insecurity_no);
-        micronutrientYes = findViewById(R.id.micronutrient_yes);
-        micronutrientNo = findViewById(R.id.micronutrient_no);
-        functionalDeclineYes = findViewById(R.id.functional_decline_yes);
-        functionalDeclineNo = findViewById(R.id.functional_decline_no);
-        functionalDeclineLabel = findViewById(R.id.functional_decline_label);
-        functionalDeclineSubtitle = findViewById(R.id.functional_decline_subtitle);
-        functionalDeclineButtons = findViewById(R.id.functional_decline_buttons);
-        
-        // Physical Signs Assessment
-        physicalThin = findViewById(R.id.physical_thin);
-        physicalShorter = findViewById(R.id.physical_shorter);
-        physicalWeak = findViewById(R.id.physical_weak);
-        physicalNone = findViewById(R.id.physical_none);
-
-        // 2. In initializeViews(), after genderGirl = ...
+        // Section 1: Basic Information
+        municipalitySpinner = findViewById(R.id.municipality_spinner);
         barangaySpinner = findViewById(R.id.barangay_spinner);
-        incomeSpinner = findViewById(R.id.income_spinner);
-        // Populate barangay spinner (alphabetical, searchable)
-        String[] sortedBarangays = java.util.Arrays.copyOf(BATAAN_BARANGAYS, BATAAN_BARANGAYS.length);
-        java.util.Arrays.sort(sortedBarangays, String::compareToIgnoreCase);
-        ArrayAdapter<String> barangayAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, sortedBarangays);
-        barangayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        barangaySpinner.setAdapter(barangayAdapter);
+        ageInput = findViewById(R.id.age_input);
+        monthsInput = findViewById(R.id.months_input);
+        sexRadioGroup = findViewById(R.id.sex_radio_group);
+        pregnantRadioGroup = findViewById(R.id.pregnant_radio_group);
+        
+        // Section 2: Anthropometric Assessment
+        weightInput = findViewById(R.id.weight_input);
+        heightInput = findViewById(R.id.height_input);
+        bmiResult = findViewById(R.id.bmi_result);
+        bmiCategory = findViewById(R.id.bmi_category);
+        
+        // Section 3: Meal Assessment
+        mealRecallInput = findViewById(R.id.meal_recall_input);
+        mealAssessmentResult = findViewById(R.id.meal_assessment_result);
+        
+        // Section 4: Family History
+        diabetesCheckBox = findViewById(R.id.diabetes_checkbox);
+        hypertensionCheckBox = findViewById(R.id.hypertension_checkbox);
+        heartDiseaseCheckBox = findViewById(R.id.heart_disease_checkbox);
+        kidneyDiseaseCheckBox = findViewById(R.id.kidney_disease_checkbox);
+        tuberculosisCheckBox = findViewById(R.id.tuberculosis_checkbox);
+        obesityCheckBox = findViewById(R.id.obesity_checkbox);
+        malnutritionCheckBox = findViewById(R.id.malnutrition_checkbox);
+        otherConditionInput = findViewById(R.id.other_condition_input);
+        noneCheckBox = findViewById(R.id.none_checkbox);
+        
+        // Section 5: Lifestyle
+        lifestyleRadioGroup = findViewById(R.id.lifestyle_radio_group);
+        otherLifestyleInput = findViewById(R.id.other_lifestyle_input);
+        
+        // Section 6: Immunization
+        bcgRadioGroup = findViewById(R.id.bcg_radio_group);
+        dptRadioGroup = findViewById(R.id.dpt_radio_group);
+        polioRadioGroup = findViewById(R.id.polio_radio_group);
+        measlesRadioGroup = findViewById(R.id.measles_radio_group);
+        hepatitisRadioGroup = findViewById(R.id.hepatitis_radio_group);
+        vitaminARadioGroup = findViewById(R.id.vitamin_a_radio_group);
+        
+        // Section 7: Final Assessment
+        finalAssessmentText = findViewById(R.id.final_assessment_text);
+        riskLevelText = findViewById(R.id.risk_level_text);
+        recommendationText = findViewById(R.id.recommendation_text);
+        interventionText = findViewById(R.id.intervention_text);
+        
+        // Setup spinners
+        setupMunicipalitySpinner();
+        setupBarangaySpinner();
+        
+        // Setup age input listener for months field visibility
+        ageInput.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                try {
+                    int age = Integer.parseInt(s.toString());
+                    if (age < 1) {
+                        monthsInput.setVisibility(View.VISIBLE);
+                    } else {
+                        monthsInput.setVisibility(View.GONE);
+                    }
+                    // Show/hide immunization section for children ≤ 12 years
+                    if (age <= 12) {
+                        questionCards[5].setVisibility(View.VISIBLE); // Immunization section
+                    } else {
+                        questionCards[5].setVisibility(View.GONE);
+                    }
+                } catch (NumberFormatException e) {
+                    monthsInput.setVisibility(View.GONE);
+                }
+            }
+        });
+        
+        // Setup weight/height input listeners for BMI calculation
+        weightInput.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                calculateBMI();
+            }
+        });
+        
+        heightInput.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                calculateBMI();
+            }
+        });
+        
+        // Setup meal recall input listener for assessment
+        mealRecallInput.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                assessMealDiversity(s.toString());
+            }
+        });
+    }
+
+    private void setupMunicipalitySpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_spinner_item, BATAAN_MUNICIPALITIES);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        municipalitySpinner.setAdapter(adapter);
+        
+        municipalitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedMunicipality = (String) parent.getItemAtPosition(position);
+                updateBarangaySpinner();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void setupBarangaySpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
+            android.R.layout.simple_spinner_item, new String[]{});
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        barangaySpinner.setAdapter(adapter);
+        
         barangaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -195,148 +292,15 @@ public class ScreeningFormActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-        // Show searchable picker when tapping spinner
-        barangaySpinner.setOnTouchListener((v, event) -> {
-            if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-                showBarangayPickerDialog(sortedBarangays, value -> {
-                    selectedBarangay = value;
-                    int idx = java.util.Arrays.asList(sortedBarangays).indexOf(value);
-                    if (idx >= 0) barangaySpinner.setSelection(idx);
-                });
-                return true;
-            }
-            return false;
-        });
-        // Populate income spinner
-        ArrayAdapter<String> incomeAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, INCOME_BRACKETS);
-        incomeAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        incomeSpinner.setAdapter(incomeAdapter);
-        incomeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedIncome = (String) parent.getItemAtPosition(position);
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
     }
 
-    private interface OnBarangayPicked { void onPick(String value); }
-
-    private void showBarangayPickerDialog(String[] items, OnBarangayPicked callback) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-
-        android.widget.LinearLayout container = new android.widget.LinearLayout(this);
-        container.setOrientation(android.widget.LinearLayout.VERTICAL);
-        int pad = (int) (16 * getResources().getDisplayMetrics().density);
-        container.setPadding(pad, pad, pad, pad);
-        container.setBackgroundResource(R.drawable.rounded_bg);
-
-        // Custom header
-        android.widget.TextView header = new android.widget.TextView(this);
-        header.setText("Select Barangay");
-        header.setTextSize(18);
-        header.setTextColor(0xFF222222);
-        header.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
-        header.setPadding(pad, pad, pad, pad / 2);
-        container.addView(header);
-
-        android.widget.EditText search = new android.widget.EditText(this);
-        search.setHint("Search barangay");
-        search.setSingleLine(true);
-        search.setBackgroundResource(R.drawable.edit_text_outline);
-        search.setPadding(pad, pad / 2, pad, pad / 2);
-        container.addView(search);
-
-        // Build municipality -> barangays map from provided list (list contains municipality names as separators)
-        java.util.Set<String> municipalities = new java.util.LinkedHashSet<>();
-        municipalities.add("ABUCAY");
-        municipalities.add("BAGAC");
-        municipalities.add("CITY OF BALANGA (Capital)");
-        municipalities.add("DINALUPIHAN");
-        municipalities.add("HERMOSA");
-        municipalities.add("LIMAY");
-        municipalities.add("MARIVELES");
-        municipalities.add("MORONG");
-        municipalities.add("ORANI");
-        municipalities.add("ORION");
-        municipalities.add("PILAR");
-        municipalities.add("SAMAL");
-
-        java.util.Map<String, java.util.List<String>> muniToBarangays = new java.util.LinkedHashMap<>();
-        String currentMuni = null;
-        // Build map using the authoritative listing (image provided) — treat municipality lines as headers in array
-        currentMuni = null;
-        for (String s : BATAAN_BARANGAYS) {
-            if (municipalities.contains(s)) { currentMuni = s; muniToBarangays.putIfAbsent(s, new java.util.ArrayList<>()); }
-            else if (currentMuni != null) { muniToBarangays.get(currentMuni).add(s); }
-        }
-        // Sort barangays within each municipality
-        for (java.util.List<String> list : muniToBarangays.values()) {
-            java.util.Collections.sort(list, String::compareToIgnoreCase);
-        }
-        // Build initial display list
-        java.util.List<String> display = new java.util.ArrayList<>();
-        for (String muni : muniToBarangays.keySet()) {
-            display.add("— " + muni + " —");
-            for (String brgy : muniToBarangays.get(muni)) display.add(brgy);
-        }
-
-        android.widget.ListView listView = new android.widget.ListView(this);
-        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, display) {
-            @Override
-            public boolean isEnabled(int position) {
-                String v = getItem(position);
-                return v != null && !v.startsWith("— ");
-            }
-            @Override
-            public android.view.View getView(int position, android.view.View convertView, android.view.ViewGroup parent) {
-                android.view.View v = super.getView(position, convertView, parent);
-                String t = getItem(position);
-                if (t != null && t.startsWith("— ")) {
-                    ((android.widget.TextView) v).setTextColor(0xFF888888);
-                    ((android.widget.TextView) v).setTextSize(14);
-                    v.setBackgroundColor(0x00FFFFFF);
-                } else {
-                    ((android.widget.TextView) v).setTextColor(0xFF222222);
-                    ((android.widget.TextView) v).setTextSize(16);
-                }
-                return v;
-            }
-        };
-        listView.setAdapter(adapter);
-        container.addView(listView);
-
-        builder.setView(container);
-        android.app.AlertDialog dialog = builder.create();
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            String value = adapter.getItem(position);
-            if (value != null && !value.startsWith("— ") && callback != null) callback.onPick(value);
-            dialog.dismiss();
-        });
-        search.addTextChangedListener(new android.text.TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Filter by query within each municipality, rebuild with muni headers
-                String q = s == null ? "" : s.toString().trim().toLowerCase();
-                java.util.List<String> disp = new java.util.ArrayList<>();
-                for (String muni : muniToBarangays.keySet()) {
-                    java.util.List<String> list = muniToBarangays.get(muni);
-                    java.util.List<String> filtered = new java.util.ArrayList<>();
-                    for (String brgy : list) if (brgy.toLowerCase().contains(q)) filtered.add(brgy);
-                    if (!filtered.isEmpty() || muni.toLowerCase().contains(q)) {
-                        disp.add("— " + muni + " —");
-                        for (String br : filtered.isEmpty() ? list : filtered) disp.add(br);
-                    }
-                }
-                adapter.clear();
-                adapter.addAll(disp);
-            }
-            @Override public void afterTextChanged(android.text.Editable s) {}
-        });
-        dialog.show();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+    private void updateBarangaySpinner() {
+        String[] barangays = MUNICIPALITY_BARANGAYS.get(selectedMunicipality);
+        if (barangays != null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
+                android.R.layout.simple_spinner_item, barangays);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            barangaySpinner.setAdapter(adapter);
         }
     }
 
@@ -345,534 +309,149 @@ public class ScreeningFormActivity extends AppCompatActivity {
         prevButton.setOnClickListener(v -> previousQuestion());
         nextButton.setOnClickListener(v -> nextQuestion());
         
-        // Section A - Gender selection
-        genderBoy.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            selectedGender = "boy";
-            updateButtonStatesForAction("gender", v);
-        });
-        genderGirl.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            selectedGender = "girl";
-            updateButtonStatesForAction("gender", v);
-        });
-        
-        // Swelling
-        swellingYes.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasSwelling = true;
-            updateButtonStatesForAction("swelling", v);
-            // Show warning about swelling but continue with the form
-            Toast.makeText(this, "⚠️ Swelling detected - this indicates high risk. Please complete all questions.", Toast.LENGTH_LONG).show();
-        });
-        swellingNo.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasSwelling = false;
-            updateButtonStatesForAction("swelling", v);
-        });
-        
-        // Weight loss/failure to gain
-        weightLoss10Plus.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            weightLossStatus = ">10%";
-            updateButtonStatesForAction("weightLoss", v);
-        });
-        weightLoss5To10.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            weightLossStatus = "5-10%";
-            updateButtonStatesForAction("weightLoss", v);
-        });
-        weightLossLess5.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            weightLossStatus = "<5% or none";
-            updateButtonStatesForAction("weightLoss", v);
-        });
-        
-        // Dietary diversity
-        feedingGood.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            feedingBehavior = "good appetite";
-            updateButtonStatesForAction("feeding", v);
-        });
-        feedingModerate.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            feedingBehavior = "moderate appetite";
-            updateButtonStatesForAction("feeding", v);
-        });
-        feedingPoor.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            feedingBehavior = "poor appetite";
-            updateButtonStatesForAction("feeding", v);
-        });
-        
-        // Physical Signs Assessment - Fixed logic
-        physicalThin.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            // If selecting "thin", unselect "none" and update states
-            if (isThin == null || !isThin) {
-                isThin = true;
-                isNone = false; // Unselect "none" when selecting other signs
+        // Sex selection
+        sexRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.sex_female) {
+                selectedSex = "Female";
+                // Show pregnancy question for females 12-50 years
+                try {
+                    int age = Integer.parseInt(ageInput.getText().toString());
+                    if (age >= 12 && age <= 50) {
+                        pregnantRadioGroup.setVisibility(View.VISIBLE);
+                    } else {
+                        pregnantRadioGroup.setVisibility(View.GONE);
+                    }
+                } catch (NumberFormatException e) {
+                    pregnantRadioGroup.setVisibility(View.GONE);
+                }
             } else {
-                isThin = false;
+                selectedSex = "Male";
+                pregnantRadioGroup.setVisibility(View.GONE);
             }
-            updateButtonStatesForAction("physical", v);
-        });
-        physicalShorter.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            // If selecting "shorter", unselect "none" and update states
-            if (isShorter == null || !isShorter) {
-                isShorter = true;
-                isNone = false; // Unselect "none" when selecting other signs
-            } else {
-                isShorter = false;
-            }
-            updateButtonStatesForAction("physical", v);
-        });
-        physicalWeak.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            // If selecting "weak", unselect "none" and update states
-            if (isWeak == null || !isWeak) {
-                isWeak = true;
-                isNone = false; // Unselect "none" when selecting other signs
-            } else {
-                isWeak = false;
-            }
-            updateButtonStatesForAction("physical", v);
-        });
-        physicalNone.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            // If selecting "none", unselect all other signs
-            if (isNone == null || !isNone) {
-                isNone = true;
-                isThin = false;      // Unselect other signs
-                isShorter = false;
-                isWeak = false;
-            } else {
-                isNone = false;
-            }
-            updateButtonStatesForAction("physical", v);
         });
         
-        // Additional Clinical Risk Factors
-        illnessYes.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasRecentIllness = true;
-            updateButtonStatesForAction("illness", v);
-        });
-        illnessNo.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasRecentIllness = false;
-            updateButtonStatesForAction("illness", v);
-        });
-        eatingDifficultyYes.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasEatingDifficulty = true;
-            updateButtonStatesForAction("eatingDifficulty", v);
-        });
-        eatingDifficultyNo.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasEatingDifficulty = false;
-            updateButtonStatesForAction("eatingDifficulty", v);
-        });
-        foodInsecurityYes.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasFoodInsecurity = true;
-            updateButtonStatesForAction("foodInsecurity", v);
-        });
-        foodInsecurityNo.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasFoodInsecurity = false;
-            updateButtonStatesForAction("foodInsecurity", v);
-        });
-        micronutrientYes.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasMicronutrientDeficiency = true;
-            updateButtonStatesForAction("micronutrient", v);
-        });
-        micronutrientNo.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasMicronutrientDeficiency = false;
-            updateButtonStatesForAction("micronutrient", v);
-        });
-        functionalDeclineYes.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasFunctionalDecline = true;
-            updateButtonStatesForAction("functionalDecline", v);
-        });
-        functionalDeclineNo.setOnClickListener(v -> {
-            // Add press animation
-            v.animate()
-                .scaleX(0.95f)
-                .scaleY(0.95f)
-                .setDuration(100)
-                .withEndAction(() -> {
-                    v.animate()
-                        .scaleX(1.0f)
-                        .scaleY(1.0f)
-                        .setDuration(100)
-                        .start();
-                })
-                .start();
-            
-            hasFunctionalDecline = false;
-            updateButtonStatesForAction("functionalDecline", v);
+        // Pregnancy selection
+        pregnantRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.pregnant_yes) {
+                selectedPregnant = "Yes";
+            } else if (checkedId == R.id.pregnant_no) {
+                selectedPregnant = "No";
+            } else {
+                selectedPregnant = "Not Applicable";
+            }
         });
         
-        // Birthday picker
-        birthdayPickerBtn.setOnClickListener(v -> showBirthdayPicker());
+        // Lifestyle selection
+        lifestyleRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.lifestyle_active) {
+                selectedLifestyle = "Active";
+                otherLifestyleInput.setVisibility(View.GONE);
+            } else if (checkedId == R.id.lifestyle_sedentary) {
+                selectedLifestyle = "Sedentary";
+                otherLifestyleInput.setVisibility(View.GONE);
+            } else if (checkedId == R.id.lifestyle_other) {
+                selectedLifestyle = "Other";
+                otherLifestyleInput.setVisibility(View.VISIBLE);
+            }
+        });
+        
+        // Family history checkboxes
+        noneCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Uncheck all other checkboxes
+                diabetesCheckBox.setChecked(false);
+                hypertensionCheckBox.setChecked(false);
+                heartDiseaseCheckBox.setChecked(false);
+                kidneyDiseaseCheckBox.setChecked(false);
+                tuberculosisCheckBox.setChecked(false);
+                obesityCheckBox.setChecked(false);
+                malnutritionCheckBox.setChecked(false);
+                otherConditionInput.setText("");
+            }
+        });
+        
+        // Other checkboxes - uncheck "None" when any other is selected
+        View.OnClickListener uncheckNoneListener = v -> noneCheckBox.setChecked(false);
+        diabetesCheckBox.setOnClickListener(uncheckNoneListener);
+        hypertensionCheckBox.setOnClickListener(uncheckNoneListener);
+        heartDiseaseCheckBox.setOnClickListener(uncheckNoneListener);
+        kidneyDiseaseCheckBox.setOnClickListener(uncheckNoneListener);
+        tuberculosisCheckBox.setOnClickListener(uncheckNoneListener);
+        obesityCheckBox.setOnClickListener(uncheckNoneListener);
+        malnutritionCheckBox.setOnClickListener(uncheckNoneListener);
     }
 
-    private void setupYesNoButtons(Button yesBtn, Button noBtn, String field) {
-        yesBtn.setOnClickListener(v -> {
-            setBooleanField(field, true);
-            updateButtonStates(yesBtn, noBtn);
-        });
-        noBtn.setOnClickListener(v -> {
-            setBooleanField(field, false);
-            updateButtonStates(noBtn, yesBtn);
-        });
-    }
-
-    private void setBooleanField(String field, boolean value) {
-        switch (field) {
-            case "illness":
-                hasRecentIllness = value;
-                break;
-            case "eatingDifficulty":
-                hasEatingDifficulty = value;
-                break;
-            case "foodInsecurity":
-                hasFoodInsecurity = value;
-                break;
-            case "micronutrient":
-                hasMicronutrientDeficiency = value;
-                break;
-            case "functionalDecline":
-                hasFunctionalDecline = value;
-                break;
+    private void calculateBMI() {
+        try {
+            double weight = Double.parseDouble(weightInput.getText().toString());
+            double height = Double.parseDouble(heightInput.getText().toString());
+            
+            if (weight > 0 && height > 0) {
+                double heightM = height / 100.0;
+                double bmi = weight / (heightM * heightM);
+                bmiResult.setText(String.format("%.1f", bmi));
+                
+                // Determine BMI category
+                String category;
+                int color;
+                if (bmi < 18.5) {
+                    category = "Underweight";
+                    color = 0xFFF44336; // Red
+                } else if (bmi < 25) {
+                    category = "Normal";
+                    color = 0xFF4CAF50; // Green
+                } else if (bmi < 30) {
+                    category = "Overweight";
+                    color = 0xFFFF9800; // Orange
+                } else {
+                    category = "Obese";
+                    color = 0xFFD32F2F; // Dark Red
+                }
+                
+                bmiCategory.setText(category);
+                bmiCategory.setTextColor(color);
+            }
+        } catch (NumberFormatException e) {
+            bmiResult.setText("");
+            bmiCategory.setText("");
         }
     }
 
-    private void updateButtonStates(Button selected, Button... unselected) {
-        // Set the selected button state with dark grey background
-        selected.setSelected(true);
-        selected.setElevation(8f); // Higher elevation for selected state
-        selected.setBackgroundColor(0xFF424242); // Dark grey for selected state
-        
-        // Clear the selected state for all unselected buttons
-        for (Button btn : unselected) {
-            btn.setSelected(false);
-            btn.setElevation(6f); // Normal elevation for unselected state
-            btn.setBackgroundColor(0xFFCCCCCC); // Lighter grey for unselected state - more distinguishable
+    private void assessMealDiversity(String mealText) {
+        if (mealText.isEmpty()) {
+            mealAssessmentResult.setText("");
+            return;
         }
         
-        // Force a redraw to show the visual changes
-        selected.invalidate();
-        for (Button btn : unselected) {
-            btn.invalidate();
-        }
+        String lowerMeal = mealText.toLowerCase();
         
-        // Add haptic feedback for better user experience
-        selected.performHapticFeedback(android.view.HapticFeedbackConstants.VIRTUAL_KEY);
+        // Check for food groups
+        boolean hasCarbs = lowerMeal.contains("rice") || lowerMeal.contains("bread") || 
+                          lowerMeal.contains("pasta") || lowerMeal.contains("potato") || 
+                          lowerMeal.contains("corn") || lowerMeal.contains("cereal");
+        
+        boolean hasProtein = lowerMeal.contains("meat") || lowerMeal.contains("fish") || 
+                            lowerMeal.contains("chicken") || lowerMeal.contains("pork") || 
+                            lowerMeal.contains("beef") || lowerMeal.contains("egg") || 
+                            lowerMeal.contains("milk") || lowerMeal.contains("cheese") || 
+                            lowerMeal.contains("beans") || lowerMeal.contains("tofu");
+        
+        boolean hasVeggies = lowerMeal.contains("vegetable") || lowerMeal.contains("carrot") || 
+                           lowerMeal.contains("broccoli") || lowerMeal.contains("spinach") || 
+                           lowerMeal.contains("lettuce") || lowerMeal.contains("tomato") || 
+                           lowerMeal.contains("onion");
+        
+        boolean hasFruits = lowerMeal.contains("fruit") || lowerMeal.contains("apple") || 
+                          lowerMeal.contains("banana") || lowerMeal.contains("orange") || 
+                          lowerMeal.contains("mango") || lowerMeal.contains("grape");
+        
+        if (hasCarbs && hasProtein && (hasVeggies || hasFruits)) {
+            mealAssessmentResult.setText("✅ Balanced");
+            mealAssessmentResult.setTextColor(0xFF4CAF50); // Green
+        } else {
+            mealAssessmentResult.setText("⚠️ At Risk");
+            mealAssessmentResult.setTextColor(0xFFFF9800); // Orange
+        }
     }
 
     private void showQuestion(int question) {
@@ -886,7 +465,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
         
         // Update navigation buttons
         prevButton.setVisibility(question == 0 ? View.GONE : View.VISIBLE);
-        nextButton.setText(question == TOTAL_QUESTIONS - 1 ? "Submit" : "Next Page →");
+        nextButton.setText(question == TOTAL_QUESTIONS - 1 ? "Submit" : "Next Section →");
         prevButton.setEnabled(true);
         nextButton.setEnabled(true);
     }
@@ -907,139 +486,185 @@ public class ScreeningFormActivity extends AppCompatActivity {
             if (validateCurrentQuestion()) {
                 currentQuestion++;
                 showQuestion(currentQuestion);
+                
+                // If moving to final assessment section, calculate results
+                if (currentQuestion == TOTAL_QUESTIONS - 1) {
+                    calculateFinalAssessment();
+                }
             }
         }
     }
 
-    private void showBirthdayPicker() {
-        DatePickerDialog.OnDateSetListener dateSetListener = (view, year, month, dayOfMonth) -> {
-            selectedBirthday = java.util.Calendar.getInstance();
-            selectedBirthday.set(year, month, dayOfMonth);
-            
-            // Calculate age
-            int ageMonths = calculateAgeInMonths(selectedBirthday, java.util.Calendar.getInstance());
-            
-            // Show/hide MUAC field based on age
-            updateMUACVisibility(ageMonths);
-            
-            // Update birthday button text
-            birthdayPickerBtn.setText(String.format("%d/%d/%d", month + 1, dayOfMonth, year));
-        };
-        
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, dateSetListener, 
-            java.util.Calendar.getInstance().get(java.util.Calendar.YEAR),
-            java.util.Calendar.getInstance().get(java.util.Calendar.MONTH),
-            java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_MONTH));
-        
-        datePickerDialog.show();
-    }
-    
-
-    
-    private void updateMUACVisibility(int ageMonths) {
-        // Show MUAC field only for children 6-59 months
-        if (ageMonths >= 6 && ageMonths <= 59) {
-            muacLabel.setVisibility(View.VISIBLE);
-            muacSubtitle.setVisibility(View.VISIBLE);
-            muacInput.setVisibility(View.VISIBLE);
-        } else {
-            muacLabel.setVisibility(View.GONE);
-            muacSubtitle.setVisibility(View.GONE);
-            muacInput.setVisibility(View.GONE);
-        }
-        
-        // Show functional decline field for older adults (60+ years)
-        if (ageMonths >= 720) { // 60 years = 720 months
-            functionalDeclineLabel.setVisibility(View.VISIBLE);
-            functionalDeclineSubtitle.setVisibility(View.VISIBLE);
-            functionalDeclineButtons.setVisibility(View.VISIBLE);
-        } else {
-            functionalDeclineLabel.setVisibility(View.GONE);
-            functionalDeclineSubtitle.setVisibility(View.GONE);
-            functionalDeclineButtons.setVisibility(View.GONE);
-        }
-    }
-
-    private int calculateAgeInMonths(java.util.Calendar birth, java.util.Calendar now) {
-        int years = now.get(java.util.Calendar.YEAR) - birth.get(java.util.Calendar.YEAR);
-        int months = now.get(java.util.Calendar.MONTH) - birth.get(java.util.Calendar.MONTH);
-        int totalMonths = years * 12 + months;
-        if (now.get(java.util.Calendar.DAY_OF_MONTH) < birth.get(java.util.Calendar.DAY_OF_MONTH)) {
-            totalMonths--;
-        }
-        return Math.max(totalMonths, 0);
-    }
-
     private boolean validateCurrentQuestion() {
         switch (currentQuestion) {
-            case 0: // Page 1: Basic Information & Measurements
-                if (selectedBirthday == null) {
-                    Toast.makeText(this, "Please select birthday", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-                if (TextUtils.isEmpty(childWeightInput.getText().toString())) {
-                    childWeightInput.setError("Weight is required");
-                    return false;
-                }
-                if (TextUtils.isEmpty(childHeightInput.getText().toString())) {
-                    childHeightInput.setError("Height is required");
-                    return false;
-                }
-                if (TextUtils.isEmpty(selectedGender)) {
-                    Toast.makeText(this, "Please select gender", Toast.LENGTH_SHORT).show();
+            case 0: // Basic Information
+                if (TextUtils.isEmpty(selectedMunicipality)) {
+                    Toast.makeText(this, "Please select municipality", Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 if (TextUtils.isEmpty(selectedBarangay)) {
-                    Toast.makeText(this, "Please select your barangay", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Please select barangay", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                if (TextUtils.isEmpty(selectedIncome)) {
-                    Toast.makeText(this, "Please select your household income", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(ageInput.getText().toString())) {
+                    ageInput.setError("Age is required");
+                    return false;
+                }
+                if (TextUtils.isEmpty(selectedSex)) {
+                    Toast.makeText(this, "Please select sex", Toast.LENGTH_SHORT).show();
                     return false;
                 }
                 break;
-            case 1: // Page 2: Health Assessment & Risk Factors
-                if (hasSwelling == null) {
-                    Toast.makeText(this, "Please answer swelling question", Toast.LENGTH_SHORT).show();
+            case 1: // Anthropometric Assessment
+                if (TextUtils.isEmpty(weightInput.getText().toString())) {
+                    weightInput.setError("Weight is required");
                     return false;
                 }
-                if (TextUtils.isEmpty(weightLossStatus)) {
-                    Toast.makeText(this, "Please answer weight loss question", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(heightInput.getText().toString())) {
+                    heightInput.setError("Height is required");
                     return false;
                 }
-                if (TextUtils.isEmpty(dietaryDiversityInput.getText().toString())) {
-                    dietaryDiversityInput.setError("Dietary diversity is required");
+                break;
+            case 2: // Meal Assessment
+                if (TextUtils.isEmpty(mealRecallInput.getText().toString())) {
+                    mealRecallInput.setError("24-hour meal recall is required");
                     return false;
                 }
-                if (TextUtils.isEmpty(feedingBehavior)) {
-                    Toast.makeText(this, "Please select feeding behavior", Toast.LENGTH_SHORT).show();
+                break;
+            case 3: // Family History
+                // At least one option must be selected
+                if (!diabetesCheckBox.isChecked() && !hypertensionCheckBox.isChecked() && 
+                    !heartDiseaseCheckBox.isChecked() && !kidneyDiseaseCheckBox.isChecked() && 
+                    !tuberculosisCheckBox.isChecked() && !obesityCheckBox.isChecked() && 
+                    !malnutritionCheckBox.isChecked() && !noneCheckBox.isChecked()) {
+                    Toast.makeText(this, "Please select at least one option or choose None", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                // No specific validation for physical signs, just ensure at least one is selected
-                // Check if at least one physical sign has been answered (either Yes or No)
-                // Since these are now Boolean wrapper classes, they can be null when not answered
-                boolean hasAnsweredPhysicalSigns = (isThin != null) || (isShorter != null) || (isWeak != null) || (isNone != null);
-                
-                if (!hasAnsweredPhysicalSigns) {
-                    Toast.makeText(this, "Please select at least one physical sign", Toast.LENGTH_SHORT).show();
+                break;
+            case 4: // Lifestyle
+                if (TextUtils.isEmpty(selectedLifestyle)) {
+                    Toast.makeText(this, "Please select lifestyle", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                // No specific validation for clinical risk factors, just ensure at least one is selected
-                // Check if at least one clinical risk factor has been answered (either Yes or No)
-                // Since these are now Boolean wrapper classes, they can be null when not answered
-                boolean hasAnsweredClinicalFactors = (hasRecentIllness != null) || 
-                                                   (hasEatingDifficulty != null) || 
-                                                   (hasFoodInsecurity != null) || 
-                                                   (hasMicronutrientDeficiency != null) || 
-                                                   (hasFunctionalDecline != null);
-                
-                if (!hasAnsweredClinicalFactors) {
-                    Toast.makeText(this, "Please answer all clinical risk factor questions", Toast.LENGTH_SHORT).show();
-                    return false;
+                break;
+            case 5: // Immunization (only for children ≤ 12 years)
+                try {
+                    int age = Integer.parseInt(ageInput.getText().toString());
+                    if (age <= 12) {
+                        // Validate immunization responses
+                        if (bcgRadioGroup.getCheckedRadioButtonId() == -1 || 
+                            dptRadioGroup.getCheckedRadioButtonId() == -1 || 
+                            polioRadioGroup.getCheckedRadioButtonId() == -1 || 
+                            measlesRadioGroup.getCheckedRadioButtonId() == -1 || 
+                            hepatitisRadioGroup.getCheckedRadioButtonId() == -1 || 
+                            vitaminARadioGroup.getCheckedRadioButtonId() == -1) {
+                            Toast.makeText(this, "Please answer all immunization questions", Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    }
+                } catch (NumberFormatException e) {
+                    // Age not entered, skip validation
                 }
                 break;
         }
         return true;
+    }
+
+    private void calculateFinalAssessment() {
+        // Calculate risk score based on all sections
+        int riskScore = calculateRiskScore();
+        
+        // Determine risk level
+        String riskLevel;
+        String recommendation;
+        String intervention;
+        
+        if (riskScore >= 80) {
+            riskLevel = "High Risk";
+            recommendation = "Immediate lifestyle intervention needed";
+            intervention = "Nutrition counseling, physical activity program, regular health monitoring";
+        } else if (riskScore >= 50) {
+            riskLevel = "Medium Risk";
+            recommendation = "Nutrition intervention needed";
+            intervention = "DOH feeding program, nutrition counseling";
+        } else {
+            riskLevel = "Low Risk";
+            recommendation = "Maintain current healthy lifestyle";
+            intervention = "Regular monitoring";
+        }
+        
+        // Update final assessment display
+        finalAssessmentText.setText("Risk Score: " + riskScore + "%");
+        riskLevelText.setText("Risk Level: " + riskLevel);
+        recommendationText.setText("Recommendation: " + recommendation);
+        interventionText.setText("Intervention: " + intervention);
+    }
+
+    private int calculateRiskScore() {
+        int score = 0;
+        
+        try {
+            // Get basic data
+            int age = Integer.parseInt(ageInput.getText().toString());
+            double weight = Double.parseDouble(weightInput.getText().toString());
+            double height = Double.parseDouble(heightInput.getText().toString());
+            
+            // Calculate BMI
+            double heightM = height / 100.0;
+            double bmi = weight / (heightM * heightM);
+            
+            // BMI scoring
+            if (bmi < 18.5) score += 25;
+            else if (bmi < 25) score += 0;
+            else if (bmi < 30) score += 15;
+            else score += 30;
+            
+            // Meal assessment scoring
+            String mealAssessment = mealAssessmentResult.getText().toString();
+            if (mealAssessment.contains("At Risk")) score += 15;
+            
+            // Family history scoring
+            if (diabetesCheckBox.isChecked()) score += 10;
+            if (hypertensionCheckBox.isChecked()) score += 10;
+            if (heartDiseaseCheckBox.isChecked()) score += 10;
+            if (kidneyDiseaseCheckBox.isChecked()) score += 10;
+            if (tuberculosisCheckBox.isChecked()) score += 8;
+            if (obesityCheckBox.isChecked()) score += 12;
+            if (malnutritionCheckBox.isChecked()) score += 15;
+            
+            // Lifestyle scoring
+            if ("Sedentary".equals(selectedLifestyle)) score += 15;
+            
+            // Immunization scoring (for children ≤ 12 years)
+            if (age <= 12) {
+                // Check immunization completeness
+                boolean bcgComplete = getRadioGroupValue(bcgRadioGroup).equals("Yes");
+                boolean dptComplete = getRadioGroupValue(dptRadioGroup).equals("Yes");
+                boolean polioComplete = getRadioGroupValue(polioRadioGroup).equals("Yes");
+                boolean measlesComplete = getRadioGroupValue(measlesRadioGroup).equals("Yes");
+                boolean hepatitisComplete = getRadioGroupValue(hepatitisRadioGroup).equals("Yes");
+                boolean vitaminAComplete = getRadioGroupValue(vitaminARadioGroup).equals("Yes");
+                
+                if (!bcgComplete || !dptComplete || !polioComplete || 
+                    !measlesComplete || !hepatitisComplete || !vitaminAComplete) {
+                    score += 10;
+                }
+            }
+            
+        } catch (NumberFormatException e) {
+            // Handle parsing errors
+        }
+        
+        return Math.min(score, 100);
+    }
+
+    private String getRadioGroupValue(RadioGroup radioGroup) {
+        int checkedId = radioGroup.getCheckedRadioButtonId();
+        if (checkedId != -1) {
+            RadioButton radioButton = findViewById(checkedId);
+            return radioButton.getText().toString();
+        }
+        return "";
     }
 
     private void submitForm() {
@@ -1047,22 +672,8 @@ public class ScreeningFormActivity extends AppCompatActivity {
             return;
         }
 
-        // Get form data
-        String weightStr = childWeightInput.getText().toString();
-        String heightStr = childHeightInput.getText().toString();
-        String dietaryDiversityStr = dietaryDiversityInput.getText().toString();
-
-        if (TextUtils.isEmpty(weightStr) || TextUtils.isEmpty(heightStr) || TextUtils.isEmpty(dietaryDiversityStr)) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        double weight = Double.parseDouble(weightStr);
-        double height = Double.parseDouble(heightStr);
-        int dietaryGroups = Integer.parseInt(dietaryDiversityStr);
-
-        // Calculate risk score
-        int riskScore = calculateRiskScore(weight, height, dietaryGroups);
+        // Calculate final risk score
+        int riskScore = calculateRiskScore();
 
         // Save to local database
         saveScreeningResults(riskScore);
@@ -1071,114 +682,6 @@ public class ScreeningFormActivity extends AppCompatActivity {
         showScreeningResult(riskScore);
     }
 
-    private int calculateRiskScore(double weight, double height, int dietaryGroups) {
-        int score = 0;
-        
-        // --- Evidence-based anthropometric scoring (WHO standards) ---
-        // Calculate age in months
-        int ageMonths = 0;
-        if (selectedBirthday != null) {
-            ageMonths = calculateAgeInMonths(selectedBirthday, java.util.Calendar.getInstance());
-        }
-        double heightMeters = height / 100.0;
-        double bmi = 0;
-        if (heightMeters > 0) {
-            bmi = weight / (heightMeters * heightMeters);
-        }
-        
-        // Validate input ranges (WHO plausible ranges)
-        if (weight < 2 || weight > 300 || height < 30 || height > 250) {
-            // Out of plausible range, return max risk
-            return 100;
-        }
-        
-        // Check for edema first - this overrides everything else
-        if (hasSwelling != null && hasSwelling) {
-            return 100; // Immediate severe risk - urgent referral alert
-        }
-        
-        // --- Age-based risk assessment (Updated to match verified system) ---
-        if (ageMonths >= 6 && ageMonths <= 59) {
-            // Children 6-59 months: Use MUAC thresholds
-            // Check if MUAC input is available
-            String muacText = muacInput.getText().toString().trim();
-            if (!muacText.isEmpty()) {
-                try {
-                    double muac = Double.parseDouble(muacText);
-                    if (muac < 11.5) score += 40;      // Severe acute malnutrition (MUAC < 11.5 cm)
-                    else if (muac < 12.5) score += 25; // Moderate acute malnutrition (MUAC 11.5-12.5 cm)
-                    else score += 0;                    // Normal (MUAC ≥ 12.5 cm)
-                } catch (NumberFormatException e) {
-                    // If MUAC parsing fails, fallback to weight-for-height approximation
-                    double wfh = weight / heightMeters;
-                    if (wfh < 0.8) score += 40;      // Severe acute malnutrition
-                    else if (wfh < 0.9) score += 25; // Moderate acute malnutrition
-                    else score += 0;                  // Normal
-                }
-            } else {
-                // If MUAC not provided, use weight-for-height approximation
-                double wfh = weight / heightMeters;
-                if (wfh < 0.8) score += 40;      // Severe acute malnutrition
-                else if (wfh < 0.9) score += 25; // Moderate acute malnutrition
-                else score += 0;                  // Normal
-            }
-        } else if (ageMonths < 240) {
-            // Children/adolescents 5-19 years (BMI-for-age, WHO)
-            if (bmi < 15) score += 40;        // Severe thinness
-            else if (bmi < 17) score += 30;   // Moderate thinness
-            else if (bmi < 18.5) score += 20; // Mild thinness
-            else score += 0;                  // Normal
-        } else {
-            // Adults 20+ (BMI, WHO) - Updated to match verified system
-            if (bmi < 16.5) score += 40;      // Severe thinness
-            else if (bmi < 18.5) score += 25; // Moderate thinness
-            else score += 0;                  // Normal weight
-        }
-        
-        // --- Weight loss scoring (Updated to match verified system) ---
-        if (">10%".equals(weightLossStatus)) score += 20;
-        else if ("5-10%".equals(weightLossStatus)) score += 10;
-        else if ("<5%".equals(weightLossStatus) || "none".equals(weightLossStatus)) score += 0;
-        // Handle legacy values
-        else if ("yes".equals(weightLossStatus)) score += 20; // Assume >10%
-        else if ("not sure".equals(weightLossStatus)) score += 10; // Assume 5-10%
-        
-        // --- Feeding behavior scoring (Updated to match verified system) ---
-        if ("poor appetite".equals(feedingBehavior)) score += 8;      // Was 25, should be 8
-        else if ("moderate appetite".equals(feedingBehavior)) score += 8; // Was 10, should be 8
-        else score += 0; // Good feeding behavior
-        
-        // --- Physical signs scoring (Updated to match verified system) ---
-        if (isThin != null && isThin) score += 8;      // Was 15, should be 8
-        if (isShorter != null && isShorter) score += 8;   // Was 15, should be 8
-        if (isWeak != null && isWeak) score += 8;      // Was 15, should be 8
-        
-        // --- Additional Clinical Risk Factors (New implementation) ---
-        if (hasRecentIllness != null && hasRecentIllness) score += 8;           // Recent acute illness (past 2 weeks)
-        if (hasEatingDifficulty != null && hasEatingDifficulty) score += 8;        // Difficulty chewing/swallowing
-        if (hasFoodInsecurity != null && hasFoodInsecurity) score += 10;         // Food insecurity / skipped meals
-        if (hasMicronutrientDeficiency != null && hasMicronutrientDeficiency) score += 6; // Visible signs of micronutrient deficiency
-        if (hasFunctionalDecline != null && hasFunctionalDecline) score += 8;       // Functional decline (older adults only)
-        
-        // --- Dietary diversity scoring (Updated to match verified system) ---
-        if (dietaryGroups < 4) score += 10;      // Was 30, should be 10
-        else if (dietaryGroups < 6) score += 5;  // Was 15, should be 5
-        else score += 0;                         // 6+ food groups
-        
-        // Note: All clinical risk factors from verified system are now implemented:
-        // - Poor appetite (8 points) - Covered by feeding behavior
-        // - Recent acute illness (8 points) - ✅ Implemented
-        // - Difficulty chewing/swallowing (8 points) - ✅ Implemented
-        // - Food insecurity (10 points) - ✅ Implemented
-        // - Visible signs of micronutrient deficiency (6 points) - ✅ Implemented
-        // - Functional decline for older adults (8 points) - ✅ Implemented
-        
-        // Cap score at 100
-        return Math.min(score, 100);
-    }
-
-    private FCMTokenManager fcmTokenManager;
-    
     private void saveScreeningResults(int riskScore) {
         // Save to local storage
         ScreeningResultStore.setRiskScore(this, riskScore);
@@ -1191,96 +694,75 @@ public class ScreeningFormActivity extends AppCompatActivity {
             
             // Sync to API
             syncScreeningToApi(email, riskScore);
-            
-            // FCM token registration will happen after successful API sync
-            // This ensures the barangay is saved to the server first
-            Log.d("ScreeningFormActivity", "Screening saved locally. FCM token will be registered after API sync.");
         }
         
         // Show success message
-        Toast.makeText(this, "Screening results saved successfully!", Toast.LENGTH_SHORT).show();
-        
-        // Navigation is now handled in showScreeningResult method
-        // No need to call finish() here
+        Toast.makeText(this, "Comprehensive screening results saved successfully!", Toast.LENGTH_SHORT).show();
     }
     
     private void saveScreeningToLocalDatabase(String email, int riskScore) {
         try {
             UserPreferencesDbHelper dbHelper = new UserPreferencesDbHelper(this);
             
-            // Create screening answers JSON for backward compatibility
-            org.json.JSONObject screeningAnswers = new org.json.JSONObject();
-            screeningAnswers.put("gender", selectedGender);
-            screeningAnswers.put("swelling", hasSwelling != null ? (hasSwelling ? "yes" : "no") : "");
-            screeningAnswers.put("weight_loss", weightLossStatus);
-            screeningAnswers.put("feeding_behavior", feedingBehavior);
+            // Create comprehensive screening data JSON
+            JSONObject screeningData = new JSONObject();
             
-            // Combine physical signs
-            java.util.List<String> physicalSigns = new java.util.ArrayList<>();
-            if (isThin != null && isThin) physicalSigns.add("thin");
-            if (isShorter != null && isShorter) physicalSigns.add("shorter");
-            if (isWeak != null && isWeak) physicalSigns.add("weak");
-            String physicalSignsStr = String.join(",", physicalSigns);
-            screeningAnswers.put("physical_signs", physicalSignsStr);
+            // Section 1: Basic Information
+            screeningData.put("municipality", selectedMunicipality);
+            screeningData.put("barangay", selectedBarangay);
+            screeningData.put("age", ageInput.getText().toString());
+            screeningData.put("sex", selectedSex);
+            screeningData.put("pregnant", selectedPregnant);
             
-            android.util.Log.d("ScreeningFormActivity", "Saving physical signs: " + physicalSignsStr);
-            android.util.Log.d("ScreeningFormActivity", "Physical signs state - thin: " + isThin + ", shorter: " + isShorter + ", weak: " + isWeak);
+            // Section 2: Anthropometric Assessment
+            screeningData.put("weight", weightInput.getText().toString());
+            screeningData.put("height", heightInput.getText().toString());
+            screeningData.put("bmi", bmiResult.getText().toString());
+            screeningData.put("bmi_category", bmiCategory.getText().toString());
             
-            // Get dietary diversity from input
-            String dietaryDiversityStr = dietaryDiversityInput.getText().toString();
-            int dietaryDiversity = dietaryDiversityStr.isEmpty() ? 0 : Integer.parseInt(dietaryDiversityStr);
-            screeningAnswers.put("dietary_diversity", dietaryDiversity);
+            // Section 3: Meal Assessment
+            screeningData.put("meal_recall", mealRecallInput.getText().toString());
+            screeningData.put("meal_assessment", mealAssessmentResult.getText().toString());
             
-            // Add weight, height, and birthday
-            String weightStr = childWeightInput.getText().toString();
-            String heightStr = childHeightInput.getText().toString();
-            double weight = weightStr.isEmpty() ? 0.0 : Double.parseDouble(weightStr);
-            double height = heightStr.isEmpty() ? 0.0 : Double.parseDouble(heightStr);
+            // Section 4: Family History
+            JSONObject familyHistory = new JSONObject();
+            familyHistory.put("diabetes", diabetesCheckBox.isChecked());
+            familyHistory.put("hypertension", hypertensionCheckBox.isChecked());
+            familyHistory.put("heart_disease", heartDiseaseCheckBox.isChecked());
+            familyHistory.put("kidney_disease", kidneyDiseaseCheckBox.isChecked());
+            familyHistory.put("tuberculosis", tuberculosisCheckBox.isChecked());
+            familyHistory.put("obesity", obesityCheckBox.isChecked());
+            familyHistory.put("malnutrition", malnutritionCheckBox.isChecked());
+            familyHistory.put("other", otherConditionInput.getText().toString());
+            familyHistory.put("none", noneCheckBox.isChecked());
+            screeningData.put("family_history", familyHistory);
             
-            String birthdayStr = "";
-            if (selectedBirthday != null) {
-                birthdayStr = String.format("%04d-%02d-%02d", 
-                    selectedBirthday.get(java.util.Calendar.YEAR),
-                    selectedBirthday.get(java.util.Calendar.MONTH) + 1,
-                    selectedBirthday.get(java.util.Calendar.DAY_OF_MONTH));
-            }
+            // Section 5: Lifestyle
+            screeningData.put("lifestyle", selectedLifestyle);
+            screeningData.put("other_lifestyle", otherLifestyleInput.getText().toString());
             
-            screeningAnswers.put("weight", weight);
-            screeningAnswers.put("height", height);
-            screeningAnswers.put("birthday", birthdayStr);
+            // Section 6: Immunization
+            JSONObject immunization = new JSONObject();
+            immunization.put("bcg", getRadioGroupValue(bcgRadioGroup));
+            immunization.put("dpt", getRadioGroupValue(dptRadioGroup));
+            immunization.put("polio", getRadioGroupValue(polioRadioGroup));
+            immunization.put("measles", getRadioGroupValue(measlesRadioGroup));
+            immunization.put("hepatitis", getRadioGroupValue(hepatitisRadioGroup));
+            immunization.put("vitamin_a", getRadioGroupValue(vitaminARadioGroup));
+            screeningData.put("immunization", immunization);
             
-            // Calculate BMI
-            double bmi = 0.0;
-            if (weight > 0 && height > 0) {
-                bmi = weight / ((height / 100) * (height / 100));
-            }
-            screeningAnswers.put("bmi", bmi);
+            // Risk assessment
+            screeningData.put("risk_score", riskScore);
+            screeningData.put("risk_level", riskLevelText.getText().toString());
+            screeningData.put("recommendation", recommendationText.getText().toString());
+            screeningData.put("intervention", interventionText.getText().toString());
             
-            // Add barangay and income (always as string, never null)
-            screeningAnswers.put("barangay", selectedBarangay != null ? selectedBarangay : "");
-            screeningAnswers.put("income", selectedIncome != null ? selectedIncome : "");
-            
-            // Add clinical risk factors
-            screeningAnswers.put("has_recent_illness", hasRecentIllness);
-            screeningAnswers.put("has_eating_difficulty", hasEatingDifficulty);
-            screeningAnswers.put("has_food_insecurity", hasFoodInsecurity);
-            screeningAnswers.put("has_micronutrient_deficiency", hasMicronutrientDeficiency);
-            screeningAnswers.put("has_functional_decline", hasFunctionalDecline);
-            
-            // Save to database - maintain backward compatibility with JSON field
+            // Save to database
             android.database.sqlite.SQLiteDatabase db = dbHelper.getWritableDatabase();
             android.content.ContentValues values = new android.content.ContentValues();
             values.put(UserPreferencesDbHelper.COL_USER_EMAIL, email);
             values.put(UserPreferencesDbHelper.COL_RISK_SCORE, riskScore);
-            values.put(UserPreferencesDbHelper.COL_SCREENING_ANSWERS, screeningAnswers.toString());
-            values.put(UserPreferencesDbHelper.COL_GENDER, selectedGender);
-            values.put(UserPreferencesDbHelper.COL_SWELLING, hasSwelling != null ? (hasSwelling ? "yes" : "no") : "");
-            values.put(UserPreferencesDbHelper.COL_WEIGHT_LOSS, weightLossStatus);
-            values.put(UserPreferencesDbHelper.COL_FEEDING_BEHAVIOR, feedingBehavior);
-            values.put(UserPreferencesDbHelper.COL_FEEDING, feedingBehavior);
-            values.put("dietary_diversity", dietaryDiversity);
-            values.put("barangay", selectedBarangay != null ? selectedBarangay : "");
-            values.put("income", selectedIncome != null ? selectedIncome : "");
+            values.put(UserPreferencesDbHelper.COL_SCREENING_ANSWERS, screeningData.toString());
             
             // Check if user already exists
             android.database.Cursor cursor = db.query(UserPreferencesDbHelper.TABLE_NAME, 
@@ -1291,137 +773,94 @@ public class ScreeningFormActivity extends AppCompatActivity {
                 // Update existing record
                 db.update(UserPreferencesDbHelper.TABLE_NAME, values, 
                     UserPreferencesDbHelper.COL_USER_EMAIL + "=?", new String[]{email});
-                android.util.Log.d("ScreeningFormActivity", "Updated screening data in local database");
             } else {
                 // Insert new record
                 db.insert(UserPreferencesDbHelper.TABLE_NAME, null, values);
-                android.util.Log.d("ScreeningFormActivity", "Inserted screening data in local database");
             }
             cursor.close();
             dbHelper.close();
             
-            runOnUiThread(() -> Toast.makeText(this, "Screening saved locally", Toast.LENGTH_SHORT).show());
-            
         } catch (Exception e) {
-            android.util.Log.e("ScreeningFormActivity", "Error saving to local database: " + e.getMessage());
-            runOnUiThread(() -> Toast.makeText(this, "Error saving locally: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            Log.e("ScreeningFormActivity", "Error saving to local database: " + e.getMessage());
         }
     }
     
     private void syncScreeningToApi(String email, int riskScore) {
-        // Create comprehensive screening data
+        // Create comprehensive screening data for API
         try {
-            org.json.JSONObject screeningAnswers = new org.json.JSONObject();
+            JSONObject screeningData = new JSONObject();
             
-            // Essential user data (CRITICAL - was missing!)
-            screeningAnswers.put("gender", selectedGender);
-            screeningAnswers.put("birthday", selectedBirthday != null ? 
-                new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(selectedBirthday.getTime()) : "");
-            screeningAnswers.put("barangay", selectedBarangay);
-            screeningAnswers.put("income", selectedIncome);
-            screeningAnswers.put("name", email); // Use email as name if no name field
+            // Basic information
+            screeningData.put("email", email);
+            screeningData.put("municipality", selectedMunicipality);
+            screeningData.put("barangay", selectedBarangay);
+            screeningData.put("age", ageInput.getText().toString());
+            screeningData.put("sex", selectedSex);
+            screeningData.put("pregnant", selectedPregnant);
             
-            // Basic measurements
-                String weightStr = childWeightInput.getText().toString();
-                String heightStr = childHeightInput.getText().toString();
-                double weight = weightStr.isEmpty() ? 0.0 : Double.parseDouble(weightStr);
-                double height = heightStr.isEmpty() ? 0.0 : Double.parseDouble(heightStr);
-                String dietaryDiversityStr = dietaryDiversityInput.getText().toString();
-            int dietaryGroups = dietaryDiversityStr.isEmpty() ? 0 : Integer.parseInt(dietaryDiversityStr);
-                
             // Anthropometric data
-                screeningAnswers.put("weight", weight);
-                screeningAnswers.put("height", height);
-            screeningAnswers.put("dietary_diversity", dietaryGroups); // Fixed field name to match API
-            screeningAnswers.put("muac", muacInput.getText().toString());
+            screeningData.put("weight", weightInput.getText().toString());
+            screeningData.put("height", heightInput.getText().toString());
+            screeningData.put("bmi", bmiResult.getText().toString());
+            screeningData.put("bmi_category", bmiCategory.getText().toString());
             
-            // Physical signs (fixed field names to match API expectations)
-                    java.util.List<String> physicalSigns = new java.util.ArrayList<>();
-                    if (isThin != null && isThin) physicalSigns.add("thin");
-                    if (isShorter != null && isShorter) physicalSigns.add("shorter");
-                    if (isWeak != null && isWeak) physicalSigns.add("weak");
-            if (isNone != null && isNone) physicalSigns.add("none");
-            screeningAnswers.put("physical_signs", new org.json.JSONArray(physicalSigns));
+            // Meal assessment
+            screeningData.put("meal_recall", mealRecallInput.getText().toString());
+            screeningData.put("meal_assessment", mealAssessmentResult.getText().toString());
             
-            // Clinical risk factors (fixed field names to match API expectations)
-            screeningAnswers.put("swelling", hasSwelling != null && hasSwelling ? "yes" : "no");
-            screeningAnswers.put("weight_loss", weightLossStatus);
-            screeningAnswers.put("feeding_behavior", feedingBehavior);
-            screeningAnswers.put("has_recent_illness", hasRecentIllness);
-            screeningAnswers.put("has_eating_difficulty", hasEatingDifficulty);
-            screeningAnswers.put("has_food_insecurity", hasFoodInsecurity);
-            screeningAnswers.put("has_micronutrient_deficiency", hasMicronutrientDeficiency);
-            screeningAnswers.put("has_functional_decline", hasFunctionalDecline);
+            // Family history
+            JSONArray familyHistory = new JSONArray();
+            if (diabetesCheckBox.isChecked()) familyHistory.put("Diabetes");
+            if (hypertensionCheckBox.isChecked()) familyHistory.put("Hypertension");
+            if (heartDiseaseCheckBox.isChecked()) familyHistory.put("Heart Disease");
+            if (kidneyDiseaseCheckBox.isChecked()) familyHistory.put("Kidney Disease");
+            if (tuberculosisCheckBox.isChecked()) familyHistory.put("Tuberculosis");
+            if (obesityCheckBox.isChecked()) familyHistory.put("Obesity");
+            if (malnutritionCheckBox.isChecked()) familyHistory.put("Malnutrition");
+            screeningData.put("family_history", familyHistory);
+            
+            // Lifestyle
+            screeningData.put("lifestyle", selectedLifestyle);
+            
+            // Immunization
+            JSONObject immunization = new JSONObject();
+            immunization.put("bcg", getRadioGroupValue(bcgRadioGroup));
+            immunization.put("dpt", getRadioGroupValue(dptRadioGroup));
+            immunization.put("polio", getRadioGroupValue(polioRadioGroup));
+            immunization.put("measles", getRadioGroupValue(measlesRadioGroup));
+            immunization.put("hepatitis", getRadioGroupValue(hepatitisRadioGroup));
+            immunization.put("vitamin_a", getRadioGroupValue(vitaminARadioGroup));
+            screeningData.put("immunization", immunization);
             
             // Risk assessment
-            screeningAnswers.put("risk_score", riskScore);
-            screeningAnswers.put("assessment_date", new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(new java.util.Date()));
+            screeningData.put("risk_score", riskScore);
+            screeningData.put("risk_level", riskLevelText.getText().toString());
+            screeningData.put("recommendation", recommendationText.getText().toString());
+            screeningData.put("intervention", interventionText.getText().toString());
             
-            // Call unified API with comprehensive data
-            syncScreeningToUnifiedApi(email, riskScore, screeningAnswers);
+            // Send to API
+            sendToComprehensiveScreeningApi(email, riskScore, screeningData);
             
         } catch (Exception e) {
-            android.util.Log.e("ScreeningFormActivity", "Error creating screening data: " + e.getMessage());
+            Log.e("ScreeningFormActivity", "Error creating screening data: " + e.getMessage());
         }
     }
 
-    // Removed WebViewAPIClient - using direct HTTP requests
-    
-    private void syncScreeningToUnifiedApi(String email, int riskScore, org.json.JSONObject screeningAnswers) {
-        // Use direct HTTP request to sync screening data
+    private void sendToComprehensiveScreeningApi(String email, int riskScore, JSONObject screeningData) {
         new Thread(() -> {
             try {
-                android.util.Log.d("ScreeningFormActivity", "Starting API sync with direct HTTP");
+                JSONObject requestData = new JSONObject();
+                requestData.put("action", "save_comprehensive_screening");
+                requestData.put("email", email);
+                requestData.put("risk_score", riskScore);
+                requestData.put("screening_data", screeningData.toString());
                 
-                // Create the JSON payload
-            org.json.JSONObject requestData = new org.json.JSONObject();
-            requestData.put("action", "save_screening");
-            requestData.put("email", email);
-            requestData.put("username", email);
-            requestData.put("risk_score", riskScore);
-            
-            // Individual fields matching database columns
-            requestData.put("birthday", screeningAnswers.optString("birthday", ""));
-            requestData.put("age", screeningAnswers.optInt("age", 0));
-            requestData.put("gender", screeningAnswers.optString("gender", ""));
-            requestData.put("weight", screeningAnswers.optDouble("weight", 0.0));
-            requestData.put("height", screeningAnswers.optDouble("height", 0.0));
-            requestData.put("bmi", screeningAnswers.optDouble("bmi", 0.0));
-            requestData.put("muac", screeningAnswers.optString("muac", ""));
-            requestData.put("swelling", screeningAnswers.optString("swelling", "no"));
-            requestData.put("weight_loss", screeningAnswers.optString("weight_loss", ""));
-            requestData.put("dietary_diversity", screeningAnswers.optInt("dietary_diversity", 0));
-            requestData.put("feeding_behavior", screeningAnswers.optString("feeding_behavior", ""));
-            
-            // Physical signs as individual boolean fields
-            requestData.put("physical_thin", screeningAnswers.optString("physical_signs", "").contains("thin"));
-            requestData.put("physical_shorter", screeningAnswers.optString("physical_signs", "").contains("shorter"));
-            requestData.put("physical_weak", screeningAnswers.optString("physical_signs", "").contains("weak"));
-            requestData.put("physical_none", screeningAnswers.optString("physical_signs", "").contains("none"));
-            
-            // Clinical risk factors as individual boolean fields
-            requestData.put("has_recent_illness", screeningAnswers.optBoolean("has_recent_illness", false));
-            requestData.put("has_eating_difficulty", screeningAnswers.optBoolean("has_eating_difficulty", false));
-            requestData.put("has_food_insecurity", screeningAnswers.optBoolean("has_food_insecurity", false));
-            requestData.put("has_micronutrient_deficiency", screeningAnswers.optBoolean("has_micronutrient_deficiency", false));
-            requestData.put("has_functional_decline", screeningAnswers.optBoolean("has_functional_decline", false));
-            
-            // Location and socioeconomic data
-            requestData.put("barangay", screeningAnswers.optString("barangay", ""));
-            requestData.put("income", screeningAnswers.optString("income", ""));
-            
-                android.util.Log.d("ScreeningFormActivity", "Sending to unified API via HTTP: " + requestData.toString());
-                
-                // Make direct HTTP request with API key and enhanced headers
-                java.net.URL url = new java.net.URL(Constants.UNIFIED_API_URL);
+                // Make HTTP request to comprehensive screening API
+                java.net.URL url = new java.net.URL(Constants.API_BASE_URL + "/api/comprehensive_screening.php");
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+                conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("User-Agent", Constants.USER_AGENT);
-                conn.setRequestProperty("Accept", "application/json, text/plain, */*");
-                conn.setRequestProperty("X-API-Key", Constants.API_KEY);
-                conn.setRequestProperty("Origin", "https://nutrisaur-production.up.railway.app");
-                conn.setRequestProperty("Cache-Control", "no-cache");
                 conn.setDoOutput(true);
                 conn.setConnectTimeout(15000);
                 conn.setReadTimeout(15000);
@@ -1431,7 +870,7 @@ public class ScreeningFormActivity extends AppCompatActivity {
                 os.close();
                 
                 int responseCode = conn.getResponseCode();
-                android.util.Log.d("ScreeningFormActivity", "HTTP response code: " + responseCode);
+                Log.d("ScreeningFormActivity", "Comprehensive screening API response code: " + responseCode);
                 
                 if (responseCode == 200) {
                     java.io.BufferedReader reader = new java.io.BufferedReader(
@@ -1443,64 +882,19 @@ public class ScreeningFormActivity extends AppCompatActivity {
                     }
                     reader.close();
                     
-                    android.util.Log.d("ScreeningFormActivity", "HTTP API response: " + response.toString());
-                    
-                    org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
-                    if (jsonResponse.optBoolean("success", false)) {
-                        android.util.Log.d("ScreeningFormActivity", "Screening synced successfully via HTTP");
-                        runOnUiThread(() -> {
-                            Toast.makeText(ScreeningFormActivity.this, "Screening synced successfully", Toast.LENGTH_SHORT).show();
-                            registerFCMTokenAfterScreening();
-                        });
-                    } else {
-                        String errorMsg = jsonResponse.optString("message", "Unknown error");
-                        android.util.Log.e("ScreeningFormActivity", "HTTP API returned success=false: " + errorMsg);
-                        runOnUiThread(() -> Toast.makeText(ScreeningFormActivity.this, "API Error: " + errorMsg, Toast.LENGTH_SHORT).show());
-                    }
+                    Log.d("ScreeningFormActivity", "Comprehensive screening API response: " + response.toString());
+                    runOnUiThread(() -> Toast.makeText(ScreeningFormActivity.this, 
+                        "Comprehensive screening synced successfully", Toast.LENGTH_SHORT).show());
                 } else {
-                    android.util.Log.e("ScreeningFormActivity", "HTTP request failed with code: " + responseCode);
-                    runOnUiThread(() -> Toast.makeText(ScreeningFormActivity.this, "Failed to sync screening data", Toast.LENGTH_SHORT).show());
-                }
-            } catch (Exception e) {
-                android.util.Log.e("ScreeningFormActivity", "Error syncing screening data: " + e.getMessage(), e);
-                runOnUiThread(() -> Toast.makeText(ScreeningFormActivity.this, "Error syncing screening data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-            }
-        }).start();
-    }
-    
-    private void testNetworkConnectivity() {
-        new Thread(() -> {
-            try {
-                android.util.Log.d("ScreeningFormActivity", "Testing network connectivity...");
-                
-                // Test basic internet connectivity
-                java.net.URL testUrl = new java.net.URL("https://www.google.com");
-                java.net.HttpURLConnection testConn = (java.net.HttpURLConnection) testUrl.openConnection();
-                testConn.setConnectTimeout(5000);
-                testConn.setReadTimeout(5000);
-                testConn.setRequestMethod("HEAD");
-                
-                int testResponseCode = testConn.getResponseCode();
-                android.util.Log.d("ScreeningFormActivity", "Internet connectivity test: " + testResponseCode);
-                testConn.disconnect();
-                
-                // Test local network connectivity using Constants
-                try {
-                    java.net.URL localTestUrl = new java.net.URL(Constants.API_BASE_URL);
-                    java.net.HttpURLConnection localTestConn = (java.net.HttpURLConnection) localTestUrl.openConnection();
-                    localTestConn.setConnectTimeout(5000);
-                    localTestConn.setReadTimeout(5000);
-                    localTestConn.setRequestMethod("HEAD");
-                    
-                    int localTestResponseCode = localTestConn.getResponseCode();
-                    android.util.Log.d("ScreeningFormActivity", "Local network test (" + Constants.API_BASE_URL + "): " + localTestResponseCode);
-                    localTestConn.disconnect();
-                } catch (Exception e) {
-                    android.util.Log.e("ScreeningFormActivity", "Local network test failed: " + e.getMessage());
+                    Log.e("ScreeningFormActivity", "Failed to sync comprehensive screening: " + responseCode);
+                    runOnUiThread(() -> Toast.makeText(ScreeningFormActivity.this, 
+                        "Failed to sync comprehensive screening data", Toast.LENGTH_SHORT).show());
                 }
                 
             } catch (Exception e) {
-                android.util.Log.e("ScreeningFormActivity", "Network connectivity test failed: " + e.getMessage());
+                Log.e("ScreeningFormActivity", "Error syncing comprehensive screening: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(ScreeningFormActivity.this, 
+                    "Error syncing comprehensive screening: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
         }).start();
     }
@@ -1508,462 +902,28 @@ public class ScreeningFormActivity extends AppCompatActivity {
     private String getCurrentUserEmail() {
         return getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).getString("current_user_email", null);
     }
-    
-    /**
-     * Register FCM token after successful screening API sync
-     * This ensures the barangay is saved to the server before registering FCM token
-     */
-    private void registerFCMTokenAfterScreening() {
-        try {
-            // Get current user email
-            String email = getCurrentUserEmail();
-            if (email == null || email.isEmpty()) {
-                Log.e("ScreeningFormActivity", "Cannot register FCM token: no user email");
-                return;
-            }
-            
-            // Get selected barangay
-            String selectedBarangay = this.selectedBarangay != null ? this.selectedBarangay : "";
-            if (selectedBarangay.isEmpty()) {
-                Log.e("ScreeningFormActivity", "Cannot register FCM token: no barangay selected");
-                return;
-            }
-            
-            // Initialize FCM token manager if needed
-            if (fcmTokenManager == null) {
-                fcmTokenManager = new FCMTokenManager(this);
-            }
-            
-            // Register FCM token with barangay
-            fcmTokenManager.registerTokenAfterScreening(email, selectedBarangay);
-            
-            Log.d("ScreeningFormActivity", "FCM token registration initiated for user: " + email + " in " + selectedBarangay);
-            
-            // Show success message
-            Toast.makeText(this, "FCM token registered with location: " + selectedBarangay, Toast.LENGTH_SHORT).show();
-            
-        } catch (Exception e) {
-            Log.e("ScreeningFormActivity", "Error registering FCM token: " + e.getMessage());
-        }
-    }
-    
-    // Add method to sync food preferences with updated risk score
-    private void syncFoodPreferencesWithRiskScore(String email, int riskScore) {
-        new Thread(() -> {
-            try {
-                // Create food preferences JSON with updated risk score
-                org.json.JSONObject requestData = new org.json.JSONObject();
-                requestData.put("action", "save_preferences");
-                requestData.put("email", email);
-                requestData.put("username", email);
-                requestData.put("allergies", new org.json.JSONArray());
-                requestData.put("diet_prefs", new org.json.JSONArray());
-                requestData.put("avoid_foods", "");
-                requestData.put("risk_score", riskScore);
-                
-                String json = requestData.toString();
-                android.util.Log.d("ScreeningFormActivity", "Sending food preferences to unified API: " + json);
-                
-                // Send to unified API
-                java.net.URL url = new java.net.URL(Constants.UNIFIED_API_URL);
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) Nutrisaur-App/1.0");
-                conn.setRequestProperty("Accept", "application/json, text/plain, */*");
-                conn.setRequestProperty("Accept-Language", "en-US,en;q=0.9");
-                conn.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
-                conn.setRequestProperty("Connection", "keep-alive");
-                conn.setRequestProperty("Cache-Control", "no-cache");
-                conn.setDoOutput(true);
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
-                
-                try (java.io.OutputStream os = conn.getOutputStream()) {
-                    os.write(json.getBytes("UTF-8"));
-                }
-                
-                int responseCode = conn.getResponseCode();
-                android.util.Log.d("ScreeningFormActivity", "Food preferences API response code: " + responseCode);
-                
-                if (responseCode >= 200 && responseCode < 300) {
-                    // Read response
-                    java.io.BufferedReader reader = new java.io.BufferedReader(
-                        new java.io.InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-                    
-                    android.util.Log.d("ScreeningFormActivity", "Food preferences API response: " + response.toString());
-                    android.util.Log.d("ScreeningFormActivity", "Food preferences synced with risk score successfully");
-                    runOnUiThread(() -> Toast.makeText(ScreeningFormActivity.this, "Food preferences updated", Toast.LENGTH_SHORT).show());
-                } else {
-                    android.util.Log.e("ScreeningFormActivity", "Failed to sync food preferences: " + responseCode);
-                    runOnUiThread(() -> Toast.makeText(ScreeningFormActivity.this, "Failed to update preferences: " + responseCode, Toast.LENGTH_SHORT).show());
-                }
-                
-            } catch (Exception e) {
-                android.util.Log.e("ScreeningFormActivity", "Error syncing food preferences: " + e.getMessage());
-                runOnUiThread(() -> Toast.makeText(ScreeningFormActivity.this, "Error updating preferences: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-            }
-        }).start();
-    }
 
     private void showScreeningResult(int riskScore) {
-        String riskCategory;
-        String recommendation;
-        String alertMessage = "";
+        String riskCategory = riskLevelText.getText().toString();
+        String recommendation = recommendationText.getText().toString();
         
-        // Updated risk categories according to verified malnutrition screening system
-        if (riskScore >= 80 || hasSwelling) {
-            riskCategory = "Severe Risk";
-            recommendation = "Urgent referral required";
-            alertMessage = "⚠️ URGENT: This person requires immediate medical attention and referral to a healthcare provider.";
-        } else if (riskScore >= 50) {
-            riskCategory = "High Risk";
-            recommendation = "Prompt clinical referral recommended";
-            alertMessage = "🔴 HIGH RISK: This person should be referred to a healthcare provider for further assessment.";
-        } else if (riskScore >= 20) {
-            riskCategory = "Moderate Risk";
-            recommendation = "Further assessment recommended";
-            alertMessage = "🟡 MODERATE RISK: This person should receive further assessment and monitoring.";
-        } else {
-            riskCategory = "Low Risk";
-            recommendation = "Routine counseling";
-            alertMessage = "🟢 LOW RISK: This person can receive routine nutrition counseling.";
-        }
-        
-        // Create enhanced result message
+        // Create result message
         String message = riskCategory + ": " + riskScore + "% - " + recommendation;
         
-        // Show result as toast message to avoid window leak
+        // Show result as toast message
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        
-        // Show alert message as separate toast - make alertMessage final for lambda
-        final String finalAlertMessage = alertMessage;
-        if (!finalAlertMessage.isEmpty()) {
-            new android.os.Handler().postDelayed(() -> {
-                Toast.makeText(this, finalAlertMessage, Toast.LENGTH_LONG).show();
-            }, 1000);
-        }
         
         // Navigate to main activity after a short delay
         new android.os.Handler().postDelayed(() -> {
-        Intent intent = new Intent(ScreeningFormActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+            Intent intent = new Intent(ScreeningFormActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         }, 2000);
     }
 
-    private void updateButtonStatesForAction(String action, View selectedButton) {
-        switch (action) {
-            case "gender":
-                if (selectedButton.getId() == R.id.gender_boy) {
-                    updateButtonStates((Button) selectedButton, genderGirl);
-                } else {
-                    updateButtonStates((Button) selectedButton, genderBoy);
-                }
-                break;
-            case "swelling":
-                if (selectedButton.getId() == R.id.swelling_yes) {
-                    updateButtonStates((Button) selectedButton, swellingNo);
-                } else {
-                    updateButtonStates((Button) selectedButton, swellingYes);
-                }
-                break;
-            case "weightLoss":
-                if (selectedButton.getId() == R.id.weightloss_10plus) {
-                    updateButtonStates((Button) selectedButton, weightLoss5To10, weightLossLess5);
-                } else if (selectedButton.getId() == R.id.weightloss_5to10) {
-                    updateButtonStates((Button) selectedButton, weightLoss10Plus, weightLossLess5);
-                } else {
-                    updateButtonStates((Button) selectedButton, weightLoss10Plus, weightLoss5To10);
-                }
-                break;
-            case "feeding":
-                if (selectedButton.getId() == R.id.feeding_good) {
-                    updateButtonStates((Button) selectedButton, feedingModerate, feedingPoor);
-                } else if (selectedButton.getId() == R.id.feeding_moderate) {
-                    updateButtonStates((Button) selectedButton, feedingGood, feedingPoor);
-                } else {
-                    updateButtonStates((Button) selectedButton, feedingGood, feedingModerate);
-                }
-                break;
-            case "physical":
-                // For physical signs, update all button states based on current values
-                updatePhysicalSignsButtonStates();
-                break;
-            case "illness":
-                if (selectedButton.getId() == R.id.illness_yes) {
-                    updateButtonStates((Button) selectedButton, illnessNo);
-                } else {
-                    updateButtonStates((Button) selectedButton, illnessYes);
-                }
-                break;
-            case "eatingDifficulty":
-                if (selectedButton.getId() == R.id.eating_difficulty_yes) {
-                    updateButtonStates((Button) selectedButton, eatingDifficultyNo);
-                } else {
-                    updateButtonStates((Button) selectedButton, eatingDifficultyYes);
-                }
-                break;
-            case "foodInsecurity":
-                if (selectedButton.getId() == R.id.food_insecurity_yes) {
-                    updateButtonStates((Button) selectedButton, foodInsecurityNo);
-                } else {
-                    updateButtonStates((Button) selectedButton, foodInsecurityYes);
-                }
-                break;
-            case "micronutrient":
-                if (selectedButton.getId() == R.id.micronutrient_yes) {
-                    updateButtonStates((Button) selectedButton, micronutrientNo);
-                } else {
-                    updateButtonStates((Button) selectedButton, micronutrientYes);
-                }
-                break;
-            case "functionalDecline":
-                if (selectedButton.getId() == R.id.functional_decline_yes) {
-                    updateButtonStates((Button) selectedButton, functionalDeclineNo);
-                } else {
-                    updateButtonStates((Button) selectedButton, functionalDeclineYes);
-                }
-                break;
-        }
-    }
-    
-    private void updatePhysicalSignsButtonStates() {
-        // Update physical signs buttons based on current state
-        if (isThin != null && isThin) {
-            physicalThin.setSelected(true);
-            physicalThin.setElevation(8f);
-            physicalThin.setBackgroundColor(0xFF424242); // Dark grey for selected
-        } else {
-            physicalThin.setSelected(false);
-            physicalThin.setElevation(6f);
-            physicalThin.setBackgroundColor(0xFFCCCCCC); // Lighter grey for unselected - more distinguishable
-        }
-        
-        if (isShorter != null && isShorter) {
-            physicalShorter.setSelected(true);
-            physicalShorter.setElevation(8f);
-            physicalShorter.setBackgroundColor(0xFF424242); // Dark grey for selected
-        } else {
-            physicalShorter.setSelected(false);
-            physicalShorter.setElevation(6f);
-            physicalShorter.setBackgroundColor(0xFFCCCCCC); // Lighter grey for unselected - more distinguishable
-        }
-        
-        if (isWeak != null && isWeak) {
-            physicalWeak.setSelected(true);
-            physicalWeak.setElevation(8f);
-            physicalWeak.setBackgroundColor(0xFF424242); // Dark grey for selected
-        } else {
-            physicalWeak.setSelected(false);
-            physicalWeak.setElevation(6f);
-            physicalWeak.setBackgroundColor(0xFFCCCCCC); // Lighter grey for unselected - more distinguishable
-        }
-        
-        if (isNone != null && isNone) {
-            physicalNone.setSelected(true);
-            physicalNone.setElevation(8f);
-            physicalNone.setBackgroundColor(0xFF424242); // Dark grey for selected
-        } else {
-            physicalNone.setSelected(false);
-            physicalNone.setElevation(6f);
-            physicalNone.setBackgroundColor(0xFFCCCCCC); // Lighter grey for unselected - more distinguishable
-        }
-        
-        // Force redraw
-        physicalThin.invalidate();
-        physicalShorter.invalidate();
-        physicalWeak.invalidate();
-        physicalNone.invalidate();
-    }
-    
     private void initializeButtonStates() {
-        // Initialize all buttons to unselected state with lighter grey background
-        genderBoy.setSelected(false);
-        genderGirl.setSelected(false);
-        genderBoy.setElevation(6f);
-        genderGirl.setElevation(6f);
-        genderBoy.setBackgroundColor(0xFFCCCCCC);
-        genderGirl.setBackgroundColor(0xFFCCCCCC);
-        
-        swellingYes.setSelected(false);
-        swellingNo.setSelected(false);
-        swellingYes.setElevation(6f);
-        swellingNo.setElevation(6f);
-        swellingYes.setBackgroundColor(0xFFCCCCCC);
-        swellingNo.setBackgroundColor(0xFFCCCCCC);
-        
-        weightLoss10Plus.setSelected(false);
-        weightLoss5To10.setSelected(false);
-        weightLossLess5.setSelected(false);
-        weightLoss10Plus.setElevation(6f);
-        weightLoss5To10.setElevation(6f);
-        weightLossLess5.setElevation(6f);
-        weightLoss10Plus.setBackgroundColor(0xFFCCCCCC);
-        weightLoss5To10.setBackgroundColor(0xFFCCCCCC);
-        weightLossLess5.setBackgroundColor(0xFFCCCCCC);
-        
-        feedingGood.setSelected(false);
-        feedingModerate.setSelected(false);
-        feedingPoor.setSelected(false);
-        feedingGood.setElevation(6f);
-        feedingModerate.setElevation(6f);
-        feedingPoor.setElevation(6f);
-        feedingGood.setBackgroundColor(0xFFCCCCCC);
-        feedingModerate.setBackgroundColor(0xFFCCCCCC);
-        feedingPoor.setBackgroundColor(0xFFCCCCCC);
-        
-        // Physical signs
-        physicalThin.setSelected(false);
-        physicalShorter.setSelected(false);
-        physicalWeak.setSelected(false);
-        physicalNone.setSelected(false);
-        physicalThin.setElevation(6f);
-        physicalShorter.setElevation(6f);
-        physicalWeak.setElevation(6f);
-        physicalNone.setElevation(6f);
-        physicalThin.setBackgroundColor(0xFFCCCCCC);
-        physicalShorter.setBackgroundColor(0xFFCCCCCC);
-        physicalWeak.setBackgroundColor(0xFFCCCCCC);
-        physicalNone.setBackgroundColor(0xFFCCCCCC);
-        
-        // Clinical risk factors
-        illnessYes.setSelected(false);
-        illnessNo.setSelected(false);
-        illnessYes.setElevation(6f);
-        illnessNo.setElevation(6f);
-        illnessYes.setBackgroundColor(0xFFCCCCCC);
-        illnessNo.setBackgroundColor(0xFFCCCCCC);
-        
-        eatingDifficultyYes.setSelected(false);
-        eatingDifficultyNo.setSelected(false);
-        eatingDifficultyYes.setElevation(6f);
-        eatingDifficultyNo.setElevation(6f);
-        eatingDifficultyYes.setBackgroundColor(0xFFCCCCCC);
-        eatingDifficultyNo.setBackgroundColor(0xFFCCCCCC);
-        
-        foodInsecurityYes.setSelected(false);
-        foodInsecurityNo.setSelected(false);
-        foodInsecurityYes.setElevation(6f);
-        foodInsecurityNo.setElevation(6f);
-        foodInsecurityYes.setBackgroundColor(0xFFCCCCCC);
-        foodInsecurityNo.setBackgroundColor(0xFFCCCCCC);
-        
-        micronutrientYes.setSelected(false);
-        micronutrientNo.setSelected(false);
-        micronutrientYes.setElevation(6f);
-        micronutrientNo.setElevation(6f);
-        micronutrientYes.setBackgroundColor(0xFFCCCCCC);
-        micronutrientNo.setBackgroundColor(0xFFCCCCCC);
-        
-        functionalDeclineYes.setSelected(false);
-        functionalDeclineNo.setSelected(false);
-        functionalDeclineYes.setElevation(6f);
-        functionalDeclineNo.setElevation(6f);
-        functionalDeclineYes.setBackgroundColor(0xFFCCCCCC);
-        functionalDeclineNo.setBackgroundColor(0xFFCCCCCC);
-        
-        // Set white text color for all buttons
-        setButtonTextColor(genderBoy, 0xFFFFFFFF);
-        setButtonTextColor(genderGirl, 0xFFFFFFFF);
-        setButtonTextColor(swellingYes, 0xFFFFFFFF);
-        setButtonTextColor(swellingNo, 0xFFFFFFFF);
-        setButtonTextColor(weightLoss10Plus, 0xFFFFFFFF);
-        setButtonTextColor(weightLoss5To10, 0xFFFFFFFF);
-        setButtonTextColor(weightLossLess5, 0xFFFFFFFF);
-        setButtonTextColor(feedingGood, 0xFFFFFFFF);
-        setButtonTextColor(feedingModerate, 0xFFFFFFFF);
-        setButtonTextColor(feedingPoor, 0xFFFFFFFF);
-        setButtonTextColor(physicalThin, 0xFFFFFFFF);
-        setButtonTextColor(physicalShorter, 0xFFFFFFFF);
-        setButtonTextColor(physicalWeak, 0xFFFFFFFF);
-        setButtonTextColor(physicalNone, 0xFFFFFFFF);
-        setButtonTextColor(illnessYes, 0xFFFFFFFF);
-        setButtonTextColor(illnessNo, 0xFFFFFFFF);
-        setButtonTextColor(eatingDifficultyYes, 0xFFFFFFFF);
-        setButtonTextColor(eatingDifficultyNo, 0xFFFFFFFF);
-        setButtonTextColor(foodInsecurityYes, 0xFFFFFFFF);
-        setButtonTextColor(foodInsecurityNo, 0xFFFFFFFF);
-        setButtonTextColor(micronutrientYes, 0xFFFFFFFF);
-        setButtonTextColor(micronutrientNo, 0xFFFFFFFF);
-        setButtonTextColor(functionalDeclineYes, 0xFFFFFFFF);
-        setButtonTextColor(functionalDeclineNo, 0xFFFFFFFF);
-        
-        // Force redraw of all buttons
-        genderBoy.invalidate();
-        genderGirl.invalidate();
-        swellingYes.invalidate();
-        swellingNo.invalidate();
-        weightLoss10Plus.invalidate();
-        weightLoss5To10.invalidate();
-        weightLossLess5.invalidate();
-        feedingGood.invalidate();
-        feedingModerate.invalidate();
-        feedingPoor.invalidate();
-        physicalThin.invalidate();
-        physicalShorter.invalidate();
-        physicalWeak.invalidate();
-        physicalNone.invalidate();
-        illnessYes.invalidate();
-        illnessNo.invalidate();
-        eatingDifficultyYes.invalidate();
-        eatingDifficultyNo.invalidate();
-        foodInsecurityYes.invalidate();
-        foodInsecurityNo.invalidate();
-        micronutrientYes.invalidate();
-        micronutrientNo.invalidate();
-        functionalDeclineYes.invalidate();
-        functionalDeclineNo.invalidate();
-    }
-    
-    // Helper method to set button text color
-    private void setButtonTextColor(Button button, int color) {
-        button.setTextColor(color);
-    }
-
-    private void updateBooleanValue(String action, boolean value) {
-        switch (action) {
-            case "gender":
-                if (value) {
-                    selectedGender = "boy";
-                } else {
-                    selectedGender = "girl";
-                }
-                break;
-            case "illness":
-                hasRecentIllness = value;
-                break;
-            case "eatingDifficulty":
-                hasEatingDifficulty = value;
-                break;
-            case "foodInsecurity":
-                hasFoodInsecurity = value;
-                break;
-            case "micronutrient":
-                hasMicronutrientDeficiency = value;
-                break;
-            case "functionalDecline":
-                hasFunctionalDecline = value;
-                break;
-            case "weightLoss":
-                // Handle weight loss status based on button ID
-                // This will be handled in the specific click listeners
-                break;
-            case "feeding":
-                // Handle feeding behavior based on button ID
-                // This will be handled in the specific click listeners
-                break;
-            case "physical":
-                // Handle physical signs - allow multiple selection
-                // This will be handled in the specific click listeners
-                break;
-        }
+        // Initialize all form elements to default states
+        // This method can be expanded as needed for specific UI elements
     }
 
     private void handleTestMode() {
@@ -1972,11 +932,10 @@ public class ScreeningFormActivity extends AppCompatActivity {
         if (!isTestMode) return;
         
         // Show test mode notification
-        Toast.makeText(this, "🧪 TEST MODE: Demo data pre-filled!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "🧪 TEST MODE: Comprehensive screening demo data pre-filled!", Toast.LENGTH_LONG).show();
         
-        // Pre-fill form with realistic test data - simplified version
+        // Pre-fill form with realistic test data for comprehensive screening
         new Thread(() -> {
-            // Wait a bit for views to be initialized
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -1985,109 +944,31 @@ public class ScreeningFormActivity extends AppCompatActivity {
             
             runOnUiThread(() -> {
                 try {
-                    // Basic info - simulating a 3-year-old child
-                    if (childWeightInput != null) childWeightInput.setText("12.5"); // kg
-                    if (childHeightInput != null) childHeightInput.setText("90"); // cm
-                    if (dietaryDiversityInput != null) dietaryDiversityInput.setText("4"); // food groups
-                    if (muacInput != null) muacInput.setText("14.2"); // cm
+                    // Section 1: Basic Information
+                    ageInput.setText("28");
+                    selectedSex = "Female";
+                    selectedPregnant = "No";
                     
-                    // Set gender selection manually
-                    selectedGender = "girl";
-                    if (genderGirl != null) {
-                        genderGirl.setSelected(true);
-                        genderGirl.setBackgroundResource(R.drawable.button_selected);
-                    }
-                    if (genderBoy != null) {
-                        genderBoy.setSelected(false);
-                        genderBoy.setBackgroundResource(R.drawable.button_unselected);
-                    }
+                    // Section 2: Anthropometric Assessment
+                    weightInput.setText("55");
+                    heightInput.setText("158");
                     
-                    // Set birthday to 3 years ago
-                    selectedBirthday = Calendar.getInstance();
-                    selectedBirthday.add(Calendar.YEAR, -3);
-                    if (birthdayPickerBtn != null) {
-                        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-                        birthdayPickerBtn.setText(dateFormat.format(selectedBirthday.getTime()));
-                    }
+                    // Section 3: Meal Assessment
+                    mealRecallInput.setText("Rice, chicken, vegetables, apple");
                     
-                    // Set clinical assessments manually
-                    hasSwelling = false;
-                    if (swellingNo != null) {
-                        swellingNo.setSelected(true);
-                        swellingNo.setBackgroundResource(R.drawable.button_selected);
-                    }
-                    if (swellingYes != null) {
-                        swellingYes.setSelected(false);
-                        swellingYes.setBackgroundResource(R.drawable.button_unselected);
-                    }
+                    // Section 4: Family History
+                    hypertensionCheckBox.setChecked(true);
                     
-                    weightLossStatus = "5-10%";
-                    if (weightLoss5To10 != null) {
-                        weightLoss5To10.setSelected(true);
-                        weightLoss5To10.setBackgroundResource(R.drawable.button_selected);
-                    }
+                    // Section 5: Lifestyle
+                    selectedLifestyle = "Active";
                     
-                    feedingBehavior = "moderate";
-                    if (feedingModerate != null) {
-                        feedingModerate.setSelected(true);
-                        feedingModerate.setBackgroundResource(R.drawable.button_selected);
-                    }
-                    
-                    // Physical signs
-                    isThin = true;
-                    isWeak = true;
-                    isShorter = false;
-                    isNone = false;
-                    if (physicalThin != null) {
-                        physicalThin.setSelected(true);
-                        physicalThin.setBackgroundResource(R.drawable.button_selected);
-                    }
-                    if (physicalWeak != null) {
-                        physicalWeak.setSelected(true);
-                        physicalWeak.setBackgroundResource(R.drawable.button_selected);
-                    }
-                    
-                    // Risk factors
-                    hasRecentIllness = true;
-                    if (illnessYes != null) {
-                        illnessYes.setSelected(true);
-                        illnessYes.setBackgroundResource(R.drawable.button_selected);
-                    }
-                    
-                    hasFoodInsecurity = true;
-                    if (foodInsecurityYes != null) {
-                        foodInsecurityYes.setSelected(true);
-                        foodInsecurityYes.setBackgroundResource(R.drawable.button_selected);
-                    }
-                    
-                    // Location data
-                    selectedBarangay = "A. Rivera (Pob.)";
-                    selectedIncome = "PHP 20,001–40,000/month (Middle)";
-                    
-                    // Set spinners if they exist
-                    setSpinnerSelection(barangaySpinner, selectedBarangay);
-                    setSpinnerSelection(incomeSpinner, selectedIncome);
+                    // Section 6: Immunization (for children)
+                    // Will be handled by age validation
                     
                 } catch (Exception e) {
                     Log.e("ScreeningFormActivity", "Error pre-filling test data: " + e.getMessage());
                 }
             });
         }).start();
-    }
-    
-    private void setSpinnerSelection(Spinner spinner, String value) {
-        if (spinner == null || value == null) return;
-        
-        try {
-            android.widget.SpinnerAdapter adapter = spinner.getAdapter();
-            for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItem(i).toString().equals(value)) {
-                    spinner.setSelection(i);
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            Log.e("ScreeningFormActivity", "Error setting spinner selection: " + e.getMessage());
-        }
     }
 } 
