@@ -651,8 +651,8 @@ header {
 .deck-cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    padding: 25px;
+    gap: 30px;
+    padding: 35px;
     height: 100%;
     overflow-y: auto;
     scrollbar-width: none;
