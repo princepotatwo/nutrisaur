@@ -497,35 +497,18 @@ header {
     margin-bottom: 30px;
 }
 
-/* Dashboard Header Styles */
 .dashboard-header {
-    background-color: var(--color-card);
-    border-radius: 12px;
-    padding: 18px 22px;
-    margin-bottom: 25px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid rgba(161, 180, 84, 0.2);
-    transition: all 0.3s ease;
-}
-
-.dashboard-header:hover {
-    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
-    transform: translateY(-1px);
+    /* Removed card styling - no background, padding, border-radius, or box-shadow */
+    padding: 0;
+    margin-bottom: 20px;
 }
 
 .dashboard-header h1 {
-    color: var(--color-highlight);
-    font-size: 22px;
-    font-weight: 600;
     margin: 0;
-}
-
-.dashboard-header .user-info {
-    display: flex;
-    align-items: center;
+    color: var(--color-text);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
 }
 
 /* User info styles */
@@ -535,73 +518,45 @@ header {
     gap: 15px;
 }
 
-/* New Theme toggle button - Orange for moon, Black for sun */
+/* New theme toggle button design */
 .new-theme-toggle-btn {
-    background: #FF9800; /* Default orange for moon icon */
+    background: #FF9800;
     border: none;
-    color: #333; /* Dark color for moon icon */
-    padding: 10px 15px;
-    border-radius: 25px;
+    color: #FFFFFF;
+    padding: 10px 12px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 18px;
-    min-width: 50px;
-    height: 50px;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
-    font-weight: bold;
+    min-width: 44px;
+    height: 44px;
 }
 
 .new-theme-toggle-btn:hover {
-    background: #F57C00; /* Darker orange on hover */
+    background: #F57C00;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
-}
-
-.new-theme-toggle-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(255, 152, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
 }
 
 .new-theme-toggle-btn .new-theme-icon {
-    font-size: 20px;
-    transition: transform 0.3s ease;
+    font-size: 18px;
+    transition: all 0.3s ease;
 }
 
-/* Dark theme: Orange background for moon icon */
-.dark-theme .new-theme-toggle-btn {
-    background: #FF9800;
-    color: #333; /* Dark color for moon icon */
-    box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
-}
-
-.dark-theme .new-theme-toggle-btn:hover {
-    background: #F57C00;
-    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
-}
-
-/* Dark theme: Orange moon icon */
-.dark-theme .new-theme-toggle-btn .new-theme-icon {
-    color: #333;
-}
-
-/* Light theme: Black background for sun icon */
+/* Light theme - black button with white icon */
 .light-theme .new-theme-toggle-btn {
     background: #000000;
-    color: #FFFFFF; /* White color for sun icon */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .light-theme .new-theme-toggle-btn:hover {
     background: #333333;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Light theme: White sun icon */
 .light-theme .new-theme-toggle-btn .new-theme-icon {
-    color: #FFFFFF;
+    color: #FFFFFF !important;
 }
         .screening-container {
             max-width: 1200px;
