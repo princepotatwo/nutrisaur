@@ -808,30 +808,30 @@ header {
 }
 
 .fan-card[data-type="personal"] {
-    transform: rotate(-15deg) translateX(-80px) translateY(-40px);
+    transform: rotate(-15deg) translateX(-120px) translateY(-60px);
     z-index: 20;
 }
 
 .fan-card[data-type="anthropometric"] {
-    transform: rotate(0deg) translateX(0) translateY(-60px);
+    transform: rotate(0deg) translateX(0) translateY(-80px);
     z-index: 30;
 }
 
 .fan-card[data-type="nutritional"] {
-    transform: rotate(15deg) translateX(80px) translateY(-40px);
+    transform: rotate(15deg) translateX(120px) translateY(-60px);
     z-index: 20;
 }
 
 .deck-card.selected .fan-card[data-type="personal"] {
-    transform: rotate(-8deg) translateX(-60px) translateY(-50px);
+    transform: rotate(-8deg) translateX(-100px) translateY(-70px);
 }
 
 .deck-card.selected .fan-card[data-type="anthropometric"] {
-    transform: rotate(0deg) translateX(0) translateY(-70px);
+    transform: rotate(0deg) translateX(0) translateY(-90px);
 }
 
 .deck-card.selected .fan-card[data-type="nutritional"] {
-    transform: rotate(8deg) translateX(60px) translateY(-50px);
+    transform: rotate(8deg) translateX(100px) translateY(-70px);
 }
 
 .fan-label {
@@ -2135,6 +2135,10 @@ header {
                         }
                         selectedCard = index;
                         card.classList.add('selected');
+                        
+                        // Auto-scroll to center the selected card
+                        scrollToCenterCard(index);
+                        
                         // Keep the spread position when selecting
                         if (hoveredCard !== null) {
                             spreadDeck();
@@ -2187,6 +2191,25 @@ header {
                 deckCards.forEach(card => {
                     card.style.transform = 'translateX(0px) translateY(0px) scale(1)';
                 });
+            }
+            
+            function scrollToCenterCard(cardIndex) {
+                const deckContainer = document.querySelector('.deck-cards');
+                const card = deckCards[cardIndex];
+                
+                if (deckContainer && card) {
+                    const containerWidth = deckContainer.clientWidth;
+                    const cardWidth = card.offsetWidth;
+                    const cardLeft = card.offsetLeft;
+                    const cardCenter = cardLeft + (cardWidth / 2);
+                    const containerCenter = containerWidth / 2;
+                    const scrollLeft = cardCenter - containerCenter;
+                    
+                    deckContainer.scrollTo({
+                        left: scrollLeft,
+                        behavior: 'smooth'
+                    });
+                }
             }
         });
 
