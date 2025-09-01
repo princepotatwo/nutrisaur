@@ -147,7 +147,7 @@ if ($conn) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Assessment Results - NutriSaur</title>
+            <title>MHO Nutritional Assessment Module - NutriSaur</title>
     <link rel="stylesheet" href="optimized_styles.css">
     <style>
         .screening-container {
@@ -680,6 +680,88 @@ if ($conn) {
             color: var(--text-color-secondary);
             margin-left: 10px;
         }
+
+        /* MHO Description Styles */
+        .mho-description {
+            margin-bottom: 30px;
+        }
+
+        .description-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .description-card h3 {
+            color: var(--accent-color);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .description-card p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: var(--text-color);
+        }
+
+        .assessment-features, .assessment-process {
+            margin-bottom: 25px;
+        }
+
+        .assessment-features h4, .assessment-process h4 {
+            color: var(--text-color);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+        }
+
+        .assessment-features ul, .assessment-process ol {
+            padding-left: 20px;
+        }
+
+        .assessment-features li, .assessment-process li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            color: var(--text-color);
+        }
+
+        .assessment-features strong {
+            color: var(--accent-color);
+        }
+
+        .assessment-process ol {
+            counter-reset: step-counter;
+        }
+
+        .assessment-process li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .assessment-process li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--accent-color);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="dark-theme">
@@ -695,7 +777,7 @@ if ($conn) {
         <div class="navbar-menu">
             <ul>
                 <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
-                <li><a href="screening" class="active"><span class="navbar-icon"></span><span>Assessment Results</span></a></li>
+                <li><a href="screening" class="active"><span class="navbar-icon"></span><span>MHO Assessment</span></a></li>
                 <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
                 <li><a href="ai"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
                 <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
@@ -711,7 +793,7 @@ if ($conn) {
     <div class="dashboard">
         <header class="dashboard-header fade-in">
             <div class="dashboard-title">
-                <h1>Assessment Results Dashboard</h1>
+                <h1>MHO Nutritional Assessment Module</h1>
             </div>
             <div class="user-info">
                 <button id="new-theme-toggle" class="new-theme-toggle-btn" title="Toggle theme">
@@ -724,16 +806,16 @@ if ($conn) {
             <!-- Assessment Results Display -->
             <div class="assessment-results">
                 <div class="results-header">
-                    <h2>📊 Nutrition Assessment Results</h2>
-                    <p>View and analyze nutrition screening assessments completed via the mobile app</p>
+                    <h2>🏥 MHO Nutritional Assessment Module</h2>
+                    <p>Enabling MHO Staff to assess the nutritional status of registered community members through a Decision Tree algorithm-based assessment module</p>
                 </div>
 
                 <!-- Assessment Summary Cards -->
                 <div class="summary-cards">
                     <div class="summary-card">
-                        <div class="card-icon">👥</div>
+                        <div class="card-icon">🏥</div>
                         <div class="card-content">
-                            <h3>Total Assessments</h3>
+                            <h3>Community Assessments</h3>
                             <div class="card-value"><?php echo count($screening_assessments); ?></div>
                         </div>
                     </div>
@@ -753,9 +835,9 @@ if ($conn) {
                     </div>
                     
                     <div class="summary-card">
-                        <div class="card-icon">📈</div>
+                        <div class="card-icon">📊</div>
                         <div class="card-content">
-                            <h3>Average Risk Score</h3>
+                            <h3>Decision Tree Score</h3>
                             <div class="card-value"><?php 
                                 if (count($screening_assessments) > 0) {
                                     $total_score = 0;
@@ -771,10 +853,40 @@ if ($conn) {
                     </div>
                 </div>
 
+                <!-- MHO Assessment Module Description -->
+                <div class="mho-description">
+                    <div class="description-card">
+                        <h3>🏥 MHO Nutritional Assessment Module</h3>
+                        <p>This module enables Municipal Health Office (MHO) Staff to conduct comprehensive nutritional assessments of registered community members using a sophisticated Decision Tree algorithm-based assessment system.</p>
+                        
+                        <div class="assessment-features">
+                            <h4>Key Features:</h4>
+                            <ul>
+                                <li><strong>Decision Tree Algorithm:</strong> Automated nutritional status classification based on multiple assessment criteria</li>
+                                <li><strong>Comprehensive Screening:</strong> 7-section assessment covering anthropometric, dietary, and health factors</li>
+                                <li><strong>Real-time Analysis:</strong> Instant BMI calculation and risk factor identification</li>
+                                <li><strong>Community Tracking:</strong> Monitor nutritional trends across different barangays and municipalities</li>
+                                <li><strong>MHO Dashboard:</strong> Centralized view of all community assessments for health planning</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="assessment-process">
+                            <h4>Assessment Process:</h4>
+                            <ol>
+                                <li>MHO Staff conducts mobile assessment using the NutriSaur app</li>
+                                <li>Decision Tree algorithm analyzes all input data</li>
+                                <li>System generates nutritional risk score and classification</li>
+                                <li>Assessment data syncs to this MHO dashboard</li>
+                                <li>Health officers can review and plan interventions</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Assessment Results Table -->
                 <div class="assessment-table-container">
                     <div class="table-header">
-                        <h3>📋 Assessment History</h3>
+                        <h3>📋 Community Nutritional Assessments</h3>
                         <div class="table-controls">
                             <input type="text" id="searchAssessments" placeholder="Search assessments..." class="search-input">
                             <select id="filterRisk" class="filter-select">
@@ -788,17 +900,18 @@ if ($conn) {
 
                     <?php if (empty($screening_assessments)): ?>
                         <div class="no-data">
-                            <div class="no-data-icon">📱</div>
-                            <h3>No Assessments Yet</h3>
-                            <p>Assessments will appear here once users complete screening via the mobile app.</p>
+                            <div class="no-data-icon">🏥</div>
+                            <h3>No Community Assessments Yet</h3>
+                            <p>Community nutritional assessments will appear here once MHO staff complete screenings via the mobile assessment module.</p>
                             <div class="mobile-app-info">
-                                <h4>📱 Mobile App Screening</h4>
-                                <p>Users can complete comprehensive nutrition screening using the NutriSaur mobile app:</p>
+                                <h4>🏥 MHO Assessment Module</h4>
+                                <p>MHO Staff can conduct comprehensive nutritional assessments using the NutriSaur mobile module:</p>
                                 <ul>
+                                    <li>Decision Tree algorithm-based assessment</li>
                                     <li>7-section comprehensive screening</li>
-                                    <li>Real-time BMI calculation</li>
-                                    <li>Risk assessment and recommendations</li>
-                                    <li>Data syncs automatically to this dashboard</li>
+                                    <li>Real-time BMI calculation and risk analysis</li>
+                                    <li>Automated nutritional status classification</li>
+                                    <li>Data syncs automatically to this MHO dashboard</li>
                                 </ul>
                             </div>
                         </div>
@@ -807,14 +920,14 @@ if ($conn) {
                             <table class="assessment-table">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Location</th>
+                                        <th>Assessment Date</th>
+                                        <th>Community Location</th>
                                         <th>Age</th>
                                         <th>Sex</th>
-                                        <th>BMI</th>
-                                        <th>Risk Score</th>
-                                        <th>Risk Level</th>
-                                        <th>Actions</th>
+                                        <th>BMI Status</th>
+                                        <th>Decision Tree Score</th>
+                                        <th>Nutritional Risk</th>
+                                        <th>MHO Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -860,7 +973,7 @@ if ($conn) {
                                                 </span>
                                             </td>
                                             <td>
-                                                <button onclick="viewAssessmentDetails(<?php echo $assessment['id']; ?>)" class="btn-view">View Details</button>
+                                                <button onclick="viewAssessmentDetails(<?php echo $assessment['id']; ?>)" class="btn-view">Review Assessment</button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -1077,7 +1190,7 @@ if ($conn) {
             modal.innerHTML = `
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3>Assessment Details - ${assessment.municipality}, ${assessment.barangay}</h3>
+                        <h3>MHO Nutritional Assessment - ${assessment.municipality}, ${assessment.barangay}</h3>
                         <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
                     </div>
                     <div class="assessment-details">
@@ -1116,13 +1229,13 @@ if ($conn) {
                         </div>
                         
                         <div class="detail-section">
-                            <h4>⚠️ Risk Assessment</h4>
+                            <h4>⚠️ Decision Tree Assessment</h4>
                             <div class="detail-item">
-                                <span class="detail-label">Risk Score:</span>
+                                <span class="detail-label">Decision Tree Score:</span>
                                 <span class="detail-value">${assessment.risk_score}</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Risk Level:</span>
+                                <span class="detail-label">Nutritional Risk Level:</span>
                                 <span class="detail-value">${getRiskLevel(assessment.risk_score)}</span>
                             </div>
                         </div>

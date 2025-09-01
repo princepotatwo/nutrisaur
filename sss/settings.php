@@ -3800,7 +3800,7 @@ optgroup option {
         <div class="navbar-menu">
             <ul>
                 <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
-                <li><a href="screening"><span class="navbar-icon"></span><span>Assessment Results</span></a></li>
+                <li><a href="screening"><span class="navbar-icon"></span><span>MHO Assessment</span></a></li>
                 <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
                 <li><a href="ai"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
                 <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
