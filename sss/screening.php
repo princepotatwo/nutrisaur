@@ -147,9 +147,279 @@ if ($conn) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>MHO Nutritional Assessment Module - NutriSaur</title>
-    <link rel="stylesheet" href="optimized_styles.css">
-    <style>
+    <title>MHO Nutritional Assessment Module - NutriSaur</title>
+</head>
+<style>
+/* Dark Theme - Default */
+:root {
+    --color-bg: #1A211A;
+    --color-card: #2A3326;
+    --color-highlight: #A1B454;
+    --color-text: #E8F0D6;
+    --color-accent1: #8CA86E;
+    --color-accent2: #B5C88D;
+    --color-accent3: #546048;
+    --color-accent4: #C9D8AA;
+    --color-danger: #CF8686;
+    --color-warning: #E0C989;
+    --color-border: rgba(161, 180, 84, 0.2);
+    --color-shadow: rgba(0, 0, 0, 0.1);
+    --color-hover: rgba(161, 180, 84, 0.08);
+    --color-active: rgba(161, 180, 84, 0.15);
+}
+
+/* Light Theme - Light Greenish Colors */
+.light-theme {
+    --color-bg: #F0F7F0;
+    --color-card: #FFFFFF;
+    --color-highlight: #66BB6A;
+    --color-text: #1B3A1B;
+    --color-accent1: #81C784;
+    --color-accent2: #4CAF50;
+    --color-accent3: #2E7D32;
+    --color-accent4: #A5D6A7;
+    --color-danger: #E57373;
+    --color-warning: #FFB74D;
+    --color-border: #C8E6C9;
+    --color-shadow: rgba(76, 175, 80, 0.1);
+    --color-hover: rgba(76, 175, 80, 0.08);
+    --color-active: rgba(76, 175, 80, 0.15);
+}
+
+/* Base navbar styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100vh;
+    background-color: var(--color-card);
+    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(10px);
+}
+
+/* Base body styles */
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    min-height: 100vh;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-left: 320px;
+    line-height: 1.6;
+    letter-spacing: 0.2px;
+}
+
+/* Dashboard container */
+.dashboard {
+    max-width: calc(100% - 60px);
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Navbar header styles */
+.navbar-header {
+    padding: 35px 25px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid rgba(164, 188, 46, 0.15);
+    background: linear-gradient(135deg, rgba(161, 180, 84, 0.05) 0%, transparent 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.navbar-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.3), transparent);
+}
+
+/* Navbar menu styles */
+.navbar-menu {
+    flex: 1;
+    padding: 30px 0;
+}
+
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar li {
+    margin-bottom: 2px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.navbar li:hover {
+    transform: translateX(5px);
+}
+
+.navbar li:not(:last-child) {
+    border-bottom: 1px solid rgba(161, 180, 84, 0.08);
+}
+
+/* Navbar footer styles */
+.navbar-footer {
+    padding: 25px;
+    text-align: center;
+    border-top: 2px solid rgba(164, 188, 46, 0.15);
+    background: linear-gradient(135deg, transparent 0%, rgba(161, 180, 84, 0.03) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.navbar-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.3), transparent);
+}
+
+.navbar-footer div:first-child {
+    font-weight: 600;
+    color: var(--color-highlight);
+    margin-bottom: 8px;
+}
+
+/* Header styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.dashboard-header {
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* User info styles */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* New theme toggle button design */
+.new-theme-toggle-btn {
+    background: #FF9800;
+    border: none;
+    color: #FFFFFF;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+}
+
+.new-theme-toggle-btn:hover {
+    background: #F57C00;
+    transform: translateY(-2px);
+}
+
+.new-theme-toggle-btn:active {
+    transform: translateY(0);
+}
+
+/* Navbar link styles */
+.navbar a {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    font-weight: 500;
+}
+
+.navbar a:hover {
+    background-color: var(--color-hover);
+    color: var(--color-highlight);
+}
+
+.navbar a.active {
+    background-color: var(--color-active);
+    color: var(--color-highlight);
+    font-weight: 600;
+}
+
+.navbar a.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: var(--color-highlight);
+}
+
+.navbar-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Navbar logo styles */
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.navbar-logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--color-highlight), var(--color-accent1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.3);
+}
+
+.navbar-logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-highlight);
+    letter-spacing: 0.5px;
+}
         .screening-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -764,7 +1034,7 @@ if ($conn) {
         }
     </style>
 </head>
-<body class="dark-theme">
+<body class="light-theme">
     <div class="navbar">
         <div class="navbar-header">
             <div class="navbar-logo">
@@ -791,8 +1061,8 @@ if ($conn) {
     </div>
 
     <div class="dashboard">
-        <header class="dashboard-header fade-in">
-            <div class="dashboard-title">
+        <header>
+            <div class="dashboard-header">
                 <h1>MHO Nutritional Assessment Module</h1>
             </div>
             <div class="user-info">
