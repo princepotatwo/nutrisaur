@@ -608,27 +608,27 @@ header {
 .card-deck-container {
     background: var(--color-card);
     border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: 15px;
+    margin-bottom: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--color-border);
 }
 
 .deck-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .deck-header h3 {
     color: var(--color-highlight);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
 }
 
 .deck-header p {
     color: var(--color-text);
-    font-size: 14px;
+    font-size: 13px;
     opacity: 0.8;
     margin: 0;
 }
@@ -640,7 +640,7 @@ header {
 
 .deck-container {
     position: relative;
-    height: 550px;
+    height: 350px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
@@ -651,7 +651,7 @@ header {
 .deck-cards {
     display: flex;
     gap: 12px;
-    padding: 24px;
+    padding: 20px;
     height: 100%;
     align-items: center;
     justify-content: center;
