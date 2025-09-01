@@ -640,7 +640,7 @@ header {
 
 .deck-container {
     position: relative;
-    height: 400px;
+    height: 450px;
     border-radius: 24px;
     border: 1px solid var(--color-border);
     background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
@@ -654,6 +654,7 @@ header {
     padding: 24px;
     height: 100%;
     align-items: center;
+    justify-content: center;
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -807,30 +808,30 @@ header {
 }
 
 .fan-card[data-type="personal"] {
-    transform: rotate(-15deg) translateX(-60px) translateY(-20px);
+    transform: rotate(-15deg) translateX(-80px) translateY(-40px);
     z-index: 20;
 }
 
 .fan-card[data-type="anthropometric"] {
-    transform: rotate(0deg) translateX(0) translateY(-40px);
+    transform: rotate(0deg) translateX(0) translateY(-60px);
     z-index: 30;
 }
 
 .fan-card[data-type="nutritional"] {
-    transform: rotate(15deg) translateX(60px) translateY(-20px);
+    transform: rotate(15deg) translateX(80px) translateY(-40px);
     z-index: 20;
 }
 
 .deck-card.selected .fan-card[data-type="personal"] {
-    transform: rotate(-8deg) translateX(-40px) translateY(-30px);
+    transform: rotate(-8deg) translateX(-60px) translateY(-50px);
 }
 
 .deck-card.selected .fan-card[data-type="anthropometric"] {
-    transform: rotate(0deg) translateX(0) translateY(-50px);
+    transform: rotate(0deg) translateX(0) translateY(-70px);
 }
 
 .deck-card.selected .fan-card[data-type="nutritional"] {
-    transform: rotate(8deg) translateX(40px) translateY(-30px);
+    transform: rotate(8deg) translateX(60px) translateY(-50px);
 }
 
 .fan-label {
