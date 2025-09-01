@@ -1,0 +1,1261 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+    header('Location: /home');
+    exit;
+}
+
+$mysql_host = 'mainline.proxy.rlwy.net';
+$mysql_port = 26063;
+$mysql_user = 'root';
+$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+$mysql_database = 'railway';
+
+if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
+    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
+    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
+    if (preg_match($pattern, $mysql_url, $matches)) {
+        $mysql_user = $matches[1];
+        $mysql_password = $matches[2];
+        $mysql_host = $matches[3];
+        $mysql_port = $matches[4];
+        $mysql_database = $matches[5];
+    }
+}
+
+try {
+    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
+    
+    $pdoOptions = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_TIMEOUT => 30,
+        PDO::ATTR_PERSISTENT => false,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
+        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+    ];
+    
+    $conn = new PDO($dsn, $mysql_user, $mysql_password, $pdoOptions);
+    $conn->query("SELECT 1");
+    
+} catch (PDOException $e) {
+    error_log("Database connection failed: " . $e->getMessage());
+    $conn = null;
+    $dbError = "Database connection failed: " . $e->getMessage();
+}
+
+// Get user info
+$username = $_SESSION['username'] ?? 'Unknown User';
+$user_id = $_SESSION['user_id'] ?? $_SESSION['admin_id'] ?? null;
+
+// Municipalities and Barangays data
+$municipalities = [
+    'ABUCAY' => ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Omboy', 'Salian', 'Wawa (Pob.)'],
+    'BAGAC' => ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibis', 'Pag-asa (Wawa-Sibacan)', 'Parang', 'Paysawan', 'Quinawan', 'San Antonio', 'Saysain', 'Tabing-Ilog (Pob.)', 'Atilano L. Ricardo'],
+    'CITY OF BALANGA (Capital)' => ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Cupang Proper', 'Cupang West', 'Dangcol (Bernabe)', 'Ibayo', 'Malabia', 'Poblacion', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Jose', 'Sibacan', 'Camacho', 'Talisay', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo', 'Bagong Silang', 'Cupang North', 'Doña Francisca', 'Lote'],
+    'DINALUPIHAN' => ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar (Pob.)', 'Gen. Luna (Pob.)', 'Gomez (Pob.)', 'Happy Valley', 'Kataasan', 'Layac', 'Luacan', 'Mabini Proper (Pob.)', 'Mabini Ext. (Pob.)', 'Magsaysay', 'Naparing', 'New San Jose', 'Old San Jose', 'Padre Dandan (Pob.)', 'Pag-asa', 'Pagalanggang', 'Pinulot', 'Pita', 'Rizal (Pob.)', 'Roosevelt', 'Roxas (Pob.)', 'Saguing', 'San Benito', 'San Isidro (Pob.)', 'San Pablo (Bulate)', 'San Ramon', 'San Simon', 'Santo Niño', 'Sapang Balas', 'Santa Isabel (Tabacan)', 'Torres Bugauen (Pob.)', 'Tucop', 'Zamora (Pob.)', 'Aquino', 'Bayan-bayanan', 'Maligaya', 'Payangan', 'Pentor', 'Tubo-tubo', 'Jose C. Payumo, Jr.'],
+    'HERMOSA' => ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culis', 'Daungan (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Mambog - Mandama', 'Palihan', 'Pandatung', 'Pulo', 'Saba', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo', 'Judge Roman Cruz Sr. (Mandama)', 'Sacrifice Valley'],
+    'LIMAY' => ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reformista', 'Townsite', 'Wawa', 'Duale', 'San Francisco de Asis', 'St. Francis II'],
+    'MARIVELES' => ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Baseco Country (Nassco)', 'Poblacion', 'San Carlos', 'San Isidro', 'Sisiman', 'Balon-Anito', 'Biaan', 'Camaya', 'Ipag', 'Malaya', 'Maligaya', 'Mt. View', 'Townsite'],
+    'MORONG' => ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang'],
+    'ORANI' => ['Bagong Paraiso (Pob.)', 'Balut (Pob.)', 'Bayan (Pob.)', 'Calero (Pob.)', 'Paking-Carbonero (Pob.)', 'Centro II (Pob.)', 'Dona', 'Kaparangan', 'Masantol', 'Mulawin', 'Pag-asa', 'Palihan (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang Parang (Pob.)', 'Centro I (Pob.)', 'Sibul', 'Silahis', 'Tala', 'Talimundoc', 'Tapulao', 'Tenejero (Pob.)', 'Tugatog', 'Wawa (Pob.)', 'Apollo', 'Kabalutan', 'Maria Fe', 'Puksuan', 'Tagumpay'],
+    'ORION' => ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago (Pob.)', 'Daang Bilolo (Pob.)', 'Daang Pare', 'General Lim (Kaput)', 'Kapunitan', 'Lati (Pob.)', 'Lusungan (Pob.)', 'Puting Buhangin', 'Sabatan', 'San Vicente (Pob.)', 'Santo Domingo', 'Villa Angeles (Pob.)', 'Wakas (Pob.)', 'Wawa (Pob.)', 'Santa Elena'],
+    'PILAR' => ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Burgos', 'Del Rosario (Pob.)', 'Diwa', 'Landing', 'Liyang', 'Nagwaling', 'Panilao', 'Pantingan', 'Poblacion', 'Rizal (Pob.)', 'Santa Rosa', 'Wakas North', 'Wakas South', 'Wawa'],
+    'SAMAL' => ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan (Pob.)', 'San Roque (Pob.)', 'Santa Lucia', 'Sapa', 'Tabing Ilog', 'Gugo', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
+];
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $screening_data = [
+            'municipality' => $_POST['municipality'] ?? '',
+            'barangay' => $_POST['barangay'] ?? '',
+            'age' => $_POST['age'] ?? '',
+            'age_months' => $_POST['age_months'] ?? '',
+            'sex' => $_POST['sex'] ?? '',
+            'pregnant' => $_POST['pregnant'] ?? '',
+            'weight' => $_POST['weight'] ?? '',
+            'height' => $_POST['height'] ?? '',
+            'bmi' => $_POST['bmi'] ?? '',
+            'meal_recall' => $_POST['meal_recall'] ?? '',
+            'family_history' => $_POST['family_history'] ?? [],
+            'lifestyle' => $_POST['lifestyle'] ?? '',
+            'lifestyle_other' => $_POST['lifestyle_other'] ?? '',
+            'immunization' => $_POST['immunization'] ?? [],
+            'created_at' => date('Y-m-d H:i:s'),
+            'user_id' => $user_id
+        ];
+
+        // Calculate BMI
+        if (!empty($screening_data['weight']) && !empty($screening_data['height'])) {
+            $weight = floatval($screening_data['weight']);
+            $height = floatval($screening_data['height']) / 100; // Convert cm to meters
+            $screening_data['bmi'] = round($weight / ($height * $height), 2);
+        }
+
+        // Insert into database
+        $stmt = $conn->prepare("INSERT INTO screening_assessments (
+            user_id, municipality, barangay, age, age_months, sex, pregnant, 
+            weight, height, bmi, meal_recall, family_history, lifestyle, 
+            lifestyle_other, immunization, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        
+        $stmt->execute([
+            $screening_data['user_id'],
+            $screening_data['municipality'],
+            $screening_data['barangay'],
+            $screening_data['age'],
+            $screening_data['age_months'],
+            $screening_data['sex'],
+            $screening_data['pregnant'],
+            $screening_data['weight'],
+            $screening_data['height'],
+            $screening_data['bmi'],
+            $screening_data['meal_recall'],
+            json_encode($screening_data['family_history']),
+            $screening_data['lifestyle'],
+            $screening_data['lifestyle_other'],
+            json_encode($screening_data['immunization']),
+            $screening_data['created_at']
+        ]);
+
+        $success_message = "Screening assessment saved successfully!";
+        
+    } catch (Exception $e) {
+        $error_message = "Error saving screening assessment: " . $e->getMessage();
+    }
+}
+
+// Get existing screening assessments
+$screening_assessments = [];
+if ($conn) {
+    try {
+        $stmt = $conn->prepare("SELECT * FROM screening_assessments WHERE user_id = ? ORDER BY created_at DESC");
+        $stmt->execute([$user_id]);
+        $screening_assessments = $stmt->fetchAll();
+    } catch (Exception $e) {
+        error_log("Error fetching screening assessments: " . $e->getMessage());
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Assessment Results - NutriSaur</title>
+    <link rel="stylesheet" href="optimized_styles.css">
+    <style>
+        .screening-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .screening-form {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-color);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 16px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(var(--accent-color-rgb), 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .age-inputs {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .age-inputs .form-group {
+            flex: 1;
+        }
+
+        .bmi-display {
+            background: var(--accent-color);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .submit-btn {
+            background: var(--accent-color);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-color-dark);
+            transform: translateY(-2px);
+        }
+
+        .screening-history {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .history-table th {
+            background: var(--accent-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .history-table tr:hover {
+            background: var(--hover-bg);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .conditional-field {
+            display: none;
+        }
+
+        .conditional-field.show {
+            display: block;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Assessment Results Styles */
+        .assessment-results {
+            margin-bottom: 30px;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-header h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .results-header p {
+            font-size: 1.1em;
+            color: var(--text-color-secondary);
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 3em;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-color);
+            border-radius: 50%;
+            color: white;
+        }
+
+        .card-content h3 {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .card-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .assessment-table-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .table-header h3 {
+            font-size: 1.5em;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            min-width: 200px;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-data-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .no-data h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .no-data p {
+            font-size: 1.1em;
+            color: var(--text-color-secondary);
+            margin-bottom: 30px;
+        }
+
+        .mobile-app-info {
+            background: var(--bg-color);
+            border-radius: 10px;
+            padding: 25px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .mobile-app-info h4 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .mobile-app-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .mobile-app-info li {
+            padding: 8px 0;
+            color: var(--text-color);
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .mobile-app-info li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .assessment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .assessment-table th,
+        .assessment-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .assessment-table th {
+            background: var(--accent-color);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+
+        .assessment-table tr:hover {
+            background: var(--hover-bg);
+        }
+
+        .bmi-value {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .bmi-category {
+            display: block;
+            font-size: 0.9em;
+            color: var(--text-color-secondary);
+            margin-top: 5px;
+        }
+
+        .risk-score {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .risk-level {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .risk-level.low {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .risk-level.medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .risk-level.high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-view {
+            background: var(--accent-color);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .btn-view:hover {
+            background: var(--accent-color-dark);
+        }
+
+        /* Assessment Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .close {
+            color: var(--text-color);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--accent-color);
+        }
+
+        .assessment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-section {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .detail-section h4 {
+            margin-bottom: 15px;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .detail-item {
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .detail-value {
+            color: var(--text-color-secondary);
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="navbar">
+        <div class="navbar-header">
+            <div class="navbar-logo">
+                <div class="navbar-logo-icon">
+                    <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
+                </div>
+                <div class="navbar-logo-text">NutriSaur</div>
+            </div>
+        </div>
+        <div class="navbar-menu">
+            <ul>
+                <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
+                <li><a href="screening" class="active"><span class="navbar-icon"></span><span>Assessment Results</span></a></li>
+                <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
+                <li><a href="ai"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
+                <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
+                <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
+            </ul>
+        </div>
+        <div class="navbar-footer">
+            <div>NutriSaur v1.0 • © 2023</div>
+            <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($username); ?></div>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <header class="dashboard-header fade-in">
+            <div class="dashboard-title">
+                <h1>Assessment Results Dashboard</h1>
+            </div>
+            <div class="user-info">
+                <button id="new-theme-toggle" class="new-theme-toggle-btn" title="Toggle theme">
+                    <span class="new-theme-icon">🌙</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="screening-container">
+            <!-- Assessment Results Display -->
+            <div class="assessment-results">
+                <div class="results-header">
+                    <h2>📊 Nutrition Assessment Results</h2>
+                    <p>View and analyze nutrition screening assessments completed via the mobile app</p>
+                </div>
+
+                <!-- Assessment Summary Cards -->
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="card-icon">👥</div>
+                        <div class="card-content">
+                            <h3>Total Assessments</h3>
+                            <div class="card-value"><?php echo count($screening_assessments); ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="card-icon">⚠️</div>
+                        <div class="card-content">
+                            <h3>High Risk Cases</h3>
+                            <div class="card-value"><?php 
+                                $high_risk_count = 0;
+                                foreach ($screening_assessments as $assessment) {
+                                    if ($assessment['risk_score'] > 20) $high_risk_count++;
+                                }
+                                echo $high_risk_count;
+                            ?></div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card">
+                        <div class="card-icon">📈</div>
+                        <div class="card-content">
+                            <h3>Average Risk Score</h3>
+                            <div class="card-value"><?php 
+                                if (count($screening_assessments) > 0) {
+                                    $total_score = 0;
+                                    foreach ($screening_assessments as $assessment) {
+                                        $total_score += $assessment['risk_score'];
+                                    }
+                                    echo round($total_score / count($screening_assessments), 1);
+                                } else {
+                                    echo "0";
+                                }
+                            ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assessment Results Table -->
+                <div class="assessment-table-container">
+                    <div class="table-header">
+                        <h3>📋 Assessment History</h3>
+                        <div class="table-controls">
+                            <input type="text" id="searchAssessments" placeholder="Search assessments..." class="search-input">
+                            <select id="filterRisk" class="filter-select">
+                                <option value="">All Risk Levels</option>
+                                <option value="low">Low Risk (0-10)</option>
+                                <option value="medium">Medium Risk (11-20)</option>
+                                <option value="high">High Risk (21+)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <?php if (empty($screening_assessments)): ?>
+                        <div class="no-data">
+                            <div class="no-data-icon">📱</div>
+                            <h3>No Assessments Yet</h3>
+                            <p>Assessments will appear here once users complete screening via the mobile app.</p>
+                            <div class="mobile-app-info">
+                                <h4>📱 Mobile App Screening</h4>
+                                <p>Users can complete comprehensive nutrition screening using the NutriSaur mobile app:</p>
+                                <ul>
+                                    <li>7-section comprehensive screening</li>
+                                    <li>Real-time BMI calculation</li>
+                                    <li>Risk assessment and recommendations</li>
+                                    <li>Data syncs automatically to this dashboard</li>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="table-wrapper">
+                            <table class="assessment-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Location</th>
+                                        <th>Age</th>
+                                        <th>Sex</th>
+                                        <th>BMI</th>
+                                        <th>Risk Score</th>
+                                        <th>Risk Level</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($screening_assessments as $assessment): ?>
+                                        <tr class="assessment-row" data-risk="<?php echo $assessment['risk_score']; ?>">
+                                            <td><?php echo date('M j, Y g:i A', strtotime($assessment['created_at'])); ?></td>
+                                            <td><?php echo htmlspecialchars($assessment['barangay'] . ', ' . $assessment['municipality']); ?></td>
+                                            <td>
+                                                <?php 
+                                                $age_display = $assessment['age'] . ' years';
+                                                if ($assessment['age'] < 1 && !empty($assessment['age_months'])) {
+                                                    $age_display = $assessment['age_months'] . ' months';
+                                                }
+                                                echo $age_display;
+                                                ?>
+                                            </td>
+                                            <td><?php echo htmlspecialchars($assessment['sex']); ?></td>
+                                            <td>
+                                                <span class="bmi-value"><?php echo $assessment['bmi'] ? $assessment['bmi'] : 'N/A'; ?></span>
+                                                <?php if ($assessment['bmi']): ?>
+                                                    <span class="bmi-category"><?php 
+                                                        if ($assessment['bmi'] < 18.5) echo 'Underweight';
+                                                        elseif ($assessment['bmi'] < 25) echo 'Normal';
+                                                        elseif ($assessment['bmi'] < 30) echo 'Overweight';
+                                                        else echo 'Obese';
+                                                    ?></span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <span class="risk-score"><?php echo $assessment['risk_score']; ?></span>
+                                            </td>
+                                            <td>
+                                                <span class="risk-level <?php 
+                                                    if ($assessment['risk_score'] <= 10) echo 'low';
+                                                    elseif ($assessment['risk_score'] <= 20) echo 'medium';
+                                                    else echo 'high';
+                                                ?>">
+                                                    <?php 
+                                                    if ($assessment['risk_score'] <= 10) echo 'Low';
+                                                    elseif ($assessment['risk_score'] <= 20) echo 'Medium';
+                                                    else echo 'High';
+                                                    ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button onclick="viewAssessmentDetails(<?php echo $assessment['id']; ?>)" class="btn-view">View Details</button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Municipalities and Barangays data
+        const municipalities = <?php echo json_encode($municipalities); ?>;
+
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForm();
+        });
+
+        function initializeForm() {
+            // Municipality change handler
+            document.getElementById('municipality').addEventListener('change', function() {
+                const municipality = this.value;
+                const barangaySelect = document.getElementById('barangay');
+                
+                barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+                
+                if (municipality && municipalities[municipality]) {
+                    municipalities[municipality].forEach(barangay => {
+                        const option = document.createElement('option');
+                        option.value = barangay;
+                        option.textContent = barangay;
+                        barangaySelect.appendChild(option);
+                    });
+                }
+            });
+
+            // Age input handler
+            document.getElementById('age').addEventListener('input', function() {
+                const age = parseInt(this.value);
+                const monthsField = document.getElementById('months-field');
+                
+                if (age < 1) {
+                    monthsField.classList.add('show');
+                } else {
+                    monthsField.classList.remove('show');
+                }
+                
+                // Show/hide immunization section
+                const immunizationSection = document.getElementById('immunization-section');
+                if (age <= 12) {
+                    immunizationSection.classList.add('show');
+                } else {
+                    immunizationSection.classList.remove('show');
+                }
+            });
+
+            // Sex change handler
+            document.querySelectorAll('input[name="sex"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const pregnantField = document.getElementById('pregnant-field');
+                    const age = parseInt(document.getElementById('age').value);
+                    
+                    if (this.value === 'Female' && age >= 12 && age <= 50) {
+                        pregnantField.classList.add('show');
+                    } else {
+                        pregnantField.classList.remove('show');
+                    }
+                });
+            });
+
+            // BMI calculation
+            document.getElementById('weight').addEventListener('input', calculateBMI);
+            document.getElementById('height').addEventListener('input', calculateBMI);
+
+            // Lifestyle other field
+            document.querySelectorAll('input[name="lifestyle"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const otherField = document.getElementById('lifestyle-other-field');
+                    if (this.value === 'Other') {
+                        otherField.classList.add('show');
+                    } else {
+                        otherField.classList.remove('show');
+                    }
+                });
+            });
+
+            // Meal analysis
+            document.getElementById('meal_recall').addEventListener('input', analyzeMeal);
+
+            // Form validation
+            document.getElementById('screeningForm').addEventListener('submit', validateForm);
+        }
+
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            
+            if (weight && height) {
+                const heightM = height / 100;
+                const bmi = weight / (heightM * heightM);
+                
+                document.getElementById('bmi-value').textContent = bmi.toFixed(2);
+                
+                let category = '';
+                if (bmi < 18.5) category = 'Underweight';
+                else if (bmi < 25) category = 'Normal';
+                else if (bmi < 30) category = 'Overweight';
+                else category = 'Obese';
+                
+                document.getElementById('bmi-category').textContent = 'Category: ' + category;
+                document.getElementById('bmi-display').style.display = 'block';
+            }
+        }
+
+        function analyzeMeal() {
+            const mealText = this.value.toLowerCase();
+            const foodGroups = {
+                carbs: ['rice', 'bread', 'pasta', 'potato', 'corn', 'cereal', 'oatmeal'],
+                protein: ['meat', 'fish', 'chicken', 'pork', 'beef', 'egg', 'milk', 'cheese', 'beans', 'tofu'],
+                vegetables: ['vegetable', 'carrot', 'broccoli', 'spinach', 'lettuce', 'tomato', 'onion'],
+                fruits: ['fruit', 'apple', 'banana', 'orange', 'mango', 'grape']
+            };
+            
+            let foundGroups = [];
+            Object.keys(foodGroups).forEach(group => {
+                if (foodGroups[group].some(food => mealText.includes(food))) {
+                    foundGroups.push(group);
+                }
+            });
+            
+            const analysis = document.getElementById('meal-analysis');
+            if (foundGroups.length >= 3) {
+                analysis.textContent = '✅ Balanced diet detected';
+                analysis.className = 'success-message';
+            } else {
+                analysis.textContent = '⚠️ At Risk: Missing major food groups';
+                analysis.className = 'error-message';
+            }
+        }
+
+        function validateForm(e) {
+            let isValid = true;
+            
+            // Age validation
+            const age = parseInt(document.getElementById('age').value);
+            if (age < 0 || age > 120) {
+                document.getElementById('age-error').textContent = 'Age cannot be negative or > 120 years';
+                isValid = false;
+            } else {
+                document.getElementById('age-error').textContent = '';
+            }
+            
+            // Weight validation
+            const weight = parseFloat(document.getElementById('weight').value);
+            const ageForValidation = parseInt(document.getElementById('age').value);
+            if (ageForValidation < 5 && weight > 50) {
+                document.getElementById('weight-error').textContent = 'Weight seems unusually high for age < 5';
+                isValid = false;
+            } else if (weight < 2 || weight > 250) {
+                document.getElementById('weight-error').textContent = 'Weight must be between 2-250 kg';
+                isValid = false;
+            } else {
+                document.getElementById('weight-error').textContent = '';
+            }
+            
+            // Height validation
+            const height = parseFloat(document.getElementById('height').value);
+            if (ageForValidation < 5 && height > 130) {
+                document.getElementById('height-error').textContent = 'Height seems unusually high for age < 5';
+                isValid = false;
+            } else if (height < 30 || height > 250) {
+                document.getElementById('height-error').textContent = 'Height must be between 30-250 cm';
+                isValid = false;
+            } else {
+                document.getElementById('height-error').textContent = '';
+            }
+            
+            // Family history validation
+            const familyHistoryCheckboxes = document.querySelectorAll('input[name="family_history[]"]:checked');
+            if (familyHistoryCheckboxes.length === 0) {
+                document.getElementById('family-history-error').textContent = 'Please select at least one option or choose None';
+                isValid = false;
+            } else {
+                document.getElementById('family-history-error').textContent = '';
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+            }
+        }
+
+        function viewAssessmentDetails(id) {
+            // Fetch assessment details via AJAX
+            fetch(`/api/comprehensive_screening.php?screening_id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error loading assessment details: ' + data.error);
+                        return;
+                    }
+                    showAssessmentModal(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading assessment details');
+                });
+        }
+
+        function showAssessmentModal(assessment) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Assessment Details - ${assessment.municipality}, ${assessment.barangay}</h3>
+                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    </div>
+                    <div class="assessment-details">
+                        <div class="detail-section">
+                            <h4>📊 Basic Information</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">Age:</span>
+                                <span class="detail-value">${assessment.age} years${assessment.age_months ? `, ${assessment.age_months} months` : ''}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Sex:</span>
+                                <span class="detail-value">${assessment.sex}</span>
+                            </div>
+                            ${assessment.pregnant ? `
+                            <div class="detail-item">
+                                <span class="detail-label">Pregnant:</span>
+                                <span class="detail-value">${assessment.pregnant}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>📏 Anthropometric Data</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">Weight:</span>
+                                <span class="detail-value">${assessment.weight} kg</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Height:</span>
+                                <span class="detail-value">${assessment.height} cm</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">BMI:</span>
+                                <span class="detail-value">${assessment.bmi} (${getBMICategory(assessment.bmi)})</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>⚠️ Risk Assessment</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">Risk Score:</span>
+                                <span class="detail-value">${assessment.risk_score}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Risk Level:</span>
+                                <span class="detail-value">${getRiskLevel(assessment.risk_score)}</span>
+                            </div>
+                        </div>
+                        
+                        ${assessment.meal_recall ? `
+                        <div class="detail-section">
+                            <h4>🍽️ Meal Assessment</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">24-Hour Recall:</span>
+                                <span class="detail-value">${assessment.meal_recall}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        ${assessment.family_history ? `
+                        <div class="detail-section">
+                            <h4>👨‍👩‍👧‍👦 Family History</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">Conditions:</span>
+                                <span class="detail-value">${JSON.parse(assessment.family_history).join(', ')}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="detail-section">
+                            <h4>🏃‍♀️ Lifestyle</h4>
+                            <div class="detail-item">
+                                <span class="detail-label">Activity Level:</span>
+                                <span class="detail-value">${assessment.lifestyle}${assessment.lifestyle_other ? ` - ${assessment.lifestyle_other}` : ''}</span>
+                            </div>
+                        </div>
+                        
+                        ${assessment.assessment_summary ? `
+                        <div class="detail-section" style="grid-column: 1 / -1;">
+                            <h4>📋 Assessment Summary</h4>
+                            <div class="detail-item">
+                                <span class="detail-value">${assessment.assessment_summary}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        ${assessment.recommendations ? `
+                        <div class="detail-section" style="grid-column: 1 / -1;">
+                            <h4>💡 Recommendations</h4>
+                            <div class="detail-item">
+                                <span class="detail-value">${assessment.recommendations}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function getBMICategory(bmi) {
+            if (bmi < 18.5) return 'Underweight';
+            if (bmi < 25) return 'Normal';
+            if (bmi < 30) return 'Overweight';
+            return 'Obese';
+        }
+
+        function getRiskLevel(score) {
+            if (score <= 10) return 'Low';
+            if (score <= 20) return 'Medium';
+            return 'High';
+        }
+
+        // Search and filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchAssessments');
+            const filterSelect = document.getElementById('filterRisk');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', filterAssessments);
+            }
+            
+            if (filterSelect) {
+                filterSelect.addEventListener('change', filterAssessments);
+            }
+        });
+
+        function filterAssessments() {
+            const searchTerm = document.getElementById('searchAssessments').value.toLowerCase();
+            const riskFilter = document.getElementById('filterRisk').value;
+            const rows = document.querySelectorAll('.assessment-row');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const riskScore = parseInt(row.dataset.risk);
+                
+                let showRow = true;
+                
+                // Search filter
+                if (searchTerm && !text.includes(searchTerm)) {
+                    showRow = false;
+                }
+                
+                // Risk filter
+                if (riskFilter) {
+                    if (riskFilter === 'low' && riskScore > 10) showRow = false;
+                    if (riskFilter === 'medium' && (riskScore <= 10 || riskScore > 20)) showRow = false;
+                    if (riskFilter === 'high' && riskScore <= 20) showRow = false;
+                }
+                
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        // Theme toggle
+        document.getElementById('new-theme-toggle').addEventListener('click', function() {
+            const body = document.body;
+            const icon = this.querySelector('.new-theme-icon');
+            
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                icon.textContent = '☀️';
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                icon.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+</html>
