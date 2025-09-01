@@ -670,7 +670,7 @@ header {
     flex-shrink: 0;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: rotate(0deg) translateX(0px) translateY(0px) scale(1);
+    transform: translateX(0px) translateY(0px) scale(1);
 }
 
 .deck-card:hover {
@@ -2164,28 +2164,26 @@ header {
                     if (selectedCard !== null && selectedCard !== i) {
                         // If a card is selected, other cards move away
                         const offset = i - selectedCard;
-                        const rotate = offset * 6;
                         const x = offset * 100;
                         const y = -Math.abs(offset) * 14;
                         const scale = 0.96;
                         
-                        card.style.transform = `rotate(${rotate}deg) translateX(${x}px) translateY(${y}px) scale(${scale})`;
+                        card.style.transform = `translateX(${x}px) translateY(${y}px) scale(${scale})`;
                     } else if (hoveredCard !== null && selectedCard === null) {
                         // If hovering and no card selected, spread around hovered card
                         const offset = i - hoveredCard;
-                        const rotate = offset * 6;
                         const x = offset * 100;
                         const y = -Math.abs(offset) * 14;
                         const scale = i === hoveredCard ? 1.08 : 0.96;
                         
-                        card.style.transform = `rotate(${rotate}deg) translateX(${x}px) translateY(${y}px) scale(${scale})`;
+                        card.style.transform = `translateX(${x}px) translateY(${y}px) scale(${scale})`;
                     }
                 });
             }
             
             function retractDeck() {
                 deckCards.forEach(card => {
-                    card.style.transform = 'rotate(0deg) translateX(0px) translateY(0px) scale(1)';
+                    card.style.transform = 'translateX(0px) translateY(0px) scale(1)';
                 });
             }
         });
