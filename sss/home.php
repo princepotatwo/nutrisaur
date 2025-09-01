@@ -6,7 +6,7 @@ session_start();
 $isLoggedIn = isset($_SESSION['user_id']);
 if ($isLoggedIn) {
     // Redirect to dashboard if already logged in
-    header("Location: dash.php");
+    header("Location: /dash");
     exit;
 }
 
@@ -1044,65 +1044,81 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         let isLoginMode = true;
 
         // Toggle between login and register mode
-        toggleLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('Switching to register mode');
-            authForm.style.display = 'none';
-            registerForm.style.display = 'block';
-            authTitle.textContent = 'Register';
-        });
+        if (toggleLink) {
+            toggleLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Switching to register mode');
+                authForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                authTitle.textContent = 'Register';
+            });
+        } else {
+            console.error('toggleLink element not found!');
+        }
         
-        toggleLinkRegister.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log('Switching to login mode');
-            registerForm.style.display = 'none';
-            authForm.style.display = 'block';
-            authTitle.textContent = 'Login';
-        });
+        if (toggleLinkRegister) {
+            toggleLinkRegister.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Switching to login mode');
+                registerForm.style.display = 'none';
+                authForm.style.display = 'block';
+                authTitle.textContent = 'Login';
+            });
+        } else {
+            console.error('toggleLinkRegister element not found!');
+        }
 
         // Form submission handler
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            console.log('Login form submitted');
-            clearMessage();
-            
-            // Always in login mode for auth-form
-            if (!usernameInput.value || !passwordInput.value) {
-                showMessage('Please enter both username/email and password', 'error');
-                return;
-            }
-            
-            await login(usernameInput.value, passwordInput.value);
-        });
+        if (authForm) {
+            authForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                console.log('Login form submitted');
+                clearMessage();
+                
+                // Always in login mode for auth-form
+                if (!usernameInput.value || !passwordInput.value) {
+                    showMessage('Please enter both username/email and password', 'error');
+                    return;
+                }
+                
+                await login(usernameInput.value, passwordInput.value);
+            });
+        } else {
+            console.error('authForm element not found!');
+        }
 
         // Register form submission handler
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            console.log('Register form submitted');
-            clearMessage();
+        if (registerForm) {
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                console.log('Register form submitted');
+                clearMessage();
 
-            // Validate form
-            const username = document.getElementById('username_register').value;
-            const email = document.getElementById('email_register').value;
-            const password = document.getElementById('password_register').value;
+                // Validate form
+                const username = document.getElementById('username_register').value;
+                const email = document.getElementById('email_register').value;
+                const password = document.getElementById('password_register').value;
 
-            if (!username || !email || !password) {
-                showMessage('Please fill in all fields', 'error');
-                return;
-            }
+                if (!username || !email || !password) {
+                    showMessage('Please fill in all fields', 'error');
+                    return;
+                }
 
-            if (!validateEmail(email)) {
-                showMessage('Please enter a valid email address', 'error');
-                return;
-            }
+                if (!validateEmail(email)) {
+                    showMessage('Please enter a valid email address', 'error');
+                    return;
+                }
 
-            if (password.length < 6) {
-                showMessage('Password must be at least 6 characters long', 'error');
-                return;
-            }
+                if (password.length < 6) {
+                    showMessage('Password must be at least 6 characters long', 'error');
+                    return;
+                }
 
-            await register(username, email, password);
-        });
+                await register(username, email, password);
+            });
+        } else {
+            console.error('registerForm element not found!');
+        }
 
         // Login function
         async function login(username, password) {
@@ -1125,7 +1141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                     
                     // Redirect to dashboard after a short delay
                     setTimeout(() => {
-                        window.location.href = 'dash.php';
+                        window.location.href = '/dash';
                     }, 1000);
                 } else {
                     showMessage(data.message || 'Login failed. Please try again.', 'error');
@@ -1181,7 +1197,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                                 showMessage('Login successful! Redirecting to dashboard...', 'success');
                                 // Redirect to dashboard after successful auto-login
                                 setTimeout(() => {
-                                    window.location.href = 'dash.php';
+                                    window.location.href = '/dash';
                                 }, 1000);
                             } else {
                                 // If auto-login fails, show error and switch to login mode
@@ -1237,7 +1253,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                 // Only redirect if user is actually logged in
                 if (data.success && data.logged_in && (data.user_id || data.admin_id)) {
                     // User is already logged in, redirect to dashboard
-                    window.location.href = 'dash.php';
+                    window.location.href = '/dash';
                 }
             } catch (error) {
                 console.error('Session check error:', error);
