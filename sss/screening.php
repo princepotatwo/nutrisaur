@@ -650,9 +650,9 @@ header {
 
 .deck-cards {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 40px;
-    padding: 40px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 50px;
+    padding: 50px;
     height: 100%;
     overflow-y: auto;
     scrollbar-width: none;
@@ -667,10 +667,11 @@ header {
 .deck-card {
     position: relative;
     width: 100%;
-    height: 280px;
+    height: 320px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(0px) translateY(0px) scale(1);
+    min-width: 0;
 }
 
 .deck-card:hover {
@@ -691,6 +692,7 @@ header {
     transition: all 0.3s ease;
     position: relative;
     z-index: 10;
+    overflow: hidden;
 }
 
 
@@ -718,6 +720,7 @@ header {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    overflow: hidden;
 }
 
 .card-stat {
