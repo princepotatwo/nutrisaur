@@ -20,7 +20,7 @@ class DatabaseAPI {
     
     public function __construct() {
         // Include the centralized configuration
-        require_once __DIR__ . "/../../config.php";
+        require_once __DIR__ . "/../config.php";
         
         // Initialize connections
         $this->pdo = getDatabaseConnection();
