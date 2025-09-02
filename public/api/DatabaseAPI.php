@@ -26,6 +26,12 @@ class DatabaseAPI {
         $this->pdo = getDatabaseConnection();
         $this->mysqli = getMysqliConnection();
         
+        // Ensure PDO connection is properly set up
+        if ($this->pdo) {
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        }
+        
         // Debug: Log connection status
         error_log("DatabaseAPI Constructor - PDO: " . ($this->pdo ? 'success' : 'failed') . ", MySQLi: " . ($this->mysqli ? 'success' : 'failed'));
     }
