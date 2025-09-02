@@ -25,6 +25,39 @@ if (isset($_GET['debug'])) {
     error_log("Public API path: $public_api_path");
 }
 
+// Check if it's an API request first
+if (strpos($path, 'api/') === 0) {
+    // Handle API requests
+    $api_path = str_replace('api/', '', $path);
+    
+    // Remove .php extension if present
+    $api_path = str_replace('.php', '', $api_path);
+    
+    // First check if file exists in public/api directory
+    $public_api_file = $public_api_path . "$api_path.php";
+    $sss_api_file = $sss_path . "api/$api_path.php";
+    
+    if (isset($_GET['debug'])) {
+        error_log("API path: $api_path");
+        error_log("Public API file: $public_api_file");
+        error_log("SSS API file: $sss_api_file");
+        error_log("Public file exists: " . (file_exists($public_api_file) ? 'yes' : 'no'));
+        error_log("SSS file exists: " . (file_exists($sss_api_file) ? 'yes' : 'no'));
+    }
+    
+    if (file_exists($public_api_file)) {
+        include_once $public_api_file;
+        exit;
+    } elseif (file_exists($sss_api_file)) {
+        include_once $sss_api_file;
+        exit;
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'API endpoint not found']);
+        exit;
+    }
+}
+
 // Route to appropriate file
 switch ($path) {
     case '':
@@ -98,35 +131,7 @@ switch ($path) {
         break;
         
     default:
-        // Check if it's an API request
-        if (strpos($path, 'api/') === 0) {
-            // Handle API requests
-            $api_path = str_replace('api/', '', $path);
-            
-            // Remove .php extension if present
-            $api_path = str_replace('.php', '', $api_path);
-            
-            // First check if file exists in public/api directory
-            $public_api_file = $public_api_path . "$api_path.php";
-            $sss_api_file = $sss_path . "api/$api_path.php";
-            
-            if (isset($_GET['debug'])) {
-                error_log("API path: $api_path");
-                error_log("Public API file: $public_api_file");
-                error_log("SSS API file: $sss_api_file");
-                error_log("Public file exists: " . (file_exists($public_api_file) ? 'yes' : 'no'));
-                error_log("SSS file exists: " . (file_exists($sss_api_file) ? 'yes' : 'no'));
-            }
-            
-            if (file_exists($public_api_file)) {
-                include_once $public_api_file;
-            } elseif (file_exists($sss_api_file)) {
-                include_once $sss_api_file;
-            } else {
-                http_response_code(404);
-                echo json_encode(['error' => 'API endpoint not found']);
-            }
-        } elseif (strpos($path, 'unified_api') === 0) {
+        if (strpos($path, 'unified_api') === 0) {
             // Handle unified API requests
             include_once 'unified_api.php';
         } else {
