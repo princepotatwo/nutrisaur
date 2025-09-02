@@ -16,25 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 session_start();
 
 try {
-    // Include the centralized Database API
-    require_once __DIR__ . "/DatabaseAPI.php";
-
-    // Initialize the database API
-    $db = new DatabaseAPI();
+    // Use the same working approach as debug_database_api.php
+    require_once __DIR__ . "/../config.php";
+    $pdo = getDatabaseConnection();
     
-    // Debug: Check if database connection is available
-    $pdo = $db->getPDO();
-    $testConnection = $db->testConnection();
-    
-    if (!$pdo || !$testConnection) {
-        echo json_encode([
-            'success' => false, 
-            'message' => 'Database connection not available',
-            'debug' => [
-                'pdo_available' => $pdo ? 'yes' : 'no',
-                'test_connection' => $testConnection ? 'success' : 'failed'
-            ]
-        ]);
+    if (!$pdo) {
+        echo json_encode(['success' => false, 'message' => 'Database connection failed']);
         exit;
     }
 
@@ -55,49 +42,48 @@ try {
             exit;
         }
         
-        // Use the centralized authentication method
-        $result = $db->authenticateUser($usernameOrEmail, $password);
+        // Simple authentication logic
+        $isEmail = filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL);
         
-        if ($result['success']) {
-            // Set session data based on user type
-            if ($result['user_type'] === 'user') {
-                $_SESSION['user_id'] = $result['data']['user_id'];
-                $_SESSION['username'] = $result['data']['username'];
-                $_SESSION['email'] = $result['data']['email'];
-                $_SESSION['is_admin'] = $result['data']['is_admin'];
-                
-                if ($result['data']['is_admin']) {
-                    $_SESSION['admin_id'] = $result['data']['admin_data']['admin_id'];
-                    $_SESSION['role'] = $result['data']['admin_data']['role'];
-                }
-            } else {
-                $_SESSION['admin_id'] = $result['data']['admin_id'];
-                $_SESSION['username'] = $result['data']['username'];
-                $_SESSION['email'] = $result['data']['email'];
-                $_SESSION['is_admin'] = true;
-                $_SESSION['role'] = $result['data']['role'];
-            }
-            
-            echo json_encode([
-                'success' => true,
-                'message' => 'Login successful!',
-                'data' => $result['data']
-            ]);
+        if ($isEmail) {
+            $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE email = :email");
+            $stmt->bindParam(':email', $usernameOrEmail);
         } else {
-            echo json_encode($result);
+            $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE username = :username");
+            $stmt->bindParam(':username', $usernameOrEmail);
+        }
+        
+        $stmt->execute();
+        
+        if ($stmt->rowCount() > 0) {
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['email'] = $user['email'];
+                
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Login successful!',
+                    'data' => [
+                        'user_id' => $user['user_id'],
+                        'username' => $user['username'],
+                        'email' => $user['email']
+                    ]
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
         }
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     }
-
-    // Close the database connection
-    $db->close();
     
 } catch (Exception $e) {
-    // Log the error
     error_log("Login API Error: " . $e->getMessage());
-    
-    // Return a proper JSON error response
     echo json_encode([
         'success' => false, 
         'message' => 'Server error occurred. Please try again later.',
