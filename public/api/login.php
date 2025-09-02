@@ -21,6 +21,22 @@ try {
 
     // Initialize the database API
     $db = new DatabaseAPI();
+    
+    // Debug: Check if database connection is available
+    $pdo = $db->getPDO();
+    $testConnection = $db->testConnection();
+    
+    if (!$pdo || !$testConnection) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Database connection not available',
+            'debug' => [
+                'pdo_available' => $pdo ? 'yes' : 'no',
+                'test_connection' => $testConnection ? 'success' : 'failed'
+            ]
+        ]);
+        exit;
+    }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = file_get_contents('php://input');
