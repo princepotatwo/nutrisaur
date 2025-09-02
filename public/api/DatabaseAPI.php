@@ -25,6 +25,9 @@ class DatabaseAPI {
         // Initialize connections
         $this->pdo = getDatabaseConnection();
         $this->mysqli = getMysqliConnection();
+        
+        // Debug: Log connection status
+        error_log("DatabaseAPI Constructor - PDO: " . ($this->pdo ? 'success' : 'failed') . ", MySQLi: " . ($this->mysqli ? 'success' : 'failed'));
     }
     
     /**
