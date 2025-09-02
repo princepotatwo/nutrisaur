@@ -66,6 +66,11 @@ class DatabaseAPI {
      */
     public function authenticateUser($usernameOrEmail, $password) {
         try {
+            // Check if database connection is available
+            if (!$this->pdo) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
             $isEmail = filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL);
             
             // First check in users table
@@ -121,6 +126,11 @@ class DatabaseAPI {
      */
     public function registerUser($username, $email, $password) {
         try {
+            // Check if database connection is available
+            if (!$this->pdo) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
             $this->pdo->beginTransaction();
             
             // Check if username or email already exists
@@ -158,7 +168,9 @@ class DatabaseAPI {
             ];
             
         } catch (Exception $e) {
-            $this->pdo->rollBack();
+            if ($this->pdo) {
+                $this->pdo->rollBack();
+            }
             return ['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()];
         }
     }
@@ -486,6 +498,11 @@ class DatabaseAPI {
      */
     public function saveUserPreferences($userId, $preferences) {
         try {
+            // Check if database connection is available
+            if (!$this->pdo) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
             // Check if preferences exist
             $stmt = $this->pdo->prepare("SELECT id FROM user_preferences WHERE user_id = :user_id");
             $stmt->bindParam(':user_id', $userId);
@@ -524,6 +541,9 @@ class DatabaseAPI {
             
             return ['success' => true];
         } catch (PDOException $e) {
+            if ($this->pdo) {
+                $this->pdo->rollBack();
+            }
             return ['success' => false, 'message' => 'Failed to save preferences: ' . $e->getMessage()];
         }
     }

@@ -4,12 +4,12 @@
  * Railway Production Environment
  */
 
-// Database Configuration
-$host = 'mainline.proxy.rlwy.net';
-$port = '26063';
-$dbname = 'railway';
-$dbUsername = 'root';
-$dbPassword = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+// Database Configuration - Use Railway environment variables
+$host = $_ENV['MYSQL_HOST'] ?? $_ENV['DB_HOST'] ?? 'mainline.proxy.rlwy.net';
+$port = $_ENV['MYSQL_PORT'] ?? $_ENV['DB_PORT'] ?? '26063';
+$dbname = $_ENV['MYSQL_DATABASE'] ?? $_ENV['DB_NAME'] ?? 'railway';
+$dbUsername = $_ENV['MYSQL_USER'] ?? $_ENV['DB_USER'] ?? 'root';
+$dbPassword = $_ENV['MYSQL_PASSWORD'] ?? $_ENV['DB_PASSWORD'] ?? 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
 
 // Application Configuration
 define('APP_NAME', 'Nutrisaur');
@@ -29,9 +29,13 @@ function getDatabaseConnection() {
     global $host, $port, $dbname, $dbUsername, $dbPassword;
     
     try {
-        $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname", $dbUsername, $dbPassword);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
+        $pdo = new PDO($dsn, $dbUsername, $dbPassword, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_TIMEOUT => 10,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+        ]);
         return $pdo;
     } catch (PDOException $e) {
         // Log error but don't expose details to user
@@ -71,5 +75,24 @@ function testDatabaseConnection() {
         }
     }
     return false;
+}
+
+// Debug function to show current database configuration
+function getDatabaseConfig() {
+    global $host, $port, $dbname, $dbUsername, $dbPassword;
+    return [
+        'host' => $host,
+        'port' => $port,
+        'database' => $dbname,
+        'username' => $dbUsername,
+        'password' => substr($dbPassword, 0, 3) . '***',
+        'env_vars' => [
+            'MYSQL_HOST' => $_ENV['MYSQL_HOST'] ?? 'not_set',
+            'MYSQL_PORT' => $_ENV['MYSQL_PORT'] ?? 'not_set',
+            'MYSQL_DATABASE' => $_ENV['MYSQL_DATABASE'] ?? 'not_set',
+            'MYSQL_USER' => $_ENV['MYSQL_USER'] ?? 'not_set',
+            'MYSQL_PASSWORD' => $_ENV['MYSQL_PASSWORD'] ? 'set' : 'not_set'
+        ]
+    ];
 }
 ?>
