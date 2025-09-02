@@ -16,11 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 session_start();
 
 try {
-    // Include the centralized Database API
-    require_once __DIR__ . "/DatabaseAPI.php";
-
-    // Initialize the database API
-    $db = new DatabaseAPI();
+    // Use the same working approach as debug_database_api.php
+    require_once __DIR__ . "/../config.php";
+    $pdo = getDatabaseConnection();
+    
+    if (!$pdo) {
+        echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+        exit;
+    }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input = file_get_contents('php://input');
@@ -40,42 +43,46 @@ try {
             exit;
         }
         
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+        // Check if username or email already exists
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username OR email = :email");
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        
+        if ($stmt->fetchColumn() > 0) {
+            echo json_encode(['success' => false, 'message' => 'Username or email already exists']);
             exit;
         }
         
-        if (strlen($password) < 6) {
-            echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
-            exit;
-        }
+        // Hash password and insert user
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         
-        // Use the centralized registration method
-        $result = $db->registerUser($username, $email, $password);
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, created_at) VALUES (:username, :email, :password, NOW())");
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $hashedPassword);
         
-        if ($result['success']) {
-            // Start session and set user data
-            $_SESSION['user_id'] = $result['data']['user_id'];
-            $_SESSION['username'] = $result['data']['username'];
-            $_SESSION['email'] = $result['data']['email'];
-            $_SESSION['is_admin'] = false;
+        if ($stmt->execute()) {
+            $userId = $pdo->lastInsertId();
             
-            echo json_encode($result);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Registration successful!',
+                'data' => [
+                    'user_id' => $userId,
+                    'username' => $username,
+                    'email' => $email
+                ]
+            ]);
         } else {
-            echo json_encode($result);
+            echo json_encode(['success' => false, 'message' => 'Registration failed']);
         }
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     }
-
-    // Close the database connection
-    $db->close();
     
 } catch (Exception $e) {
-    // Log the error
     error_log("Register API Error: " . $e->getMessage());
-    
-    // Return a proper JSON error response
     echo json_encode([
         'success' => false, 
         'message' => 'Server error occurred. Please try again later.',
