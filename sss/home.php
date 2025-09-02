@@ -10,39 +10,16 @@ if ($isLoggedIn) {
     exit;
 }
 
-    // Database connection
-$mysql_host = 'mainline.proxy.rlwy.net';
-$mysql_port = 26063;
-$mysql_user = 'root';
-$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-$mysql_database = 'railway';
-
-// If MYSQL_PUBLIC_URL is set (Railway sets this), parse it
-if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
-    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
-    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
-    if (preg_match($pattern, $mysql_url, $matches)) {
-        $mysql_user = $matches[1];
-        $mysql_password = $matches[2];
-        $mysql_host = $matches[3];
-        $mysql_port = $matches[4];
-        $mysql_database = $matches[5];
+    // Use the centralized Database API
+    require_once __DIR__ . "/../public/api/DatabaseAPI.php";
+    $db = new DatabaseAPI();
+    
+    // Get database connection
+    $conn = $db->getPDO();
+    
+    if (!$conn) {
+        $dbError = "Database connection failed";
     }
-}
-
-// Create database connection
-try {
-    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-    $conn = new PDO($dsn, $mysql_user, $mysql_password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_TIMEOUT => 10
-    ]);
-} catch (PDOException $e) {
-    // If database connection fails, show error but don't crash
-    $conn = null;
-    $dbError = "Database connection failed: " . $e->getMessage();
-}
 
 $loginError = "";
 $registrationError = "";
@@ -56,95 +33,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     if (empty($usernameOrEmail) || empty($password)) {
         $loginError = "Please enter both username/email and password";
     } else {
-        // Check if input is email or username
-        $isEmail = filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL);
+        // Use the centralized authentication method
+        $result = $db->authenticateUser($usernameOrEmail, $password);
         
-        // First check in users table
-        if ($isEmail) {
-            $stmt = $conn->prepare("SELECT user_id, username, email, password FROM users WHERE email = :email");
-            $stmt->bindParam(':email', $usernameOrEmail);
-        } else {
-            $stmt = $conn->prepare("SELECT user_id, username, email, password FROM users WHERE username = :username");
-            $stmt->bindParam(':username', $usernameOrEmail);
-        }
-        
-        $stmt->execute();
-        
-        if ($stmt->rowCount() > 0) {
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result['success']) {
+            // Password is correct, start a new session
+            session_regenerate_id();
             
-            if (password_verify($password, $user['password'])) {
-                // Password is correct, start a new session
-                session_regenerate_id();
+            if ($result['user_type'] === 'user') {
+                $_SESSION['user_id'] = $result['data']['user_id'];
+                $_SESSION['username'] = $result['data']['username'];
+                $_SESSION['email'] = $result['data']['email'];
+                $_SESSION['is_admin'] = $result['data']['is_admin'];
                 
-                $_SESSION['user_id'] = $user['user_id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['email'] = $user['email'];
-                
-                // Check if user is also in admin table
-                $adminStmt = $conn->prepare("SELECT admin_id, role FROM admin WHERE email = :email");
-                $adminStmt->bindParam(':email', $user['email']);
-                $adminStmt->execute();
-                
-                if ($adminStmt->rowCount() > 0) {
-                    $adminData = $adminStmt->fetch(PDO::FETCH_ASSOC);
-                    $_SESSION['is_admin'] = true;
-                    $_SESSION['admin_id'] = $adminData['admin_id'];
-                    $_SESSION['role'] = $adminData['role'];
-                } else {
-                    $_SESSION['is_admin'] = false;
-                }
-                
-                // Update last login time
-                $updateStmt = $conn->prepare("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE user_id = :user_id");
-                $updateStmt->bindParam(':user_id', $user['user_id']);
-                $updateStmt->execute();
-                
-                // Redirect to dashboard
-                header("Location: dash.php");
-                exit;
-            } else {
-                $loginError = "Invalid password";
-            }
-        } else {
-            // If not found in users table, check admin table directly
-            if ($isEmail) {
-                $stmt = $conn->prepare("SELECT admin_id, username, email, password, role FROM admin WHERE email = :email");
-                $stmt->bindParam(':email', $usernameOrEmail);
-            } else {
-                $stmt = $conn->prepare("SELECT admin_id, username, email, password, role FROM admin WHERE username = :username");
-                $stmt->bindParam(':username', $usernameOrEmail);
-            }
-            
-            $stmt->execute();
-            
-            if ($stmt->rowCount() > 0) {
-                $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                if (password_verify($password, $admin['password'])) {
-                    // Password is correct, start a new session
-                    session_regenerate_id();
-                    
-                    $_SESSION['admin_id'] = $admin['admin_id'];
-                    $_SESSION['username'] = $admin['username'];
-                    $_SESSION['email'] = $admin['email'];
-                    $_SESSION['is_admin'] = true;
-                    $_SESSION['role'] = $admin['role'];
-                    
-                    // Update last login time
-                    $updateStmt = $conn->prepare("UPDATE admin SET last_login = CURRENT_TIMESTAMP WHERE admin_id = :admin_id");
-                    $updateStmt->bindParam(':admin_id', $admin['admin_id']);
-                    $updateStmt->execute();
-                    
-                    // Redirect to dashboard
-                    header("Location: dash.php");
-                    exit;
-                } else {
-                    $loginError = "Invalid password";
+                if ($result['data']['is_admin']) {
+                    $_SESSION['admin_id'] = $result['data']['admin_data']['admin_id'];
+                    $_SESSION['role'] = $result['data']['admin_data']['role'];
                 }
             } else {
-                $loginError = "User not found";
+                $_SESSION['admin_id'] = $result['data']['admin_id'];
+                $_SESSION['username'] = $result['data']['username'];
+                $_SESSION['email'] = $result['data']['email'];
+                $_SESSION['is_admin'] = true;
+                $_SESSION['role'] = $result['data']['role'];
             }
+            
+            // Redirect to dashboard
+            header("Location: dash.php");
+            exit;
+        } else {
+            $loginError = $result['message'];
         }
     }
 }
@@ -162,54 +80,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     } elseif (strlen($password) < 6) {
         $registrationError = "Password must be at least 6 characters long";
     } else {
-        try {
-            // Start transaction
-            $conn->beginTransaction();
+        // Use the centralized registration method
+        $result = $db->registerUser($username, $email, $password);
+        
+        if ($result['success']) {
+            // Start session and set user data
+            session_start();
+            $_SESSION['user_id'] = $result['data']['user_id'];
+            $_SESSION['username'] = $result['data']['username'];
+            $_SESSION['email'] = $result['data']['email'];
+            $_SESSION['is_admin'] = false;
             
-            // Check if username or email already exists
-            $stmt = $conn->prepare("SELECT user_id FROM users WHERE username = :username OR email = :email");
-            $stmt->bindParam(':username', $username);
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
-            
-            if ($stmt->rowCount() > 0) {
-                $registrationError = "Username or email already exists";
-            } else {
-                // Hash password
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                
-                // Insert new user
-                $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
-                $stmt->bindParam(':username', $username);
-                $stmt->bindParam(':email', $email);
-                $stmt->bindParam(':password', $hashedPassword);
-                $stmt->execute();
-                
-                // Get the new user's ID
-                $userId = $conn->lastInsertId();
-                
-                // User profile data is now stored in user_preferences table
-                // No separate user_profiles table needed
-                
-                // Commit the transaction
-                $conn->commit();
-                
-                // Start session and set user data
-                session_start();
-                $_SESSION['user_id'] = $userId;
-                $_SESSION['username'] = $username;
-                $_SESSION['email'] = $email;
-                
-                // Redirect to dashboard
-                header("Location: dash.php");
-                exit;
-            }
-        } catch (Exception $e) {
-            // Rollback the transaction if something failed
-            $conn->rollBack();
-            $registrationError = "Registration failed: " . $e->getMessage();
+            // Redirect to dashboard
+            header("Location: dash.php");
+            exit;
+        } else {
+            $registrationError = $result['message'];
         }
     }
+    
+    // Close the database connection
+    $db->close();
 }
 ?>
 <!DOCTYPE html>
