@@ -4,12 +4,12 @@
  * Railway Production Environment
  */
 
-// Database Configuration - Use Railway environment variables
-$host = $_ENV['MYSQL_HOST'] ?? $_ENV['DB_HOST'] ?? 'mainline.proxy.rlwy.net';
-$port = $_ENV['MYSQL_PORT'] ?? $_ENV['DB_PORT'] ?? '26063';
-$dbname = $_ENV['MYSQL_DATABASE'] ?? $_ENV['DB_NAME'] ?? 'railway';
-$dbUsername = $_ENV['MYSQL_USER'] ?? $_ENV['DB_USER'] ?? 'root';
-$dbPassword = $_ENV['MYSQL_PASSWORD'] ?? $_ENV['DB_PASSWORD'] ?? 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+// Database Configuration - Original working configuration
+$host = $_ENV['MYSQL_HOST'] ?? $_ENV['DB_HOST'] ?? $_ENV['DATABASE_HOST'] ?? 'mainline.proxy.rlwy.net';
+$port = $_ENV['MYSQL_PORT'] ?? $_ENV['DB_PORT'] ?? $_ENV['DATABASE_PORT'] ?? '26063';
+$dbname = $_ENV['MYSQL_DATABASE'] ?? $_ENV['DB_NAME'] ?? $_ENV['DATABASE_NAME'] ?? 'railway';
+$dbUsername = $_ENV['MYSQL_USER'] ?? $_ENV['DB_USER'] ?? $_ENV['DATABASE_USER'] ?? 'root';
+$dbPassword = $_ENV['MYSQL_PASSWORD'] ?? $_ENV['DB_PASSWORD'] ?? $_ENV['DATABASE_PASSWORD'] ?? 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
 
 // Application Configuration
 define('APP_NAME', 'Nutrisaur');
@@ -91,7 +91,12 @@ function getDatabaseConfig() {
             'MYSQL_PORT' => $_ENV['MYSQL_PORT'] ?? 'not_set',
             'MYSQL_DATABASE' => $_ENV['MYSQL_DATABASE'] ?? 'not_set',
             'MYSQL_USER' => $_ENV['MYSQL_USER'] ?? 'not_set',
-            'MYSQL_PASSWORD' => $_ENV['MYSQL_PASSWORD'] ? 'set' : 'not_set'
+            'MYSQL_PASSWORD' => $_ENV['MYSQL_PASSWORD'] ? 'set' : 'not_set',
+            'DATABASE_HOST' => $_ENV['DATABASE_HOST'] ?? 'not_set',
+            'DATABASE_PORT' => $_ENV['DATABASE_PORT'] ?? 'not_set',
+            'DATABASE_NAME' => $_ENV['DATABASE_NAME'] ?? 'not_set',
+            'DATABASE_USER' => $_ENV['DATABASE_USER'] ?? 'not_set',
+            'DATABASE_PASSWORD' => $_ENV['DATABASE_PASSWORD'] ? 'set' : 'not_set'
         ]
     ];
 }
