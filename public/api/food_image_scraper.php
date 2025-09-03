@@ -1,6 +1,6 @@
 <?php
 /**
- * Food Image Scraper API using serping approach - Google SERP scraping
+ * Food Image Scraper API using enhanced serping approach - Google SERP scraping
  * Exactly 10 images, no unlimited cards
  * Based on: https://github.com/serping/express-scraper/blob/main/app/api/v1/google/serp.ts
  */
@@ -31,109 +31,81 @@ function validateFoodQuery($query) {
     return strlen($query) <= 100; // Limit length
 }
 
-// Function to scrape Google Images using serping approach
+// Function to scrape Google Images using enhanced serping approach
 function scrapeGoogleImagesSerping($foodQuery) {
     $images = array();
     
     try {
-        // Build Google Images search URL (serping approach)
-        $searchQuery = urlencode($foodQuery . ' food');
-        $searchUrl = "https://www.google.com/search?q={$searchQuery}&tbm=isch&hl=en&tbs=isz:l";
+        // Multiple search strategies for better results
+        $searchStrategies = array(
+            // Strategy 1: Basic Google Images search
+            "https://www.google.com/search?q=" . urlencode($foodQuery . ' food') . "&tbm=isch&hl=en&tbs=isz:l",
+            // Strategy 2: With photo filter
+            "https://www.google.com/search?q=" . urlencode($foodQuery . ' food') . "&tbm=isch&hl=en&tbs=isz:l,itp:photo",
+            // Strategy 3: Without food keyword
+            "https://www.google.com/search?q=" . urlencode($foodQuery) . "&tbm=isch&hl=en&tbs=isz:l",
+            // Strategy 4: With recipe keyword
+            "https://www.google.com/search?q=" . urlencode($foodQuery . ' recipe') . "&tbm=isch&hl=en&tbs=isz:l"
+        );
         
-        // Set up cURL with serping-style headers
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $searchUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language: en-US,en;q=0.9',
-            'Accept-Encoding: gzip, deflate, br',
-            'Connection: keep-alive',
-            'Upgrade-Insecure-Requests: 1',
-            'Sec-Fetch-Dest: document',
-            'Sec-Fetch-Mode: navigate',
-            'Sec-Fetch-Site: none',
-            'Cache-Control: max-age=0',
-            'DNT: 1'
-        ));
+        $userAgents = array(
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        );
         
-        $html = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        $patterns = array(
+            // Google Images JSON data patterns
+            '/"ou":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+            '/"url":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+            '/\["(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+            // Direct image URLs
+            '/data-src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+            '/src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+            // Google Images specific patterns
+            '/"https:\/\/[^"]+\.(jpg|jpeg|png|webp)"/',
+            '/https:\/\/[^"]+\.(jpg|jpeg|png|webp)/',
+            // Additional patterns for better coverage
+            '/"https:\/\/[^"]+\.(jpg|jpeg|png|webp)\?[^"]*"/',
+            '/https:\/\/[^"]+\.(jpg|jpeg|png|webp)\?[^"]*/'
+        );
         
-        if ($httpCode === 200 && $html) {
-            // Extract image URLs using serping-style patterns
-            $patterns = array(
-                // Google Images JSON data pattern
-                '/"ou":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
-                // Alternative JSON patterns
-                '/"url":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
-                '/\["(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
-                // Direct image URLs
-                '/data-src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
-                '/src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
-                // Google Images specific patterns
-                '/"https:\/\/[^"]+\.(jpg|jpeg|png|webp)"/',
-                '/https:\/\/[^"]+\.(jpg|jpeg|png|webp)/'
-            );
+        $foundUrls = array();
+        
+        foreach ($searchStrategies as $strategyIndex => $searchUrl) {
+            if (count($images) >= 10) break; // Stop if we have enough images
             
-            $foundUrls = array();
-            
-            foreach ($patterns as $pattern) {
-                preg_match_all($pattern, $html, $matches);
-                if (!empty($matches[1])) {
-                    $foundUrls = array_merge($foundUrls, $matches[1]);
-                } elseif (!empty($matches[0])) {
-                    // For patterns without capture groups
-                    $foundUrls = array_merge($foundUrls, $matches[0]);
-                }
-            }
-            
-            // Remove duplicates and validate URLs
-            $foundUrls = array_unique($foundUrls);
-            $count = 0;
-            
-            foreach ($foundUrls as $url) {
-                if ($count >= 10) break; // Exactly 10 images
-                
-                // Clean up URL (remove quotes if present)
-                $url = trim($url, '"');
-                
-                // Validate URL and ensure it's an image
-                if (filter_var($url, FILTER_VALIDATE_URL) && 
-                    preg_match('/\.(jpg|jpeg|png|webp)$/i', $url)) {
-                    
-                    $images[] = array(
-                        'title' => $foodQuery . ' food image',
-                        'image_url' => $url,
-                        'source_url' => $url,
-                        'query' => $foodQuery
-                    );
-                    $count++;
-                }
-            }
-            
-            // If no images found with first attempt, try alternative search
-            if (empty($images)) {
-                $altSearchUrl = "https://www.google.com/search?q=" . urlencode($foodQuery) . "&tbm=isch&hl=en&tbs=isz:l,itp:photo";
+            foreach ($userAgents as $userAgent) {
+                if (count($images) >= 10) break;
                 
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $altSearchUrl);
+                curl_setopt($ch, CURLOPT_URL, $searchUrl);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+                curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                    'Accept-Language: en-US,en;q=0.9',
+                    'Accept-Encoding: gzip, deflate, br',
+                    'Connection: keep-alive',
+                    'Upgrade-Insecure-Requests: 1',
+                    'Sec-Fetch-Dest: document',
+                    'Sec-Fetch-Mode: navigate',
+                    'Sec-Fetch-Site: none',
+                    'Cache-Control: max-age=0',
+                    'DNT: 1'
+                ));
                 
-                $altHtml = curl_exec($ch);
+                $html = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
                 
-                if ($altHtml) {
+                if ($httpCode === 200 && $html) {
+                    // Extract image URLs using patterns
                     foreach ($patterns as $pattern) {
-                        preg_match_all($pattern, $altHtml, $matches);
+                        preg_match_all($pattern, $html, $matches);
                         if (!empty($matches[1])) {
                             $foundUrls = array_merge($foundUrls, $matches[1]);
                         } elseif (!empty($matches[0])) {
@@ -141,14 +113,16 @@ function scrapeGoogleImagesSerping($foodQuery) {
                         }
                     }
                     
+                    // Remove duplicates and validate URLs
                     $foundUrls = array_unique($foundUrls);
-                    $count = 0;
                     
                     foreach ($foundUrls as $url) {
-                        if ($count >= 10) break;
+                        if (count($images) >= 10) break;
                         
+                        // Clean up URL (remove quotes if present)
                         $url = trim($url, '"');
                         
+                        // Validate URL and ensure it's an image
                         if (filter_var($url, FILTER_VALIDATE_URL) && 
                             preg_match('/\.(jpg|jpeg|png|webp)$/i', $url)) {
                             
@@ -158,10 +132,17 @@ function scrapeGoogleImagesSerping($foodQuery) {
                                 'source_url' => $url,
                                 'query' => $foodQuery
                             );
-                            $count++;
                         }
                     }
+                    
+                    // If we found images, break out of user agent loop
+                    if (!empty($images)) {
+                        break;
+                    }
                 }
+                
+                // Small delay between requests
+                usleep(100000); // 0.1 second
             }
         }
         
@@ -246,20 +227,26 @@ try {
     // Log the request
     error_log("Food image scraper request: query='$foodQuery', max_results=$maxResults");
     
-    // Scrape Google Images using serping approach
+    // Scrape Google Images using enhanced serping approach
     $images = scrapeGoogleImagesSerping($foodQuery);
     
     if (!empty($images)) {
         // Limit to exactly 10 images
         $images = array_slice($images, 0, 10);
         
+        // Determine source based on image URLs
+        $source = 'google_serp_scraping';
+        if (strpos($images[0]['image_url'], 'unsplash.com') !== false) {
+            $source = 'unsplash_fallback';
+        }
+        
         echo json_encode(array(
             'success' => true,
-            'message' => 'Images retrieved successfully using Google SERP scraping',
+            'message' => 'Images retrieved successfully using enhanced Google SERP scraping',
             'query' => $foodQuery,
             'count' => count($images),
             'images' => $images,
-            'source' => 'google_serp_scraping'
+            'source' => $source
         ));
     } else {
         http_response_code(404);
