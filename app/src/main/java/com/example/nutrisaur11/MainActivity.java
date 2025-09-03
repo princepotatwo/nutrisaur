@@ -75,8 +75,10 @@ public class MainActivity extends AppCompatActivity {
         // Start food preload service in background
         MainActivityHelper.startFoodPreloadService(this);
         
-        // Initialize event checking and auto-refresh functionality
+        // TEMPORARILY DISABLED: Initialize event checking and auto-refresh functionality
+        // This was causing unwanted API calls every 3 seconds
         
+        /*
         // Initialize event checking timer
         eventCheckHandler = new android.os.Handler();
         eventCheckRunnable = new Runnable() {
@@ -90,12 +92,23 @@ public class MainActivity extends AppCompatActivity {
                 eventCheckHandler.postDelayed(this, EVENT_CHECK_INTERVAL);
             }
         };
+        */
         
         android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
         
         isLoggedIn = prefs.getBoolean("is_logged_in", false);
         if (isLoggedIn) {
             setContentView(R.layout.activity_dashboard);
+            
+            // Set header title
+            TextView pageTitle = findViewById(R.id.page_title);
+            TextView pageSubtitle = findViewById(R.id.page_subtitle);
+            if (pageTitle != null) {
+                pageTitle.setText("DASHBOARD");
+            }
+            if (pageSubtitle != null) {
+                pageSubtitle.setText("Your nutrition health overview");
+            }
             
             // Setup UI components
             setupNavigation();
@@ -1263,6 +1276,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startPeriodicEventChecking() {
+        // TEMPORARILY DISABLED: This was causing unwanted API calls every 3 seconds
+        Log.d("MainActivity", "Periodic event checking temporarily disabled to prevent unwanted API calls");
+        
+        /*
         // Stop any existing timer
         stopPeriodicEventChecking();
         
@@ -1278,6 +1295,7 @@ public class MainActivity extends AppCompatActivity {
             
             Log.d("MainActivity", "Started periodic event checking and background service in foreground mode");
         }
+        */
     }
     
     private void stopPeriodicEventChecking() {

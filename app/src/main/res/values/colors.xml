@@ -8,13 +8,36 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- Custom colors for food recommendation -->
-    <color name="light_gray">#F5F5F5</color>
-    <color name="dark_gray">#757575</color>
-    <color name="primary_blue">#2196F3</color>
-    <color name="dark_blue">#1976D2</color>
+    <!-- Personalization Band Colors - Light Pastel Vibes -->
+    <color name="purple_band">#E0F2F1</color>  <!-- Light teal/mint green -->
+    <color name="blue_band">#F0F8E8</color>   <!-- Pale yellow/lime green -->
+    <color name="orange_band">#FFE4D6</color> <!-- Light peach/coral -->
+    <color name="pink_band">#FCE4EC</color>   <!-- Soft pink -->
+    <color name="light_blue_band">#E3F2FD</color> <!-- Light blue -->
+    <color name="green_band">#66BB6A</color>   <!-- Medium green like goal image -->
+    <color name="red_band">#FFEBEE</color>    <!-- Light red/coral pink -->
+    <color name="yellow_band">#FFF8E1</color>  <!-- Very light yellow -->
+    <color name="cyan_band">#E0F7FA</color>   <!-- Light cyan -->
+    <color name="brown_band">#F3E5F5</color>  <!-- Light purple -->
+    <color name="gray_band">#FAFAFA</color>   <!-- Very light gray -->
+    <color name="background_dark">#1F2937</color>
     
-    <!-- FreshFood Green Theme Colors -->
+    <!-- Original App Colors -->
+    <color name="primary_color">#4CAF50</color>
+    <color name="primary_dark">#388E3C</color>
+    <color name="accent_color">#FF9800</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BBBBBB</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="background">#FAFAFA</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="error_color">#F44336</color>
+    <color name="success_color">#4CAF50</color>
+    <color name="warning_color">#FF9800</color>
+    <color name="info_color">#2196F3</color>
+    
+    <!-- Theme Colors for backward compatibility -->
     <color name="colorPrimary">#4CAF50</color>
     <color name="colorPrimaryContainer">#81C784</color>
     <color name="colorOnPrimary">#FFFFFF</color>
@@ -24,25 +47,14 @@
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorOnSurface">#222222</color>
     
-    <!-- Additional FreshFood Theme Colors -->
+    <!-- Additional colors for existing layouts -->
     <color name="fresh_green_light">#A5D6A7</color>
     <color name="fresh_green_dark">#388E3C</color>
     <color name="fresh_green_accent">#66BB6A</color>
     <color name="background_light">#F8F9FA</color>
-    <color name="card_background">#FFFFFF</color>
-    <color name="text_primary">#222222</color>
-    <color name="text_secondary">#666666</color>
-    <color name="text_hint">#BBBBBB</color>
     <color name="border_color">#E0E0E0</color>
-    
-    <!-- Legacy colors for backward compatibility -->
     <color name="darker_gray">#666666</color>
+    <color name="light_gray">#F5F5F5</color>
     <color name="green">#4CAF50</color>
     <color name="notification_color">#4CAF50</color>
-    
-    <!-- Nutrition insights colors -->
-    <color name="primary_color">#1A4D2E</color>
-    <color name="success_color">#4CAF50</color>
-    <color name="warning_color">#FF9800</color>
-    <color name="error_color">#F44336</color>
 </resources>

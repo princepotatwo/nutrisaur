@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
-    header('Location: /home');
+    header('Location: home.php');
     exit;
 }
 

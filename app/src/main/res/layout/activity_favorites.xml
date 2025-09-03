@@ -19,18 +19,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Header with Gradient -->
+            <include
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Favorites"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="#222"
-                android:fontFamily="sans-serif"
-                android:paddingBottom="18dp" />
+                layout="@layout/header_gradient" />
+
+            <!-- Main Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
             <!-- Empty state text -->
             <TextView
@@ -334,8 +336,9 @@
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-            </LinearLayout>
-        </LinearLayout>
+            </LinearLayout> <!-- Close static favorites container -->
+        </LinearLayout> <!-- Close main content -->
+    </LinearLayout> <!-- Close root LinearLayout -->
     </androidx.core.widget.NestedScrollView>
 
     <!-- Glassy Bottom Nav Bar, floating, no text, only icons, using vector drawables -->

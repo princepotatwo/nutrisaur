@@ -65,6 +65,18 @@ public class FoodActivity extends AppCompatActivity {
         
         Log.d(TAG, "FoodActivity onCreate started");
         
+        // Check if personalization has been completed
+        android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+        boolean personalizationCompleted = prefs.getBoolean("personalization_completed", false);
+        
+        if (!personalizationCompleted) {
+            // Start personalization activity
+            android.content.Intent intent = new android.content.Intent(this, PersonalizationActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+        
         // Initialize executor service
         executorService = Executors.newFixedThreadPool(2);
         Log.d(TAG, "Executor service initialized");
@@ -87,6 +99,8 @@ public class FoodActivity extends AppCompatActivity {
         setupViewPager();
         loadPreloadedDataOrStartPreload();
         
+
+        
         // Setup navigation
         setupNavigation();
     }
@@ -94,6 +108,32 @@ public class FoodActivity extends AppCompatActivity {
     private void initializeViews() {
         viewPager = findViewById(R.id.view_pager);
         Log.d(TAG, "ViewPager2 initialized: " + (viewPager != null ? "success" : "failed"));
+        
+        // Set header title
+        TextView pageTitle = findViewById(R.id.page_title);
+        TextView pageSubtitle = findViewById(R.id.page_subtitle);
+        if (pageTitle != null) {
+            pageTitle.setText("AI FOOD RECOMMENDATIONS");
+        }
+        if (pageSubtitle != null) {
+            pageSubtitle.setText("Personalized nutrition suggestions");
+        }
+        
+        // Setup edit personalization button
+        setupEditPersonalizationButton();
+    }
+    
+    private void setupEditPersonalizationButton() {
+        // Find the edit personalization card and make it clickable
+        androidx.cardview.widget.CardView editPersonalizationCard = findViewById(R.id.edit_personalization_card);
+        if (editPersonalizationCard != null) {
+            editPersonalizationCard.setOnClickListener(v -> {
+                // Start personalization activity
+                Intent intent = new Intent(this, PersonalizationActivity.class);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            });
+        }
     }
     
     private void initializeNutritionInsights() {
@@ -365,6 +405,8 @@ public class FoodActivity extends AppCompatActivity {
         Log.d(TAG, "ViewPager2 setup completed");
     }
     
+
+    
     private void loadUserProfile() {
         try {
             // Get current user email from SharedPreferences
@@ -602,9 +644,9 @@ public class FoodActivity extends AppCompatActivity {
             
             Log.d(TAG, "Loaded " + preloadedRecommendations.size() + " preloaded food cards (no images loaded yet)");
             
-            // Notify adapter that data is ready
+            // Notify adapter that data is ready - use range inserted to avoid ViewPager reset
             if (adapter != null) {
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemRangeInserted(0, preloadedRecommendations.size());
             }
             
             // DON'T load images yet - wait for user to actually view the activity
@@ -712,7 +754,8 @@ public class FoodActivity extends AppCompatActivity {
                                 addFallbacksToCompleteBatch(remaining);
                             }
                             
-                            adapter.notifyDataSetChanged(); // Use notifyDataSetChanged to avoid position issues
+                            // Use notifyItemRangeInserted to add new items without affecting current view
+                            adapter.notifyItemRangeInserted(oldSize, addedCount);
                             Log.d(TAG, "Added " + addedCount + " new unique recommendations from batch");
                             
                             // Load images progressively for the new batch
@@ -1393,7 +1436,9 @@ public class FoodActivity extends AppCompatActivity {
             generatedFoodNames.add(fallback.getFoodName().toLowerCase().trim());
             Log.d(TAG, "Fallback recommendation added: " + fallback.getFoodName());
         }
-        adapter.notifyDataSetChanged();
+        // Use range inserted to avoid ViewPager reset
+        int oldSize = recommendations.size() - fallbacks.size();
+        adapter.notifyItemRangeInserted(oldSize, fallbacks.size());
         Log.d(TAG, "Added " + fallbacks.size() + " fallback recommendations");
     }
     
@@ -1401,7 +1446,8 @@ public class FoodActivity extends AppCompatActivity {
         FoodRecommendation fallback = createFallbackRecommendation();
         recommendations.add(fallback);
         generatedFoodNames.add(fallback.getFoodName().toLowerCase().trim());
-        adapter.notifyDataSetChanged();
+        // Use range inserted to avoid ViewPager reset
+        adapter.notifyItemRangeInserted(recommendations.size() - 1, 1);
         Log.d(TAG, "Fallback recommendation added: " + fallback.getFoodName());
     }
     
@@ -1584,8 +1630,8 @@ public class FoodActivity extends AppCompatActivity {
                             Log.d(TAG, "Trimmed recommendations to exactly 10 items");
                         }
                         
-                        // Update adapter with proper notification
-                        adapter.notifyDataSetChanged();
+                        // Update adapter with proper notification - use range changed to avoid ViewPager reset
+                        adapter.notifyItemRangeChanged(0, recommendations.size());
                         
                         // DON'T load images yet - wait for user to actually view the activity
                         Log.d(TAG, "Real food cards ready! Images will load when user views them.");
@@ -1638,8 +1684,8 @@ public class FoodActivity extends AppCompatActivity {
             generatedFoodNames.add(placeholderFoods[i].toLowerCase());
         }
         
-        // Update adapter
-        adapter.notifyDataSetChanged();
+        // Update adapter - use range inserted to avoid ViewPager reset
+        adapter.notifyItemRangeInserted(0, recommendations.size());
         Log.d(TAG, "Placeholder cards created - user can start swiping immediately!");
     }
 } 

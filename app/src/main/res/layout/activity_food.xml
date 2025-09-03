@@ -19,32 +19,84 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/background_light"
-    android:padding="24dp">
+    android:orientation="vertical">
 
-    <!-- Top Header -->
+    <!-- Header with Gradient -->
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/header_gradient" />
+
+    <!-- Main Content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="@color/white"
-        android:elevation="4dp"
-        android:layout_marginBottom="24dp">
+        android:orientation="vertical"
+        android:background="@color/background_light"
+        android:padding="24dp">
 
-        <TextView
-            android:layout_width="0dp"
+    <!-- Edit Personalization Button -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/edit_personalization_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/green_band">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="AI Food Recommendations"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary_color"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center" />
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:gravity="center_vertical">
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_settings"
+                android:tint="@color/white"
+                android:layout_marginEnd="16dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Update Food Preferences"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:fontFamily="sans-serif-medium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customize your dietary needs and preferences"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:alpha="0.9"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:text="→"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:alpha="0.8" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <!-- Nutrition Insights Card -->
     <include
@@ -201,8 +253,10 @@
 
     </androidx.cardview.widget.CardView>
 
-</LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            </LinearLayout> <!-- Close main content -->
+
+        </LinearLayout> <!-- Close root LinearLayout -->
+    </androidx.core.widget.NestedScrollView>
 
 <!-- Glassy Bottom Nav Bar (exact copy from MainActivity) -->
     <androidx.cardview.widget.CardView

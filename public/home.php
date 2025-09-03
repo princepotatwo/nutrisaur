@@ -11,8 +11,8 @@ if ($isLoggedIn) {
 }
 
 // Use the centralized Database API with Railway configuration
-require_once __DIR__ . "/../public/config.php";
-require_once __DIR__ . "/../public/api/DatabaseAPI.php";
+require_once __DIR__ . "/config.php";
+require_once __DIR__ . "/api/DatabaseAPI.php";
 $db = new DatabaseAPI();
 
 // Get database connection
@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             }
             
             // Redirect to dashboard
-            header("Location: /dash.php");
+            header("Location: dash.php");
             exit;
         } else {
             $loginError = $result['message'];
@@ -95,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             $_SESSION['is_admin'] = false;
             
             // Redirect to dashboard
-            header("Location: /dash.php");
+            header("Location: dash.php");
             exit;
         } else {
             $registrationError = $result['message'];

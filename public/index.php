@@ -15,7 +15,7 @@ if (strpos($path, '?') !== false) {
 }
 
 // Define the correct paths
-$sss_path = __DIR__ . '/../sss/';
+$public_path = __DIR__ . '/';
 $public_api_path = __DIR__ . '/api/';
 
 // Debug logging for development
@@ -33,23 +33,17 @@ if (strpos($path, 'api/') === 0) {
     // Remove .php extension if present
     $api_path = str_replace('.php', '', $api_path);
     
-    // First check if file exists in public/api directory
+    // Check if file exists in public/api directory
     $public_api_file = $public_api_path . "$api_path.php";
-    $sss_api_file = $sss_path . "api/$api_path.php";
     
     if (isset($_GET['debug'])) {
         error_log("API path: $api_path");
         error_log("Public API file: $public_api_file");
-        error_log("SSS API file: $sss_api_file");
         error_log("Public file exists: " . (file_exists($public_api_file) ? 'yes' : 'no'));
-        error_log("SSS file exists: " . (file_exists($sss_api_file) ? 'yes' : 'no'));
     }
     
     if (file_exists($public_api_file)) {
         include_once $public_api_file;
-        exit;
-    } elseif (file_exists($sss_api_file)) {
-        include_once $sss_api_file;
         exit;
     } else {
         http_response_code(404);
@@ -63,39 +57,39 @@ switch ($path) {
     case '':
     case 'home':
         // Route to home page
-        include_once $sss_path . 'home.php';
+        include_once $public_path . 'home.php';
         break;
         
     case 'dash':
     case 'dashboard':
         // Route to dashboard
-        include_once $sss_path . 'dash.php';
+        include_once $public_path . 'dash.php';
         break;
         
     case 'settings':
         // Route to settings
-        include_once $sss_path . 'settings.php';
+        include_once $public_path . 'settings.php';
         break;
         
     case 'ai':
         // Route to AI page
-        include_once $sss_path . 'AI.php';
+        include_once $public_path . 'AI.php';
         break;
         
     case 'event':
     case 'events':
         // Route to events page
-        include_once $sss_path . 'event.php';
+        include_once $public_path . 'event.php';
         break;
         
     case 'logout':
         // Route to logout
-        include_once $sss_path . 'logout.php';
+        include_once $public_path . 'logout.php';
         break;
         
     case 'NR':
         // Route to NR page
-        include_once $sss_path . 'NR.php';
+        include_once $public_path . 'NR.php';
         break;
         
     case 'FPM':

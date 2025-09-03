@@ -33,6 +33,16 @@ public class AccountActivity extends AppCompatActivity {
         
         dbHelper = new UserPreferencesDbHelper(this);
         
+        // Set header title
+        TextView pageTitle = findViewById(R.id.page_title);
+        TextView pageSubtitle = findViewById(R.id.page_subtitle);
+        if (pageTitle != null) {
+            pageTitle.setText("PROFILE");
+        }
+        if (pageSubtitle != null) {
+            pageSubtitle.setText("Manage your account settings");
+        }
+        
         // Initialize views
         initializeViews();
         

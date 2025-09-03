@@ -25,6 +25,16 @@ public class FavoritesActivity extends AppCompatActivity {
         // Initialize favorites manager
         favoritesManager = new FavoritesManager(this);
         
+        // Set header title
+        TextView pageTitle = findViewById(R.id.page_title);
+        TextView pageSubtitle = findViewById(R.id.page_subtitle);
+        if (pageTitle != null) {
+            pageTitle.setText("FAVORITES");
+        }
+        if (pageSubtitle != null) {
+            pageSubtitle.setText("Your saved food preferences");
+        }
+        
         // Setup RecyclerView for favorites
         setupFavoritesRecyclerView();
         

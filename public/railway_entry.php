@@ -69,49 +69,49 @@ switch ($path) {
     case 'index':
         // Suppress PHP notices for main website
         error_reporting(E_ERROR | E_PARSE);
-        include '../sss/home.php';
+        include 'home.php';
         break;
         
     case 'home':
     case 'home.php':
         error_reporting(E_ERROR | E_PARSE);
-        include '../sss/home.php';
+        include 'home.php';
         break;
         
     case 'dash':
     case 'dash.php':
-        include '../sss/dash.php';
+        include 'dash.php';
         break;
         
     case 'event':
     case 'events':
     case 'event.php':
-        include '../sss/event.php';
+        include 'event.php';
         break;
         
     case 'settings':
     case 'settings.php':
-        include '../sss/settings.php';
+        include 'settings.php';
         break;
         
     case 'ai':
     case 'AI.php':
-        include '../sss/AI.php';
+        include 'AI.php';
         break;
         
     case 'fpm':
     case 'FPM.php':
-        include '../sss/FPM.php';
+        include 'FPM.php';
         break;
         
     case 'nr':
     case 'NR.php':
-        include '../sss/NR.php';
+        include 'NR.php';
         break;
         
     case 'logout':
     case 'logout.php':
-        include '../sss/logout.php';
+        include 'logout.php';
         break;
         
     case 'import_database':
@@ -127,9 +127,9 @@ switch ($path) {
         break;
         
     default:
-        // First check if it's a direct sss file
-        if (file_exists("../sss/$path.php")) {
-            include "../sss/$path.php";
+        // First check if it's a direct file
+        if (file_exists("$path.php")) {
+            include "$path.php";
         } elseif (file_exists("$path.php")) {
             include "$path.php";
         } else {

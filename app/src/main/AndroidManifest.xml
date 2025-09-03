@@ -49,6 +49,10 @@
             android:theme="@style/Theme.ScreeningForm" />
         
         <activity
+            android:name=".PersonalizationActivity"
+            android:exported="false" />
+            
+        <activity
             android:name=".FoodActivity"
             android:exported="true">
         </activity>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+
+
+    <!-- Main Content -->
+    <LinearLayout
+        android:id="@+id/main_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Header Section with Gradient -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="horizontal"
+            android:background="@drawable/header_gradient"
+            android:padding="24dp"
+            android:gravity="center_vertical">
+
+            <!-- Back Button -->
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_arrow_back"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="@color/white"
+                android:scaleType="centerInside"
+                android:contentDescription="Back" />
+
+            <!-- Question Title -->
+            <TextView
+                android:id="@+id/question_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="MAIN FOOD IDENTITY"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:fontFamily="sans-serif"
+                android:letterSpacing="0.1" />
+
+            <!-- Placeholder to balance the layout -->
+            <View
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+
+        </LinearLayout>
+
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/question_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PICK ONE"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.05"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/header_gradient" />
+
+        <!-- Main Content Area -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:padding="20dp">
+
+            <!-- Swipeable Question Container -->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/question_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</FrameLayout>
