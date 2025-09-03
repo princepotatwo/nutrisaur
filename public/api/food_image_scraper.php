@@ -1,7 +1,7 @@
 <?php
 /**
- * Food Image Scraper API using ohyicong/Google-Image-Scraper
- * https://github.com/ohyicong/Google-Image-Scraper
+ * Food Image Scraper API using Google Images
+ * Gets real Google Images without requiring Chrome/Selenium
  */
 
 header('Content-Type: application/json');
@@ -30,146 +30,128 @@ function validateFoodQuery($query) {
     return strlen($query) <= 100; // Limit length
 }
 
-// Function to call the Google Image Scraper
-function callGoogleImageScraper($foodQuery, $maxResults = 5) {
-    try {
-        // Path to the Python script
-        $pythonScript = __DIR__ . '/../../GoogleImageScraper.py';
-        
-        // Check if Python script exists
-        if (!file_exists($pythonScript)) {
-            throw new Exception("Google Image Scraper script not found: $pythonScript");
-        }
-        
-        // Create a temporary Python script for this specific query
-        $tempScript = __DIR__ . '/../../temp_scraper_' . time() . '.py';
-        
-        // Create the Python script content
-        $pythonCode = <<<PYTHON
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from GoogleImageScraper import GoogleImageScraper
-import json
-
-def scrape_images(search_key, number_of_images=5):
-    try:
-        # Initialize the scraper
-        scraper = GoogleImageScraper(
-            webdriver_path=None,  # Auto-download
-            image_path="temp_images",
-            search_key=search_key,
-            number_of_images=number_of_images,
-            headless=True,
-            min_resolution=(0, 0),
-            max_resolution=(9999, 9999),
-            max_missed=10,
-            number_of_workers=1
-        )
-        
-        # Scrape images
-        scraper.scrape_images()
-        
-        # Get the scraped image URLs
-        image_urls = []
-        image_path = "temp_images/" + search_key.replace(" ", "_")
-        
-        if os.path.exists(image_path):
-            for filename in os.listdir(image_path):
-                if filename.endswith(('.jpg', '.jpeg', '.png', '.webp')):
-                    # For now, we'll return placeholder URLs since we can't serve local files
-                    # In production, you'd upload these to a CDN or cloud storage
-                    image_urls.append({
-                        'title': f"{search_key} food image",
-                        'image_url': f"https://source.unsplash.com/300x200/?{search_key},food",
-                        'source_url': f"https://source.unsplash.com/300x200/?{search_key},food",
-                        'query': search_key
-                    })
-        
-        # Clean up temporary files
-        if os.path.exists(image_path):
-            import shutil
-            shutil.rmtree(image_path)
-        
-        return image_urls
-        
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return []
-
-if __name__ == "__main__":
-    search_key = sys.argv[1] if len(sys.argv) > 1 else "food"
-    number_of_images = int(sys.argv[2]) if len(sys.argv) > 2 else 5
-    
-    results = scrape_images(search_key, number_of_images)
-    print(json.dumps(results))
-PYTHON;
-        
-        // Write the temporary script
-        file_put_contents($tempScript, $pythonCode);
-        
-        // Escape the query for shell execution
-        $escapedQuery = escapeshellarg($foodQuery);
-        $escapedMaxResults = escapeshellarg($maxResults);
-        
-        // Build the command
-        $command = "python3 $tempScript $escapedQuery $escapedMaxResults 2>&1";
-        
-        // Execute the command
-        $output = shell_exec($command);
-        
-        // Clean up the temporary script
-        unlink($tempScript);
-        
-        // Check if the command executed successfully
-        if (strpos($output, 'Error:') !== false) {
-            throw new Exception("Python script failed: $output");
-        }
-        
-        // Parse the JSON output
-        $imageData = json_decode($output, true);
-        if ($imageData === null) {
-            throw new Exception("Failed to parse JSON output: " . json_last_error_msg());
-        }
-        
-        return $imageData;
-        
-    } catch (Exception $e) {
-        error_log("Error calling Google Image Scraper: " . $e->getMessage());
-        return null;
-    }
-}
-
-// Function to get fallback images using Unsplash
-function getFallbackImages($foodQuery, $maxResults = 5) {
+// Function to scrape Google Images directly using PHP
+function scrapeGoogleImages($foodQuery, $maxResults = 5) {
     $images = array();
     
     try {
-        // Use Unsplash Source API for fallback
-        $imageUrls = array(
-            "https://source.unsplash.com/300x200/?{$foodQuery},food",
-            "https://source.unsplash.com/300x200/?{$foodQuery},dish",
-            "https://source.unsplash.com/300x200/?{$foodQuery},meal",
-            "https://source.unsplash.com/300x200/?{$foodQuery},cuisine",
-            "https://source.unsplash.com/300x200/?{$foodQuery},cooking"
+        // Create search URL for Google Images
+        $searchQuery = urlencode($foodQuery . ' food');
+        $searchUrl = "https://www.google.com/search?q={$searchQuery}&tbm=isch&hl=en&tbs=isz:l";
+        
+        // Set up cURL with proper headers to mimic a real browser
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $searchUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language: en-US,en;q=0.9',
+            'Accept-Encoding: gzip, deflate, br',
+            'Connection: keep-alive',
+            'Upgrade-Insecure-Requests: 1',
+            'Sec-Fetch-Dest: document',
+            'Sec-Fetch-Mode: navigate',
+            'Sec-Fetch-Site: none',
+            'Cache-Control: max-age=0'
+        ));
+        
+        $html = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200 || empty($html)) {
+            throw new Exception("Failed to fetch Google Images page. HTTP Code: $httpCode");
+        }
+        
+        // Extract image URLs using multiple patterns
+        $patterns = array(
+            '/"ou":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+            '/"url":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+            '/\["(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+            '/data-src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+            '/src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/'
         );
         
+        $foundUrls = array();
+        
+        foreach ($patterns as $pattern) {
+            preg_match_all($pattern, $html, $matches);
+            if (!empty($matches[1])) {
+                $foundUrls = array_merge($foundUrls, $matches[1]);
+            }
+        }
+        
+        // Remove duplicates and validate URLs
+        $foundUrls = array_unique($foundUrls);
         $count = 0;
-        foreach ($imageUrls as $url) {
+        
+        foreach ($foundUrls as $url) {
             if ($count >= $maxResults) break;
             
-            $images[] = array(
-                'title' => $foodQuery . ' food image',
-                'image_url' => $url,
-                'source_url' => $url,
-                'query' => $foodQuery
-            );
-            $count++;
+            // Validate URL and ensure it's an image
+            if (filter_var($url, FILTER_VALIDATE_URL) && 
+                preg_match('/\.(jpg|jpeg|png|webp)$/i', $url)) {
+                
+                $images[] = array(
+                    'title' => $foodQuery . ' food image',
+                    'image_url' => $url,
+                    'source_url' => $url,
+                    'query' => $foodQuery
+                );
+                $count++;
+            }
+        }
+        
+        // If no images found with first pattern, try alternative search
+        if (empty($images)) {
+            // Try a different search approach
+            $altSearchUrl = "https://www.google.com/search?q=" . urlencode($foodQuery) . "&tbm=isch&hl=en";
+            
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $altSearchUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+            
+            $altHtml = curl_exec($ch);
+            curl_close($ch);
+            
+            if ($altHtml) {
+                foreach ($patterns as $pattern) {
+                    preg_match_all($pattern, $altHtml, $matches);
+                    if (!empty($matches[1])) {
+                        $foundUrls = array_merge($foundUrls, $matches[1]);
+                    }
+                }
+                
+                $foundUrls = array_unique($foundUrls);
+                $count = 0;
+                
+                foreach ($foundUrls as $url) {
+                    if ($count >= $maxResults) break;
+                    
+                    if (filter_var($url, FILTER_VALIDATE_URL) && 
+                        preg_match('/\.(jpg|jpeg|png|webp)$/i', $url)) {
+                        
+                        $images[] = array(
+                            'title' => $foodQuery . ' food image',
+                            'image_url' => $url,
+                            'source_url' => $url,
+                            'query' => $foodQuery
+                        );
+                        $count++;
+                    }
+                }
+            }
         }
         
     } catch (Exception $e) {
-        error_log("Error getting fallback images: " . $e->getMessage());
+        error_log("Error scraping Google Images: " . $e->getMessage());
     }
     
     return $images;
@@ -222,31 +204,24 @@ try {
     // Log the request
     error_log("Food image scraper request: query='$foodQuery', max_results=$maxResults");
     
-    // Try to use the Google Image Scraper first
-    $imageData = callGoogleImageScraper($foodQuery, $maxResults);
+    // Scrape Google Images
+    $images = scrapeGoogleImages($foodQuery, $maxResults);
     
-    if ($imageData && !empty($imageData)) {
-        // Success - return scraped images
+    if (!empty($images)) {
         echo json_encode(array(
             'success' => true,
-            'message' => 'Images retrieved successfully using Google Image Scraper',
+            'message' => 'Google Images retrieved successfully',
             'query' => $foodQuery,
-            'count' => count($imageData),
-            'images' => $imageData,
-            'source' => 'google_scraper'
+            'count' => count($images),
+            'images' => $images,
+            'source' => 'google_images'
         ));
-        
     } else {
-        // Fallback to Unsplash images
-        $fallbackImages = getFallbackImages($foodQuery, $maxResults);
-        
+        http_response_code(404);
         echo json_encode(array(
-            'success' => true,
-            'message' => 'Using Unsplash fallback images',
-            'query' => $foodQuery,
-            'count' => count($fallbackImages),
-            'images' => $fallbackImages,
-            'source' => 'unsplash_fallback'
+            'success' => false,
+            'message' => 'No Google Images found for the query',
+            'query' => $foodQuery
         ));
     }
     
