@@ -3,23 +3,23 @@
 session_start();
 
 // Check if user is already logged in
-$isLoggedIn = isset($_SESSION['user_id']);
+$isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
 if ($isLoggedIn) {
     // Redirect to dashboard if already logged in
-    header("Location: /dash");
+    header("Location: dash.php");
     exit;
 }
 
-    // Use the centralized Database API
-    require_once __DIR__ . "/../public/api/DatabaseAPI.php";
-    $db = new DatabaseAPI();
-    
-    // Get database connection
-    $conn = $db->getPDO();
-    
-    if (!$conn) {
-        $dbError = "Database connection failed";
-    }
+// Use the centralized Database API
+require_once __DIR__ . "/../public/api/DatabaseAPI.php";
+$db = new DatabaseAPI();
+
+// Get database connection
+$conn = $db->getPDO();
+
+if (!$conn) {
+    $dbError = "Database connection failed";
+}
 
 $loginError = "";
 $registrationError = "";
@@ -27,7 +27,7 @@ $registrationSuccess = "";
 
 // Handle login form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
-    $usernameOrEmail = $_POST['username_login'];
+    $usernameOrEmail = trim($_POST['username_login']);
     $password = $_POST['password_login'];
     
     if (empty($usernameOrEmail) || empty($password)) {
@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
         
         if ($result['success']) {
             // Password is correct, start a new session
-            session_regenerate_id();
+            session_regenerate_id(true);
             
             if ($result['user_type'] === 'user') {
                 $_SESSION['user_id'] = $result['data']['user_id'];
@@ -69,8 +69,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
 
 // Handle registration form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
-    $username = $_POST['username_register'];
-    $email = $_POST['email_register'];
+    $username = trim($_POST['username_register']);
+    $email = trim($_POST['email_register']);
     $password = $_POST['password_register'];
     
     if (empty($username) || empty($email) || empty($password)) {
@@ -79,13 +79,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         $registrationError = "Please enter a valid email address";
     } elseif (strlen($password) < 6) {
         $registrationError = "Password must be at least 6 characters long";
+    } elseif (strlen($username) < 3) {
+        $registrationError = "Username must be at least 3 characters long";
     } else {
         // Use the centralized registration method
         $result = $db->registerUser($username, $email, $password);
         
         if ($result['success']) {
             // Start session and set user data
-            session_start();
+            session_regenerate_id(true);
             $_SESSION['user_id'] = $result['data']['user_id'];
             $_SESSION['username'] = $result['data']['username'];
             $_SESSION['email'] = $result['data']['email'];
@@ -98,10 +100,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             $registrationError = $result['message'];
         }
     }
-    
-    // Close the database connection
-    $db->close();
 }
+
+// Handle AJAX requests for better user experience
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
+    header('Content-Type: application/json');
+    
+    switch ($_POST['ajax_action']) {
+        case 'login':
+            $usernameOrEmail = trim($_POST['username']);
+            $password = $_POST['password'];
+            
+            if (empty($usernameOrEmail) || empty($password)) {
+                echo json_encode(['success' => false, 'message' => 'Please enter both username/email and password']);
+                exit;
+            }
+            
+            $result = $db->authenticateUser($usernameOrEmail, $password);
+            echo json_encode($result);
+            exit;
+            
+        case 'register':
+            $username = trim($_POST['username']);
+            $email = trim($_POST['email']);
+            $password = $_POST['password'];
+            
+            if (empty($username) || empty($email) || empty($password)) {
+                echo json_encode(['success' => false, 'message' => 'Please fill in all fields']);
+                exit;
+            }
+            
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+                exit;
+            }
+            
+            if (strlen($password) < 6) {
+                echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+                exit;
+            }
+            
+            if (strlen($username) < 3) {
+                echo json_encode(['success' => false, 'message' => 'Username must be at least 3 characters long']);
+                exit;
+            }
+            
+            $result = $db->registerUser($username, $email, $password);
+            echo json_encode($result);
+            exit;
+            
+        case 'check_session':
+            $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
+            echo json_encode([
+                'success' => true,
+                'logged_in' => $isLoggedIn,
+                'user_id' => $_SESSION['user_id'] ?? null,
+                'admin_id' => $_SESSION['admin_id'] ?? null,
+                'username' => $_SESSION['username'] ?? null,
+                'is_admin' => $_SESSION['is_admin'] ?? false
+            ]);
+            exit;
+    }
+}
+
+// Close the database connection
+$db->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1011,18 +1074,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             console.error('registerForm element not found!');
         }
 
-        // Login function
+        // Login function - using unified Database API
         async function login(username, password) {
             try {
-                const response = await fetch('api/login.php', {
+                const formData = new FormData();
+                formData.append('ajax_action', 'login');
+                formData.append('username', username);
+                formData.append('password', password);
+                
+                const response = await fetch(window.location.href, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
+                    body: formData
                 });
                 
                 const data = await response.json();
@@ -1032,7 +1094,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                     
                     // Redirect to dashboard after a short delay
                     setTimeout(() => {
-                        window.location.href = '/dash';
+                        window.location.href = 'dash.php';
                     }, 1000);
                 } else {
                     showMessage(data.message || 'Login failed. Please try again.', 'error');
@@ -1043,24 +1105,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             }
         }
 
-        // Register function
+        // Register function - using unified Database API
         async function register(username, email, password) {
             try {
                 // Show a loading message
                 showMessage('Processing registration...', 'info');
                 
-                const endpoint = 'api/register.php';
+                const formData = new FormData();
+                formData.append('ajax_action', 'register');
+                formData.append('username', username);
+                formData.append('email', email);
+                formData.append('password', password);
                 
-                const response = await fetch(endpoint, {
+                const response = await fetch(window.location.href, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: username,
-                        email: email,
-                        password: password
-                    })
+                    body: formData
                 });
                 
                 const data = await response.json();
@@ -1071,15 +1130,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                     // Automatically log in the user after successful registration
                     setTimeout(async () => {
                         try {
-                            const loginResponse = await fetch('api/login.php', {
+                            const loginFormData = new FormData();
+                            loginFormData.append('ajax_action', 'login');
+                            loginFormData.append('username', username);
+                            loginFormData.append('password', password);
+                            
+                            const loginResponse = await fetch(window.location.href, {
                                 method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    username: username,
-                                    password: password
-                                })
+                                body: loginFormData
                             });
                             
                             const loginData = await loginResponse.json();
@@ -1088,7 +1146,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                                 showMessage('Login successful! Redirecting to dashboard...', 'success');
                                 // Redirect to dashboard after successful auto-login
                                 setTimeout(() => {
-                                    window.location.href = '/dash';
+                                    window.location.href = 'dash.php';
                                 }, 1000);
                             } else {
                                 // If auto-login fails, show error and switch to login mode
@@ -1135,16 +1193,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             return re.test(email);
         }
 
-        // Check if user is already logged in
+        // Check if user is already logged in - using unified Database API
         async function checkSession() {
             try {
-                const response = await fetch('api/check_session.php');
+                const formData = new FormData();
+                formData.append('ajax_action', 'check_session');
+                
+                const response = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData
+                });
+                
                 const data = await response.json();
                 
                 // Only redirect if user is actually logged in
                 if (data.success && data.logged_in && (data.user_id || data.admin_id)) {
                     // User is already logged in, redirect to dashboard
-                    window.location.href = '/dash';
+                    window.location.href = 'dash.php';
                 }
             } catch (error) {
                 console.error('Session check error:', error);
