@@ -3,8 +3,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Debug: Log session status
+error_log("Dash.php - Session check: " . (isset($_SESSION['user_id']) || isset($_SESSION['admin_id']) ? 'logged in' : 'not logged in'));
+error_log("Dash.php - Session data: " . json_encode($_SESSION));
+
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
-    header('Location: home.php');
+    error_log("Dash.php - Redirecting to home.php (not logged in)");
+    header('Location: /home.php');
     exit;
 }
 
