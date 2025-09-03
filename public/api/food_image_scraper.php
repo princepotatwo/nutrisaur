@@ -50,10 +50,11 @@ function callPythonScraper($foodQuery, $maxResults = 5) {
         
         // Execute the command
         $output = shell_exec($command);
-        $returnCode = $? ?? 0;
+        $returnCode = 0; // Default to 0, we'll check output instead
         
-        if ($returnCode !== 0) {
-            throw new Exception("Python script failed with return code: $returnCode. Output: $output");
+        // Check if the command executed successfully by looking for error patterns
+        if (strpos($output, 'Error') !== false || strpos($output, 'Exception') !== false) {
+            throw new Exception("Python script failed: $output");
         }
         
         // Look for the generated JSON file
