@@ -1,12 +1,9 @@
 <?php
 echo "=== Railway Database Environment Check ===\n\n";
 
-// Check all possible Railway database environment variables
+// Check Railway database environment variables
 $railwayVars = [
-    'MYSQL_HOST', 'MYSQL_PORT', 'MYSQL_DATABASE', 'MYSQL_USER', 'MYSQL_PASSWORD',
-    'DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD',
-    'DATABASE_HOST', 'DATABASE_PORT', 'DATABASE_NAME', 'DATABASE_USER', 'DATABASE_PASSWORD',
-    'RAILWAY_MYSQL_HOST', 'RAILWAY_MYSQL_PORT', 'RAILWAY_MYSQL_DATABASE', 'RAILWAY_MYSQL_USER', 'RAILWAY_MYSQL_PASSWORD'
+    'MYSQL_PUBLIC_URL'
 ];
 
 echo "Checking Railway Database Environment Variables:\n";
@@ -28,14 +25,8 @@ foreach ($railwayVars as $var) {
 echo "\n";
 
 if (empty($foundVars)) {
-    echo "❌ NO DATABASE ENVIRONMENT VARIABLES FOUND!\n";
-    echo "This means Railway hasn't linked a database service to your app.\n\n";
-    
-    echo "SOLUTION:\n";
-    echo "1. Go to your Railway project dashboard\n";
-    echo "2. Add a MySQL database service\n";
-    echo "3. Link it to your nutrisaur service\n";
-    echo "4. Railway will automatically set the environment variables\n\n";
+    echo "❌ MYSQL_PUBLIC_URL NOT FOUND!\n";
+    echo "Railway should provide MYSQL_PUBLIC_URL when database is linked.\n\n";
     
     echo "Current fallback values being used:\n";
     echo "- Host: mainline.proxy.rlwy.net\n";
@@ -82,10 +73,10 @@ if (empty($foundVars)) {
     }
     
 } else {
-    echo "✅ Found " . count($foundVars) . " database environment variables\n";
-    echo "Variables found: " . implode(', ', $foundVars) . "\n\n";
+    echo "✅ Found MYSQL_PUBLIC_URL\n";
+    echo "Railway database is properly linked!\n\n";
     
-    echo "Testing connection with Railway variables...\n";
+    echo "Testing connection with parsed MYSQL_PUBLIC_URL...\n";
     require_once __DIR__ . "/config.php";
     
     try {

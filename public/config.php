@@ -124,19 +124,7 @@ function getDatabaseConfig() {
         'username' => $dbUsername,
         'password' => substr($dbPassword, 0, 3) . '***',
         'mysql_public_url' => $_ENV['MYSQL_PUBLIC_URL'] ?? 'not_set',
-        'env_vars' => [
-            'MYSQL_PUBLIC_URL' => $_ENV['MYSQL_PUBLIC_URL'] ?? 'not_set',
-            'MYSQL_HOST' => $_ENV['MYSQL_HOST'] ?? 'not_set',
-            'MYSQL_PORT' => $_ENV['MYSQL_PORT'] ?? 'not_set',
-            'MYSQL_DATABASE' => $_ENV['MYSQL_DATABASE'] ?? 'not_set',
-            'MYSQL_USER' => $_ENV['MYSQL_USER'] ?? 'not_set',
-            'MYSQL_PASSWORD' => $_ENV['MYSQL_PASSWORD'] ? 'set' : 'not_set',
-            'DATABASE_HOST' => $_ENV['DATABASE_HOST'] ?? 'not_set',
-            'DATABASE_PORT' => $_ENV['DATABASE_PORT'] ?? 'not_set',
-            'DATABASE_NAME' => $_ENV['DATABASE_NAME'] ?? 'not_set',
-            'DATABASE_USER' => $_ENV['DATABASE_USER'] ?? 'not_set',
-            'DATABASE_PASSWORD' => $_ENV['DATABASE_PASSWORD'] ? 'set' : 'not_set'
-        ]
+        'connection_method' => $_ENV['MYSQL_PUBLIC_URL'] ? 'parsed_from_url' : 'fallback_values'
     ];
 }
 ?>
