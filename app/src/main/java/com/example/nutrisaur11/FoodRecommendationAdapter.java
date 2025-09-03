@@ -93,21 +93,7 @@ public class FoodRecommendationAdapter extends RecyclerView.Adapter<FoodRecommen
         return recommendations.size();
     }
 
-    // Method to load images progressively - only current + next 2
-    public void loadImagesProgressively(int currentPosition) {
-        Log.d(TAG, "Loading images progressively from position: " + currentPosition);
-        
-        // Preload next 2 images using FoodImageService
-        for (int i = 1; i <= 2; i++) {
-            int nextPosition = currentPosition + i;
-            if (nextPosition < recommendations.size()) {
-                FoodRecommendation recommendation = recommendations.get(nextPosition);
-                if (recommendation != null && recommendation.getFoodName() != null) {
-                    foodImageService.preloadFoodImages(new String[]{recommendation.getFoodName()});
-                }
-            }
-        }
-    }
+
     
     // Method to clean and shorten food names
     private String cleanFoodName(String foodName) {

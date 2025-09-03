@@ -33,8 +33,6 @@ public class FoodRecommendationActivity extends AppCompatActivity {
     private List<FoodRecommendation> recommendations;
     private int currentPosition = 0;
     private ExecutorService executorService;
-    private boolean isLoadingNext = false;
-    private boolean isLoadingPrevious = false;
     private Set<String> generatedFoodNames = new HashSet<>(); // Track generated foods
     private int generationCount = 0; // Track generation attempts
     
@@ -74,9 +72,9 @@ public class FoodRecommendationActivity extends AppCompatActivity {
         loadUserProfile();
         Log.d(TAG, "User profile loaded");
         
-        // Generate initial recommendation
-        generateRecommendation();
-        Log.d(TAG, "Initial recommendation generation started");
+        // Generate exactly 10 recommendations at startup
+        generateInitialRecommendations();
+        Log.d(TAG, "Initial 10 recommendations generation started");
     }
     
     private void initializeViews() {
@@ -91,22 +89,15 @@ public class FoodRecommendationActivity extends AppCompatActivity {
         // Configure ViewPager2 for unlimited swiping
         viewPager.setOffscreenPageLimit(3); // Keep 3 pages in memory for smooth swiping
         
-        // Setup page change callback for unlimited swiping
+        // Setup page change callback for fixed 10 recommendations
         viewPager.registerOnPageChangeCallback(new OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 currentPosition = position;
                 
-                // Handle forward swiping (right) - generate new recommendations
-                if (position >= recommendations.size() - 1 && !isLoadingNext) {
-                    isLoadingNext = true;
-                    generateNextRecommendation();
-                }
-                
-                // Handle backward swiping (left) - show previous recommendations
-                // The adapter will automatically update the UI
-                Log.d(TAG, "Showing recommendation at position: " + position);
+                // Just log the position change - no more progressive loading
+                Log.d(TAG, "Showing recommendation at position: " + position + ", isPreloading: false, total foods: " + recommendations.size());
             }
         });
     }
@@ -163,80 +154,55 @@ public class FoodRecommendationActivity extends AppCompatActivity {
         Log.d(TAG, "Using default user profile");
     }
     
-    private void generateRecommendation() {
-        executorService.execute(() -> {
-            try {
-                FoodRecommendation recommendation = callGeminiAPI();
-                if (recommendation != null) {
-                    runOnUiThread(() -> {
-                        recommendations.add(recommendation);
-                        generatedFoodNames.add(recommendation.getFoodName().toLowerCase().trim());
-                        adapter.notifyDataSetChanged();
-                        
-                        // If this is the first recommendation, the adapter will show it
-                        Log.d(TAG, "First recommendation added to adapter");
-                        
-                        Log.d(TAG, "Generated initial recommendation: " + recommendation.getFoodName());
-                    });
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error generating recommendation: " + e.getMessage());
-                runOnUiThread(() -> {
-                    // Show error message or fallback recommendation
-                    showFallbackRecommendation();
-                });
-            }
-        });
-    }
-    
-    private void generateNextRecommendation() {
+    private void generateInitialRecommendations() {
         // Show loading indicator
-        runOnUiThread(() -> {
-            ProgressBar loadingIndicator = findViewById(R.id.loading_indicator);
-            if (loadingIndicator != null) {
-                loadingIndicator.setVisibility(View.VISIBLE);
-            }
-        });
-
+        ProgressBar loadingIndicator = findViewById(R.id.loading_indicator);
+        if (loadingIndicator != null) {
+            loadingIndicator.setVisibility(View.VISIBLE);
+        }
+        
         executorService.execute(() -> {
             try {
-                FoodRecommendation recommendation = callGeminiAPI();
-                if (recommendation != null) {
-                    runOnUiThread(() -> {
-                        recommendations.add(recommendation);
-                        generatedFoodNames.add(recommendation.getFoodName().toLowerCase().trim());
-                        adapter.notifyDataSetChanged();
-                        isLoadingNext = false;
-                        
-                        // Hide loading indicator
-                        ProgressBar loadingIndicator = findViewById(R.id.loading_indicator);
-                        if (loadingIndicator != null) {
-                            loadingIndicator.setVisibility(View.GONE);
-                        }
-                        
-                        Log.d(TAG, "Generated new recommendation: " + recommendation.getFoodName() + 
-                              " (Total: " + recommendations.size() + ", Unique: " + generatedFoodNames.size() + ")");
-                    });
-                } else {
-                    runOnUiThread(() -> {
-                        isLoadingNext = false;
-                        showFallbackRecommendation();
-
-                        // Hide loading indicator
-                        ProgressBar loadingIndicator = findViewById(R.id.loading_indicator);
-                        if (loadingIndicator != null) {
-                            loadingIndicator.setVisibility(View.GONE);
-                        }
-                    });
+                // Generate exactly 10 recommendations
+                for (int i = 0; i < 10; i++) {
+                    FoodRecommendation recommendation = callGeminiAPI();
+                    if (recommendation != null) {
+                        runOnUiThread(() -> {
+                            recommendations.add(recommendation);
+                            generatedFoodNames.add(recommendation.getFoodName().toLowerCase().trim());
+                            adapter.notifyDataSetChanged();
+                            
+                            Log.d(TAG, "Generated recommendation " + (i + 1) + "/10: " + recommendation.getFoodName());
+                        });
+                    } else {
+                        // Add fallback if API fails
+                        runOnUiThread(() -> {
+                            FoodRecommendation fallback = createFallbackRecommendation();
+                            recommendations.add(fallback);
+                            adapter.notifyDataSetChanged();
+                            Log.d(TAG, "Added fallback recommendation " + (i + 1) + "/10");
+                        });
+                    }
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error generating next recommendation: " + e.getMessage());
+                
+                // Hide loading indicator when all 10 are generated
                 runOnUiThread(() -> {
-                    isLoadingNext = false;
-                    showFallbackRecommendation();
-
-                    // Hide loading indicator
-                    ProgressBar loadingIndicator = findViewById(R.id.loading_indicator);
+                    if (loadingIndicator != null) {
+                        loadingIndicator.setVisibility(View.GONE);
+                    }
+                    Log.d(TAG, "All 10 recommendations generated successfully");
+                });
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error generating initial recommendations: " + e.getMessage());
+                runOnUiThread(() -> {
+                    // Add fallback recommendations to reach 10
+                    while (recommendations.size() < 10) {
+                        FoodRecommendation fallback = createFallbackRecommendation();
+                        recommendations.add(fallback);
+                    }
+                    adapter.notifyDataSetChanged();
+                    
                     if (loadingIndicator != null) {
                         loadingIndicator.setVisibility(View.GONE);
                     }
@@ -244,6 +210,8 @@ public class FoodRecommendationActivity extends AppCompatActivity {
             }
         });
     }
+    
+
     
     private FoodRecommendation callGeminiAPI() {
         return callGeminiAPIWithRetry(0);
