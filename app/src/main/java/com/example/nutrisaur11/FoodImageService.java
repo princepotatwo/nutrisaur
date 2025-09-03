@@ -27,12 +27,8 @@ import okhttp3.Response;
 public class FoodImageService {
     private static final String TAG = "FoodImageService";
     // Use your existing Railway deployment URL from Constants.java
-    // For testing with local Python server, use one of these:
-    // private static final String API_BASE_URL = "https://nutrisaur-production.up.railway.app/"; // Production
-    // private static final String API_BASE_URL = "http://10.0.2.2:8000/"; // Android emulator
-    // private static final String API_BASE_URL = "http://192.168.1.XXX:8000/"; // Physical device (replace XXX with your IP)
-    private static final String API_BASE_URL = "http://10.0.2.2:8000/"; // For testing with emulator
-    private static final String IMAGE_SCRAPER_ENDPOINT = "public/api/food_image_scraper.php";
+    private static final String API_BASE_URL = "https://nutrisaur-production.up.railway.app/"; // Production Railway deployment
+    private static final String IMAGE_SCRAPER_ENDPOINT = "api/food_image_scraper.php";
     
     private final OkHttpClient client;
     private final ExecutorService executor;
