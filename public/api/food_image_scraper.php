@@ -1,7 +1,8 @@
 <?php
 /**
- * Food Image Scraper API using DuckDuckGo search
+ * Food Image Scraper API using serping approach - Google SERP scraping
  * Exactly 10 images, no unlimited cards
+ * Based on: https://github.com/serping/express-scraper/blob/main/app/api/v1/google/serp.ts
  */
 
 header('Content-Type: application/json');
@@ -30,55 +31,141 @@ function validateFoodQuery($query) {
     return strlen($query) <= 100; // Limit length
 }
 
-// Function to search DuckDuckGo images using direct API
-function searchDuckDuckGoImages($foodQuery) {
+// Function to scrape Google Images using serping approach
+function scrapeGoogleImagesSerping($foodQuery) {
     $images = array();
     
     try {
-        // Use DuckDuckGo Instant Answer API
+        // Build Google Images search URL (serping approach)
         $searchQuery = urlencode($foodQuery . ' food');
-        $apiUrl = "https://api.duckduckgo.com/?q={$searchQuery}&format=json&no_html=1&skip_disambig=1";
+        $searchUrl = "https://www.google.com/search?q={$searchQuery}&tbm=isch&hl=en&tbs=isz:l";
         
+        // Set up cURL with serping-style headers
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $apiUrl);
+        curl_setopt($ch, CURLOPT_URL, $searchUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language: en-US,en;q=0.9',
+            'Accept-Encoding: gzip, deflate, br',
+            'Connection: keep-alive',
+            'Upgrade-Insecure-Requests: 1',
+            'Sec-Fetch-Dest: document',
+            'Sec-Fetch-Mode: navigate',
+            'Sec-Fetch-Site: none',
+            'Cache-Control: max-age=0',
+            'DNT: 1'
+        ));
         
-        $response = curl_exec($ch);
+        $html = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         
-        if ($httpCode === 200 && $response) {
-            $data = json_decode($response, true);
+        if ($httpCode === 200 && $html) {
+            // Extract image URLs using serping-style patterns
+            $patterns = array(
+                // Google Images JSON data pattern
+                '/"ou":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+                // Alternative JSON patterns
+                '/"url":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+                '/\["(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+                // Direct image URLs
+                '/data-src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+                '/src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
+                // Google Images specific patterns
+                '/"https:\/\/[^"]+\.(jpg|jpeg|png|webp)"/',
+                '/https:\/\/[^"]+\.(jpg|jpeg|png|webp)/'
+            );
             
-            // Extract image URLs from DuckDuckGo response
-            if (isset($data['Image']) && !empty($data['Image'])) {
-                $images[] = array(
-                    'title' => $foodQuery . ' food image',
-                    'image_url' => $data['Image'],
-                    'source_url' => $data['Image'],
-                    'query' => $foodQuery
-                );
+            $foundUrls = array();
+            
+            foreach ($patterns as $pattern) {
+                preg_match_all($pattern, $html, $matches);
+                if (!empty($matches[1])) {
+                    $foundUrls = array_merge($foundUrls, $matches[1]);
+                } elseif (!empty($matches[0])) {
+                    // For patterns without capture groups
+                    $foundUrls = array_merge($foundUrls, $matches[0]);
+                }
             }
             
-            // Also check for related topics with images
-            if (isset($data['RelatedTopics']) && is_array($data['RelatedTopics'])) {
-                foreach ($data['RelatedTopics'] as $topic) {
-                    if (isset($topic['Icon']['URL']) && !empty($topic['Icon']['URL'])) {
-                        $images[] = array(
-                            'title' => $foodQuery . ' food image',
-                            'image_url' => $topic['Icon']['URL'],
-                            'source_url' => $topic['Icon']['URL'],
-                            'query' => $foodQuery
-                        );
+            // Remove duplicates and validate URLs
+            $foundUrls = array_unique($foundUrls);
+            $count = 0;
+            
+            foreach ($foundUrls as $url) {
+                if ($count >= 10) break; // Exactly 10 images
+                
+                // Clean up URL (remove quotes if present)
+                $url = trim($url, '"');
+                
+                // Validate URL and ensure it's an image
+                if (filter_var($url, FILTER_VALIDATE_URL) && 
+                    preg_match('/\.(jpg|jpeg|png|webp)$/i', $url)) {
+                    
+                    $images[] = array(
+                        'title' => $foodQuery . ' food image',
+                        'image_url' => $url,
+                        'source_url' => $url,
+                        'query' => $foodQuery
+                    );
+                    $count++;
+                }
+            }
+            
+            // If no images found with first attempt, try alternative search
+            if (empty($images)) {
+                $altSearchUrl = "https://www.google.com/search?q=" . urlencode($foodQuery) . "&tbm=isch&hl=en&tbs=isz:l,itp:photo";
+                
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $altSearchUrl);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+                
+                $altHtml = curl_exec($ch);
+                curl_close($ch);
+                
+                if ($altHtml) {
+                    foreach ($patterns as $pattern) {
+                        preg_match_all($pattern, $altHtml, $matches);
+                        if (!empty($matches[1])) {
+                            $foundUrls = array_merge($foundUrls, $matches[1]);
+                        } elseif (!empty($matches[0])) {
+                            $foundUrls = array_merge($foundUrls, $matches[0]);
+                        }
+                    }
+                    
+                    $foundUrls = array_unique($foundUrls);
+                    $count = 0;
+                    
+                    foreach ($foundUrls as $url) {
+                        if ($count >= 10) break;
+                        
+                        $url = trim($url, '"');
+                        
+                        if (filter_var($url, FILTER_VALIDATE_URL) && 
+                            preg_match('/\.(jpg|jpeg|png|webp)$/i', $url)) {
+                            
+                            $images[] = array(
+                                'title' => $foodQuery . ' food image',
+                                'image_url' => $url,
+                                'source_url' => $url,
+                                'query' => $foodQuery
+                            );
+                            $count++;
+                        }
                     }
                 }
             }
         }
         
-        // If DuckDuckGo API doesn't work, use a fallback with high-quality food images
+        // If still no images, use high-quality fallback
         if (empty($images)) {
             $fallbackImages = array(
                 "https://source.unsplash.com/300x200/?{$foodQuery},food",
@@ -104,7 +191,7 @@ function searchDuckDuckGoImages($foodQuery) {
         }
         
     } catch (Exception $e) {
-        error_log("Error searching DuckDuckGo images: " . $e->getMessage());
+        error_log("Error scraping Google Images (serping): " . $e->getMessage());
     }
     
     return $images;
@@ -159,8 +246,8 @@ try {
     // Log the request
     error_log("Food image scraper request: query='$foodQuery', max_results=$maxResults");
     
-    // Search for images
-    $images = searchDuckDuckGoImages($foodQuery);
+    // Scrape Google Images using serping approach
+    $images = scrapeGoogleImagesSerping($foodQuery);
     
     if (!empty($images)) {
         // Limit to exactly 10 images
@@ -168,11 +255,11 @@ try {
         
         echo json_encode(array(
             'success' => true,
-            'message' => 'Images retrieved successfully',
+            'message' => 'Images retrieved successfully using Google SERP scraping',
             'query' => $foodQuery,
             'count' => count($images),
             'images' => $images,
-            'source' => 'duckduckgo_search'
+            'source' => 'google_serp_scraping'
         ));
     } else {
         http_response_code(404);
