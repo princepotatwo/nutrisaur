@@ -1180,7 +1180,7 @@ $db->close();
                         try {
                             const loginFormData = new FormData();
                             loginFormData.append('ajax_action', 'login');
-                            loginFormData.append('username', username);
+                            loginFormData.append('username', document.getElementById('username_register').value);
                             loginFormData.append('password', password);
                             
                             const loginResponse = await fetch(window.location.href, {
