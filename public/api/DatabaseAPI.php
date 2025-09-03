@@ -729,14 +729,22 @@ class DatabaseAPI {
             $metrics['total_users'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // Active FCM tokens
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as active FROM fcm_tokens WHERE is_active = 1");
-            $stmt->execute();
-            $metrics['active_devices'] = $stmt->fetch(PDO::FETCH_ASSOC)['active'];
+            try {
+                $stmt = $this->pdo->prepare("SELECT COUNT(*) as active FROM fcm_tokens WHERE is_active = 1");
+                $stmt->execute();
+                $metrics['active_devices'] = $stmt->fetch(PDO::FETCH_ASSOC)['active'];
+            } catch (PDOException $e) {
+                $metrics['active_devices'] = 0;
+            }
             
             // Users by barangay
-            $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as count FROM user_preferences GROUP BY barangay");
-            $stmt->execute();
-            $metrics['users_by_barangay'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            try {
+                $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as count FROM user_preferences GROUP BY barangay");
+                $stmt->execute();
+                $metrics['users_by_barangay'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                $metrics['users_by_barangay'] = [];
+            }
             
             // Recent registrations (last 7 days)
             $stmt = $this->pdo->prepare("SELECT COUNT(*) as recent FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
@@ -745,7 +753,13 @@ class DatabaseAPI {
             
             return $metrics;
         } catch (PDOException $e) {
-            return [];
+            error_log("Community metrics error: " . $e->getMessage());
+            return [
+                'total_users' => 0,
+                'active_devices' => 0,
+                'users_by_barangay' => [],
+                'recent_registrations' => 0
+            ];
         }
     }
     
@@ -758,6 +772,7 @@ class DatabaseAPI {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            error_log("Geographic distribution error: " . $e->getMessage());
             return [];
         }
     }
@@ -767,10 +782,31 @@ class DatabaseAPI {
      */
     public function getRiskDistribution() {
         try {
-            $stmt = $this->pdo->prepare("SELECT health_goals, COUNT(*) as count FROM user_preferences WHERE health_goals IS NOT NULL GROUP BY health_goals");
+            // Create risk levels based on risk_score
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    CASE 
+                        WHEN risk_score < 20 THEN 'Low Risk'
+                        WHEN risk_score < 50 THEN 'Moderate Risk'
+                        WHEN risk_score < 80 THEN 'High Risk'
+                        ELSE 'Severe Risk'
+                    END as risk_level,
+                    COUNT(*) as count
+                FROM user_preferences 
+                WHERE risk_score IS NOT NULL 
+                GROUP BY risk_level
+                ORDER BY 
+                    CASE risk_level
+                        WHEN 'Low Risk' THEN 1
+                        WHEN 'Moderate Risk' THEN 2
+                        WHEN 'High Risk' THEN 3
+                        WHEN 'Severe Risk' THEN 4
+                    END
+            ");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            error_log("Risk distribution error: " . $e->getMessage());
             return [];
         }
     }
@@ -1130,6 +1166,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
         case 'intelligent_programs':
             // This would need to be implemented based on your programs data structure
             echo json_encode(['success' => true, 'data' => []]);
+            break;
+            
+        case 'ai_food_recommendations':
+            $userEmail = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
+            $limit = $_GET['limit'] ?? $_POST['limit'] ?? 10;
+            
+            if (empty($userEmail)) {
+                echo json_encode(['success' => false, 'message' => 'User email is required']);
+                break;
+            }
+            
+            $recommendations = $db->getAIRecommendations($userEmail, $limit);
+            echo json_encode(['success' => true, 'data' => $recommendations]);
             break;
             
         // ========================================
