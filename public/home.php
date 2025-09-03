@@ -45,27 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
         $result = $db->authenticateUser($usernameOrEmail, $password);
         
         if ($result['success']) {
-            // Set session data
-            if ($result['user_type'] === 'user') {
-                $_SESSION['user_id'] = $result['data']['user_id'];
-                $_SESSION['username'] = $result['data']['username'];
-                $_SESSION['email'] = $result['data']['email'];
-                $_SESSION['is_admin'] = $result['data']['is_admin'];
-                
-                if ($result['data']['is_admin']) {
-                    $_SESSION['admin_id'] = $result['data']['admin_data']['admin_id'];
-                    $_SESSION['role'] = $result['data']['admin_data']['role'];
-                }
-            } else {
-                $_SESSION['admin_id'] = $result['data']['admin_id'];
-                $_SESSION['username'] = $result['data']['username'];
-                $_SESSION['email'] = $result['data']['email'];
-                $_SESSION['is_admin'] = true;
-                $_SESSION['role'] = $result['data']['role'];
-            }
-            
-            // Regenerate session ID for security
-            session_regenerate_id(true);
+            // Use centralized session management
+            $db->setUserSession($result['data'], $result['user_type'] === 'admin');
             
             // Redirect to dashboard
             header("Location: /dash.php");
@@ -95,15 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         $result = $db->registerUser($username, $email, $password);
         
         if ($result['success']) {
-            // Set session data
-            $_SESSION['user_id'] = $result['data']['user_id'];
-            $_SESSION['username'] = $result['data']['username'];
-            $_SESSION['email'] = $result['data']['email'];
-            $_SESSION['is_admin'] = false;
-            
-            // Regenerate session ID for security
-            session_regenerate_id(true);
-            
+            // Session is now handled automatically by DatabaseAPI
             // Redirect to dashboard
             header("Location: /dash.php");
             exit;
@@ -130,27 +103,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             $result = $db->authenticateUser($usernameOrEmail, $password);
             
             if ($result['success']) {
-                // Set session data for AJAX login
-                if ($result['user_type'] === 'user') {
-                    $_SESSION['user_id'] = $result['data']['user_id'];
-                    $_SESSION['username'] = $result['data']['username'];
-                    $_SESSION['email'] = $result['data']['email'];
-                    $_SESSION['is_admin'] = $result['data']['is_admin'];
-                    
-                    if ($result['data']['is_admin']) {
-                        $_SESSION['admin_id'] = $result['data']['admin_data']['admin_id'];
-                        $_SESSION['role'] = $result['data']['admin_data']['role'];
-                    }
-                } else {
-                    $_SESSION['admin_id'] = $result['data']['admin_id'];
-                    $_SESSION['username'] = $result['data']['username'];
-                    $_SESSION['email'] = $result['data']['email'];
-                    $_SESSION['is_admin'] = true;
-                    $_SESSION['role'] = $result['data']['role'];
-                }
-                
-                // Regenerate session ID for security
-                session_regenerate_id(true);
+                // Use centralized session management
+                $db->setUserSession($result['data'], $result['user_type'] === 'admin');
             }
             
             echo json_encode($result);
@@ -183,29 +137,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
             $result = $db->registerUser($username, $email, $password);
             
-            if ($result['success']) {
-                // Set session data for AJAX registration
-                $_SESSION['user_id'] = $result['data']['user_id'];
-                $_SESSION['username'] = $result['data']['username'];
-                $_SESSION['email'] = $result['data']['email'];
-                $_SESSION['is_admin'] = false;
-                
-                // Regenerate session ID for security
-                session_regenerate_id(true);
-            }
-            
+            // Session is now handled automatically by DatabaseAPI
             echo json_encode($result);
             exit;
             
         case 'check_session':
-            $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
+            $sessionData = $db->getCurrentUserSession();
             echo json_encode([
                 'success' => true,
-                'logged_in' => $isLoggedIn,
-                'user_id' => $_SESSION['user_id'] ?? null,
-                'admin_id' => $_SESSION['admin_id'] ?? null,
-                'username' => $_SESSION['username'] ?? null,
-                'is_admin' => $_SESSION['is_admin'] ?? false
+                'logged_in' => $db->isUserLoggedIn(),
+                'user_id' => $sessionData['user_id'],
+                'admin_id' => $sessionData['admin_id'],
+                'username' => $sessionData['username'],
+                'is_admin' => $sessionData['is_admin']
             ]);
             exit;
     }
@@ -1173,40 +1117,11 @@ $db->close();
                 const data = await response.json();
                 
                 if (data.success) {
-                    showMessage('Registration successful! Logging you in automatically...', 'success');
-                    
-                    // Automatically log in the user after successful registration
-                    setTimeout(async () => {
-                        try {
-                            const loginFormData = new FormData();
-                            loginFormData.append('ajax_action', 'login');
-                            loginFormData.append('username', document.getElementById('username_register').value);
-                            loginFormData.append('password', password);
-                            
-                            const loginResponse = await fetch(window.location.href, {
-                                method: 'POST',
-                                body: loginFormData
-                            });
-                            
-                            const loginData = await loginResponse.json();
-                            
-                            if (loginData.success) {
-                                showMessage('Login successful! Redirecting to dashboard...', 'success');
-                                // Redirect to dashboard after successful auto-login
-                                setTimeout(() => {
-                                    window.location.href = '/dash.php';
-                                }, 1000);
-                            } else {
-                                // If auto-login fails, show error and switch to login mode
-                                showMessage('Auto-login failed. Please login manually.', 'error');
-                                switchToLoginMode();
-                            }
-                        } catch (error) {
-                            showMessage('Auto-login failed. Please login manually.', 'error');
-                            console.error('Auto-login error:', error);
-                            switchToLoginMode();
-                        }
-                    }, 1500);
+                    showMessage('Registration successful! Redirecting to dashboard...', 'success');
+                    // Redirect to dashboard after successful registration
+                    setTimeout(() => {
+                        window.location.href = '/dash.php';
+                    }, 1000);
                 } else {
                     showMessage(data.message || 'Registration failed. Please try again.', 'error');
                     // Stay on registration form

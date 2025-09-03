@@ -198,13 +198,17 @@ class DatabaseAPI {
             
             $this->pdo->commit();
             
+            // Auto-login the user after successful registration
+            $this->autoLoginUser($userId, $username, $email);
+            
             return [
                 'success' => true,
-                'message' => 'Registration successful!',
+                'message' => 'Registration successful! You are now logged in.',
                 'data' => [
                     'user_id' => $userId,
                     'username' => $username,
-                    'email' => $email
+                    'email' => $email,
+                    'auto_logged_in' => true
                 ]
             ];
             
@@ -243,6 +247,111 @@ class DatabaseAPI {
         } catch (PDOException $e) {
             return false;
         }
+    }
+    
+    /**
+     * Auto-login user after registration
+     */
+    public function autoLoginUser($userId, $username, $email) {
+        try {
+            // Start session if not already started
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            
+            // Set session data
+            $_SESSION['user_id'] = $userId;
+            $_SESSION['username'] = $username;
+            $_SESSION['email'] = $email;
+            $_SESSION['is_admin'] = false;
+            
+            // Regenerate session ID for security
+            session_regenerate_id(true);
+            
+            // Update last login
+            $this->updateUserLastLogin($userId);
+            
+            // Ensure session is written
+            session_write_close();
+            
+            return true;
+        } catch (Exception $e) {
+            error_log("Auto-login failed: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Centralized session management - ensures consistent session handling across all pages
+     */
+    public function ensureSessionStarted() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        return true;
+    }
+    
+    /**
+     * Set user session data consistently
+     */
+    public function setUserSession($userData, $isAdmin = false) {
+        try {
+            $this->ensureSessionStarted();
+            
+            if ($isAdmin) {
+                $_SESSION['admin_id'] = $userData['admin_id'];
+                $_SESSION['username'] = $userData['username'];
+                $_SESSION['email'] = $userData['email'];
+                $_SESSION['is_admin'] = true;
+                $_SESSION['role'] = $userData['role'];
+            } else {
+                $_SESSION['user_id'] = $userData['user_id'];
+                $_SESSION['username'] = $userData['username'];
+                $_SESSION['email'] = $userData['email'];
+                $_SESSION['is_admin'] = $userData['is_admin'] ?? false;
+                
+                if (isset($userData['admin_data'])) {
+                    $_SESSION['admin_id'] = $userData['admin_data']['admin_id'];
+                    $_SESSION['role'] = $userData['admin_data']['role'];
+                }
+            }
+            
+            // Regenerate session ID for security
+            session_regenerate_id(true);
+            
+            // Update last login for regular users
+            if (!$isAdmin && isset($userData['user_id'])) {
+                $this->updateUserLastLogin($userData['user_id']);
+            }
+            
+            return true;
+        } catch (Exception $e) {
+            error_log("Session setting failed: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Check if user is logged in
+     */
+    public function isUserLoggedIn() {
+        $this->ensureSessionStarted();
+        return isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
+    }
+    
+    /**
+     * Get current user session data
+     */
+    public function getCurrentUserSession() {
+        $this->ensureSessionStarted();
+        return [
+            'user_id' => $_SESSION['user_id'] ?? null,
+            'admin_id' => $_SESSION['admin_id'] ?? null,
+            'username' => $_SESSION['username'] ?? null,
+            'email' => $_SESSION['email'] ?? null,
+            'is_admin' => $_SESSION['is_admin'] ?? false,
+            'role' => $_SESSION['role'] ?? null
+        ];
     }
     
     // ========================================

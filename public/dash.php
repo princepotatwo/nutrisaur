@@ -1,13 +1,14 @@
 <?php
-// Start session if not already started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Use centralized session management
+require_once __DIR__ . "/config.php";
+require_once __DIR__ . "/api/DatabaseAPI.php";
+$db = new DatabaseAPI();
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+// Check if user is logged in using centralized method
+if (!$db->isUserLoggedIn()) {
     // Simple debug to see what's in the session
-    error_log("Dash.php - Session data: " . json_encode($_SESSION));
+    $sessionData = $db->getCurrentUserSession();
+    error_log("Dash.php - Session data: " . json_encode($sessionData));
     error_log("Dash.php - Session ID: " . session_id());
     header('Location: /home.php');
     exit;
