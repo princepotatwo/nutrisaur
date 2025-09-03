@@ -342,7 +342,7 @@ public class FoodActivity extends AppCompatActivity {
                 
                 // Load current image + preload next 2 images for smooth experience
                 if (shouldLoadImages && adapter != null) {
-                    adapter.loadImagesProgressively(position);
+                    // Removed progressive loading - images are loaded when cards are displayed
                 }
                 
                 // Preload logic: Trigger when user is near the end of available foods
@@ -648,7 +648,7 @@ public class FoodActivity extends AppCompatActivity {
                             Log.d(TAG, "Added " + addedCount + " verified recommendations from initial batch");
                             
                             // Load first image + preload next 2 for smooth experience
-                            adapter.loadImagesProgressively(0);
+                            // Removed progressive loading - images are loaded when cards are displayed
                             
                             // If we didn't get enough foods, add fallbacks to complete the batch
                             if (addedCount < 8) {
@@ -708,7 +708,7 @@ public class FoodActivity extends AppCompatActivity {
                             
                             // Load images progressively for the new batch
                             int newBatchStartIndex = recommendations.size() - addedCount;
-                            adapter.loadImagesProgressively(newBatchStartIndex);
+                            // Removed progressive loading - images are loaded when cards are displayed
                         } else {
                             Log.d(TAG, "No unique foods added, generating more recommendations");
                             // Generate more recommendations instead of fallbacks

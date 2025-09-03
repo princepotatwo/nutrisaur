@@ -165,6 +165,7 @@ public class FoodRecommendationActivity extends AppCompatActivity {
             try {
                 // Generate exactly 10 recommendations
                 for (int i = 0; i < 10; i++) {
+                    final int currentIndex = i;
                     FoodRecommendation recommendation = callGeminiAPI();
                     if (recommendation != null) {
                         runOnUiThread(() -> {
@@ -172,7 +173,7 @@ public class FoodRecommendationActivity extends AppCompatActivity {
                             generatedFoodNames.add(recommendation.getFoodName().toLowerCase().trim());
                             adapter.notifyDataSetChanged();
                             
-                            Log.d(TAG, "Generated recommendation " + (i + 1) + "/10: " + recommendation.getFoodName());
+                            Log.d(TAG, "Generated recommendation " + (currentIndex + 1) + "/10: " + recommendation.getFoodName());
                         });
                     } else {
                         // Add fallback if API fails
@@ -180,7 +181,7 @@ public class FoodRecommendationActivity extends AppCompatActivity {
                             FoodRecommendation fallback = createFallbackRecommendation();
                             recommendations.add(fallback);
                             adapter.notifyDataSetChanged();
-                            Log.d(TAG, "Added fallback recommendation " + (i + 1) + "/10");
+                            Log.d(TAG, "Added fallback recommendation " + (currentIndex + 1) + "/10");
                         });
                     }
                 }
