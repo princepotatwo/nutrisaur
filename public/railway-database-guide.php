@@ -92,9 +92,14 @@ header('Content-Type: text/html; charset=utf-8');
         require_once __DIR__ . "/config.php";
         
         // Check current database status
-        $db = new RailwayDatabaseConfig();
-        $connectionStatus = $db->getPDOConnection() ? 'success' : 'error';
-        $statusMessage = $connectionStatus === 'success' ? 'Database Connected!' : 'Database Not Connected';
+        try {
+            $db = new RailwayDatabaseConfig();
+            $connectionStatus = $db->getPDOConnection() ? 'success' : 'error';
+            $statusMessage = $connectionStatus === 'success' ? 'Database Connected!' : 'Database Not Connected';
+        } catch (Exception $e) {
+            $connectionStatus = 'error';
+            $statusMessage = 'Database Configuration Error: ' . $e->getMessage();
+        }
         ?>
 
         <div class="status-box <?php echo $connectionStatus; ?>">
@@ -187,6 +192,13 @@ header('Content-Type: text/html; charset=utf-8');
             foreach ($envVars as $var => $value) {
                 $status = $value === 'NOT SET' ? '❌' : '✅';
                 echo "{$status} {$var}: {$value}\n";
+            }
+            
+            echo "\n🔍 Database Connection Test:\n";
+            if (function_exists('testDatabaseConnection')) {
+                echo testDatabaseConnection() ? "✅ Database connection successful!\n" : "❌ Database connection failed!\n";
+            } else {
+                echo "⚠️ Database functions not available\n";
             }
             ?></pre>
         </div>
