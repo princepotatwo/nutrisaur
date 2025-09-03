@@ -2,6 +2,11 @@
 // Start the session
 session_start();
 
+// Debug session information
+error_log("Home.php - Session ID: " . session_id());
+error_log("Home.php - Session Name: " . session_name());
+error_log("Home.php - Session Status: " . session_status());
+
 // Check if user is already logged in
 $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
 if ($isLoggedIn) {
@@ -62,6 +67,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             // Regenerate session ID after setting data
             session_regenerate_id(true);
             
+            // Debug: Log session after login
+            error_log("Home.php - Session after login - ID: " . session_id());
+            error_log("Home.php - Session after login - Data: " . json_encode($_SESSION));
+            
             // Redirect to dashboard
             header("Location: /dash.php");
             exit;
@@ -100,6 +109,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             
             // Regenerate session ID after setting data
             session_regenerate_id(true);
+            
+            // Debug: Log session after registration
+            error_log("Home.php - Session after registration - ID: " . session_id());
+            error_log("Home.php - Session after registration - Data: " . json_encode($_SESSION));
             
             // Redirect to dashboard
             header("Location: /dash.php");
