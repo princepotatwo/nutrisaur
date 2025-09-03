@@ -24,7 +24,6 @@ public class FoodRecommendationAdapter extends RecyclerView.Adapter<FoodRecommen
     private List<FoodRecommendation> recommendations;
     private Context context;
     private ExecutorService executorService;
-    private ImageCacheManager imageCacheManager;
     private FoodImageService foodImageService;
     private Set<String> pendingRequests = new HashSet<>();
     
@@ -33,10 +32,8 @@ public class FoodRecommendationAdapter extends RecyclerView.Adapter<FoodRecommen
         this.recommendations = recommendations;
         this.context = context;
         this.executorService = Executors.newFixedThreadPool(2);
-        this.imageCacheManager = ImageCacheManager.getInstance();
         this.foodImageService = new FoodImageService();
-        Log.d(TAG, "FoodRecommendationAdapter created - Cache status:");
-        imageCacheManager.logCacheStatus();
+        Log.d(TAG, "FoodRecommendationAdapter created - Local images only");
     }
 
     @NonNull

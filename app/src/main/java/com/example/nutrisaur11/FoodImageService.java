@@ -1,57 +1,28 @@
 package com.example.nutrisaur11;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
+/**
+ * Simple Food Image Service - Uses local drawable resources only
+ * No API calls, no scraping, no network requests, no caching
+ */
 public class FoodImageService {
     private static final String TAG = "FoodImageService";
-    // Use your existing Railway deployment URL from Constants.java
-    private static final String API_BASE_URL = "https://nutrisaur-production.up.railway.app/"; // Production Railway deployment
-    private static final String IMAGE_SCRAPER_ENDPOINT = "api/food_image_scraper.php";
-    
-    private final OkHttpClient client;
     private final ExecutorService executor;
-    private final ImageCacheManager imageCacheManager;
-    
+
     public FoodImageService() {
-        this.client = new OkHttpClient();
-        this.executor = Executors.newFixedThreadPool(3);
-        this.imageCacheManager = ImageCacheManager.getInstance();
+        this.executor = Executors.newFixedThreadPool(2);
+        Log.d(TAG, "FoodImageService initialized - Local images only");
     }
-    
-    public interface ImageLoadCallback {
-        void onImageLoaded(Bitmap bitmap);
-        void onError(String error);
-    }
-    
-    public interface ImageUrlsCallback {
-        void onUrlsReceived(String[] imageUrls);
-        void onError(String error);
-    }
-    
+
     /**
-     * Load food image using Google Images scraper API
+     * Load food image using local drawable resources
      */
     public void loadFoodImage(String foodName, ImageView imageView, ProgressBar progressBar) {
         if (foodName == null || foodName.trim().isEmpty()) {
@@ -59,226 +30,83 @@ public class FoodImageService {
             return;
         }
         
-        // Check cache first
-        String cacheKey = "food_" + foodName.toLowerCase().replaceAll("\\s+", "_");
-        Bitmap cachedBitmap = imageCacheManager.getCachedImage(cacheKey);
-        
-        if (cachedBitmap != null) {
-            Log.d(TAG, "Using cached image for: " + foodName);
-            imageView.setImageBitmap(cachedBitmap);
-            if (progressBar != null) {
-                progressBar.setVisibility(android.view.View.GONE);
-            }
-            return;
-        }
-        
-        // Show loading state
-        if (progressBar != null) {
-            progressBar.setVisibility(android.view.View.VISIBLE);
-        }
-        imageView.setImageResource(R.drawable.default_food_image);
-        
-        // Get image URLs from scraper API
-        getFoodImageUrls(foodName, new ImageUrlsCallback() {
-            @Override
-            public void onUrlsReceived(String[] imageUrls) {
-                if (imageUrls.length > 0) {
-                    // Load the first image
-                    loadImageFromUrl(imageUrls[0], new ImageLoadCallback() {
-                        @Override
-                        public void onImageLoaded(Bitmap bitmap) {
-                            // Cache the image
-                            imageCacheManager.putImageInCache(cacheKey, bitmap);
-                            
-                            // Update UI on main thread
-                            imageView.post(() -> {
-                                imageView.setImageBitmap(bitmap);
-                                if (progressBar != null) {
-                                    progressBar.setVisibility(android.view.View.GONE);
-                                }
-                                Log.d(TAG, "Image loaded successfully for: " + foodName);
-                            });
-                        }
-                        
-                        @Override
-                        public void onError(String error) {
-                            Log.e(TAG, "Error loading image for " + foodName + ": " + error);
-                            imageView.post(() -> {
-                                imageView.setImageResource(R.drawable.ic_food_simple);
-                                if (progressBar != null) {
-                                    progressBar.setVisibility(android.view.View.GONE);
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    Log.w(TAG, "No image URLs received for: " + foodName);
-                    imageView.post(() -> {
-                        imageView.setImageResource(R.drawable.ic_food_simple);
-                        if (progressBar != null) {
-                            progressBar.setVisibility(android.view.View.GONE);
-                        }
-                    });
-                }
-            }
-            
-            @Override
-            public void onError(String error) {
-                Log.e(TAG, "Error getting image URLs for " + foodName + ": " + error);
-                imageView.post(() -> {
-                    imageView.setImageResource(R.drawable.ic_food_simple);
-                    if (progressBar != null) {
-                        progressBar.setVisibility(android.view.View.GONE);
-                    }
-                });
-            }
-        });
+        // Load local image based on food name
+        int drawableResource = getDrawableResourceForFood(foodName);
+        imageView.setImageResource(drawableResource);
+        Log.d(TAG, "Loaded local image for: " + foodName + " (resource: " + drawableResource + ")");
     }
-    
+
     /**
-     * Get food image URLs from the scraper API
+     * Get drawable resource ID based on food name
      */
-    private void getFoodImageUrls(String foodName, ImageUrlsCallback callback) {
-        executor.execute(() -> {
-            try {
-                // Build the API URL
-                String apiUrl = API_BASE_URL + IMAGE_SCRAPER_ENDPOINT + "?query=" + 
-                               java.net.URLEncoder.encode(foodName, "UTF-8") + "&max_results=3";
-                
-                Log.d(TAG, "Requesting image URLs from: " + apiUrl);
-                
-                Request request = new Request.Builder()
-                        .url(apiUrl)
-                        .get()
-                        .build();
-                
-                try (Response response = client.newCall(request).execute()) {
-                    if (!response.isSuccessful()) {
-                        callback.onError("API request failed: " + response.code());
-                        return;
-                    }
-                    
-                    String responseBody = response.body().string();
-                    JSONObject jsonResponse = new JSONObject(responseBody);
-                    
-                    if (jsonResponse.getBoolean("success")) {
-                        JSONArray imagesArray = jsonResponse.getJSONArray("images");
-                        String[] imageUrls = new String[imagesArray.length()];
-                        
-                        for (int i = 0; i < imagesArray.length(); i++) {
-                            JSONObject imageObj = imagesArray.getJSONObject(i);
-                            imageUrls[i] = imageObj.getString("image_url");
-                        }
-                        
-                        callback.onUrlsReceived(imageUrls);
-                    } else {
-                        String errorMessage = jsonResponse.optString("message", "Unknown error");
-                        callback.onError("API error: " + errorMessage);
-                    }
-                }
-                
-            } catch (Exception e) {
-                Log.e(TAG, "Error getting image URLs", e);
-                callback.onError("Network error: " + e.getMessage());
-            }
-        });
+    private int getDrawableResourceForFood(String foodName) {
+        String lowerFoodName = foodName.toLowerCase();
+        
+        // Map food names to drawable resources
+        if (lowerFoodName.contains("adobo")) {
+            return R.drawable.adobo;
+        } else if (lowerFoodName.contains("sinigang")) {
+            return R.drawable.sinigang_na_baboy;
+        } else if (lowerFoodName.contains("lechon")) {
+            return R.drawable.lechon;
+        } else if (lowerFoodName.contains("pancit")) {
+            return R.drawable.pancit_sotanghon;
+        } else if (lowerFoodName.contains("tinola")) {
+            return R.drawable.tinola;
+        } else if (lowerFoodName.contains("tortang")) {
+            return R.drawable.tortang_talong;
+        } else if (lowerFoodName.contains("chicharon")) {
+            return R.drawable.chicharon;
+        } else if (lowerFoodName.contains("suman")) {
+            return R.drawable.suman_sa_latik;
+        } else if (lowerFoodName.contains("turon")) {
+            return R.drawable.turon;
+        } else if (lowerFoodName.contains("bibingka")) {
+            return R.drawable.ube_bibingka;
+        } else if (lowerFoodName.contains("halaya")) {
+            return R.drawable.ube_halaya;
+        } else if (lowerFoodName.contains("empanada")) {
+            return R.drawable.vigan_empanada;
+        } else if (lowerFoodName.contains("ukoy")) {
+            return R.drawable.ukoy;
+        } else if (lowerFoodName.contains("tupig")) {
+            return R.drawable.tupig;
+        } else if (lowerFoodName.contains("tokneneng")) {
+            return R.drawable.tokneneng;
+        } else if (lowerFoodName.contains("tocilog")) {
+            return R.drawable.tocilog;
+        } else if (lowerFoodName.contains("bangus")) {
+            return R.drawable.tinolang_bangus;
+        } else if (lowerFoodName.contains("tinapa")) {
+            return R.drawable.tinapa;
+        } else if (lowerFoodName.contains("pork")) {
+            return R.drawable.sweet_sour_pork;
+        } else if (lowerFoodName.contains("fish")) {
+            return R.drawable.sweet_and_sour_fish;
+        } else if (lowerFoodName.contains("milk")) {
+            return R.drawable.soya_milk;
+        } else if (lowerFoodName.contains("sorbetes")) {
+            return R.drawable.sorbetes;
+        } else if (lowerFoodName.contains("squid")) {
+            return R.drawable.squid_balls;
+        } else {
+            // Default image for unmatched foods
+            return R.drawable.default_img;
+        }
     }
-    
+
     /**
-     * Load image from URL
-     */
-    private void loadImageFromUrl(String imageUrl, ImageLoadCallback callback) {
-        executor.execute(() -> {
-            try {
-                Log.d(TAG, "Loading image from URL: " + imageUrl);
-                
-                Request request = new Request.Builder()
-                        .url(imageUrl)
-                        .build();
-                
-                try (Response response = client.newCall(request).execute()) {
-                    if (!response.isSuccessful()) {
-                        callback.onError("Failed to load image: " + response.code());
-                        return;
-                    }
-                    
-                    InputStream inputStream = response.body().byteStream();
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    
-                    if (bitmap != null) {
-                        callback.onImageLoaded(bitmap);
-                    } else {
-                        callback.onError("Failed to decode image");
-                    }
-                }
-                
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading image from URL", e);
-                callback.onError("Error loading image: " + e.getMessage());
-            }
-        });
-    }
-    
-    /**
-     * Preload food images in background
+     * Preload food images (no-op for local images)
      */
     public void preloadFoodImages(String[] foodNames) {
-        for (String foodName : foodNames) {
-            if (foodName != null && !foodName.trim().isEmpty()) {
-                String cacheKey = "food_" + foodName.toLowerCase().replaceAll("\\s+", "_");
-                
-                // Only preload if not already cached
-                if (imageCacheManager.getCachedImage(cacheKey) == null) {
-                    getFoodImageUrls(foodName, new ImageUrlsCallback() {
-                        @Override
-                        public void onUrlsReceived(String[] imageUrls) {
-                            if (imageUrls.length > 0) {
-                                loadImageFromUrl(imageUrls[0], new ImageLoadCallback() {
-                                    @Override
-                                    public void onImageLoaded(Bitmap bitmap) {
-                                        imageCacheManager.putImageInCache(cacheKey, bitmap);
-                                        Log.d(TAG, "Preloaded image for: " + foodName);
-                                    }
-                                    
-                                    @Override
-                                    public void onError(String error) {
-                                        Log.w(TAG, "Failed to preload image for " + foodName + ": " + error);
-                                    }
-                                });
-                            }
-                        }
-                        
-                        @Override
-                        public void onError(String error) {
-                            Log.w(TAG, "Failed to get URLs for preloading " + foodName + ": " + error);
-                        }
-                    });
-                }
-            }
-        }
+        // No preloading needed for local images
+        Log.d(TAG, "Preload requested for local images - no action needed");
     }
-    
+
     /**
-     * Clear all cached food images
-     */
-    public void clearCache() {
-        imageCacheManager.clearCache();
-        Log.d(TAG, "Food image cache cleared");
-    }
-    
-    /**
-     * Get cache statistics
-     */
-    public String getCacheStats() {
-        return imageCacheManager.getCacheStats();
-    }
-    
-    /**
-     * Shutdown the service
+     * Shutdown executor
      */
     public void shutdown() {
-        if (executor != null && !executor.isShutdown()) {
-            executor.shutdown();
-        }
+        executor.shutdown();
     }
 }
