@@ -7037,8 +7037,8 @@ body {
                 
                 console.log('Notification data:', notificationData);
                 
-                // Send to the dedicated notification API
-                const response = await fetch('/api/send_notification.php', {
+                // Send to the centralized DatabaseAPI
+                const response = await fetch('/api/DatabaseAPI.php?action=send_notification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -7586,19 +7586,19 @@ body {
         // API Connection and Data Fetching Functions
         const API_BASE_URL = window.location.origin + '/api/';
 
-        // Function to fetch data from API
+        // Function to fetch data from centralized DatabaseAPI
         async function fetchDataFromAPI(endpoint, params = {}) {
             try {
-                // Build URL for local API endpoints
-                let url = `${API_BASE_URL}${endpoint}.php`;
+                // Use centralized DatabaseAPI
+                let url = `${API_BASE_URL}DatabaseAPI.php?action=${endpoint}`;
                 
                 // Add query parameters if any
                 if (Object.keys(params).length > 0) {
                     const queryString = new URLSearchParams(params).toString();
-                    url += `?${queryString}`;
+                    url += `&${queryString}`;
                 }
                 
-                console.log('Fetching from API:', url);
+                console.log('Fetching from centralized DatabaseAPI:', url);
                 
                 const response = await fetch(url);
                 
@@ -7607,10 +7607,10 @@ body {
                 }
                 
                 const data = await response.json();
-                console.log('API response for', endpoint, ':', data);
-                return data;
+                console.log('DatabaseAPI response for', endpoint, ':', data);
+                return data.data || data; // Return data field if exists, otherwise return full response
             } catch (error) {
-                console.error('API error for', endpoint, ':', error);
+                console.error('DatabaseAPI error for', endpoint, ':', error);
                 return null;
             }
         }
@@ -9264,7 +9264,7 @@ body {
             
             try {
                 // Get all critical alerts data
-                const response = await fetch('/api/critical_alerts.php');
+                const response = await fetch('/api/DatabaseAPI.php?action=critical_alerts');
                 const data = await response.json();
                 
                 if (!data.success || !data.data || data.data.length === 0) {
@@ -9294,7 +9294,7 @@ body {
                             user_name: userName
                         };
                         
-                        const notificationResponse = await fetch('/api/send_notification.php', {
+                        const notificationResponse = await fetch('/api/DatabaseAPI.php?action=send_notification', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',

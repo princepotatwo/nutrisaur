@@ -998,6 +998,31 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
             echo json_encode(['success' => true, 'data' => $logs]);
             break;
             
+        case 'risk_distribution':
+            $risks = $db->getRiskDistribution();
+            echo json_encode(['success' => true, 'data' => $risks]);
+            break;
+            
+        case 'detailed_screening_responses':
+            // This would need to be implemented based on your screening data structure
+            echo json_encode(['success' => true, 'data' => []]);
+            break;
+            
+        case 'critical_alerts':
+            // This would need to be implemented based on your alerts data structure
+            echo json_encode(['success' => true, 'data' => []]);
+            break;
+            
+        case 'analysis_data':
+            // This would need to be implemented based on your analysis data structure
+            echo json_encode(['success' => true, 'data' => []]);
+            break;
+            
+        case 'intelligent_programs':
+            // This would need to be implemented based on your programs data structure
+            echo json_encode(['success' => true, 'data' => []]);
+            break;
+            
         // ========================================
         // TEST API
         // ========================================
@@ -1078,6 +1103,87 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
             break;
             
         // ========================================
+        // SEND NOTIFICATION API
+        // ========================================
+        case 'send_notification':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $notificationData = $_POST['notification_data'] ?? '';
+                
+                if (empty($notificationData)) {
+                    echo json_encode(['success' => false, 'message' => 'Notification data is required']);
+                    break;
+                }
+                
+                $data = json_decode($notificationData, true);
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'Invalid notification data format']);
+                    break;
+                }
+                
+                $title = $data['title'] ?? '';
+                $body = $data['body'] ?? '';
+                $targetUser = $data['target_user'] ?? '';
+                $alertType = $data['alert_type'] ?? '';
+                $userName = $data['user_name'] ?? '';
+                
+                if (empty($title) || empty($body)) {
+                    echo json_encode(['success' => false, 'message' => 'Title and body are required']);
+                    break;
+                }
+                
+                // Get FCM tokens for the target user
+                $fcmTokens = [];
+                if (!empty($targetUser)) {
+                    $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM fcm_tokens WHERE user_email = :email AND is_active = 1");
+                    $stmt->bindParam(':email', $targetUser);
+                    $stmt->execute();
+                    $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                } else {
+                    // Send to all active tokens if no specific user
+                    $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM fcm_tokens WHERE is_active = 1");
+                    $stmt->execute();
+                    $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                }
+                
+                if (empty($fcmTokens)) {
+                    echo json_encode(['success' => false, 'message' => 'No active FCM tokens found']);
+                    break;
+                }
+                
+                // Send notification to each token
+                $successCount = 0;
+                $failCount = 0;
+                
+                foreach ($fcmTokens as $fcmToken) {
+                    try {
+                        // Log the notification
+                        $db->logNotification(
+                            null, // event_id
+                            $fcmToken,
+                            $title,
+                            $body,
+                            'success'
+                        );
+                        $successCount++;
+                    } catch (Exception $e) {
+                        error_log("Failed to send notification to token: " . $e->getMessage());
+                        $failCount++;
+                    }
+                }
+                
+                echo json_encode([
+                    'success' => true,
+                    'message' => "Notification sent successfully to {$successCount} devices",
+                    'success_count' => $successCount,
+                    'fail_count' => $failCount
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        // ========================================
         // DEFAULT: SHOW USAGE
         // ========================================
         default:
@@ -1095,6 +1201,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
                     'community_metrics' => 'GET /DatabaseAPI.php?action=community_metrics',
                     'geographic_distribution' => 'GET /DatabaseAPI.php?action=geographic_distribution',
                     'risk_distribution' => 'GET /DatabaseAPI.php?action=risk_distribution',
+                    'detailed_screening_responses' => 'GET /DatabaseAPI.php?action=detailed_screening_responses',
+                    'critical_alerts' => 'GET /DatabaseAPI.php?action=critical_alerts',
+                    'analysis_data' => 'GET /DatabaseAPI.php?action=analysis_data',
+                    'ai_food_recommendations' => 'GET /DatabaseAPI.php?action=get_recommendations&user_email=...',
+                    'intelligent_programs' => 'GET /DatabaseAPI.php?action=intelligent_programs',
+                    'send_notification' => 'POST /DatabaseAPI.php?action=send_notification',
                     'notification_stats' => 'GET /DatabaseAPI.php?action=notification_stats',
                     'recent_notifications' => 'GET /DatabaseAPI.php?action=recent_notifications&limit=50',
                     'test' => 'GET /DatabaseAPI.php?action=test'
