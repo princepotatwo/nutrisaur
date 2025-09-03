@@ -34,6 +34,11 @@ class DatabaseAPI {
         
         // Debug: Log connection status
         error_log("DatabaseAPI Constructor - PDO: " . ($this->pdo ? 'success' : 'failed') . ", MySQLi: " . ($this->mysqli ? 'success' : 'failed'));
+        
+        // If both connections failed, log a warning but don't crash
+        if (!$this->pdo && !$this->mysqli) {
+            error_log("Warning: Database connections failed. Application will run in limited mode.");
+        }
     }
     
     /**
@@ -66,6 +71,25 @@ class DatabaseAPI {
         }
     }
     
+    /**
+     * Check if database is available
+     */
+    public function isDatabaseAvailable() {
+        return $this->pdo !== null && $this->testConnection();
+    }
+    
+    /**
+     * Get database status
+     */
+    public function getDatabaseStatus() {
+        return [
+            'available' => $this->isDatabaseAvailable(),
+            'pdo_connected' => $this->pdo !== null,
+            'mysqli_connected' => $this->mysqli !== null,
+            'test_passed' => $this->testConnection()
+        ];
+    }
+    
     // ========================================
     // USER MANAGEMENT
     // ========================================
@@ -76,8 +100,12 @@ class DatabaseAPI {
     public function authenticateUser($usernameOrEmail, $password) {
         try {
             // Check if database connection is available
-            if (!$this->pdo) {
-                return ['success' => false, 'message' => 'Database connection not available'];
+            if (!$this->isDatabaseAvailable()) {
+                return [
+                    'success' => false, 
+                    'message' => 'Database connection not available. Please check your database configuration.',
+                    'database_status' => $this->getDatabaseStatus()
+                ];
             }
             
             $isEmail = filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL);
@@ -136,8 +164,12 @@ class DatabaseAPI {
     public function registerUser($username, $email, $password) {
         try {
             // Check if database connection is available
-            if (!$this->pdo) {
-                return ['success' => false, 'message' => 'Database connection not available'];
+            if (!$this->isDatabaseAvailable()) {
+                return [
+                    'success' => false, 
+                    'message' => 'Database connection not available. Please check your database configuration.',
+                    'database_status' => $this->getDatabaseStatus()
+                ];
             }
             
             $this->pdo->beginTransaction();
