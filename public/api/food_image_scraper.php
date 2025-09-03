@@ -236,7 +236,14 @@ try {
         
         // Determine source based on image URLs
         $source = 'google_serp_scraping';
-        if (strpos($images[0]['image_url'], 'unsplash.com') !== false) {
+        $hasGoogleImages = false;
+        foreach ($images as $image) {
+            if (strpos($image['image_url'], 'unsplash.com') === false) {
+                $hasGoogleImages = true;
+                break;
+            }
+        }
+        if (!$hasGoogleImages) {
             $source = 'unsplash_fallback';
         }
         
