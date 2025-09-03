@@ -650,15 +650,15 @@ public class FoodActivity extends AppCompatActivity {
                             // Load first image + preload next 2 for smooth experience
                             // Removed progressive loading - images are loaded when cards are displayed
                             
-                            // If we didn't get enough foods, add fallbacks to complete the batch
-                            if (addedCount < 8) {
-                                int remaining = 8 - addedCount;
+                            // Always ensure we have exactly 10 items
+                            if (addedCount < 10) {
+                                int remaining = 10 - addedCount;
                                 Log.d(TAG, "Adding " + remaining + " fallback foods to complete initial batch");
                                 addFallbacksToCompleteBatch(remaining);
                             }
                         } else {
-                            Log.d(TAG, "Only " + addedCount + " unique foods added, generating fallbacks to reach minimum batch size");
-                            // Add fallbacks to ensure we have enough foods for the initial batch
+                            Log.d(TAG, "Only " + addedCount + " unique foods added, generating fallbacks to reach exactly 10 items");
+                            // Add fallbacks to ensure we have exactly 10 foods
                             addFallbacksToCompleteBatch(10 - addedCount);
                         }
                         
@@ -703,6 +703,15 @@ public class FoodActivity extends AppCompatActivity {
                         
                         if (addedCount > 0) {
                             int oldSize = recommendations.size() - addedCount;
+                            
+                            // Always ensure we have exactly 10 items in the current batch
+                            int currentBatchSize = recommendations.size() % 10;
+                            if (currentBatchSize != 0) {
+                                int remaining = 10 - currentBatchSize;
+                                Log.d(TAG, "Adding " + remaining + " fallback foods to complete current batch");
+                                addFallbacksToCompleteBatch(remaining);
+                            }
+                            
                             adapter.notifyDataSetChanged(); // Use notifyDataSetChanged to avoid position issues
                             Log.d(TAG, "Added " + addedCount + " new unique recommendations from batch");
                             
@@ -1562,11 +1571,21 @@ public class FoodActivity extends AppCompatActivity {
                             generatedFoodNames.add(recommendation.getFoodName().toLowerCase());
                         }
                         
-                        // Update adapter with proper notification
-                        adapter.notifyItemRangeChanged(0, Math.min(oldSize, recommendations.size()));
-                        if (recommendations.size() > oldSize) {
-                            adapter.notifyItemRangeInserted(oldSize, recommendations.size() - oldSize);
+                        // Ensure we always have exactly 10 items
+                        if (recommendations.size() < 10) {
+                            int remaining = 10 - recommendations.size();
+                            Log.d(TAG, "Adding " + remaining + " fallback foods to complete batch");
+                            addFallbacksToCompleteBatch(remaining);
+                        } else if (recommendations.size() > 10) {
+                            // Trim to exactly 10 items
+                            while (recommendations.size() > 10) {
+                                recommendations.remove(recommendations.size() - 1);
+                            }
+                            Log.d(TAG, "Trimmed recommendations to exactly 10 items");
                         }
+                        
+                        // Update adapter with proper notification
+                        adapter.notifyDataSetChanged();
                         
                         // DON'T load images yet - wait for user to actually view the activity
                         Log.d(TAG, "Real food cards ready! Images will load when user views them.");
