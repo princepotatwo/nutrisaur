@@ -69,10 +69,10 @@ public class FoodRecommendationAdapter extends RecyclerView.Adapter<FoodRecommen
         // Handle image loading using FoodImageService
         if (recommendation.getImageUrl() != null && !recommendation.getImageUrl().isEmpty()) {
             // Use the image URL from the recommendation
-            foodImageService.loadFoodImage(recommendation.getImageUrl(), holder.foodImage, holder.progressBar);
+            foodImageService.loadFoodImage(recommendation.getImageUrl(), holder.foodImage, null);
         } else {
             // Load image using food name
-            foodImageService.loadFoodImage(recommendation.getFoodName(), holder.foodImage, holder.progressBar);
+            foodImageService.loadFoodImage(recommendation.getFoodName(), holder.foodImage, null);
         }
         
         // Set up smart substitution button
@@ -145,7 +145,6 @@ public class FoodRecommendationAdapter extends RecyclerView.Adapter<FoodRecommen
         TextView descriptionText;
         Button smartSubstitutionButton;
         Button viewIngredientsButton;
-        ProgressBar progressBar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -159,7 +158,6 @@ public class FoodRecommendationAdapter extends RecyclerView.Adapter<FoodRecommen
             descriptionText = itemView.findViewById(R.id.description_text);
             smartSubstitutionButton = itemView.findViewById(R.id.smart_substitution_button);
             viewIngredientsButton = itemView.findViewById(R.id.view_ingredients_button);
-            progressBar = itemView.findViewById(R.id.progress_bar);
         }
     }
 }

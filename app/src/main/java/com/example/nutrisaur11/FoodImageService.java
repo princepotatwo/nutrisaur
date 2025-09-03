@@ -66,12 +66,16 @@ public class FoodImageService {
         if (cachedBitmap != null) {
             Log.d(TAG, "Using cached image for: " + foodName);
             imageView.setImageBitmap(cachedBitmap);
-            progressBar.setVisibility(android.view.View.GONE);
+            if (progressBar != null) {
+                progressBar.setVisibility(android.view.View.GONE);
+            }
             return;
         }
         
         // Show loading state
-        progressBar.setVisibility(android.view.View.VISIBLE);
+        if (progressBar != null) {
+            progressBar.setVisibility(android.view.View.VISIBLE);
+        }
         imageView.setImageResource(R.drawable.default_food_image);
         
         // Get image URLs from scraper API
@@ -89,7 +93,9 @@ public class FoodImageService {
                             // Update UI on main thread
                             imageView.post(() -> {
                                 imageView.setImageBitmap(bitmap);
-                                progressBar.setVisibility(android.view.View.GONE);
+                                if (progressBar != null) {
+                                    progressBar.setVisibility(android.view.View.GONE);
+                                }
                                 Log.d(TAG, "Image loaded successfully for: " + foodName);
                             });
                         }
@@ -99,7 +105,9 @@ public class FoodImageService {
                             Log.e(TAG, "Error loading image for " + foodName + ": " + error);
                             imageView.post(() -> {
                                 imageView.setImageResource(R.drawable.ic_food_simple);
-                                progressBar.setVisibility(android.view.View.GONE);
+                                if (progressBar != null) {
+                                    progressBar.setVisibility(android.view.View.GONE);
+                                }
                             });
                         }
                     });
@@ -107,7 +115,9 @@ public class FoodImageService {
                     Log.w(TAG, "No image URLs received for: " + foodName);
                     imageView.post(() -> {
                         imageView.setImageResource(R.drawable.ic_food_simple);
-                        progressBar.setVisibility(android.view.View.GONE);
+                        if (progressBar != null) {
+                            progressBar.setVisibility(android.view.View.GONE);
+                        }
                     });
                 }
             }
@@ -117,7 +127,9 @@ public class FoodImageService {
                 Log.e(TAG, "Error getting image URLs for " + foodName + ": " + error);
                 imageView.post(() -> {
                     imageView.setImageResource(R.drawable.ic_food_simple);
-                    progressBar.setVisibility(android.view.View.GONE);
+                    if (progressBar != null) {
+                        progressBar.setVisibility(android.view.View.GONE);
+                    }
                 });
             }
         });

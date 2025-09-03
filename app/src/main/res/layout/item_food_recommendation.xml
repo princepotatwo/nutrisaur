@@ -26,13 +26,7 @@
                 android:scaleType="centerCrop"
                 android:background="@color/light_gray" />
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:indeterminateDrawable="@drawable/loading_spinner"
-                android:visibility="visible" />
+
 
         </FrameLayout>
 

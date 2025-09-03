@@ -155,11 +155,7 @@ public class FoodRecommendationActivity extends AppCompatActivity {
     }
     
     private void generateInitialRecommendations() {
-        // Show loading indicator
-        ProgressBar loadingIndicator = findViewById(R.id.loading_indicator);
-        if (loadingIndicator != null) {
-            loadingIndicator.setVisibility(View.VISIBLE);
-        }
+        // No loading indicator needed for default images
         
         executorService.execute(() -> {
             try {
@@ -186,11 +182,8 @@ public class FoodRecommendationActivity extends AppCompatActivity {
                     }
                 }
                 
-                // Hide loading indicator when all 10 are generated
+                // All 10 recommendations generated successfully
                 runOnUiThread(() -> {
-                    if (loadingIndicator != null) {
-                        loadingIndicator.setVisibility(View.GONE);
-                    }
                     Log.d(TAG, "All 10 recommendations generated successfully");
                 });
                 
@@ -203,10 +196,6 @@ public class FoodRecommendationActivity extends AppCompatActivity {
                         recommendations.add(fallback);
                     }
                     adapter.notifyDataSetChanged();
-                    
-                    if (loadingIndicator != null) {
-                        loadingIndicator.setVisibility(View.GONE);
-                    }
                 });
             }
         });

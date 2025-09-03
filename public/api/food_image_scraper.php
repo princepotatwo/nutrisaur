@@ -1,8 +1,8 @@
 <?php
 /**
- * Food Image Scraper API - Clean implementation
+ * Food Image Scraper API - Default Images Implementation
  * Exactly 10 images, no unlimited cards
- * No Google scraping or Unsplash fallback
+ * Uses default food images from drawable folder
  */
 
 header('Content-Type: application/json');
@@ -29,6 +29,74 @@ function validateFoodQuery($query) {
     $query = preg_replace('/[^a-zA-Z0-9\s\-_]/', '', $query);
     
     return strlen($query) <= 100; // Limit length
+}
+
+// Function to get default food images
+function getDefaultFoodImages($foodQuery) {
+    // List of available default food images
+    $defaultImages = array(
+        'adobo' => 'adobo.jpg',
+        'sinigang' => 'sinigang_na_baboy.jpg',
+        'lechon' => 'lechon.jpg',
+        'pancit' => 'pancit_sotanghon.jpg',
+        'tinola' => 'tinola.jpg',
+        'tortang' => 'tortang_talong.jpg',
+        'chicharon' => 'chicharon.jpg',
+        'suman' => 'suman_sa_latik.jpg',
+        'turon' => 'turon.jpg',
+        'bibingka' => 'ube_bibingka.jpg',
+        'halaya' => 'ube_halaya.jpg',
+        'empanada' => 'vigan_empanada.jpg',
+        'ukoy' => 'ukoy.jpg',
+        'tupig' => 'tupig.jpg',
+        'tokneneng' => 'tokneneng.jpg',
+        'tocilog' => 'tocilog.jpg',
+        'bangus' => 'tinolang_bangus.jpg',
+        'tinapa' => 'tinapa.jpg',
+        'pork' => 'sweet_sour_pork.jpg',
+        'fish' => 'sweet_and_sour_fish.jpg',
+        'milk' => 'soya_milk.jpg',
+        'sorbetes' => 'sorbetes.jpg',
+        'squid' => 'squid_balls.png',
+        'default' => 'default_img.png'
+    );
+    
+    $images = array();
+    $baseUrl = 'https://nutrisaur-production.up.railway.app/app/src/main/res/drawable/';
+    
+    // Try to find matching food image
+    $foundMatch = false;
+    foreach ($defaultImages as $foodName => $imageFile) {
+        if (stripos($foodQuery, $foodName) !== false) {
+            $images[] = array(
+                'title' => $foodQuery . ' food image',
+                'image_url' => $baseUrl . $imageFile,
+                'source_url' => $baseUrl . $imageFile,
+                'query' => $foodQuery
+            );
+            $foundMatch = true;
+            break;
+        }
+    }
+    
+    // If no match found, use default image
+    if (!$foundMatch) {
+        $images[] = array(
+            'title' => $foodQuery . ' food image',
+            'image_url' => $baseUrl . 'default_img.png',
+            'source_url' => $baseUrl . 'default_img.png',
+            'query' => $foodQuery
+        );
+    }
+    
+    // Repeat the same image 10 times to get exactly 10 images
+    $selectedImage = $images[0];
+    $images = array();
+    for ($i = 0; $i < 10; $i++) {
+        $images[] = $selectedImage;
+    }
+    
+    return $images;
 }
 
 // Main API logic
@@ -80,14 +148,16 @@ try {
     // Log the request
     error_log("Food image scraper request: query='$foodQuery', max_results=$maxResults");
     
-    // Return error - no image scraper implemented
-    http_response_code(501);
+    // Get default food images
+    $images = getDefaultFoodImages($foodQuery);
+    
     echo json_encode(array(
-        'success' => false,
-        'message' => 'Image scraper not implemented. Please implement your own image source.',
+        'success' => true,
+        'message' => 'Default food images retrieved successfully',
         'query' => $foodQuery,
-        'max_results' => $maxResults,
-        'note' => 'Google scraping and Unsplash fallback have been removed as requested.'
+        'count' => count($images),
+        'images' => $images,
+        'source' => 'default_images'
     ));
     
 } catch (Exception $e) {
