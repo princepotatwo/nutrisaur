@@ -117,14 +117,14 @@ try {
     
     if ($method === 'GET') {
         // Handle GET request
-        $foodQuery = $_GET['query'] ?? '';
-        $maxResults = intval($_GET['max_results'] ?? 5);
+        $foodQuery = isset($_GET['query']) ? $_GET['query'] : '';
+        $maxResults = intval(isset($_GET['max_results']) ? $_GET['max_results'] : 5);
         
     } elseif ($method === 'POST') {
         // Handle POST request
         $input = json_decode(file_get_contents('php://input'), true);
-        $foodQuery = $input['query'] ?? '';
-        $maxResults = intval($input['max_results'] ?? 5);
+        $foodQuery = isset($input['query']) ? $input['query'] : '';
+        $maxResults = intval(isset($input['max_results']) ? $input['max_results'] : 5);
         
     } else {
         http_response_code(405);
