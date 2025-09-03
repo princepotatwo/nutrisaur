@@ -1,7 +1,8 @@
 <?php
 /**
- * Food Image Scraper API using Google Images
- * Gets real Google Images without requiring Chrome/Selenium
+ * Food Image Scraper API using christian-byrne/google-image-comyui-node approach
+ * Uses DuckDuckGo search and limits to exactly 10 images
+ * https://github.com/christian-byrne/google-image-comyui-node
  */
 
 header('Content-Type: application/json');
@@ -30,131 +31,91 @@ function validateFoodQuery($query) {
     return strlen($query) <= 100; // Limit length
 }
 
-// Function to scrape Google Images directly using PHP
-function scrapeGoogleImages($foodQuery, $maxResults = 5) {
-    $images = array();
-    
+// Function to call the christian-byrne Google Image scraper
+function callDuckDuckGoScraper($foodQuery) {
     try {
-        // Create search URL for Google Images
-        $searchQuery = urlencode($foodQuery . ' food');
-        $searchUrl = "https://www.google.com/search?q={$searchQuery}&tbm=isch&hl=en&tbs=isz:l";
+        // Path to the Python script
+        $pythonScript = __DIR__ . '/../../node.py';
         
-        // Set up cURL with proper headers to mimic a real browser
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $searchUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language: en-US,en;q=0.9',
-            'Accept-Encoding: gzip, deflate, br',
-            'Connection: keep-alive',
-            'Upgrade-Insecure-Requests: 1',
-            'Sec-Fetch-Dest: document',
-            'Sec-Fetch-Mode: navigate',
-            'Sec-Fetch-Site: none',
-            'Cache-Control: max-age=0'
-        ));
-        
-        $html = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        
-        if ($httpCode !== 200 || empty($html)) {
-            throw new Exception("Failed to fetch Google Images page. HTTP Code: $httpCode");
+        // Check if Python script exists
+        if (!file_exists($pythonScript)) {
+            throw new Exception("DuckDuckGo scraper script not found: $pythonScript");
         }
         
-        // Extract image URLs using multiple patterns
-        $patterns = array(
-            '/"ou":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
-            '/"url":"(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
-            '/\["(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
-            '/data-src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/',
-            '/src="(https:\/\/[^"]+\.(jpg|jpeg|png|webp))"/'
-        );
+        // Create a temporary Python script for this specific query
+        $tempScript = __DIR__ . '/../../temp_duckduckgo_' . time() . '.py';
         
-        $foundUrls = array();
+        // Create the Python script content using christian-byrne approach
+        $pythonCode = <<<PYTHON
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from duckduckgo_search import DDGS
+import json
+
+def search_images(search_key):
+    try:
+        # Use DuckDuckGo search like christian-byrne approach
+        with DDGS() as ddgs:
+            # Search for images with the food query
+            search_results = list(ddgs.images(search_key + " food", max_results=10))
+            
+            # Extract image URLs (limit to exactly 10)
+            image_urls = []
+            for result in search_results[:10]:  # Ensure exactly 10 results
+                if 'image' in result:
+                    image_urls.append({
+                        'title': f"{search_key} food image",
+                        'image_url': result['image'],
+                        'source_url': result.get('link', result['image']),
+                        'query': search_key
+                    })
+            
+            return image_urls
+            
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return []
+
+if __name__ == "__main__":
+    search_key = sys.argv[1] if len(sys.argv) > 1 else "food"
+    results = search_images(search_key)
+    print(json.dumps(results))
+PYTHON;
         
-        foreach ($patterns as $pattern) {
-            preg_match_all($pattern, $html, $matches);
-            if (!empty($matches[1])) {
-                $foundUrls = array_merge($foundUrls, $matches[1]);
-            }
+        // Write the temporary script
+        file_put_contents($tempScript, $pythonCode);
+        
+        // Escape the query for shell execution
+        $escapedQuery = escapeshellarg($foodQuery);
+        
+        // Build the command
+        $command = "python3 $tempScript $escapedQuery 2>&1";
+        
+        // Execute the command
+        $output = shell_exec($command);
+        
+        // Clean up the temporary script
+        unlink($tempScript);
+        
+        // Check if the command executed successfully
+        if (strpos($output, 'Error:') !== false) {
+            throw new Exception("Python script failed: $output");
         }
         
-        // Remove duplicates and validate URLs
-        $foundUrls = array_unique($foundUrls);
-        $count = 0;
-        
-        foreach ($foundUrls as $url) {
-            if ($count >= $maxResults) break;
-            
-            // Validate URL and ensure it's an image
-            if (filter_var($url, FILTER_VALIDATE_URL) && 
-                preg_match('/\.(jpg|jpeg|png|webp)$/i', $url)) {
-                
-                $images[] = array(
-                    'title' => $foodQuery . ' food image',
-                    'image_url' => $url,
-                    'source_url' => $url,
-                    'query' => $foodQuery
-                );
-                $count++;
-            }
+        // Parse the JSON output
+        $imageData = json_decode($output, true);
+        if ($imageData === null) {
+            throw new Exception("Failed to parse JSON output: " . json_last_error_msg());
         }
         
-        // If no images found with first pattern, try alternative search
-        if (empty($images)) {
-            // Try a different search approach
-            $altSearchUrl = "https://www.google.com/search?q=" . urlencode($foodQuery) . "&tbm=isch&hl=en";
-            
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $altSearchUrl);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
-            
-            $altHtml = curl_exec($ch);
-            curl_close($ch);
-            
-            if ($altHtml) {
-                foreach ($patterns as $pattern) {
-                    preg_match_all($pattern, $altHtml, $matches);
-                    if (!empty($matches[1])) {
-                        $foundUrls = array_merge($foundUrls, $matches[1]);
-                    }
-                }
-                
-                $foundUrls = array_unique($foundUrls);
-                $count = 0;
-                
-                foreach ($foundUrls as $url) {
-                    if ($count >= $maxResults) break;
-                    
-                    if (filter_var($url, FILTER_VALIDATE_URL) && 
-                        preg_match('/\.(jpg|jpeg|png|webp)$/i', $url)) {
-                        
-                        $images[] = array(
-                            'title' => $foodQuery . ' food image',
-                            'image_url' => $url,
-                            'source_url' => $url,
-                            'query' => $foodQuery
-                        );
-                        $count++;
-                    }
-                }
-            }
-        }
+        return $imageData;
         
     } catch (Exception $e) {
-        error_log("Error scraping Google Images: " . $e->getMessage());
+        error_log("Error calling DuckDuckGo scraper: " . $e->getMessage());
+        return null;
     }
-    
-    return $images;
 }
 
 // Main API logic
@@ -165,13 +126,13 @@ try {
     if ($method === 'GET') {
         // Handle GET request
         $foodQuery = isset($_GET['query']) ? $_GET['query'] : '';
-        $maxResults = intval(isset($_GET['max_results']) ? $_GET['max_results'] : 5);
+        $maxResults = intval(isset($_GET['max_results']) ? $_GET['max_results'] : 10);
         
     } elseif ($method === 'POST') {
         // Handle POST request
         $input = json_decode(file_get_contents('php://input'), true);
         $foodQuery = isset($input['query']) ? $input['query'] : '';
-        $maxResults = intval(isset($input['max_results']) ? $input['max_results'] : 5);
+        $maxResults = intval(isset($input['max_results']) ? $input['max_results'] : 10);
         
     } else {
         http_response_code(405);
@@ -179,8 +140,8 @@ try {
             'success' => false,
             'message' => 'Method not allowed. Use GET or POST.',
             'usage' => array(
-                'GET' => '?query=food_name&max_results=5',
-                'POST' => '{"query": "food_name", "max_results": 5}'
+                'GET' => '?query=food_name&max_results=10',
+                'POST' => '{"query": "food_name", "max_results": 10}'
             )
         ));
         exit;
@@ -199,28 +160,34 @@ try {
     
     // Sanitize input
     $foodQuery = sanitizeInput($foodQuery);
-    $maxResults = max(1, min(20, $maxResults)); // Limit between 1 and 20
+    
+    // Force max_results to be exactly 10 (as requested)
+    $maxResults = 10;
     
     // Log the request
     error_log("Food image scraper request: query='$foodQuery', max_results=$maxResults");
     
-    // Scrape Google Images
-    $images = scrapeGoogleImages($foodQuery, $maxResults);
+    // Call the DuckDuckGo scraper
+    $imageData = callDuckDuckGoScraper($foodQuery);
     
-    if (!empty($images)) {
+    if ($imageData && !empty($imageData)) {
+        // Limit to exactly 10 images
+        $imageData = array_slice($imageData, 0, 10);
+        
         echo json_encode(array(
             'success' => true,
-            'message' => 'Google Images retrieved successfully',
+            'message' => 'Images retrieved successfully using DuckDuckGo search',
             'query' => $foodQuery,
-            'count' => count($images),
-            'images' => $images,
-            'source' => 'google_images'
+            'count' => count($imageData),
+            'images' => $imageData,
+            'source' => 'duckduckgo_search'
         ));
+        
     } else {
         http_response_code(404);
         echo json_encode(array(
             'success' => false,
-            'message' => 'No Google Images found for the query',
+            'message' => 'No images found for the query',
             'query' => $foodQuery
         ));
     }
