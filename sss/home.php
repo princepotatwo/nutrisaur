@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             }
             
             // Redirect to dashboard
-            header("Location: dash.php");
+            header("Location: /dash");
             exit;
         } else {
             $loginError = $result['message'];
@@ -95,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             $_SESSION['is_admin'] = false;
             
             // Redirect to dashboard
-            header("Location: dash.php");
+            header("Location: /dash");
             exit;
         } else {
             $registrationError = $result['message'];
@@ -1095,7 +1095,7 @@ $db->close();
                     
                     // Redirect to dashboard after a short delay
                     setTimeout(() => {
-                        window.location.href = 'dash.php';
+                        window.location.href = '/dash';
                     }, 1000);
                 } else {
                     showMessage(data.message || 'Login failed. Please try again.', 'error');
@@ -1147,7 +1147,7 @@ $db->close();
                                 showMessage('Login successful! Redirecting to dashboard...', 'success');
                                 // Redirect to dashboard after successful auto-login
                                 setTimeout(() => {
-                                    window.location.href = 'dash.php';
+                                    window.location.href = '/dash';
                                 }, 1000);
                             } else {
                                 // If auto-login fails, show error and switch to login mode
@@ -1209,8 +1209,8 @@ $db->close();
                 
                 // Only redirect if user is actually logged in
                 if (data.success && data.logged_in && (data.user_id || data.admin_id)) {
-                    // User is already logged in, redirect to dashboard
-                    window.location.href = 'dash.php';
+                                    // User is already logged in, redirect to dashboard
+                window.location.href = '/dash';
                 }
             } catch (error) {
                 console.error('Session check error:', error);
