@@ -800,28 +800,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
                 $result = $db->authenticateUser($usernameOrEmail, $password);
                 
                 if ($result['success']) {
-                    // Start session
-                    session_start();
-                    
-                    // Set session data based on user type
-                    if ($result['user_type'] === 'user') {
-                        $_SESSION['user_id'] = $result['data']['user_id'];
-                        $_SESSION['username'] = $result['data']['username'];
-                        $_SESSION['email'] = $result['data']['email'];
-                        $_SESSION['is_admin'] = $result['data']['is_admin'];
-                        
-                        if ($result['data']['is_admin']) {
-                            $_SESSION['admin_id'] = $result['data']['admin_data']['admin_id'];
-                            $_SESSION['role'] = $result['data']['admin_data']['role'];
-                        }
-                    } else {
-                        $_SESSION['admin_id'] = $result['data']['admin_id'];
-                        $_SESSION['username'] = $result['data']['username'];
-                        $_SESSION['email'] = $result['data']['email'];
-                        $_SESSION['is_admin'] = true;
-                        $_SESSION['role'] = $result['data']['role'];
-                    }
-                    
                     echo json_encode([
                         'success' => true,
                         'message' => 'Login successful!',
@@ -868,16 +846,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
                 }
                 
                 $result = $db->registerUser($username, $email, $password);
-                
-                if ($result['success']) {
-                    // Start session
-                    session_start();
-                    
-                    $_SESSION['user_id'] = $result['data']['user_id'];
-                    $_SESSION['username'] = $result['data']['username'];
-                    $_SESSION['email'] = $result['data']['email'];
-                    $_SESSION['is_admin'] = false;
-                }
                 
                 echo json_encode($result);
             } else {

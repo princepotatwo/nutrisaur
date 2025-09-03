@@ -2,10 +2,12 @@
 // Start the session
 session_start();
 
-// Debug session information
-error_log("Home.php - Session ID: " . session_id());
-error_log("Home.php - Session Name: " . session_name());
-error_log("Home.php - Session Status: " . session_status());
+// Simple session test
+if (isset($_POST['test_session'])) {
+    $_SESSION['test'] = 'working';
+    echo json_encode(['success' => true, 'session_id' => session_id(), 'test_value' => $_SESSION['test']]);
+    exit;
+}
 
 // Check if user is already logged in
 $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
@@ -36,8 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     $usernameOrEmail = trim($_POST['username_login']);
     $password = $_POST['password_login'];
     
-
-    
     if (empty($usernameOrEmail) || empty($password)) {
         $loginError = "Please enter both username/email and password";
     } else {
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
         $result = $db->authenticateUser($usernameOrEmail, $password);
         
         if ($result['success']) {
-            // Password is correct, set session data first
+            // Set session data
             if ($result['user_type'] === 'user') {
                 $_SESSION['user_id'] = $result['data']['user_id'];
                 $_SESSION['username'] = $result['data']['username'];
@@ -64,12 +64,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
                 $_SESSION['role'] = $result['data']['role'];
             }
             
-            // Regenerate session ID after setting data
+            // Regenerate session ID for security
             session_regenerate_id(true);
-            
-            // Debug: Log session after login
-            error_log("Home.php - Session after login - ID: " . session_id());
-            error_log("Home.php - Session after login - Data: " . json_encode($_SESSION));
             
             // Redirect to dashboard
             header("Location: /dash.php");
@@ -86,8 +82,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     $email = trim($_POST['email_register']);
     $password = $_POST['password_register'];
     
-
-    
     if (empty($username) || empty($email) || empty($password)) {
         $registrationError = "Please fill in all fields";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -101,18 +95,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         $result = $db->registerUser($username, $email, $password);
         
         if ($result['success']) {
-            // Start session and set user data
+            // Set session data
             $_SESSION['user_id'] = $result['data']['user_id'];
             $_SESSION['username'] = $result['data']['username'];
             $_SESSION['email'] = $result['data']['email'];
             $_SESSION['is_admin'] = false;
             
-            // Regenerate session ID after setting data
+            // Regenerate session ID for security
             session_regenerate_id(true);
-            
-            // Debug: Log session after registration
-            error_log("Home.php - Session after registration - ID: " . session_id());
-            error_log("Home.php - Session after registration - Data: " . json_encode($_SESSION));
             
             // Redirect to dashboard
             header("Location: /dash.php");
@@ -138,6 +128,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             }
             
             $result = $db->authenticateUser($usernameOrEmail, $password);
+            
+            if ($result['success']) {
+                // Set session data for AJAX login
+                if ($result['user_type'] === 'user') {
+                    $_SESSION['user_id'] = $result['data']['user_id'];
+                    $_SESSION['username'] = $result['data']['username'];
+                    $_SESSION['email'] = $result['data']['email'];
+                    $_SESSION['is_admin'] = $result['data']['is_admin'];
+                    
+                    if ($result['data']['is_admin']) {
+                        $_SESSION['admin_id'] = $result['data']['admin_data']['admin_id'];
+                        $_SESSION['role'] = $result['data']['admin_data']['role'];
+                    }
+                } else {
+                    $_SESSION['admin_id'] = $result['data']['admin_id'];
+                    $_SESSION['username'] = $result['data']['username'];
+                    $_SESSION['email'] = $result['data']['email'];
+                    $_SESSION['is_admin'] = true;
+                    $_SESSION['role'] = $result['data']['role'];
+                }
+                
+                // Regenerate session ID for security
+                session_regenerate_id(true);
+            }
+            
             echo json_encode($result);
             exit;
             
@@ -167,6 +182,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             }
             
             $result = $db->registerUser($username, $email, $password);
+            
+            if ($result['success']) {
+                // Set session data for AJAX registration
+                $_SESSION['user_id'] = $result['data']['user_id'];
+                $_SESSION['username'] = $result['data']['username'];
+                $_SESSION['email'] = $result['data']['email'];
+                $_SESSION['is_admin'] = false;
+                
+                // Regenerate session ID for security
+                session_regenerate_id(true);
+            }
+            
             echo json_encode($result);
             exit;
             

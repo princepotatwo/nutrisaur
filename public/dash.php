@@ -1,19 +1,14 @@
 <?php
+// Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Debug session information
-error_log("Dash.php - Session ID: " . session_id());
-error_log("Dash.php - Session Name: " . session_name());
-error_log("Dash.php - Session Status: " . session_status());
-
-// Debug: Log session status
-error_log("Dash.php - Session check: " . (isset($_SESSION['user_id']) || isset($_SESSION['admin_id']) ? 'logged in' : 'not logged in'));
-error_log("Dash.php - Session data: " . json_encode($_SESSION));
-
+// Check if user is logged in
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
-    error_log("Dash.php - Redirecting to home.php (not logged in)");
+    // Simple debug to see what's in the session
+    error_log("Dash.php - Session data: " . json_encode($_SESSION));
+    error_log("Dash.php - Session ID: " . session_id());
     header('Location: /home.php');
     exit;
 }
