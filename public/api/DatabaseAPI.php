@@ -721,6 +721,16 @@ class DatabaseAPI {
      */
     public function getCommunityMetrics() {
         try {
+            // Check if database connection is available
+            if (!$this->isDatabaseAvailable()) {
+                return [
+                    'total_users' => 0,
+                    'active_devices' => 0,
+                    'users_by_barangay' => [],
+                    'recent_registrations' => 0
+                ];
+            }
+            
             $metrics = [];
             
             // Total users
@@ -768,6 +778,11 @@ class DatabaseAPI {
      */
     public function getGeographicDistribution() {
         try {
+            // Check if database connection is available
+            if (!$this->isDatabaseAvailable()) {
+                return [];
+            }
+            
             $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as user_count FROM user_preferences GROUP BY barangay ORDER BY user_count DESC");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -782,6 +797,11 @@ class DatabaseAPI {
      */
     public function getRiskDistribution() {
         try {
+            // Check if database connection is available
+            if (!$this->isDatabaseAvailable()) {
+                return [];
+            }
+            
             // Create risk levels based on risk_score
             $stmt = $this->pdo->prepare("
                 SELECT 
