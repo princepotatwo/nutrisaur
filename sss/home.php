@@ -10,7 +10,8 @@ if ($isLoggedIn) {
     exit;
 }
 
-// Use the centralized Database API
+// Use the centralized Database API with Railway configuration
+require_once __DIR__ . "/../public/config.php";
 require_once __DIR__ . "/../public/api/DatabaseAPI.php";
 $db = new DatabaseAPI();
 
