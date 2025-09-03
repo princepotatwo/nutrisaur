@@ -90,11 +90,11 @@ function callPythonScraper($foodQuery, $maxResults = 5) {
 // Function to get fallback images
 function getFallbackImages($foodQuery) {
     $fallbackUrls = [
-        "https://via.placeholder.com/300x200/FF6B6B/FFFFFF?text=" . urlencode($foodQuery),
-        "https://via.placeholder.com/300x200/4ECDC4/FFFFFF?text=" . urlencode($foodQuery),
-        "https://via.placeholder.com/300x200/45B7D1/FFFFFF?text=" . urlencode($foodQuery),
-        "https://via.placeholder.com/300x200/96CEB4/FFFFFF?text=" . urlencode($foodQuery),
-        "https://via.placeholder.com/300x200/FFEAA7/000000?text=" . urlencode($foodQuery)
+        "https://picsum.photos/300/200?random=1",
+        "https://picsum.photos/300/200?random=2", 
+        "https://picsum.photos/300/200?random=3",
+        "https://picsum.photos/300/200?random=4",
+        "https://picsum.photos/300/200?random=5"
     ];
     
     $fallbackImages = [];
