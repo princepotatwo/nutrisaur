@@ -1,1447 +1,1626 @@
 package com.example.nutrisaur11;
 
-import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.EditText;
-import androidx.cardview.widget.CardView;
+import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 import java.util.*;
-import com.example.nutrisaur11.ScreeningResultStore;
-import com.example.nutrisaur11.UserPreferencesDbHelper;
-import android.widget.Toast;
-import android.os.AsyncTask;
+import android.util.Log;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import okhttp3.*;
 import org.json.JSONObject;
-import com.example.nutrisaur11.MainActivity;
-import com.example.nutrisaur11.FoodCardAdapter;
-import com.example.nutrisaur11.NutritionRecommendationEngine;
-import com.example.nutrisaur11.FoodImageHelper;
-import com.example.nutrisaur11.DishInfo;
 import org.json.JSONArray;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import android.util.Log;
-import com.example.nutrisaur11.Constants;
-import android.widget.ImageView;
-import com.example.nutrisaur11.SmartFilterEngine;
+import org.json.JSONException;
+import java.io.IOException;
 
-// Use DishData.Dish and UserPreferencesDbHelper from the same package
-public class FoodActivity extends AppCompatActivity implements FoodCardAdapter.OnInfoClickListener {
-    private UserPreferencesDbHelper dbHelper;
-    private static final String[] ALLERGENS = {"Peanuts", "Dairy", "Eggs", "Shellfish", "Gluten", "Soy", "Fish", "Tree nuts"};
-    private static final String[] DIET_PREFS = {"Vegetarian", "Vegan", "Halal", "Kosher", "Pescatarian"};
-    private static final List<DishData.Dish> DISHES = DishData.DISHES;
-    private RecyclerView foodRecyclerView;
-    private FoodCardAdapter foodCardAdapter;
-    private List<DishData.Dish> currentRecommendations = new ArrayList<>();
-    private boolean isLoading = false;
-    private int failedTries = 0;
-    private static final int MAX_RETRIES = 5;
+public class FoodActivity extends AppCompatActivity {
+    private static final String TAG = "FoodActivity";
+    private ViewPager2 viewPager;
+    private FoodRecommendationAdapter adapter;
+    private List<FoodRecommendation> recommendations = new ArrayList<>();
+    private ExecutorService executorService;
+    private Set<String> generatedFoodNames = new HashSet<>();
+    private int generationCount = 0;
+    private int foodsPerBatch = 10; // Track foods per batch
+    private int lastPreloadPosition = -1; // Track last preload position to avoid duplicate triggers
+    private boolean isPreloading = false; // Prevent multiple simultaneous preloads
+    private int consecutiveFailures = 0; // Track consecutive failures to prevent infinite loops
+    private boolean shouldLoadImages = false; // Flag to control when images start loading
+    
+    // Nutrition insights views
+    private TextView tvBmiStatus, tvCaloriesTarget, tvProteinTarget, tvFatTarget, tvCarbsTarget, tvHealthRecommendation;
+    
+    // User profile variables
+    private String userAge;
+    private String userSex;
+    private String userBMI;
+    private String userHeight;
+    private String userWeight;
+    private String userHealthConditions;
+    private String userActivityLevel;
+    private String userBudgetLevel;
+    private String userDietaryRestrictions;
+    private String userAllergies;
+    private String userDietPrefs;
+    private String userAvoidFoods;
+    private String userRiskScore;
+    private String userBarangay;
+    private String userIncome;
+    private String userPregnancyStatus;
+    
+    // Gemini API configuration
+    private static final String GEMINI_API_KEY = "AIzaSyAR0YOJALZphmQaSbc5Ydzs5kZS6eCefJM";
+    private static final String GEMINI_TEXT_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
+    private static final String GEMINI_IMAGE_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=" + GEMINI_API_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
         
-        // Initialize database helper
-        dbHelper = new UserPreferencesDbHelper(this);
+        Log.d(TAG, "FoodActivity onCreate started");
         
-        // Initialize FoodImageHelper
-        FoodImageHelper.initialize(this);
+        // Initialize executor service
+        executorService = Executors.newFixedThreadPool(2);
+        Log.d(TAG, "Executor service initialized");
         
-        // Setup RecyclerView with performance optimizations
-        foodRecyclerView = findViewById(R.id.food_recycler_view);
-        foodRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        // Initialize views
+        initializeViews();
         
-        // Performance optimizations
-        foodRecyclerView.setHasFixedSize(true);
-        foodRecyclerView.setItemViewCacheSize(20);
-        foodRecyclerView.setDrawingCacheEnabled(true);
-        foodRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        // Initialize recommendations list
+        recommendations = new ArrayList<>();
+        Log.d(TAG, "Recommendations list initialized");
         
-        foodCardAdapter = new FoodCardAdapter(currentRecommendations, dish -> showSubstitutionPanel(dish), this, this, getCurrentUserEmail());
-        foodRecyclerView.setAdapter(foodCardAdapter);
+        // Load user profile
+        loadUserProfile();
         
-        // Setup optimized infinite scroll with performance safeguards
-        foodRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            private static final int SCROLL_THRESHOLD = 5; // Load more when 5 items away from end
-            private static final long MIN_LOAD_INTERVAL = 1000; // Minimum 1 second between loads
-            private long lastLoadTime = 0;
-            
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                
-                // Prevent excessive loading at edges
-                if (isLoading || currentRecommendations.size() < 10) {
-                    return;
-                }
-                
-                // Rate limiting to prevent rapid successive loads
-                long currentTime = System.currentTimeMillis();
-                if (currentTime - lastLoadTime < MIN_LOAD_INTERVAL) {
-                    return;
-                }
-                
-                GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-                if (layoutManager != null) {
-                    int lastVisiblePosition = layoutManager.findLastVisibleItemPosition();
-                    int totalItems = currentRecommendations.size();
-                    
-                    // Only load more if we're approaching the end (not at the very edge)
-                    if (lastVisiblePosition >= totalItems - SCROLL_THRESHOLD) {
-                        lastLoadTime = currentTime;
-                        loadMoreFoods();
-                    }
-                }
-            }
-        });
+        // Initialize nutrition insights
+        initializeNutritionInsights();
         
-        // Setup buttons
-        setupButtons();
+        // Setup ViewPager first, then check for preloaded data or start background preload
+        Log.d(TAG, "Setting up ViewPager and checking for preloaded data");
+        setupViewPager();
+        loadPreloadedDataOrStartPreload();
         
-        // Load recommendations in background using existing sophisticated system
-        new android.os.Handler().post(() -> loadOrFetchRecommendations());
-        
-        // Show current screening data summary
-        showScreeningDataSummary();
+        // Setup navigation
+        setupNavigation();
     }
     
-    private void setupButtons() {
-        Button customizeBtn = findViewById(R.id.btn_customize_recommendations);
-        if (customizeBtn != null) {
-            customizeBtn.setOnClickListener(v -> showFilterDialog());
-        }
-        
-        Button refreshBtn = findViewById(R.id.btn_refresh);
-        if (refreshBtn != null) {
-            refreshBtn.setOnClickListener(v -> {
-                // Clear cached recommendations and reload based on current screening data
-                dbHelper.getWritableDatabase().delete(UserPreferencesDbHelper.TABLE_FOOD_RECS, null, null);
-                currentRecommendations.clear();
-                foodCardAdapter.notifyDataSetChanged();
-                
-                android.widget.Toast.makeText(FoodActivity.this, 
-                    "🔄 Refreshing recommendations based on your latest screening data...", 
-                    android.widget.Toast.LENGTH_SHORT).show();
-                
-                // Use AI engine for fresh recommendations
-                loadAIRecommendations();
-            });
-        }
-        
-        // Setup bottom navigation bar (use explicit nav bar IDs from activity_food.xml)
-        findViewById(R.id.nav_home).setOnClickListener(v -> {
-            Intent intent = new Intent(FoodActivity.this, MainActivity.class);
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
-        });
-        findViewById(R.id.nav_food).setOnClickListener(v -> {
-            // Already in FoodActivity, do nothing
-        });
-        findViewById(R.id.nav_favorites).setOnClickListener(v -> {
-            Intent intent = new Intent(FoodActivity.this, FavoritesActivity.class);
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
-        });
-        findViewById(R.id.nav_account).setOnClickListener(v -> {
-            Intent intent = new Intent(FoodActivity.this, AccountActivity.class);
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
-        });
-        // Setup close button for substitution bottom sheet
-        View closeBtn = findViewById(R.id.close_substitution);
-        if (closeBtn != null) {
-            closeBtn.setOnClickListener(v -> hideSubstitutionPanel());
-        }
-        
-        // Setup close button for dish info panel
-        View closeDishInfoBtn = findViewById(R.id.close_dish_info);
-        if (closeDishInfoBtn != null) {
-            closeDishInfoBtn.setOnClickListener(v -> hideDishInfoPanel());
-        }
+    private void initializeViews() {
+        viewPager = findViewById(R.id.view_pager);
+        Log.d(TAG, "ViewPager2 initialized: " + (viewPager != null ? "success" : "failed"));
     }
     
-    private void showFilterDialog() {
-        FilterDialog filterDialog = new FilterDialog(this, new FilterDialog.OnFilterAppliedListener() {
-            @Override
-            public void onFilterApplied(List<String> allergies, List<String> dietPrefs, String avoidFoods) {
-                // Combine allergies, diet preferences, and avoid foods into active filters
-                List<String> activeFilters = new ArrayList<>();
-                
-                // Add allergies as filters
-                if (allergies != null) {
-                    activeFilters.addAll(allergies);
-                }
-                
-                // Add diet preferences as filters (both dietary restrictions and nutritional preferences)
-                if (dietPrefs != null) {
-                    for (String pref : dietPrefs) {
-                        String prefLower = pref.trim().toLowerCase();
-                        
-                        // Add the actual dietary preference (Vegan, Vegetarian, etc.)
-                        activeFilters.add(pref);
-                        
-                        // Also extract nutritional filters for enhanced recommendations
-                        if (prefLower.contains("high-protein") || prefLower.contains("protein")) {
-                            activeFilters.add("high-protein");
-                        }
-                        if (prefLower.contains("high-energy") || prefLower.contains("energy")) {
-                            activeFilters.add("high-energy");
-                        }
-                        if (prefLower.contains("iron") || prefLower.contains("iron-rich")) {
-                            activeFilters.add("iron-rich");
-                        }
-                        if (prefLower.contains("vitamin") || prefLower.contains("vitamin-rich")) {
-                            activeFilters.add("vitamin-rich");
-                        }
-                        if (prefLower.contains("fiber") || prefLower.contains("fiber-rich")) {
-                            activeFilters.add("fiber-rich");
-                        }
-                        if (prefLower.contains("calcium") || prefLower.contains("calcium-rich")) {
-                            activeFilters.add("calcium-rich");
-                        }
-                        if (prefLower.contains("low-calorie") || prefLower.contains("calorie")) {
-                            activeFilters.add("low-calorie");
-                        }
-                    }
-                }
-                
-                // Add avoid foods as filters
-                if (avoidFoods != null && !avoidFoods.trim().isEmpty()) {
-                    activeFilters.add("avoid:" + avoidFoods.trim());
-                }
-                
-                android.util.Log.d("FoodActivity", "Combined active filters: " + activeFilters);
-                
-                // Apply smart filtering with active filters
-                updateFoodRecommendationsWithFilters(activeFilters);
-            }
-        });
-        filterDialog.show();
-    }
-
-    private String getCurrentUserEmail() {
-        return getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).getString("current_user_email", null);
-    }
-
-    private boolean userHasDietPrefs() {
-        String email = getCurrentUserEmail();
-        if (email == null) return false;
-        Cursor cursor = dbHelper.getReadableDatabase().rawQuery("SELECT * FROM " + UserPreferencesDbHelper.TABLE_NAME + " WHERE " + UserPreferencesDbHelper.COL_USER_EMAIL + "=?", new String[]{email});
-        boolean exists = cursor.moveToFirst();
-        cursor.close();
-        return exists;
-    }
-
-    private void showDietPrefsDialog(Runnable onComplete) {
-        boolean[] checkedAllergies = new boolean[ALLERGENS.length];
-        boolean[] checkedPrefs = new boolean[DIET_PREFS.length];
-        List<String> selectedAllergies = new ArrayList<>();
-        List<String> selectedPrefs = new ArrayList<>();
+    private void initializeNutritionInsights() {
+        // Initialize nutrition insights views
+        tvBmiStatus = findViewById(R.id.tv_bmi_status);
+        tvCaloriesTarget = findViewById(R.id.tv_calories_target);
+        tvProteinTarget = findViewById(R.id.tv_protein_target);
+        tvFatTarget = findViewById(R.id.tv_fat_target);
+        tvCarbsTarget = findViewById(R.id.tv_carbs_target);
+        tvHealthRecommendation = findViewById(R.id.tv_health_recommendation);
         
-        // Get current risk score asynchronously to preserve it
-        ScreeningResultStore.getRiskScoreAsync(this, new ScreeningResultStore.OnRiskScoreReceivedListener() {
-            @Override
-            public void onRiskScoreReceived(int currentRiskScore) {
-                showDietPrefsDialogWithRiskScore(currentRiskScore, onComplete, checkedAllergies, checkedPrefs, selectedAllergies, selectedPrefs);
-            }
-        });
+        // Calculate and display nutrition targets
+        calculateAndDisplayNutritionTargets();
     }
     
-    private void showCurrentScreeningData() {
-        String email = getCurrentUserEmail();
-        if (email == null) {
-            android.widget.Toast.makeText(this, "No user data available", android.widget.Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
-        // Get current screening data from database
-        android.database.Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-            "SELECT * FROM " + UserPreferencesDbHelper.TABLE_NAME + " WHERE " + UserPreferencesDbHelper.COL_USER_EMAIL + "=?",
-            new String[]{email}
-        );
-        
-        if (cursor.moveToFirst()) {
-            int riskScore = cursor.getInt(cursor.getColumnIndex(UserPreferencesDbHelper.COL_RISK_SCORE));
-            String screeningAnswers = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_SCREENING_ANSWERS));
-            
-            StringBuilder message = new StringBuilder();
-            message.append("📊 Current Screening Data:\n\n");
-            message.append("Risk Score: ").append(riskScore).append("%\n");
-            
-            if (screeningAnswers != null && !screeningAnswers.isEmpty()) {
-                try {
-                    org.json.JSONObject screening = new org.json.JSONObject(screeningAnswers);
-                    message.append("Screening Answers:\n");
-                    
-                    // Show key screening fields
-                    String[] keyFields = {"swelling", "weight_loss", "feeding_behavior", "physical_signs", 
-                                        "dietary_diversity", "muac", "has_recent_illness", "has_eating_difficulty"};
-                    
-                    for (String field : keyFields) {
-                        if (screening.has(field)) {
-                            String value = screening.getString(field);
-                            message.append("• ").append(field.replace("_", " ").toUpperCase()).append(": ").append(value).append("\n");
-                        }
-                    }
-                } catch (Exception e) {
-                    message.append("Error parsing screening data: ").append(e.getMessage());
-                }
-            } else {
-                message.append("No screening data available");
-            }
-            
-            new AlertDialog.Builder(this)
-                .setTitle("Current Screening Data")
-                .setMessage(message.toString())
-                .setPositiveButton("OK", null)
-                .show();
-        }
-        cursor.close();
-    }
-    
-
-    
-    private void showScreeningDataSummary() {
-        String email = getCurrentUserEmail();
-        if (email == null) return;
-        
-        // Get current screening data
-        android.database.Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-            "SELECT * FROM " + UserPreferencesDbHelper.TABLE_NAME + " WHERE " + UserPreferencesDbHelper.COL_USER_EMAIL + "=?",
-            new String[]{email}
-        );
-        
-        if (cursor.moveToFirst()) {
-            int riskScore = cursor.getInt(cursor.getColumnIndex(UserPreferencesDbHelper.COL_RISK_SCORE));
-            String screeningAnswers = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_SCREENING_ANSWERS));
-            
-            // Show a brief summary of what's being used for recommendations
-            String summary = "🎯 Recommendations based on:\n";
-            summary += "Risk Score: " + riskScore + "%\n";
-            
-            if (screeningAnswers != null && !screeningAnswers.isEmpty()) {
-                try {
-                    org.json.JSONObject screening = new org.json.JSONObject(screeningAnswers);
-                    if (screening.has("swelling") && "yes".equals(screening.getString("swelling"))) {
-                        summary += "⚠️ Edema detected\n";
-                    }
-                    if (screening.has("weight_loss")) {
-                        String weightLoss = screening.getString("weight_loss");
-                        if (">10%".equals(weightLoss)) {
-                            summary += "📉 Severe weight loss\n";
-                        } else if ("5-10%".equals(weightLoss)) {
-                            summary += "📉 Moderate weight loss\n";
-                        }
-                    }
-                    if (screening.has("feeding_behavior")) {
-                        String feeding = screening.getString("feeding_behavior");
-                        if ("poor appetite".equals(feeding)) {
-                            summary += "🍽️ Poor appetite\n";
-                        }
-                    }
-                } catch (Exception e) {
-                    summary += "📊 Screening data available\n";
-                }
-            } else {
-                summary += "📊 Basic screening data\n";
-            }
-            
-            // Show as a toast message
-            android.widget.Toast.makeText(this, summary, android.widget.Toast.LENGTH_LONG).show();
-        }
-        cursor.close();
-    }
-    
-    private void showTestScenariosDialog() {
-        String[] scenarios = {
-            "High Risk (80%+) - Severe Malnutrition",
-            "High Risk (50-79%) - Moderate Malnutrition", 
-            "Moderate Risk (20-49%) - Growth Issues",
-            "Low Risk (0-19%) - Normal Status"
-        };
-        
-        new AlertDialog.Builder(this)
-            .setTitle("Test Different Screening Scenarios")
-            .setItems(scenarios, (dialog, which) -> {
-                String email = getCurrentUserEmail();
-                if (email == null) {
-                    android.widget.Toast.makeText(this, "No user data available", android.widget.Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                
-                // Simulate different screening scenarios
-                simulateScreeningScenario(email, which);
-            })
-            .setNegativeButton("Cancel", null)
-            .show();
-    }
-    
-    private void simulateScreeningScenario(String email, int scenarioIndex) {
-        // Create different screening data for testing
-        org.json.JSONObject screeningData = new org.json.JSONObject();
-        
+    private void calculateAndDisplayNutritionTargets() {
         try {
-            switch (scenarioIndex) {
-                case 0: // High Risk - Severe Malnutrition
-                    screeningData.put("risk_score", 85);
-                    screeningData.put("swelling", "yes");
-                    screeningData.put("weight_loss", ">10%");
-                    screeningData.put("feeding_behavior", "poor appetite");
-                    screeningData.put("physical_signs", "thin,weak");
-                    screeningData.put("muac", "11.0");
-                    screeningData.put("has_recent_illness", true);
-                    screeningData.put("has_eating_difficulty", true);
-                    screeningData.put("has_food_insecurity", true);
-                    break;
-                    
-                case 1: // High Risk - Moderate Malnutrition
-                    screeningData.put("risk_score", 65);
-                    screeningData.put("swelling", "no");
-                    screeningData.put("weight_loss", "5-10%");
-                    screeningData.put("feeding_behavior", "moderate appetite");
-                    screeningData.put("physical_signs", "thin");
-                    screeningData.put("muac", "12.0");
-                    screeningData.put("has_recent_illness", false);
-                    screeningData.put("has_eating_difficulty", false);
-                    screeningData.put("has_food_insecurity", false);
-                    break;
-                    
-                case 2: // Moderate Risk - Growth Issues
-                    screeningData.put("risk_score", 35);
-                    screeningData.put("swelling", "no");
-                    screeningData.put("weight_loss", "<5% or none");
-                    screeningData.put("feeding_behavior", "good appetite");
-                    screeningData.put("physical_signs", "shorter");
-                    screeningData.put("muac", "13.0");
-                    screeningData.put("has_recent_illness", false);
-                    screeningData.put("has_eating_difficulty", false);
-                    screeningData.put("has_food_insecurity", false);
-                    break;
-                    
-                case 3: // Low Risk - Normal Status
-                    screeningData.put("risk_score", 15);
-                    screeningData.put("swelling", "no");
-                    screeningData.put("weight_loss", "<5% or none");
-                    screeningData.put("feeding_behavior", "good appetite");
-                    screeningData.put("physical_signs", "none");
-                    screeningData.put("muac", "14.0");
-                    screeningData.put("has_recent_illness", false);
-                    screeningData.put("has_eating_difficulty", false);
-                    screeningData.put("has_food_insecurity", false);
-                    break;
+            // Parse user data
+            int age = userAge != null ? Integer.parseInt(userAge) : 25;
+            double weight = 70.0; // Default weight
+            double height = 170.0; // Default height in cm
+            double bmi = 22.5; // Default BMI
+            
+            // Try to parse BMI if available
+            if (userBMI != null && !userBMI.isEmpty()) {
+                try {
+                    bmi = Double.parseDouble(userBMI);
+                } catch (NumberFormatException e) {
+                    Log.w(TAG, "Could not parse BMI: " + userBMI);
+                }
             }
             
-            // Save to database
-            android.content.ContentValues values = new android.content.ContentValues();
-            values.put(UserPreferencesDbHelper.COL_USER_EMAIL, email);
-            values.put(UserPreferencesDbHelper.COL_RISK_SCORE, screeningData.getInt("risk_score"));
-            values.put(UserPreferencesDbHelper.COL_SCREENING_ANSWERS, screeningData.toString());
+            // Calculate weight from BMI (assuming average height)
+            if (bmi > 0) {
+                weight = bmi * 1.7 * 1.7; // BMI = weight(kg) / height(m)^2, assuming 1.7m height
+            }
             
-            dbHelper.getWritableDatabase().update(
-                UserPreferencesDbHelper.TABLE_NAME,
-                values,
-                UserPreferencesDbHelper.COL_USER_EMAIL + "=?",
-                new String[]{email}
-            );
+            // Calculate BMI status
+            String bmiStatus = determineBmiStatus(bmi);
+            int bmiStatusColor = getBmiStatusColor(bmi);
             
-            android.widget.Toast.makeText(this, 
-                "🧪 Test scenario applied! Refreshing recommendations...", 
-                android.widget.Toast.LENGTH_SHORT).show();
+            // Calculate daily nutrition targets
+            NutritionTargets targets = calculateDailyNutritionTargets(age, weight, height, bmi, userSex);
             
-            // Reload recommendations with new scenario
-            loadAIRecommendations();
+            // Update UI
+            if (tvBmiStatus != null) {
+                tvBmiStatus.setText(bmiStatus);
+                tvBmiStatus.setTextColor(getResources().getColor(bmiStatusColor));
+            }
+            
+            if (tvCaloriesTarget != null) {
+                tvCaloriesTarget.setText(targets.calories + " kcal");
+            }
+            
+            if (tvProteinTarget != null) {
+                tvProteinTarget.setText(targets.protein + "g");
+            }
+            
+            if (tvFatTarget != null) {
+                tvFatTarget.setText(targets.fat + "g");
+            }
+            
+            if (tvCarbsTarget != null) {
+                tvCarbsTarget.setText(targets.carbs + "g");
+            }
+            
+            if (tvHealthRecommendation != null) {
+                tvHealthRecommendation.setText(generateHealthRecommendation(bmi, age, userHealthConditions));
+            }
+            
+            Log.d(TAG, "Nutrition targets calculated: " + targets.calories + " kcal, " + targets.protein + "g protein");
             
         } catch (Exception e) {
-            android.widget.Toast.makeText(this, "Error applying test scenario: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error calculating nutrition targets: " + e.getMessage());
+            // Set default values
+            if (tvBmiStatus != null) tvBmiStatus.setText("Normal");
+            if (tvCaloriesTarget != null) tvCaloriesTarget.setText("2000 kcal");
+            if (tvProteinTarget != null) tvProteinTarget.setText("75g");
+            if (tvFatTarget != null) tvFatTarget.setText("65g");
+            if (tvCarbsTarget != null) tvCarbsTarget.setText("250g");
+            if (tvHealthRecommendation != null) tvHealthRecommendation.setText("Focus on balanced meals with lean proteins and vegetables.");
         }
     }
     
-    private void showCurrentRecommendationsSummary() {
-        if (currentRecommendations.isEmpty()) {
-            android.widget.Toast.makeText(this, "No recommendations loaded yet", android.widget.Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
-        StringBuilder summary = new StringBuilder();
-        summary.append("🍽️ Current Food Recommendations:\n\n");
-        summary.append("Total: ").append(currentRecommendations.size()).append(" dishes\n\n");
-        
-        // Group by categories (simplified)
-        Map<String, List<String>> categories = new HashMap<>();
-        for (DishData.Dish dish : currentRecommendations) {
-            String category = "General";
-            if (dish.tags.contains("HP")) category = "High Protein";
-            else if (dish.tags.contains("ED")) category = "Energy Dense";
-            else if (dish.tags.contains("WG")) category = "Weight Gain";
-            else if (dish.tags.contains("TH")) category = "Therapeutic";
-            else if (dish.tags.contains("HVC")) category = "Vitamin C Rich";
-            else if (dish.tags.contains("HVA")) category = "Vitamin A Rich";
-            else if (dish.tags.contains("HI")) category = "Iron Rich";
-            
-            categories.computeIfAbsent(category, k -> new ArrayList<>()).add(dish.name);
-        }
-        
-        for (Map.Entry<String, List<String>> entry : categories.entrySet()) {
-            summary.append(entry.getKey()).append(":\n");
-            for (String dishName : entry.getValue()) {
-                summary.append("  • ").append(dishName).append("\n");
-            }
-            summary.append("\n");
-        }
-        
-        new AlertDialog.Builder(this)
-            .setTitle("Current Recommendations Summary")
-            .setMessage(summary.toString())
-            .setPositiveButton("OK", null)
-            .show();
+    private String determineBmiStatus(double bmi) {
+        if (bmi < 18.5) return "Underweight";
+        else if (bmi < 25) return "Normal";
+        else if (bmi < 30) return "Overweight";
+        else return "Obese";
     }
     
-    private void forceNewAIRecommendations() {
-        android.widget.Toast.makeText(this, 
-            "🧠 Forcing new AI recommendations...", 
-            android.widget.Toast.LENGTH_SHORT).show();
-        
-        // Clear current recommendations
-        currentRecommendations.clear();
-        foodCardAdapter.notifyDataSetChanged();
-        
-        // Force reload with AI engine
-        loadAIRecommendations();
+    private int getBmiStatusColor(double bmi) {
+        if (bmi < 18.5) return android.R.color.holo_orange_light; // Underweight - orange
+        else if (bmi < 25) return android.R.color.holo_green_light; // Normal - green
+        else if (bmi < 30) return android.R.color.holo_orange_light; // Overweight - orange
+        else return android.R.color.holo_red_light; // Obese - red
     }
     
-    private void showDietPrefsDialogWithRiskScore(int currentRiskScore, Runnable onComplete, boolean[] checkedAllergies, boolean[] checkedPrefs, 
-                                                 List<String> selectedAllergies, List<String> selectedPrefs) {
-        new AlertDialog.Builder(this)
-            .setTitle("Select your allergies")
-            .setMultiChoiceItems(ALLERGENS, checkedAllergies, (dialog, which, isChecked) -> {
-                if (isChecked) selectedAllergies.add(ALLERGENS[which]);
-                else selectedAllergies.remove(ALLERGENS[which]);
-            })
-            .setPositiveButton("Next", (dialog, which) -> {
-                new AlertDialog.Builder(this)
-                    .setTitle("Select your dietary preferences")
-                    .setMultiChoiceItems(DIET_PREFS, checkedPrefs, (d2, w2, isC) -> {
-                        if (isC) selectedPrefs.add(DIET_PREFS[w2]);
-                        else selectedPrefs.remove(DIET_PREFS[w2]);
-                    })
-                    .setPositiveButton("Next", (d2, w2) -> {
-                        final EditText avoidInput = new EditText(this);
-                        avoidInput.setHint("Foods to avoid (optional)");
-                        avoidInput.setInputType(InputType.TYPE_CLASS_TEXT);
-                        new AlertDialog.Builder(this)
-                            .setTitle("Any foods to avoid?")
-                            .setView(avoidInput)
-                            .setPositiveButton("Save", (d3, w3) -> {
-                                String avoid = avoidInput.getText().toString();
-                                saveUserPreferences(selectedAllergies, selectedPrefs, avoid, currentRiskScore);
-                                if (onComplete != null) onComplete.run();
-                            })
-                            .setNegativeButton("Skip", (d3, w3) -> {
-                                saveUserPreferences(selectedAllergies, selectedPrefs, "", currentRiskScore);
-                                if (onComplete != null) onComplete.run();
-                            })
-                            .show();
-                    })
-                    .setNegativeButton("Skip", (d2, w2) -> {
-                        saveUserPreferences(selectedAllergies, new ArrayList<>(), "", currentRiskScore);
-                        if (onComplete != null) onComplete.run();
-                    })
-                    .show();
-            })
-            .setNegativeButton("Skip", (dialog, which) -> {
-                if (onComplete != null) onComplete.run();
-            })
-            .show();
-    }
-    
-    private void saveUserPreferences(List<String> allergies, List<String> dietPrefs, String avoidFoods, int riskScore) {
-        String email = getCurrentUserEmail();
-        if (email == null) return;
-        
-        ContentValues values = new ContentValues();
-        values.put(UserPreferencesDbHelper.COL_USER_EMAIL, email);
-        values.put(UserPreferencesDbHelper.COL_ALLERGIES, join(allergies));
-        values.put(UserPreferencesDbHelper.COL_DIET_PREFS, join(dietPrefs));
-        values.put(UserPreferencesDbHelper.COL_AVOID_FOODS, avoidFoods);
-        values.put(UserPreferencesDbHelper.COL_RISK_SCORE, riskScore);
-        
-        // Safe upsert: UPDATE existing row; INSERT only if missing
-        android.database.sqlite.SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int updated = db.update(
-            UserPreferencesDbHelper.TABLE_NAME,
-            values,
-            UserPreferencesDbHelper.COL_USER_EMAIL + "=?",
-            new String[]{email}
-        );
-        if (updated == 0) {
-            db.insert(UserPreferencesDbHelper.TABLE_NAME, null, values);
-        }
-        
-        // Sync with web API
-        syncPreferencesToApi(email, allergies, dietPrefs, avoidFoods, riskScore);
-    }
-    
-    // New method to sync preferences with web API
-    private void syncPreferencesToApi(String email, List<String> allergies, List<String> dietPrefs, String avoidFoods, int riskScore) {
-        new Thread(() -> {
-            try {
-                OkHttpClient client = new OkHttpClient();
-                
-                JSONObject json = new JSONObject();
-                json.put("action", "save_preferences");
-                json.put("email", email);
-                json.put("allergies", new JSONArray(allergies));
-                json.put("diet_prefs", new JSONArray(dietPrefs));
-                json.put("avoid_foods", avoidFoods);
-                json.put("risk_score", riskScore);
-                
-                RequestBody body = RequestBody.create(json.toString(), MediaType.parse("application/json"));
-                Request request = new Request.Builder()
-                    .url(Constants.UNIFIED_API_URL)
-                    .post(body)
-                    .build();
-                
-                try (Response response = client.newCall(request).execute()) {
-                    if (response.isSuccessful()) {
-                        Log.d("FoodActivity", "Preferences synced to API successfully");
-                    } else {
-                        Log.e("FoodActivity", "Failed to sync preferences: " + response.code());
-                    }
-                }
-            } catch (Exception e) {
-                Log.e("FoodActivity", "Error syncing preferences: " + e.getMessage());
-            }
-        }).start();
-    }
-    
-    // New method to sync screening results with web API
-    private void syncScreeningToApi(String email, int riskScore, List<String> screeningAnswers) {
-        new Thread(() -> {
-            try {
-                OkHttpClient client = new OkHttpClient();
-                
-                JSONObject json = new JSONObject();
-                json.put("action", "save_screening");
-                json.put("email", email);
-                json.put("risk_score", riskScore);
-                json.put("screening_data", new JSONArray(screeningAnswers));
-                
-                RequestBody body = RequestBody.create(json.toString(), MediaType.parse("application/json"));
-                Request request = new Request.Builder()
-                    .url(Constants.UNIFIED_API_URL)
-                    .post(body)
-                    .build();
-                
-                try (Response response = client.newCall(request).execute()) {
-                    if (response.isSuccessful()) {
-                        Log.d("FoodActivity", "Screening data synced to API successfully");
-                    } else {
-                        Log.e("FoodActivity", "Failed to sync screening: " + response.code());
-                    }
-                }
-            } catch (Exception e) {
-                Log.e("FoodActivity", "Error syncing screening: " + e.getMessage());
-            }
-        }).start();
-    }
-    
-    // New method to sync food recommendations with web API
-    private void syncFoodRecommendationsToApi(String email, List<DishData.Dish> recommendations) {
-        new Thread(() -> {
-            try {
-                OkHttpClient client = new OkHttpClient();
-                
-                JSONArray recsArray = new JSONArray();
-                for (DishData.Dish dish : recommendations) {
-                    JSONObject dishJson = new JSONObject();
-                    dishJson.put("name", dish.name);
-                    dishJson.put("emoji", dish.emoji);
-                    dishJson.put("desc", dish.desc);
-                    recsArray.put(dishJson);
-                }
-                
-                JSONObject json = new JSONObject();
-                json.put("action", "save_food_recommendations");
-                json.put("email", email);
-                json.put("recommendations", recsArray);
-                
-                RequestBody body = RequestBody.create(json.toString(), MediaType.parse("application/json"));
-                Request request = new Request.Builder()
-                    .url(Constants.UNIFIED_API_URL)
-                    .post(body)
-                    .build();
-                
-                try (Response response = client.newCall(request).execute()) {
-                    if (response.isSuccessful()) {
-                        Log.d("FoodActivity", "Food recommendations synced to API successfully");
-                    } else {
-                        Log.e("FoodActivity", "Failed to sync recommendations: " + response.code());
-                    }
-                }
-            } catch (Exception e) {
-                Log.e("FoodActivity", "Error syncing recommendations: " + e.getMessage());
-            }
-        }).start();
-    }
-
-    private String join(List<String> list) {
-        return android.text.TextUtils.join(",", list);
-    }
-    
-    /**
-     * Update food recommendations with smart filtering
-     */
-    private void updateFoodRecommendationsWithFilters(List<String> activeFilters) {
-        String email = getCurrentUserEmail();
-        if (email == null) {
-            android.util.Log.e("FoodActivity", "No current user email found");
-            return;
-        }
-        
-        android.util.Log.d("FoodActivity", "Updating food recommendations with filters: " + activeFilters);
-        
-        // Toast message removed for performance
-        
-        new Thread(() -> {
-            try {
-                SmartFilterEngine filterEngine = new SmartFilterEngine(this);
-                List<SmartFilterEngine.RankedDish> rankedRecommendations = 
-                    filterEngine.getFilteredRecommendations(email, activeFilters);
-                filterEngine.close();
-                
-                runOnUiThread(() -> {
-                    android.util.Log.d("FoodActivity", "Got " + rankedRecommendations.size() + " filtered recommendations");
-                    
-                    // Set ranks for display
-                    for (int i = 0; i < rankedRecommendations.size(); i++) {
-                        rankedRecommendations.get(i).setRank(i + 1);
-                    }
-                    
-                    // Clear current recommendations and add filtered ones
-                    currentRecommendations.clear();
-                    for (SmartFilterEngine.RankedDish rankedDish : rankedRecommendations) {
-                        currentRecommendations.add(rankedDish.dish);
-                    }
-                    
-                    // Update adapter
-                    if (foodCardAdapter != null) {
-                        foodCardAdapter.notifyDataSetChanged();
-                    }
-                    
-                    // Show that recommendations have been updated
-                    android.widget.Toast.makeText(FoodActivity.this, 
-                        "🎯 Updated recommendations based on your filters!", 
-                        android.widget.Toast.LENGTH_SHORT).show();
-                    
-                    // Show filter summary
-                    if (!rankedRecommendations.isEmpty()) {
-                        StringBuilder filterSummary = new StringBuilder();
-                        filterSummary.append("🎯 Applied Filters: ");
-                        for (String filter : activeFilters) {
-                            filterSummary.append(filter).append(", ");
-                        }
-                        filterSummary.append("\n🥇 Top Recommendation: ").append(rankedRecommendations.get(0).dish.name);
-                        filterSummary.append("\n📊 Score: ").append(rankedRecommendations.get(0).getScoreDisplay());
-                        
-                        // Toast message removed for performance
-                    }
-                });
-                
-            } catch (Exception e) {
-                android.util.Log.e("FoodActivity", "Error getting filtered recommendations: " + e.getMessage());
-                runOnUiThread(() -> {
-                    // Toast message removed for performance
-                    updateFoodRecommendations(); // Fallback to default
-                });
-            }
-        }).start();
-    }
-
-    private void updateFoodRecommendations() {
-        String email = getCurrentUserEmail();
-        if (email == null) {
-            android.util.Log.e("FoodActivity", "No current user email found");
-            return;
-        }
-        
-        android.util.Log.d("FoodActivity", "Updating food recommendations for user: " + email);
-        
-        // Check if user has set preferences
-        if (!userHasDietPrefs()) {
-            // Toast message removed for performance
-        }
-        
-        NutritionRecommendationEngine engine = new NutritionRecommendationEngine(this);
-        try {
-            List<DishData.Dish> recommendations = engine.getPersonalizedRecommendations(email);
-            
-            android.util.Log.d("FoodActivity", "Got " + recommendations.size() + " recommendations");
-            
-            // Clear current recommendations and add new ones
-            currentRecommendations.clear();
-            currentRecommendations.addAll(recommendations);
-            
-            // Update adapter
-            if (foodCardAdapter != null) {
-                foodCardAdapter.notifyDataSetChanged();
-            }
-            
-            // Show top recommendation explanation with AI learning message
-            if (!recommendations.isEmpty()) {
-                // Get risk score asynchronously
-                ScreeningResultStore.getRiskScoreAsync(this, new ScreeningResultStore.OnRiskScoreReceivedListener() {
-                    @Override
-                    public void onRiskScoreReceived(int riskScore) {
-                        String explanation = engine.getNutritionExplanation(recommendations.get(0), riskScore);
-                        android.util.Log.d("FoodActivity", "Risk score: " + riskScore + ", Top recommendation: " + recommendations.get(0).name);
-                        
-                        // Add AI learning message
-                        String aiMessage = "🤖 AI Learning: System adapts recommendations based on your screening data and preferences.";
-                        // Toast message removed for performance
-                            
-                        // Save recommendation data for AI learning
-                        saveRecommendationForLearning(email, recommendations, riskScore);
-                    }
-                });
-            }
-        } finally {
-            engine.close();
-        }
-    }
-    
-    /**
-     * Load AI-powered personalized recommendations
-     */
-    private void loadAIRecommendations() {
-        String email = getCurrentUserEmail();
-        if (email == null) {
-            updateFoodRecommendations();
-            return;
-        }
-        
-        new Thread(() -> {
-            try {
-                AIFoodRecommendationEngine aiEngine = new AIFoodRecommendationEngine(this);
-                List<DishData.Dish> aiRecommendations = aiEngine.getAIPersonalizedRecommendations(email);
-                aiEngine.close();
-                
-                runOnUiThread(() -> {
-                    android.util.Log.d("FoodActivity", "Got " + aiRecommendations.size() + " AI recommendations");
-                    
-                    // Clear current recommendations and add AI ones
-                    currentRecommendations.clear();
-                    currentRecommendations.addAll(aiRecommendations);
-                    
-                    // Update adapter
-                    if (foodCardAdapter != null) {
-                        foodCardAdapter.notifyDataSetChanged();
-                    }
-                    
-                    // Show that AI recommendations have been loaded
-                    android.widget.Toast.makeText(FoodActivity.this, 
-                        "🧠 AI-powered recommendations loaded based on your screening data!", 
-                        android.widget.Toast.LENGTH_SHORT).show();
-                    
-                    // Show AI recommendation summary
-                    if (!aiRecommendations.isEmpty()) {
-                        // Get risk score asynchronously
-                        ScreeningResultStore.getRiskScoreAsync(FoodActivity.this, new ScreeningResultStore.OnRiskScoreReceivedListener() {
-                            @Override
-                            public void onRiskScoreReceived(int riskScore) {
-                                String aiSummary = generateAISummary(aiRecommendations, riskScore);
-                                // Toast message removed for performance
-                                
-                                // Save AI recommendations to database for future use
-                                saveAIRecommendationsToDb(aiRecommendations);
-                                
-                                // Sync with web API
-                                syncFoodRecommendationsToApi(email, aiRecommendations);
-                            }
-                        });
-                    } else {
-                        // Toast message removed for performance
-                    }
-                });
-                
-            } catch (Exception e) {
-                android.util.Log.e("FoodActivity", "Error loading AI recommendations: " + e.getMessage());
-                // Toast message removed for performance
-                // Fallback to regular recommendations
-                updateFoodRecommendations();
-            }
-        }).start();
-    }
-    
-    /**
-     * Generate AI summary message for user
-     */
-    private String generateAISummary(List<DishData.Dish> recommendations, int riskScore) {
-        StringBuilder summary = new StringBuilder();
-        summary.append("🧠 AI Analysis Complete! ");
-        
-        if (riskScore >= 70) {
-            summary.append("High nutritional support needed. ");
-        } else if (riskScore >= 40) {
-            summary.append("Moderate nutritional support recommended. ");
+    private NutritionTargets calculateDailyNutritionTargets(int age, double weight, double height, double bmi, String sex) {
+        // Calculate BMR (Basal Metabolic Rate) using Mifflin-St Jeor Equation
+        double bmr;
+        if ("Male".equalsIgnoreCase(sex) || "M".equalsIgnoreCase(sex)) {
+            bmr = 10 * weight + 6.25 * height - 5 * age + 5;
         } else {
-            summary.append("Maintaining healthy nutrition. ");
+            bmr = 10 * weight + 6.25 * height - 5 * age - 161;
         }
         
-        summary.append("Generated ").append(recommendations.size()).append(" personalized recommendations.");
+        // Activity factor (sedentary to moderate activity)
+        double activityFactor = 1.4; // Moderate activity
         
-        return summary.toString();
-    }
-    
-    /**
-     * Save AI recommendations to local database
-     */
-    private void saveAIRecommendationsToDb(List<DishData.Dish> recommendations) {
-        String email = getCurrentUserEmail();
-        if (email == null) return;
+        // Calculate TDEE (Total Daily Energy Expenditure)
+        double tdee = bmr * activityFactor;
         
-        // Clear previous recommendations
-        dbHelper.getWritableDatabase().delete(UserPreferencesDbHelper.TABLE_FOOD_RECS, 
-            UserPreferencesDbHelper.COL_FOOD_RECS_USER_EMAIL + "=?", new String[]{email});
-        
-        // Save new AI recommendations
-        for (DishData.Dish dish : recommendations) {
-            saveRecommendationToDb(dish);
+        // Adjust calories based on BMI status
+        if (bmi < 18.5) {
+            tdee *= 1.1; // Increase calories for underweight
+        } else if (bmi > 25) {
+            tdee *= 0.9; // Decrease calories for overweight/obese
         }
         
-        android.util.Log.d("FoodActivity", "Saved " + recommendations.size() + " AI recommendations to database");
+        // Calculate macronutrient targets
+        int calories = (int) Math.round(tdee);
+        int protein = (int) Math.round(weight * 1.2); // 1.2g per kg body weight
+        int fat = (int) Math.round(calories * 0.25 / 9); // 25% of calories from fat
+        int carbs = (int) Math.round((calories - (protein * 4) - (fat * 9)) / 4); // Remaining calories from carbs
+        
+        return new NutritionTargets(calories, protein, fat, carbs);
     }
     
-    /**
-     * Save recommendation data for AI learning and improvement
-     */
-    private void saveRecommendationForLearning(String email, List<DishData.Dish> recommendations, int riskScore) {
-        new Thread(() -> {
-            try {
-                // Create learning data JSON
-                org.json.JSONObject learningData = new org.json.JSONObject();
-                learningData.put("email", email);
-                learningData.put("risk_score", riskScore);
-                learningData.put("timestamp", System.currentTimeMillis());
+    private String generateHealthRecommendation(double bmi, int age, String healthConditions) {
+        StringBuilder recommendation = new StringBuilder();
+        
+        // BMI-based recommendations
+        if (bmi < 18.5) {
+            recommendation.append("Focus on nutrient-dense foods to gain healthy weight. ");
+        } else if (bmi > 25) {
+            recommendation.append("Choose lean proteins and vegetables to support healthy weight management. ");
+            } else {
+            recommendation.append("Maintain balanced nutrition with variety in your meals. ");
+        }
+        
+        // Age-based recommendations
+        if (age < 18) {
+            recommendation.append("Include calcium-rich foods for bone development. ");
+        } else if (age > 50) {
+            recommendation.append("Prioritize fiber and antioxidants for healthy aging. ");
+        }
+        
+        // Health condition recommendations
+        if (healthConditions != null && !healthConditions.isEmpty()) {
+            if (healthConditions.toLowerCase().contains("diabetes")) {
+                recommendation.append("Choose low-glycemic foods and control portion sizes. ");
+            }
+            if (healthConditions.toLowerCase().contains("hypertension")) {
+                recommendation.append("Limit sodium and include potassium-rich foods. ");
+            }
+            if (healthConditions.toLowerCase().contains("heart")) {
+                recommendation.append("Focus on heart-healthy fats and whole grains. ");
+            }
+        }
+        
+        return recommendation.toString().trim();
+    }
+    
+    // Helper class for nutrition targets
+    private static class NutritionTargets {
+        final int calories;
+        final int protein;
+        final int fat;
+        final int carbs;
+        
+        NutritionTargets(int calories, int protein, int fat, int carbs) {
+            this.calories = calories;
+            this.protein = protein;
+            this.fat = fat;
+            this.carbs = carbs;
+        }
+    }
+    
+    private void setupNavigation() {
+        // Home navigation
+        findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FoodActivity.this, MainActivity.class);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            }
+        });
+
+        // Food navigation (current page - no action needed)
+        findViewById(R.id.nav_food).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Already on food page, do nothing
+            }
+        });
+
+        // Favorites navigation
+        findViewById(R.id.nav_favorites).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FoodActivity.this, FavoritesActivity.class);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            }
+        });
+
+        // Account navigation
+        findViewById(R.id.nav_account).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FoodActivity.this, AccountActivity.class);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+            }
+        });
+    }
+    
+    private void setupViewPager() {
+        // Start with empty list - no loading state
+        recommendations.clear();
+        
+        adapter = new FoodRecommendationAdapter(recommendations, this);
+        viewPager.setAdapter(adapter);
+        
+        // Disable any ViewPager2 indicators or page transformers that might cause blue bars
+        viewPager.setPageTransformer(null);
+        
+        // Setup swipe listeners
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                Log.d(TAG, "Showing recommendation at position: " + position + ", isPreloading: " + isPreloading + ", total foods: " + recommendations.size());
                 
-                // Add recommendation data for learning
-                org.json.JSONArray recsArray = new org.json.JSONArray();
-                for (DishData.Dish dish : recommendations) {
-                    org.json.JSONObject dishData = new org.json.JSONObject();
-                    dishData.put("name", dish.name);
-                    dishData.put("tags", new org.json.JSONArray(dish.tags));
-                    dishData.put("allergens", new org.json.JSONArray(dish.allergens));
-                    recsArray.put(dishData);
+                // Only start loading images when user actually starts swiping
+                // This prevents unnecessary API calls when user is just browsing other parts of the app
+                if (!shouldLoadImages) {
+                    shouldLoadImages = true;
+                    Log.d(TAG, "User started viewing food cards - enabling image loading");
                 }
-                learningData.put("recommendations", recsArray);
                 
-                // Send to API for AI learning
-                okhttp3.OkHttpClient client = new okhttp3.OkHttpClient();
-                okhttp3.RequestBody body = okhttp3.RequestBody.create(
-                    learningData.toString(), 
+                // Load current image + preload next 2 images for smooth experience
+                if (shouldLoadImages && adapter != null) {
+                    adapter.loadImagesProgressively(position);
+                }
+                
+                // Preload logic: Trigger when user is near the end of available foods
+                // This ensures next batch is ready before user reaches the end
+                if (position >= recommendations.size() - 3 && !isPreloading) {
+                    Log.d(TAG, "Triggering preload at position: " + position + " (near end of available foods: " + recommendations.size() + ")");
+                    isPreloading = true;
+                    generateNextRecommendation();
+                }
+                
+                // Emergency fallback: Only if we're truly at the end and no preload is happening
+                if (recommendations.size() > 2 && position >= recommendations.size() - 2 && !isPreloading) {
+                    Log.d(TAG, "Emergency fallback: At very end of available foods (position " + position + ", size " + recommendations.size() + "), forcing preload");
+                    isPreloading = true;
+                    generateNextRecommendation();
+                }
+            }
+        });
+        
+        Log.d(TAG, "ViewPager2 setup completed");
+    }
+    
+    private void loadUserProfile() {
+        try {
+            // Get current user email from SharedPreferences
+            android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+            String userEmail = prefs.getString("current_user_email", null);
+            
+            if (userEmail != null) {
+                // Load complete user profile from database
+                UserPreferencesDbHelper dbHelper = new UserPreferencesDbHelper(this);
+        android.database.Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
+                    "SELECT * FROM " + UserPreferencesDbHelper.TABLE_NAME + 
+                    " WHERE " + UserPreferencesDbHelper.COL_USER_EMAIL + "=?",
+                    new String[]{userEmail}
+        );
+        
+        if (cursor.moveToFirst()) {
+                    // Load all user profile data
+                    userAge = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_AGE));
+                    userSex = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_GENDER));
+                    userBMI = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_BMI));
+                    userHeight = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_HEIGHT));
+                    userWeight = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_WEIGHT));
+                    userAllergies = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_ALLERGIES));
+                    userDietPrefs = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_DIET_PREFS));
+                    userAvoidFoods = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_AVOID_FOODS));
+                    userRiskScore = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_RISK_SCORE));
+                    userBarangay = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_BARANGAY));
+                    userIncome = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_INCOME));
+                    
+                    // Load health conditions
+                    userHealthConditions = buildHealthConditionsString(cursor);
+                    
+                    // Load pregnancy status from screening_answers JSON
+                    String screeningAnswersJson = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_SCREENING_ANSWERS));
+                    userPregnancyStatus = loadPregnancyStatusFromScreeningJson(screeningAnswersJson);
+                    
+                    // Determine activity level based on risk score
+                    userActivityLevel = determineActivityLevel(userRiskScore);
+                    
+                    // Determine budget level based on income
+                    userBudgetLevel = determineBudgetLevel(userIncome);
+                    
+                    Log.d(TAG, "Loaded complete user profile: Age=" + userAge + ", Sex=" + userSex + 
+                          ", BMI=" + userBMI + ", Health=" + userHealthConditions + 
+                          ", Pregnancy=" + userPregnancyStatus + ", Allergies=" + userAllergies + 
+                          ", Diet=" + userDietPrefs);
+                } else {
+                    Log.w(TAG, "No user profile found in database, using defaults");
+                    setDefaultUserProfile();
+                }
+        cursor.close();
+                dbHelper.close();
+            } else {
+                Log.w(TAG, "No user email found, using defaults");
+                setDefaultUserProfile();
+                    }
+                } catch (Exception e) {
+            Log.e(TAG, "Error loading user profile: " + e.getMessage());
+            setDefaultUserProfile();
+        }
+        
+        Log.d(TAG, "User profile loaded");
+    }
+    
+    private String buildHealthConditionsString(android.database.Cursor cursor) {
+        StringBuilder conditions = new StringBuilder();
+        
+        // Check BMI category first
+        double bmi = cursor.getDouble(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_BMI));
+        if (bmi > 0) {
+            if (bmi < 18.5) {
+                conditions.append("Underweight, ");
+            } else if (bmi >= 25.0) {
+                conditions.append("Overweight/Obese, ");
+            }
+        }
+        
+        // Check for physical signs from screening
+        String physicalSigns = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_PHYSICAL_SIGNS));
+        if (physicalSigns != null && !physicalSigns.isEmpty()) {
+            if (physicalSigns.contains("thin")) {
+                conditions.append("Physical thinness, ");
+            }
+            if (physicalSigns.contains("shorter")) {
+                conditions.append("Stunted growth, ");
+            }
+            if (physicalSigns.contains("weak")) {
+                conditions.append("Physical weakness, ");
+            }
+        }
+        
+        // Check for feeding behavior issues
+        String feedingBehavior = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_FEEDING_BEHAVIOR));
+        if (feedingBehavior != null && !feedingBehavior.isEmpty()) {
+            if (feedingBehavior.contains("difficulty")) {
+                conditions.append("Eating difficulty, ");
+            }
+        }
+        
+        // Check for weight loss
+        String weightLoss = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_WEIGHT_LOSS));
+        if (weightLoss != null && !weightLoss.isEmpty()) {
+            if (weightLoss.contains("yes")) {
+                conditions.append("Recent weight loss, ");
+            }
+        }
+        
+        // Check for swelling
+        String swelling = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_SWELLING));
+        if (swelling != null && !swelling.isEmpty()) {
+            if (swelling.contains("yes")) {
+                conditions.append("Edema/swelling, ");
+            }
+        }
+        
+        // Extract additional health conditions from screening_answers JSON
+        try {
+            String screeningAnswersJson = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_SCREENING_ANSWERS));
+            if (screeningAnswersJson != null && !screeningAnswersJson.isEmpty()) {
+                JSONObject screeningData = new JSONObject(screeningAnswersJson);
+                
+                // Check family history
+                JSONObject familyHistory = screeningData.optJSONObject("family_history");
+                if (familyHistory != null) {
+                    if (familyHistory.optBoolean("diabetes", false)) {
+                        conditions.append("Family history of diabetes, ");
+                    }
+                    if (familyHistory.optBoolean("hypertension", false)) {
+                        conditions.append("Family history of hypertension, ");
+                    }
+                    if (familyHistory.optBoolean("heart_disease", false)) {
+                        conditions.append("Family history of heart disease, ");
+                    }
+                    if (familyHistory.optBoolean("obesity", false)) {
+                        conditions.append("Family history of obesity, ");
+                    }
+                }
+                
+                // Check BMI category from screening
+                String bmiCategory = screeningData.optString("bmi_category", "");
+                if (!bmiCategory.isEmpty()) {
+                    conditions.append("BMI Category: ").append(bmiCategory).append(", ");
+                    }
+                }
+            } catch (Exception e) {
+            Log.e(TAG, "Error parsing additional health conditions from screening JSON: " + e.getMessage());
+        }
+        
+        String result = conditions.toString();
+        return result.isEmpty() ? "None" : result.substring(0, result.length() - 2); // Remove last comma
+    }
+    
+    private String determineActivityLevel(String riskScore) {
+        if (riskScore == null || riskScore.isEmpty()) return "Moderate";
+        
+        try {
+            int score = Integer.parseInt(riskScore);
+            if (score <= 3) return "Low";
+            else if (score <= 7) return "Moderate";
+            else return "High";
+        } catch (NumberFormatException e) {
+            return "Moderate";
+        }
+    }
+    
+    private String determineBudgetLevel(String income) {
+        if (income == null || income.isEmpty()) return "Low";
+        
+        String lowerIncome = income.toLowerCase();
+        if (lowerIncome.contains("low") || lowerIncome.contains("minimum")) return "Low";
+        else if (lowerIncome.contains("high") || lowerIncome.contains("above")) return "High";
+        else return "Medium";
+    }
+    
+    private String loadPregnancyStatusFromScreeningJson(String screeningAnswersJson) {
+        try {
+            if (screeningAnswersJson == null || screeningAnswersJson.isEmpty()) {
+                return "Not Applicable";
+            }
+            
+            JSONObject screeningData = new JSONObject(screeningAnswersJson);
+            String pregnant = screeningData.optString("pregnant", "Not Applicable");
+            
+            Log.d(TAG, "Pregnancy status from screening JSON: " + pregnant);
+            return pregnant;
+            } catch (Exception e) {
+            Log.e(TAG, "Error parsing pregnancy status from screening JSON: " + e.getMessage());
+            return "Not Applicable";
+        }
+    }
+    
+    private void setDefaultUserProfile() {
+        userAge = "25";
+        userSex = "Not specified";
+        userBMI = "22.5";
+        userHealthConditions = "None";
+        userActivityLevel = "Moderate";
+        userBudgetLevel = "Low";
+        userDietaryRestrictions = "None";
+        userAllergies = "";
+        userDietPrefs = "";
+        userAvoidFoods = "";
+        userRiskScore = "5";
+        userBarangay = "Not specified";
+        userIncome = "Low";
+        userPregnancyStatus = "Not Applicable";
+    }
+    
+        private void loadPreloadedDataOrStartPreload() {
+        // Check if we have preloaded data from the background service
+        if (FoodPreloadService.isPreloaded()) {
+            Log.d(TAG, "Using preloaded food data - cards ready instantly!");
+            loadPreloadedData();
+                    } else {
+            Log.d(TAG, "No preloaded data available, starting immediate preload");
+            // Start preloading immediately but don't block the UI
+            preloadFoodDataImmediately();
+        }
+    }
+
+    private void loadPreloadedData() {
+        List<FoodRecommendation> preloadedRecommendations = FoodPreloadService.getPreloadedRecommendations();
+        Set<String> preloadedFoodNames = FoodPreloadService.getPreloadedFoodNames();
+        
+        if (preloadedRecommendations != null && !preloadedRecommendations.isEmpty()) {
+            // Clear any existing data and add preloaded recommendations
+            recommendations.clear();
+            generatedFoodNames.clear();
+            
+            // Add all preloaded recommendations
+            for (FoodRecommendation recommendation : preloadedRecommendations) {
+                recommendations.add(recommendation);
+                generatedFoodNames.add(recommendation.getFoodName().toLowerCase());
+            }
+            
+            Log.d(TAG, "Loaded " + preloadedRecommendations.size() + " preloaded food cards (no images loaded yet)");
+            
+            // Notify adapter that data is ready
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+            
+            // DON'T load images yet - wait for user to actually view the activity
+            Log.d(TAG, "Preloaded food cards ready! Images will load when user views them.");
+                    } else {
+            Log.e(TAG, "Preloaded data is empty, falling back to background preload");
+            preloadFoodDataImmediately();
+        }
+    }
+
+    
+
+    private void generateRecommendation() {
+        executorService.execute(() -> {
+            try {
+                Log.d(TAG, "Starting initial recommendation generation");
+                List<FoodRecommendation> newRecommendations = callGeminiAPIForMultiple();
+                if (newRecommendations != null && !newRecommendations.isEmpty()) {
+                    // The recommendations are already verified by callGeminiAPIForMultiple()
+                runOnUiThread(() -> {
+                        // Clear the loading state and start fresh
+                        recommendations.clear();
+                        generatedFoodNames.clear();
+                        
+                        int addedCount = 0;
+                        // Add only unique recommendations
+                        for (FoodRecommendation rec : newRecommendations) {
+                            String foodNameLower = rec.getFoodName().toLowerCase().trim();
+                            if (!generatedFoodNames.contains(foodNameLower)) {
+                                recommendations.add(rec);
+                                generatedFoodNames.add(foodNameLower);
+                                addedCount++;
+                                Log.d(TAG, "Added verified recommendation: " + rec.getFoodName());
+                            } else {
+                                Log.d(TAG, "Skipped duplicate: " + rec.getFoodName());
+                            }
+                        }
+                        
+                        if (addedCount >= 6) {
+                            adapter.notifyItemRangeInserted(0, addedCount);
+                            Log.d(TAG, "Added " + addedCount + " verified recommendations from initial batch");
+                            
+                            // Load first image + preload next 2 for smooth experience
+                            adapter.loadImagesProgressively(0);
+                            
+                            // If we didn't get enough foods, add fallbacks to complete the batch
+                            if (addedCount < 8) {
+                                int remaining = 8 - addedCount;
+                                Log.d(TAG, "Adding " + remaining + " fallback foods to complete initial batch");
+                                addFallbacksToCompleteBatch(remaining);
+                            }
+                        } else {
+                            Log.d(TAG, "Only " + addedCount + " unique foods added, generating fallbacks to reach minimum batch size");
+                            // Add fallbacks to ensure we have enough foods for the initial batch
+                            addFallbacksToCompleteBatch(10 - addedCount);
+                        }
+                        
+                        Log.d(TAG, "Final initial recommendations size: " + recommendations.size());
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        Log.d(TAG, "No initial recommendations generated, using fallbacks");
+                        addFallbacksToCompleteBatch(10);
+                    });
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error generating initial recommendation: " + e.getMessage());
+                runOnUiThread(() -> {
+                    addFallbacksToCompleteBatch(10);
+                });
+            }
+        });
+    }
+    
+        private void generateNextRecommendation() {
+        executorService.execute(() -> {
+            try {
+                Log.d(TAG, "Starting generateNextRecommendation - current size: " + recommendations.size());
+                // Always generate 10 foods per batch for consistency
+                List<FoodRecommendation> newRecommendations = callGeminiAPIForMultiple();
+                if (newRecommendations != null && !newRecommendations.isEmpty()) {
+                    runOnUiThread(() -> {
+                        int addedCount = 0;
+                        // Add only unique recommendations
+                        for (FoodRecommendation rec : newRecommendations) {
+                            String foodNameLower = rec.getFoodName().toLowerCase().trim();
+                            if (!generatedFoodNames.contains(foodNameLower)) {
+                                recommendations.add(rec);
+                                generatedFoodNames.add(foodNameLower);
+                                addedCount++;
+                                Log.d(TAG, "Added unique recommendation: " + rec.getFoodName());
+                            } else {
+                                Log.d(TAG, "Skipped duplicate: " + rec.getFoodName());
+                            }
+                        }
+                        
+                        if (addedCount > 0) {
+                            int oldSize = recommendations.size() - addedCount;
+                            adapter.notifyDataSetChanged(); // Use notifyDataSetChanged to avoid position issues
+                            Log.d(TAG, "Added " + addedCount + " new unique recommendations from batch");
+                            
+                            // Load images progressively for the new batch
+                            int newBatchStartIndex = recommendations.size() - addedCount;
+                            adapter.loadImagesProgressively(newBatchStartIndex);
+                        } else {
+                            Log.d(TAG, "No unique foods added, generating more recommendations");
+                            // Generate more recommendations instead of fallbacks
+                            generateNextRecommendation();
+                        }
+                        
+                        Log.d(TAG, "Final recommendations size after batch: " + recommendations.size());
+                        
+                        // Don't call ensureEnoughFoodsAvailable here as it can cause conflicts
+                        // The preload logic in onPageSelected will handle the next batch
+                        isPreloading = false; // Reset preload flag
+                        consecutiveFailures = 0; // Reset failure counter on success
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        Log.d(TAG, "No recommendations generated, trying again");
+                        generateNextRecommendation();
+                        consecutiveFailures++; // Increment failure counter
+                        Log.d(TAG, "Retrying generation due to empty response");
+                    });
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error generating next recommendation: " + e.getMessage());
+                runOnUiThread(() -> {
+                    Log.d(TAG, "Exception occurred, retrying generation");
+                    generateNextRecommendation();
+                    consecutiveFailures++; // Increment failure counter
+                    Log.d(TAG, "Retrying generation after exception");
+                });
+            }
+        });
+    }
+    
+    private void ensureEnoughFoodsAvailable() {
+        // Ensure we have enough foods for the next batch
+        // Calculate how many foods we need for the next batch
+        int currentSize = recommendations.size();
+        int currentBatch = currentSize / 10;
+        int nextBatchStart = (currentBatch + 1) * 10;
+        int foodsNeeded = nextBatchStart + 10; // Need 10 more foods for the next batch
+        
+        Log.d(TAG, "Checking food availability - current size: " + currentSize + ", isPreloading: " + isPreloading + ", need: " + foodsNeeded);
+        
+        // Prevent infinite loops by checking if we're making progress and haven't failed too many times
+        if (currentSize < foodsNeeded && !isPreloading && currentSize > 0 && consecutiveFailures < 3) {
+            Log.d(TAG, "Need more foods (" + currentSize + " < " + foodsNeeded + "), triggering additional preload");
+            isPreloading = true;
+            generateNextRecommendation();
+        } else if (consecutiveFailures >= 3) {
+            Log.w(TAG, "Too many consecutive failures (" + consecutiveFailures + "), stopping preload attempts");
+        }
+    }
+    
+    private void addFallbacksToCompleteBatch(int count) {
+        List<FoodRecommendation> fallbacks = createFallbackRecommendations();
+        int added = 0;
+        
+        for (FoodRecommendation fallback : fallbacks) {
+            if (added >= count) break;
+            
+            String foodNameLower = fallback.getFoodName().toLowerCase().trim();
+            if (!generatedFoodNames.contains(foodNameLower)) {
+                recommendations.add(fallback);
+                generatedFoodNames.add(foodNameLower);
+                added++;
+                Log.d(TAG, "Added fallback to complete batch: " + fallback.getFoodName());
+            }
+        }
+        
+        // If we still don't have enough, create generic fallbacks
+        if (added < count) {
+            int remaining = count - added;
+            Log.d(TAG, "Creating " + remaining + " generic fallbacks to complete batch");
+            for (int i = 0; i < remaining; i++) {
+                // Use timestamp to ensure unique names
+                long timestamp = System.currentTimeMillis();
+                String genericName = "Filipino Dish " + timestamp + "_" + i;
+                FoodRecommendation generic = new FoodRecommendation(
+                    genericName, 250, 15.0, 8.0, 25.0, "1 serving", "Balanced", "Traditional Filipino dish"
+                );
+                recommendations.add(generic);
+                generatedFoodNames.add(genericName.toLowerCase().trim());
+                Log.d(TAG, "Added generic fallback: " + genericName);
+            }
+        }
+        
+        if (added > 0) {
+            int oldSize = recommendations.size() - added;
+            adapter.notifyItemRangeInserted(oldSize, added);
+        Log.d(TAG, "Added " + added + " fallback foods to complete batch. Total foods: " + recommendations.size());
+        }
+    }
+    
+    public List<FoodRecommendation> callGeminiAPIForMultiple() {
+        return callGeminiAPIForMultipleWithRetry(0);
+    }
+    
+    private FoodRecommendation callGeminiAPI() {
+        List<FoodRecommendation> recommendations = callGeminiAPIForMultiple();
+        if (!recommendations.isEmpty()) {
+            return recommendations.get(0);
+        }
+        return null;
+    }
+    
+        private List<FoodRecommendation> callGeminiAPIForMultipleWithRetry(int retryCount) {
+        if (retryCount > 3) {
+            Log.w(TAG, "Max retry count reached, returning fallback recommendations");
+            return createFallbackRecommendations();
+        }
+        
+        try {
+            generationCount++;
+            String masterPrompt = buildMasterPrompt();
+            
+            // Create JSON request
+            JSONObject requestBody = new JSONObject();
+            JSONArray contents = new JSONArray();
+            JSONObject content = new JSONObject();
+            JSONArray parts = new JSONArray();
+            JSONObject part = new JSONObject();
+            part.put("text", masterPrompt);
+            parts.put(part);
+            content.put("parts", parts);
+            contents.put(content);
+            requestBody.put("contents", contents);
+            
+            // Make API call
+            OkHttpClient client = new OkHttpClient();
+            RequestBody body = RequestBody.create(
+                requestBody.toString(), 
                     okhttp3.MediaType.parse("application/json")
                 );
-                okhttp3.Request request = new okhttp3.Request.Builder()
-                    .url(Constants.UNIFIED_API_URL)
+            
+            Request request = new Request.Builder()
+                .url(GEMINI_TEXT_API_URL)
                     .post(body)
                     .build();
                 
-                try (okhttp3.Response response = client.newCall(request).execute()) {
-                    if (response.isSuccessful()) {
-                        android.util.Log.d("FoodActivity", "AI learning data saved successfully");
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseText = response.body().string();
+                    Log.d(TAG, "Gemini API response: " + responseText);
+                    
+                    List<FoodRecommendation> recommendations = parseFoodRecommendations(responseText);
+                    if (recommendations != null && !recommendations.isEmpty()) {
+                        // Verify that these are actual food dishes, not just ingredients
+                        List<FoodRecommendation> verifiedRecommendations = verifyFoodRecommendations(recommendations);
+                        
+                        // Check if we have enough unique foods
+                        List<FoodRecommendation> uniqueRecommendations = new ArrayList<>();
+                        for (FoodRecommendation rec : verifiedRecommendations) {
+                            if (!generatedFoodNames.contains(rec.getFoodName().toLowerCase().trim())) {
+                                uniqueRecommendations.add(rec);
+                            }
+                        }
+                        
+                        // Return any unique foods we have (no minimum requirement)
+                        if (uniqueRecommendations.size() > 0) {
+                            Log.d(TAG, "Generated " + uniqueRecommendations.size() + " unique verified foods out of " + recommendations.size() + " total");
+                            return uniqueRecommendations;
+        } else {
+                            Log.d(TAG, "No unique foods found, retrying... (attempt " + (retryCount + 1) + ")");
+                            // Sleep briefly before retry
+                            Thread.sleep(1000);
+                            return callGeminiAPIForMultipleWithRetry(retryCount + 1);
+                        }
                     } else {
-                        android.util.Log.e("FoodActivity", "Failed to save AI learning data: " + response.code());
+                        Log.w(TAG, "No recommendations parsed from response, retrying... (attempt " + (retryCount + 1) + ")");
+                        // Sleep briefly before retry
+                        Thread.sleep(1000);
+                        return callGeminiAPIForMultipleWithRetry(retryCount + 1);
                     }
                 }
-                
-            } catch (Exception e) {
-                android.util.Log.e("FoodActivity", "Error saving AI learning data: " + e.getMessage());
             }
-        }).start();
-    }
-
-    private void loadOrFetchRecommendations() {
-        // Use AI-powered personalized nutrition recommendation engine
-        String userEmail = getCurrentUserEmail();
-        Log.d("FoodActivity", "Loading AI-powered recommendations for user: " + userEmail);
+        } catch (Exception e) {
+            Log.e(TAG, "Error calling Gemini API: " + e.getMessage());
+        }
         
-        if (userEmail != null) {
-            // First, try to sync data from web to ensure we have the latest screening data
-            new Thread(() -> {
-                SyncDataActivity.syncUserDataFromWeb(FoodActivity.this, userEmail);
-                
-                runOnUiThread(() -> {
-                    // Use AI engine for personalized recommendations based on screening data
-                    loadAIRecommendations();
-                });
-            }).start();
-        } else {
-            Log.d("FoodActivity", "No user email found, falling back to default");
-            // Fallback to default recommendations
-            updateFoodRecommendations();
+        // If we get here, retry
+        Log.d(TAG, "Retrying API call (attempt " + (retryCount + 1) + ")");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return callGeminiAPIForMultipleWithRetry(retryCount + 1);
+    }
+    
+    private FoodRecommendation callGeminiAPIWithRetry(int retryCount) {
+        List<FoodRecommendation> recommendations = callGeminiAPIForMultipleWithRetry(retryCount);
+        if (recommendations != null && !recommendations.isEmpty()) {
+            return recommendations.get(0);
+        }
+        return null;
+    }
+    
+    private String buildMasterPrompt() {
+        // Parse age to determine life stage
+        int age = 25; // default
+        try {
+            age = Integer.parseInt(userAge != null ? userAge : "25");
+        } catch (NumberFormatException e) {
+            age = 25;
+        }
+        
+        // Determine life stage and special considerations
+        String lifeStage = determineLifeStage(age);
+        String specialConsiderations = buildSpecialConsiderations(age);
+        
+        // Let Gemini generate diverse Filipino dishes based on user profile
+        // No limited list - let AI access its vast knowledge of Filipino cuisine
+        
+        return "You are an expert nutritionist and chef. Generate EXACTLY 10 DIFFERENT food dishes available in the Philippines for: " +
+               "Age: " + (userAge != null ? userAge : "25") + " (" + lifeStage + "), " +
+               "Sex: " + (userSex != null ? userSex : "Not specified") + ", " +
+               "BMI: " + (userBMI != null ? userBMI : "22.5") + ", " +
+               "Health: " + (userHealthConditions != null ? userHealthConditions : "None") + ", " +
+               "Budget: " + (userBudgetLevel != null ? userBudgetLevel : "Low") + ", " +
+               "Allergies: " + (userAllergies != null && !userAllergies.isEmpty() ? userAllergies : "None") + ", " +
+               "Diet: " + (userDietPrefs != null && !userDietPrefs.isEmpty() ? userDietPrefs : "None") + ", " +
+               "Pregnancy: " + (userPregnancyStatus != null ? userPregnancyStatus : "Not Applicable") + ". " +
+               "SPECIAL CONSIDERATIONS: " + specialConsiderations + " " +
+               "REQUIREMENTS: " +
+               "1. Choose from ANY food dishes available in the Philippines - Filipino, Asian, Western, International " +
+               "2. Include traditional Filipino dishes, Asian cuisine, Western dishes, and international foods " +
+               "3. Consider ingredients commonly available in Philippine markets and restaurants " +
+               "4. Include dishes from all cuisines popular in the Philippines " +
+               "5. Consider the user's health conditions and dietary restrictions " +
+               "6. Ensure dishes are appropriate for the user's age and life stage " +
+               "7. Include both popular and diverse food options " +
+               "8. Consider budget-friendly options based on user's income level " +
+               "9. Include vegetarian, seafood, meat, and international options " +
+               "10. Each dish must be completely different from the previous recommendations " +
+               "CRITICAL: Each dish must be different. NO REPEATS. " +
+               "FOOD NAME RULES: " +
+               "1. Keep food names SHORT (maximum 30 characters) " +
+               "2. Use simple, clear names without unnecessary words " +
+               "3. NO parentheses, brackets, or extra descriptions in food_name " +
+               "4. NO words like 'Puree', 'Mash', 'Cream', 'Smoothie' in food_name " +
+               "5. Use actual dish names that people recognize and order " +
+               "6. Examples: 'Adobo', 'Sinigang', 'Kare-kare', 'Pancit', 'Tapsilog', 'Chicken Teriyaki', 'Beef Bulgogi', 'Pad Thai', 'Spaghetti', 'Burger' " +
+               "7. NO numbers or special characters in food names " +
+               "8. NO generic names like 'Dish' or 'Food' " +
+               "9. NEVER use single ingredients like 'Apple', 'Carrot', 'Pear', 'Banana', 'Rice', 'Chicken', 'Beef', 'Tomato' - ONLY complete dishes " +
+               "10. Avoid odd or made-up combinations " +
+               "11. CRITICAL: Each food_name must be a complete dish that people order at restaurants or cook at home " +
+               "12. Examples of GOOD names: 'Chicken Adobo', 'Beef Bulgogi', 'Pad Thai', 'Spaghetti Carbonara', 'Fish and Chips' " +
+               "13. Examples of BAD names: 'Apple', 'Carrot', 'Pear', 'Rice', 'Chicken' (these are ingredients, not dishes) " +
+               "NUTRITION REQUIREMENTS: " +
+               "1. All nutritional information MUST be for 1 serving only " +
+               "2. Use accurate, realistic nutrition data from reliable sources " +
+               "3. Calories should be between 150-800 per serving " +
+               "4. Protein should be between 5-40g per serving " +
+               "5. Fat should be between 2-30g per serving " +
+               "6. Carbs should be between 10-100g per serving " +
+               "7. Ensure total calories = (protein × 4) + (fat × 9) + (carbs × 4) ± 10% " +
+               "8. Use realistic serving sizes (e.g., 1 cup rice, 1 piece chicken, 1 bowl soup) " +
+               "9. Verify nutrition data is appropriate for Filipino/Asian dishes " +
+               "DESCRIPTION REQUIREMENTS: " +
+               "1. Write simple, appetizing introductions for each dish " +
+               "2. Focus on what makes the dish appealing and unique " +
+               "3. Keep descriptions 1-2 sentences long " +
+               "4. NO generic phrases like 'delicious food recommendation' " +
+               "5. NO repetitive descriptions across different dishes " +
+               "6. NO detailed nutrition analysis (that goes in ingredients button) " +
+               "7. NO detailed ingredient lists (that goes in ingredients button) " +
+               "8. Examples of good descriptions: " +
+               "   - 'A classic Filipino dish featuring tender chicken braised in a savory soy-vinegar sauce with aromatic garlic and bay leaves.' " +
+               "   - 'Fresh rice noodles stir-fried with crisp vegetables and succulent shrimp in a perfectly balanced sweet-savory sauce.' " +
+               "   - 'Hearty beef stew simmered with root vegetables in a rich, flavorful broth that warms the soul.' " +
+               "Return ONLY valid JSON array with 10 items: " +
+               "[{\"food_name\": \"[SHORT DISH NAME]\", \"calories\": <number>, \"protein_g\": <number>, \"fat_g\": <number>, \"carbs_g\": <number>, \"serving_size\": \"1 serving\", \"diet_type\": \"[TYPE]\", \"description\": \"[SIMPLE APPETIZING INTRODUCTION]\"}, ...]";
+    }
+    
+    private List<FoodRecommendation> verifyFoodRecommendations(List<FoodRecommendation> recommendations) {
+        try {
+            // First verify food names are actual dishes
+            List<FoodRecommendation> verifiedDishes = verifyFoodNames(recommendations);
+            
+            // Then verify nutrition data accuracy
+            List<FoodRecommendation> verifiedNutrition = verifyNutritionData(verifiedDishes);
+            
+            return verifiedNutrition;
+        } catch (Exception e) {
+            Log.e(TAG, "Error during food verification: " + e.getMessage());
+            return recommendations;
         }
     }
-
-    private List<DishData.Dish> loadRecommendationsFromDb() {
-        List<DishData.Dish> list = new ArrayList<>();
-        String email = getCurrentUserEmail();
-        if (email == null) return list;
-        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-            "SELECT " + UserPreferencesDbHelper.COL_FOOD_RECS_NAME + ", " + UserPreferencesDbHelper.COL_FOOD_RECS_EMOJI + ", " + UserPreferencesDbHelper.COL_FOOD_RECS_DESC + " FROM " + UserPreferencesDbHelper.TABLE_FOOD_RECS + " WHERE " + UserPreferencesDbHelper.COL_FOOD_RECS_USER_EMAIL + "=? ORDER BY " + UserPreferencesDbHelper.COL_FOOD_RECS_TIMESTAMP + " ASC", new String[]{email});
-        while (cursor.moveToNext()) {
-            String name = cursor.getString(0);
-            String emoji = cursor.getString(1);
-            String desc = cursor.getString(2);
-            list.add(new DishData.Dish(name, emoji, desc, new ArrayList<>(), new ArrayList<>()));
-        }
-        cursor.close();
-        return list;
-    }
-
-    private void saveRecommendationToDb(DishData.Dish dish) {
-        ContentValues values = new ContentValues();
-        values.put(UserPreferencesDbHelper.COL_FOOD_RECS_USER_EMAIL, getCurrentUserEmail());
-        values.put(UserPreferencesDbHelper.COL_FOOD_RECS_NAME, dish.name);
-        values.put(UserPreferencesDbHelper.COL_FOOD_RECS_EMOJI, dish.emoji);
-        values.put(UserPreferencesDbHelper.COL_FOOD_RECS_DESC, dish.desc);
-        values.put(UserPreferencesDbHelper.COL_FOOD_RECS_TIMESTAMP, System.currentTimeMillis());
-        dbHelper.getWritableDatabase().insert(UserPreferencesDbHelper.TABLE_FOOD_RECS, null, values);
-    }
-
-    // Infinite scroll: load more foods as needed
-    public void loadMoreFoods() {
-        // No more foods, or not loaded yet
-    }
-
-    private void showSubstitutionPanel(DishData.Dish dish) {
-        CardView bottomSheet = findViewById(R.id.substitution_bottom_sheet);
-        TextView title = findViewById(R.id.substitution_title);
-        LinearLayout options = findViewById(R.id.substitution_options_container);
-        if (bottomSheet != null && title != null) {
-            title.setText("Substitute for " + dish.name);
-            if (options != null) {
-                options.removeAllViews();
-                // Build ranked substitutes
-                List<DishData.Dish> substitutes = getRankedSubstitutes(dish);
-                for (DishData.Dish sub : substitutes) {
-                    options.addView(createSubstituteRow(options, dish, sub));
+    
+    private List<FoodRecommendation> verifyFoodNames(List<FoodRecommendation> recommendations) {
+        try {
+            // Create verification prompt
+            StringBuilder foodNames = new StringBuilder();
+            for (int i = 0; i < recommendations.size(); i++) {
+                foodNames.append((i + 1)).append(". ").append(recommendations.get(i).getFoodName());
+                if (i < recommendations.size() - 1) {
+                    foodNames.append("\n");
                 }
             }
-            bottomSheet.setVisibility(View.VISIBLE);
-            bottomSheet.setAlpha(0f);
-            bottomSheet.animate().alpha(1f).setDuration(300).start();
+            
+            String verificationPrompt = "You are a food expert. Review these food names and identify which ones are ACTUAL FOOD DISHES (complete meals/recipes) vs SINGLE INGREDIENTS.\n\n" +
+                    "Food names to review:\n" + foodNames.toString() + "\n\n" +
+                    "RULES:\n" +
+                    "1. FOOD DISHES (GOOD): Complete meals, recipes, or prepared foods like 'Adobo', 'Chicken Teriyaki', 'Spaghetti', 'Beef Bulgogi', 'Pad Thai', 'Pizza', 'Burger', 'Sinigang', 'Kare-kare', 'Lechon', 'Congee', 'Broth', 'Mush'\n" +
+                    "2. INGREDIENTS (BAD): Single raw ingredients like 'Apple', 'Carrot', 'Pear', 'Banana', 'Rice', 'Chicken', 'Beef', 'Tomato', 'Fish', 'Pork', 'Vegetables'\n" +
+                    "3. NUMBERS ARE BAD: Any food name containing numbers (like 'Food 1', 'Dish 2', 'Recipe 3') should be REJECTED\n" +
+                    "4. GENERIC NAMES ARE BAD: Names like 'Food', 'Dish', 'Recipe', 'Meal' should be REJECTED\n" +
+                    "5. BE GENEROUS: If a food name could be a dish (even if it's simple), accept it\n" +
+                    "6. Only return the numbers of ACTUAL FOOD DISHES (not ingredients, not numbers, not generic names)\n" +
+                    "7. Return ONLY a comma-separated list of numbers (e.g., '1,3,5,7,9')\n" +
+                    "8. When in doubt, accept the food as a dish\n\n" +
+                    "Return ONLY the numbers of actual food dishes:";
+            
+            // Create JSON request for verification
+            JSONObject requestBody = new JSONObject();
+            JSONArray contents = new JSONArray();
+            JSONObject content = new JSONObject();
+            JSONArray parts = new JSONArray();
+            JSONObject part = new JSONObject();
+            part.put("text", verificationPrompt);
+            parts.put(part);
+            content.put("parts", parts);
+            contents.put(content);
+            requestBody.put("contents", contents);
+            
+            // Make API call
+            OkHttpClient client = new OkHttpClient();
+            RequestBody body = RequestBody.create(
+                requestBody.toString(), 
+                okhttp3.MediaType.parse("application/json")
+            );
+            
+            Request request = new Request.Builder()
+                .url(GEMINI_TEXT_API_URL)
+                .post(body)
+                .build();
+                
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseText = response.body().string();
+                    Log.d(TAG, "Verification response: " + responseText);
+                    
+                    // Parse the verification response
+                    String verifiedNumbers = extractTextFromGeminiResponse(responseText);
+                    if (verifiedNumbers != null && !verifiedNumbers.trim().isEmpty()) {
+                        // Parse comma-separated numbers
+                        String[] numbers = verifiedNumbers.trim().split(",");
+                        List<FoodRecommendation> verifiedRecommendations = new ArrayList<>();
+                        
+                        for (String numberStr : numbers) {
+                            try {
+                                int index = Integer.parseInt(numberStr.trim()) - 1; // Convert to 0-based index
+                                if (index >= 0 && index < recommendations.size()) {
+                                    verifiedRecommendations.add(recommendations.get(index));
+                                    Log.d(TAG, "Verified food dish: " + recommendations.get(index).getFoodName());
+                                }
+                            } catch (NumberFormatException e) {
+                                Log.w(TAG, "Invalid number in verification response: " + numberStr);
+                            }
+                        }
+                        
+                        Log.d(TAG, "Verification complete: " + verifiedRecommendations.size() + " out of " + recommendations.size() + " are actual food dishes");
+                        return verifiedRecommendations;
+                    }
+                        }
+                    }
+                } catch (Exception e) {
+            Log.e(TAG, "Error during food verification: " + e.getMessage());
         }
+        
+        // If verification fails, return original recommendations
+        Log.w(TAG, "Food name verification failed, returning original recommendations");
+        return recommendations;
+    }
+    
+    private List<FoodRecommendation> verifyNutritionData(List<FoodRecommendation> recommendations) {
+        try {
+            // Create nutrition verification prompt
+            StringBuilder nutritionData = new StringBuilder();
+            for (int i = 0; i < recommendations.size(); i++) {
+                FoodRecommendation rec = recommendations.get(i);
+                nutritionData.append((i + 1)).append(". ").append(rec.getFoodName())
+                           .append(" - Calories: ").append(rec.getCalories())
+                           .append(", Protein: ").append(rec.getProtein()).append("g")
+                           .append(", Fat: ").append(rec.getFat()).append("g")
+                           .append(", Carbs: ").append(rec.getCarbs()).append("g");
+                if (i < recommendations.size() - 1) {
+                    nutritionData.append("\n");
+                }
+            }
+            
+            String nutritionPrompt = "You are a nutrition expert. Verify the accuracy of these nutrition data for 1 serving of each dish.\n\n" +
+                    "Nutrition data to verify:\n" + nutritionData.toString() + "\n\n" +
+                    "VERIFICATION RULES:\n" +
+                    "1. Check if calories = (protein × 4) + (fat × 9) + (carbs × 4) ± 10%\n" +
+                    "2. Verify realistic ranges: Calories 150-800, Protein 5-40g, Fat 2-30g, Carbs 10-100g\n" +
+                    "3. Consider typical Filipino/Asian serving sizes\n" +
+                    "4. Return ONLY the numbers of dishes with ACCURATE nutrition data\n" +
+                    "5. Return ONLY a comma-separated list of numbers (e.g., '1,3,5,7,9')\n\n" +
+                    "Return ONLY the numbers of dishes with accurate nutrition:";
+            
+            // Create JSON request for verification
+            JSONObject requestBody = new JSONObject();
+            JSONArray contents = new JSONArray();
+            JSONObject content = new JSONObject();
+            JSONArray parts = new JSONArray();
+            JSONObject part = new JSONObject();
+            part.put("text", nutritionPrompt);
+            parts.put(part);
+            content.put("parts", parts);
+            contents.put(content);
+            requestBody.put("contents", contents);
+            
+            // Make API call
+            OkHttpClient client = new OkHttpClient();
+            RequestBody body = RequestBody.create(
+                requestBody.toString(), 
+                okhttp3.MediaType.parse("application/json")
+            );
+            
+            Request request = new Request.Builder()
+                .url(GEMINI_TEXT_API_URL)
+                .post(body)
+                .build();
+                
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseText = response.body().string();
+                    Log.d(TAG, "Nutrition verification response: " + responseText);
+                    
+                    // Parse the verification response
+                    String verifiedNumbers = extractTextFromGeminiResponse(responseText);
+                    if (verifiedNumbers != null && !verifiedNumbers.trim().isEmpty()) {
+                        // Parse comma-separated numbers
+                        String[] numbers = verifiedNumbers.trim().split(",");
+                        List<FoodRecommendation> verifiedRecommendations = new ArrayList<>();
+                        
+                        for (String numberStr : numbers) {
+                            try {
+                                int index = Integer.parseInt(numberStr.trim()) - 1; // Convert to 0-based index
+                                if (index >= 0 && index < recommendations.size()) {
+                                    verifiedRecommendations.add(recommendations.get(index));
+                                    Log.d(TAG, "Verified nutrition for: " + recommendations.get(index).getFoodName());
+                                }
+                            } catch (NumberFormatException e) {
+                                Log.w(TAG, "Invalid number in nutrition verification response: " + numberStr);
+                            }
+                        }
+                        
+                        Log.d(TAG, "Nutrition verification complete: " + verifiedRecommendations.size() + " out of " + recommendations.size() + " have accurate nutrition");
+                        return verifiedRecommendations;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error during nutrition verification: " + e.getMessage());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error during nutrition verification: " + e.getMessage());
+        }
+        
+        // If verification fails, return original recommendations
+        Log.w(TAG, "Nutrition verification failed, returning original recommendations");
+        return recommendations;
+    }
+    
+    private String extractTextFromGeminiResponse(String responseText) {
+        try {
+            JSONObject geminiResponse = new JSONObject(responseText);
+            JSONArray candidates = geminiResponse.getJSONArray("candidates");
+            
+            if (candidates.length() > 0) {
+                JSONObject candidate = candidates.getJSONObject(0);
+                JSONObject content = candidate.getJSONObject("content");
+                JSONArray parts = content.getJSONArray("parts");
+                
+                if (parts.length() > 0) {
+                    JSONObject part = parts.getJSONObject(0);
+                    String text = part.getString("text");
+                    Log.d(TAG, "Extracted verification text: " + text);
+                    return text;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error extracting text from Gemini response: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    private String determineLifeStage(int age) {
+        if (age < 1) return "Infant (0-12 months)";
+        else if (age < 3) return "Toddler (1-3 years)";
+        else if (age < 6) return "Preschool (3-6 years)";
+        else if (age < 12) return "School Age (6-12 years)";
+        else if (age < 18) return "Adolescent (12-18 years)";
+        else if (age < 50) return "Adult (18-50 years)";
+        else if (age < 65) return "Middle Age (50-65 years)";
+        else return "Senior (65+ years)";
+    }
+    
+    private String buildSpecialConsiderations(int age) {
+        StringBuilder considerations = new StringBuilder();
+        
+        // Age-specific considerations
+        if (age < 1) {
+            considerations.append("INFANT: Only recommend soft, pureed foods. NO hard foods, NO choking hazards. ");
+            considerations.append("Focus on: rice porridge (lugaw), mashed vegetables, soft fruits. ");
+            considerations.append("Avoid: nuts, seeds, hard vegetables, spicy foods, raw foods. ");
+        } else if (age < 3) {
+            considerations.append("TODDLER: Recommend soft, easy-to-chew foods. Small portions. ");
+            considerations.append("Focus on: rice, soft vegetables, lean proteins, fruits. ");
+            considerations.append("Avoid: hard foods, spicy foods, large chunks. ");
+        } else if (age < 6) {
+            considerations.append("PRESCHOOL: Recommend balanced meals with variety. Moderate portions. ");
+            considerations.append("Focus on: whole grains, vegetables, lean proteins, fruits. ");
+            considerations.append("Avoid: excessive salt, sugar, processed foods. ");
+        } else if (age < 12) {
+            considerations.append("SCHOOL AGE: Recommend nutrient-dense foods for growth and learning. ");
+            considerations.append("Focus on: protein, complex carbs, healthy fats, vitamins. ");
+            considerations.append("Avoid: excessive junk food, sugary drinks. ");
+        } else if (age < 18) {
+            considerations.append("ADOLESCENT: Recommend foods supporting growth and development. ");
+            considerations.append("Focus on: protein, calcium, iron, vitamins. ");
+            considerations.append("Avoid: excessive processed foods, sugary drinks. ");
+        } else if (age >= 50) {
+            considerations.append("OLDER ADULT: Recommend heart-healthy, bone-strengthening foods. ");
+            considerations.append("Focus on: lean proteins, fiber, calcium, antioxidants. ");
+            considerations.append("Avoid: excessive salt, saturated fats, processed foods. ");
+        }
+        
+        // Pregnancy considerations
+        if ("Female".equalsIgnoreCase(userSex) && age >= 12 && age <= 50) {
+            if ("Yes".equalsIgnoreCase(userPregnancyStatus)) {
+                considerations.append("PREGNANT: CRITICAL - Avoid: raw fish, unpasteurized dairy, undercooked meat, ");
+                considerations.append("excessive caffeine, alcohol, high-mercury fish, soft cheeses, deli meats. ");
+                considerations.append("Focus on: folate-rich foods (malunggay, spinach), iron (lean meat, beans), ");
+                considerations.append("calcium (milk, yogurt), protein (chicken, fish), omega-3 (safe fish). ");
+                considerations.append("Recommend: Lugaw with chicken, Ginisang Malunggay, Tinola, boiled eggs. ");
+            }
+        }
+        
+        // Health condition considerations
+        if (userHealthConditions != null && !userHealthConditions.equals("None")) {
+            if (userHealthConditions.contains("Diabetes")) {
+                considerations.append("DIABETES: Recommend low glycemic index foods, complex carbs, fiber. ");
+                considerations.append("Avoid: excessive simple sugars, refined carbs. ");
+            }
+            if (userHealthConditions.contains("Hypertension")) {
+                considerations.append("HYPERTENSION: Recommend low-sodium foods, potassium-rich foods. ");
+                considerations.append("Avoid: excessive salt, processed foods, canned foods. ");
+            }
+            if (userHealthConditions.contains("Heart Disease")) {
+                considerations.append("HEART DISEASE: Recommend heart-healthy foods, omega-3 rich foods. ");
+                considerations.append("Avoid: excessive saturated fats, trans fats, cholesterol. ");
+            }
+            if (userHealthConditions.contains("Kidney Disease")) {
+                considerations.append("KIDNEY DISEASE: Recommend low-protein, low-sodium foods. ");
+                considerations.append("Avoid: excessive protein, salt, potassium-rich foods. ");
+            }
+        }
+        
+        return considerations.toString();
+    }
+    
+    private boolean isDuplicate(FoodRecommendation recommendation) {
+        if (recommendation == null || recommendation.getFoodName() == null) {
+            return false;
+        }
+        
+        String foodName = recommendation.getFoodName().toLowerCase().trim();
+        
+        // Only check exact match
+        if (generatedFoodNames.contains(foodName)) {
+            Log.d(TAG, "Duplicate detected: " + foodName);
+            return true;
+        }
+        
+        Log.d(TAG, "No duplicate found for: " + foodName);
+        return false;
+    }
+    
+    private List<FoodRecommendation> parseFoodRecommendations(String responseText) {
+        List<FoodRecommendation> recommendations = new ArrayList<>();
+        
+        try {
+            // Parse the Gemini response structure
+            JSONObject geminiResponse = new JSONObject(responseText);
+            JSONArray candidates = geminiResponse.getJSONArray("candidates");
+            
+            if (candidates.length() > 0) {
+                JSONObject candidate = candidates.getJSONObject(0);
+                JSONObject content = candidate.getJSONObject("content");
+                JSONArray parts = content.getJSONArray("parts");
+                
+                for (int i = 0; i < parts.length(); i++) {
+                    JSONObject part = parts.getJSONObject(i);
+                    if (part.has("text")) {
+                        String textContent = part.getString("text");
+                        Log.d(TAG, "Extracted text content: " + textContent);
+                        
+                        // Extract JSON array from the text content
+                        int arrayStart = textContent.indexOf("[");
+                        int arrayEnd = textContent.lastIndexOf("]") + 1;
+                        
+                        if (arrayStart >= 0 && arrayEnd > arrayStart) {
+                            String jsonArrayString = textContent.substring(arrayStart, arrayEnd);
+                            Log.d(TAG, "Extracted JSON array: " + jsonArrayString);
+                            
+                            JSONArray foodArray = new JSONArray(jsonArrayString);
+                            
+                            for (int j = 0; j < foodArray.length(); j++) {
+                                try {
+                                    JSONObject foodJson = foodArray.getJSONObject(j);
+                                    
+                                    // Skip if the food object is null
+                                    if (foodJson == null || foodJson == JSONObject.NULL) {
+                                        Log.w(TAG, "Skipping null food object at index " + j);
+                                        continue;
+                                    }
+                                    
+                                    String foodName = foodJson.optString("food_name", "");
+                                    int calories = foodJson.optInt("calories", 0);
+                                    double protein = foodJson.optDouble("protein_g", 0.0);
+                                    double fat = foodJson.optDouble("fat_g", 0.0);
+                                    double carbs = foodJson.optDouble("carbs_g", 0.0);
+                                    String servingSize = foodJson.optString("serving_size", "");
+                                    String dietType = foodJson.optString("diet_type", "");
+                                    String description = foodJson.optString("description", "");
+                                    
+                                    // Skip if food name is empty
+                                    if (foodName.trim().isEmpty()) {
+                                        Log.w(TAG, "Skipping food with empty name at index " + j);
+                                        continue;
+                                    }
+                                    
+                                    Log.d(TAG, "Parsed food: " + foodName + " - Calories: " + calories + 
+                                              ", Protein: " + protein + ", Fat: " + fat + ", Carbs: " + carbs);
+                                    
+                                    FoodRecommendation recommendation = new FoodRecommendation(
+                                        foodName, calories, protein, fat, carbs, servingSize, dietType, description
+                                    );
+                                    
+                                    recommendations.add(recommendation);
+                                } catch (JSONException e) {
+                                    Log.w(TAG, "Error parsing food at index " + j + ": " + e.getMessage() + ", skipping");
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing JSON: " + e.getMessage());
+            Log.e(TAG, "Response text: " + responseText);
+        }
+        
+        return recommendations;
+    }
+    
+    private FoodRecommendation parseFoodRecommendation(String responseText) {
+        List<FoodRecommendation> recommendations = parseFoodRecommendations(responseText);
+        if (!recommendations.isEmpty()) {
+            return recommendations.get(0);
+        }
+        return null;
+    }
+
+    private void showFallbackRecommendations() {
+        List<FoodRecommendation> fallbacks = createFallbackRecommendations();
+        for (FoodRecommendation fallback : fallbacks) {
+            recommendations.add(fallback);
+            generatedFoodNames.add(fallback.getFoodName().toLowerCase().trim());
+            Log.d(TAG, "Fallback recommendation added: " + fallback.getFoodName());
+        }
+        adapter.notifyDataSetChanged();
+        Log.d(TAG, "Added " + fallbacks.size() + " fallback recommendations");
+    }
+    
+    private void showFallbackRecommendation() {
+        FoodRecommendation fallback = createFallbackRecommendation();
+        recommendations.add(fallback);
+        generatedFoodNames.add(fallback.getFoodName().toLowerCase().trim());
+        adapter.notifyDataSetChanged();
+        Log.d(TAG, "Fallback recommendation added: " + fallback.getFoodName());
+    }
+    
+    private List<FoodRecommendation> createFallbackRecommendations() {
+        // Dynamic fallback generation based on user profile
+        String[] baseDishes = {
+            "Adobo", "Sinigang", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
+            "Kare-kare", "Pancit", "Lumpia", "Tapsilog", "Sisig", "Bicol Express",
+            "Chicken Inasal", "Lechon", "Crispy Pata", "Dinuguan", "Laing",
+            "Ginataang Gulay", "Pinakbet", "Chopsuey", "Beef Steak", "Pork Chop",
+            "Chicken Teriyaki", "Beef Bulgogi", "Pad Thai", "Spaghetti", "Burger",
+            "Fried Chicken", "Pizza", "Sushi", "Ramen", "Curry", "Stir Fry"
+        };
+        
+        String[] cookingMethods = {
+            "Adobo", "Sinigang", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
+            "Escabeche", "Pochero", "Morcon", "Ginisang", "Tortang", "Inihaw", "Lechon",
+            "Crispy", "Steamed", "Braised", "Stir-Fried", "Curried", "Escabeche"
+        };
+        
+        String[] regionalStyles = {
+            "Bicol", "Ilocos", "Visayas", "Mindanao", "Pampanga", "Batangas", "Cebu", "Davao",
+            "Zamboanga", "Iloilo", "Negros", "Palawan", "Batanes", "Cagayan", "Pangasinan", "Quezon"
+        };
+        
+        List<FoodRecommendation> fallbacks = new ArrayList<>();
+        Random random = new Random();
+        
+        // Generate dynamic fallback foods based on user profile
+        int attempts = 0;
+        int maxAttempts = 150; // Increased attempts for more variety
+        
+        while (fallbacks.size() < 10 && attempts < maxAttempts) {
+            String foodName;
+            
+            // Use complete dish names instead of combining ingredients
+            foodName = baseDishes[random.nextInt(baseDishes.length)];
+            
+            if (!generatedFoodNames.contains(foodName.toLowerCase().trim())) {
+                // Generate varied nutritional values based on food type
+                int calories;
+                double protein, fat, carbs;
+                
+                if (foodName.toLowerCase().contains("fish") || foodName.toLowerCase().contains("bangus") || 
+                    foodName.toLowerCase().contains("tilapia") || foodName.toLowerCase().contains("galunggong")) {
+                    // Fish dishes: lower calories, higher protein
+                    calories = 150 + random.nextInt(100); // 150-250 calories
+                    protein = 15.0 + random.nextInt(10); // 15-25g protein
+                    fat = 3.0 + random.nextInt(8); // 3-11g fat
+                    carbs = 5.0 + random.nextInt(15); // 5-20g carbs
+                } else if (foodName.toLowerCase().contains("chicken")) {
+                    // Chicken dishes: moderate calories, good protein
+                    calories = 200 + random.nextInt(120); // 200-320 calories
+                    protein = 18.0 + random.nextInt(12); // 18-30g protein
+                    fat = 8.0 + random.nextInt(12); // 8-20g fat
+                    carbs = 8.0 + random.nextInt(17); // 8-25g carbs
+                } else if (foodName.toLowerCase().contains("beef")) {
+                    // Beef dishes: higher calories, good protein
+                    calories = 250 + random.nextInt(150); // 250-400 calories
+                    protein = 20.0 + random.nextInt(15); // 20-35g protein
+                    fat = 12.0 + random.nextInt(18); // 12-30g fat
+                    carbs = 10.0 + random.nextInt(20); // 10-30g carbs
+                } else if (foodName.toLowerCase().contains("pork")) {
+                    // Pork dishes: higher calories, moderate protein
+                    calories = 280 + random.nextInt(170); // 280-450 calories
+                    protein = 16.0 + random.nextInt(14); // 16-30g protein
+                    fat = 15.0 + random.nextInt(20); // 15-35g fat
+                    carbs = 12.0 + random.nextInt(23); // 12-35g carbs
+                } else if (foodName.toLowerCase().contains("ginisang") || foodName.toLowerCase().contains("vegetable")) {
+                    // Vegetable dishes: lower calories, lower protein
+                    calories = 120 + random.nextInt(80); // 120-200 calories
+                    protein = 5.0 + random.nextInt(8); // 5-13g protein
+                    fat = 3.0 + random.nextInt(7); // 3-10g fat
+                    carbs = 15.0 + random.nextInt(20); // 15-35g carbs
+                } else {
+                    // Default balanced values
+                    calories = 200 + random.nextInt(150); // 200-350 calories
+                    protein = 12.0 + random.nextInt(13); // 12-25g protein
+                    fat = 8.0 + random.nextInt(12); // 8-20g fat
+                    carbs = 15.0 + random.nextInt(20); // 15-35g carbs
+                }
+                
+                fallbacks.add(new FoodRecommendation(
+                    foodName, calories, protein, fat, carbs, "1 serving", "Balanced", "Traditional Filipino dish"
+                ));
+                generatedFoodNames.add(foodName.toLowerCase().trim());
+                Log.d(TAG, "Added fallback: " + foodName + " (calories: " + calories + ")");
+            }
+            attempts++;
+        }
+        
+        // If we still don't have enough unique foods, create regional variations
+        if (fallbacks.size() < 10) {
+            Log.d(TAG, "Creating regional variations to complete fallback batch");
+            String[] regions = {"Bicol", "Ilocos", "Visayas", "Mindanao", "Pampanga", "Batangas", "Cebu", "Davao"};
+            String[] regionalBaseDishes = {"Adobo", "Sinigang", "Tinola", "Kaldereta", "Afritada", "Mechado", "Kare-kare", "Pancit", "Lumpia", "Tapsilog", "Sisig", "Bicol Express", "Chicken Teriyaki", "Beef Bulgogi", "Pad Thai", "Spaghetti", "Burger"};
+            
+            while (fallbacks.size() < 10) {
+                String region = regions[random.nextInt(regions.length)];
+                String baseDish = regionalBaseDishes[random.nextInt(regionalBaseDishes.length)];
+                String regionalDish = region + " " + baseDish;
+                
+                if (!generatedFoodNames.contains(regionalDish.toLowerCase().trim())) {
+                    int calories = 200 + random.nextInt(150);
+                    double protein = 12.0 + random.nextInt(13);
+                    double fat = 8.0 + random.nextInt(12);
+                    double carbs = 15.0 + random.nextInt(20);
+                    
+                    fallbacks.add(new FoodRecommendation(
+                        regionalDish, calories, protein, fat, carbs, "1 serving", "Regional", "Regional Filipino variation"
+                    ));
+                    generatedFoodNames.add(regionalDish.toLowerCase().trim());
+                    Log.d(TAG, "Added regional variation: " + regionalDish);
+                }
+            }
+        }
+        
+        Log.d(TAG, "Created " + fallbacks.size() + " fallback recommendations");
+        return fallbacks;
+    }
+    
+    private FoodRecommendation createFallbackRecommendation() {
+        List<FoodRecommendation> fallbacks = createFallbackRecommendations();
+        if (!fallbacks.isEmpty()) {
+            return fallbacks.get(0);
+        }
+        
+        // If all fallbacks are used, return a generic one
+        return new FoodRecommendation(
+            "Ginisang Munggo", 200, 12.0, 6.0, 20.0, "1 serving", "Balanced", "Traditional Filipino mung bean dish"
+        );
     }
 
     @Override
     public void onBackPressed() {
-        // Check if dish info panel is visible, close it first
-        CardView dishInfoPanel = findViewById(  R.id.dish_info_bottom_sheet);
-        if (dishInfoPanel != null && dishInfoPanel.getVisibility() == View.VISIBLE) {
-            hideDishInfoPanel();
-            return;
-        }
-        
-        // Check if substitution panel is visible, close it first
-        CardView substitutionPanel = findViewById(R.id.substitution_bottom_sheet);
-        if (substitutionPanel != null && substitutionPanel.getVisibility() == View.VISIBLE) {
-            hideSubstitutionPanel();
-            return;
-        }
-        
-        // Default back behavior
         super.onBackPressed();
-    }
-
-    @Override
-    public void onInfoClick(DishData.Dish dish) {
-        showDishInfoPanel(dish);
-    }
-    
-    /**
-     * Show AI reasoning for a specific dish recommendation
-     */
-    private void showAIReasoning(DishData.Dish dish) {
-        String email = getCurrentUserEmail();
-        if (email == null) return;
-        
-        // Get current screening data to show reasoning
-        android.database.Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-            "SELECT * FROM " + UserPreferencesDbHelper.TABLE_NAME + " WHERE " + UserPreferencesDbHelper.COL_USER_EMAIL + "=?",
-            new String[]{email}
-        );
-        
-        if (cursor.moveToFirst()) {
-            int riskScore = cursor.getInt(cursor.getColumnIndex(UserPreferencesDbHelper.COL_RISK_SCORE));
-            String screeningAnswers = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_SCREENING_ANSWERS));
-            
-            StringBuilder reasoning = new StringBuilder();
-            reasoning.append("🤖 AI Reasoning for ").append(dish.name).append(":\n\n");
-            reasoning.append("Your Risk Score: ").append(riskScore).append("%\n\n");
-            
-            if (screeningAnswers != null && !screeningAnswers.isEmpty()) {
-                try {
-                    org.json.JSONObject screening = new org.json.JSONObject(screeningAnswers);
-                    reasoning.append("Based on your screening:\n");
-                    
-                    // Show key factors that influenced this recommendation
-                    if (screening.has("swelling") && "yes".equals(screening.getString("swelling"))) {
-                        reasoning.append("• Edema detected → High priority for therapeutic foods\n");
-                    }
-                    if (screening.has("weight_loss")) {
-                        String weightLoss = screening.getString("weight_loss");
-                        if (">10%".equals(weightLoss)) {
-                            reasoning.append("• Severe weight loss → High-calorie, protein-rich foods\n");
-                        } else if ("5-10%".equals(weightLoss)) {
-                            reasoning.append("• Moderate weight loss → Energy-dense foods\n");
-                        }
-                    }
-                    if (screening.has("feeding_behavior")) {
-                        String feeding = screening.getString("feeding_behavior");
-                        if ("poor appetite".equals(feeding)) {
-                            reasoning.append("• Poor appetite → Appetite-stimulating foods\n");
-                        }
-                    }
-                    if (screening.has("physical_signs")) {
-                        String signs = screening.getString("physical_signs");
-                        if (signs.contains("thin")) {
-                            reasoning.append("• Thin appearance → Weight gain support foods\n");
-                        }
-                        if (signs.contains("weak")) {
-                            reasoning.append("• Weakness → Energy-boosting foods\n");
-                        }
-                    }
-                } catch (Exception e) {
-                    reasoning.append("Error parsing screening data: ").append(e.getMessage());
-                }
-            }
-            
-            reasoning.append("\nThis dish was selected because it matches your nutritional needs based on the screening assessment.");
-            
-            new AlertDialog.Builder(this)
-                .setTitle("AI Reasoning")
-                .setMessage(reasoning.toString())
-                .setPositiveButton("OK", null)
-                .show();
-        }
-        cursor.close();
-    }
-
-    private void showDishInfoPanel(DishData.Dish dish) {
-        CardView dishInfoPanel = findViewById(R.id.dish_info_bottom_sheet);
-        if (dishInfoPanel != null) {
-            // Get detailed dish information
-            DishInfo.DetailedDish detailedDish = DishInfo.getDishInfo(dish.name);
-            
-            if (detailedDish != null) {
-                // Update the dish info card with detailed information
-                updateDishInfoCard(detailedDish);
-            } else {
-                // Fallback to basic dish information
-                updateDishInfoCardBasic(dish);
-            }
-            
-            // Show the panel with animation
-            dishInfoPanel.setVisibility(View.VISIBLE);
-            dishInfoPanel.setAlpha(0f);
-            dishInfoPanel.animate().alpha(1f).setDuration(300).start();
-            
-            // Setup close button
-            View closeBtn = dishInfoPanel.findViewById(R.id.close_dish_info);
-            if (closeBtn != null) {
-                closeBtn.setOnClickListener(v -> hideDishInfoPanel());
-            }
-        }
-    }
-
-    private void hideDishInfoPanel() {
-        CardView dishInfoPanel = findViewById(R.id.dish_info_bottom_sheet);
-        if (dishInfoPanel != null) {
-            dishInfoPanel.animate().alpha(0f).setDuration(300).withEndAction(() -> dishInfoPanel.setVisibility(View.GONE)).start();
-        }
-    }
-
-    private void updateDishInfoCard(DishInfo.DetailedDish detailedDish) {
-        CardView dishInfoPanel = findViewById(R.id.dish_info_bottom_sheet);
-        if (dishInfoPanel == null) return;
-        
-        // Update image
-        ImageView imageView = dishInfoPanel.findViewById(R.id.dish_info_image);
-        if (imageView != null) {
-            int imageResourceId = FoodImageHelper.getImageResourceId(this, detailedDish.name);
-            imageView.setImageResource(imageResourceId);
-        }
-        
-        // Update emoji and name
-        TextView emojiView = dishInfoPanel.findViewById(R.id.dish_info_emoji);
-        if (emojiView != null) emojiView.setText(detailedDish.emoji);
-        
-        TextView nameView = dishInfoPanel.findViewById(R.id.dish_info_name);
-        if (nameView != null) nameView.setText(detailedDish.name);
-        
-        // Note: Other detailed fields are not yet implemented in the new layout
-        // They can be added later when needed
-    }
-
-    private void updateDishInfoCardBasic(DishData.Dish dish) {
-        CardView dishInfoPanel = findViewById(R.id.dish_info_bottom_sheet);
-        if (dishInfoPanel == null) return;
-        
-        // Update image
-        ImageView imageView = dishInfoPanel.findViewById(R.id.dish_info_image);
-        if (imageView != null) {
-            int imageResourceId = FoodImageHelper.getImageResourceId(this, dish.name);
-            imageView.setImageResource(imageResourceId);
-        }
-        
-        // Update emoji and name
-        TextView emojiView = dishInfoPanel.findViewById(R.id.dish_info_emoji);
-        if (emojiView != null) emojiView.setText("🍽️");
-        
-        TextView nameView = dishInfoPanel.findViewById(R.id.dish_info_name);
-        if (nameView != null) nameView.setText(dish.name);
-        
-        // Note: Other detailed fields are not yet implemented in the new layout
-        // They can be added later when needed
-    }
-
-    private void hideSubstitutionPanel() {
-        CardView bottomSheet = findViewById(R.id.substitution_bottom_sheet);
-        if (bottomSheet != null) {
-            bottomSheet.animate().alpha(0f).setDuration(300).withEndAction(() -> bottomSheet.setVisibility(View.GONE)).start();
-        }
-    }
-
-    private List<DishData.Dish> getRankedSubstitutes(DishData.Dish original) {
-        // Similar dishes: share at least one tag and same age group tag
-        // Rank by: past substitution choices (by reason/tag), then tag overlap count
-        String email = getCurrentUserEmail();
-        Map<String, Integer> reasonCounts = getUserSubstitutionReasonCounts(email);
-
-        // Detect age group tag from original
-        String ageGroupTag = detectAgeGroupTag(original);
-
-        List<DishData.Dish> candidates = new ArrayList<>();
-        for (DishData.Dish d : DishData.DISHES) {
-            if (d.name.equals(original.name)) continue;
-            if (ageGroupTag != null && !d.tags.contains(ageGroupTag)) continue; // keep age group
-            // must share at least one tag besides age group
-            boolean share = false;
-            for (String t : original.tags) {
-                if (t.equals(ageGroupTag)) continue;
-                if (d.tags.contains(t)) { share = true; break; }
-            }
-            if (share) candidates.add(d);
-        }
-
-        candidates.sort((a, b) -> {
-            // Compute preferred reason weight
-            int aReason = topReasonWeight(a.tags, reasonCounts);
-            int bReason = topReasonWeight(b.tags, reasonCounts);
-            if (aReason != bReason) return Integer.compare(bReason, aReason);
-            // Fallback: overlap count with original (excluding age tag)
-            int aOverlap = overlapCount(original, a, ageGroupTag);
-            int bOverlap = overlapCount(original, b, ageGroupTag);
-            return Integer.compare(bOverlap, aOverlap);
-        });
-
-        // Limit to top 6
-        if (candidates.size() > 6) return candidates.subList(0, 6);
-        return candidates;
-    }
-
-    private int overlapCount(DishData.Dish base, DishData.Dish other, String ageGroupTag) {
-        int count = 0;
-        for (String t : base.tags) {
-            if (t.equals(ageGroupTag)) continue;
-            if (other.tags.contains(t)) count++;
-        }
-        return count;
-    }
-
-    private String detectAgeGroupTag(DishData.Dish d) {
-        String[] groups = {"Infant-Early","Infant","Toddler-Early","Toddler","Preschool","School-age","Adolescent"};
-        for (String g : groups) if (d.tags.contains(g)) return g;
-        return null;
-    }
-
-    private int topReasonWeight(List<String> tags, Map<String, Integer> reasonCounts) {
-        int best = 0;
-        for (String t : tags) {
-            Integer c = reasonCounts.get(t);
-            if (c != null && c > best) best = c;
-        }
-        return best;
-    }
-
-    private Map<String, Integer> getUserSubstitutionReasonCounts(String email) {
-        Map<String, Integer> map = new HashMap<>();
-        if (email == null) return map;
-        Cursor c = dbHelper.getReadableDatabase().query(
-            UserPreferencesDbHelper.TABLE_SUBSTITUTIONS,
-            new String[]{UserPreferencesDbHelper.COL_SUB_REASON_TAG},
-            UserPreferencesDbHelper.COL_SUB_USER_EMAIL + "=?",
-            new String[]{email}, null, null, null
-        );
-        while (c.moveToNext()) {
-            String tag = c.getString(0);
-            if (tag != null && !tag.isEmpty()) {
-                map.put(tag, map.getOrDefault(tag, 0) + 1);
-            }
-        }
-        c.close();
-        return map;
-    }
-
-    private View createSubstituteRow(ViewGroup parent, DishData.Dish original, DishData.Dish substitute) {
-        LinearLayout row = new LinearLayout(parent.getContext());
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setPadding(dp(12), dp(12), dp(12), dp(12));
-        row.setBackgroundResource(android.R.drawable.list_selector_background);
-        row.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        row.setGravity(android.view.Gravity.CENTER_VERTICAL);
-
-        TextView emoji = new TextView(parent.getContext());
-        emoji.setText(substitute.emoji);
-        emoji.setTextSize(32);
-        LinearLayout.LayoutParams emojiLp = new LinearLayout.LayoutParams(dp(48), dp(48));
-        emoji.setLayoutParams(emojiLp);
-        row.addView(emoji);
-
-        LinearLayout col = new LinearLayout(parent.getContext());
-        col.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams colLp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-        colLp.leftMargin = dp(16);
-        col.setLayoutParams(colLp);
-
-        TextView name = new TextView(parent.getContext());
-        name.setText(substitute.name);
-        name.setTextSize(16);
-        name.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
-        name.setTextColor(0xFF222222);
-        col.addView(name);
-
-        TextView desc = new TextView(parent.getContext());
-        desc.setText("Similar option");
-        desc.setTextSize(13);
-        desc.setTextColor(0xFF888888);
-        col.addView(desc);
-        
-        row.addView(col);
-
-        // Click to apply substitution
-        row.setOnClickListener(v -> {
-            applySubstitution(original, substitute);
-            hideSubstitutionPanel();
-        });
-
-        return row;
-    }
-
-    private int dp(int v) {
-        float d = getResources().getDisplayMetrics().density;
-        return Math.round(v * d);
-    }
-
-    private void applySubstitution(DishData.Dish original, DishData.Dish substitute) {
-        // Replace in currentRecommendations
-        for (int i = 0; i < currentRecommendations.size(); i++) {
-            if (currentRecommendations.get(i).name.equals(original.name)) {
-                currentRecommendations.set(i, substitute);
-                foodCardAdapter.notifyItemChanged(i);
-                break;
-            }
-        }
-        // Persist choice locally
-        saveSubstitutionChoice(original, substitute);
-        // Send to API for learning
-        sendSubstitutionToApi(original, substitute);
-    }
-
-    private void saveSubstitutionChoice(DishData.Dish original, DishData.Dish substitute) {
-        String email = getCurrentUserEmail();
-        if (email == null) return;
-        String reason = firstSharedNonAgeTag(original, substitute);
-        android.content.ContentValues v = new android.content.ContentValues();
-        v.put(UserPreferencesDbHelper.COL_SUB_USER_EMAIL, email);
-        v.put(UserPreferencesDbHelper.COL_SUB_ORIGINAL_NAME, original.name);
-        v.put(UserPreferencesDbHelper.COL_SUB_CHOSEN_NAME, substitute.name);
-        v.put(UserPreferencesDbHelper.COL_SUB_CHOSEN_EMOJI, substitute.emoji);
-        v.put(UserPreferencesDbHelper.COL_SUB_CHOSEN_DESC, substitute.desc);
-        v.put(UserPreferencesDbHelper.COL_SUB_CHOSEN_TAGS, substitute.tags.toString());
-        v.put(UserPreferencesDbHelper.COL_SUB_REASON_TAG, reason);
-        v.put(UserPreferencesDbHelper.COL_SUB_TIMESTAMP, System.currentTimeMillis());
-        dbHelper.getWritableDatabase().insert(UserPreferencesDbHelper.TABLE_SUBSTITUTIONS, null, v);
-    }
-
-    private String firstSharedNonAgeTag(DishData.Dish a, DishData.Dish b) {
-        String age = detectAgeGroupTag(a);
-        for (String t : a.tags) {
-            if (age != null && t.equals(age)) continue;
-            if (b.tags.contains(t)) return t;
-        }
-        return "";
-    }
-
-    private void sendSubstitutionToApi(DishData.Dish original, DishData.Dish substitute) {
-        new Thread(() -> {
-            try {
-                org.json.JSONObject json = new org.json.JSONObject();
-                json.put("action", "save_substitution");
-                json.put("email", getCurrentUserEmail());
-                json.put("original_name", original.name);
-                json.put("chosen_name", substitute.name);
-                json.put("chosen_emoji", substitute.emoji);
-                json.put("chosen_desc", substitute.desc);
-                json.put("chosen_tags", new org.json.JSONArray(substitute.tags));
-                json.put("reason_tag", firstSharedNonAgeTag(original, substitute));
-                json.put("timestamp", System.currentTimeMillis());
-
-                okhttp3.RequestBody body = okhttp3.RequestBody.create(
-                    json.toString(), okhttp3.MediaType.parse("application/json"));
-                okhttp3.Request req = new okhttp3.Request.Builder()
-                    .url(Constants.UNIFIED_API_URL)
-                    .post(body)
-                    .build();
-                okhttp3.OkHttpClient client = new okhttp3.OkHttpClient();
-                try (okhttp3.Response resp = client.newCall(req).execute()) {
-                    if (!resp.isSuccessful()) {
-                        android.util.Log.e("FoodActivity", "Failed to save substitution: " + resp.code());
-                    }
-                }
-            } catch (Exception e) {
-                android.util.Log.e("FoodActivity", "Error sending substitution: " + e.getMessage());
-            }
-        }).start();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (dbHelper != null) {
-            dbHelper.close();
+        if (executorService != null) {
+            executorService.shutdown();
         }
+    }
+    
+    private void preloadFoodDataImmediately() {
+        // Start with some placeholder cards so user sees something immediately
+        Log.d(TAG, "Creating immediate placeholder cards while loading real data");
+        createPlaceholderCards();
+        
+        // Then load real data in background
+        executorService.execute(() -> {
+            try {
+                Log.d(TAG, "Loading real food data in background (cards only, no images)");
+                List<FoodRecommendation> newRecommendations = callGeminiAPIForMultiple();
+                if (newRecommendations != null && !newRecommendations.isEmpty()) {
+                    runOnUiThread(() -> {
+                        // Replace placeholder cards with real data
+                        int oldSize = recommendations.size();
+                        recommendations.clear();
+                        generatedFoodNames.clear();
+                        
+                        // Add all new recommendations
+                        for (FoodRecommendation recommendation : newRecommendations) {
+                            recommendations.add(recommendation);
+                            generatedFoodNames.add(recommendation.getFoodName().toLowerCase());
+                        }
+                        
+                        // Update adapter with proper notification
+                        adapter.notifyItemRangeChanged(0, Math.min(oldSize, recommendations.size()));
+                        if (recommendations.size() > oldSize) {
+                            adapter.notifyItemRangeInserted(oldSize, recommendations.size() - oldSize);
+                        }
+                        
+                        // DON'T load images yet - wait for user to actually view the activity
+                        Log.d(TAG, "Real food cards ready! Images will load when user views them.");
+                    });
+                } else {
+                    Log.e(TAG, "Failed to generate recommendations, keeping placeholder cards");
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in immediate preload: " + e.getMessage());
+            }
+        });
+    }
+    
+    private void createPlaceholderCards() {
+        Log.d(TAG, "Creating 10 placeholder food cards for immediate display");
+        recommendations.clear();
+        generatedFoodNames.clear();
+        
+        // Create 10 placeholder cards with specific Filipino food names and descriptions
+        String[] placeholderFoods = {
+            "Adobo", "Sinigang", "Kare-kare", "Lechon", "Pancit",
+            "Lumpia", "Tapsilog", "Sisig", "Bicol Express", "Chicken Inasal"
+        };
+        
+        String[] placeholderDescriptions = {
+            "A classic Filipino dish featuring tender meat braised in savory soy-vinegar sauce.",
+            "Hearty Filipino soup with tender meat and vegetables in tangy tamarind broth.",
+            "Rich Filipino stew with tender meat and vegetables in creamy peanut sauce.",
+            "Crispy roasted pork with golden skin and tender, flavorful meat.",
+            "Fresh rice noodles stir-fried with vegetables and savory sauce.",
+            "Crispy spring rolls filled with fresh vegetables and savory meat.",
+            "Filipino breakfast favorite with cured beef, eggs, and garlic rice.",
+            "Sizzling pork dish with onions, chili peppers, and citrus juice.",
+            "Spicy Filipino dish with pork and vegetables in coconut milk.",
+            "Grilled chicken marinated in citrus and spices with smoky flavor."
+        };
+        
+        for (int i = 0; i < 10; i++) {
+            FoodRecommendation placeholder = new FoodRecommendation(
+                placeholderFoods[i],
+                100 + (i * 10), // Varying calories
+                5.0 + i, // Varying protein
+                3.0 + (i * 0.5), // Varying fat
+                10.0 + (i * 2), // Varying carbs
+                "1 serving",
+                "Filipino",
+                placeholderDescriptions[i]
+            );
+            recommendations.add(placeholder);
+            generatedFoodNames.add(placeholderFoods[i].toLowerCase());
+        }
+        
+        // Update adapter
+        adapter.notifyDataSetChanged();
+        Log.d(TAG, "Placeholder cards created - user can start swiping immediately!");
     }
 } 

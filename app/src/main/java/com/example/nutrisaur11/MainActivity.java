@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         // Initialize FCM Token Manager
         fcmTokenManager = new FCMTokenManager(this);
         
+        // Start food preload service in background
+        MainActivityHelper.startFoodPreloadService(this);
+        
         // Initialize event checking and auto-refresh functionality
         
         // Initialize event checking timer

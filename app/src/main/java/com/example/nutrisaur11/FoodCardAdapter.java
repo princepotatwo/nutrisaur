@@ -31,15 +31,26 @@ public class FoodCardAdapter extends RecyclerView.Adapter<FoodCardAdapter.FoodCa
         this.foodList = foodList;
         this.substituteClickListener = substituteListener;
         this.infoClickListener = infoListener;
+        
+        // Safety check for context
+        if (context == null) {
+            throw new IllegalArgumentException("Context cannot be null for FoodCardAdapter");
+        }
+        
         this.favoritesManager = new FavoritesManager(context);
         
         // Set user email, with fallback to SharedPreferences if empty
         if (userEmail != null && !userEmail.isEmpty()) {
             this.userEmail = userEmail;
         } else {
-            android.content.SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
-            this.userEmail = prefs.getString("current_user_email", "");
-            android.util.Log.d("FoodCardAdapter", "Retrieved user email from SharedPreferences: " + this.userEmail);
+            try {
+                android.content.SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+                this.userEmail = prefs.getString("current_user_email", "");
+                android.util.Log.d("FoodCardAdapter", "Retrieved user email from SharedPreferences: " + this.userEmail);
+            } catch (Exception e) {
+                android.util.Log.e("FoodCardAdapter", "Error accessing SharedPreferences: " + e.getMessage());
+                this.userEmail = "";
+            }
         }
     }
 
@@ -63,7 +74,12 @@ public class FoodCardAdapter extends RecyclerView.Adapter<FoodCardAdapter.FoodCa
         // Load food image asynchronously to prevent scrolling lag
         loadImageAsync(holder, dish.name);
         
-        holder.substituteBtn.setOnClickListener(v -> substituteClickListener.onSubstituteClick(dish));
+        // Set up substitute button click listener with null safety
+        if (substituteClickListener != null) {
+            holder.substituteBtn.setOnClickListener(v -> substituteClickListener.onSubstituteClick(dish));
+        } else {
+            holder.substituteBtn.setVisibility(View.GONE); // Hide button if no listener
+        }
         
         // Check if this dish is already in favorites
         holder.isFavorited = favoritesManager.isFavorite(userEmail, dish.name);

@@ -1,0 +1,787 @@
+2025-09-03 06:36:22.006 29902-11239 ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=7176   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+---------------------------- PROCESS STARTED (17280) for package com.example.nutrisaur11 ----------------------------
+2025-09-03 06:36:22.265 17280-17280 nativeloader            com.example.nutrisaur11              D  Configuring clns-4 for other apk /apex/com.android.extservices/javalib/android.ext.adservices.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~G1Iad00N17QM6AffC-BHcw==/com.example.nutrisaur11-DOkHIwwHfyootiY2EGPOAQ==/lib/arm64:/data/app/~~G1Iad00N17QM6AffC-BHcw==/com.example.nutrisaur11-DOkHIwwHfyootiY2EGPOAQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.example.nutrisaur11
+2025-09-03 06:36:22.265 17280-17280 nativeloader            com.example.nutrisaur11              D  Extending system_exposed_libraries: libvraudio_client.qti.so:libbinauralrenderer_wrapper.qti.so:libhoaeffects.qti.so:libQOC.qti.so:libcamera_algoup_jni.xiaomi.so:libcamera_mianode_jni.xiaomi.so:libupdateprof.qti.so:libthermalclient.qti.so:libQOC.qti.so:libdiag_system.qti.so:libqape.qti.so:libqesdk_ndk_platform.qti.so:liblistenjni.qti.so
+2025-09-03 06:36:22.267 17280-17280 nativeloader            com.example.nutrisaur11              D  InitApexLibraries:
+                                                                                                      com_android_appsearch: libicing.so
+                                                                                                      com_android_art: libartservice.so
+                                                                                                      com_android_conscrypt: libjavacrypto.so
+                                                                                                      com_android_extservices: libtflite_support_classifiers_native.so
+                                                                                                      com_android_mediaprovider: libpdfclient.so
+                                                                                                      com_android_os_statsd: libstats_jni.so
+                                                                                                      com_android_tethering: libandroid_net_connectivity_com_android_net_module_util_jni.so:libframework-connectivity-jni.so:libframework-connectivity-tiramisu-jni.so:libmainlinecronet.136.0.7091.2.so:libservice-connectivity.so:libservice-thread-jni.so:stable_cronet_libcrypto.so:stable_cronet_libssl.so
+2025-09-03 06:36:22.271 17280-17280 nativeloader            com.example.nutrisaur11              D  Configuring clns-5 for other apk /data/app/~~G1Iad00N17QM6AffC-BHcw==/com.example.nutrisaur11-DOkHIwwHfyootiY2EGPOAQ==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~G1Iad00N17QM6AffC-BHcw==/com.example.nutrisaur11-DOkHIwwHfyootiY2EGPOAQ==/lib/arm64:/data/app/~~G1Iad00N17QM6AffC-BHcw==/com.example.nutrisaur11-DOkHIwwHfyootiY2EGPOAQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.example.nutrisaur11
+2025-09-03 06:36:22.280 17280-17280 Perf                    com.example.nutrisaur11              I  Connecting to perf service.
+2025-09-03 06:36:22.286 17280-17280 GraphicsEnvironment     com.example.nutrisaur11              V  ANGLE Developer option for 'com.example.nutrisaur11' set to: 'default'
+2025-09-03 06:36:22.286 17280-17280 GraphicsEnvironment     com.example.nutrisaur11              V  Updatable production driver is not supported on the device.
+2025-09-03 06:36:22.290 17280-17280 ForceDarkHelperStubImpl com.example.nutrisaur11              I  initialize for com.example.nutrisaur11 , ForceDarkOrigin
+2025-09-03 06:36:22.293 17280-17280 nativeloader            com.example.nutrisaur11              D  Load libforcedarkimpl.so using system ns (caller=/system/framework/miui-framework.jar): ok
+2025-09-03 06:36:22.293 17280-17280 OpenGLRenderer          com.example.nutrisaur11              D  JNI_OnLoad success
+2025-09-03 06:36:22.293 17280-17280 MiuiForceDarkConfig     com.example.nutrisaur11              I  setConfig density:2.750000, mainRule:0, secondaryRule:0, tertiaryRule:0
+2025-09-03 06:36:22.295 17280-17280 NetworkSecurityConfig   com.example.nutrisaur11              D  No Network Security Config specified, using platform default
+2025-09-03 06:36:22.296 17280-17280 NetworkSecurityConfig   com.example.nutrisaur11              D  No Network Security Config specified, using platform default
+2025-09-03 06:36:22.309 17280-17280 FirebaseApp             com.example.nutrisaur11              I  Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+2025-09-03 06:36:22.321 17280-17280 FirebaseInitProvider    com.example.nutrisaur11              I  FirebaseApp initialization successful
+2025-09-03 06:36:22.348 17280-17280 AppCompatDelegate       com.example.nutrisaur11              D  Checking for metadata for AppLocalesMetadataHolderService : Service not found
+2025-09-03 06:36:22.358 17280-17311 ple.nutrisaur1          com.example.nutrisaur11              W  ClassLoaderContext classpath size mismatch. expected=1, found=0 (DLC[];PCL[base.apk*549733019]{PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*3549398240]#PCL[/system/framework/com.android.media.remotedisplay.jar*3472798123]#PCL[/system/framework/com.android.location.provider.jar*3633238672]#PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*3549398240]} | DLC[];PCL[])
+2025-09-03 06:36:22.363 17280-17311 DynamiteModule          com.example.nutrisaur11              I  Considering local module com.google.android.gms.measurement.dynamite:155 and remote module com.google.android.gms.measurement.dynamite:158
+2025-09-03 06:36:22.363 17280-17311 DynamiteModule          com.example.nutrisaur11              I  Selected remote version of com.google.android.gms.measurement.dynamite, version >= 158
+2025-09-03 06:36:22.363 17280-17311 DynamiteModule          com.example.nutrisaur11              V  Dynamite loader version >= 2, using loadModule2NoCrashUtils
+2025-09-03 06:36:22.378 17280-17280 MainActivity            com.example.nutrisaur11              D  Started food preload service
+2025-09-03 06:36:22.384 17280-17311 System                  com.example.nutrisaur11              W  ClassLoader referenced unknown path: 
+2025-09-03 06:36:22.384 17280-17311 nativeloader            com.example.nutrisaur11              D  Configuring clns-6 for other apk . target_sdk_version=36, uses_libraries=, library_path=/data/app/~~kH7VzkzVM7MD3-6iD4sNAQ==/com.google.android.gms-GdgvXmMcgxMp_7PO_4z2Zg==/lib/arm64:/data/app/~~kH7VzkzVM7MD3-6iD4sNAQ==/com.google.android.gms-GdgvXmMcgxMp_7PO_4z2Zg==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+2025-09-03 06:36:22.396 17280-17311 ple.nutrisaur1          com.example.nutrisaur11              W  ClassLoaderContext classpath element checksum mismatch. expected=549733019, found=3060246564 (DLC[];PCL[base.apk*549733019]{PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*3549398240]#PCL[/system/framework/com.android.media.remotedisplay.jar*3472798123]#PCL[/system/framework/com.android.location.provider.jar*3633238672]#PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*3549398240]} | DLC[];PCL[/data/app/~~G1Iad00N17QM6AffC-BHcw==/com.example.nutrisaur11-DOkHIwwHfyootiY2EGPOAQ==/base.apk*3060246564]{PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*3549398240]})
+2025-09-03 06:36:22.402 17280-17280 ViewScrollStubImpl      com.example.nutrisaur11              D  the value of ScrollFrictionRes is: 0.019499999
+2025-09-03 06:36:22.407 17280-17280 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-09-03 06:36:22.407 17280-17280 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-09-03 06:36:22.408 17280-17280 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-09-03 06:36:22.408 17280-17280 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-09-03 06:36:22.408 17280-17280 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-09-03 06:36:22.408 17280-17280 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-09-03 06:36:22.412 17280-17280 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-09-03 06:36:22.429 17280-17280 ple.nutrisaur1          com.example.nutrisaur11              I  hiddenapi: Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (runtime_flags=0, domain=platform, api=unsupported) from Landroidx/appcompat/widget/ViewUtils; (domain=app) using reflection: allowed
+2025-09-03 06:36:22.439 17280-17280 Compatibil...geReporter com.example.nutrisaur11              D  Compat change id reported: 171228096; UID 10328; state: ENABLED
+2025-09-03 06:36:22.469 17280-17329 ple.nutrisaur1          com.example.nutrisaur11              I  hiddenapi: Accessing hidden method Ldalvik/system/VMStack;->getStackClass2()Ljava/lang/Class; (runtime_flags=0, domain=core-platform, api=unsupported) from Lm7/aop; (domain=app) using reflection: allowed
+2025-09-03 06:36:22.474 17280-17327 ple.nutrisaur1          com.example.nutrisaur11              E  No package ID 6a found for ID 0x6a0b000f.
+2025-09-03 06:36:22.475 17280-17327 FA                      com.example.nutrisaur11              I  App measurement initialized, version: 136000
+2025-09-03 06:36:22.475 17280-17327 FA                      com.example.nutrisaur11              I  To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+2025-09-03 06:36:22.475 17280-17327 FA                      com.example.nutrisaur11              I  To enable faster debug mode event logging run:
+                                                                                                      adb shell setprop debug.firebase.analytics.app com.example.nutrisaur11
+2025-09-03 06:36:22.552 17280-17280 MainActivity            com.example.nutrisaur11              D  Fetched barangay from database for udhdhd@udhd.jdjd: Not specified
+2025-09-03 06:36:22.553 17280-17280 MainActivity            com.example.nutrisaur11              D  User has barangay data, initializing FCM with user context
+2025-09-03 06:36:22.553 17280-17280 FCMTokenManager         com.example.nutrisaur11              D  Initializing FCM token manager with user: udhdhd@udhd.jdjd
+2025-09-03 06:36:22.553 17280-17280 MainActivity            com.example.nutrisaur11              D  FCM initialization completed successfully
+2025-09-03 06:36:22.553 17280-17280 MainActivity            com.example.nutrisaur11              D  Fetching dashboard events for user: udhdhd@udhd.jdjd
+2025-09-03 06:36:22.569 17280-17280 MainActivity            com.example.nutrisaur11              D  Fetching dashboard events for user: udhdhd@udhd.jdjd
+2025-09-03 06:36:22.571 17280-17280 MainActivity            com.example.nutrisaur11              D  Started periodic event checking and background service in foreground mode
+2025-09-03 06:36:22.574 17280-17327 FA                      com.example.nutrisaur11              I  Tag Manager is not found and thus will not be used
+2025-09-03 06:36:22.596 17280-17280 Looper                  com.example.nutrisaur11              W  PerfMonitor looperActivity : package=com.example.nutrisaur11/.MainActivity time=263ms latency=311ms running=215ms  procState=-1  historyMsgCount=3 (msgIndex=1 wall=205ms seq=1 running=26ms io=6ms h=android.app.ActivityThread$H w=162) (msgIndex=3 wall=89ms seq=3 running=77ms runnable=4ms io=1ms binder=11ms h=android.app.ActivityThread$H w=110)
+2025-09-03 06:36:22.597 17280-17280 Looper                  com.example.nutrisaur11              W  PerfMonitor looperActivity : package=com.example.nutrisaur11/.MainActivity time=0ms latency=574ms running=2ms  procState=-1  historyMsgCount=4 (msgIndex=1 wall=205ms seq=1 running=26ms io=6ms h=android.app.ActivityThread$H w=162) (msgIndex=3 wall=89ms seq=3 running=77ms runnable=4ms io=1ms binder=11ms h=android.app.ActivityThread$H w=110) (msgIndex=4 wall=263ms seq=4 running=215ms runnable=12ms binder=22ms h=android.app.ActivityThread$H w=159)
+2025-09-03 06:36:22.642 17280-17314 AdrenoGLES-0            com.example.nutrisaur11              I  QUALCOMM build                   : c5f0e23, I9972db7aac
+                                                                                                    Build Date                       : 04/28/21
+                                                                                                    OpenGL ES Shader Compiler Version: EV031.32.02.10
+                                                                                                    Local Branch                     : mybrancheba83f1e-3815-f156-b760-08f1eafda2d8
+                                                                                                    Remote Branch                    : quic/gfx-adreno.lnx.1.0.r99-rel
+                                                                                                    Remote Branch                    : NONE
+                                                                                                    Reconstruct Branch               : NOTHING
+2025-09-03 06:36:22.642 17280-17314 AdrenoGLES-0            com.example.nutrisaur11              I  Build Config                     : S P 10.0.7 AArch64
+2025-09-03 06:36:22.642 17280-17314 AdrenoGLES-0            com.example.nutrisaur11              I  Driver Path                      : /vendor/lib64/egl/libGLESv2_adreno.so
+2025-09-03 06:36:22.651 17280-17314 AdrenoGLES-0            com.example.nutrisaur11              I  PFP: 0x016ee190, ME: 0x00000000
+2025-09-03 06:36:22.670 17280-17314 hw-ProcessState         com.example.nutrisaur11              D  Binder ioctl to enable oneway spam detection failed: Invalid argument
+2025-09-03 06:36:22.704 17280-17314 ple.nutrisaur1          com.example.nutrisaur11              E  open libmigui.so failed! dlopen - dlopen failed: library "libmigui.so" not found
+2025-09-03 06:36:22.709 17280-17280 FoodPreloadService      com.example.nutrisaur11              D  FoodPreloadService created
+2025-09-03 06:36:22.710 17280-17280 FoodPreloadService      com.example.nutrisaur11              D  FoodPreloadService started
+2025-09-03 06:36:22.711 17280-17351 FoodPreloadService      com.example.nutrisaur11              D  Starting background food preload
+2025-09-03 06:36:22.711 17280-17280 FCMTokenManager         com.example.nutrisaur11              D  FCM token obtained: dDgJr74pRHukYxdkYiGyAE:APA91bHGxsIiGsI7MF9C5-tHr2Q...
+2025-09-03 06:36:22.712 17280-17353 FCMTokenManager         com.example.nutrisaur11              D  Token is the same and recently registered, skipping registration
+2025-09-03 06:36:22.712 17280-17351 FoodPreloadService      com.example.nutrisaur11              E  Error preloading food data: Can't create handler inside thread Thread[pool-11-thread-1,5,main] that has not called Looper.prepare()
+2025-09-03 06:36:22.713 17280-17280 EventBackgroundService  com.example.nutrisaur11              D  EventBackgroundService started with startId: 1
+2025-09-03 06:36:22.713 17280-17280 EventBackgroundService  com.example.nutrisaur11              D  Starting periodic event checking every 3000ms
+2025-09-03 06:36:22.719 17280-17354 EventBackgroundService  com.example.nutrisaur11              D  Running scheduled event check...
+2025-09-03 06:36:22.720 17280-17354 Compatibil...geReporter com.example.nutrisaur11              D  Compat change id reported: 288912692; UID 10328; state: DISABLED
+2025-09-03 06:36:22.720 17280-17355 EventBackgroundService  com.example.nutrisaur11              D  Starting event check with direct HTTP...
+2025-09-03 06:36:22.723 17280-17280 FoodPreloadService      com.example.nutrisaur11              D  FoodPreloadService destroyed
+2025-09-03 06:36:22.766 17280-17280 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-09-03 06:36:23.153 17280-17355 EventBackgroundService  com.example.nutrisaur11              D  HTTP API response: {"success":true,"events":[{"id":1,"title":"Sample Event","type":"Workshop","description":"Sample description","date_time":"2025-09-08 13:07:00","location":"Sample Location","organizer":"Sample Organizer","created_at":1756703239000}],"total_events":1}
+2025-09-03 06:36:23.154 17280-17355 EventBackgroundService  com.example.nutrisaur11              D  Found 1 events
+2025-09-03 06:36:23.154 17280-17355 EventBackgroundService  com.example.nutrisaur11              D  Currently tracking 18 events
+2025-09-03 06:36:23.155 17280-17355 EventBackgroundService  com.example.nutrisaur11              D  Known event tracked: Sample Event (ID: 1)
+2025-09-03 06:36:23.155 17280-17342 MainActivity            com.example.nutrisaur11              D  Events API response code: 200
+2025-09-03 06:36:23.157 17280-17342 MainActivity            com.example.nutrisaur11              D  Events API response: {"success":true,"events":[{"id":1,"title":"Sample Event","type":"Workshop","description":"Sample description","date_time":"2025-09-08 13:07:00","location":"Sample Location","organizer":"Sample Organizer","created_at":1756703239000}],"total_events":1}
+2025-09-03 06:36:23.158 17280-17342 MainActivity            com.example.nutrisaur11              D  Found 1 events
+2025-09-03 06:36:23.164 17280-17355 EventBackgroundService  com.example.nutrisaur11              D  Updated tracking: 18 -> 18 events
+2025-09-03 06:36:23.169 17280-17353 FCMTokenManager         com.example.nutrisaur11              W  Failed to check token existence on server: Value <br of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:23.169 17280-17353 FCMTokenManager         com.example.nutrisaur11              D  Server reports token is missing; will register now
+2025-09-03 06:36:23.170 17280-17337 MainActivity            com.example.nutrisaur11              D  Events API response code: 200
+2025-09-03 06:36:23.173 17280-17337 MainActivity            com.example.nutrisaur11              D  Events API response: {"success":true,"events":[{"id":1,"title":"Sample Event","type":"Workshop","description":"Sample description","date_time":"2025-09-08 13:07:00","location":"Sample Location","organizer":"Sample Organizer","created_at":1756703239000}],"total_events":1}
+2025-09-03 06:36:23.173 17280-17337 MainActivity            com.example.nutrisaur11              D  Found 1 events
+2025-09-03 06:36:23.295 17280-17342 MainActivity            com.example.nutrisaur11              D  Unified API user events response code: 400
+2025-09-03 06:36:23.295 17280-17337 MainActivity            com.example.nutrisaur11              D  Unified API user events response code: 400
+2025-09-03 06:36:23.297 17280-17342 MainActivity            com.example.nutrisaur11              D  Processing 1 events from API
+2025-09-03 06:36:23.297 17280-17337 MainActivity            com.example.nutrisaur11              D  Processing 1 events from API
+2025-09-03 06:36:23.297 17280-17342 MainActivity            com.example.nutrisaur11              D  Processing event: Sample Event at 2025-09-08 13:07:00
+2025-09-03 06:36:23.297 17280-17337 MainActivity            com.example.nutrisaur11              D  Processing event: Sample Event at 2025-09-08 13:07:00
+2025-09-03 06:36:23.302 17280-17337 MainActivity            com.example.nutrisaur11              D  Added event: Sample Event at 2025-09-08 13:07:00 (diff: 5 days)
+2025-09-03 06:36:23.302 17280-17342 MainActivity            com.example.nutrisaur11              D  Added event: Sample Event at 2025-09-08 13:07:00 (diff: 5 days)
+2025-09-03 06:36:23.302 17280-17337 MainActivity            com.example.nutrisaur11              D  New event detected: Sample Event
+2025-09-03 06:36:23.302 17280-17342 MainActivity            com.example.nutrisaur11              D  New event detected: Sample Event
+2025-09-03 06:36:23.303 17280-17337 MainActivity            com.example.nutrisaur11              D  Total future events found: 1
+2025-09-03 06:36:23.303 17280-17342 MainActivity            com.example.nutrisaur11              D  Total future events found: 1
+2025-09-03 06:36:23.303 17280-17337 MainActivity            com.example.nutrisaur11              D  Displaying 1 events on dashboard
+2025-09-03 06:36:23.303 17280-17342 MainActivity            com.example.nutrisaur11              D  Displaying 1 events on dashboard
+2025-09-03 06:36:23.305 17280-17280 MainActivity            com.example.nutrisaur11              D  Dashboard events refreshed. Count: 1
+2025-09-03 06:36:23.305 17280-17280 MainActivity            com.example.nutrisaur11              D  Dashboard events refreshed. Count: 1
+2025-09-03 06:36:23.349 17280-17280 EventAdapter            com.example.nutrisaur11              D  Event: Sample Event | Button: Join | Status: Upcoming | EventTime: 1757308020000 | CurrentTime: 1756852583344 | EventEndTime: 1757308020000 | IsStarted: false | IsFinished: false
+2025-09-03 06:36:23.367 17280-17372 FCMTokenManager         com.example.nutrisaur11              D  FCM token registered successfully: {"success":true,"message":"FCM token already registered, no changes needed","action":"no_change","token_id":95}
+2025-09-03 06:36:24.179 17280-17280 EventBackgroundService  com.example.nutrisaur11              D  EventBackgroundService being destroyed, shutting down scheduler
+2025-09-03 06:36:24.190 17280-17280 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-09-03 06:36:24.190 17280-17280 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-09-03 06:36:24.193 17280-17280 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-09-03 06:36:24.240 17280-17280 FoodActivity            com.example.nutrisaur11              D  FoodActivity onCreate started
+2025-09-03 06:36:24.240 17280-17280 FoodActivity            com.example.nutrisaur11              D  Executor service initialized
+2025-09-03 06:36:24.240 17280-17280 FoodActivity            com.example.nutrisaur11              D  ViewPager2 initialized: success
+2025-09-03 06:36:24.240 17280-17280 FoodActivity            com.example.nutrisaur11              D  Recommendations list initialized
+2025-09-03 06:36:24.242 17280-17280 FoodActivity            com.example.nutrisaur11              D  Pregnancy status from screening JSON: Not Applicable
+2025-09-03 06:36:24.242 17280-17280 FoodActivity            com.example.nutrisaur11              D  Loaded complete user profile: Age=0, Sex=Not specified, BMI=0, Health=Family history of heart disease, BMI Category: Underweight, Pregnancy=Not Applicable, Allergies=null, Diet=null
+2025-09-03 06:36:24.243 17280-17280 FoodActivity            com.example.nutrisaur11              D  User profile loaded
+2025-09-03 06:36:24.244 17280-17280 FoodActivity            com.example.nutrisaur11              D  Nutrition targets calculated: 2466 kcal, 84g protein
+2025-09-03 06:36:24.244 17280-17280 FoodActivity            com.example.nutrisaur11              D  Setting up ViewPager and checking for preloaded data
+2025-09-03 06:36:24.245 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Creating new ImageCacheManager singleton instance
+2025-09-03 06:36:24.245 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Initializing ImageCacheManager - Max Images: 50
+2025-09-03 06:36:24.246 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  FoodRecommendationAdapter created - Cache status:
+2025-09-03 06:36:24.246 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache Status - Images: 0/50, Hit Count: 0, Miss Count: 0
+2025-09-03 06:36:24.246 17280-17280 FoodActivity            com.example.nutrisaur11              D  ViewPager2 setup completed
+2025-09-03 06:36:24.246 17280-17280 FoodActivity            com.example.nutrisaur11              D  No preloaded data available, starting immediate preload
+2025-09-03 06:36:24.246 17280-17280 FoodActivity            com.example.nutrisaur11              D  Creating immediate placeholder cards while loading real data
+2025-09-03 06:36:24.246 17280-17280 FoodActivity            com.example.nutrisaur11              D  Creating 10 placeholder food cards for immediate display
+2025-09-03 06:36:24.247 17280-17280 FoodActivity            com.example.nutrisaur11              D  Placeholder cards created - user can start swiping immediately!
+2025-09-03 06:36:24.247 17280-17382 FoodActivity            com.example.nutrisaur11              D  Loading real food data in background (cards only, no images)
+2025-09-03 06:36:24.292 29902-11239 ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=7176   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-09-03 06:36:24.407 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Binding recommendation at position 0: Adobo
+2025-09-03 06:36:24.413 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Set text values - Name: 'Adobo', Calories: 100, Protein: 5.0, Description: 'A classic Filipino dish featuring tender meat braised in savory soy-vinegar sauce.'
+2025-09-03 06:36:24.413 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_adobo
+2025-09-03 06:36:24.414 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Adobo
+2025-09-03 06:36:24.414 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Adobo
+2025-09-03 06:36:24.420 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Adobo
+2025-09-03 06:36:24.437 17280-17280 FoodActivity            com.example.nutrisaur11              D  Showing recommendation at position: 0, isPreloading: false, total foods: 10
+2025-09-03 06:36:24.437 17280-17280 FoodActivity            com.example.nutrisaur11              D  User started viewing food cards - enabling image loading
+2025-09-03 06:36:24.437 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading images progressively from position: 0
+2025-09-03 06:36:24.437 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_adobo
+2025-09-03 06:36:24.438 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image silently for position 0: Adobo (cache key: food_adobo)
+2025-09-03 06:36:24.438 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_sinigang
+2025-09-03 06:36:24.438 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Preloading image for position 1: Sinigang (cache key: food_sinigang)
+2025-09-03 06:36:24.439 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_kare-kare
+2025-09-03 06:36:24.439 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Preloading image for position 2: Kare-kare (cache key: food_kare-kare)
+2025-09-03 06:36:24.440 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Adobo
+2025-09-03 06:36:24.457 17280-17377 MainActivity            com.example.nutrisaur11              E  Failed to sync preferences: 400
+2025-09-03 06:36:24.496 17280-17280 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-09-03 06:36:24.535 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197085455ms; Flags=0, FrameTimelineVsyncId=7430281, IntendedVsync=174951399066093, Vsync=174951399066093, InputEventId=609626619, HandleInputStart=174951400405133, AnimationStart=174951400408883, PerformTraversalsStart=174951400411644, DrawStart=174951400775758, FrameDeadline=174951415732759, FrameInterval=174951400383050, FrameStartTime=16666666, SyncQueued=174951406187060, SyncStart=174951406601644, IssueDrawCommandsStart=174951406886644, SwapBuffers=174951409225238, FrameCompleted=9223372036854775807, DequeueBufferDuration=35625, QueueBufferDuration=1974167, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174951411884873, DisplayPresentTime=2586505446831423488, 
+2025-09-03 06:36:24.585 17280-17280 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-09-03 06:36:24.629 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197085355ms; Flags=0, FrameTimelineVsyncId=7430299, IntendedVsync=174951499083048, Vsync=174951499083048, InputEventId=0, HandleInputStart=174951500768675, AnimationStart=174951500772060, PerformTraversalsStart=174951501225706, DrawStart=174951501373727, FrameDeadline=174951515749714, FrameInterval=174951500748050, FrameStartTime=16666666, SyncQueued=174951502256279, SyncStart=174951502567113, IssueDrawCommandsStart=174951502883050, SwapBuffers=174951506994196, FrameCompleted=9223372036854775807, DequeueBufferDuration=30833, QueueBufferDuration=850989, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174951508693415, DisplayPresentTime=0, 
+2025-09-03 06:36:24.779 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197085205ms; Flags=0, FrameTimelineVsyncId=7430312, IntendedVsync=174951649079183, Vsync=174951649079183, InputEventId=75321687, HandleInputStart=174951655010602, AnimationStart=174951655014144, PerformTraversalsStart=174951655417217, DrawStart=174951655574144, FrameDeadline=174951682412515, FrameInterval=174951654991904, FrameStartTime=16666666, SyncQueued=174951656075446, SyncStart=174951656169821, IssueDrawCommandsStart=174951656508050, SwapBuffers=174951664763623, FrameCompleted=9223372036854775807, DequeueBufferDuration=35938, QueueBufferDuration=736563, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174951665816175, DisplayPresentTime=0, 
+2025-09-03 06:36:24.845 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197085138ms; Flags=0, FrameTimelineVsyncId=7430317, IntendedVsync=174951715725451, Vsync=174951715725451, InputEventId=98002128, HandleInputStart=174951716240133, AnimationStart=174951718368987, PerformTraversalsStart=174951718568519, DrawStart=174951718714977, FrameDeadline=174951749058783, FrameInterval=174951716220342, FrameStartTime=16666666, SyncQueued=174951719108779, SyncStart=174951719172217, IssueDrawCommandsStart=174951719491852, SwapBuffers=174951722556435, FrameCompleted=9223372036854775807, DequeueBufferDuration=28802, QueueBufferDuration=719219, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174951723895550, DisplayPresentTime=0, 
+2025-09-03 06:36:24.861 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197085122ms; Flags=0, FrameTimelineVsyncId=7430319, IntendedVsync=174951732391187, Vsync=174951732391187, InputEventId=209197985, HandleInputStart=174951732964769, AnimationStart=174951735132790, PerformTraversalsStart=174951735253206, DrawStart=174951735406279, FrameDeadline=174951765724519, FrameInterval=174951732944821, FrameStartTime=16666666, SyncQueued=174951735727998, SyncStart=174951736000758, IssueDrawCommandsStart=174951736314977, SwapBuffers=174951739636540, FrameCompleted=9223372036854775807, DequeueBufferDuration=29166, QueueBufferDuration=787083, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174951741142894, DisplayPresentTime=0, 
+2025-09-03 06:36:24.878 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197085105ms; Flags=0, FrameTimelineVsyncId=7430321, IntendedVsync=174951749141363, Vsync=174951749141363, InputEventId=989645332, HandleInputStart=174951749641592, AnimationStart=174951752625758, PerformTraversalsStart=174951752747946, DrawStart=174951752899977, FrameDeadline=174951782474695, FrameInterval=174951749620810, FrameStartTime=16666666, SyncQueued=174951753254821, SyncStart=174951753330654, IssueDrawCommandsStart=174951753656435, SwapBuffers=174951757072529, FrameCompleted=9223372036854775807, DequeueBufferDuration=30156, QueueBufferDuration=667396, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174951758413623, DisplayPresentTime=0, 
+2025-09-03 06:36:24.895 17280-17293 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197085088ms; Flags=0, FrameTimelineVsyncId=7430323, IntendedVsync=174951765810940, Vsync=174951765810940, InputEventId=399835440, HandleInputStart=174951766705862, AnimationStart=174951769591175, PerformTraversalsStart=174951769715706, DrawStart=174951770075550, FrameDeadline=174951799144272, FrameInterval=174951766635654, FrameStartTime=16666666, SyncQueued=174951770433415, SyncStart=174951770504248, IssueDrawCommandsStart=174951770830654, SwapBuffers=174951775653987, FrameCompleted=9223372036854775807, DequeueBufferDuration=29844, QueueBufferDuration=711354, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174951777012894, DisplayPresentTime=0, 
+2025-09-03 06:36:25.394 17280-17293 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197084587ms; Flags=0, FrameTimelineVsyncId=7430383, IntendedVsync=174952265744418, Vsync=174952265744418, InputEventId=360866233, HandleInputStart=174952267728623, AnimationStart=174952267732789, PerformTraversalsStart=174952268174508, DrawStart=174952268305706, FrameDeadline=174952299077750, FrameInterval=174952267686383, FrameStartTime=16666666, SyncQueued=174952268620966, SyncStart=174952270357477, IssueDrawCommandsStart=174952270683727, SwapBuffers=174952274017685, FrameCompleted=9223372036854775807, DequeueBufferDuration=58802, QueueBufferDuration=1112604, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174952276234039, DisplayPresentTime=0, 
+2025-09-03 06:36:25.445 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197084529ms; Flags=0, FrameTimelineVsyncId=-1, IntendedVsync=174952324390966, Vsync=174952324393310, InputEventId=732185477, HandleInputStart=174952324404143, AnimationStart=174952324892529, PerformTraversalsStart=174952324991123, DrawStart=174952325053675, FrameDeadline=-9223372036838109143, FrameInterval=174952324393310, FrameStartTime=16666666, SyncQueued=174952325194768, SyncStart=174952325765029, IssueDrawCommandsStart=174952326028883, SwapBuffers=174952327069873, FrameCompleted=9223372036854775807, DequeueBufferDuration=16094, QueueBufferDuration=772187, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174952330068623, DisplayPresentTime=0, 
+2025-09-03 06:36:25.775 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Adobo
+2025-09-03 06:36:25.778 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Adobo
+2025-09-03 06:36:25.779 17280-17392 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Adobo
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:25.779 17280-17392 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to get image URL silently for position 0: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:25.781 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Sinigang
+2025-09-03 06:36:25.784 17280-17388 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Adobo
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:25.784 17280-17388 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to get image URL for Adobo: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:25.786 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Kare-kare
+2025-09-03 06:36:26.106 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Sinigang
+2025-09-03 06:36:26.107 17280-17392 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Sinigang
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:26.107 17280-17392 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to preload image URL for position 1: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:26.210 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Kare-kare
+2025-09-03 06:36:26.210 17280-17388 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Kare-kare
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:26.210 17280-17388 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to preload image URL for position 2: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:26.506 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Binding recommendation at position 1: Sinigang
+2025-09-03 06:36:26.507 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Set text values - Name: 'Sinigang', Calories: 110, Protein: 6.0, Description: 'Hearty Filipino soup with tender meat and vegetables in tangy tamarind broth.'
+2025-09-03 06:36:26.507 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_sinigang
+2025-09-03 06:36:26.507 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Sinigang
+2025-09-03 06:36:26.507 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Sinigang
+2025-09-03 06:36:26.513 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Sinigang
+2025-09-03 06:36:26.545 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197083438ms; Flags=0, FrameTimelineVsyncId=7430489, IntendedVsync=174953415821310, Vsync=174953415821310, InputEventId=634527147, HandleInputStart=174953416405966, AnimationStart=174953417933101, PerformTraversalsStart=174953417935133, DrawStart=174953417992476, FrameDeadline=174953449154642, FrameInterval=174953416384768, FrameStartTime=16666666, SyncQueued=174953419679456, SyncStart=174953419728362, IssueDrawCommandsStart=174953419866903, SwapBuffers=174953421023674, FrameCompleted=9223372036854775807, DequeueBufferDuration=11719, QueueBufferDuration=549688, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174953421887737, DisplayPresentTime=0, 
+2025-09-03 06:36:26.828 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197083155ms; Flags=0, FrameTimelineVsyncId=7430513, IntendedVsync=174953698944624, Vsync=174953698944624, InputEventId=591782970, HandleInputStart=174953699559351, AnimationStart=174953701528622, PerformTraversalsStart=174953701534143, DrawStart=174953701685341, FrameDeadline=174953732277956, FrameInterval=174953699534455, FrameStartTime=16666666, SyncQueued=174953701975341, SyncStart=174953702066955, IssueDrawCommandsStart=174953702710133, SwapBuffers=174953706768518, FrameCompleted=9223372036854775807, DequeueBufferDuration=37604, QueueBufferDuration=962396, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174953708315914, DisplayPresentTime=0, 
+2025-09-03 06:36:26.845 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197083139ms; Flags=0, FrameTimelineVsyncId=7430515, IntendedVsync=174953715610306, Vsync=174953715610306, InputEventId=787811061, HandleInputStart=174953716221070, AnimationStart=174953719381487, PerformTraversalsStart=174953719519768, DrawStart=174953719659247, FrameDeadline=174953748943638, FrameInterval=174953716196226, FrameStartTime=16666666, SyncQueued=174953720210289, SyncStart=174953720294612, IssueDrawCommandsStart=174953720756851, SwapBuffers=174953724255133, FrameCompleted=9223372036854775807, DequeueBufferDuration=31563, QueueBufferDuration=881406, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174953725784247, DisplayPresentTime=0, 
+2025-09-03 06:36:26.863 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197083122ms; Flags=0, FrameTimelineVsyncId=7430517, IntendedVsync=174953732275988, Vsync=174953732275988, InputEventId=384774577, HandleInputStart=174953733889039, AnimationStart=174953736078726, PerformTraversalsStart=174953736084455, DrawStart=174953736235341, FrameDeadline=174953765609320, FrameInterval=174953733862789, FrameStartTime=16666666, SyncQueued=174953736526799, SyncStart=174953736605966, IssueDrawCommandsStart=174953737024768, SwapBuffers=174953740543049, FrameCompleted=9223372036854775807, DequeueBufferDuration=27708, QueueBufferDuration=908177, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174953742106278, DisplayPresentTime=0, 
+2025-09-03 06:36:26.895 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Sinigang
+2025-09-03 06:36:26.896 17280-17392 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Sinigang
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:26.896 17280-17392 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to get image URL for Sinigang: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:26.912 17280-17293 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197083072ms; Flags=0, FrameTimelineVsyncId=7430523, IntendedVsync=174953782294173, Vsync=174953782294173, InputEventId=112088490, HandleInputStart=174953782858205, AnimationStart=174953786687841, PerformTraversalsStart=174953786693622, DrawStart=174953786828622, FrameDeadline=174953815627505, FrameInterval=174953782835966, FrameStartTime=16666666, SyncQueued=174953787094351, SyncStart=174953787177268, IssueDrawCommandsStart=174953787590341, SwapBuffers=174953791210445, FrameCompleted=9223372036854775807, DequeueBufferDuration=30573, QueueBufferDuration=1178593, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174953793002737, DisplayPresentTime=0, 
+2025-09-03 06:36:26.948 17280-17293 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197083055ms; Flags=0, FrameTimelineVsyncId=7430525, IntendedVsync=174953798980863, Vsync=174953798980863, InputEventId=389740983, HandleInputStart=174953799515185, AnimationStart=174953801582737, PerformTraversalsStart=174953801588778, DrawStart=174953809566278, FrameDeadline=174953832314195, FrameInterval=174953799491226, FrameStartTime=16666666, SyncQueued=174953811139924, SyncStart=174953811233414, IssueDrawCommandsStart=174953811780601, SwapBuffers=174953828236695, FrameCompleted=9223372036854775807, DequeueBufferDuration=35781, QueueBufferDuration=778698, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174953829667424, DisplayPresentTime=0, 
+2025-09-03 06:36:26.961 17280-17293 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197083028ms; Flags=0, FrameTimelineVsyncId=7430526, IntendedVsync=174953815643069, Vsync=174953815643069, InputEventId=572003945, HandleInputStart=174953816274924, AnimationStart=174953818516903, PerformTraversalsStart=174953818522528, DrawStart=174953818679560, FrameDeadline=174953848976401, FrameInterval=174953816251799, FrameStartTime=16666666, SyncQueued=174953818972476, SyncStart=174953829700132, IssueDrawCommandsStart=174953830162580, SwapBuffers=174953834048257, FrameCompleted=9223372036854775807, DequeueBufferDuration=24635, QueueBufferDuration=7526563, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174953842390497, DisplayPresentTime=0, 
+2025-09-03 06:36:27.010 17280-17280 FoodActivity            com.example.nutrisaur11              D  Showing recommendation at position: 1, isPreloading: false, total foods: 10
+2025-09-03 06:36:27.010 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading images progressively from position: 1
+2025-09-03 06:36:27.011 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_sinigang
+2025-09-03 06:36:27.011 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Image already cached for position 1: Sinigang
+2025-09-03 06:36:27.011 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_kare-kare
+2025-09-03 06:36:27.011 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Image already cached for position 2: Kare-kare
+2025-09-03 06:36:27.011 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_lechon
+2025-09-03 06:36:27.011 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Preloading image for position 3: Lechon (cache key: food_lechon)
+2025-09-03 06:36:27.018 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Lechon
+2025-09-03 06:36:27.336 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Binding recommendation at position 2: Kare-kare
+2025-09-03 06:36:27.342 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Set text values - Name: 'Kare-kare', Calories: 120, Protein: 7.0, Description: 'Rich Filipino stew with tender meat and vegetables in creamy peanut sauce.'
+2025-09-03 06:36:27.342 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_kare-kare
+2025-09-03 06:36:27.343 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Kare-kare
+2025-09-03 06:36:27.343 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Kare-kare
+2025-09-03 06:36:27.344 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Kare-kare
+2025-09-03 06:36:27.363 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Lechon
+2025-09-03 06:36:27.363 17280-17388 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Lechon
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:27.363 17280-17388 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to preload image URL for position 3: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:27.710 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Kare-kare
+2025-09-03 06:36:27.711 17280-17392 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Kare-kare
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:27.711 17280-17392 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to get image URL for Kare-kare: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:27.712 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197082272ms; Flags=0, FrameTimelineVsyncId=7430597, IntendedVsync=174954582263273, Vsync=174954582263273, InputEventId=697089304, HandleInputStart=174954582912372, AnimationStart=174954583879195, PerformTraversalsStart=174954584117893, DrawStart=174954584237424, FrameDeadline=174954598929939, FrameInterval=174954582889611, FrameStartTime=16666666, SyncQueued=174954584593413, SyncStart=174954584673049, IssueDrawCommandsStart=174954584969976, SwapBuffers=174954587312684, FrameCompleted=9223372036854775807, DequeueBufferDuration=28073, QueueBufferDuration=887135, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174954588823986, DisplayPresentTime=0, 
+2025-09-03 06:36:27.727 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197082255ms; Flags=0, FrameTimelineVsyncId=7430599, IntendedVsync=174954598926920, Vsync=174954598926920, InputEventId=1008659375, HandleInputStart=174954599514455, AnimationStart=174954600783309, PerformTraversalsStart=174954600886591, DrawStart=174954601052528, FrameDeadline=174954632260252, FrameInterval=174954599490393, FrameStartTime=16666666, SyncQueued=174954601424455, SyncStart=174954601510080, IssueDrawCommandsStart=174954601862163, SwapBuffers=174954604689143, FrameCompleted=9223372036854775807, DequeueBufferDuration=30520, QueueBufferDuration=712344, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174954605941955, DisplayPresentTime=0, 
+2025-09-03 06:36:28.229 17280-17400 ProfileInstaller        com.example.nutrisaur11              D  Installing profile for com.example.nutrisaur11
+2025-09-03 06:36:28.276 17280-17280 FoodActivity            com.example.nutrisaur11              D  Showing recommendation at position: 2, isPreloading: false, total foods: 10
+2025-09-03 06:36:28.276 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading images progressively from position: 2
+2025-09-03 06:36:28.276 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_kare-kare
+2025-09-03 06:36:28.276 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Image already cached for position 2: Kare-kare
+2025-09-03 06:36:28.276 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_lechon
+2025-09-03 06:36:28.276 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Image already cached for position 3: Lechon
+2025-09-03 06:36:28.276 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_pancit
+2025-09-03 06:36:28.276 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Preloading image for position 4: Pancit (cache key: food_pancit)
+2025-09-03 06:36:28.285 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Pancit
+2025-09-03 06:36:28.590 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Binding recommendation at position 3: Lechon
+2025-09-03 06:36:28.591 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Set text values - Name: 'Lechon', Calories: 130, Protein: 8.0, Description: 'Crispy roasted pork with golden skin and tender, flavorful meat.'
+2025-09-03 06:36:28.592 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_lechon
+2025-09-03 06:36:28.592 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Lechon
+2025-09-03 06:36:28.592 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Lechon
+2025-09-03 06:36:28.598 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Pancit
+2025-09-03 06:36:28.599 17280-17388 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Pancit
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:28.599 17280-17388 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to preload image URL for position 4: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:28.601 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Lechon
+2025-09-03 06:36:28.939 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Lechon
+2025-09-03 06:36:28.940 17280-17392 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Lechon
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:28.940 17280-17392 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to get image URL for Lechon: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:28.963 17280-17361 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223197081022ms; Flags=0, FrameTimelineVsyncId=7430707, IntendedVsync=174955832656022, Vsync=174955832656022, InputEventId=252273390, HandleInputStart=174955833429090, AnimationStart=174955834562423, PerformTraversalsStart=174955834789975, DrawStart=174955834943517, FrameDeadline=174955849322688, FrameInterval=174955833405288, FrameStartTime=16666666, SyncQueued=174955835357475, SyncStart=174955835448309, IssueDrawCommandsStart=174955835952580, SwapBuffers=174955839070809, FrameCompleted=9223372036854775807, DequeueBufferDuration=34531, QueueBufferDuration=1042344, GpuCompleted=9223372036854775807, SwapBuffersCompleted=174955840822580, DisplayPresentTime=0, 
+2025-09-03 06:36:29.626 17280-17280 FoodActivity            com.example.nutrisaur11              D  Showing recommendation at position: 3, isPreloading: false, total foods: 10
+2025-09-03 06:36:29.626 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading images progressively from position: 3
+2025-09-03 06:36:29.626 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_lechon
+2025-09-03 06:36:29.626 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Image already cached for position 3: Lechon
+2025-09-03 06:36:29.626 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_pancit
+2025-09-03 06:36:29.626 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Image already cached for position 4: Pancit
+2025-09-03 06:36:29.626 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_lumpia
+2025-09-03 06:36:29.626 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Preloading image for position 5: Lumpia (cache key: food_lumpia)
+2025-09-03 06:36:29.628 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Lumpia
+2025-09-03 06:36:29.951 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Binding recommendation at position 4: Pancit
+2025-09-03 06:36:29.952 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Set text values - Name: 'Pancit', Calories: 140, Protein: 9.0, Description: 'Fresh rice noodles stir-fried with vegetables and savory sauce.'
+2025-09-03 06:36:29.952 17280-17280 ImageCacheManager       com.example.nutrisaur11              D  Cache MISS for key: food_pancit
+2025-09-03 06:36:29.952 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Pancit
+2025-09-03 06:36:29.952 17280-17280 FoodRecomm...ionAdapter com.example.nutrisaur11              D  Loading image for: Pancit
+2025-09-03 06:36:29.968 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Requesting Scraping Dog image for: Pancit
+2025-09-03 06:36:29.985 17280-17388 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Lumpia
+2025-09-03 06:36:29.985 17280-17388 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Lumpia
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:29.985 17280-17388 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to preload image URL for position 5: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:30.388 17280-17392 ScrapingDogImageService com.example.nutrisaur11              D  Scraping Dog API response received for: Pancit
+2025-09-03 06:36:30.390 17280-17392 ScrapingDogImageService com.example.nutrisaur11              E  Error fetching Scraping Dog image for Pancit
+                                                                                                    org.json.JSONException: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+                                                                                                    	at org.json.JSON.typeMismatch(JSON.java:112)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:172)
+                                                                                                    	at org.json.JSONObject.<init>(JSONObject.java:185)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService.lambda$getFoodImage$0$com-example-nutrisaur11-ScrapingDogImageService(ScrapingDogImageService.java:65)
+                                                                                                    	at com.example.nutrisaur11.ScrapingDogImageService$$ExternalSyntheticLambda0.run(D8$$SyntheticClass:0)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-03 06:36:30.390 17280-17392 FoodRecomm...ionAdapter com.example.nutrisaur11              E  Failed to get image URL for Pancit: Error: Value <!doctype of type java.lang.String cannot be converted to JSONObject
+2025-09-03 06:36:31.713 17280-17382 FoodActivity            com.example.nutrisaur11              D  Gemini API response: {
+                                                                                                      "candidates": [
+                                                                                                        {
+                                                                                                          "content": {
+                                                                                                            "parts": [
+                                                                                                              {
+                                                                                                                "text": "```json\n[\n  {\n    \"food_name\": \"Kalabasa Congee\",\n    \"calories\": 200,\n    \"protein_g\": 6,\n    \"fat_g\": 5,\n    \"carbs_g\": 32,\n    \"serving_size\": \"1 cup\",\n    \"diet_type\": \"Vegetarian\",\n    \"description\": \"A smooth and gentle rice porridge infused with the sweetness of kalabasa (squash), offering a comforting introduction to solids.\"\n  },\n  {\n    \"food_name\": \"Avocado Delight\",\n    \"calories\": 180,\n    \"protein_g\": 2,\n    \"fat_g\": 15,\n    \"carbs_g\": 10,\n    \"serving_size\": \"1/2 cup\",\n    \"diet_type\": \"Vegetarian\",\n    \"description\": \"Perfectly ripe avocado, gently mashed into a creamy, subtly sweet treat – an ideal first food rich in healthy fats.\"\n  },\n  {\n    \"food_name\": \"Banana Langka\",\n    \"calories\": 160,\n    \"protein_g\": 2,\n    \"fat_g\": 1,\n    \"carbs_g\": 38,\n    \"serving_size\": \"1/2 cup\",\n    \"diet_type\": \"Vegetarian\",\n    \"description\": \"A naturally sweet blend of mashed banana and soft langka (jackfruit), creating a flavorful and easily digestible treat.\"\n  },\n  {\n    \"food_name\": \"Sweet Potato Baby\",\n    \"calories\": 170,\n    \"protein_g\": 3,\n    \"fat_g\": 1,\n    \"carbs_g\": 40,\n    \"serving_size\": \"1/2 cup\",\n    \"diet_type\": \"Vegetarian\",\n    \"description\": \"Tender sweet potato, steamed and mashed into a smooth, subtly sweet puree packed with essential nutrients for growing infants.\"\n  },\n  {\n    \"food_name\": \"Pears Lugaw\",\n    \"calories\": 190,\n    \"protein_g\": 5,\n    \"fat_g\": 4,\n    \"carbs_g\": 34,\n    \"serving_size\": \"1 cup\",\n    \"diet_type\": \"Vegetarian\",\n    \"description\": \"Mild and easily digestible, this rice porridge combines the subtle sweetness of pears for a nourishing and comforting meal.\"\n  },\n  {\n    \"food_name\": \"Chicken Tinola Broth\",\n    \"calories\": 160,\n    \"protein_g\": 10,\n    \"fat_g\": 5,\n    \"carbs_g\": 18,\n    \"serving_size\": \"1 cup\",\n    \"diet_type\": \"Meat\",\n    \"description\": \"A light, strained broth from Chicken Tinola, providing hydration and essential electrolytes – gentle on the developing digestive system.\"\n  },\n  {\n    \"food_name\": \"Salmon Congee\",\n    \"calories\": 220,\n    \"protein_g\": 12,\n    \"fat_g\": 7,\n    \"carbs_g\": 28,\n    \"serving_size\": \"1 cup\",\n    \"diet_type\": \"Seafood\",\n    \"description\": \"A delicate rice porridge enriched with flakes of cooked salmon, offering a great source of omega-3 fatty acids.\"\n  },\n  {\n    \"food_name\": \"Apple Carrot Baby\",\n    \"calories\": 155,\n    \"protein_g\": 1,\n    \"fat_g\": 0.5,\n    \"carbs_g\": 37,\n    \"serving_size\": \"1/2 cup\",\n    \"diet_type\": \"Vegetarian\",\n    \"description\": \"A smooth blend of steamed apples and carrots, offering a naturally sweet and nutritious meal, easy for infants to digest and enjoy.\"\n  },\n  {\n    \"food_name\": \"Malunggay Veggie\",\n    \"calories\": 175,\n    \"protein_g\": 7,\n    \"fat_g\": 3,\n    \"carbs_g\": 30,\n    \"serving_size\": \"1/2 cup\",\n    \"diet_type\": \"Vegetarian\",\n    \"description\": \"Nutrient-rich malunggay (moringa) leaves, cooked and blended with other soft vegetables, offering essential vitamins and minerals in an easily digestible form.\"\n  },\n  {\n    \"food_name\": \"Ginisang Upo Mush\",\n    \"calories\": 150,\n    \"protein_g\": 4,\n    \"fat_g\": 4,\n    \"carbs_g\": 25,\n    \"serving_size\": \"1/2 cup\",\n    \"diet_type\": \"Vegetarian\",\n    \"description\": \"Soft and mild upo (bottle gourd), gently sauteed and pureed to a smooth consistency, introducing a subtle, savory flavor to the palate.\"\n  }\n]\n```"
+                                                                                                              }
+                                                                                                            ],
+                                                                                                            "role": "model"
+                                                                                                          },
+                                                                                                          "finishReason": "STOP",
+                                                                                                          "avgLogprobs": -0.24799119240326406
+                                                                                                        }
+                                                                                                      ],
+                                                                                                      "usageMetadata": {
+                                                                                                        "promptTokenCount": 995,
+2025-09-03 06:36:31.713 17280-17382 FoodActivity            com.example.nutrisaur11              D      "candidatesTokenCount": 1146,
+                                                                                                        "totalTokenCount": 2141,
+                                                                                                        "promptTokensDetails": [
+                                                                                                          {
+                                                                                                            "modality": "TEXT",
+                                                                                                            "tokenCount": 995
+                                                                                                          }
+                                                                                                        ],
+                                                                                                        "candidatesTokensDetails": [
+                                                                                                          {
+                                                                                                            "modality": "TEXT",
+                                                                                                            "tokenCount": 1146
+                                                                                                          }
+                                                                                                        ]
+                                                                                                      },
+                                                                                                      "modelVersion": "gemini-2.0-flash",
+                                                                                                      "responseId": "aHG3aJfrIqriqtsP_PnNqQk"
+                                                                                                    }
+2025-09-03 06:36:31.714 17280-17382 FoodActivity            com.example.nutrisaur11              D  Extracted text content: ```json
+                                                                                                    [
+                                                                                                      {
+                                                                                                        "food_name": "Kalabasa Congee",
+                                                                                                        "calories": 200,
+                                                                                                        "protein_g": 6,
+                                                                                                        "fat_g": 5,
+                                                                                                        "carbs_g": 32,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "A smooth and gentle rice porridge infused with the sweetness of kalabasa (squash), offering a comforting introduction to solids."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Avocado Delight",
+                                                                                                        "calories": 180,
+                                                                                                        "protein_g": 2,
+                                                                                                        "fat_g": 15,
+                                                                                                        "carbs_g": 10,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Perfectly ripe avocado, gently mashed into a creamy, subtly sweet treat – an ideal first food rich in healthy fats."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Banana Langka",
+                                                                                                        "calories": 160,
+                                                                                                        "protein_g": 2,
+                                                                                                        "fat_g": 1,
+                                                                                                        "carbs_g": 38,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "A naturally sweet blend of mashed banana and soft langka (jackfruit), creating a flavorful and easily digestible treat."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Sweet Potato Baby",
+                                                                                                        "calories": 170,
+                                                                                                        "protein_g": 3,
+                                                                                                        "fat_g": 1,
+                                                                                                        "carbs_g": 40,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Tender sweet potato, steamed and mashed into a smooth, subtly sweet puree packed with essential nutrients for growing infants."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Pears Lugaw",
+                                                                                                        "calories": 190,
+                                                                                                        "protein_g": 5,
+                                                                                                        "fat_g": 4,
+                                                                                                        "carbs_g": 34,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Mild and easily digestible, this rice porridge combines the subtle sweetness of pears for a nourishing and comforting meal."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Chicken Tinola Broth",
+                                                                                                        "calories": 160,
+                                                                                                        "protein_g": 10,
+                                                                                                        "fat_g": 5,
+                                                                                                        "carbs_g": 18,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "diet_type": "Meat",
+                                                                                                        "description": "A light, strained broth from Chicken Tinola, providing hydration and essential electrolytes – gentle on the developing digestive system."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Salmon Congee",
+                                                                                                        "calories": 220,
+                                                                                                        "protein_g": 12,
+                                                                                                        "fat_g": 7,
+                                                                                                        "carbs_g": 28,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "diet_type": "Seafood",
+                                                                                                        "description": "A delicate rice porridge enriched with flakes of cooked salmon, offering a great source of omega-3 fatty acids."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Apple Carrot Baby",
+                                                                                                        "calories": 155,
+                                                                                                        "protein_g": 1,
+                                                                                                        "fat_g": 0.5,
+                                                                                                        "carbs_g": 37,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "A smooth blend of steamed apples and carrots, offering a naturally sweet and nutritious meal, easy for infants to digest and enjoy."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Malunggay Veggie",
+                                                                                                        "calories": 175,
+                                                                                                        "protein_g": 7,
+                                                                                                        "fat_g": 3,
+                                                                                                        "carbs_g": 30,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Nutrient-rich malunggay (moringa) leaves, cooked and blended with other soft vegetables, offering essential vitamins and minerals in an easily digestible form."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Ginisang Upo Mush",
+                                                                                                        "calories": 150,
+                                                                                                        "protein_g": 4,
+                                                                                                        "fat_g": 4,
+                                                                                                        "carbs_g": 25,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Soft and mild upo (bottle gourd), gently sauteed and pureed to a smooth consistency, introducing a subtle, savory flavor to the palate."
+                                                                                                      }
+                                                                                                    ]
+                                                                                                    ```
+2025-09-03 06:36:31.714 17280-17382 FoodActivity            com.example.nutrisaur11              D  Extracted JSON array: [
+                                                                                                      {
+                                                                                                        "food_name": "Kalabasa Congee",
+                                                                                                        "calories": 200,
+                                                                                                        "protein_g": 6,
+                                                                                                        "fat_g": 5,
+                                                                                                        "carbs_g": 32,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "A smooth and gentle rice porridge infused with the sweetness of kalabasa (squash), offering a comforting introduction to solids."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Avocado Delight",
+                                                                                                        "calories": 180,
+                                                                                                        "protein_g": 2,
+                                                                                                        "fat_g": 15,
+                                                                                                        "carbs_g": 10,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Perfectly ripe avocado, gently mashed into a creamy, subtly sweet treat – an ideal first food rich in healthy fats."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Banana Langka",
+                                                                                                        "calories": 160,
+                                                                                                        "protein_g": 2,
+                                                                                                        "fat_g": 1,
+                                                                                                        "carbs_g": 38,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "A naturally sweet blend of mashed banana and soft langka (jackfruit), creating a flavorful and easily digestible treat."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Sweet Potato Baby",
+                                                                                                        "calories": 170,
+                                                                                                        "protein_g": 3,
+                                                                                                        "fat_g": 1,
+                                                                                                        "carbs_g": 40,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Tender sweet potato, steamed and mashed into a smooth, subtly sweet puree packed with essential nutrients for growing infants."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Pears Lugaw",
+                                                                                                        "calories": 190,
+                                                                                                        "protein_g": 5,
+                                                                                                        "fat_g": 4,
+                                                                                                        "carbs_g": 34,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Mild and easily digestible, this rice porridge combines the subtle sweetness of pears for a nourishing and comforting meal."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Chicken Tinola Broth",
+                                                                                                        "calories": 160,
+                                                                                                        "protein_g": 10,
+                                                                                                        "fat_g": 5,
+                                                                                                        "carbs_g": 18,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "diet_type": "Meat",
+                                                                                                        "description": "A light, strained broth from Chicken Tinola, providing hydration and essential electrolytes – gentle on the developing digestive system."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Salmon Congee",
+                                                                                                        "calories": 220,
+                                                                                                        "protein_g": 12,
+                                                                                                        "fat_g": 7,
+                                                                                                        "carbs_g": 28,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "diet_type": "Seafood",
+                                                                                                        "description": "A delicate rice porridge enriched with flakes of cooked salmon, offering a great source of omega-3 fatty acids."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Apple Carrot Baby",
+                                                                                                        "calories": 155,
+                                                                                                        "protein_g": 1,
+                                                                                                        "fat_g": 0.5,
+                                                                                                        "carbs_g": 37,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "A smooth blend of steamed apples and carrots, offering a naturally sweet and nutritious meal, easy for infants to digest and enjoy."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Malunggay Veggie",
+                                                                                                        "calories": 175,
+                                                                                                        "protein_g": 7,
+                                                                                                        "fat_g": 3,
+                                                                                                        "carbs_g": 30,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Nutrient-rich malunggay (moringa) leaves, cooked and blended with other soft vegetables, offering essential vitamins and minerals in an easily digestible form."
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Ginisang Upo Mush",
+                                                                                                        "calories": 150,
+                                                                                                        "protein_g": 4,
+                                                                                                        "fat_g": 4,
+                                                                                                        "carbs_g": 25,
+                                                                                                        "serving_size": "1/2 cup",
+                                                                                                        "diet_type": "Vegetarian",
+                                                                                                        "description": "Soft and mild upo (bottle gourd), gently sauteed and pureed to a smooth consistency, introducing a subtle, savory flavor to the palate."
+                                                                                                      }
+                                                                                                    ]
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Kalabasa Congee - Calories: 200, Protein: 6.0, Fat: 5.0, Carbs: 32.0
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Avocado Delight - Calories: 180, Protein: 2.0, Fat: 15.0, Carbs: 10.0
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Banana Langka - Calories: 160, Protein: 2.0, Fat: 1.0, Carbs: 38.0
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Sweet Potato Baby - Calories: 170, Protein: 3.0, Fat: 1.0, Carbs: 40.0
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Pears Lugaw - Calories: 190, Protein: 5.0, Fat: 4.0, Carbs: 34.0
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Chicken Tinola Broth - Calories: 160, Protein: 10.0, Fat: 5.0, Carbs: 18.0
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Salmon Congee - Calories: 220, Protein: 12.0, Fat: 7.0, Carbs: 28.0
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Apple Carrot Baby - Calories: 155, Protein: 1.0, Fat: 0.5, Carbs: 37.0
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Malunggay Veggie - Calories: 175, Protein: 7.0, Fat: 3.0, Carbs: 30.0
+2025-09-03 06:36:31.715 17280-17382 FoodActivity            com.example.nutrisaur11              D  Parsed food: Ginisang Upo Mush - Calories: 150, Protein: 4.0, Fat: 4.0, Carbs: 25.0
+2025-09-03 06:36:33.252 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verification response: {
+                                                                                                      "candidates": [
+                                                                                                        {
+                                                                                                          "content": {
+                                                                                                            "parts": [
+                                                                                                              {
+                                                                                                                "text": "1,3,5,7,10\n"
+                                                                                                              }
+                                                                                                            ],
+                                                                                                            "role": "model"
+                                                                                                          },
+                                                                                                          "finishReason": "STOP",
+                                                                                                          "avgLogprobs": -0.07951587438583374
+                                                                                                        }
+                                                                                                      ],
+                                                                                                      "usageMetadata": {
+                                                                                                        "promptTokenCount": 349,
+                                                                                                        "candidatesTokenCount": 11,
+                                                                                                        "totalTokenCount": 360,
+                                                                                                        "promptTokensDetails": [
+                                                                                                          {
+                                                                                                            "modality": "TEXT",
+                                                                                                            "tokenCount": 349
+                                                                                                          }
+                                                                                                        ],
+                                                                                                        "candidatesTokensDetails": [
+                                                                                                          {
+                                                                                                            "modality": "TEXT",
+                                                                                                            "tokenCount": 11
+                                                                                                          }
+                                                                                                        ]
+                                                                                                      },
+                                                                                                      "modelVersion": "gemini-2.0-flash",
+                                                                                                      "responseId": "cHG3aIe7LqWgqtsP54bOyAg"
+                                                                                                    }
+2025-09-03 06:36:33.253 17280-17382 FoodActivity            com.example.nutrisaur11              D  Extracted verification text: 1,3,5,7,10
+2025-09-03 06:36:33.253 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verified food dish: Kalabasa Congee
+2025-09-03 06:36:33.253 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verified food dish: Banana Langka
+2025-09-03 06:36:33.253 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verified food dish: Pears Lugaw
+2025-09-03 06:36:33.253 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verified food dish: Salmon Congee
+2025-09-03 06:36:33.253 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verified food dish: Ginisang Upo Mush
+2025-09-03 06:36:33.253 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verification complete: 5 out of 10 are actual food dishes
+2025-09-03 06:36:33.311 17280-17291 System                  com.example.nutrisaur11              W  A resource failed to call close. 
+ 2025-09-03 06:36:34.792 17280-17382 FoodActivity            com.example.nutrisaur11              D  Nutrition verification response: {
+                                                                                                      "candidates": [
+                                                                                                        {
+                                                                                                          "content": {
+                                                                                                            "parts": [
+                                                                                                              {
+                                                                                                                "text": "1,2,4,5\n"
+                                                                                                              }
+                                                                                                            ],
+                                                                                                            "role": "model"
+                                                                                                          },
+                                                                                                          "finishReason": "STOP",
+                                                                                                          "avgLogprobs": -0.243203803896904
+                                                                                                        }
+                                                                                                      ],
+                                                                                                      "usageMetadata": {
+                                                                                                        "promptTokenCount": 372,
+                                                                                                        "candidatesTokenCount": 8,
+                                                                                                        "totalTokenCount": 380,
+                                                                                                        "promptTokensDetails": [
+                                                                                                          {
+                                                                                                            "modality": "TEXT",
+                                                                                                            "tokenCount": 372
+                                                                                                          }
+                                                                                                        ],
+                                                                                                        "candidatesTokensDetails": [
+                                                                                                          {
+                                                                                                            "modality": "TEXT",
+                                                                                                            "tokenCount": 8
+                                                                                                          }
+                                                                                                        ]
+                                                                                                      },
+                                                                                                      "modelVersion": "gemini-2.0-flash",
+                                                                                                      "responseId": "cnG3aPqBE_muqtsP0dCPyAc"
+                                                                                                    }
+2025-09-03 06:36:34.792 17280-17382 FoodActivity            com.example.nutrisaur11              D  Extracted verification text: 1,2,4,5
+2025-09-03 06:36:34.792 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verified nutrition for: Kalabasa Congee
+2025-09-03 06:36:34.792 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verified nutrition for: Banana Langka
+2025-09-03 06:36:34.793 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verified nutrition for: Salmon Congee
+2025-09-03 06:36:34.793 17280-17382 FoodActivity            com.example.nutrisaur11              D  Verified nutrition for: Ginisang Upo Mush
+2025-09-03 06:36:34.793 17280-17382 FoodActivity            com.example.nutrisaur11              D  Nutrition verification complete: 4 out of 5 have accurate nutrition
+2025-09-03 06:36:34.793 17280-17382 FoodActivity            com.example.nutrisaur11              D  Generated 4 unique verified foods out of 10 total
+2025-09-03 06:36:34.795 17280-17280 FoodActivity            com.example.nutrisaur11              D  Real food cards ready! Images will load when user views them.
+2025-09-03 06:36:34.811 17280-17280 AndroidRuntime          com.example.nutrisaur11              D  Shutting down VM
+2025-09-03 06:36:34.812 17280-17280 AndroidRuntime          com.example.nutrisaur11              E  FATAL EXCEPTION: main
+                                                                                                    Process: com.example.nutrisaur11, PID: 17280
+                                                                                                    java.lang.IndexOutOfBoundsException: Inconsistency detected. Invalid view holder adapter positionViewHolder{c6f0167 position=4 id=-1, oldPos=-1, pLpos:-1 no parent} androidx.viewpager2.widget.ViewPager2$RecyclerViewImpl{2ad8429 VFED..... ......I. 33,33-915,1397 #1}, adapter:com.example.nutrisaur11.FoodRecommendationAdapter@2dbf3ae, layout:androidx.viewpager2.widget.ViewPager2$LinearLayoutManagerImpl@279f54f, context:com.example.nutrisaur11.FoodActivity@771bd83
+                                                                                                    	at androidx.recyclerview.widget.RecyclerView$Recycler.validateViewHolderForOffsetPosition(RecyclerView.java:5974)
+                                                                                                    	at androidx.recyclerview.widget.RecyclerView$Recycler.tryGetViewHolderForPositionByDeadline(RecyclerView.java:6158)
+                                                                                                    	at androidx.recyclerview.widget.RecyclerView$Recycler.getViewForPosition(RecyclerView.java:6118)
+                                                                                                    	at androidx.recyclerview.widget.RecyclerView$Recycler.getViewForPosition(RecyclerView.java:6114)
+                                                                                                    	at androidx.recyclerview.widget.LinearLayoutManager$LayoutState.next(LinearLayoutManager.java:2303)
+                                                                                                    	at androidx.recyclerview.widget.LinearLayoutManager.layoutChunk(LinearLayoutManager.java:1627)
+                                                                                                    	at androidx.recyclerview.widget.LinearLayoutManager.fill(LinearLayoutManager.java:1587)
+                                                                                                    	at androidx.recyclerview.widget.LinearLayoutManager.onLayoutChildren(LinearLayoutManager.java:665)
+                                                                                                    	at androidx.recyclerview.widget.RecyclerView.dispatchLayoutStep1(RecyclerView.java:4085)
+                                                                                                    	at androidx.recyclerview.widget.RecyclerView.dispatchLayout(RecyclerView.java:3849)
+                                                                                                    	at androidx.recyclerview.widget.RecyclerView.onLayout(RecyclerView.java:4404)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at androidx.viewpager2.widget.ViewPager2.onLayout(ViewPager2.java:527)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.widget.FrameLayout.layoutChildren(FrameLayout.java:332)
+                                                                                                    	at android.widget.FrameLayout.onLayout(FrameLayout.java:270)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.widget.LinearLayout.setChildFrame(LinearLayout.java:1829)
+                                                                                                    	at android.widget.LinearLayout.layoutVertical(LinearLayout.java:1673)
+                                                                                                    	at android.widget.LinearLayout.onLayout(LinearLayout.java:1582)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.widget.FrameLayout.layoutChildren(FrameLayout.java:332)
+                                                                                                    	at android.widget.FrameLayout.onLayout(FrameLayout.java:270)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.widget.LinearLayout.setChildFrame(LinearLayout.java:1829)
+                                                                                                    	at android.widget.LinearLayout.layoutVertical(LinearLayout.java:1673)
+                                                                                                    	at android.widget.LinearLayout.onLayout(LinearLayout.java:1582)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.widget.FrameLayout.layoutChildren(FrameLayout.java:332)
+                                                                                                    	at android.widget.FrameLayout.onLayout(FrameLayout.java:270)
+                                                                                                    	at androidx.core.widget.NestedScrollView.onLayout(NestedScrollView.java:2229)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at androidx.constraintlayout.widget.ConstraintLayout.onLayout(ConstraintLayout.java:1961)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.widget.FrameLayout.layoutChildren(FrameLayout.java:332)
+                                                                                                    	at android.widget.FrameLayout.onLayout(FrameLayout.java:270)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.widget.LinearLayout.setChildFrame(LinearLayout.java:1829)
+                                                                                                    	at android.widget.LinearLayout.layoutVertical(LinearLayout.java:1673)
+                                                                                                    	at android.widget.LinearLayout.onLayout(LinearLayout.java:1582)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+2025-09-03 06:36:34.812 17280-17280 AndroidRuntime          com.example.nutrisaur11              E  	at android.widget.FrameLayout.layoutChildren(FrameLayout.java:332)
+                                                                                                    	at android.widget.FrameLayout.onLayout(FrameLayout.java:270)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.widget.LinearLayout.setChildFrame(LinearLayout.java:1829)
+                                                                                                    	at android.widget.LinearLayout.layoutVertical(LinearLayout.java:1673)
+                                                                                                    	at android.widget.LinearLayout.onLayout(LinearLayout.java:1582)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.widget.FrameLayout.layoutChildren(FrameLayout.java:332)
+                                                                                                    	at android.widget.FrameLayout.onLayout(FrameLayout.java:270)
+                                                                                                    	at com.android.internal.policy.DecorView.onLayout(DecorView.java:865)
+                                                                                                    	at android.view.View.layout(View.java:23554)
+                                                                                                    	at android.view.ViewGroup.layout(ViewGroup.java:6452)
+                                                                                                    	at android.view.ViewRootImpl.performLayout(ViewRootImpl.java:3849)
+                                                                                                    	at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:3299)
+                                                                                                    	at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:2263)
+                                                                                                    	at android.view.ViewRootImpl$TraversalRunnable.run(ViewRootImpl.java:8984)
+                                                                                                    	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1144)
+                                                                                                    	at android.view.Choreographer.doCallbacks(Choreographer.java:948)
+                                                                                                    	at android.view.Choreographer.doFrame(Choreographer.java:877)
+                                                                                                    	at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1129)
+                                                                                                    	at android.os.Handler.handleCallback(Handler.java:938)
+                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:99)
+                                                                                                    	at android.os.Looper.loopOnce(Looper.java:210)
+                                                                                                    	at android.os.Looper.loop(Looper.java:299)
+                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:8168)
+                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
+                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
+                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1037)
+2025-09-03 06:36:34.820 17280-17280 OOMEventManagerFK       com.example.nutrisaur11              D  checkEventAndDumpForJE: 0
+2025-09-03 06:36:35.475 29902-11239 ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=7176   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }

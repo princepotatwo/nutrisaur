@@ -48,6 +48,9 @@ dependencies {
     // Gemini API dependencies
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("org.json:json:20231013")
+    // SerpApi for Google Images
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     // SwipeRefreshLayout dependency
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
