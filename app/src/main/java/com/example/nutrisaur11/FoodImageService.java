@@ -28,7 +28,7 @@ public class FoodImageService {
     private static final String TAG = "FoodImageService";
     // Use your existing Railway deployment URL from Constants.java
     private static final String API_BASE_URL = "https://nutrisaur-production.up.railway.app/"; // Production Railway deployment
-    private static final String IMAGE_SCRAPER_ENDPOINT = "api/food_image_scraper_simple.php";
+    private static final String IMAGE_SCRAPER_ENDPOINT = "api/food_image_scraper_robust.php";
     
     private final OkHttpClient client;
     private final ExecutorService executor;
