@@ -22,8 +22,8 @@ class DatabaseAPI {
         // Include the centralized configuration
         require_once __DIR__ . "/../config.php";
         
-        // Initialize connections
-        $this->pdo = getDatabaseConnection();
+        // Initialize connections with retry logic
+        $this->pdo = $this->establishPDOConnection();
         $this->mysqli = getMysqliConnection();
         
         // Ensure PDO connection is properly set up
@@ -39,6 +39,34 @@ class DatabaseAPI {
         if (!$this->pdo && !$this->mysqli) {
             error_log("Warning: Database connections failed. Application will run in limited mode.");
         }
+    }
+    
+    /**
+     * Establish PDO connection with retry logic
+     */
+    private function establishPDOConnection() {
+        $maxRetries = 3;
+        $retryDelay = 1; // seconds
+        
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            try {
+                $pdo = getDatabaseConnection();
+                if ($pdo) {
+                    // Test the connection
+                    $pdo->query("SELECT 1");
+                    error_log("DatabaseAPI: PDO connection established on attempt $attempt");
+                    return $pdo;
+                }
+            } catch (Exception $e) {
+                error_log("DatabaseAPI: PDO connection attempt $attempt failed: " . $e->getMessage());
+                if ($attempt < $maxRetries) {
+                    sleep($retryDelay);
+                }
+            }
+        }
+        
+        error_log("DatabaseAPI: Failed to establish PDO connection after $maxRetries attempts");
+        return null;
     }
     
     /**
