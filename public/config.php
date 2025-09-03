@@ -4,12 +4,41 @@
  * Railway Production Environment
  */
 
-// Database Configuration - Original working configuration
-$host = $_ENV['MYSQL_HOST'] ?? $_ENV['DB_HOST'] ?? $_ENV['DATABASE_HOST'] ?? 'mainline.proxy.rlwy.net';
-$port = $_ENV['MYSQL_PORT'] ?? $_ENV['DB_PORT'] ?? $_ENV['DATABASE_PORT'] ?? '26063';
-$dbname = $_ENV['MYSQL_DATABASE'] ?? $_ENV['DB_NAME'] ?? $_ENV['DATABASE_NAME'] ?? 'railway';
-$dbUsername = $_ENV['MYSQL_USER'] ?? $_ENV['DB_USER'] ?? $_ENV['DATABASE_USER'] ?? 'root';
-$dbPassword = $_ENV['MYSQL_PASSWORD'] ?? $_ENV['DB_PASSWORD'] ?? $_ENV['DATABASE_PASSWORD'] ?? 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+// Database Configuration - Parse Railway MYSQL_PUBLIC_URL or use fallbacks
+function parseRailwayDatabaseUrl() {
+    $mysqlUrl = $_ENV['MYSQL_PUBLIC_URL'] ?? null;
+    
+    if ($mysqlUrl) {
+        // Parse: mysql://root:password@host:port/database
+        $parsed = parse_url($mysqlUrl);
+        
+        if ($parsed && isset($parsed['host']) && isset($parsed['user']) && isset($parsed['pass'])) {
+            return [
+                'host' => $parsed['host'],
+                'port' => $parsed['port'] ?? '3306',
+                'database' => ltrim($parsed['path'] ?? '', '/'),
+                'username' => $parsed['user'],
+                'password' => $parsed['pass']
+            ];
+        }
+    }
+    
+    // Fallback values (these are working as shown in the diagnostic)
+    return [
+        'host' => 'mainline.proxy.rlwy.net',
+        'port' => '26063',
+        'database' => 'railway',
+        'username' => 'root',
+        'password' => 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy'
+    ];
+}
+
+$dbConfig = parseRailwayDatabaseUrl();
+$host = $dbConfig['host'];
+$port = $dbConfig['port'];
+$dbname = $dbConfig['database'];
+$dbUsername = $dbConfig['username'];
+$dbPassword = $dbConfig['password'];
 
 // Application Configuration
 define('APP_NAME', 'Nutrisaur');
@@ -94,7 +123,9 @@ function getDatabaseConfig() {
         'database' => $dbname,
         'username' => $dbUsername,
         'password' => substr($dbPassword, 0, 3) . '***',
+        'mysql_public_url' => $_ENV['MYSQL_PUBLIC_URL'] ?? 'not_set',
         'env_vars' => [
+            'MYSQL_PUBLIC_URL' => $_ENV['MYSQL_PUBLIC_URL'] ?? 'not_set',
             'MYSQL_HOST' => $_ENV['MYSQL_HOST'] ?? 'not_set',
             'MYSQL_PORT' => $_ENV['MYSQL_PORT'] ?? 'not_set',
             'MYSQL_DATABASE' => $_ENV['MYSQL_DATABASE'] ?? 'not_set',
