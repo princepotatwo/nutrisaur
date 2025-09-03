@@ -4,8 +4,14 @@ session_start();
 
 // Check if user is already logged in
 $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
+
+// Debug: Log session status
+error_log("Home.php - Session check: " . ($isLoggedIn ? 'logged in' : 'not logged in'));
+error_log("Home.php - Session data: " . print_r($_SESSION, true));
+
 if ($isLoggedIn) {
     // Redirect to dashboard if already logged in
+    error_log("Home.php - Redirecting to dash.php");
     header("Location: dash.php");
     exit;
 }
@@ -59,7 +65,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
                 $_SESSION['role'] = $result['data']['role'];
             }
             
+            // Debug: Log successful login
+            error_log("Home.php - Login successful, session data: " . print_r($_SESSION, true));
+            
             // Redirect to dashboard
+            error_log("Home.php - Redirecting to dash.php after login");
             header("Location: dash.php");
             exit;
         } else {
