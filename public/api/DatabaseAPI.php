@@ -629,6 +629,11 @@ class DatabaseAPI {
      */
     public function getAIRecommendations($userEmail, $limit = 10) {
         try {
+            // Check if database connection is available
+            if (!$this->isDatabaseAvailable()) {
+                return [];
+            }
+            
             $stmt = $this->pdo->prepare("SELECT * FROM ai_food_recommendations WHERE user_email = :user_email ORDER BY created_at DESC LIMIT :limit");
             $stmt->bindParam(':user_email', $userEmail);
             $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -703,6 +708,11 @@ class DatabaseAPI {
      */
     public function getUserPreferences($userId) {
         try {
+            // Check if database connection is available
+            if (!$this->isDatabaseAvailable()) {
+                return null;
+            }
+            
             $stmt = $this->pdo->prepare("SELECT * FROM user_preferences WHERE user_id = :user_id");
             $stmt->bindParam(':user_id', $userId);
             $stmt->execute();
