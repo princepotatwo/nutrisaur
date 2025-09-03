@@ -4,14 +4,8 @@ session_start();
 
 // Check if user is already logged in
 $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
-
-// Debug: Log session status for troubleshooting
-error_log("Home.php - Session check: " . ($isLoggedIn ? 'logged in' : 'not logged in'));
-error_log("Home.php - Session data: " . json_encode($_SESSION));
-
 if ($isLoggedIn) {
     // Redirect to dashboard if already logged in
-    error_log("Home.php - Redirecting to dash.php (already logged in)");
     header("Location: /dash.php");
     exit;
 }
@@ -37,8 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     $usernameOrEmail = trim($_POST['username_login']);
     $password = $_POST['password_login'];
     
-    // Debug: Log login attempt
-    error_log("Home.php - Login attempt - Username: " . $usernameOrEmail . ", Password length: " . strlen($password));
+
     
     if (empty($usernameOrEmail) || empty($password)) {
         $loginError = "Please enter both username/email and password";
@@ -69,17 +62,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             // Regenerate session ID after setting data
             session_regenerate_id(true);
             
-            // Debug: Log successful login
-            error_log("Home.php - Login successful, session data: " . json_encode($_SESSION));
-            
             // Redirect to dashboard
-            error_log("Home.php - Redirecting to dash.php after login");
             header("Location: /dash.php");
             exit;
         } else {
             $loginError = $result['message'];
-            // Debug: Log authentication failure
-            error_log("Home.php - Authentication failed: " . $result['message']);
         }
     }
 }
@@ -90,8 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     $email = trim($_POST['email_register']);
     $password = $_POST['password_register'];
     
-    // Debug: Log registration attempt
-    error_log("Home.php - Registration attempt - Username: " . $username . ", Email: " . $email . ", Password length: " . strlen($password));
+
     
     if (empty($username) || empty($email) || empty($password)) {
         $registrationError = "Please fill in all fields";
@@ -115,17 +101,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             // Regenerate session ID after setting data
             session_regenerate_id(true);
             
-            // Debug: Log successful registration
-            error_log("Home.php - Registration successful, session data: " . json_encode($_SESSION));
-            
             // Redirect to dashboard
-            error_log("Home.php - Redirecting to dash.php after registration");
             header("Location: /dash.php");
             exit;
         } else {
             $registrationError = $result['message'];
-            // Debug: Log registration failure
-            error_log("Home.php - Registration failed: " . $result['message']);
         }
     }
 }
