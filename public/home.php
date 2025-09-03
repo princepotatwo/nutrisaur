@@ -4,9 +4,15 @@ session_start();
 
 // Check if user is already logged in
 $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
+
+// Debug: Log session status for troubleshooting
+error_log("Home.php - Session check: " . ($isLoggedIn ? 'logged in' : 'not logged in'));
+error_log("Home.php - Session data: " . json_encode($_SESSION));
+
 if ($isLoggedIn) {
     // Redirect to dashboard if already logged in
-    header("Location: dash.php");
+    error_log("Home.php - Redirecting to dash.php (already logged in)");
+    header("Location: /dash.php");
     exit;
 }
 
@@ -60,8 +66,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             // Regenerate session ID after setting data
             session_regenerate_id(true);
             
+            // Debug: Log successful login
+            error_log("Home.php - Login successful, session data: " . json_encode($_SESSION));
+            
             // Redirect to dashboard
-            header("Location: dash.php");
+            error_log("Home.php - Redirecting to dash.php after login");
+            header("Location: /dash.php");
             exit;
         } else {
             $loginError = $result['message'];
@@ -97,8 +107,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
             // Regenerate session ID after setting data
             session_regenerate_id(true);
             
+            // Debug: Log successful registration
+            error_log("Home.php - Registration successful, session data: " . json_encode($_SESSION));
+            
             // Redirect to dashboard
-            header("Location: dash.php");
+            error_log("Home.php - Redirecting to dash.php after registration");
+            header("Location: /dash.php");
             exit;
         } else {
             $registrationError = $result['message'];
