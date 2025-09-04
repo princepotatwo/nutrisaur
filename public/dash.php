@@ -6600,6 +6600,15 @@ body {
             }
         }
 
+        // State management for dashboard data
+        const dashboardState = {
+            totalScreened: null,
+            highRisk: null,
+            samCases: null,
+            criticalAlerts: null,
+            lastUpdate: null
+        };
+
         // Function to update community metrics
         async function updateCommunityMetrics(barangay = '') {
             // Debounce rapid successive calls to prevent flickering
@@ -6639,14 +6648,18 @@ body {
                         const totalUsersValue = data.total_users || 0;
                         const recentRegValue = data.recent_registrations || 0;
                         
-                        console.log('Setting totalScreened.textContent to:', totalUsersValue);
-                        console.log('Setting screenedChange.textContent to:', recentRegValue);
+                        // Only update if data has changed
+                        if (dashboardState.totalScreened !== totalUsersValue) {
+                            console.log('Setting totalScreened.textContent to:', totalUsersValue);
+                            totalScreened.textContent = totalUsersValue;
+                            dashboardState.totalScreened = totalUsersValue;
+                        }
                         
-                        totalScreened.textContent = totalUsersValue;
-                        screenedChange.textContent = recentRegValue;
-                        
-                        console.log('After setting - totalScreened.textContent:', totalScreened.textContent);
-                        console.log('After setting - screenedChange.textContent:', screenedChange.textContent);
+                        if (dashboardState.recentRegistrations !== recentRegValue) {
+                            console.log('Setting screenedChange.textContent to:', recentRegValue);
+                            screenedChange.textContent = recentRegValue;
+                            dashboardState.recentRegistrations = recentRegValue;
+                        }
                     } else {
                         console.log('❌ HTML elements not found for Total Screened');
                     }
@@ -6719,14 +6732,18 @@ body {
                     const highRiskValue = riskData.high || 0;
                     const moderateValue = riskData.moderate || 0;
                     
-                    console.log('Setting highRisk.textContent to:', highRiskValue);
-                    console.log('Setting riskChange.textContent to:', moderateValue);
+                    // Only update if data has changed
+                    if (dashboardState.highRisk !== highRiskValue) {
+                        console.log('Setting highRisk.textContent to:', highRiskValue);
+                        highRisk.textContent = highRiskValue;
+                        dashboardState.highRisk = highRiskValue;
+                    }
                     
-                    highRisk.textContent = highRiskValue;
-                    riskChange.textContent = moderateValue;
-                    
-                    console.log('After setting - highRisk.textContent:', highRisk.textContent);
-                    console.log('After setting - riskChange.textContent:', riskChange.textContent);
+                    if (dashboardState.moderateRisk !== moderateValue) {
+                        console.log('Setting riskChange.textContent to:', moderateValue);
+                        riskChange.textContent = moderateValue;
+                        dashboardState.moderateRisk = moderateValue;
+                    }
                 } else {
                     console.log('❌ HTML elements not found for High Risk Cases');
                 }
@@ -6743,14 +6760,18 @@ body {
                         const samCasesValue = riskData.severe || 0;
                         const samChangeValue = riskData.high || 0;
                         
-                        console.log('Setting samCases.textContent to:', samCasesValue);
-                        console.log('Setting samChange.textContent to:', samChangeValue);
+                        // Only update if data has changed
+                        if (dashboardState.samCases !== samCasesValue) {
+                            console.log('Setting samCases.textContent to:', samCasesValue);
+                            samCases.textContent = samCasesValue;
+                            dashboardState.samCases = samCasesValue;
+                        }
                         
-                        samCases.textContent = samCasesValue;
-                        samChange.textContent = samChangeValue;
-                        
-                        console.log('After setting - samCases.textContent:', samCases.textContent);
-                        console.log('After setting - samChange.textContent:', samChange.textContent);
+                        if (dashboardState.samChange !== samChangeValue) {
+                            console.log('Setting samChange.textContent to:', samChangeValue);
+                            samChange.textContent = samChangeValue;
+                            dashboardState.samChange = samChangeValue;
+                        }
                     } else {
                         console.log('❌ HTML elements not found for SAM Cases');
                     }
@@ -7202,22 +7223,12 @@ body {
                 } else {
                 }
 
-                const data = await fetchDataFromAPI('ai_food_recommendations', params);
+                const data = await fetchDataFromAPI('intelligent_programs', params);
                 
                 if (data && data.success) {
-                    // Map AI food recommendations to programs format
-                    const programs = data.data || [];
-                    const analysis = {
-                        total_users: programs.length,
-                        high_risk_percentage: 0,
-                        sam_cases: 0,
-                        children_count: 0,
-                        elderly_count: 0,
-                        low_dietary_diversity: 0,
-                        average_risk: 0,
-                        community_health_status: 'Active',
-                        message: `Generated ${programs.length} AI food recommendations based on community data`
-                    };
+                    // Use the intelligent programs data directly
+                    const programs = data.data.programs || [];
+                    const analysis = data.data.data_analysis || {};
                     updateIntelligentProgramsDisplay(programs, analysis);
                 } else {
                     // Show appropriate no-data message
@@ -9062,6 +9073,18 @@ body {
             const alertsContainer = document.getElementById('critical-alerts');
             if (!alertsContainer) return;
             
+            // Create a hash of the current data to check if it has changed
+            const dataHash = JSON.stringify({
+                sam_cases: data.sam_cases || 0,
+                high_risk_cases: data.high_risk_cases || 0,
+                critical_muac: data.critical_muac || 0
+            });
+            
+            // Only update if data has actually changed
+            if (dashboardState.criticalAlerts === dataHash) {
+                return; // No change, don't update
+            }
+            
             let alertsHtml = '';
             let hasRealAlerts = false;
             
@@ -9135,12 +9158,11 @@ body {
                 `;
             }
             
-            // Only update if content has actually changed
-            if (alertsContainer.innerHTML !== alertsHtml) {
-                alertsContainer.innerHTML = alertsHtml;
-                currentAlertsState.hasAlerts = hasRealAlerts;
-                currentAlertsState.lastContent = alertsHtml;
-            }
+            // Update the container and state
+            alertsContainer.innerHTML = alertsHtml;
+            currentAlertsState.hasAlerts = hasRealAlerts;
+            currentAlertsState.lastContent = alertsHtml;
+            dashboardState.criticalAlerts = dataHash; // Store the new hash
         }
         
         // Function to show dashboard loading state

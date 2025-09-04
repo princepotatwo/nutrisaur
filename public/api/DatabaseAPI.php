@@ -689,6 +689,196 @@ class DatabaseAPI {
         }
     }
     
+    /**
+     * Get intelligent programs based on community data
+     */
+    public function getIntelligentPrograms($barangay = '', $municipality = '') {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return [
+                    'programs' => [],
+                    'data_analysis' => [
+                        'total_users' => 0,
+                        'high_risk_percentage' => 0,
+                        'sam_cases' => 0,
+                        'children_count' => 0,
+                        'elderly_count' => 0,
+                        'low_dietary_diversity' => 0,
+                        'average_risk' => 0,
+                        'community_health_status' => 'No Data',
+                        'message' => 'No community data available'
+                    ]
+                ];
+            }
+            
+            // Build where clause
+            $whereClause = "WHERE 1=1";
+            $params = [];
+            
+            if (!empty($barangay)) {
+                $whereClause .= " AND barangay = :barangay";
+                $params[':barangay'] = $barangay;
+            }
+            
+            if (!empty($municipality)) {
+                $whereClause .= " AND municipality = :municipality";
+                $params[':municipality'] = $municipality;
+            }
+            
+            // Get community data
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    COUNT(*) as total_users,
+                    AVG(risk_score) as average_risk,
+                    SUM(CASE WHEN risk_score >= 30 THEN 1 ELSE 0 END) as high_risk_count,
+                    SUM(CASE WHEN risk_score >= 80 THEN 1 ELSE 0 END) as sam_cases,
+                    SUM(CASE WHEN age < 5 THEN 1 ELSE 0 END) as children_count,
+                    SUM(CASE WHEN age >= 65 THEN 1 ELSE 0 END) as elderly_count,
+                    SUM(CASE WHEN dietary_diversity <= 2 THEN 1 ELSE 0 END) as low_dietary_diversity
+                FROM user_preferences 
+                $whereClause
+            ");
+            $stmt->execute($params);
+            $communityData = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Calculate percentages
+            $totalUsers = $communityData['total_users'] ?? 0;
+            $highRiskPercentage = $totalUsers > 0 ? round(($communityData['high_risk_count'] / $totalUsers) * 100, 1) : 0;
+            $averageRisk = round($communityData['average_risk'] ?? 0, 1);
+            
+            // Determine community health status
+            $communityHealthStatus = 'Good';
+            if ($highRiskPercentage > 50) {
+                $communityHealthStatus = 'Critical';
+            } elseif ($highRiskPercentage > 30) {
+                $communityHealthStatus = 'High Risk';
+            } elseif ($highRiskPercentage > 15) {
+                $communityHealthStatus = 'Moderate Risk';
+            }
+            
+            // Generate programs based on data
+            $programs = [];
+            
+            if ($totalUsers > 0) {
+                // SAM Cases Program
+                if ($communityData['sam_cases'] > 0) {
+                    $programs[] = [
+                        'id' => 'sam_intervention',
+                        'title' => 'Severe Acute Malnutrition (SAM) Intervention',
+                        'description' => 'Emergency nutrition program for ' . $communityData['sam_cases'] . ' SAM cases',
+                        'priority' => 'Critical',
+                        'target_group' => 'Children under 5',
+                        'duration' => '3-6 months',
+                        'status' => 'Active',
+                        'ai_reasoning' => 'Based on ' . $communityData['sam_cases'] . ' SAM cases detected in the community. Immediate intervention required.'
+                    ];
+                }
+                
+                // High Risk Program
+                if ($communityData['high_risk_count'] > 0) {
+                    $programs[] = [
+                        'id' => 'high_risk_nutrition',
+                        'title' => 'High Risk Nutrition Support',
+                        'description' => 'Targeted nutrition program for ' . $communityData['high_risk_count'] . ' high-risk individuals',
+                        'priority' => 'High',
+                        'target_group' => 'High-risk individuals',
+                        'duration' => '6-12 months',
+                        'status' => 'Active',
+                        'ai_reasoning' => 'Based on ' . $highRiskPercentage . '% high-risk cases. Preventive measures needed.'
+                    ];
+                }
+                
+                // Children Nutrition Program
+                if ($communityData['children_count'] > 0) {
+                    $programs[] = [
+                        'id' => 'children_nutrition',
+                        'title' => 'Children Nutrition Program',
+                        'description' => 'Specialized nutrition program for ' . $communityData['children_count'] . ' children under 5',
+                        'priority' => 'High',
+                        'target_group' => 'Children under 5',
+                        'duration' => '12 months',
+                        'status' => 'Active',
+                        'ai_reasoning' => 'Based on ' . $communityData['children_count'] . ' children in the community. Early intervention crucial.'
+                    ];
+                }
+                
+                // Elderly Nutrition Program
+                if ($communityData['elderly_count'] > 0) {
+                    $programs[] = [
+                        'id' => 'elderly_nutrition',
+                        'title' => 'Elderly Nutrition Support',
+                        'description' => 'Specialized nutrition program for ' . $communityData['elderly_count'] . ' elderly individuals',
+                        'priority' => 'Medium',
+                        'target_group' => 'Elderly (65+)',
+                        'duration' => 'Ongoing',
+                        'status' => 'Active',
+                        'ai_reasoning' => 'Based on ' . $communityData['elderly_count'] . ' elderly individuals. Age-appropriate nutrition needed.'
+                    ];
+                }
+                
+                // Dietary Diversity Program
+                if ($communityData['low_dietary_diversity'] > 0) {
+                    $programs[] = [
+                        'id' => 'dietary_diversity',
+                        'title' => 'Dietary Diversity Improvement',
+                        'description' => 'Program to improve dietary diversity for ' . $communityData['low_dietary_diversity'] . ' individuals',
+                        'priority' => 'Medium',
+                        'target_group' => 'Low dietary diversity',
+                        'duration' => '6 months',
+                        'status' => 'Active',
+                        'ai_reasoning' => 'Based on ' . $communityData['low_dietary_diversity'] . ' individuals with low dietary diversity. Education and support needed.'
+                    ];
+                }
+            }
+            
+            // If no specific programs, create a general community program
+            if (empty($programs) && $totalUsers > 0) {
+                $programs[] = [
+                    'id' => 'general_community',
+                    'title' => 'General Community Nutrition Program',
+                    'description' => 'Comprehensive nutrition program for the entire community',
+                    'priority' => 'Medium',
+                    'target_group' => 'All community members',
+                    'duration' => '12 months',
+                    'status' => 'Active',
+                    'ai_reasoning' => 'Based on community data analysis. General nutrition improvement program.'
+                ];
+            }
+            
+            return [
+                'programs' => $programs,
+                'data_analysis' => [
+                    'total_users' => $totalUsers,
+                    'high_risk_percentage' => $highRiskPercentage,
+                    'sam_cases' => $communityData['sam_cases'] ?? 0,
+                    'children_count' => $communityData['children_count'] ?? 0,
+                    'elderly_count' => $communityData['elderly_count'] ?? 0,
+                    'low_dietary_diversity' => $communityData['low_dietary_diversity'] ?? 0,
+                    'average_risk' => $averageRisk,
+                    'community_health_status' => $communityHealthStatus,
+                    'message' => $totalUsers > 0 ? "Generated " . count($programs) . " programs based on community data analysis" : 'No community data available'
+                ]
+            ];
+            
+        } catch (PDOException $e) {
+            error_log("Error getting intelligent programs: " . $e->getMessage());
+            return [
+                'programs' => [],
+                'data_analysis' => [
+                    'total_users' => 0,
+                    'high_risk_percentage' => 0,
+                    'sam_cases' => 0,
+                    'children_count' => 0,
+                    'elderly_count' => 0,
+                    'low_dietary_diversity' => 0,
+                    'average_risk' => 0,
+                    'community_health_status' => 'Error',
+                    'message' => 'Error analyzing community data'
+                ]
+            ];
+        }
+    }
+    
     // ========================================
     // USER PREFERENCES
     // ========================================
@@ -2007,6 +2197,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             
             $recommendations = $db->getAIRecommendations($userEmail, $limit);
             echo json_encode(['success' => true, 'data' => $recommendations]);
+            break;
+            
+        case 'intelligent_programs':
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $municipality = $_GET['municipality'] ?? $_POST['municipality'] ?? '';
+            
+            $programs = $db->getIntelligentPrograms($barangay, $municipality);
+            echo json_encode(['success' => true, 'data' => $programs]);
             break;
             
         case 'time_frame_data':
