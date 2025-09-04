@@ -46,10 +46,10 @@ try {
         $isEmail = filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL);
         
         if ($isEmail) {
-            $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE email = :email");
+            $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE email = :email");
             $stmt->bindParam(':email', $usernameOrEmail);
         } else {
-            $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE username = :username");
+            $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE username = :username");
             $stmt->bindParam(':username', $usernameOrEmail);
         }
         
@@ -59,19 +59,7 @@ try {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if (password_verify($password, $user['password'])) {
-                // Check if email is verified
-                if (!$user['email_verified']) {
-                    echo json_encode([
-                        'success' => false, 
-                        'message' => 'Please verify your email address before logging in. Check your email for the verification code.',
-                        'requires_verification' => true,
-                        'data' => [
-                            'user_id' => $user['user_id'],
-                            'email' => $user['email']
-                        ]
-                    ]);
-                    exit;
-                }
+                // Login successful - no email verification required for existing users
                 
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['username'] = $user['username'];
@@ -83,8 +71,7 @@ try {
                     'data' => [
                         'user_id' => $user['user_id'],
                         'username' => $user['username'],
-                        'email' => $user['email'],
-                        'email_verified' => true
+                        'email' => $user['email']
                     ]
                 ]);
             } else {

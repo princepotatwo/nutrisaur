@@ -1104,12 +1104,7 @@ $db->close();
                         window.location.href = '/dash';
                     }, 1000);
                 } else {
-                    if (data.requires_verification) {
-                        // Show verification screen for login
-                        showVerificationScreen(data.data.email);
-                    } else {
-                        showMessage(data.message || 'Login failed. Please try again.', 'error');
-                    }
+                    showMessage(data.message || 'Login failed. Please try again.', 'error');
                 }
             } catch (error) {
                 showMessage('An error occurred. Please try again later.', 'error');
