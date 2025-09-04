@@ -410,7 +410,7 @@ $role = isset($currentUser['role']) ? $currentUser['role'] : 'user';
 
 $profile = null;
 try {
-    $stmt = $pdo->prepare("
+    $stmt = $db->pdo->prepare("
         SELECT u.*, up.* 
         FROM users u 
         LEFT JOIN user_preferences up ON u.email = up.user_email 
@@ -426,7 +426,7 @@ try {
     $profile = null;
 }
         
-        $stmt = $pdo->prepare("SELECT * FROM nutrition_goals WHERE user_id = :user_id");
+        $stmt = $db->pdo->prepare("SELECT * FROM nutrition_goals WHERE user_id = :user_id");
         $stmt->bindParam(':user_id', $userId);
         $stmt->execute();
         
