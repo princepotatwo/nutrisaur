@@ -22,12 +22,14 @@ WORKDIR /var/www/html
 COPY sss/ ./sss/
 COPY public/ ./public/
 COPY config.php ./config.php
+COPY email_config.php ./email_config.php
 COPY vendor/ ./vendor/
 COPY package.json ./package.json
-COPY email-service.js ./email-service.js
+COPY email-service-simple.js ./email-service-simple.js
 
-# Ensure config.php is accessible from both root and public directory
+# Ensure config.php and email_config.php are accessible from both root and public directory
 RUN cp config.php public/config.php
+RUN cp email_config.php public/email_config.php
 
 # Install Node.js dependencies
 RUN npm install
