@@ -10,14 +10,14 @@ if (!$db->isUserLoggedIn()) {
     $sessionData = $db->getCurrentUserSession();
     error_log("Dash.php - Session data: " . json_encode($sessionData));
     error_log("Dash.php - Session ID: " . session_id());
-    header('Location: home.php');
+    header('Location: /home');
     exit;
 }
 
 $currentUser = $db->getCurrentUserSession();
 if (!$currentUser) {
     error_log("Dash.php - Failed to get current user session");
-    header("Location: home.php");
+    header("Location: /home");
     exit();
 }
 
@@ -400,7 +400,7 @@ $role = isset($currentUser['role']) ? $currentUser['role'] : 'user';
 
 $profile = null;
 try {
-    $stmt = $db->pdo->prepare("
+    $stmt = $db->getPDO()->prepare("
         SELECT u.*, up.* 
         FROM users u 
         LEFT JOIN user_preferences up ON u.email = up.user_email 
@@ -416,7 +416,7 @@ try {
     $profile = null;
 }
         
-        $stmt = $db->pdo->prepare("SELECT * FROM nutrition_goals WHERE user_id = :user_id");
+        $stmt = $db->getPDO()->prepare("SELECT * FROM nutrition_goals WHERE user_id = :user_id");
         $stmt->bindParam(':user_id', $userId);
         $stmt->execute();
         
@@ -426,13 +426,13 @@ try {
         
         $currentTimeFrame = '1d';
         $currentBarangay = '';
-        $timeFrameData = getTimeFrameData($db->pdo, $currentTimeFrame, $currentBarangay);
-        $screeningResponsesData = getScreeningResponsesByTimeFrame($db->pdo, $currentTimeFrame, $currentBarangay);
+        $timeFrameData = getTimeFrameData($db->getPDO(), $currentTimeFrame, $currentBarangay);
+        $screeningResponsesData = getScreeningResponsesByTimeFrame($db->getPDO(), $currentTimeFrame, $currentBarangay);
 
 if (isset($_GET['logout'])) {
     session_unset();
     session_destroy();
-    header("Location: home.php");
+    header("Location: /home");
     exit;
 }
 ?>
