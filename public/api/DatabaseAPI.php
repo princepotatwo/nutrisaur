@@ -1943,6 +1943,144 @@ class DatabaseAPI {
 }
 
 // ========================================
+// EMAIL FUNCTIONS (RESEND API)
+// ========================================
+
+/**
+ * Send email using Resend API
+ */
+function sendResendEmail($email, $username, $verificationCode) {
+    try {
+        // Resend API configuration
+        $resendApiKey = 're_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB';
+        $fromEmail = 'onboarding@resend.dev';
+        
+        // Create email data
+        $emailData = [
+            'from' => $fromEmail,
+            'to' => [$email],
+            'subject' => "Nutrisaur Verification Code: $verificationCode",
+            'html' => "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
+                <div style='background: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;'>
+                    <h1 style='margin: 0;'>🧪 Nutrisaur</h1>
+                </div>
+                <div style='background: white; padding: 30px; border: 1px solid #ddd; border-radius: 0 0 10px 10px;'>
+                    <h2 style='color: #333;'>Hello $username!</h2>
+                    <p style='color: #666; font-size: 16px;'>Your verification code is:</p>
+                    <div style='background: #f8f9fa; border: 2px solid #4CAF50; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
+                        <span style='font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;'>$verificationCode</span>
+                    </div>
+                    <p style='color: #666; font-size: 14px;'>This code will expire in 5 minutes.</p>
+                    <p style='color: #666; font-size: 14px;'>If you didn't request this verification, please ignore this email.</p>
+                    <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;'>
+                    <p style='color: #999; font-size: 12px; text-align: center;'>Best regards,<br>Nutrisaur Team</p>
+                </div>
+            </div>
+            "
+        ];
+        
+        // Send email using Resend API
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.resend.com/emails');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $resendApiKey
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+        
+        if ($httpCode == 200 && !$curlError) {
+            return true;
+        } else {
+            error_log("Resend API failed: HTTP $httpCode, Error: $curlError");
+            return false;
+        }
+        
+    } catch (Exception $e) {
+        error_log("Email sending exception: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Send welcome email using Resend API
+ */
+function sendWelcomeEmail($email, $username) {
+    try {
+        // Resend API configuration
+        $resendApiKey = 're_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB';
+        $fromEmail = 'onboarding@resend.dev';
+        
+        // Create email data
+        $emailData = [
+            'from' => $fromEmail,
+            'to' => [$email],
+            'subject' => "Welcome to Nutrisaur! 🧪",
+            'html' => "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
+                <div style='background: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;'>
+                    <h1 style='margin: 0;'>🧪 Nutrisaur</h1>
+                </div>
+                <div style='background: white; padding: 30px; border: 1px solid #ddd; border-radius: 0 0 10px 10px;'>
+                    <h2 style='color: #333;'>Welcome to Nutrisaur, $username! 🎉</h2>
+                    <p style='color: #666; font-size: 16px;'>Your email has been successfully verified!</p>
+                    <p style='color: #666; font-size: 16px;'>You can now access all features of Nutrisaur:</p>
+                    <ul style='color: #666; font-size: 16px;'>
+                        <li>📊 Nutrition screening and assessment</li>
+                        <li>🍎 AI-powered food recommendations</li>
+                        <li>📈 Health tracking and analytics</li>
+                        <li>🔔 Personalized notifications</li>
+                    </ul>
+                    <div style='background: #f8f9fa; border: 2px solid #4CAF50; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
+                        <p style='color: #4CAF50; font-size: 18px; font-weight: bold; margin: 0;'>Ready to start your nutrition journey!</p>
+                    </div>
+                    <p style='color: #666; font-size: 14px;'>Thank you for choosing Nutrisaur for your health and nutrition needs.</p>
+                    <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;'>
+                    <p style='color: #999; font-size: 12px; text-align: center;'>Best regards,<br>Nutrisaur Team</p>
+                </div>
+            </div>
+            "
+        ];
+        
+        // Send email using Resend API
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.resend.com/emails');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $resendApiKey
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+        
+        if ($httpCode == 200 && !$curlError) {
+            return true;
+        } else {
+            error_log("Resend API failed: HTTP $httpCode, Error: $curlError");
+            return false;
+        }
+        
+    } catch (Exception $e) {
+        error_log("Welcome email sending exception: " . $e->getMessage());
+        return false;
+    }
+}
+
+// ========================================
 // API ENDPOINTS
 // ========================================
 
@@ -2268,6 +2406,253 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             
             $timeFrameData = $db->getTimeFrameData($timeFrame, $barangay);
             echo json_encode(['success' => true, 'data' => $timeFrameData]);
+            break;
+            
+        // ========================================
+        // EMAIL VERIFICATION API (RESEND)
+        // ========================================
+        case 'register_resend':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data received']);
+                    break;
+                }
+                
+                $username = trim($data['username'] ?? '');
+                $email = trim($data['email'] ?? '');
+                $password = $data['password'] ?? '';
+                
+                // Validation
+                if (empty($username) || empty($email) || empty($password)) {
+                    echo json_encode(['success' => false, 'message' => 'Please fill in all fields']);
+                    break;
+                }
+                
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+                    break;
+                }
+                
+                if (strlen($password) < 6) {
+                    echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters']);
+                    break;
+                }
+                
+                try {
+                    // Check if user already exists
+                    $pdo = $db->getPDO();
+                    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
+                    $stmt->execute([$email, $username]);
+                    $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($existingUser) {
+                        echo json_encode(['success' => false, 'message' => 'User with this email or username already exists']);
+                        break;
+                    }
+                    
+                    // Generate verification code
+                    $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                    $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+                    
+                    // Hash password
+                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                    
+                    // Insert user
+                    $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, 0, NOW())");
+                    $result = $stmt->execute([$username, $email, $hashedPassword, $verificationCode, $expiresAt]);
+                    
+                    if (!$result) {
+                        echo json_encode(['success' => false, 'message' => 'Failed to create user account']);
+                        break;
+                    }
+                    
+                    $userId = $pdo->lastInsertId();
+                    
+                    // Send email using Resend API
+                    $emailSent = sendResendEmail($email, $username, $verificationCode);
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Registration successful! Please check your email for verification code.',
+                        'requires_verification' => true,
+                        'data' => [
+                            'user_id' => $userId,
+                            'username' => $username,
+                            'email' => $email,
+                            'email_sent' => $emailSent,
+                            'verification_code' => $verificationCode // For testing purposes
+                        ]
+                    ]);
+                    
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'verify_resend':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data received']);
+                    break;
+                }
+                
+                $email = trim($data['email'] ?? '');
+                $verificationCode = trim($data['verification_code'] ?? '');
+                
+                // Validation
+                if (empty($email) || empty($verificationCode)) {
+                    echo json_encode(['success' => false, 'message' => 'Please provide email and verification code']);
+                    break;
+                }
+                
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+                    break;
+                }
+                
+                try {
+                    $pdo = $db->getPDO();
+                    
+                    // Find user
+                    $stmt = $pdo->prepare("SELECT user_id, username, verification_code, verification_code_expires, email_verified FROM users WHERE email = ?");
+                    $stmt->execute([$email]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if (!$user) {
+                        echo json_encode(['success' => false, 'message' => 'User not found']);
+                        break;
+                    }
+                    
+                    if ($user['email_verified']) {
+                        echo json_encode(['success' => false, 'message' => 'Email is already verified']);
+                        break;
+                    }
+                    
+                    // Check if code is expired
+                    if (strtotime($user['verification_code_expires']) < time()) {
+                        echo json_encode(['success' => false, 'message' => 'Verification code has expired']);
+                        break;
+                    }
+                    
+                    // Verify code
+                    if ($user['verification_code'] !== $verificationCode) {
+                        echo json_encode(['success' => false, 'message' => 'Invalid verification code']);
+                        break;
+                    }
+                    
+                    // Mark email as verified
+                    $stmt = $pdo->prepare("UPDATE users SET email_verified = 1, verification_code = NULL, verification_code_expires = NULL WHERE user_id = ?");
+                    $result = $stmt->execute([$user['user_id']]);
+                    
+                    if (!$result) {
+                        echo json_encode(['success' => false, 'message' => 'Failed to verify email']);
+                        break;
+                    }
+                    
+                    // Send welcome email using Resend
+                    sendWelcomeEmail($email, $user['username']);
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Email verified successfully! Welcome to Nutrisaur.',
+                        'data' => [
+                            'user_id' => $user['user_id'],
+                            'username' => $user['username'],
+                            'email' => $email,
+                            'email_verified' => true
+                        ]
+                    ]);
+                    
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'message' => 'Verification failed: ' . $e->getMessage()]);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'resend_verification_resend':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data received']);
+                    break;
+                }
+                
+                $email = trim($data['email'] ?? '');
+                
+                // Validation
+                if (empty($email)) {
+                    echo json_encode(['success' => false, 'message' => 'Email is required']);
+                    break;
+                }
+                
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+                    break;
+                }
+                
+                try {
+                    $pdo = $db->getPDO();
+                    
+                    // Find user
+                    $stmt = $pdo->prepare("SELECT user_id, username, email_verified FROM users WHERE email = ?");
+                    $stmt->execute([$email]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if (!$user) {
+                        echo json_encode(['success' => false, 'message' => 'User not found']);
+                        break;
+                    }
+                    
+                    if ($user['email_verified']) {
+                        echo json_encode(['success' => false, 'message' => 'Email is already verified']);
+                        break;
+                    }
+                    
+                    // Generate new verification code
+                    $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                    $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+                    
+                    // Update user with new verification code
+                    $stmt = $pdo->prepare("UPDATE users SET verification_code = ?, verification_code_expires = ? WHERE user_id = ?");
+                    $result = $stmt->execute([$verificationCode, $expiresAt, $user['user_id']]);
+                    
+                    if (!$result) {
+                        echo json_encode(['success' => false, 'message' => 'Failed to update verification code']);
+                        break;
+                    }
+                    
+                    // Send email using Resend API
+                    $emailSent = sendResendEmail($email, $user['username'], $verificationCode);
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Verification code sent successfully! Please check your email.',
+                        'data' => [
+                            'email' => $email,
+                            'email_sent' => $emailSent,
+                            'verification_code' => $verificationCode // For testing purposes
+                        ]
+                    ]);
+                    
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'message' => 'Failed to resend verification code: ' . $e->getMessage()]);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
             break;
             
         // ========================================

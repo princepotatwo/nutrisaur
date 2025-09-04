@@ -33,14 +33,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/background_light"
-        android:padding="24dp">
+        android:padding="8dp">
 
     <!-- Edit Personalization Button -->
     <androidx.cardview.widget.CardView
         android:id="@+id/edit_personalization_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="12dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
         app:cardBackgroundColor="@color/green_band">
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="20dp"
+            android:padding="16dp"
             android:gravity="center_vertical">
 
             <ImageView
@@ -102,7 +102,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         app:cardCornerRadius="12dp"
@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="12dp">
 
             <!-- Title -->
             <TextView
@@ -618,7 +618,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="12dp"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         app:cardCornerRadius="16dp"
@@ -640,7 +640,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:padding="24dp"
+                    android:padding="16dp"
                     android:gravity="center_vertical">
 
                     <!-- Featured Food Image -->
@@ -717,7 +717,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="12dp">
 
             <!-- Section Header -->
             <LinearLayout
@@ -725,8 +725,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:layout_marginBottom="16dp">
 
                 <TextView
@@ -756,8 +756,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:clipToPadding="false"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp" />
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
 
         </LinearLayout>
 
@@ -766,7 +766,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="12dp">
 
             <!-- Section Header -->
             <LinearLayout
@@ -774,8 +774,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:layout_marginBottom="16dp">
 
                 <TextView
@@ -805,8 +805,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:clipToPadding="false"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp" />
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
 
         </LinearLayout>
 
@@ -815,7 +815,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="12dp">
 
             <!-- Section Header -->
             <LinearLayout
@@ -823,8 +823,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:layout_marginBottom="16dp">
 
                 <TextView
@@ -854,8 +854,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:clipToPadding="false"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp" />
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
 
         </LinearLayout>
 
@@ -864,7 +864,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="12dp">
 
             <!-- Section Header -->
             <LinearLayout
@@ -872,8 +872,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:layout_marginBottom="16dp">
 
                 <TextView
@@ -903,8 +903,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:clipToPadding="false"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp" />
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp" />
 
         </LinearLayout>
 

@@ -1125,7 +1125,7 @@ $db->close();
                     password: password
                 };
                 
-                let response = await fetch('/api/register_resend.php', {
+                let response = await fetch('/api/DatabaseAPI.php?action=register_resend', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1306,7 +1306,7 @@ $db->close();
                     verification_code: code
                 };
                 
-                const response = await fetch('/api/verify_resend.php', {
+                const response = await fetch('/api/DatabaseAPI.php?action=verify_resend', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1348,7 +1348,7 @@ $db->close();
                     username: 'User' // We'll get this from the database
                 };
                 
-                const response = await fetch('/api/resend_verification_resend.php', {
+                const response = await fetch('/api/DatabaseAPI.php?action=resend_verification_resend', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
