@@ -1111,7 +1111,7 @@ $db->close();
             }
         }
 
-        // Register function - using simple verification endpoint
+        // Register function - using new verification system
         async function register(username, email, password) {
             try {
                 // Show a loading message
@@ -1123,7 +1123,7 @@ $db->close();
                 formData.append('email', email);
                 formData.append('password', password);
                 
-                const response = await fetch('/api/verify', {
+                const response = await fetch('/api/verification_system', {
                     method: 'POST',
                     body: formData
                 });
@@ -1228,7 +1228,7 @@ $db->close();
             clearMessage();
         }
 
-        // Verify email function - using simple verification endpoint
+        // Verify email function - using new verification system
         async function verifyEmail(email, code) {
             try {
                 const formData = new FormData();
@@ -1236,7 +1236,7 @@ $db->close();
                 formData.append('email', email);
                 formData.append('verification_code', code);
                 
-                const response = await fetch('/api/verify', {
+                const response = await fetch('/api/verification_system', {
                     method: 'POST',
                     body: formData
                 });
@@ -1257,14 +1257,14 @@ $db->close();
             }
         }
 
-        // Resend verification code function - using simple verification endpoint
+        // Resend verification code function - using new verification system
         async function resendVerificationCode(email) {
             try {
                 const formData = new FormData();
                 formData.append('action', 'resend');
                 formData.append('email', email);
                 
-                const response = await fetch('/api/verify', {
+                const response = await fetch('/api/verification_system', {
                     method: 'POST',
                     body: formData
                 });
