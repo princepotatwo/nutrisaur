@@ -225,19 +225,6 @@ class DatabaseAPI {
             'connection_method' => $_ENV['MYSQL_PUBLIC_URL'] ? 'parsed_from_url' : 'fallback_values'
         ];
     }
-        if (!$this->pdo) {
-            return false;
-        }
-        
-        try {
-            $this->pdo->query("SELECT 1");
-            return true;
-        } catch (PDOException $e) {
-            error_log("Database connection test failed: " . $e->getMessage());
-            // Try to re-establish connection
-            $this->pdo = $this->establishPDOConnection();
-            return $this->pdo !== null;
-        }
     }
     
     /**
