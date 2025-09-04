@@ -225,7 +225,6 @@ class DatabaseAPI {
             'connection_method' => $_ENV['MYSQL_PUBLIC_URL'] ? 'parsed_from_url' : 'fallback_values'
         ];
     }
-    }
     
     /**
      * Check if database is available
