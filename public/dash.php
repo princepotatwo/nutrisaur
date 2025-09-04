@@ -6614,6 +6614,8 @@ body {
         // Function to update community metrics
         async function updateCommunityMetrics(barangay = '') {
             try {
+                console.log('🔄 updateCommunityMetrics called with barangay:', barangay);
+                
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
@@ -6624,9 +6626,9 @@ body {
                 }
                 const data = await fetchDataFromAPI('community_metrics', params);
                 
-                console.log('Community Metrics Data:', data);
-                console.log('Data type:', typeof data);
-                console.log('Data keys:', Object.keys(data));
+                console.log('📊 Community Metrics Data:', data);
+                console.log('📊 Data type:', typeof data);
+                console.log('📊 Data keys:', Object.keys(data));
                 
                 if (data && typeof data === 'object') {
                     // Update Total Screened (using total_users from community metrics)
@@ -6687,6 +6689,8 @@ body {
         // Function to update charts
         async function updateCharts(barangay = '') {
             try {
+                console.log('🔄 updateCharts called with barangay:', barangay);
+                
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
@@ -6694,7 +6698,7 @@ body {
 
                 // Update Risk Distribution Chart
                 const riskData = await fetchDataFromAPI('risk_distribution', params);
-                console.log('Risk Distribution Data:', riskData);
+                console.log('📈 Risk Distribution Data:', riskData);
                 
                 if (riskData && typeof riskData === 'object') {
                     updateRiskChart(riskData);
