@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Resend API configuration
-    $resendApiKey = 're_123456789'; // This is a placeholder - you'll get a real one
+    $resendApiKey = 're_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB'; // Your real API key
     $fromEmail = 'onboarding@resend.dev'; // Resend's default sender
     
     // Create email data

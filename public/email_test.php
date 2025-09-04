@@ -159,6 +159,14 @@
             <div id="resend-result" class="result" style="display: none;"></div>
         </div>
 
+        <!-- Test 1.5: Resend Simple (PHP SDK) -->
+        <div class="test-section">
+            <h3>Test 1.5: Resend Simple (PHP SDK)</h3>
+            <p>Send email using Resend PHP SDK - your API key is configured!</p>
+            <button onclick="testResendSimple()">Send Test Email (Resend SDK)</button>
+            <div id="resend-simple-result" class="result" style="display: none;"></div>
+        </div>
+
         <!-- Railway Setup Instructions -->
         <div class="setup-box">
             <h4>🚀 Railway Email Setup Required</h4>
@@ -277,6 +285,38 @@
             .finally(() => {
                 button.disabled = false;
                 button.textContent = 'Send Test Email (Resend)';
+            });
+        }
+
+        function testResendSimple() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Sending...';
+
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+
+            fetch('/api/test_resend_simple.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: 'kevinpingol123@gmail.com',
+                    username: 'TestUser',
+                    verificationCode: code
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const message = `Code: ${code}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
+                showResult('resend-simple-result', message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                showResult('resend-simple-result', 'Error: ' + error.message, 'error');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Send Test Email (Resend SDK)';
             });
         }
 
