@@ -22,57 +22,27 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 }
 */
 
-// Database connection - Use the same working approach
-$mysql_host = 'mainline.proxy.rlwy.net';
-$mysql_port = 26063;
-$mysql_user = 'root';
-$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-$mysql_database = 'railway';
-
-// If MYSQL_PUBLIC_URL is set (Railway sets this), parse it
-if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
-    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
-    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
-    if (preg_match($pattern, $mysql_url, $matches)) {
-        $mysql_user = $matches[1];
-        $mysql_password = $matches[2];
-        $mysql_host = $matches[3];
-        $mysql_port = $matches[4];
-        $mysql_database = $matches[5];
-    }
-}
+// Use the unified DatabaseAPI for all database operations
+require_once __DIR__ . "/DatabaseAPI.php";
 
 try {
-    // Create database connection with Railway-optimized settings
-    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
+    // Get the unified database instance
+    $db = new DatabaseAPI();
+    $pdo = $db->getPDO();
     
-    // Railway-specific PDO options for better connection stability
-    $pdoOptions = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_TIMEOUT => 30, // Increased timeout for Railway
-        PDO::ATTR_PERSISTENT => false, // Disable persistent connections for Railway
-        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
-        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-    ];
-    
-    $pdo = new PDO($dsn, $mysql_user, $mysql_password, $pdoOptions);
+    if (!$pdo) {
+        throw new Exception("Failed to establish database connection");
+    }
     
     // Test the connection
     $pdo->query("SELECT 1");
     
-} catch (PDOException $e) {
+} catch (Exception $e) {
     error_log("Database connection failed: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false, 
-        'message' => 'Database connection failed: ' . $e->getMessage(),
-        'details' => [
-            'host' => $mysql_host,
-            'port' => $mysql_port,
-            'database' => $mysql_database,
-            'user' => $mysql_user
-        ]
+        'message' => 'Database connection failed: ' . $e->getMessage()
     ]);
     exit;
 }
