@@ -1985,11 +1985,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // ========================================
         case 'login':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Try to get JSON data first
                 $input = file_get_contents('php://input');
                 $data = json_decode($input, true);
                 
+                // If JSON parsing fails, try form data
                 if (!$data) {
-                    echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
+                    $data = $_POST;
+                }
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data provided']);
                     break;
                 }
                 
@@ -2023,11 +2029,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // ========================================
         case 'register':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Try to get JSON data first
                 $input = file_get_contents('php://input');
                 $data = json_decode($input, true);
                 
+                // If JSON parsing fails, try form data
                 if (!$data) {
-                    echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
+                    $data = $_POST;
+                }
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data provided']);
                     break;
                 }
                 
