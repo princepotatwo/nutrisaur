@@ -107,20 +107,20 @@
             <div id="node-result" class="result" style="display: none;"></div>
         </div>
 
-        <!-- Test 3: Generate Verification Code -->
+        <!-- Test 3: Send Verification Email -->
         <div class="test-section">
-            <h3>Test 3: Generate Verification Code</h3>
-            <p>Generate a random 4-digit verification code.</p>
-            <button onclick="generateCode()">Generate Code</button>
-            <div id="code-result" class="result" style="display: none;"></div>
-        </div>
-
-        <!-- Test 4: Send Verification Email -->
-        <div class="test-section">
-            <h3>Test 4: Send Verification Email</h3>
+            <h3>Test 3: Send Verification Email</h3>
             <p>Send a verification email with a generated code.</p>
             <button onclick="sendVerificationEmail()">Send Verification Email</button>
             <div id="verification-result" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 4: Working Email Solution -->
+        <div class="test-section">
+            <h3>Test 4: Working Email Solution</h3>
+            <p>Send email using a working solution that bypasses Railway's email restrictions.</p>
+            <button onclick="testWorkingEmail()">Send Working Email</button>
+            <div id="working-result" class="result" style="display: none;"></div>
         </div>
     </div>
 
@@ -190,11 +190,6 @@
             });
         }
 
-        function generateCode() {
-            const code = Math.floor(1000 + Math.random() * 9000).toString();
-            showResult('code-result', `Generated Code: ${code}\n\nYou can use this code to test verification.`, 'success');
-        }
-
         function sendVerificationEmail() {
             const button = event.target;
             button.disabled = true;
@@ -224,6 +219,38 @@
             .finally(() => {
                 button.disabled = false;
                 button.textContent = 'Send Verification Email';
+            });
+        }
+
+        function testWorkingEmail() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Sending...';
+
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+
+            fetch('/api/test_working_email.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: 'kevinpingol123@gmail.com',
+                    username: 'TestUser',
+                    verificationCode: code
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const message = `Code: ${code}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
+                showResult('working-result', message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                showResult('working-result', 'Error: ' + error.message, 'error');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Send Working Email';
             });
         }
     </script>

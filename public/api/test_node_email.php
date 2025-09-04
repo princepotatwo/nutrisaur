@@ -1,5 +1,5 @@
 <?php
-// Test Node.js email service
+// Test Node.js email service with better error handling
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -32,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     try {
-        // Call Node.js email service
+        // Call Node.js email service with timeout
         $nodeScript = __DIR__ . "/../../email-service-simple.js";
-        $command = "node -e \"
+        $command = "timeout 10s node -e \"
             const emailService = require('$nodeScript');
             emailService.sendVerificationEmail('$email', '$username', '$verificationCode')
                 .then(result => {
@@ -53,10 +53,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Check if email was sent successfully
         $emailSent = false;
+        $errorMessage = '';
+        
         foreach ($output as $line) {
             if (strpos($line, 'Email sent successfully') !== false) {
                 $emailSent = true;
                 break;
+            }
+            if (strpos($line, 'EMAIL_ERROR:') !== false) {
+                $errorMessage = trim(str_replace('EMAIL_ERROR:', '', $line));
             }
         }
         
@@ -72,18 +77,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ]
             ]);
         } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Failed to send email using Node.js',
-                'data' => [
-                    'to' => $email,
-                    'username' => $username,
-                    'verification_code' => $verificationCode,
-                    'method' => 'Node.js email service',
-                    'output' => $output,
-                    'return_code' => $returnCode
-                ]
-            ]);
+            // If Node.js fails, try PHP mail() as fallback
+            $subject = "Nutrisaur Verification Code: $verificationCode";
+            $message = "Hello $username! Your verification code is: $verificationCode";
+            $headers = "From: kevinpingol123@gmail.com\r\n";
+            
+            $phpResult = mail($email, $subject, $message, $headers);
+            
+            if ($phpResult) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Node.js failed, but PHP mail() worked as fallback',
+                    'data' => [
+                        'to' => $email,
+                        'username' => $username,
+                        'verification_code' => $verificationCode,
+                        'method' => 'PHP mail() fallback',
+                        'nodejs_error' => $errorMessage
+                    ]
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Both Node.js and PHP mail() failed',
+                    'data' => [
+                        'to' => $email,
+                        'username' => $username,
+                        'verification_code' => $verificationCode,
+                        'method' => 'Both failed',
+                        'nodejs_error' => $errorMessage,
+                        'output' => $output,
+                        'return_code' => $returnCode
+                    ]
+                ]);
+            }
         }
         
     } catch (Exception $e) {
