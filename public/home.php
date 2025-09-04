@@ -1159,9 +1159,30 @@ $db->close();
                     try {
                         data = JSON.parse(responseText);
                     } catch (fallbackParseError) {
-                        console.error('Both registration methods failed');
-                        showMessage('Registration service unavailable. Please try again later.', 'error');
-                        return;
+                        console.error('Regular register failed, trying simple register...');
+                        
+                        // Third fallback to simple register endpoint
+                        const simpleFormData = new FormData();
+                        simpleFormData.append('username', username);
+                        simpleFormData.append('email', email);
+                        simpleFormData.append('password', password);
+                        
+                        response = await fetch('/api/register_simple', {
+                            method: 'POST',
+                            body: simpleFormData
+                        });
+                        
+                        console.log('Simple register response status:', response.status);
+                        responseText = await response.text();
+                        console.log('Simple register response text:', responseText);
+                        
+                        try {
+                            data = JSON.parse(responseText);
+                        } catch (simpleParseError) {
+                            console.error('All registration methods failed');
+                            showMessage('Registration service unavailable. Please try again later.', 'error');
+                            return;
+                        }
                     }
                 }
                 
