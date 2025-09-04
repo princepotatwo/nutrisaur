@@ -1062,10 +1062,9 @@ header {
     box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
 }
         .screening-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px;
             width: 100%;
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
@@ -1686,6 +1685,10 @@ header {
             border: 1px solid var(--color-border);
             position: relative;
             overflow: hidden;
+            width: 100%;
+            max-width: calc(100% - 60px);
+            margin-left: 0;
+            margin-right: 0;
         }
 
         /* Dark theme specific styles */
