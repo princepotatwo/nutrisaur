@@ -151,12 +151,12 @@
             </ol>
         </div>
 
-        <!-- Test 1: Railway Email (Recommended) -->
+        <!-- Test 1: Resend Email (WORKING SOLUTION) -->
         <div class="test-section">
-            <h3>Test 1: Railway Email (Recommended)</h3>
-            <p>Send email using Railway environment variables and proper configuration.</p>
-            <button onclick="testRailwayEmail()">Send Test Email (Railway)</button>
-            <div id="railway-result" class="result" style="display: none;"></div>
+            <h3>Test 1: Resend Email (WORKING SOLUTION)</h3>
+            <p>Send email using Resend API - this should actually work!</p>
+            <button onclick="testResendEmail()">Send Test Email (Resend)</button>
+            <div id="resend-result" class="result" style="display: none;"></div>
         </div>
 
         <!-- Railway Setup Instructions -->
@@ -183,9 +183,9 @@
             </ol>
         </div>
 
-        <!-- Test 1: Railway Email (Recommended) -->
+        <!-- Test 2: Railway Email (Recommended) -->
         <div class="test-section">
-            <h3>Test 1: Railway Email (Recommended)</h3>
+            <h3>Test 2: Railway Email (Recommended)</h3>
             <p>Send email using Railway environment variables and proper configuration.</p>
             <button onclick="testRailwayEmail()">Send Test Email (Railway)</button>
             <div id="railway-result" class="result" style="display: none;"></div>
@@ -246,6 +246,38 @@
             element.className = `result ${type}`;
             element.textContent = message;
             element.style.display = 'block';
+        }
+
+        function testResendEmail() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Sending...';
+
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+
+            fetch('/api/test_resend_email.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: 'kevinpingol123@gmail.com',
+                    username: 'TestUser',
+                    verificationCode: code
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const message = `Code: ${code}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
+                showResult('resend-result', message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                showResult('resend-result', 'Error: ' + error.message, 'error');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Send Test Email (Resend)';
+            });
         }
 
         function testRailwayEmail() {
