@@ -1466,7 +1466,7 @@ class DatabaseAPI {
 // ========================================
 
 // Only process API requests if this file is called directly
-if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
+if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI') {
     
     // Set headers for API responses
     header('Content-Type: application/json');
