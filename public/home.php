@@ -13,7 +13,7 @@ if (isset($_POST['test_session'])) {
 $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
 if ($isLoggedIn) {
     // Redirect to dashboard if already logged in
-    header("Location: /dash.php");
+    header("Location: dash.php");
     exit;
 }
 
@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             $db->setUserSession($result['data'], $result['user_type'] === 'admin');
             
             // Redirect to dashboard
-            header("Location: /dash.php");
+            header("Location: dash.php");
             exit;
         } else {
             $loginError = $result['message'];
@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         if ($result['success']) {
             // Session is now handled automatically by DatabaseAPI
             // Redirect to dashboard
-            header("Location: /dash.php");
+            header("Location: dash.php");
             exit;
         } else {
             $registrationError = $result['message'];
@@ -1086,7 +1086,7 @@ $db->close();
                     
                     // Redirect to dashboard after a short delay
                     setTimeout(() => {
-                        window.location.href = '/dash.php';
+                        window.location.href = 'dash.php';
                     }, 1000);
                 } else {
                     showMessage(data.message || 'Login failed. Please try again.', 'error');
@@ -1120,7 +1120,7 @@ $db->close();
                     showMessage('Registration successful! Redirecting to dashboard...', 'success');
                     // Redirect to dashboard after successful registration
                     setTimeout(() => {
-                        window.location.href = '/dash.php';
+                        window.location.href = 'dash.php';
                     }, 1000);
                 } else {
                     showMessage(data.message || 'Registration failed. Please try again.', 'error');
@@ -1172,7 +1172,7 @@ $db->close();
                 // Only redirect if user is actually logged in
                 if (data.success && data.logged_in && (data.user_id || data.admin_id)) {
                                     // User is already logged in, redirect to dashboard
-                window.location.href = '/dash.php';
+                window.location.href = 'dash.php';
                 }
             } catch (error) {
                 console.error('Session check error:', error);

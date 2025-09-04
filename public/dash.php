@@ -10,7 +10,7 @@ if (!$db->isUserLoggedIn()) {
     $sessionData = $db->getCurrentUserSession();
     error_log("Dash.php - Session data: " . json_encode($sessionData));
     error_log("Dash.php - Session ID: " . session_id());
-    header('Location: /home.php');
+    header('Location: home.php');
     exit;
 }
 
