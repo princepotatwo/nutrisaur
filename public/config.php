@@ -12,18 +12,26 @@ function parseRailwayDatabaseUrl() {
         // Parse: mysql://root:password@host:port/database
         $parsed = parse_url($mysqlUrl);
         
+        // Debug logging
+        error_log("Parsing MYSQL_PUBLIC_URL: " . $mysqlUrl);
+        error_log("Parsed result: " . json_encode($parsed));
+        
         if ($parsed && isset($parsed['host']) && isset($parsed['user']) && isset($parsed['pass'])) {
-            return [
+            $config = [
                 'host' => $parsed['host'],
                 'port' => $parsed['port'] ?? '3306',
                 'database' => ltrim($parsed['path'] ?? '', '/'),
                 'username' => $parsed['user'],
-                'password' => $parsed['pass']
+                'password' => urldecode($parsed['pass']) // Decode URL-encoded characters
             ];
+            
+            error_log("Using parsed config: " . json_encode(array_merge($config, ['password' => substr($config['password'], 0, 3) . '***'])));
+            return $config;
         }
     }
     
     // Fallback values (these are working as shown in the diagnostic)
+    error_log("Using fallback config");
     return [
         'host' => 'mainline.proxy.rlwy.net',
         'port' => '26063',
