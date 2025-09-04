@@ -6709,13 +6709,13 @@ body {
                 
                 console.log('High Risk Element:', highRisk);
                 console.log('Risk Change Element:', riskChange);
-                console.log('High Risk Data:', riskData.data.high);
-                console.log('Moderate Risk Data:', riskData.data.moderate);
-                console.log('Severe Risk Data:', riskData.data.severe);
+                console.log('High Risk Data:', riskData.high);
+                console.log('Moderate Risk Data:', riskData.moderate);
+                console.log('Severe Risk Data:', riskData.severe);
                 
                 if (highRisk && riskChange) {
-                    const highRiskValue = riskData.data.high || 0;
-                    const moderateValue = riskData.data.moderate || 0;
+                    const highRiskValue = riskData.high || 0;
+                    const moderateValue = riskData.moderate || 0;
                     
                     console.log('Setting highRisk.textContent to:', highRiskValue);
                     console.log('Setting riskChange.textContent to:', moderateValue);
@@ -6734,12 +6734,12 @@ body {
                     
                     console.log('SAM Cases Element:', samCases);
                     console.log('SAM Change Element:', samChange);
-                    console.log('SAM Cases Data (severe):', riskData.data.severe);
-                    console.log('SAM Change Data (high):', riskData.data.high);
+                    console.log('SAM Cases Data (severe):', riskData.severe);
+                    console.log('SAM Change Data (high):', riskData.high);
                     
                     if (samCases && samChange) {
-                        const samCasesValue = riskData.data.severe || 0;
-                        const samChangeValue = riskData.data.high || 0;
+                        const samCasesValue = riskData.severe || 0;
+                        const samChangeValue = riskData.high || 0;
                         
                         console.log('Setting samCases.textContent to:', samCasesValue);
                         console.log('Setting samChange.textContent to:', samChangeValue);
