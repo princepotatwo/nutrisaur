@@ -23,6 +23,8 @@ COPY sss/ ./sss/
 COPY public/ ./public/
 COPY config.php ./config.php
 COPY vendor/ ./vendor/
+COPY package.json ./package.json
+COPY email-service.js ./email-service.js
 
 # Ensure config.php is accessible from both root and public directory
 RUN cp config.php public/config.php
