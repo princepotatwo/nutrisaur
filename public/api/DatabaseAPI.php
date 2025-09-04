@@ -849,8 +849,10 @@ class DatabaseAPI {
      */
     public function getRiskDistribution() {
         try {
+            error_log("getRiskDistribution: Starting method");
             // Check if database connection is available
             if (!$this->isDatabaseAvailable()) {
+                error_log("getRiskDistribution: Database not available");
                 return [
                     'low' => 0,
                     'moderate' => 0,
@@ -875,6 +877,7 @@ class DatabaseAPI {
             ");
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("getRiskDistribution: Raw SQL results: " . json_encode($results));
             
             // Convert to expected format
             $distribution = [
@@ -888,6 +891,7 @@ class DatabaseAPI {
                 $distribution[$row['risk_level']] = (int)$row['count'];
             }
             
+            error_log("getRiskDistribution: Final distribution: " . json_encode($distribution));
             return $distribution;
         } catch (PDOException $e) {
             error_log("Risk distribution error: " . $e->getMessage());
@@ -1695,7 +1699,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         case 'risk_distribution':
+            error_log("API: risk_distribution called");
             $risks = $db->getRiskDistribution();
+            error_log("API: risk_distribution result: " . json_encode($risks));
             echo json_encode(['success' => true, 'data' => $risks]);
             break;
             
@@ -1708,11 +1714,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $limit = $_GET['limit'] ?? $_POST['limit'] ?? 50;
             $logs = $db->getRecentNotificationLogs($limit);
             echo json_encode(['success' => true, 'data' => $logs]);
-            break;
-            
-        case 'risk_distribution':
-            $risks = $db->getRiskDistribution();
-            echo json_encode(['success' => true, 'data' => $risks]);
             break;
             
         case 'detailed_screening_responses':
