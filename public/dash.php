@@ -7004,7 +7004,7 @@ body {
                 console.log('Notification data:', notificationData);
                 
                 // Send to the centralized DatabaseAPI
-                const response = await fetch('/api/DatabaseAPI.php?action=send_notification', {
+                const response = await fetch('/api/DatabaseAPI?action=send_notification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -7556,7 +7556,7 @@ body {
         async function fetchDataFromAPI(endpoint, params = {}) {
             try {
                 // Use centralized DatabaseAPI
-                let url = `${API_BASE_URL}DatabaseAPI.php?action=${endpoint}`;
+                let url = `${API_BASE_URL}DatabaseAPI?action=${endpoint}`;
                 
                 // Add query parameters if any
                 if (Object.keys(params).length > 0) {
@@ -8865,7 +8865,7 @@ body {
         /*
         async function fetchTimeFrameData(timeFrame, barangay) {
             try {
-                const response = await fetch(`/api/DatabaseAPI.php?action=time_frame_data&time_frame=${timeFrame}&barangay=${encodeURIComponent(barangay)}`);
+                const response = await fetch(`/api/DatabaseAPI?action=time_frame_data&time_frame=${timeFrame}&barangay=${encodeURIComponent(barangay)}`);
                 
                 if (response.ok) {
                     const responseData = await response.json();
@@ -9221,7 +9221,7 @@ body {
             
             try {
                 // Get all critical alerts data
-                const response = await fetch('/api/DatabaseAPI.php?action=critical_alerts');
+                const response = await fetch('/api/DatabaseAPI?action=critical_alerts');
                 const data = await response.json();
                 
                 if (!data.success || !data.data || data.data.length === 0) {
@@ -9251,7 +9251,7 @@ body {
                             user_name: userName
                         };
                         
-                        const notificationResponse = await fetch('/api/DatabaseAPI.php?action=send_notification', {
+                        const notificationResponse = await fetch('/api/DatabaseAPI?action=send_notification', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
