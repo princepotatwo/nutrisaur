@@ -14,46 +14,21 @@ if (!$db->isUserLoggedIn()) {
     exit;
 }
 
-$mysql_host = 'mainline.proxy.rlwy.net';
-$mysql_port = 26063;
-$mysql_user = 'root';
-$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-$mysql_database = 'railway';
+// Use centralized DatabaseAPI for all database operations
+require_once __DIR__ . "/api/DatabaseAPI.php";
+$db = new DatabaseAPI();
 
-if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
-    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
-    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
-    if (preg_match($pattern, $mysql_url, $matches)) {
-        $mysql_user = $matches[1];
-        $mysql_password = $matches[2];
-        $mysql_host = $matches[3];
-        $mysql_port = $matches[4];
-        $mysql_database = $matches[5];
-    }
+// Check if user is logged in
+if (!$db->isUserLoggedIn()) {
+    header("Location: home.php");
+    exit();
 }
 
-try {
-    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-    
-    // Railway-specific PDO options for better connection stability
-    $pdoOptions = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_TIMEOUT => 30, // Increased timeout for Railway
-        PDO::ATTR_PERSISTENT => false, // Disable persistent connections for Railway
-        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
-        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-    ];
-    
-    $conn = new PDO($dsn, $mysql_user, $mysql_password, $pdoOptions);
-    
-    // Test the connection
-    $conn->query("SELECT 1");
-    
-} catch (PDOException $e) {
-    error_log("Database connection failed: " . $e->getMessage());
-    $conn = null;
-    $dbError = "Database connection failed: " . $e->getMessage();
+$currentUser = $db->getCurrentUserSession();
+if (!$currentUser) {
+    error_log("Dash.php - Failed to get current user session");
+    header("Location: home.php");
+    exit();
 }
 
 // PHP Date formatting function for user-friendly time display
@@ -103,7 +78,7 @@ function formatDatePHP($dateString, $format = 'relative') {
 }
 
 // Function to get time frame data from user_preferences table
-function getTimeFrameData($conn, $timeFrame, $barangay = null) {
+function getTimeFrameData($pdo, $timeFrame, $barangay = null) {
     $now = new DateTime();
     $startDate = new DateTime();
     
@@ -157,7 +132,7 @@ function getTimeFrameData($conn, $timeFrame, $barangay = null) {
             $whereClause
         ";
         
-        $stmt = $conn->prepare($query);
+        $stmt = $pdo->prepare($query);
         $stmt->execute($params);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         
@@ -189,7 +164,7 @@ function getTimeFrameData($conn, $timeFrame, $barangay = null) {
 }
 
 // Function to get screening responses by time frame
-function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
+function getScreeningResponsesByTimeFrame($pdo, $timeFrame, $barangay = null) {
     $now = new DateTime();
     $startDate = new DateTime();
     
@@ -248,7 +223,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             ORDER BY MIN(up.age)
         ";
         
-        $stmt = $conn->prepare($ageQuery);
+        $stmt = $pdo->prepare($ageQuery);
         $stmt->execute($params);
         $ageGroups = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -262,7 +237,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             GROUP BY up.gender
         ";
         
-        $stmt = $conn->prepare($genderQuery);
+        $stmt = $pdo->prepare($genderQuery);
         $stmt->execute($params);
         $genderDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -276,7 +251,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             GROUP BY up.income
         ";
         
-        $stmt = $conn->prepare($incomeQuery);
+        $stmt = $pdo->prepare($incomeQuery);
         $stmt->execute($params);
         $incomeLevels = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -298,7 +273,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             ORDER BY MIN(up.height)
         ";
         
-        $stmt = $conn->prepare($heightQuery);
+        $stmt = $pdo->prepare($heightQuery);
         $stmt->execute($params);
         $heightDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -312,7 +287,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             GROUP BY up.swelling
         ";
         
-        $stmt = $conn->prepare($swellingQuery);
+        $stmt = $pdo->prepare($swellingQuery);
         $stmt->execute($params);
         $swellingDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -326,7 +301,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             GROUP BY up.weight_loss
         ";
         
-        $stmt = $conn->prepare($weightLossQuery);
+        $stmt = $pdo->prepare($weightLossQuery);
         $stmt->execute($params);
         $weightLossDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -340,7 +315,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             GROUP BY up.feeding_behavior
         ";
         
-        $stmt = $conn->prepare($feedingQuery);
+        $stmt = $pdo->prepare($feedingQuery);
         $stmt->execute($params);
         $feedingBehaviorDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -360,7 +335,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             GROUP BY physical_sign
         ";
         
-        $stmt = $conn->prepare($physicalQuery);
+        $stmt = $pdo->prepare($physicalQuery);
         $stmt->execute($params);
         $physicalSigns = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -382,7 +357,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             ORDER BY MIN(up.dietary_diversity_score)
         ";
         
-        $stmt = $conn->prepare($dietaryQuery);
+        $stmt = $pdo->prepare($dietaryQuery);
         $stmt->execute($params);
         $dietaryDiversityDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -401,7 +376,7 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
             GROUP BY clinical_risk_factor
         ";
         
-        $stmt = $conn->prepare($clinicalQuery);
+        $stmt = $pdo->prepare($clinicalQuery);
         $stmt->execute($params);
         $clinicalRiskFactors = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -427,15 +402,15 @@ function getScreeningResponsesByTimeFrame($conn, $timeFrame, $barangay = null) {
     }
 }
 
-$userId = $_SESSION['user_id'] ?? 'unknown';
-$username = $_SESSION['username'] ?? 'User';
-$email = $_SESSION['email'] ?? 'user@example.com';
-$isAdmin = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
-$role = isset($_SESSION['role']) ? $_SESSION['role'] : 'user';
+$userId = $currentUser['user_id'] ?? 'unknown';
+$username = $currentUser['username'] ?? 'User';
+$email = $currentUser['email'] ?? 'user@example.com';
+$isAdmin = isset($currentUser['is_admin']) && $currentUser['is_admin'] === true;
+$role = isset($currentUser['role']) ? $currentUser['role'] : 'user';
 
 $profile = null;
 try {
-    $stmt = $conn->prepare("
+    $stmt = $pdo->prepare("
         SELECT u.*, up.* 
         FROM users u 
         LEFT JOIN user_preferences up ON u.email = up.user_email 
@@ -451,7 +426,7 @@ try {
     $profile = null;
 }
         
-        $stmt = $conn->prepare("SELECT * FROM nutrition_goals WHERE user_id = :user_id");
+        $stmt = $pdo->prepare("SELECT * FROM nutrition_goals WHERE user_id = :user_id");
         $stmt->bindParam(':user_id', $userId);
         $stmt->execute();
         
@@ -461,8 +436,8 @@ try {
         
         $currentTimeFrame = '1d';
         $currentBarangay = '';
-        $timeFrameData = getTimeFrameData($conn, $currentTimeFrame, $currentBarangay);
-        $screeningResponsesData = getScreeningResponsesByTimeFrame($conn, $currentTimeFrame, $currentBarangay);
+        $timeFrameData = getTimeFrameData($db->pdo, $currentTimeFrame, $currentBarangay);
+        $screeningResponsesData = getScreeningResponsesByTimeFrame($db->pdo, $currentTimeFrame, $currentBarangay);
 
 if (isset($_GET['logout'])) {
     session_unset();
