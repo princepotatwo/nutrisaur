@@ -6625,45 +6625,34 @@ body {
                 const data = await fetchDataFromAPI('community_metrics', params);
                 
                 if (data && data.success) {
-                    // Update Total Screened
+                    // Update Total Screened (using total_users from community metrics)
                     const totalScreened = document.getElementById('community-total-screened');
                     const screenedChange = document.getElementById('community-screened-change');
                     if (totalScreened && screenedChange) {
-                        totalScreened.textContent = data.data.total_screenings || 0;
-                        screenedChange.textContent = data.data.recent_activity.screenings_this_week || 0;
+                        totalScreened.textContent = data.data.total_users || 0;
+                        screenedChange.textContent = data.data.recent_registrations || 0;
                     }
 
-                    // Update High Risk Cases
+                    // Update High Risk Cases (will be updated by risk_distribution API call)
                     const highRisk = document.getElementById('community-high-risk');
                     const riskChange = document.getElementById('community-risk-change');
                     if (highRisk && riskChange) {
-                        highRisk.textContent = data.data.risk_distribution.high || 0;
-                        riskChange.textContent = data.data.risk_distribution.moderate || 0;
+                        // These will be updated when risk_distribution data is loaded
+                        highRisk.textContent = '0';
+                        riskChange.textContent = '0';
                     }
 
-                    // Update SAM Cases (using moderate risk as proxy)
+                    // Update SAM Cases (will be updated by risk_distribution API call)
                     const samCases = document.getElementById('community-sam-cases');
                     const samChange = document.getElementById('community-sam-change');
                     if (samCases && samChange) {
-                        samCases.textContent = data.data.risk_distribution.moderate || 0;
-                        samChange.textContent = data.data.risk_distribution.low || 0;
+                        // These will be updated when risk_distribution data is loaded
+                        samCases.textContent = '0';
+                        samChange.textContent = '0';
                     }
                     
-                    // Calculate average risk score from distribution
-                    const totalRisk = (data.data.risk_distribution.high * 75) + (data.data.risk_distribution.moderate * 50) + (data.data.risk_distribution.low * 25);
-                    const totalUsers = data.data.risk_distribution.high + data.data.risk_distribution.moderate + data.data.risk_distribution.low;
-                    const avgRiskScore = totalUsers > 0 ? totalRisk / totalUsers : 0;
-                    
-                    // Store the average risk score globally for use in charts
-                    window.globalAverageRiskScore = avgRiskScore;
-                    
-                    // Update the risk chart center text immediately if it exists
-                    const riskCenterText = document.getElementById('risk-center-text');
-                    if (riskCenterText && window.globalAverageRiskScore > 0) {
-                        riskCenterText.textContent = Math.round(window.globalAverageRiskScore) + '%';
-                    }
-                    
-                    // Note: Critical alerts are now handled by updateCriticalAlerts() function
+                    // Note: Risk distribution data will be handled by updateCharts() function
+                    // which calls the risk_distribution API separately
                 }
             } catch (error) {
                 // Error handling for community metrics update
@@ -6682,6 +6671,21 @@ body {
                 const riskData = await fetchDataFromAPI('risk_distribution', params);
                 if (riskData && riskData.success) {
                     updateRiskChart(riskData.data);
+                    
+                    // Update individual cards with risk distribution data
+                    const highRisk = document.getElementById('community-high-risk');
+                    const riskChange = document.getElementById('community-risk-change');
+                    if (highRisk && riskChange) {
+                        highRisk.textContent = riskData.data.high || 0;
+                        riskChange.textContent = riskData.data.moderate || 0;
+                    }
+
+                    const samCases = document.getElementById('community-sam-cases');
+                    const samChange = document.getElementById('community-sam-change');
+                    if (samCases && samChange) {
+                        samCases.textContent = riskData.data.moderate || 0;
+                        samChange.textContent = riskData.data.low || 0;
+                    }
                 }
 
                 // Update Screening Responses (Age, Gender, Income, Height, Swelling, Weight Loss, Feeding, Physical Signs, Dietary, Clinical)

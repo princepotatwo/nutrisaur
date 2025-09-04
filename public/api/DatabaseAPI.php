@@ -771,7 +771,7 @@ class DatabaseAPI {
     /**
      * Get community metrics
      */
-    public function getCommunityMetrics() {
+    public function getCommunityMetrics($barangay = '') {
         try {
             // Check if database connection is available
             if (!$this->isDatabaseAvailable()) {
@@ -785,9 +785,25 @@ class DatabaseAPI {
             
             $metrics = [];
             
-            // Total users
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM users");
-            $stmt->execute();
+            // Build WHERE clause for barangay filtering
+            $whereClause = "";
+            $params = [];
+            if (!empty($barangay)) {
+                if (strpos($barangay, 'MUNICIPALITY_') === 0) {
+                    // Handle municipality-level filtering
+                    $municipality = str_replace('MUNICIPALITY_', '', $barangay);
+                    $whereClause = " WHERE barangay LIKE :municipality";
+                    $params[':municipality'] = $municipality . '%';
+                } else {
+                    // Handle specific barangay filtering
+                    $whereClause = " WHERE barangay = :barangay";
+                    $params[':barangay'] = $barangay;
+                }
+            }
+            
+            // Total users (filtered by barangay if specified)
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM user_preferences" . $whereClause);
+            $stmt->execute($params);
             $metrics['total_users'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // Active FCM tokens
@@ -799,18 +815,18 @@ class DatabaseAPI {
                 $metrics['active_devices'] = 0;
             }
             
-            // Users by barangay
+            // Users by barangay (filtered if barangay specified)
             try {
-                $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as count FROM user_preferences GROUP BY barangay");
-                $stmt->execute();
+                $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as count FROM user_preferences" . $whereClause . " GROUP BY barangay");
+                $stmt->execute($params);
                 $metrics['users_by_barangay'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (PDOException $e) {
                 $metrics['users_by_barangay'] = [];
             }
             
-            // Recent registrations (last 7 days)
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as recent FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
-            $stmt->execute();
+            // Recent registrations (last 7 days, filtered by barangay if specified)
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as recent FROM user_preferences" . $whereClause . " AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
+            $stmt->execute($params);
             $metrics['recent_registrations'] = $stmt->fetch(PDO::FETCH_ASSOC)['recent'];
             
             return $metrics;
@@ -828,15 +844,31 @@ class DatabaseAPI {
     /**
      * Get geographic distribution
      */
-    public function getGeographicDistribution() {
+    public function getGeographicDistribution($barangay = '') {
         try {
             // Check if database connection is available
             if (!$this->isDatabaseAvailable()) {
                 return [];
             }
             
-            $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as user_count FROM user_preferences GROUP BY barangay ORDER BY user_count DESC");
-            $stmt->execute();
+            // Build WHERE clause for barangay filtering
+            $whereClause = "";
+            $params = [];
+            if (!empty($barangay)) {
+                if (strpos($barangay, 'MUNICIPALITY_') === 0) {
+                    // Handle municipality-level filtering
+                    $municipality = str_replace('MUNICIPALITY_', '', $barangay);
+                    $whereClause = " WHERE barangay LIKE :municipality";
+                    $params[':municipality'] = $municipality . '%';
+                } else {
+                    // Handle specific barangay filtering
+                    $whereClause = " WHERE barangay = :barangay";
+                    $params[':barangay'] = $barangay;
+                }
+            }
+            
+            $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as user_count FROM user_preferences" . $whereClause . " GROUP BY barangay ORDER BY user_count DESC");
+            $stmt->execute($params);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             error_log("Geographic distribution error: " . $e->getMessage());
@@ -847,7 +879,7 @@ class DatabaseAPI {
     /**
      * Get risk distribution
      */
-    public function getRiskDistribution() {
+    public function getRiskDistribution($barangay = '') {
         try {
             error_log("getRiskDistribution: Starting method");
             // Check if database connection is available
@@ -861,6 +893,22 @@ class DatabaseAPI {
                 ];
             }
             
+            // Build WHERE clause for barangay filtering
+            $whereClause = "WHERE risk_score IS NOT NULL";
+            $params = [];
+            if (!empty($barangay)) {
+                if (strpos($barangay, 'MUNICIPALITY_') === 0) {
+                    // Handle municipality-level filtering
+                    $municipality = str_replace('MUNICIPALITY_', '', $barangay);
+                    $whereClause .= " AND barangay LIKE :municipality";
+                    $params[':municipality'] = $municipality . '%';
+                } else {
+                    // Handle specific barangay filtering
+                    $whereClause .= " AND barangay = :barangay";
+                    $params[':barangay'] = $barangay;
+                }
+            }
+            
             // Create risk levels based on risk_score
             $stmt = $this->pdo->prepare("
                 SELECT 
@@ -872,10 +920,10 @@ class DatabaseAPI {
                     END as risk_level,
                     COUNT(*) as count
                 FROM user_preferences 
-                WHERE risk_score IS NOT NULL 
+                $whereClause
                 GROUP BY risk_level
             ");
-            $stmt->execute();
+            $stmt->execute($params);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             error_log("getRiskDistribution: Raw SQL results: " . json_encode($results));
             
@@ -1689,18 +1737,21 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // ANALYTICS API
         // ========================================
         case 'community_metrics':
-            $metrics = $db->getCommunityMetrics();
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $metrics = $db->getCommunityMetrics($barangay);
             echo json_encode(['success' => true, 'data' => $metrics]);
             break;
             
         case 'geographic_distribution':
-            $distribution = $db->getGeographicDistribution();
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $distribution = $db->getGeographicDistribution($barangay);
             echo json_encode(['success' => true, 'data' => $distribution]);
             break;
             
         case 'risk_distribution':
             error_log("API: risk_distribution called");
-            $risks = $db->getRiskDistribution();
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $risks = $db->getRiskDistribution($barangay);
             error_log("API: risk_distribution result: " . json_encode($risks));
             echo json_encode(['success' => true, 'data' => $risks]);
             break;
