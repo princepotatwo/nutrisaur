@@ -2050,13 +2050,13 @@ header {
 
         .user-table th,
         .user-table td {
-            padding: 15px 12px;
+            padding: 8px 10px;
             text-align: left;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
             vertical-align: middle;
             position: relative;
@@ -2083,27 +2083,26 @@ header {
             text-align: center;
         }
 
-        /* Set specific widths for columns - Balanced for 8 columns */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 8%; } /* Assessment ID */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 18%; } /* Name */
-        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; } /* Age/Sex */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 22%; } /* Location */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 8%; } /* BMI */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 12%; text-align: center; } /* Risk Level */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 12%; } /* Assessment Date */
-        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 10%; text-align: center; } /* Actions */
+        /* Set specific widths for columns - Balanced for 7 columns (removed Actions) */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 10%; } /* Assessment ID */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 20%; } /* Name */
+        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 15%; } /* Age/Sex */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 25%; } /* Location */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 10%; } /* BMI */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 10%; text-align: center; } /* Risk Level */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 10%; } /* Assessment Date */
 
         .user-table th {
             color: var(--color-highlight);
             font-weight: 700;
-            font-size: 16px;
+            font-size: 13px;
             position: sticky;
             top: 0;
             background-color: var(--color-card);
             z-index: 10;
             border-bottom: 2px solid rgba(161, 180, 84, 0.4);
-            padding-bottom: 18px;
-            padding-top: 18px;
+            padding-bottom: 12px;
+            padding-top: 12px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -2162,13 +2161,13 @@ header {
         }
 
         .risk-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
             font-weight: 600;
             display: inline-block;
             text-align: center;
-            min-width: 80px;
+            min-width: 60px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
@@ -2412,7 +2411,7 @@ header {
 
     </style>
 </head>
-<body class="light-theme">
+<body>
     <div class="navbar">
         <div class="navbar-header">
             <div class="navbar-logo">
@@ -2487,7 +2486,6 @@ header {
                             <th>BMI</th>
                             <th>Risk Level</th>
                             <th>Assessment Date</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="assessmentsTableBody">
@@ -2646,18 +2644,11 @@ header {
                                         <span class="risk-badge <?php echo $riskClass; ?>"><?php echo ucfirst($riskLevel); ?> Risk</span>
                                     </td>
                                     <td><?php echo date('M d, Y', strtotime($createdAt)); ?></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn btn-edit" onclick="viewAssessment(<?php echo $assessment['id']; ?>)" title="View Details">👁️</button>
-                                            <button class="btn btn-edit" onclick="editAssessment(<?php echo $assessment['id']; ?>)" title="Edit Assessment">✏️</button>
-                                            <button class="btn btn-delete" onclick="deleteAssessment(<?php echo $assessment['id']; ?>)" title="Delete Assessment">🗑️</button>
-                                        </div>
-                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="8" class="no-data-message">
+                                <td colspan="7" class="no-data-message">
                                     <div>No MHO assessments found. Start by creating new assessments.</div>
                                 </td>
                             </tr>
@@ -3062,6 +3053,24 @@ header {
             });
         }
 
+        // Theme persistence and toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved theme from localStorage
+            const savedTheme = localStorage.getItem('theme');
+            const body = document.body;
+            const icon = document.querySelector('.new-theme-icon');
+            
+            if (savedTheme === 'dark') {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                icon.textContent = '🌙';
+            } else {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                icon.textContent = '☀️';
+            }
+        });
+
         // Theme toggle
         document.getElementById('new-theme-toggle').addEventListener('click', function() {
             const body = document.body;
@@ -3071,10 +3080,12 @@ header {
                 body.classList.remove('dark-theme');
                 body.classList.add('light-theme');
                 icon.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
             } else {
                 body.classList.remove('light-theme');
                 body.classList.add('dark-theme');
                 icon.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
             }
         });
 
