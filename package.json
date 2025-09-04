@@ -1,16 +1,13 @@
 {
   "name": "nutrisaur-email-service",
   "version": "1.0.0",
-  "description": "Email service for Nutrisaur application",
-  "main": "email-service.js",
+  "description": "Email service for Nutrisaur application using Resend API",
+  "main": "index.php",
   "scripts": {
-    "start": "node email-service.js",
-    "test": "node email-service.js"
+    "start": "php -S 0.0.0.0:8080 -t public public/index.php"
   },
-  "dependencies": {
-    "nodemailer": "^6.9.7"
-  },
-  "keywords": ["email", "verification", "nutrisaur"],
+  "dependencies": {},
+  "keywords": ["email", "verification", "nutrisaur", "resend"],
   "author": "Nutrisaur Team",
   "license": "MIT"
 }

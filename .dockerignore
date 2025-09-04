@@ -2,16 +2,15 @@
 .git
 .gitignore
 
-# Node modules (will be installed in container)
-node_modules/
-
-# Build artifacts
-app/build/
-build/
+# Documentation
+README.md
+*.md
 
 # IDE files
-.vscode/
-.idea/
+.vscode
+.idea
+*.swp
+*.swo
 
 # OS files
 .DS_Store
@@ -19,17 +18,45 @@ Thumbs.db
 
 # Logs
 *.log
+logs/
 
 # Temporary files
-*.tmp
-*.temp
+tmp/
+temp/
 
-# Documentation
-README.md
-*.md
+# Build artifacts
+build/
+dist/
 
-# Testing
+# Node modules (will be installed fresh)
+node_modules/
+
+# Vendor (will be installed fresh if needed)
+vendor/
+
+# Database files
+*.sql
+*.db
+
+# Environment files
+.env
+.env.local
+
+# Test files
+test/
+tests/
 testing/
 
-# Local config
-local.properties
+# Backup files
+*.bak
+*.backup
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+
+# Docker files
+Dockerfile*
+docker-compose*
+.dockerignore
