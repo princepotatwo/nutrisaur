@@ -8303,25 +8303,17 @@ body {
         // Screening Responses Functions
         async function loadScreeningResponses(barangay = '') {
             try {
-                let url = 'https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=screening_responses';
+                const params = {};
                 if (barangay && barangay !== '') {
-                    url += `&barangay=${encodeURIComponent(barangay)}`;
+                    params.barangay = barangay;
                 }
                 
+                const data = await fetchDataFromAPI('detailed_screening_responses', params);
                 
-                const response = await fetch(url);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    if (data.success && data.data) {
-                        updateScreeningResponsesDisplay(data.data);
-                    } else {
-                        showScreeningResponsesError('API returned no data');
-                    }
+                if (data && data.success && data.data) {
+                    updateScreeningResponsesDisplay(data.data);
                 } else {
-                    const errorText = await response.text();
-                    showScreeningResponsesError(`HTTP ${response.status}: ${errorText}`);
+                    showScreeningResponsesError('API returned no data');
                 }
             } catch (error) {
                 showScreeningResponsesError(`Connection error: ${error.message}`);
