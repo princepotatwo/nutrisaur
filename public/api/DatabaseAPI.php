@@ -17,6 +17,7 @@
 class DatabaseAPI {
     private $pdo;
     private $mysqli;
+    private static $instance = null;
     
     public function __construct() {
         // Include the centralized configuration
@@ -39,6 +40,16 @@ class DatabaseAPI {
         if (!$this->pdo && !$this->mysqli) {
             error_log("Warning: Database connections failed. Application will run in limited mode.");
         }
+    }
+    
+    /**
+     * Get singleton instance
+     */
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
     
     /**
@@ -970,8 +981,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
         exit(0);
     }
     
-    // Initialize the database API
-    $db = new DatabaseAPI();
+    // Initialize the database API using singleton pattern
+    $db = DatabaseAPI::getInstance();
     
     // Get the action from query parameter or POST data
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
