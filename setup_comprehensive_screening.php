@@ -192,7 +192,7 @@ try {
 echo "\n🎉 Comprehensive screening system setup completed successfully!\n";
 echo "\nNext steps:\n";
 echo "1. The web screening page is available at: /screening\n";
-echo "2. The API endpoint is available at: /api/comprehensive_screening.php\n";
+echo "2. The API endpoint is available at: /api/DatabaseAPI.php?action=comprehensive_screening\n";
 echo "3. Update your Android app to use the new ComprehensiveScreeningActivity\n";
 echo "4. Test the system with real data\n";
 ?>

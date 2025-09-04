@@ -675,7 +675,7 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
             
             // Send via the working notification API
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/send_notification.php');
+            curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
                 'notification_data' => json_encode($notificationPayload)
