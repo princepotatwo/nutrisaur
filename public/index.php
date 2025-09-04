@@ -94,7 +94,7 @@ switch ($path) {
         
     case 'FPM':
         // Route to FPM page
-        include_once $sss_path . 'FPM.php';
+        include_once $public_path . 'FPM.php';
         break;
         
     case 'health':
@@ -121,6 +121,12 @@ switch ($path) {
         include_once 'test_email.php';
         break;
         
+    case 'test_phpmailer':
+    case 'test_phpmailer.php':
+        // Route to PHPMailer test
+        include_once 'test_phpmailer.php';
+        break;
+        
     case 'logo.png':
         // Serve logo as static file
         $logoPath = __DIR__ . '/logo.png';
@@ -136,20 +142,20 @@ switch ($path) {
         }
         break;
         
-    default:
-        if (strpos($path, 'unified_api') === 0) {
-            // Handle unified API requests
-            include_once 'unified_api.php';
-        } else {
-            // Check if file exists in sss directory
-            $file_path = $sss_path . "$path.php";
-            if (file_exists($file_path)) {
-                include_once $file_path;
+            default:
+            if (strpos($path, 'unified_api') === 0) {
+                // Handle unified API requests
+                include_once 'unified_api.php';
             } else {
-                // Default to home page
-                include_once $sss_path . 'home.php';
+                // Check if file exists in public directory
+                $file_path = $public_path . "$path.php";
+                if (file_exists($file_path)) {
+                    include_once $file_path;
+                } else {
+                    // Default to home page
+                    include_once $public_path . 'home.php';
+                }
             }
-        }
-        break;
+            break;
 }
 ?>

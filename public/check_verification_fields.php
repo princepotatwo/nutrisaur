@@ -13,6 +13,8 @@ try {
         exit;
     }
     
+    echo "=== Database Verification Fields Check ===\n\n";
+    
     // Check if verification fields exist
     $stmt = $pdo->prepare("SHOW COLUMNS FROM users LIKE 'email_verified'");
     $stmt->execute();
@@ -87,7 +89,59 @@ try {
         echo "✓ idx_email_verified index added\n";
     }
     
+    echo "\n=== PHPMailer Installation Check ===\n\n";
+    
+    // Check PHPMailer files
+    $phpmailerPath = __DIR__ . "/../vendor/phpmailer/phpmailer/src/";
+    $requiredFiles = ['Exception.php', 'PHPMailer.php', 'SMTP.php'];
+    
+    echo "Checking PHPMailer files:\n";
+    foreach ($requiredFiles as $file) {
+        $filePath = $phpmailerPath . $file;
+        if (file_exists($filePath)) {
+            echo "✓ $file - EXISTS\n";
+        } else {
+            echo "✗ $file - MISSING\n";
+        }
+    }
+    
+    // Check email config
+    $emailConfigPath = __DIR__ . "/../email_config.php";
+    if (file_exists($emailConfigPath)) {
+        echo "✓ email_config.php - EXISTS\n";
+    } else {
+        echo "✗ email_config.php - MISSING\n";
+    }
+    
+    // Check EmailService
+    $emailServicePath = __DIR__ . "/api/EmailService.php";
+    if (file_exists($emailServicePath)) {
+        echo "✓ EmailService.php - EXISTS\n";
+    } else {
+        echo "✗ EmailService.php - MISSING\n";
+    }
+    
+    echo "\n=== Email Configuration Check ===\n\n";
+    
+    // Try to load email config
+    if (file_exists($emailConfigPath)) {
+        require_once $emailConfigPath;
+        
+        echo "SMTP Host: " . (defined('SMTP_HOST') ? SMTP_HOST : 'NOT SET') . "\n";
+        echo "SMTP Port: " . (defined('SMTP_PORT') ? SMTP_PORT : 'NOT SET') . "\n";
+        echo "SMTP Username: " . (defined('SMTP_USERNAME') ? SMTP_USERNAME : 'NOT SET') . "\n";
+        echo "SMTP Password: " . (defined('SMTP_PASSWORD') ? (SMTP_PASSWORD === 'your-app-password' ? 'NOT CONFIGURED' : 'CONFIGURED') : 'NOT SET') . "\n";
+        echo "From Email: " . (defined('FROM_EMAIL') ? FROM_EMAIL : 'NOT SET') . "\n";
+    } else {
+        echo "email_config.php not found!\n";
+    }
+    
     echo "\n✅ Database verification fields check completed!\n";
+    echo "\n📧 Next steps:\n";
+    echo "1. If any PHPMailer files are missing, they need to be uploaded\n";
+    echo "2. If email_config.php is missing, it needs to be created\n";
+    echo "3. Visit /test_email to test the email configuration\n";
+    echo "4. Visit /home to test the registration flow\n";
     
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "\n";
