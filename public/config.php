@@ -73,13 +73,25 @@ ini_set('session.cookie_lifetime', 3600); // 1 hour
 function getDatabaseConnection() {
     global $host, $port, $dbname, $dbUsername, $dbPassword;
     
+    // Validate connection parameters
+    if (empty($host) || empty($port) || empty($dbname) || empty($dbUsername) || empty($dbPassword)) {
+        error_log("Database connection failed: Missing required parameters - Host: $host, Port: $port, DB: $dbname, User: $dbUsername");
+        return null;
+    }
+    
     try {
+        // Force TCP connection by explicitly specifying the port
         $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
+        
+        error_log("Attempting database connection with DSN: mysql:host=$host;port=$port;dbname=$dbname");
+        
+        // Add additional options to force TCP connection
         $pdo = new PDO($dsn, $dbUsername, $dbPassword, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_TIMEOUT => 10,
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
+            PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
         ]);
         return $pdo;
     } catch (PDOException $e) {
