@@ -113,7 +113,7 @@ function sendWelcomeEmail($email, $username) {
     try {
         // Resend API configuration
         $resendApiKey = 're_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB';
-        $fromEmail = 'onboarding@resend.dev';
+        $fromEmail = 'kevinpingol123@gmail.com'; // Your Gmail address
         
         // Create welcome email
         $emailData = [
