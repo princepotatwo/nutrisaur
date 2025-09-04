@@ -100,7 +100,7 @@ switch ($path) {
     case 'health':
     case 'health.php':
         // Route to health check
-        include_once $sss_path . 'health.php';
+        include_once $public_path . 'health.php';
         break;
         
     case 'fcm_diagnostic':
@@ -109,23 +109,7 @@ switch ($path) {
         include_once 'fcm_diagnostic.php';
         break;
         
-    case 'check_verification_fields':
-    case 'check_verification_fields.php':
-        // Route to verification fields checker
-        include_once 'check_verification_fields.php';
-        break;
-        
-    case 'test_email':
-    case 'test_email.php':
-        // Route to email test page
-        include_once 'test_email.php';
-        break;
-        
-    case 'test_phpmailer':
-    case 'test_phpmailer.php':
-        // Route to PHPMailer test
-        include_once 'test_phpmailer.php';
-        break;
+
         
     case 'logo.png':
         // Serve logo as static file
