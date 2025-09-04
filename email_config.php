@@ -7,12 +7,12 @@
 // Email Configuration
 define('SMTP_HOST', 'smtp.gmail.com');  // Gmail SMTP
 define('SMTP_PORT', 587);              // TLS port
-define('SMTP_USERNAME', 'do.not.reply.nutrisaur@gmail.com');  // Your Gmail address
-define('SMTP_PASSWORD', 'tvnd trif zsga tfso');     // Your app password
+define('SMTP_USERNAME', 'kevinpingol123@gmail.com');  // Your Gmail address
+define('SMTP_PASSWORD', 'eoax bdlz bogm ikjk');     // Your app password
 define('SMTP_SECURE', 'tls');          // TLS encryption
 
 // From email settings
-define('FROM_EMAIL', 'do.not.reply.nutrisaur@gmail.com');
+define('FROM_EMAIL', 'kevinpingol123@gmail.com');
 define('FROM_NAME', 'Nutrisaur Nutrition App');
 
 // Verification settings

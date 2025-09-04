@@ -6,8 +6,8 @@ const emailConfig = {
     port: 587,
     secure: false,
     auth: {
-        user: 'do.not.reply.nutrisaur@gmail.com',
-        pass: 'tvnd trif zsga tfso'
+        user: 'kevinpingol123@gmail.com',
+        pass: 'eoax bdlz bogm ikjk'
     }
 };
 
@@ -74,7 +74,7 @@ const createVerificationEmail = (username, verificationCode) => {
 const sendVerificationEmail = async (to, username, verificationCode) => {
     try {
         const mailOptions = {
-            from: 'do.not.reply.nutrisaur@gmail.com',
+            from: 'kevinpingol123@gmail.com',
             to: to,
             subject: 'Verify Your Nutrisaur Account',
             html: createVerificationEmail(username, verificationCode),
