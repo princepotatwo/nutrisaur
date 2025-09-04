@@ -29,11 +29,17 @@ try {
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Try to get JSON data first
         $input = file_get_contents('php://input');
         $data = json_decode($input, true);
         
+        // If JSON decoding fails, try form data
         if (!$data) {
-            echo json_encode(['success' => false, 'message' => 'Invalid JSON data']);
+            $data = $_POST;
+        }
+        
+        if (!$data) {
+            echo json_encode(['success' => false, 'message' => 'No data received']);
             exit;
         }
         
