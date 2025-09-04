@@ -1148,12 +1148,15 @@ $db->close();
                 }
                 
                 console.log('Registration parsed data:', data);
+                console.log('requires_verification check:', data.requires_verification);
+                console.log('data.data check:', data.data);
                 
                 if (data.success) {
-                    if (data.data && data.data.requires_verification) {
+                    if (data.requires_verification || (data.data && data.data.requires_verification)) {
                         // Show verification screen with code if available
-                        const verificationCode = data.data.verification_code || null;
-                        showVerificationScreen(data.data.email, verificationCode);
+                        const verificationCode = data.data?.verification_code || null;
+                        const email = data.data?.email || '';
+                        showVerificationScreen(email, verificationCode);
                     } else {
                         showMessage('Registration successful! Redirecting to dashboard...', 'success');
                         // Redirect to dashboard after successful registration
