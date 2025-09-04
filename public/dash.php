@@ -14,16 +14,6 @@ if (!$db->isUserLoggedIn()) {
     exit;
 }
 
-// Use centralized DatabaseAPI for all database operations
-require_once __DIR__ . "/api/DatabaseAPI.php";
-$db = new DatabaseAPI();
-
-// Check if user is logged in
-if (!$db->isUserLoggedIn()) {
-    header("Location: home.php");
-    exit();
-}
-
 $currentUser = $db->getCurrentUserSession();
 if (!$currentUser) {
     error_log("Dash.php - Failed to get current user session");
