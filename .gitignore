@@ -4,10 +4,11 @@
 *.json
 !package.json
 !composer.json
+!google-services.json
 config_production.php
 
 # Database Configuration (contains credentials)
-config.php
+# config.php - Commented out to allow deployment
 
 # Firebase Admin SDK (contains private keys)
 **/nutrisaur-ebf29-firebase-adminsdk-*.json
@@ -50,7 +51,7 @@ coverage/
 
 # Dependency directories
 node_modules/
-vendor/
+# vendor/ - Commented out to allow PHPMailer deployment
 
 # Environment variables
 .env
@@ -81,3 +82,8 @@ fcm_token_cache.json
 !railway.json
 !nixpacks.toml
 !README.md
+!email_config.php
+!vendor/
+!vendor/phpmailer/
+!vendor/phpmailer/phpmailer/
+!vendor/phpmailer/phpmailer/src/
