@@ -6625,22 +6625,22 @@ body {
                 const data = await fetchDataFromAPI('community_metrics', params);
                 
                 console.log('Community Metrics Data:', data);
-                console.log('Data success:', data.success);
-                console.log('Data.data:', data.data);
+                console.log('Data type:', typeof data);
+                console.log('Data keys:', Object.keys(data));
                 
-                if (data && data.success) {
+                if (data && typeof data === 'object') {
                     // Update Total Screened (using total_users from community metrics)
                     const totalScreened = document.getElementById('community-total-screened');
                     const screenedChange = document.getElementById('community-screened-change');
                     
                     console.log('Total Screened Element:', totalScreened);
                     console.log('Screened Change Element:', screenedChange);
-                    console.log('Total Users:', data.data.total_users);
-                    console.log('Recent Registrations:', data.data.recent_registrations);
+                    console.log('Total Users:', data.total_users);
+                    console.log('Recent Registrations:', data.recent_registrations);
                     
                     if (totalScreened && screenedChange) {
-                        const totalUsersValue = data.data.total_users || 0;
-                        const recentRegValue = data.data.recent_registrations || 0;
+                        const totalUsersValue = data.total_users || 0;
+                        const recentRegValue = data.recent_registrations || 0;
                         
                         console.log('Setting totalScreened.textContent to:', totalUsersValue);
                         console.log('Setting screenedChange.textContent to:', recentRegValue);
@@ -6696,8 +6696,8 @@ body {
                 const riskData = await fetchDataFromAPI('risk_distribution', params);
                 console.log('Risk Distribution Data:', riskData);
                 
-                if (riskData && riskData.success) {
-                    updateRiskChart(riskData.data);
+                if (riskData && typeof riskData === 'object') {
+                    updateRiskChart(riskData);
                     
                                     // Update individual cards with risk distribution data
                 const highRisk = document.getElementById('community-high-risk');
@@ -6752,20 +6752,20 @@ body {
 
                 // Update Screening Responses (Age, Gender, Income, Height, Swelling, Weight Loss, Feeding, Physical Signs, Dietary, Clinical)
                 const screeningData = await fetchDataFromAPI('detailed_screening_responses', params);
-                if (screeningData && screeningData.success) {
-                    updateScreeningResponsesDisplay(screeningData.data);
+                if (screeningData && Array.isArray(screeningData)) {
+                    updateScreeningResponsesDisplay(screeningData);
                 }
 
                 // Update Geographic Distribution Chart
                 const geoData = await fetchDataFromAPI('geographic_distribution', params);
-                if (geoData && geoData.success) {
-                    updateGeographicChartDisplay(geoData.data);
+                if (geoData && Array.isArray(geoData)) {
+                    updateGeographicChartDisplay(geoData);
                 }
 
                 // Update Critical Alerts
                 const alertsData = await fetchDataFromAPI('critical_alerts', params);
-                if (alertsData && alertsData.success) {
-                    updateCriticalAlertsDisplay(alertsData.data);
+                if (alertsData && Array.isArray(alertsData)) {
+                    updateCriticalAlertsDisplay(alertsData);
                 }
                 
                 // Update Nutritional Status Overview Card
