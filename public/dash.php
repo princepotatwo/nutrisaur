@@ -9004,6 +9004,7 @@ body {
         
         // Function to update screening responses display with new data
         function updateScreeningResponsesDisplay(data) {
+            console.log('🔄 updateScreeningResponsesDisplay called with data:', data);
             
             // Update age groups
             updateResponseSection('age-group-responses', data.age_groups || [], 'Age Group', data.total_screened);

@@ -1002,11 +1002,180 @@ class DatabaseAPI {
                 LIMIT 100
             ");
             $stmt->execute($params);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $rawData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Process raw data into distributions
+            return $this->processScreeningDataIntoDistributions($rawData);
         } catch (PDOException $e) {
             error_log("Detailed screening responses error: " . $e->getMessage());
             return [];
         }
+    }
+    
+    /**
+     * Process raw screening data into distributions for UI display
+     */
+    private function processScreeningDataIntoDistributions($rawData) {
+        if (empty($rawData)) {
+            return [
+                'total_screened' => 0,
+                'age_groups' => [],
+                'gender' => [],
+                'income_levels' => [],
+                'height' => [],
+                'swelling' => [],
+                'weight_loss' => [],
+                'feeding_behavior' => [],
+                'physical_signs' => [],
+                'dietary_diversity' => [],
+                'clinical_risk' => [],
+                'sam_cases' => 0,
+                'high_risk_cases' => 0,
+                'critical_muac' => 0,
+                'latest_update' => date('Y-m-d H:i:s')
+            ];
+        }
+        
+        $totalScreened = count($rawData);
+        $ageGroups = [];
+        $gender = [];
+        $incomeLevels = [];
+        $height = [];
+        $swelling = [];
+        $weightLoss = [];
+        $feedingBehavior = [];
+        $physicalSigns = [];
+        $dietaryDiversity = [];
+        $clinicalRisk = [];
+        $samCases = 0;
+        $highRiskCases = 0;
+        $criticalMuac = 0;
+        
+        foreach ($rawData as $record) {
+            // Age groups
+            $age = $record['age'] ?? 0;
+            if ($age < 5) $ageGroup = 'Under 5';
+            elseif ($age < 12) $ageGroup = '5-11';
+            elseif ($age < 18) $ageGroup = '12-17';
+            elseif ($age < 30) $ageGroup = '18-29';
+            elseif ($age < 50) $ageGroup = '30-49';
+            elseif ($age < 65) $ageGroup = '50-64';
+            else $ageGroup = '65+';
+            
+            $ageGroups[$ageGroup] = ($ageGroups[$ageGroup] ?? 0) + 1;
+            
+            // Gender
+            $genderValue = $record['gender'] ?? 'Unknown';
+            $gender[$genderValue] = ($gender[$genderValue] ?? 0) + 1;
+            
+            // Income levels
+            $incomeLevel = $record['income_level'] ?? 'Unknown';
+            $incomeLevels[$incomeLevel] = ($incomeLevels[$incomeLevel] ?? 0) + 1;
+            
+            // Height distribution
+            $heightCm = $record['height_cm'] ?? 0;
+            if ($heightCm < 100) $heightRange = 'Under 100 cm';
+            elseif ($heightCm < 120) $heightRange = '100-119 cm';
+            elseif ($heightCm < 140) $heightRange = '120-139 cm';
+            elseif ($heightCm < 160) $heightRange = '140-159 cm';
+            elseif ($heightCm < 180) $heightRange = '160-179 cm';
+            else $heightRange = '180+ cm';
+            
+            $height[$heightRange] = ($height[$heightRange] ?? 0) + 1;
+            
+            // Swelling (Edema)
+            $swellingValue = $record['swelling_edema'] ?? 0;
+            $swellingStatus = $swellingValue ? 'Present' : 'Absent';
+            $swelling[$swellingStatus] = ($swelling[$swellingStatus] ?? 0) + 1;
+            
+            // Weight loss
+            $weightLossValue = $record['recent_weight_loss'] ?? 0;
+            $weightLossStatus = $weightLossValue ? 'Yes' : 'No';
+            $weightLoss[$weightLossStatus] = ($weightLoss[$weightLossStatus] ?? 0) + 1;
+            
+            // Feeding behavior
+            $feedingValue = $record['appetite_changes'] ?? 0;
+            $feedingStatus = $feedingValue ? 'Poor' : 'Normal';
+            $feedingBehavior[$feedingStatus] = ($feedingBehavior[$feedingStatus] ?? 0) + 1;
+            
+            // Physical signs
+            $physicalSignsList = [];
+            if ($record['fatigue'] ?? 0) $physicalSignsList[] = 'Fatigue';
+            if ($record['weakness'] ?? 0) $physicalSignsList[] = 'Weakness';
+            if ($record['dizziness'] ?? 0) $physicalSignsList[] = 'Dizziness';
+            if ($record['headache'] ?? 0) $physicalSignsList[] = 'Headache';
+            if ($record['abdominal_pain'] ?? 0) $physicalSignsList[] = 'Abdominal Pain';
+            if ($record['nausea'] ?? 0) $physicalSignsList[] = 'Nausea';
+            if ($record['diarrhea'] ?? 0) $physicalSignsList[] = 'Diarrhea';
+            if ($record['dental_problems'] ?? 0) $physicalSignsList[] = 'Dental Problems';
+            if ($record['skin_problems'] ?? 0) $physicalSignsList[] = 'Skin Problems';
+            if ($record['hair_loss'] ?? 0) $physicalSignsList[] = 'Hair Loss';
+            if ($record['nail_changes'] ?? 0) $physicalSignsList[] = 'Nail Changes';
+            if ($record['bone_pain'] ?? 0) $physicalSignsList[] = 'Bone Pain';
+            if ($record['joint_pain'] ?? 0) $physicalSignsList[] = 'Joint Pain';
+            if ($record['muscle_cramps'] ?? 0) $physicalSignsList[] = 'Muscle Cramps';
+            
+            foreach ($physicalSignsList as $sign) {
+                $physicalSigns[$sign] = ($physicalSigns[$sign] ?? 0) + 1;
+            }
+            
+            // Dietary diversity
+            $dietaryScore = $record['dietary_diversity_score'] ?? 0;
+            if ($dietaryScore <= 2) $dietaryCategory = 'Low (0-2)';
+            elseif ($dietaryScore <= 4) $dietaryCategory = 'Moderate (3-4)';
+            else $dietaryCategory = 'High (5+)';
+            
+            $dietaryDiversity[$dietaryCategory] = ($dietaryDiversity[$dietaryCategory] ?? 0) + 1;
+            
+            // Clinical risk factors
+            $clinicalRiskList = [];
+            if ($record['chronic_illness'] ?? 0) $clinicalRiskList[] = 'Chronic Illness';
+            if ($record['medication_use'] ?? 0) $clinicalRiskList[] = 'Medication Use';
+            if ($record['mental_health_concerns'] ?? 0) $clinicalRiskList[] = 'Mental Health';
+            if ($record['family_history_diabetes'] ?? 0) $clinicalRiskList[] = 'Diabetes History';
+            if ($record['family_history_heart_disease'] ?? 0) $clinicalRiskList[] = 'Heart Disease History';
+            if ($record['family_history_cancer'] ?? 0) $clinicalRiskList[] = 'Cancer History';
+            if ($record['family_history_obesity'] ?? 0) $clinicalRiskList[] = 'Obesity History';
+            if ($record['disability'] ?? 0) $clinicalRiskList[] = 'Disability';
+            if ($record['pregnant'] ?? 0) $clinicalRiskList[] = 'Pregnancy';
+            if ($record['lactating'] ?? 0) $clinicalRiskList[] = 'Lactating';
+            
+            foreach ($clinicalRiskList as $risk) {
+                $clinicalRisk[$risk] = ($clinicalRisk[$risk] ?? 0) + 1;
+            }
+            
+            // Count SAM cases, high risk cases, and critical MUAC
+            if (($record['risk_score'] ?? 0) >= 80) $samCases++;
+            if (($record['risk_score'] ?? 0) >= 30) $highRiskCases++;
+            if (($record['muac_cm'] ?? 0) < 11.5) $criticalMuac++;
+        }
+        
+        // Convert associative arrays to indexed arrays for UI
+        $convertToIndexed = function($assocArray) {
+            $result = [];
+            foreach ($assocArray as $key => $count) {
+                $result[] = ['name' => $key, 'count' => $count];
+            }
+            return $result;
+        };
+        
+        return [
+            'total_screened' => $totalScreened,
+            'age_groups' => $convertToIndexed($ageGroups),
+            'gender' => $convertToIndexed($gender),
+            'income_levels' => $convertToIndexed($incomeLevels),
+            'height' => $convertToIndexed($height),
+            'swelling' => $convertToIndexed($swelling),
+            'weight_loss' => $convertToIndexed($weightLoss),
+            'feeding_behavior' => $convertToIndexed($feedingBehavior),
+            'physical_signs' => $convertToIndexed($physicalSigns),
+            'dietary_diversity' => $convertToIndexed($dietaryDiversity),
+            'clinical_risk' => $convertToIndexed($clinicalRisk),
+            'sam_cases' => $samCases,
+            'high_risk_cases' => $highRiskCases,
+            'critical_muac' => $criticalMuac,
+            'latest_update' => date('Y-m-d H:i:s')
+        ];
     }
     
     /**
