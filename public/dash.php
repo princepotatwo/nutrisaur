@@ -6732,17 +6732,26 @@ body {
                     const highRiskValue = riskData.high || 0;
                     const moderateValue = riskData.moderate || 0;
                     
+                    console.log('Current dashboardState.highRisk:', dashboardState.highRisk);
+                    console.log('New highRiskValue:', highRiskValue);
+                    console.log('Current dashboardState.moderateRisk:', dashboardState.moderateRisk);
+                    console.log('New moderateValue:', moderateValue);
+                    
                     // Only update if data has changed
                     if (dashboardState.highRisk !== highRiskValue) {
-                        console.log('Setting highRisk.textContent to:', highRiskValue);
+                        console.log('✅ Updating highRisk.textContent to:', highRiskValue);
                         highRisk.textContent = highRiskValue;
                         dashboardState.highRisk = highRiskValue;
+                    } else {
+                        console.log('❌ Skipping highRisk update - no change');
                     }
                     
                     if (dashboardState.moderateRisk !== moderateValue) {
-                        console.log('Setting riskChange.textContent to:', moderateValue);
+                        console.log('✅ Updating riskChange.textContent to:', moderateValue);
                         riskChange.textContent = moderateValue;
                         dashboardState.moderateRisk = moderateValue;
+                    } else {
+                        console.log('❌ Skipping moderateRisk update - no change');
                     }
                 } else {
                     console.log('❌ HTML elements not found for High Risk Cases');
@@ -6760,17 +6769,26 @@ body {
                         const samCasesValue = riskData.severe || 0;
                         const samChangeValue = riskData.high || 0;
                         
+                        console.log('Current dashboardState.samCases:', dashboardState.samCases);
+                        console.log('New samCasesValue:', samCasesValue);
+                        console.log('Current dashboardState.samChange:', dashboardState.samChange);
+                        console.log('New samChangeValue:', samChangeValue);
+                        
                         // Only update if data has changed
                         if (dashboardState.samCases !== samCasesValue) {
-                            console.log('Setting samCases.textContent to:', samCasesValue);
+                            console.log('✅ Updating samCases.textContent to:', samCasesValue);
                             samCases.textContent = samCasesValue;
                             dashboardState.samCases = samCasesValue;
+                        } else {
+                            console.log('❌ Skipping samCases update - no change');
                         }
                         
                         if (dashboardState.samChange !== samChangeValue) {
-                            console.log('Setting samChange.textContent to:', samChangeValue);
+                            console.log('✅ Updating samChange.textContent to:', samChangeValue);
                             samChange.textContent = samChangeValue;
                             dashboardState.samChange = samChangeValue;
+                        } else {
+                            console.log('❌ Skipping samChange update - no change');
                         }
                     } else {
                         console.log('❌ HTML elements not found for SAM Cases');
