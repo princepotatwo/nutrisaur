@@ -6603,8 +6603,11 @@ body {
         // State management for dashboard data
         const dashboardState = {
             totalScreened: null,
+            recentRegistrations: null,
             highRisk: null,
+            moderateRisk: null,
             samCases: null,
+            samChange: null,
             criticalAlerts: null,
             lastUpdate: null
         };
@@ -6737,8 +6740,8 @@ body {
                     console.log('Current dashboardState.moderateRisk:', dashboardState.moderateRisk);
                     console.log('New moderateValue:', moderateValue);
                     
-                    // Only update if data has changed
-                    if (dashboardState.highRisk !== highRiskValue) {
+                    // Force update on first load or if data has changed
+                    if (dashboardState.highRisk === null || dashboardState.highRisk !== highRiskValue) {
                         console.log('✅ Updating highRisk.textContent to:', highRiskValue);
                         highRisk.textContent = highRiskValue;
                         dashboardState.highRisk = highRiskValue;
@@ -6746,7 +6749,7 @@ body {
                         console.log('❌ Skipping highRisk update - no change');
                     }
                     
-                    if (dashboardState.moderateRisk !== moderateValue) {
+                    if (dashboardState.moderateRisk === null || dashboardState.moderateRisk !== moderateValue) {
                         console.log('✅ Updating riskChange.textContent to:', moderateValue);
                         riskChange.textContent = moderateValue;
                         dashboardState.moderateRisk = moderateValue;
@@ -6774,8 +6777,8 @@ body {
                         console.log('Current dashboardState.samChange:', dashboardState.samChange);
                         console.log('New samChangeValue:', samChangeValue);
                         
-                        // Only update if data has changed
-                        if (dashboardState.samCases !== samCasesValue) {
+                        // Force update on first load or if data has changed
+                        if (dashboardState.samCases === null || dashboardState.samCases !== samCasesValue) {
                             console.log('✅ Updating samCases.textContent to:', samCasesValue);
                             samCases.textContent = samCasesValue;
                             dashboardState.samCases = samCasesValue;
@@ -6783,7 +6786,7 @@ body {
                             console.log('❌ Skipping samCases update - no change');
                         }
                         
-                        if (dashboardState.samChange !== samChangeValue) {
+                        if (dashboardState.samChange === null || dashboardState.samChange !== samChangeValue) {
                             console.log('✅ Updating samChange.textContent to:', samChangeValue);
                             samChange.textContent = samChangeValue;
                             dashboardState.samChange = samChangeValue;
