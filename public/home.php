@@ -1081,15 +1081,14 @@ $db->close();
             console.error('registerForm element not found!');
         }
 
-        // Login function - using unified Database API
+        // Login function - using direct API endpoint
         async function login(username, password) {
             try {
                 const formData = new FormData();
-                formData.append('ajax_action', 'login');
                 formData.append('username', username);
                 formData.append('password', password);
                 
-                const response = await fetch(window.location.href, {
+                const response = await fetch('/api/login', {
                     method: 'POST',
                     body: formData
                 });
@@ -1112,19 +1111,18 @@ $db->close();
             }
         }
 
-        // Register function - using unified Database API
+        // Register function - using direct API endpoint
         async function register(username, email, password) {
             try {
                 // Show a loading message
                 showMessage('Processing registration...', 'info');
                 
                 const formData = new FormData();
-                formData.append('ajax_action', 'register');
                 formData.append('username', username);
                 formData.append('email', email);
                 formData.append('password', password);
                 
-                const response = await fetch(window.location.href, {
+                const response = await fetch('/api/register', {
                     method: 'POST',
                     body: formData
                 });
@@ -1176,15 +1174,11 @@ $db->close();
             return re.test(email);
         }
 
-        // Check if user is already logged in - using unified Database API
+        // Check if user is already logged in - using direct API endpoint
         async function checkSession() {
             try {
-                const formData = new FormData();
-                formData.append('ajax_action', 'check_session');
-                
-                const response = await fetch(window.location.href, {
-                    method: 'POST',
-                    body: formData
+                const response = await fetch('/api/check_session', {
+                    method: 'POST'
                 });
                 
                 const data = await response.json();
