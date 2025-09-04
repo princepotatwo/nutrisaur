@@ -203,7 +203,7 @@ try {
     echo "<h1>Creating Comprehensive Test Account</h1>";
     
     // Check if test user already exists
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt = $pdo->prepare("SELECT email FROM users WHERE email = ?");
     $stmt->execute([$testUser['email']]);
     $existingUser = $stmt->fetch();
     
@@ -217,7 +217,7 @@ try {
     }
     
     // Check if user preferences already exist
-    $stmt = $pdo->prepare("SELECT id FROM user_preferences WHERE user_email = ?");
+    $stmt = $pdo->prepare("SELECT user_email FROM user_preferences WHERE user_email = ?");
     $stmt->execute([$userPreferences['user_email']]);
     $existingPrefs = $stmt->fetch();
     
