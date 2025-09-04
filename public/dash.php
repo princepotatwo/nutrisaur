@@ -8874,7 +8874,7 @@ body {
         /*
         async function fetchTimeFrameData(timeFrame, barangay) {
             try {
-                const response = await fetch(`https://nutrisaur-production.up.railway.app/unified_api.php?endpoint=time_frame_data&time_frame=${timeFrame}&barangay=${encodeURIComponent(barangay)}`);
+                const response = await fetch(`/api/DatabaseAPI.php?action=time_frame_data&time_frame=${timeFrame}&barangay=${encodeURIComponent(barangay)}`);
                 
                 if (response.ok) {
                     const responseData = await response.json();

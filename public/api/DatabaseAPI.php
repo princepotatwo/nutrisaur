@@ -1239,6 +1239,15 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
             echo json_encode(['success' => true, 'data' => $recommendations]);
             break;
             
+        case 'time_frame_data':
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            // This would need to be implemented based on your time frame data structure
+            // For now, return empty data to prevent errors
+            echo json_encode(['success' => true, 'data' => []]);
+            break;
+            
         // ========================================
         // TEST API
         // ========================================
