@@ -1117,73 +1117,34 @@ $db->close();
                 // Show a loading message
                 showMessage('Processing registration...', 'info');
                 
-                // Try verification system first
-                console.log('Trying verification system...');
-                const formData = new FormData();
-                formData.append('action', 'register');
-                formData.append('username', username);
-                formData.append('email', email);
-                formData.append('password', password);
+                // Use Resend registration system
+                console.log('Using Resend registration system...');
+                const formData = {
+                    username: username,
+                    email: email,
+                    password: password
+                };
                 
-                let response = await fetch('/api/verification_system', {
+                let response = await fetch('/api/register_resend.php', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
                 });
                 
-                console.log('Verification system response status:', response.status);
+                console.log('Resend registration response status:', response.status);
                 
                 let responseText = await response.text();
-                console.log('Verification system response text:', responseText);
+                console.log('Resend registration response text:', responseText);
                 
                 let data;
                 try {
                     data = JSON.parse(responseText);
                 } catch (parseError) {
-                    console.error('Verification system failed, trying fallback...');
-                    
-                    // Fallback to regular register endpoint
-                    const fallbackFormData = new FormData();
-                    fallbackFormData.append('username', username);
-                    fallbackFormData.append('email', email);
-                    fallbackFormData.append('password', password);
-                    
-                    response = await fetch('/api/register', {
-                        method: 'POST',
-                        body: fallbackFormData
-                    });
-                    
-                    console.log('Fallback response status:', response.status);
-                    responseText = await response.text();
-                    console.log('Fallback response text:', responseText);
-                    
-                    try {
-                        data = JSON.parse(responseText);
-                    } catch (fallbackParseError) {
-                        console.error('Regular register failed, trying simple register...');
-                        
-                        // Third fallback to register with code endpoint
-                        const codeFormData = new FormData();
-                        codeFormData.append('username', username);
-                        codeFormData.append('email', email);
-                        codeFormData.append('password', password);
-                        
-                        response = await fetch('/api/register_with_code', {
-                            method: 'POST',
-                            body: codeFormData
-                        });
-                        
-                        console.log('Register with code response status:', response.status);
-                        responseText = await response.text();
-                        console.log('Register with code response text:', responseText);
-                        
-                        try {
-                            data = JSON.parse(responseText);
-                        } catch (codeParseError) {
-                            console.error('All registration methods failed');
-                            showMessage('Registration service unavailable. Please try again later.', 'error');
-                            return;
-                        }
-                    }
+                    console.error('Resend registration failed');
+                    showMessage('Registration service unavailable. Please try again later.', 'error');
+                    return;
                 }
                 
                 console.log('Registration parsed data:', data);
@@ -1334,20 +1295,24 @@ $db->close();
             clearMessage();
         }
 
-        // Verify email function - using new verification endpoint
+        // Verify email function - using Resend verification endpoint
         async function verifyEmail(email, code) {
             try {
-                const formData = new FormData();
-                formData.append('email', email);
-                formData.append('verification_code', code);
+                const formData = {
+                    email: email,
+                    verification_code: code
+                };
                 
-                const response = await fetch('/api/verify_code', {
+                const response = await fetch('/api/verify_resend.php', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
                 });
                 
                 const responseText = await response.text();
-                console.log('Verification response:', responseText);
+                console.log('Resend verification response:', responseText);
                 
                 let data;
                 try {
@@ -1359,7 +1324,7 @@ $db->close();
                 }
                 
                 if (data.success) {
-                    showMessage('Email verified successfully! Redirecting to dashboard...', 'success');
+                    showMessage('Email verified successfully! Welcome to Nutrisaur!', 'success');
                     setTimeout(() => {
                         window.location.href = '/dash';
                     }, 2000);
@@ -1372,16 +1337,20 @@ $db->close();
             }
         }
 
-        // Resend verification code function - using new verification system
+        // Resend verification code function - using Resend API
         async function resendVerificationCode(email) {
             try {
-                const formData = new FormData();
-                formData.append('action', 'resend');
-                formData.append('email', email);
+                const formData = {
+                    email: email,
+                    username: 'User' // We'll get this from the database
+                };
                 
-                const response = await fetch('/api/verification_system', {
+                const response = await fetch('/api/resend_verification_resend.php', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
                 });
                 
                 const data = await response.json();
