@@ -1978,8 +1978,7 @@ header {
             border-collapse: separate;
             border-spacing: 0;
             margin-top: 10px;
-            table-layout: auto;
-            min-width: 900px;
+            table-layout: fixed;
             border-radius: 15px;
             overflow: hidden;
             border: 1px solid var(--color-border);
@@ -2069,15 +2068,10 @@ header {
             min-width: 120px;
         }
 
-        /* Ensure table fits container */
-        .user-table {
-            width: 100%;
-            min-width: 900px;
-        }
+
 
         /* Responsive table wrapper */
         .table-responsive {
-            overflow-x: auto;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
@@ -2087,14 +2081,14 @@ header {
         }
 
         /* Set specific widths for columns - Balanced for 8 columns */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 10%; } /* Assessment ID */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 20%; } /* Name */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 8%; } /* Assessment ID */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 18%; } /* Name */
         .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; } /* Age/Sex */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 20%; } /* Location */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 10%; } /* BMI */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 15%; text-align: center; } /* Risk Level */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 13%; } /* Assessment Date */
-        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 20%; text-align: center; } /* Actions */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 22%; } /* Location */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 8%; } /* BMI */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 12%; text-align: center; } /* Risk Level */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 12%; } /* Assessment Date */
+        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 10%; text-align: center; } /* Actions */
 
         .user-table th {
             color: var(--color-highlight);
@@ -2472,20 +2466,7 @@ header {
                                 </select>
                             </div>
                         </div>
-                        <div class="action-row" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(161, 180, 84, 0.2);">
-                            <button class="btn btn-add" onclick="exportData()">
-                                <span class="btn-icon">📊</span>
-                                <span class="btn-text">Export Data</span>
-                            </button>
-                            <button class="btn btn-add" onclick="refreshTable()">
-                                <span class="btn-icon">🔄</span>
-                                <span class="btn-text">Refresh</span>
-                            </button>
-                            <button class="btn btn-add" onclick="showStats()">
-                                <span class="btn-icon">📈</span>
-                                <span class="btn-text">Statistics</span>
-                            </button>
-                        </div>
+
                     </div>
                 </div>
 
@@ -3368,114 +3349,12 @@ header {
             });
         }
 
-        function exportData() {
-            alert('Exporting assessment data to CSV...');
-            // In real implementation, this would generate and download CSV
-        }
 
-        function refreshTable() {
-            location.reload();
-        }
 
-        function showStats() {
-            const tableRows = document.querySelectorAll('.user-table tbody tr');
-            const totalAssessments = tableRows.length;
-            
-            let lowRisk = 0, mediumRisk = 0, highRisk = 0;
-            
-            tableRows.forEach(row => {
-                const riskLevel = row.cells[5].textContent.toLowerCase();
-                if (riskLevel.includes('low')) lowRisk++;
-                else if (riskLevel.includes('medium')) mediumRisk++;
-                else if (riskLevel.includes('high')) highRisk++;
-            });
-            
-            const statsModal = document.createElement('div');
-            statsModal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.7);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-                backdrop-filter: blur(5px);
-            `;
-            
-            const statsContent = document.createElement('div');
-            statsContent.style.cssText = `
-                background: var(--color-card);
-                border-radius: 16px;
-                padding: 30px;
-                max-width: 500px;
-                width: 90%;
-                border: 1px solid var(--color-highlight);
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-                position: relative;
-            `;
-            
-            const closeBtn = document.createElement('button');
-            closeBtn.innerHTML = '✕';
-            closeBtn.style.cssText = `
-                position: absolute;
-                top: 15px;
-                right: 20px;
-                background: none;
-                border: none;
-                color: var(--color-highlight);
-                font-size: 24px;
-                cursor: pointer;
-                padding: 5px;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
-            `;
-            
-            closeBtn.addEventListener('click', function() {
-                statsModal.remove();
-            });
-            
-            statsContent.innerHTML = `
-                <h3 style="color: var(--color-highlight); margin-bottom: 20px; text-align: center; font-size: 24px;">
-                    Assessment Statistics
-                </h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
-                        <h4 style="color: var(--color-highlight); margin-bottom: 8px;">Total Assessments</h4>
-                        <p style="color: var(--color-text); font-size: 24px; font-weight: bold;">${totalAssessments}</p>
-                    </div>
-                    <div style="background: rgba(76, 175, 80, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
-                        <h4 style="color: #4CAF50; margin-bottom: 8px;">Low Risk</h4>
-                        <p style="color: var(--color-text); font-size: 24px; font-weight: bold;">${lowRisk}</p>
-                    </div>
-                    <div style="background: rgba(255, 152, 0, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
-                        <h4 style="color: #FF9800; margin-bottom: 8px;">Medium Risk</h4>
-                        <p style="color: var(--color-text); font-size: 24px; font-weight: bold;">${mediumRisk}</p>
-                    </div>
-                    <div style="background: rgba(244, 67, 54, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
-                        <h4 style="color: #F44336; margin-bottom: 8px;">High Risk</h4>
-                        <p style="color: var(--color-text); font-size: 24px; font-weight: bold;">${highRisk}</p>
-                    </div>
-                </div>
-            `;
-            
-            statsContent.appendChild(closeBtn);
-            statsModal.appendChild(statsContent);
-            document.body.appendChild(statsModal);
-            
-            statsModal.addEventListener('click', function(e) {
-                if (e.target === statsModal) {
-                    statsModal.remove();
-                }
-            });
-        }
+
+
+
+
     </script>
 </body>
 </html>
