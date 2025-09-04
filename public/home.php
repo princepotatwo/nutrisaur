@@ -1244,9 +1244,9 @@ $db->close();
                 const data = await response.json();
                 
                 if (data.success) {
-                    showMessage('Email verified successfully! You can now login.', 'success');
+                    showMessage('Email verified successfully! Redirecting to dashboard...', 'success');
                     setTimeout(() => {
-                        hideVerificationScreen();
+                        window.location.href = '/dash';
                     }, 2000);
                 } else {
                     showMessage(data.message || 'Verification failed. Please try again.', 'error');
