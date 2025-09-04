@@ -73,7 +73,7 @@ try {
             $emailSent = false;
             try {
                 require_once __DIR__ . "/EmailService.php";
-                require_once __DIR__ . "/../../email_config.php";
+                require_once __DIR__ . "/../../../email_config.php";
                 
                 $emailService = new EmailService();
                 $emailSent = $emailService->sendVerificationEmail($email, $username, $verificationCode);

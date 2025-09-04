@@ -7,7 +7,7 @@
 require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/Exception.php';
 require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/PHPMailer.php';
 require_once __DIR__ . '/../../vendor/phpmailer/phpmailer/src/SMTP.php';
-require_once __DIR__ . '/../../email_config.php';
+require_once __DIR__ . '/../../../email_config.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;

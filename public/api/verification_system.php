@@ -24,7 +24,7 @@ try {
     require_once __DIR__ . "/EmailService.php";
     error_log("EmailService included successfully");
     
-    require_once __DIR__ . "/../../email_config.php";
+                require_once __DIR__ . "/../../../email_config.php";
     error_log("Email config included successfully");
     
     error_log("All files included successfully");

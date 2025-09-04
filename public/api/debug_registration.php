@@ -78,7 +78,7 @@ try {
     
     // Test 6: Test email configuration
     try {
-        require_once __DIR__ . "/../../email_config.php";
+        require_once __DIR__ . "/../../../email_config.php";
         error_log("Test 6: Email config included successfully");
         error_log("Email config - SMTP_USERNAME: " . SMTP_USERNAME);
         error_log("Email config - SMTP_HOST: " . SMTP_HOST);

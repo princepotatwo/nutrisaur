@@ -10,7 +10,7 @@ try {
     // Use the same working approach as debug_database_api.php
     require_once __DIR__ . "/../config.php";
     require_once __DIR__ . "/EmailService.php";
-    require_once __DIR__ . "/../../email_config.php";
+    require_once __DIR__ . "/../../../email_config.php";
     
     $pdo = getDatabaseConnection();
     
