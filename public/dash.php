@@ -6272,18 +6272,7 @@ body {
                             </div>
                         </div>
                         
-                        <div class="response-item">
-                            <div class="response-question">Clinical Risk Factors</div>
-                            <div class="response-answers" id="clinical-risk-responses">
-                            <div class="column-headers">
-                                <span class="header-label">Risk Factors</span>
-                                <span class="header-count">Count</span>
-                                <span class="header-percent">Percentage</span>
-                            </div>
-                            <div class="response-data-container">
-                                <div class="loading-placeholder">Loading clinical risk data...</div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -6690,7 +6679,7 @@ body {
             } catch (error) {
                 console.error('Error in updateCommunityMetrics:', error);
             }
-            }, 300); // 300ms debounce delay
+            }, 1000); // 1000ms debounce delay to prevent flickering
         }
 
         // Function to update charts
@@ -6793,7 +6782,7 @@ body {
             } catch (error) {
                 // Error handling for charts update
             }
-            }, 300); // 300ms debounce delay
+            }, 1000); // 1000ms debounce delay to prevent flickering
         }
 
         // Function to update geographic distribution
@@ -6874,7 +6863,7 @@ body {
                     if (data && data.success) {
                         updateCriticalAlertsDisplay(data.data);
                     }
-                }, 300); // 300ms debounce delay
+                }, 1000); // 1000ms debounce delay to prevent flickering
                 
             } catch (error) {
                 console.error('Error updating critical alerts:', error);
@@ -9061,8 +9050,7 @@ body {
             // Update dietary diversity distribution
             updateResponseSection('dietary-diversity-responses', data.dietary_diversity || [], 'Dietary Diversity Score', data.total_screened);
             
-            // Update clinical risk factors
-            updateResponseSection('clinical-risk-responses', data.clinical_risk || [], 'Clinical Risk Factor', data.total_screened);
+
             
             // Update critical alerts from screening data
             updateCriticalAlertsFromScreeningData(data);

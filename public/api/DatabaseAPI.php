@@ -1097,22 +1097,35 @@ class DatabaseAPI {
             $feedingStatus = $feedingValue ? 'Poor' : 'Normal';
             $feedingBehavior[$feedingStatus] = ($feedingBehavior[$feedingStatus] ?? 0) + 1;
             
-            // Physical signs
+            // Physical signs - handle both text field and individual boolean columns
             $physicalSignsList = [];
-            if ($record['fatigue'] ?? 0) $physicalSignsList[] = 'Fatigue';
-            if ($record['weakness'] ?? 0) $physicalSignsList[] = 'Weakness';
-            if ($record['dizziness'] ?? 0) $physicalSignsList[] = 'Dizziness';
-            if ($record['headache'] ?? 0) $physicalSignsList[] = 'Headache';
-            if ($record['abdominal_pain'] ?? 0) $physicalSignsList[] = 'Abdominal Pain';
-            if ($record['nausea'] ?? 0) $physicalSignsList[] = 'Nausea';
-            if ($record['diarrhea'] ?? 0) $physicalSignsList[] = 'Diarrhea';
-            if ($record['dental_problems'] ?? 0) $physicalSignsList[] = 'Dental Problems';
-            if ($record['skin_problems'] ?? 0) $physicalSignsList[] = 'Skin Problems';
-            if ($record['hair_loss'] ?? 0) $physicalSignsList[] = 'Hair Loss';
-            if ($record['nail_changes'] ?? 0) $physicalSignsList[] = 'Nail Changes';
-            if ($record['bone_pain'] ?? 0) $physicalSignsList[] = 'Bone Pain';
-            if ($record['joint_pain'] ?? 0) $physicalSignsList[] = 'Joint Pain';
-            if ($record['muscle_cramps'] ?? 0) $physicalSignsList[] = 'Muscle Cramps';
+            
+            // Check if physical_signs is a text field with comma-separated values
+            if (!empty($record['physical_signs']) && $record['physical_signs'] !== 'None') {
+                $signs = explode(',', $record['physical_signs']);
+                foreach ($signs as $sign) {
+                    $cleanSign = trim($sign);
+                    if (!empty($cleanSign) && $cleanSign !== 'None') {
+                        $physicalSignsList[] = $cleanSign;
+                    }
+                }
+            } else {
+                // Fallback to individual boolean columns
+                if ($record['fatigue'] ?? 0) $physicalSignsList[] = 'Fatigue';
+                if ($record['weakness'] ?? 0) $physicalSignsList[] = 'Weakness';
+                if ($record['dizziness'] ?? 0) $physicalSignsList[] = 'Dizziness';
+                if ($record['headache'] ?? 0) $physicalSignsList[] = 'Headache';
+                if ($record['abdominal_pain'] ?? 0) $physicalSignsList[] = 'Abdominal Pain';
+                if ($record['nausea'] ?? 0) $physicalSignsList[] = 'Nausea';
+                if ($record['diarrhea'] ?? 0) $physicalSignsList[] = 'Diarrhea';
+                if ($record['dental_problems'] ?? 0) $physicalSignsList[] = 'Dental Problems';
+                if ($record['skin_problems'] ?? 0) $physicalSignsList[] = 'Skin Problems';
+                if ($record['hair_loss'] ?? 0) $physicalSignsList[] = 'Hair Loss';
+                if ($record['nail_changes'] ?? 0) $physicalSignsList[] = 'Nail Changes';
+                if ($record['bone_pain'] ?? 0) $physicalSignsList[] = 'Bone Pain';
+                if ($record['joint_pain'] ?? 0) $physicalSignsList[] = 'Joint Pain';
+                if ($record['muscle_cramps'] ?? 0) $physicalSignsList[] = 'Muscle Cramps';
+            }
             
             foreach ($physicalSignsList as $sign) {
                 $physicalSigns[$sign] = ($physicalSigns[$sign] ?? 0) + 1;
