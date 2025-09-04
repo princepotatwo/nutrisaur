@@ -6613,8 +6613,14 @@ body {
 
         // Function to update community metrics
         async function updateCommunityMetrics(barangay = '') {
-            try {
-                console.log('🔄 updateCommunityMetrics called with barangay:', barangay);
+            // Debounce rapid successive calls to prevent flickering
+            if (updateCommunityMetrics.debounceTimer) {
+                clearTimeout(updateCommunityMetrics.debounceTimer);
+            }
+            
+            updateCommunityMetrics.debounceTimer = setTimeout(async () => {
+                try {
+                    console.log('🔄 updateCommunityMetrics called with barangay:', barangay);
                 
                 const params = {};
                 if (barangay && barangay !== '') {
@@ -6684,12 +6690,19 @@ body {
             } catch (error) {
                 console.error('Error in updateCommunityMetrics:', error);
             }
+            }, 300); // 300ms debounce delay
         }
 
         // Function to update charts
         async function updateCharts(barangay = '') {
-            try {
-                console.log('🔄 updateCharts called with barangay:', barangay);
+            // Debounce rapid successive calls to prevent flickering
+            if (updateCharts.debounceTimer) {
+                clearTimeout(updateCharts.debounceTimer);
+            }
+            
+            updateCharts.debounceTimer = setTimeout(async () => {
+                try {
+                    console.log('🔄 updateCharts called with barangay:', barangay);
                 
                 const params = {};
                 if (barangay && barangay !== '') {
@@ -6780,6 +6793,7 @@ body {
             } catch (error) {
                 // Error handling for charts update
             }
+            }, 300); // 300ms debounce delay
         }
 
         // Function to update geographic distribution
@@ -8504,12 +8518,12 @@ body {
                 label = item.income_level;
             } else if (item.height_range !== undefined) {
                 label = item.height_range;
+            } else if (item.name !== undefined) {
+                label = item.name;
             } else if (item.value !== undefined) {
                 label = item.value;
             } else if (item.count !== undefined) {
                 label = item.count;
-            } else if (item.name !== undefined) {
-                label = item.name;
             }
             
             
