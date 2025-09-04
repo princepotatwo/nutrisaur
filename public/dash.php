@@ -6624,13 +6624,25 @@ body {
                 }
                 const data = await fetchDataFromAPI('community_metrics', params);
                 
+                console.log('Community Metrics Data:', data);
+                
                 if (data && data.success) {
                     // Update Total Screened (using total_users from community metrics)
                     const totalScreened = document.getElementById('community-total-screened');
                     const screenedChange = document.getElementById('community-screened-change');
+                    
+                    console.log('Total Screened Element:', totalScreened);
+                    console.log('Screened Change Element:', screenedChange);
+                    console.log('Total Users:', data.data.total_users);
+                    console.log('Recent Registrations:', data.data.recent_registrations);
+                    
                     if (totalScreened && screenedChange) {
                         totalScreened.textContent = data.data.total_users || 0;
                         screenedChange.textContent = data.data.recent_registrations || 0;
+                        console.log('Updated Total Screened to:', data.data.total_users || 0);
+                        console.log('Updated Screened Change to:', data.data.recent_registrations || 0);
+                    } else {
+                        console.log('❌ HTML elements not found for Total Screened');
                     }
 
                     // Update High Risk Cases (will be updated by risk_distribution API call)
@@ -6640,6 +6652,8 @@ body {
                         // These will be updated when risk_distribution data is loaded
                         highRisk.textContent = '0';
                         riskChange.textContent = '0';
+                    } else {
+                        console.log('❌ HTML elements not found for High Risk Cases');
                     }
 
                     // Update SAM Cases (will be updated by risk_distribution API call)
@@ -6649,13 +6663,15 @@ body {
                         // These will be updated when risk_distribution data is loaded
                         samCases.textContent = '0';
                         samChange.textContent = '0';
+                    } else {
+                        console.log('❌ HTML elements not found for SAM Cases');
                     }
                     
                     // Note: Risk distribution data will be handled by updateCharts() function
                     // which calls the risk_distribution API separately
                 }
             } catch (error) {
-                // Error handling for community metrics update
+                console.error('Error in updateCommunityMetrics:', error);
             }
         }
 
@@ -6669,22 +6685,44 @@ body {
 
                 // Update Risk Distribution Chart
                 const riskData = await fetchDataFromAPI('risk_distribution', params);
+                console.log('Risk Distribution Data:', riskData);
+                
                 if (riskData && riskData.success) {
                     updateRiskChart(riskData.data);
                     
                     // Update individual cards with risk distribution data
                     const highRisk = document.getElementById('community-high-risk');
                     const riskChange = document.getElementById('community-risk-change');
+                    
+                    console.log('High Risk Element:', highRisk);
+                    console.log('Risk Change Element:', riskChange);
+                    console.log('High Risk Data:', riskData.data.high);
+                    console.log('Moderate Risk Data:', riskData.data.moderate);
+                    
                     if (highRisk && riskChange) {
                         highRisk.textContent = riskData.data.high || 0;
                         riskChange.textContent = riskData.data.moderate || 0;
+                        console.log('Updated High Risk to:', riskData.data.high || 0);
+                        console.log('Updated Risk Change to:', riskData.data.moderate || 0);
+                    } else {
+                        console.log('❌ HTML elements not found for High Risk Cases');
                     }
 
                     const samCases = document.getElementById('community-sam-cases');
                     const samChange = document.getElementById('community-sam-change');
+                    
+                    console.log('SAM Cases Element:', samCases);
+                    console.log('SAM Change Element:', samChange);
+                    console.log('SAM Cases Data:', riskData.data.moderate);
+                    console.log('SAM Change Data:', riskData.data.low);
+                    
                     if (samCases && samChange) {
                         samCases.textContent = riskData.data.moderate || 0;
                         samChange.textContent = riskData.data.low || 0;
+                        console.log('Updated SAM Cases to:', riskData.data.moderate || 0);
+                        console.log('Updated SAM Change to:', riskData.data.low || 0);
+                    } else {
+                        console.log('❌ HTML elements not found for SAM Cases');
                     }
                 }
 
