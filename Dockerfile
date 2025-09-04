@@ -28,7 +28,7 @@ RUN echo '#!/bin/bash' > /start.sh && \
     echo 'PORT=${PORT:-8000}' >> /start.sh && \
     echo 'echo "Using port: $PORT"' >> /start.sh && \
     echo 'echo "Starting PHP server on port $PORT"' >> /start.sh && \
-    echo 'php -S 0.0.0.0:$PORT -t public' >> /start.sh && \
+    echo 'php -S 0.0.0.0:$PORT -t public public/index.php' >> /start.sh && \
     chmod +x /start.sh
 
 # Expose port

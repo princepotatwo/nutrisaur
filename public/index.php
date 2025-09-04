@@ -19,11 +19,12 @@ $public_path = __DIR__ . '/';
 $public_api_path = __DIR__ . '/api/';
 
 // Debug logging for development
-if (isset($_GET['debug'])) {
-    error_log("Requested path: $path");
-    error_log("SSS path: $sss_path");
-    error_log("Public API path: $public_api_path");
-}
+error_log("=== ROUTER DEBUG ===");
+error_log("Requested path: $path");
+error_log("Public path: $public_path");
+error_log("Public API path: $public_api_path");
+error_log("Request URI: " . $_SERVER['REQUEST_URI']);
+error_log("Script Name: " . $_SERVER['SCRIPT_NAME']);
 
 // Check if it's an API request first
 if (strpos($path, 'api/') === 0) {
