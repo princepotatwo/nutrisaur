@@ -1676,192 +1676,295 @@ header {
             font-weight: bold;
         }
 
-        /* Enhanced MHO Assessment Table Styles */
-        .mho-assessment-container {
-            background: var(--color-card);
-            border-radius: 16px;
-            padding: 30px;
+        /* User Management Styles - Same as settings.php */
+        .user-management-container {
+            background-color: var(--color-card);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
             margin-bottom: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             border: 1px solid var(--color-border);
             position: relative;
             overflow: hidden;
         }
 
-        .mho-assessment-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--color-highlight), var(--color-accent1), var(--color-accent2));
-            animation: shimmer 2s ease-in-out infinite;
+        /* Dark theme specific styles */
+        .dark-theme .user-management-container {
+            background-color: var(--color-card);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
         }
 
-        @keyframes shimmer {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
+        .light-theme .user-management-container {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 6px 20px var(--color-shadow);
         }
 
         .table-header {
-            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: var(--color-card);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--color-border);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Dark theme table header styles */
+        .dark-theme .table-header {
+            background-color: var(--color-card);
+            border-color: var(--color-border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Light theme table header styles */
+        .light-theme .table-header {
+            background-color: var(--color-card);
+            border-color: var(--color-border);
+            box-shadow: 0 4px 15px var(--color-shadow);
         }
 
         .table-header h2 {
             color: var(--color-highlight);
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
-            position: relative;
+            font-size: 24px;
+            margin: 0;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
-        .table-header h2::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--color-highlight), var(--color-accent1));
-            border-radius: 2px;
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
         .header-controls {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
+            width: 100%;
         }
 
         .search-row {
             display: flex;
             gap: 15px;
             align-items: center;
+            width: 100%;
             flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .search-container {
-            display: flex;
-            align-items: center;
-            background: var(--color-card);
-            border: 2px solid var(--color-border);
-            border-radius: 25px;
-            padding: 8px 15px;
-            min-width: 300px;
-            transition: all 0.3s ease;
-        }
-
-        .search-container:focus-within {
-            border-color: var(--color-highlight);
-            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
-        }
-
-        .search-input {
-            flex: 1;
-            border: none;
-            background: transparent;
-            color: var(--color-text);
-            font-size: 14px;
-            padding: 8px 0;
-            outline: none;
-        }
-
-        .search-input::placeholder {
-            color: var(--color-text);
-            opacity: 0.6;
-        }
-
-        .search-btn {
-            background: var(--color-highlight);
-            color: var(--color-bg);
-            border: none;
-            padding: 8px 12px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            margin-left: 8px;
-        }
-
-        .search-btn:hover {
-            background: var(--color-accent1);
-            transform: scale(1.1);
-        }
-
-        .filter-container {
-            position: relative;
-        }
-
-        .filter-select {
-            background: var(--color-card);
-            border: 2px solid var(--color-border);
-            color: var(--color-text);
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 150px;
-            outline: none;
-        }
-
-        .filter-select:focus {
-            border-color: var(--color-highlight);
-            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
         }
 
         .action-row {
             display: flex;
-            gap: 10px;
-            justify-content: center;
+            gap: 12px;
+            align-items: center;
+            width: 100%;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
+        .btn-add {
+            background-color: var(--color-highlight);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
         }
 
-        .btn-view {
-            background: var(--color-highlight);
-            color: var(--color-bg);
+        .btn-icon {
+            font-size: 16px;
+            line-height: 1;
         }
 
-        .btn-view:hover {
-            background: var(--color-accent1);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+        .btn-text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-secondary {
+            background-color: var(--color-accent3);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-accent2);
+            transform: translateY(-1px);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-edit, .btn-suspend, .btn-delete {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 0 4px;
+            transition: all 0.3s ease;
+            cursor: pointer !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            border: none;
+            min-width: 60px;
+            max-width: 80px;
+            display: inline-block !important;
+            text-align: center;
+            line-height: 1.2;
+            position: relative;
+            z-index: 10;
         }
 
         .btn-edit {
-            background: var(--color-accent2);
-            color: var(--color-bg);
+            background-color: rgba(161, 180, 84, 0.15);
+            color: var(--color-highlight);
+            border: 2px solid rgba(161, 180, 84, 0.4);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
         }
 
-        .btn-edit:hover {
-            background: var(--color-accent3);
-            transform: translateY(-2px);
+        .btn-suspend {
+            background-color: rgba(224, 201, 137, 0.15);
+            color: var(--color-warning);
+            border: 2px solid rgba(224, 201, 137, 0.4);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(224, 201, 137, 0.2);
         }
 
         .btn-delete {
-            background: var(--color-danger);
-            color: white;
+            background-color: rgba(207, 134, 134, 0.15);
+            color: var(--color-danger);
+            border: 2px solid rgba(207, 134, 134, 0.4);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(207, 134, 134, 0.2);
         }
 
-        .btn-delete:hover {
-            background: #b71c1c;
+        .light-theme .btn-edit {
+            background-color: rgba(102, 187, 106, 0.15);
+            color: var(--color-highlight);
+            border: 2px solid rgba(102, 187, 106, 0.4);
+            font-weight: 600;
+        }
+
+        .light-theme .btn-suspend {
+            background-color: rgba(255, 183, 77, 0.15);
+            color: var(--color-warning);
+            border: 2px solid rgba(255, 183, 77, 0.4);
+            font-weight: 600;
+        }
+
+        .light-theme .btn-delete {
+            background-color: rgba(229, 115, 115, 0.15);
+            color: var(--color-danger);
+            border: 2px solid rgba(229, 115, 115, 0.4);
+            font-weight: 600;
+        }
+
+        .btn-edit:hover, .btn-suspend:hover, .btn-delete:hover {
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.1);
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .btn-edit:active, .btn-suspend:active, .btn-delete:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-edit:focus, .btn-suspend:focus, .btn-delete:focus {
+            outline: 2px solid var(--color-highlight);
+            outline-offset: 2px;
+            transform: translateY(-1px);
+        }
+
+        /* Ensure buttons look clickable */
+        .btn-edit, .btn-suspend, .btn-delete {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            position: relative;
+            overflow: hidden;
+            pointer-events: auto !important;
+            touch-action: manipulation;
+        }
+
+        /* Add a subtle background pattern to make buttons more visible */
+        .btn-edit::before, .btn-suspend::before, .btn-delete::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+            pointer-events: none;
+        }
+
+        .btn-edit:hover::before, .btn-suspend:hover::before, .btn-delete:hover::before {
+            left: 100%;
+        }
+
+        /* Ensure buttons are always clickable */
+        .btn-edit, .btn-suspend, .btn-delete {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            position: relative;
+            z-index: 100;
+            /* Make buttons clearly look clickable */
+            background-image: linear-gradient(145deg, rgba(255,255,255,0.1), transparent);
+            border-style: solid;
+            border-width: 2px;
+            text-decoration: none;
+            /* Prevent text selection */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .table-responsive {
@@ -1870,54 +1973,144 @@ header {
             border: 1px solid var(--color-border);
         }
 
-        .mho-table {
+        .user-table {
             width: 100%;
-            border-collapse: collapse;
-            background: var(--color-card);
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 10px;
+            table-layout: auto;
+            min-width: 900px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px var(--color-shadow);
         }
 
-        .mho-table th {
-            background: linear-gradient(135deg, var(--color-highlight), var(--color-accent1));
-            color: var(--color-bg);
+        .user-table thead { 
+            background-color: var(--color-card);
+        }
+
+        .user-table tbody tr:nth-child(odd) {
+            background-color: rgba(84, 96, 72, 0.3);
+        }
+
+        .user-table tbody tr:nth-child(even) {
+            background-color: rgba(84, 96, 72, 0.1);
+        }
+
+        /* Dark theme table styles */
+        .dark-theme .user-table {
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-theme .user-table thead {
+            background-color: var(--color-card);
+        }
+
+        .dark-theme .user-table tbody tr:nth-child(odd) {
+            background-color: rgba(161, 180, 84, 0.1);
+        }
+
+        .dark-theme .user-table tbody tr:nth-child(even) {
+            background-color: rgba(161, 180, 84, 0.05);
+        }
+
+        /* Light theme table styles */
+        .light-theme .user-table {
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px var(--color-shadow);
+        }
+
+        .light-theme .user-table thead {
+            background-color: var(--color-card);
+        }
+
+        .light-theme .user-table tbody tr:nth-child(odd) {
+            background-color: rgba(102, 187, 106, 0.1);
+        }
+
+        .light-theme .user-table tbody tr:nth-child(even) {
+            background-color: rgba(102, 187, 106, 0.05);
+        }
+
+        .user-table tbody tr {
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .user-table tbody tr:hover {
+            border-left-color: var(--color-highlight);
+            background-color: rgba(161, 180, 84, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.15);
+        }
+
+        .user-table th,
+        .user-table td {
             padding: 15px 12px;
             text-align: left;
-            font-weight: 700;
+            border-bottom: 1px solid rgba(161, 180, 84, 0.2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             font-size: 14px;
+            font-weight: 500;
+            vertical-align: middle;
+            position: relative;
+        }
+
+        /* Ensure actions column is always visible */
+        .user-table th:last-child,
+        .user-table td:last-child {
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: clip;
+            min-width: 120px;
+        }
+
+        /* Ensure table fits container */
+        .user-table {
+            width: 100%;
+            min-width: 900px;
+        }
+
+        /* Responsive table wrapper */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .user-table td:last-child {
+            text-align: center;
+        }
+
+        /* Set specific widths for columns - Balanced for 8 columns */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 10%; } /* Assessment ID */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 20%; } /* Name */
+        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; } /* Age/Sex */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 20%; } /* Location */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 10%; } /* BMI */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 15%; text-align: center; } /* Risk Level */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 13%; } /* Assessment Date */
+        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 20%; text-align: center; } /* Actions */
+
+        .user-table th {
+            color: var(--color-highlight);
+            font-weight: 700;
+            font-size: 16px;
             position: sticky;
             top: 0;
+            background-color: var(--color-card);
             z-index: 10;
-            border-bottom: 2px solid var(--color-accent2);
-        }
-
-        .mho-table th:first-child {
-            border-top-left-radius: 12px;
-        }
-
-        .mho-table th:last-child {
-            border-top-right-radius: 12px;
-        }
-
-        .mho-table td {
-            padding: 12px;
-            border-bottom: 1px solid var(--color-border);
-            color: var(--color-text);
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .mho-table tbody tr {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .mho-table tbody tr:hover {
-            background: rgba(161, 180, 84, 0.08);
-            transform: scale(1.01);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .mho-table tbody tr:last-child td {
-            border-bottom: none;
+            border-bottom: 2px solid rgba(161, 180, 84, 0.4);
+            padding-bottom: 18px;
+            padding-top: 18px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
         }
 
         .tooltip {
@@ -1951,100 +2144,275 @@ header {
             opacity: 1;
         }
 
-        .risk-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
-
-        .risk-badge.low {
-            background: rgba(76, 175, 80, 0.2);
-            color: #4CAF50;
-            border: 1px solid rgba(76, 175, 80, 0.3);
-        }
-
-        .risk-badge.medium {
-            background: rgba(255, 152, 0, 0.2);
-            color: #FF9800;
-            border: 1px solid rgba(255, 152, 0, 0.3);
-        }
-
-        .risk-badge.high {
-            background: rgba(244, 67, 54, 0.2);
-            color: #F44336;
-            border: 1px solid rgba(244, 67, 54, 0.3);
-        }
-
-        .risk-badge:hover {
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
         .status-indicator {
             display: inline-block;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            margin-right: 8px;
+            margin-right: 5px;
         }
 
         .status-active {
-            background: #4CAF50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+            background-color: var(--color-highlight);
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 5px;
-            justify-content: center;
+        .status-suspended {
+            background-color: var(--color-warning);
         }
 
-        .action-buttons .btn {
-            padding: 6px 10px;
+        .status-inactive {
+            background-color: var(--color-danger);
+        }
+
+        .risk-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
             font-size: 12px;
-            border-radius: 15px;
-            min-width: 35px;
-            height: 35px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            min-width: 80px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .risk-badge.good {
+            background-color: rgba(161, 180, 84, 0.15);
+            color: #A1B454;
+        }
+
+        .risk-badge.at,
+        .risk-badge.risk {
+            background-color: rgba(224, 201, 137, 0.15);
+            color: #E0C989;
+        }
+
+        .risk-badge.malnourished {
+            background-color: rgba(207, 134, 134, 0.15);
+            color: #CF8686;
+        }
+
+        /* Light theme risk badge styles */
+        .light-theme .risk-badge.good {
+            background-color: rgba(102, 187, 106, 0.15);
+            color: var(--color-highlight);
+            border: 1px solid rgba(102, 187, 106, 0.3);
+        }
+
+        .light-theme .risk-badge.at,
+        .light-theme .risk-badge.risk {
+            background-color: rgba(255, 183, 77, 0.15);
+            color: var(--color-warning);
+            border: 1px solid rgba(255, 183, 77, 0.3);
+        }
+
+        .light-theme .risk-badge.malnourished {
+            background-color: rgba(229, 115, 115, 0.15);
+            color: var(--color-danger);
+            border: 1px solid rgba(229, 115, 115, 0.3);
+        }
+
+        /* Add hover effects for risk badges */
+        .risk-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .risk-badge.low:hover {
+            background-color: rgba(161, 180, 84, 0.25);
+            transform: scale(1.05) translateY(-1px);
+        }
+
+        .risk-badge.medium:hover {
+            background-color: rgba(224, 201, 137, 0.25);
+            transform: scale(1.05) translateY(-1px);
+        }
+
+        .risk-badge.high:hover {
+            background-color: rgba(207, 134, 134, 0.25);
+            transform: scale(1.05) translateY(-1px);
+        }
+
+        .light-theme .risk-badge.low:hover {
+            background-color: rgba(102, 187, 106, 0.25);
+        }
+
+        .light-theme .risk-badge.medium:hover {
+            background-color: rgba(255, 183, 77, 0.25);
+        }
+
+        .light-theme .risk-badge.high:hover {
+            background-color: rgba(229, 115, 115, 0.25);
+        }
+
+        /* Add hover effects for table rows */
+        .user-table tbody tr {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .user-table tbody tr::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .user-table tbody tr:hover::after {
+            opacity: 1;
+        }
+
+        .user-table tbody tr:hover {
+            border-left-color: var(--color-highlight);
+            background-color: rgba(161, 180, 84, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.15);
+        }
+
+        /* Add hover effects for search container */
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: var(--color-card);
+            border-radius: 8px;
+            padding: 8px 12px;
+            border: 1px solid rgba(161, 180, 84, 0.3);
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 0;
+            max-width: 300px;
+        }
+
+        .search-container:focus-within {
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .search-input {
+            border: none;
+            background: transparent;
+            color: var(--color-text);
+            padding: 6px 8px;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Dark theme search input styles */
+        .dark-theme .search-input {
+            background: transparent;
+            color: var(--color-text);
+        }
+
+        .dark-theme .search-input::placeholder {
+            color: rgba(232, 240, 214, 0.6);
+        }
+
+        /* Light theme search input styles */
+        .light-theme .search-input {
+            background: transparent;
+            color: var(--color-text);
+        }
+
+        .light-theme .search-input::placeholder {
+            color: rgba(65, 89, 57, 0.6);
+        }
+
+        .search-btn {
+            background: var(--color-highlight);
+            border: none;
+            color: var(--color-bg);
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            min-width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .search-btn:hover {
+            background: var(--color-accent1);
+            transform: scale(1.02);
+        }
+
+        /* Location filter styles */
+        .location-filter-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .location-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            background-color: var(--color-card);
+            color: var(--color-text);
+            font-size: 14px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        /* Dark theme location select styles */
+        .dark-theme .location-select {
+            background-color: var(--color-card);
+            color: var(--color-text);
+            border-color: var(--color-border);
+        }
+
+        .light-theme .location-select {
+            background-color: var(--color-card);
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+        }
+
+        .location-select:focus {
+            outline: none;
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .light-theme .location-select:focus {
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 2px var(--color-shadow);
         }
 
         .no-data-message {
             text-align: center;
-            padding: 40px;
+            padding: 30px;
             color: var(--color-text);
+            opacity: 0.7;
             font-style: italic;
-            background: rgba(161, 180, 84, 0.05);
         }
 
-        /* Light theme adjustments */
-        .light-theme .mho-assessment-container {
-            background: var(--color-card);
-            box-shadow: 0 8px 25px rgba(102, 187, 106, 0.15);
-        }
 
-        .light-theme .search-container {
-            background: var(--color-card);
-            border-color: var(--color-border);
-        }
-
-        .light-theme .filter-select {
-            background: var(--color-card);
-            border-color: var(--color-border);
-        }
-
-        .light-theme .mho-table th {
-            background: linear-gradient(135deg, var(--color-highlight), var(--color-accent1));
-        }
-
-        .light-theme .mho-table tbody tr:hover {
-            background: rgba(102, 187, 106, 0.08);
-        }
     </style>
 </head>
 <body class="light-theme">
@@ -2087,253 +2455,231 @@ header {
         </header>
 
         <div class="screening-container">
-            <!-- Enhanced MHO Assessment Table -->
-            <div class="mho-assessment-container">
+            <div class="user-management-container">
                 <div class="table-header">
-                    <h2>Comprehensive MHO Assessment Records</h2>
                     <div class="header-controls">
-                        <div class="search-row">
-                            <div class="search-container">
+                        <div class="search-row" style="justify-content: center; gap: 20px;">
+                            <div class="search-container" style="width: 300px;">
                                 <input type="text" id="searchInput" placeholder="Search by name, location, or risk level..." class="search-input">
                                 <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                             </div>
-                            <div class="filter-container">
-                                <select id="riskFilter" onchange="filterByRisk()" class="filter-select">
+                            <div class="location-filter-container" style="width: 300px;">
+                                <select id="riskFilter" onchange="filterByRisk()" class="location-select">
                                     <option value="">All Risk Levels</option>
                                     <option value="low">Low Risk</option>
                                     <option value="medium">Medium Risk</option>
                                     <option value="high">High Risk</option>
                                 </select>
                             </div>
-                            <div class="filter-container">
-                                <select id="locationFilter" onchange="filterByLocation()" class="filter-select">
-                                    <option value="">All Locations</option>
-                                    <option value="ABUCAY">ABUCAY</option>
-                                    <option value="BAGAC">BAGAC</option>
-                                    <option value="CITY OF BALANGA">CITY OF BALANGA</option>
-                                    <option value="DINALUPIHAN">DINALUPIHAN</option>
-                                    <option value="HERMOSA">HERMOSA</option>
-                                    <option value="LIMAY">LIMAY</option>
-                                    <option value="MARIVELES">MARIVELES</option>
-                                    <option value="MORONG">MORONG</option>
-                                    <option value="ORANI">ORANI</option>
-                                    <option value="ORION">ORION</option>
-                                    <option value="PILAR">PILAR</option>
-                                    <option value="SAMAL">SAMAL</option>
-                                </select>
-                            </div>
                         </div>
-                        <div class="action-row">
-                            <button class="btn btn-view" onclick="exportData()">📊 Export Data</button>
-                            <button class="btn btn-view" onclick="refreshTable()">🔄 Refresh</button>
-                            <button class="btn btn-view" onclick="showStats()">📈 Statistics</button>
+                        <div class="action-row" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(161, 180, 84, 0.2);">
+                            <button class="btn btn-add" onclick="exportData()">
+                                <span class="btn-icon">📊</span>
+                                <span class="btn-text">Export Data</span>
+                            </button>
+                            <button class="btn btn-add" onclick="refreshTable()">
+                                <span class="btn-icon">🔄</span>
+                                <span class="btn-text">Refresh</span>
+                            </button>
+                            <button class="btn btn-add" onclick="showStats()">
+                                <span class="btn-icon">📈</span>
+                                <span class="btn-text">Statistics</span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="mho-table" id="mhoTable">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Age/Sex</th>
-                                <th>Location</th>
-                                <th>BMI</th>
-                                <th>Risk Level</th>
-                                <th>Assessment Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Enhanced sample user data with diverse age groups and pregnancy status - 120 placeholder users
-                            $sample_users = [];
+                <div id="no-assessments-message" style="display:none;" class="no-data-message">
+                    No assessments found in the database. Add your first assessment!
+                </div>
+
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Assessment ID</th>
+                            <th>Name</th>
+                            <th>Age/Sex</th>
+                            <th>Location</th>
+                            <th>BMI</th>
+                            <th>Risk Level</th>
+                            <th>Assessment Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assessmentsTableBody">
+                        <?php
+                        // Enhanced sample user data with diverse age groups and pregnancy status - 120 placeholder users
+                        $sample_users = [];
+                        
+                        // Extended names list for more variety
+                        $names = [
+                            // Children and Teens (0-17)
+                            'Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales',
+                            'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
+                            'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
+                            'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
+                            'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
+                            // Young Adults (18-35)
+                            'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
+                            'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
+                            // Adults (36-65)
+                            'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
+                            'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
+                            // Seniors (65+)
+                            'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas'
+                        ];
+                        
+                        $barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose', 'Munting Batangas', 'Cataning', 'Central', 'Dangcol', 'Dona Francisca', 'Lote', 'Malabia', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Juan', 'Talisay', 'Tanato', 'Tortugas', 'Wawa'];
+                        
+                        $bmi_categories = ['Normal', 'Overweight', 'Underweight', 'Obese'];
+                        $meal_assessments = ['Balanced', 'At Risk'];
+                        $lifestyles = ['Active', 'Sedentary'];
+                        $risk_levels = ['Low Risk', 'Medium Risk', 'High Risk'];
+                        
+                        // Create diverse age groups and pregnancy status
+                        for ($i = 0; $i < 120; $i++) {
+                            $bmi_category = $bmi_categories[array_rand($bmi_categories)];
+                            $meal_assessment = $meal_assessments[array_rand($meal_assessments)];
+                            $lifestyle = $lifestyles[array_rand($lifestyles)];
+                            $risk_level = $risk_levels[array_rand($risk_levels)];
                             
-                            // Extended names list for more variety
-                            $names = [
+                            // Generate age based on groups for diversity
+                            $age_group = $i % 4; // 0-3 for different age groups
+                            if ($age_group === 0) {
                                 // Children and Teens (0-17)
-                                'Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales',
-                                'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
-                                'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
-                                'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
-                                'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
-                                // Young Adults (18-35)
-                                'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
-                                'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
-                                // Adults (36-65)
-                                'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
-                                'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
+                                $age = rand(5, 17);
+                                $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                $pregnant = 'Not Applicable';
+                            } elseif ($age_group === 1) {
+                                // Young Adults (18-35) - High pregnancy chance
+                                $age = rand(18, 35);
+                                $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                $pregnant = $sex === 'Female' ? (rand(0, 3) === 0 ? 'Yes' : 'No') : 'Not Applicable';
+                            } elseif ($age_group === 2) {
+                                // Adults (36-65) - Medium pregnancy chance
+                                $age = rand(36, 65);
+                                $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                $pregnant = $sex === 'Female' && $age <= 50 ? (rand(0, 5) === 0 ? 'Yes' : 'No') : 'Not Applicable';
+                            } else {
                                 // Seniors (65+)
-                                'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas'
-                            ];
-                            
-                            $barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose', 'Munting Batangas', 'Cataning', 'Central', 'Dangcol', 'Dona Francisca', 'Lote', 'Malabia', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Juan', 'Talisay', 'Tanato', 'Tortugas', 'Wawa'];
-                            
-                            $bmi_categories = ['Normal', 'Overweight', 'Underweight', 'Obese'];
-                            $meal_assessments = ['Balanced', 'At Risk'];
-                            $lifestyles = ['Active', 'Sedentary'];
-                            $risk_levels = ['Low Risk', 'Medium Risk', 'High Risk'];
-                            
-                            // Create diverse age groups and pregnancy status
-                            for ($i = 0; $i < 120; $i++) {
-                                $bmi_category = $bmi_categories[array_rand($bmi_categories)];
-                                $meal_assessment = $meal_assessments[array_rand($meal_assessments)];
-                                $lifestyle = $lifestyles[array_rand($lifestyles)];
-                                $risk_level = $risk_levels[array_rand($risk_levels)];
-                                
-                                // Generate age based on groups for diversity
-                                $age_group = $i % 4; // 0-3 for different age groups
-                                if ($age_group === 0) {
-                                    // Children and Teens (0-17)
-                                    $age = rand(5, 17);
-                                    $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                    $pregnant = 'Not Applicable';
-                                } elseif ($age_group === 1) {
-                                    // Young Adults (18-35) - High pregnancy chance
-                                    $age = rand(18, 35);
-                                    $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                    $pregnant = $sex === 'Female' ? (rand(0, 3) === 0 ? 'Yes' : 'No') : 'Not Applicable';
-                                } elseif ($age_group === 2) {
-                                    // Adults (36-65) - Medium pregnancy chance
-                                    $age = rand(36, 65);
-                                    $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                    $pregnant = $sex === 'Female' && $age <= 50 ? (rand(0, 5) === 0 ? 'Yes' : 'No') : 'Not Applicable';
-                                } else {
-                                    // Seniors (65+)
-                                    $age = rand(65, 85);
-                                    $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                    $pregnant = 'Not Applicable';
-                                }
-                                
-                                // Generate realistic data based on age and risk level
-                                $risk_score = $risk_level === 'Low Risk' ? rand(5, 12) : ($risk_level === 'Medium Risk' ? rand(13, 20) : rand(21, 30));
-                                
-                                // Adjust height and weight based on age
-                                if ($age < 18) {
-                                    // Children and teens
-                                    $height = rand(100, 170);
-                                    $weight = $bmi_category === 'Normal' ? rand(20, 60) : ($bmi_category === 'Overweight' ? rand(65, 80) : ($bmi_category === 'Underweight' ? rand(15, 25) : rand(85, 100)));
-                                } elseif ($age < 36) {
-                                    // Young adults
-                                    $height = rand(150, 180);
-                                    $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
-                                } elseif ($age < 66) {
-                                    // Adults
-                                    $height = rand(150, 180);
-                                    $weight = $bmi_category === 'Normal' ? rand(50, 80) : ($bmi_category === 'Overweight' ? rand(85, 100) : ($bmi_category === 'Underweight' ? rand(40, 55) : rand(105, 140)));
-                                } else {
-                                    // Seniors
-                                    $height = rand(145, 175);
-                                    $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
-                                }
-                                
-                                $bmi = round($weight / pow($height/100, 2), 1);
-                                
-                                $family_history_options = [['None'], ['Hypertension'], ['Diabetes'], ['Heart Disease'], ['Hypertension', 'Diabetes'], ['Obesity'], ['Malnutrition'], ['Tuberculosis'], ['Kidney Disease']];
-                                $family_history = $family_history_options[array_rand($family_history_options)];
-                                
-                                $risk_factors = [];
-                                if ($bmi_category !== 'Normal') $risk_factors[] = 'BMI: ' . $bmi_category;
-                                if ($meal_assessment === 'At Risk') $risk_factors[] = 'Unbalanced Diet';
-                                if ($lifestyle === 'Sedentary') $risk_factors[] = 'Sedentary Lifestyle';
-                                if ($family_history[0] !== 'None') $risk_factors[] = 'Family History: ' . implode(', ', $family_history);
-                                if (empty($risk_factors)) $risk_factors[] = 'None';
-                                
-                                $sample_users[] = [
-                                    'id' => $i + 1,
-                                    'name' => $names[$i % count($names)],
-                                    'age' => (string)$age,
-                                    'sex' => $sex,
-                                    'pregnant' => $pregnant,
-                                    'municipality' => 'Balanga',
-                                    'barangay' => $barangays[$i % count($barangays)],
-                                    'height' => (string)$height,
-                                    'weight' => (string)$weight,
-                                    'bmi' => (string)$bmi,
-                                    'bmi_category' => $bmi_category,
-                                    'meal_assessment' => $meal_assessment,
-                                    'family_history' => $family_history,
-                                    'lifestyle' => $lifestyle,
-                                    'immunization_status' => 'Complete',
-                                    'risk_factors' => $risk_factors,
-                                    'risk_score' => (string)$risk_score,
-                                    'risk_level' => $risk_level,
-                                    'recommendation' => $risk_level === 'Low Risk' ? 'Maintain current healthy lifestyle' : ($risk_level === 'Medium Risk' ? 'Nutrition intervention needed' : 'Immediate lifestyle intervention needed'),
-                                    'intervention' => $risk_level === 'Low Risk' ? 'Regular monitoring' : ($risk_level === 'Medium Risk' ? 'DOH feeding program, nutrition counseling' : 'Nutrition counseling, physical activity program, regular health monitoring'),
-                                    'created_at' => date('Y-m-d', strtotime('-' . rand(0, 365) . ' days'))
-                                ];
+                                $age = rand(65, 85);
+                                $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                $pregnant = 'Not Applicable';
                             }
-                            ?>
                             
-                            <?php if (!empty($sample_users)): ?>
-                                <?php foreach ($sample_users as $assessment): ?>
-                                    <?php
-                                    // Calculate risk level based on BMI and other factors
-                                    $bmi = floatval($assessment['bmi']);
-                                    $riskLevel = 'low';
-                                    $riskClass = 'low';
-                                    
-                                    if ($bmi < 18.5 || $bmi > 30) {
-                                        $riskLevel = 'high';
-                                        $riskClass = 'high';
-                                    } elseif ($bmi < 20 || $bmi > 25) {
-                                        $riskLevel = 'medium';
-                                        $riskClass = 'medium';
-                                    }
-                                    
-                                    // Get user info
-                                    $userName = $assessment['name'] ?? 'Unknown User';
-                                    $age = $assessment['age'] ?? 'N/A';
-                                    $sex = $assessment['sex'] ?? 'N/A';
-                                    $municipality = $assessment['municipality'] ?? 'N/A';
-                                    $barangay = $assessment['barangay'] ?? 'N/A';
-                                    $bmiValue = $assessment['bmi'] ?? 'N/A';
-                                    $createdAt = $assessment['created_at'] ?? 'N/A';
-                                    ?>
-                                    <tr data-risk="<?php echo $riskClass; ?>" data-location="<?php echo htmlspecialchars($municipality); ?>">
-                                        <td><?php echo htmlspecialchars($assessment['id']); ?></td>
-                                        <td class="tooltip">
-                                            <?php echo htmlspecialchars($userName); ?>
-                                            <span class="tooltiptext">User: <?php echo htmlspecialchars($userName); ?><br>Email: user@example.com</span>
-                                        </td>
-                                        <td><?php echo htmlspecialchars($age . 'y, ' . $sex); ?></td>
-                                        <td class="tooltip">
-                                            <?php echo htmlspecialchars($barangay . ', ' . $municipality); ?>
-                                            <span class="tooltiptext">Municipality: <?php echo htmlspecialchars($municipality); ?><br>Barangay: <?php echo htmlspecialchars($barangay); ?></span>
-                                        </td>
-                                        <td class="tooltip">
-                                            <?php echo htmlspecialchars($bmiValue); ?>
-                                            <span class="tooltiptext">BMI: <?php echo htmlspecialchars($bmiValue); ?><br>Category: <?php echo $bmi < 18.5 ? 'Underweight' : ($bmi < 25 ? 'Normal' : ($bmi < 30 ? 'Overweight' : 'Obese')); ?></span>
-                                        </td>
-                                        <td>
-                                            <span class="risk-badge <?php echo $riskClass; ?>"><?php echo ucfirst($riskLevel); ?> Risk</span>
-                                        </td>
-                                        <td><?php echo date('M d, Y', strtotime($createdAt)); ?></td>
-                                        <td>
-                                            <span class="status-indicator status-active"></span>
-                                            Active
-                                        </td>
-                                        <td>
-                                            <div class="action-buttons">
-                                                <button class="btn btn-view" onclick="viewAssessment(<?php echo $assessment['id']; ?>)" title="View Details">👁️</button>
-                                                <button class="btn btn-edit" onclick="editAssessment(<?php echo $assessment['id']; ?>)" title="Edit Assessment">✏️</button>
-                                                <button class="btn btn-delete" onclick="deleteAssessment(<?php echo $assessment['id']; ?>)" title="Delete Assessment">🗑️</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="9" class="no-data-message">
-                                        <div>No MHO assessments found. Start by creating new assessments.</div>
+                            // Generate realistic data based on age and risk level
+                            $risk_score = $risk_level === 'Low Risk' ? rand(5, 12) : ($risk_level === 'Medium Risk' ? rand(13, 20) : rand(21, 30));
+                            
+                            // Adjust height and weight based on age
+                            if ($age < 18) {
+                                // Children and teens
+                                $height = rand(100, 170);
+                                $weight = $bmi_category === 'Normal' ? rand(20, 60) : ($bmi_category === 'Overweight' ? rand(65, 80) : ($bmi_category === 'Underweight' ? rand(15, 25) : rand(85, 100)));
+                            } elseif ($age < 36) {
+                                // Young adults
+                                $height = rand(150, 180);
+                                $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
+                            } elseif ($age < 66) {
+                                // Adults
+                                $height = rand(150, 180);
+                                $weight = $bmi_category === 'Normal' ? rand(50, 80) : ($bmi_category === 'Overweight' ? rand(85, 100) : ($bmi_category === 'Underweight' ? rand(40, 55) : rand(105, 140)));
+                            } else {
+                                // Seniors
+                                $height = rand(145, 175);
+                                $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
+                            }
+                            
+                            $bmi = round($weight / pow($height/100, 2), 1);
+                            
+                            $family_history_options = [['None'], ['Hypertension'], ['Diabetes'], ['Heart Disease'], ['Hypertension', 'Diabetes'], ['Obesity'], ['Malnutrition'], ['Tuberculosis'], ['Kidney Disease']];
+                            $family_history = $family_history_options[array_rand($family_history_options)];
+                            
+                            $risk_factors = [];
+                            if ($bmi_category !== 'Normal') $risk_factors[] = 'BMI: ' . $bmi_category;
+                            if ($meal_assessment === 'At Risk') $risk_factors[] = 'Unbalanced Diet';
+                            if ($lifestyle === 'Sedentary') $risk_factors[] = 'Sedentary Lifestyle';
+                            if ($family_history[0] !== 'None') $risk_factors[] = 'Family History: ' . implode(', ', $family_history);
+                            if (empty($risk_factors)) $risk_factors[] = 'None';
+                            
+                            $sample_users[] = [
+                                'id' => $i + 1,
+                                'name' => $names[$i % count($names)],
+                                'age' => (string)$age,
+                                'sex' => $sex,
+                                'pregnant' => $pregnant,
+                                'municipality' => 'Balanga',
+                                'barangay' => $barangays[$i % count($barangays)],
+                                'height' => (string)$height,
+                                'weight' => (string)$weight,
+                                'bmi' => (string)$bmi,
+                                'bmi_category' => $bmi_category,
+                                'meal_assessment' => $meal_assessment,
+                                'family_history' => $family_history,
+                                'lifestyle' => $lifestyle,
+                                'immunization_status' => 'Complete',
+                                'risk_factors' => $risk_factors,
+                                'risk_score' => (string)$risk_score,
+                                'risk_level' => $risk_level,
+                                'recommendation' => $risk_level === 'Low Risk' ? 'Maintain current healthy lifestyle' : ($risk_level === 'Medium Risk' ? 'Nutrition intervention needed' : 'Immediate lifestyle intervention needed'),
+                                'intervention' => $risk_level === 'Low Risk' ? 'Regular monitoring' : ($risk_level === 'Medium Risk' ? 'DOH feeding program, nutrition counseling' : 'Nutrition counseling, physical activity program, regular health monitoring'),
+                                'created_at' => date('Y-m-d', strtotime('-' . rand(0, 365) . ' days'))
+                            ];
+                        }
+                        ?>
+                        
+                        <?php if (!empty($sample_users)): ?>
+                            <?php foreach ($sample_users as $assessment): ?>
+                                <?php
+                                // Calculate risk level based on BMI and other factors
+                                $bmi = floatval($assessment['bmi']);
+                                $riskLevel = 'low';
+                                $riskClass = 'low';
+                                
+                                if ($bmi < 18.5 || $bmi > 30) {
+                                    $riskLevel = 'high';
+                                    $riskClass = 'high';
+                                } elseif ($bmi < 20 || $bmi > 25) {
+                                    $riskLevel = 'medium';
+                                    $riskClass = 'medium';
+                                }
+                                
+                                // Get user info
+                                $userName = $assessment['name'] ?? 'Unknown User';
+                                $age = $assessment['age'] ?? 'N/A';
+                                $sex = $assessment['sex'] ?? 'N/A';
+                                $municipality = $assessment['municipality'] ?? 'N/A';
+                                $barangay = $assessment['barangay'] ?? 'N/A';
+                                $bmiValue = $assessment['bmi'] ?? 'N/A';
+                                $createdAt = $assessment['created_at'] ?? 'N/A';
+                                ?>
+                                <tr data-risk="<?php echo $riskClass; ?>" data-location="<?php echo htmlspecialchars($municipality); ?>">
+                                    <td><?php echo htmlspecialchars($assessment['id']); ?></td>
+                                    <td><?php echo htmlspecialchars($userName); ?></td>
+                                    <td><?php echo htmlspecialchars($age . 'y, ' . $sex); ?></td>
+                                    <td><?php echo htmlspecialchars($barangay . ', ' . $municipality); ?></td>
+                                    <td><?php echo htmlspecialchars($bmiValue); ?></td>
+                                    <td>
+                                        <span class="risk-badge <?php echo $riskClass; ?>"><?php echo ucfirst($riskLevel); ?> Risk</span>
+                                    </td>
+                                    <td><?php echo date('M d, Y', strtotime($createdAt)); ?></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-edit" onclick="viewAssessment(<?php echo $assessment['id']; ?>)" title="View Details">👁️</button>
+                                            <button class="btn btn-edit" onclick="editAssessment(<?php echo $assessment['id']; ?>)" title="Edit Assessment">✏️</button>
+                                            <button class="btn btn-delete" onclick="deleteAssessment(<?php echo $assessment['id']; ?>)" title="Delete Assessment">🗑️</button>
+                                        </div>
                                     </td>
                                 </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="8" class="no-data-message">
+                                    <div>No MHO assessments found. Start by creating new assessments.</div>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -2756,7 +3102,7 @@ header {
 
         function initializeTableFunctionality() {
             // Add row hover effects
-            const tableRows = document.querySelectorAll('.mho-table tbody tr');
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
             tableRows.forEach(row => {
                 row.addEventListener('mouseenter', function() {
                     this.style.transform = 'scale(1.01)';
@@ -2771,7 +3117,7 @@ header {
         function searchAssessments() {
             const searchInput = document.getElementById('searchInput');
             const searchTerm = searchInput.value.toLowerCase().trim();
-            const tableRows = document.querySelectorAll('.mho-table tbody tr');
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
             
             let visibleCount = 0;
             
@@ -2797,7 +3143,7 @@ header {
 
         function filterByRisk() {
             const riskFilter = document.getElementById('riskFilter').value;
-            const tableRows = document.querySelectorAll('.mho-table tbody tr');
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
             
             let visibleCount = 0;
             
@@ -2817,7 +3163,7 @@ header {
 
         function filterByLocation() {
             const locationFilter = document.getElementById('locationFilter').value;
-            const tableRows = document.querySelectorAll('.mho-table tbody tr');
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
             
             let visibleCount = 0;
             
@@ -2837,7 +3183,7 @@ header {
 
         function updateNoDataMessage(visibleCount) {
             const noDataMessage = document.querySelector('.no-data-message');
-            const tbody = document.querySelector('.mho-table tbody');
+            const tbody = document.querySelector('.user-table tbody');
             
             if (visibleCount === 0) {
                 if (!noDataMessage) {
@@ -3032,7 +3378,7 @@ header {
         }
 
         function showStats() {
-            const tableRows = document.querySelectorAll('.mho-table tbody tr');
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
             const totalAssessments = tableRows.length;
             
             let lowRisk = 0, mediumRisk = 0, highRisk = 0;
