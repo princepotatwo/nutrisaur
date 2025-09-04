@@ -36,18 +36,34 @@ if (strpos($path, 'api/') === 0) {
     // Check if file exists in public/api directory
     $public_api_file = $public_api_path . "$api_path.php";
     
-    if (isset($_GET['debug'])) {
-        error_log("API path: $api_path");
-        error_log("Public API file: $public_api_file");
-        error_log("Public file exists: " . (file_exists($public_api_file) ? 'yes' : 'no'));
-    }
+    // Debug logging for API requests
+    error_log("API Request - Path: $path, API Path: $api_path, File: $public_api_file");
     
     if (file_exists($public_api_file)) {
-        include_once $public_api_file;
-        exit;
+        try {
+            // Set JSON content type for all API responses
+            header('Content-Type: application/json');
+            header('Access-Control-Allow-Origin: *');
+            header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+            header('Access-Control-Allow-Headers: Content-Type');
+            
+            // Handle preflight OPTIONS request
+            if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+                exit(0);
+            }
+            
+            include_once $public_api_file;
+            exit;
+        } catch (Exception $e) {
+            error_log("API Error in $public_api_file: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode(['error' => 'Internal server error', 'message' => $e->getMessage()]);
+            exit;
+        }
     } else {
+        error_log("API endpoint not found: $public_api_file");
         http_response_code(404);
-        echo json_encode(['error' => 'API endpoint not found']);
+        echo json_encode(['error' => 'API endpoint not found', 'path' => $api_path]);
         exit;
     }
 }

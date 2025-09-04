@@ -4,21 +4,13 @@
  * Standard implementation with comprehensive debugging
  */
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// Headers are now set by the router
 
 // Debug logging
 error_log("=== VERIFICATION SYSTEM DEBUG ===");
 error_log("Request Method: " . $_SERVER['REQUEST_METHOD']);
 error_log("Request URI: " . $_SERVER['REQUEST_URI']);
 error_log("Script Name: " . $_SERVER['SCRIPT_NAME']);
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    error_log("Handling OPTIONS request");
-    exit(0);
-}
 
 // Include required files
 error_log("Including required files...");

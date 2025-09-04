@@ -1123,12 +1123,29 @@ $db->close();
                 formData.append('email', email);
                 formData.append('password', password);
                 
+                console.log('Sending registration request...');
                 const response = await fetch('/api/verification_system', {
                     method: 'POST',
                     body: formData
                 });
                 
-                const data = await response.json();
+                console.log('Registration response status:', response.status);
+                console.log('Registration response headers:', response.headers);
+                
+                const responseText = await response.text();
+                console.log('Registration response text:', responseText);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('Failed to parse registration JSON:', parseError);
+                    console.error('Registration response was:', responseText);
+                    showMessage('Server returned invalid response. Please try again.', 'error');
+                    return;
+                }
+                
+                console.log('Registration parsed data:', data);
                 
                 if (data.success) {
                     if (data.data && data.data.requires_verification) {
@@ -1178,24 +1195,66 @@ $db->close();
         // Check if user is already logged in - using direct API endpoint
         async function checkSession() {
             try {
+                console.log('Checking session...');
                 const response = await fetch('/api/check_session', {
-                    method: 'POST'
+                    method: 'GET'
                 });
                 
-                const data = await response.json();
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('Failed to parse JSON:', parseError);
+                    console.error('Response was:', responseText);
+                    return;
+                }
+                
+                console.log('Parsed data:', data);
                 
                 // Only redirect if user is actually logged in
                 if (data.success && data.logged_in && (data.user_id || data.admin_id)) {
-                                    // User is already logged in, redirect to dashboard
-                window.location.href = '/dash';
+                    // User is already logged in, redirect to dashboard
+                    window.location.href = '/dash';
                 }
             } catch (error) {
                 console.error('Session check error:', error);
             }
         }
 
+        // Test API connectivity
+        async function testAPI() {
+            try {
+                console.log('Testing API connectivity...');
+                const response = await fetch('/api/health', {
+                    method: 'GET'
+                });
+                
+                console.log('API test response status:', response.status);
+                const responseText = await response.text();
+                console.log('API test response text:', responseText);
+                
+                try {
+                    const data = JSON.parse(responseText);
+                    console.log('API test successful:', data);
+                } catch (parseError) {
+                    console.error('API test failed to parse JSON:', parseError);
+                }
+            } catch (error) {
+                console.error('API test error:', error);
+            }
+        }
+
         // Check session on page load
         checkSession();
+        
+        // Test API connectivity
+        testAPI();
 
         // Function to switch to login mode
         function switchToLoginMode() {
