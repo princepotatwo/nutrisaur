@@ -15,7 +15,7 @@ error_log("Script Name: " . $_SERVER['SCRIPT_NAME']);
 // Include required files
 error_log("Including required files...");
 try {
-    require_once __DIR__ . "/../config.php";
+    require_once __DIR__ . "/../../config.php";
     error_log("Config included successfully");
     
     require_once __DIR__ . "/DatabaseAPI.php";
@@ -24,7 +24,7 @@ try {
     require_once __DIR__ . "/EmailService.php";
     error_log("EmailService included successfully");
     
-                require_once __DIR__ . "/../../../email_config.php";
+                require_once __DIR__ . "/../../email_config.php";
     error_log("Email config included successfully");
     
     error_log("All files included successfully");

@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 session_start();
 
 try {
-    require_once __DIR__ . "/../config.php";
+    require_once __DIR__ . "/../../config.php";
     require_once __DIR__ . "/EmailService.php";
     require_once __DIR__ . "/../../email_config.php";
     

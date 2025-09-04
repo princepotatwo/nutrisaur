@@ -8,7 +8,7 @@ session_start();
 
 try {
     // Only include config and database
-    require_once __DIR__ . "/../config.php";
+    require_once __DIR__ . "/../../config.php";
     
     $pdo = getDatabaseConnection();
     
@@ -73,7 +73,7 @@ try {
             $emailSent = false;
             try {
                 require_once __DIR__ . "/EmailService.php";
-                require_once __DIR__ . "/../../../email_config.php";
+                require_once __DIR__ . "/../../email_config.php";
                 
                 $emailService = new EmailService();
                 $emailSent = $emailService->sendVerificationEmail($email, $username, $verificationCode);

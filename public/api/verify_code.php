@@ -8,7 +8,7 @@ session_start();
 
 try {
     // Only include config and database
-    require_once __DIR__ . "/../config.php";
+    require_once __DIR__ . "/../../config.php";
     
     $pdo = getDatabaseConnection();
     
