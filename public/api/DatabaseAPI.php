@@ -848,34 +848,251 @@ class DatabaseAPI {
         try {
             // Check if database connection is available
             if (!$this->isDatabaseAvailable()) {
-                return [];
+                return [
+                    'low' => 0,
+                    'moderate' => 0,
+                    'high' => 0,
+                    'severe' => 0
+                ];
             }
             
             // Create risk levels based on risk_score
             $stmt = $this->pdo->prepare("
                 SELECT 
                     CASE 
-                        WHEN risk_score < 20 THEN 'Low Risk'
-                        WHEN risk_score < 50 THEN 'Moderate Risk'
-                        WHEN risk_score < 80 THEN 'High Risk'
-                        ELSE 'Severe Risk'
+                        WHEN risk_score < 20 THEN 'low'
+                        WHEN risk_score < 50 THEN 'moderate'
+                        WHEN risk_score < 80 THEN 'high'
+                        ELSE 'severe'
                     END as risk_level,
                     COUNT(*) as count
                 FROM user_preferences 
                 WHERE risk_score IS NOT NULL 
                 GROUP BY risk_level
-                ORDER BY 
-                    CASE risk_level
-                        WHEN 'Low Risk' THEN 1
-                        WHEN 'Moderate Risk' THEN 2
-                        WHEN 'High Risk' THEN 3
-                        WHEN 'Severe Risk' THEN 4
-                    END
+            ");
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Convert to expected format
+            $distribution = [
+                'low' => 0,
+                'moderate' => 0,
+                'high' => 0,
+                'severe' => 0
+            ];
+            
+            foreach ($results as $row) {
+                $distribution[$row['risk_level']] = (int)$row['count'];
+            }
+            
+            return $distribution;
+        } catch (PDOException $e) {
+            error_log("Risk distribution error: " . $e->getMessage());
+            return [
+                'low' => 0,
+                'moderate' => 0,
+                'high' => 0,
+                'severe' => 0
+            ];
+        }
+    }
+    
+    /**
+     * Get detailed screening responses
+     */
+    public function getDetailedScreeningResponses($timeFrame = '1d', $barangay = '') {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return [];
+            }
+            
+            $whereClause = "WHERE 1=1";
+            $params = [];
+            
+            // Add time frame filter
+            switch($timeFrame) {
+                case '1d':
+                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                    break;
+                case '1w':
+                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
+                    break;
+                case '1m':
+                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+                    break;
+            }
+            
+            // Add barangay filter
+            if (!empty($barangay)) {
+                $whereClause .= " AND barangay = :barangay";
+                $params[':barangay'] = $barangay;
+            }
+            
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    up.*, u.username, u.email,
+                    DATE_FORMAT(up.created_at, '%Y-%m-%d') as screening_date
+                FROM user_preferences up
+                LEFT JOIN users u ON up.user_email = u.email
+                $whereClause
+                ORDER BY up.created_at DESC
+                LIMIT 100
+            ");
+            $stmt->execute($params);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Detailed screening responses error: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Get critical alerts
+     */
+    public function getCriticalAlerts() {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return [];
+            }
+            
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    up.*, u.username, u.email,
+                    CASE 
+                        WHEN up.risk_score >= 80 THEN 'Severe Risk'
+                        WHEN up.risk_score >= 50 THEN 'High Risk'
+                        ELSE 'Moderate Risk'
+                    END as alert_level
+                FROM user_preferences up
+                LEFT JOIN users u ON up.user_email = u.email
+                WHERE up.risk_score >= 30
+                ORDER BY up.risk_score DESC, up.created_at DESC
+                LIMIT 50
             ");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log("Risk distribution error: " . $e->getMessage());
+            error_log("Critical alerts error: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Get analysis data
+     */
+    public function getAnalysisData($timeFrame = '1d', $barangay = '') {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return [];
+            }
+            
+            $whereClause = "WHERE 1=1";
+            $params = [];
+            
+            // Add time frame filter
+            switch($timeFrame) {
+                case '1d':
+                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                    break;
+                case '1w':
+                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
+                    break;
+                case '1m':
+                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+                    break;
+            }
+            
+            // Add barangay filter
+            if (!empty($barangay)) {
+                $whereClause .= " AND barangay = :barangay";
+                $params[':barangay'] = $barangay;
+            }
+            
+            $analysis = [];
+            
+            // Total screenings
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM user_preferences $whereClause");
+            $stmt->execute($params);
+            $analysis['total_screenings'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+            
+            // High risk cases
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM user_preferences $whereClause AND risk_score >= 30");
+            $stmt->execute($params);
+            $analysis['high_risk_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['high_risk'];
+            
+            // SAM cases (Severe Acute Malnutrition)
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM user_preferences $whereClause AND risk_score >= 80");
+            $stmt->execute($params);
+            $analysis['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
+            
+            // Critical MUAC
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM user_preferences $whereClause AND muac < 11.5");
+            $stmt->execute($params);
+            $analysis['critical_muac'] = $stmt->fetch(PDO::FETCH_ASSOC)['critical_muac'];
+            
+            return $analysis;
+        } catch (PDOException $e) {
+            error_log("Analysis data error: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Get time frame data
+     */
+    public function getTimeFrameData($timeFrame = '1d', $barangay = '') {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return [];
+            }
+            
+            $whereClause = "WHERE 1=1";
+            $params = [];
+            
+            // Add time frame filter
+            switch($timeFrame) {
+                case '1d':
+                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                    break;
+                case '1w':
+                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
+                    break;
+                case '1m':
+                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+                    break;
+            }
+            
+            // Add barangay filter
+            if (!empty($barangay)) {
+                $whereClause .= " AND barangay = :barangay";
+                $params[':barangay'] = $barangay;
+            }
+            
+            $data = [];
+            
+            // Total screenings in time frame
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM user_preferences $whereClause");
+            $stmt->execute($params);
+            $data['total_screenings'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+            
+            // High risk cases in time frame
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM user_preferences $whereClause AND risk_score >= 30");
+            $stmt->execute($params);
+            $data['high_risk_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['high_risk'];
+            
+            // SAM cases in time frame
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM user_preferences $whereClause AND risk_score >= 80");
+            $stmt->execute($params);
+            $data['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
+            
+            // Critical MUAC in time frame
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM user_preferences $whereClause AND muac < 11.5");
+            $stmt->execute($params);
+            $data['critical_muac'] = $stmt->fetch(PDO::FETCH_ASSOC)['critical_muac'];
+            
+            return $data;
+        } catch (PDOException $e) {
+            error_log("Time frame data error: " . $e->getMessage());
             return [];
         }
     }
@@ -1218,18 +1435,24 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
             break;
             
         case 'detailed_screening_responses':
-            // This would need to be implemented based on your screening data structure
-            echo json_encode(['success' => true, 'data' => []]);
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            $responses = $db->getDetailedScreeningResponses($timeFrame, $barangay);
+            echo json_encode(['success' => true, 'data' => $responses]);
             break;
             
         case 'critical_alerts':
-            // This would need to be implemented based on your alerts data structure
-            echo json_encode(['success' => true, 'data' => []]);
+            $alerts = $db->getCriticalAlerts();
+            echo json_encode(['success' => true, 'data' => $alerts]);
             break;
             
         case 'analysis_data':
-            // This would need to be implemented based on your analysis data structure
-            echo json_encode(['success' => true, 'data' => []]);
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            $analysis = $db->getAnalysisData($timeFrame, $barangay);
+            echo json_encode(['success' => true, 'data' => $analysis]);
             break;
             
         case 'intelligent_programs':
@@ -1254,9 +1477,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php') {
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
-            // This would need to be implemented based on your time frame data structure
-            // For now, return empty data to prevent errors
-            echo json_encode(['success' => true, 'data' => []]);
+            $timeFrameData = $db->getTimeFrameData($timeFrame, $barangay);
+            echo json_encode(['success' => true, 'data' => $timeFrameData]);
             break;
             
         // ========================================

@@ -7632,30 +7632,21 @@ body {
                 let totalUsers = 0;
                 let actualRiskScores = []; // Store actual risk scores from API
                 
-                if (data && data.length > 0) {
-                    // API returns data in format: [{risk_level: 'Low', count: 1}, {risk_level: 'Moderate', count: 1}, {risk_level: 'High', count: 1}]
-                    // Risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)
-                    data.forEach(item => {
-                        totalUsers += item.count;
-                        
-                        // Map the risk_level to the correct index (case-insensitive)
-                        const riskLevel = item.risk_level.toLowerCase();
-                        if (riskLevel === 'low risk') riskLevels[0] = item.count;
-                        else if (riskLevel === 'moderate risk') riskLevels[1] = item.count;
-                        else if (riskLevel === 'high risk') riskLevels[2] = item.count;
-                        else if (riskLevel === 'critical risk') riskLevels[3] = item.count;
-                        else if (riskLevel === 'severe risk') riskLevels[3] = item.count;
-                        
-                        // Store actual risk scores for each user (using count as proxy)
-                        // Since we don't have individual risk scores, we'll use the weighted average approach
-                        const riskScore = riskLevel === 'low risk' ? 10 : 
-                                        riskLevel === 'moderate risk' ? 35 : 
-                                        riskLevel === 'high risk' ? 65 : 90;
-                        
-                        for (let i = 0; i < item.count; i++) {
-                            actualRiskScores.push(riskScore);
-                        }
-                    });
+                if (data && typeof data === 'object') {
+                    // API now returns data in format: {low: 5, moderate: 3, high: 2, severe: 1}
+                    riskLevels[0] = data.low || 0;
+                    riskLevels[1] = data.moderate || 0;
+                    riskLevels[2] = data.high || 0;
+                    riskLevels[3] = data.severe || 0;
+                    
+                    totalUsers = riskLevels[0] + riskLevels[1] + riskLevels[2] + riskLevels[3];
+                    
+                    // Store actual risk scores for each user (using count as proxy)
+                    // Since we don't have individual risk scores, we'll use the weighted average approach
+                    for (let i = 0; i < riskLevels[0]; i++) actualRiskScores.push(10);  // Low risk
+                    for (let i = 0; i < riskLevels[1]; i++) actualRiskScores.push(35); // Moderate risk
+                    for (let i = 0; i < riskLevels[2]; i++) actualRiskScores.push(65); // High risk
+                    for (let i = 0; i < riskLevels[3]; i++) actualRiskScores.push(90); // Severe risk
                 }
                 
                 // If no data from API, clear the chart properly
