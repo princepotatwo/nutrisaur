@@ -89,7 +89,7 @@ header('Content-Type: text/html; charset=utf-8');
 
         <?php
         // Include the enhanced config
-        require_once __DIR__ . "/config.php";
+        require_once __DIR__ . "/../config.php";
         
         // Check current database status
         try {

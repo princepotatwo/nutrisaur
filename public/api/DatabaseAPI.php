@@ -11,7 +11,7 @@
  */
 
 // Include the config file for database connection functions
-require_once __DIR__ . "/../config.php";
+require_once __DIR__ . "/../../config.php";
 
 // ========================================
 // DATABASE API CLASS

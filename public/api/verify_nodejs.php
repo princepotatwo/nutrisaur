@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 session_start();
 
 try {
-    require_once __DIR__ . "/../config.php";
+    require_once __DIR__ . "/../../config.php";
     
     $pdo = getDatabaseConnection();
     
@@ -83,7 +83,7 @@ try {
         if ($stmt->execute()) {
             // Send welcome email using Node.js service
             try {
-                $nodeScript = __DIR__ . "/../../../email-service-simple.js";
+                $nodeScript = __DIR__ . "/../../email-service-simple.js";
                 $command = "node -e \"
                     const emailService = require('$nodeScript');
                     emailService.sendVerificationEmail('{$user['email']}', '{$user['username']}', 'WELCOME')

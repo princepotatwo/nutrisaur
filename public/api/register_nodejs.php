@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 session_start();
 
 try {
-    require_once __DIR__ . "/../config.php";
+    require_once __DIR__ . "/../../config.php";
     
     $pdo = getDatabaseConnection();
     
@@ -75,7 +75,7 @@ try {
             $emailSent = false;
             try {
                 // Call Node.js email service
-                $nodeScript = __DIR__ . "/../../../email-service-simple.js";
+                $nodeScript = __DIR__ . "/../../email-service-simple.js";
                 $command = "node -e \"
                     const emailService = require('$nodeScript');
                     emailService.sendVerificationEmail('$email', '$username', '$verificationCode')

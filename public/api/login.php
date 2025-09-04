@@ -8,7 +8,7 @@ session_start();
 
 try {
     // Use the same working approach as debug_database_api.php
-    require_once __DIR__ . "/../config.php";
+    require_once __DIR__ . "/../../config.php";
     $pdo = getDatabaseConnection();
     
     if (!$pdo) {

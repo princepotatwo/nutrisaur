@@ -26,8 +26,8 @@ COPY . .
 RUN npm install
 
 # Create simple startup script
-RUN echo 'php -S 0.0.0.0:${PORT:-8000} -t public public/index.php' > /start.sh && \
+RUN echo 'php -S 0.0.0.0:${PORT:-8080} -t public public/index.php' > /start.sh && \
     chmod +x /start.sh
 
-EXPOSE 8000
+EXPOSE 8080
 CMD ["/bin/bash", "/start.sh"]
