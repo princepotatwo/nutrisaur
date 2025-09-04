@@ -6625,6 +6625,8 @@ body {
                 const data = await fetchDataFromAPI('community_metrics', params);
                 
                 console.log('Community Metrics Data:', data);
+                console.log('Data success:', data.success);
+                console.log('Data.data:', data.data);
                 
                 if (data && data.success) {
                     // Update Total Screened (using total_users from community metrics)
@@ -6637,10 +6639,17 @@ body {
                     console.log('Recent Registrations:', data.data.recent_registrations);
                     
                     if (totalScreened && screenedChange) {
-                        totalScreened.textContent = data.data.total_users || 0;
-                        screenedChange.textContent = data.data.recent_registrations || 0;
-                        console.log('Updated Total Screened to:', data.data.total_users || 0);
-                        console.log('Updated Screened Change to:', data.data.recent_registrations || 0);
+                        const totalUsersValue = data.data.total_users || 0;
+                        const recentRegValue = data.data.recent_registrations || 0;
+                        
+                        console.log('Setting totalScreened.textContent to:', totalUsersValue);
+                        console.log('Setting screenedChange.textContent to:', recentRegValue);
+                        
+                        totalScreened.textContent = totalUsersValue;
+                        screenedChange.textContent = recentRegValue;
+                        
+                        console.log('After setting - totalScreened.textContent:', totalScreened.textContent);
+                        console.log('After setting - screenedChange.textContent:', screenedChange.textContent);
                     } else {
                         console.log('❌ HTML elements not found for Total Screened');
                     }
@@ -6690,37 +6699,52 @@ body {
                 if (riskData && riskData.success) {
                     updateRiskChart(riskData.data);
                     
-                    // Update individual cards with risk distribution data
-                    const highRisk = document.getElementById('community-high-risk');
-                    const riskChange = document.getElementById('community-risk-change');
+                                    // Update individual cards with risk distribution data
+                const highRisk = document.getElementById('community-high-risk');
+                const riskChange = document.getElementById('community-risk-change');
+                
+                console.log('High Risk Element:', highRisk);
+                console.log('Risk Change Element:', riskChange);
+                console.log('High Risk Data:', riskData.data.high);
+                console.log('Moderate Risk Data:', riskData.data.moderate);
+                console.log('Severe Risk Data:', riskData.data.severe);
+                
+                if (highRisk && riskChange) {
+                    const highRiskValue = riskData.data.high || 0;
+                    const moderateValue = riskData.data.moderate || 0;
                     
-                    console.log('High Risk Element:', highRisk);
-                    console.log('Risk Change Element:', riskChange);
-                    console.log('High Risk Data:', riskData.data.high);
-                    console.log('Moderate Risk Data:', riskData.data.moderate);
+                    console.log('Setting highRisk.textContent to:', highRiskValue);
+                    console.log('Setting riskChange.textContent to:', moderateValue);
                     
-                    if (highRisk && riskChange) {
-                        highRisk.textContent = riskData.data.high || 0;
-                        riskChange.textContent = riskData.data.moderate || 0;
-                        console.log('Updated High Risk to:', riskData.data.high || 0);
-                        console.log('Updated Risk Change to:', riskData.data.moderate || 0);
-                    } else {
-                        console.log('❌ HTML elements not found for High Risk Cases');
-                    }
+                    highRisk.textContent = highRiskValue;
+                    riskChange.textContent = moderateValue;
+                    
+                    console.log('After setting - highRisk.textContent:', highRisk.textContent);
+                    console.log('After setting - riskChange.textContent:', riskChange.textContent);
+                } else {
+                    console.log('❌ HTML elements not found for High Risk Cases');
+                }
 
                     const samCases = document.getElementById('community-sam-cases');
                     const samChange = document.getElementById('community-sam-change');
                     
                     console.log('SAM Cases Element:', samCases);
                     console.log('SAM Change Element:', samChange);
-                    console.log('SAM Cases Data:', riskData.data.moderate);
-                    console.log('SAM Change Data:', riskData.data.low);
+                    console.log('SAM Cases Data (severe):', riskData.data.severe);
+                    console.log('SAM Change Data (high):', riskData.data.high);
                     
                     if (samCases && samChange) {
-                        samCases.textContent = riskData.data.moderate || 0;
-                        samChange.textContent = riskData.data.low || 0;
-                        console.log('Updated SAM Cases to:', riskData.data.moderate || 0);
-                        console.log('Updated SAM Change to:', riskData.data.low || 0);
+                        const samCasesValue = riskData.data.severe || 0;
+                        const samChangeValue = riskData.data.high || 0;
+                        
+                        console.log('Setting samCases.textContent to:', samCasesValue);
+                        console.log('Setting samChange.textContent to:', samChangeValue);
+                        
+                        samCases.textContent = samCasesValue;
+                        samChange.textContent = samChangeValue;
+                        
+                        console.log('After setting - samCases.textContent:', samCases.textContent);
+                        console.log('After setting - samChange.textContent:', samChange.textContent);
                     } else {
                         console.log('❌ HTML elements not found for SAM Cases');
                     }
