@@ -1,5 +1,6 @@
 <?php
 // Simple database status checker
+// Access this at: /db_status (clean URL)
 require_once __DIR__ . "/config.php";
 require_once __DIR__ . "/api/DatabaseAPI.php";
 
