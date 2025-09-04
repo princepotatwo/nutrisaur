@@ -1111,38 +1111,58 @@ $db->close();
             }
         }
 
-        // Register function - using new verification system
+        // Register function - using new verification system with fallback
         async function register(username, email, password) {
             try {
                 // Show a loading message
                 showMessage('Processing registration...', 'info');
                 
+                // Try verification system first
+                console.log('Trying verification system...');
                 const formData = new FormData();
                 formData.append('action', 'register');
                 formData.append('username', username);
                 formData.append('email', email);
                 formData.append('password', password);
                 
-                console.log('Sending registration request...');
-                const response = await fetch('/api/verification_system', {
+                let response = await fetch('/api/verification_system', {
                     method: 'POST',
                     body: formData
                 });
                 
-                console.log('Registration response status:', response.status);
-                console.log('Registration response headers:', response.headers);
+                console.log('Verification system response status:', response.status);
                 
-                const responseText = await response.text();
-                console.log('Registration response text:', responseText);
+                let responseText = await response.text();
+                console.log('Verification system response text:', responseText);
                 
                 let data;
                 try {
                     data = JSON.parse(responseText);
                 } catch (parseError) {
-                    console.error('Failed to parse registration JSON:', parseError);
-                    console.error('Registration response was:', responseText);
-                    showMessage('Server returned invalid response. Please try again.', 'error');
-                    return;
+                    console.error('Verification system failed, trying fallback...');
+                    
+                    // Fallback to regular register endpoint
+                    const fallbackFormData = new FormData();
+                    fallbackFormData.append('username', username);
+                    fallbackFormData.append('email', email);
+                    fallbackFormData.append('password', password);
+                    
+                    response = await fetch('/api/register', {
+                        method: 'POST',
+                        body: fallbackFormData
+                    });
+                    
+                    console.log('Fallback response status:', response.status);
+                    responseText = await response.text();
+                    console.log('Fallback response text:', responseText);
+                    
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (fallbackParseError) {
+                        console.error('Both registration methods failed');
+                        showMessage('Registration service unavailable. Please try again later.', 'error');
+                        return;
+                    }
                 }
                 
                 console.log('Registration parsed data:', data);

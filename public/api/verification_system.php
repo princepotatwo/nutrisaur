@@ -14,25 +14,44 @@ error_log("Script Name: " . $_SERVER['SCRIPT_NAME']);
 
 // Include required files
 error_log("Including required files...");
-require_once __DIR__ . "/../config.php";
-require_once __DIR__ . "/DatabaseAPI.php";
-require_once __DIR__ . "/EmailService.php";
-require_once __DIR__ . "/../../email_config.php";
-
-error_log("Files included successfully");
+try {
+    require_once __DIR__ . "/../config.php";
+    error_log("Config included successfully");
+    
+    require_once __DIR__ . "/DatabaseAPI.php";
+    error_log("DatabaseAPI included successfully");
+    
+    require_once __DIR__ . "/EmailService.php";
+    error_log("EmailService included successfully");
+    
+    require_once __DIR__ . "/../../email_config.php";
+    error_log("Email config included successfully");
+    
+    error_log("All files included successfully");
+} catch (Exception $e) {
+    error_log("Error including files: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'System initialization failed', 'error' => $e->getMessage()]);
+    exit;
+}
 
 // Initialize DatabaseAPI
 error_log("Initializing DatabaseAPI...");
-$db = DatabaseAPI::getInstance();
-error_log("DatabaseAPI initialized");
-
-// Check database connection
-$dbStatus = $db->getDatabaseStatus();
-error_log("Database status: " . json_encode($dbStatus));
-
-if (!$db->isDatabaseAvailable()) {
-    error_log("ERROR: Database not available");
-    echo json_encode(['success' => false, 'message' => 'Database connection failed', 'debug' => $dbStatus]);
+try {
+    $db = DatabaseAPI::getInstance();
+    error_log("DatabaseAPI initialized");
+    
+    // Check database connection
+    $dbStatus = $db->getDatabaseStatus();
+    error_log("Database status: " . json_encode($dbStatus));
+    
+    if (!$db->isDatabaseAvailable()) {
+        error_log("ERROR: Database not available");
+        echo json_encode(['success' => false, 'message' => 'Database connection failed', 'debug' => $dbStatus]);
+        exit;
+    }
+} catch (Exception $e) {
+    error_log("Error initializing DatabaseAPI: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Database initialization failed', 'error' => $e->getMessage()]);
     exit;
 }
 
