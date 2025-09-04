@@ -1,0 +1,16 @@
+{
+  "name": "nutrisaur-email-service",
+  "version": "1.0.0",
+  "description": "Email service for Nutrisaur application",
+  "main": "email-service.js",
+  "scripts": {
+    "start": "node email-service.js",
+    "test": "node email-service.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.7"
+  },
+  "keywords": ["email", "verification", "nutrisaur"],
+  "author": "Nutrisaur Team",
+  "license": "MIT"
+}

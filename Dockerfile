@@ -1,10 +1,16 @@
 FROM php:8.1-cli
 
-# Install only essential dependencies
+# Install Node.js and essential dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
-    libxml2-dev
+    libxml2-dev \
+    curl \
+    gnupg
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mysqli
@@ -16,9 +22,13 @@ WORKDIR /var/www/html
 COPY sss/ ./sss/
 COPY public/ ./public/
 COPY config.php ./config.php
+COPY vendor/ ./vendor/
 
 # Ensure config.php is accessible from both root and public directory
 RUN cp config.php public/config.php
+
+# Install Node.js dependencies
+RUN npm install
 
 # Create startup script that uses Railway's PORT
 RUN echo '#!/bin/bash' > /start.sh && \

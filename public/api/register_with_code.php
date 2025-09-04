@@ -69,19 +69,46 @@ try {
         if ($stmt->execute()) {
             $userId = $pdo->lastInsertId();
             
-            // Return the verification code directly (for testing purposes)
-            echo json_encode([
-                'success' => true,
-                'message' => 'Registration successful! Please use the verification code below.',
-                'data' => [
-                    'user_id' => $userId,
-                    'username' => $username,
-                    'email' => $email,
-                    'requires_verification' => true,
-                    'verification_code' => $verificationCode, // For testing - remove in production
-                    'verification_expires' => $verificationExpiry
-                ]
-            ]);
+            // Try to send email verification
+            $emailSent = false;
+            try {
+                require_once __DIR__ . "/EmailService.php";
+                require_once __DIR__ . "/../../email_config.php";
+                
+                $emailService = new EmailService();
+                $emailSent = $emailService->sendVerificationEmail($email, $username, $verificationCode);
+            } catch (Exception $e) {
+                error_log("Email sending failed: " . $e->getMessage());
+            }
+            
+            if ($emailSent) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Registration successful! Please check your email for the verification code.',
+                    'data' => [
+                        'user_id' => $userId,
+                        'username' => $username,
+                        'email' => $email,
+                        'requires_verification' => true,
+                        'email_sent' => true
+                    ]
+                ]);
+            } else {
+                // Fallback: show code on screen if email fails
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Registration successful! Email could not be sent. Please use the verification code below.',
+                    'data' => [
+                        'user_id' => $userId,
+                        'username' => $username,
+                        'email' => $email,
+                        'requires_verification' => true,
+                        'verification_code' => $verificationCode,
+                        'verification_expires' => $verificationExpiry,
+                        'email_sent' => false
+                    ]
+                ]);
+            }
         } else {
             echo json_encode(['success' => false, 'message' => 'Registration failed. Please try again.']);
         }
