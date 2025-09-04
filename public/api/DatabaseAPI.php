@@ -827,12 +827,10 @@ class DatabaseAPI {
                 $metrics['users_by_barangay'] = [];
             }
             
-            // Recent registrations (last 7 days, filtered by barangay if specified)
+            // Recent registrations (all time, filtered by barangay if specified)
             $recentWhereClause = $whereClause;
-            if (!empty($recentWhereClause)) {
-                $recentWhereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
-            } else {
-                $recentWhereClause = " WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+            if (empty($recentWhereClause)) {
+                $recentWhereClause = " WHERE 1=1";
             }
             $stmt = $this->pdo->prepare("SELECT COUNT(*) as recent FROM user_preferences" . $recentWhereClause);
             $stmt->execute($params);
@@ -973,18 +971,19 @@ class DatabaseAPI {
             $whereClause = "WHERE 1=1";
             $params = [];
             
+            // REMOVED: Date filtering to show all data
             // Add time frame filter
-            switch($timeFrame) {
-                case '1d':
-                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
-                    break;
-                case '1w':
-                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
-                    break;
-                case '1m':
-                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
-                    break;
-            }
+            // switch($timeFrame) {
+            //     case '1d':
+            //         $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+            //         break;
+            //     case '1w':
+            //         $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
+            //         break;
+            //     case '1m':
+            //         $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+            //         break;
+            // }
             
             // Add barangay filter
             if (!empty($barangay)) {
@@ -1053,18 +1052,19 @@ class DatabaseAPI {
             $whereClause = "WHERE 1=1";
             $params = [];
             
+            // REMOVED: Date filtering to show all data
             // Add time frame filter
-            switch($timeFrame) {
-                case '1d':
-                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
-                    break;
-                case '1w':
-                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
-                    break;
-                case '1m':
-                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
-                    break;
-            }
+            // switch($timeFrame) {
+            //     case '1d':
+            //         $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+            //         break;
+            //     case '1w':
+            //         $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
+            //         break;
+            //     case '1m':
+            //         $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+            //         break;
+            // }
             
             // Add barangay filter
             if (!empty($barangay)) {
@@ -1391,18 +1391,19 @@ class DatabaseAPI {
             $whereClause = "WHERE 1=1";
             $params = [];
             
+            // REMOVED: Date filtering to show all data
             // Add time frame filter
-            switch($timeFrame) {
-                case '1d':
-                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
-                    break;
-                case '1w':
-                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
-                    break;
-                case '1m':
-                    $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
-                    break;
-            }
+            // switch($timeFrame) {
+            //     case '1d':
+            //         $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+            //         break;
+            //     case '1w':
+            //         $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
+            //         break;
+            //     case '1m':
+            //         $whereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+            //         break;
+            // }
             
             // Add barangay filter
             if (!empty($barangay)) {
