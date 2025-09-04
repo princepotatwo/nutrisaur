@@ -82,6 +82,42 @@
             text-align: center;
             margin: 10px 0;
         }
+        .setup-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .setup-box h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .setup-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .setup-box li {
+            margin: 5px 0;
+        }
+        .setup-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .setup-box h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .setup-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .setup-box li {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -91,49 +127,113 @@
             <p>Test multiple email sending methods for Nutrisaur</p>
         </div>
 
-        <!-- Test 1: PHP mail() -->
+        <!-- Railway Setup Instructions -->
+        <div class="setup-box">
+            <h4>🚀 Railway Email Setup Required</h4>
+            <p><strong>Why InfinityFree works but Railway doesn't:</strong></p>
+            <ul>
+                <li>InfinityFree has built-in email services</li>
+                <li>Railway blocks outgoing SMTP connections</li>
+                <li>You need to configure environment variables</li>
+            </ul>
+            <p><strong>Quick Setup:</strong></p>
+            <ol>
+                <li>Go to Railway Dashboard → Your Project → Variables</li>
+                <li>Add these environment variables:</li>
+                <ul>
+                    <li><code>SMTP_HOST=smtp.gmail.com</code></li>
+                    <li><code>SMTP_PORT=587</code></li>
+                    <li><code>SMTP_USERNAME=kevinpingol123@gmail.com</code></li>
+                    <li><code>SMTP_PASSWORD=your_gmail_app_password</code></li>
+                    <li><code>FROM_EMAIL=kevinpingol123@gmail.com</code></li>
+                </ul>
+                <li>Deploy and test!</li>
+            </ol>
+        </div>
+
+        <!-- Test 1: Railway Email (Recommended) -->
         <div class="test-section">
-            <h3>Test 1: PHP mail() Function</h3>
+            <h3>Test 1: Railway Email (Recommended)</h3>
+            <p>Send email using Railway environment variables and proper configuration.</p>
+            <button onclick="testRailwayEmail()">Send Test Email (Railway)</button>
+            <div id="railway-result" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Railway Setup Instructions -->
+        <div class="setup-box">
+            <h4>🚀 Railway Email Setup Required</h4>
+            <p><strong>Why InfinityFree works but Railway doesn't:</strong></p>
+            <ul>
+                <li>InfinityFree has built-in email services</li>
+                <li>Railway blocks outgoing SMTP connections</li>
+                <li>You need to configure environment variables</li>
+            </ul>
+            <p><strong>Quick Setup:</strong></p>
+            <ol>
+                <li>Go to Railway Dashboard → Your Project → Variables</li>
+                <li>Add these environment variables:</li>
+                <ul>
+                    <li><code>SMTP_HOST=smtp.gmail.com</code></li>
+                    <li><code>SMTP_PORT=587</code></li>
+                    <li><code>SMTP_USERNAME=kevinpingol123@gmail.com</code></li>
+                    <li><code>SMTP_PASSWORD=your_gmail_app_password</code></li>
+                    <li><code>FROM_EMAIL=kevinpingol123@gmail.com</code></li>
+                </ul>
+                <li>Deploy and test!</li>
+            </ol>
+        </div>
+
+        <!-- Test 1: Railway Email (Recommended) -->
+        <div class="test-section">
+            <h3>Test 1: Railway Email (Recommended)</h3>
+            <p>Send email using Railway environment variables and proper configuration.</p>
+            <button onclick="testRailwayEmail()">Send Test Email (Railway)</button>
+            <div id="railway-result" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 2: PHP mail() -->
+        <div class="test-section">
+            <h3>Test 2: PHP mail() Function</h3>
             <p>Send a simple test email using PHP's built-in mail() function.</p>
             <button onclick="testPhpMail()">Send Test Email (PHP mail())</button>
             <div id="php-result" class="result" style="display: none;"></div>
         </div>
 
-        <!-- Test 2: Node.js Email Service -->
+        <!-- Test 3: Node.js Email Service -->
         <div class="test-section">
-            <h3>Test 2: Node.js Email Service</h3>
+            <h3>Test 3: Node.js Email Service</h3>
             <p>Send a test email using the Node.js email service.</p>
             <button onclick="testNodeEmail()">Send Test Email (Node.js)</button>
             <div id="node-result" class="result" style="display: none;"></div>
         </div>
 
-        <!-- Test 3: cURL Email -->
+        <!-- Test 4: cURL Email -->
         <div class="test-section">
-            <h3>Test 3: cURL Email Service</h3>
+            <h3>Test 4: cURL Email Service</h3>
             <p>Send email using cURL to external email service.</p>
             <button onclick="testCurlEmail()">Send Test Email (cURL)</button>
             <div id="curl-result" class="result" style="display: none;"></div>
         </div>
 
-        <!-- Test 4: File-based Email -->
+        <!-- Test 5: File-based Email -->
         <div class="test-section">
-            <h3>Test 4: File-based Email</h3>
+            <h3>Test 5: File-based Email</h3>
             <p>Create email file that can be processed by system mail.</p>
             <button onclick="testFileEmail()">Send Test Email (File-based)</button>
             <div id="file-result" class="result" style="display: none;"></div>
         </div>
 
-        <!-- Test 5: SendGrid API -->
+        <!-- Test 6: SendGrid API -->
         <div class="test-section">
-            <h3>Test 5: SendGrid API</h3>
+            <h3>Test 6: SendGrid API</h3>
             <p>Send email using SendGrid API (if configured).</p>
             <button onclick="testSendGrid()">Send Test Email (SendGrid)</button>
             <div id="sendgrid-result" class="result" style="display: none;"></div>
         </div>
 
-        <!-- Test 6: Working Email Solution -->
+        <!-- Test 7: Working Email Solution -->
         <div class="test-section">
-            <h3>Test 6: Working Email Solution</h3>
+            <h3>Test 7: Working Email Solution</h3>
             <p>Send email using multiple fallback methods.</p>
             <button onclick="testWorkingEmail()">Send Working Email</button>
             <div id="working-result" class="result" style="display: none;"></div>
@@ -146,6 +246,70 @@
             element.className = `result ${type}`;
             element.textContent = message;
             element.style.display = 'block';
+        }
+
+        function testRailwayEmail() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Sending...';
+
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+
+            fetch('/api/test_railway_email.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: 'kevinpingol123@gmail.com',
+                    username: 'TestUser',
+                    verificationCode: code
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const message = `Code: ${code}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
+                showResult('railway-result', message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                showResult('railway-result', 'Error: ' + error.message, 'error');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Send Test Email (Railway)';
+            });
+        }
+
+        function testRailwayEmail() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Sending...';
+
+            const code = Math.floor(1000 + Math.random() * 9000).toString();
+
+            fetch('/api/test_railway_email.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: 'kevinpingol123@gmail.com',
+                    username: 'TestUser',
+                    verificationCode: code
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const message = `Code: ${code}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
+                showResult('railway-result', message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                showResult('railway-result', 'Error: ' + error.message, 'error');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Send Test Email (Railway)';
+            });
         }
 
         function testPhpMail() {
