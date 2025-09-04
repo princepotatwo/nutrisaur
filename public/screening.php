@@ -1675,6 +1675,376 @@ header {
             font-size: 0.8em;
             font-weight: bold;
         }
+
+        /* Enhanced MHO Assessment Table Styles */
+        .mho-assessment-container {
+            background: var(--color-card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--color-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mho-assessment-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-highlight), var(--color-accent1), var(--color-accent2));
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .table-header {
+            margin-bottom: 25px;
+        }
+
+        .table-header h2 {
+            color: var(--color-highlight);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .table-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-highlight), var(--color-accent1));
+            border-radius: 2px;
+        }
+
+        .header-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: var(--color-card);
+            border: 2px solid var(--color-border);
+            border-radius: 25px;
+            padding: 8px 15px;
+            min-width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .search-container:focus-within {
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: var(--color-text);
+            font-size: 14px;
+            padding: 8px 0;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--color-text);
+            opacity: 0.6;
+        }
+
+        .search-btn {
+            background: var(--color-highlight);
+            color: var(--color-bg);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin-left: 8px;
+        }
+
+        .search-btn:hover {
+            background: var(--color-accent1);
+            transform: scale(1.1);
+        }
+
+        .filter-container {
+            position: relative;
+        }
+
+        .filter-select {
+            background: var(--color-card);
+            border: 2px solid var(--color-border);
+            color: var(--color-text);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            outline: none;
+        }
+
+        .filter-select:focus {
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-view {
+            background: var(--color-highlight);
+            color: var(--color-bg);
+        }
+
+        .btn-view:hover {
+            background: var(--color-accent1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+        }
+
+        .btn-edit {
+            background: var(--color-accent2);
+            color: var(--color-bg);
+        }
+
+        .btn-edit:hover {
+            background: var(--color-accent3);
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+        }
+
+        .mho-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-card);
+        }
+
+        .mho-table th {
+            background: linear-gradient(135deg, var(--color-highlight), var(--color-accent1));
+            color: var(--color-bg);
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 2px solid var(--color-accent2);
+        }
+
+        .mho-table th:first-child {
+            border-top-left-radius: 12px;
+        }
+
+        .mho-table th:last-child {
+            border-top-right-radius: 12px;
+        }
+
+        .mho-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .mho-table tbody tr {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .mho-table tbody tr:hover {
+            background: rgba(161, 180, 84, 0.08);
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .mho-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background: var(--color-card);
+            color: var(--color-text);
+            text-align: center;
+            border-radius: 8px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .risk-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .risk-badge.low {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .risk-badge.medium {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .risk-badge.high {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .risk-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .action-buttons .btn {
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 15px;
+            min-width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .no-data-message {
+            text-align: center;
+            padding: 40px;
+            color: var(--color-text);
+            font-style: italic;
+            background: rgba(161, 180, 84, 0.05);
+        }
+
+        /* Light theme adjustments */
+        .light-theme .mho-assessment-container {
+            background: var(--color-card);
+            box-shadow: 0 8px 25px rgba(102, 187, 106, 0.15);
+        }
+
+        .light-theme .search-container {
+            background: var(--color-card);
+            border-color: var(--color-border);
+        }
+
+        .light-theme .filter-select {
+            background: var(--color-card);
+            border-color: var(--color-border);
+        }
+
+        .light-theme .mho-table th {
+            background: linear-gradient(135deg, var(--color-highlight), var(--color-accent1));
+        }
+
+        .light-theme .mho-table tbody tr:hover {
+            background: rgba(102, 187, 106, 0.08);
+        }
     </style>
 </head>
 <body class="light-theme">
@@ -1717,385 +2087,254 @@ header {
         </header>
 
         <div class="screening-container">
-                <!-- Card Deck Fan Component -->
-                <div class="card-deck-container">
-                                                <div class="deck-header">
-                                <div class="search-filter-container">
-                                    <div class="search-box">
-                                        <input type="text" id="searchInput" placeholder="Search by name or barangay..." class="search-input">
-                                        <button type="button" class="search-btn">🔍</button>
-                                        <button type="button" class="test-search-btn" onclick="testSearch()" style="margin-left: 10px; padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Test Search</button>
-                                    </div>
-                                    <div class="filter-buttons">
-                                        <button type="button" class="filter-btn active" data-filter="all">All</button>
-                                        <button type="button" class="filter-btn" data-filter="low-risk">Low Risk</button>
-                                        <button type="button" class="filter-btn" data-filter="medium-risk">Medium Risk</button>
-                                        <button type="button" class="filter-btn" data-filter="high-risk">High Risk</button>
-                                    </div>
-                                </div>
+            <!-- Enhanced MHO Assessment Table -->
+            <div class="mho-assessment-container">
+                <div class="table-header">
+                    <h2>Comprehensive MHO Assessment Records</h2>
+                    <div class="header-controls">
+                        <div class="search-row">
+                            <div class="search-container">
+                                <input type="text" id="searchInput" placeholder="Search by name, location, or risk level..." class="search-input">
+                                <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                             </div>
-                    
-                    <!-- Children Section -->
-                    <div class="deck-wrapper">
-                        <div class="deck-header-section">
-                            <h3 class="section-title">Children (0-17 years)</h3>
-                        </div>
-                        <div class="deck-container">
-                            <div class="deck-cards children-cards">
-                                <?php
-                                // Enhanced sample user data with diverse age groups and pregnancy status - 120 placeholder users
-                                $sample_users = [];
-                                
-                                // Extended names list for more variety
-                                $names = [
-                                    // Children and Teens (0-17)
-                                    'Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales',
-                                    'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
-                                    'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
-                                    'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
-                                    'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
-                                    // Young Adults (18-35)
-                                    'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
-                                    'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
-                                    // Adults (36-65)
-                                    'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
-                                    'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
-                                    // Seniors (65+)
-                                    'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas'
-                                ];
-                                
-                                $barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose', 'Munting Batangas', 'Cataning', 'Central', 'Dangcol', 'Dona Francisca', 'Lote', 'Malabia', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Juan', 'Talisay', 'Tanato', 'Tortugas', 'Wawa'];
-                                
-                                $bmi_categories = ['Normal', 'Overweight', 'Underweight', 'Obese'];
-                                $meal_assessments = ['Balanced', 'At Risk'];
-                                $lifestyles = ['Active', 'Sedentary'];
-                                $risk_levels = ['Low Risk', 'Medium Risk', 'High Risk'];
-                                
-                                // Create diverse age groups and pregnancy status
-                                for ($i = 0; $i < 120; $i++) {
-                                    $bmi_category = $bmi_categories[array_rand($bmi_categories)];
-                                    $meal_assessment = $meal_assessments[array_rand($meal_assessments)];
-                                    $lifestyle = $lifestyles[array_rand($lifestyles)];
-                                    $risk_level = $risk_levels[array_rand($risk_levels)];
-                                    
-                                    // Generate age based on groups for diversity
-                                    $age_group = $i % 4; // 0-3 for different age groups
-                                    if ($age_group === 0) {
-                                        // Children and Teens (0-17)
-                                        $age = rand(5, 17);
-                                        $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                        $pregnant = 'Not Applicable';
-                                    } elseif ($age_group === 1) {
-                                        // Young Adults (18-35) - High pregnancy chance
-                                        $age = rand(18, 35);
-                                        $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                        $pregnant = $sex === 'Female' ? (rand(0, 3) === 0 ? 'Yes' : 'No') : 'Not Applicable';
-                                    } elseif ($age_group === 2) {
-                                        // Adults (36-65) - Medium pregnancy chance
-                                        $age = rand(36, 65);
-                                        $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                        $pregnant = $sex === 'Female' && $age <= 50 ? (rand(0, 5) === 0 ? 'Yes' : 'No') : 'Not Applicable';
-                                    } else {
-                                        // Seniors (65+)
-                                        $age = rand(65, 85);
-                                        $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                        $pregnant = 'Not Applicable';
-                                    }
-                                    
-                                    // Generate realistic data based on age and risk level
-                                    $risk_score = $risk_level === 'Low Risk' ? rand(5, 12) : ($risk_level === 'Medium Risk' ? rand(13, 20) : rand(21, 30));
-                                    
-                                    // Adjust height and weight based on age
-                                    if ($age < 18) {
-                                        // Children and teens
-                                        $height = rand(100, 170);
-                                        $weight = $bmi_category === 'Normal' ? rand(20, 60) : ($bmi_category === 'Overweight' ? rand(65, 80) : ($bmi_category === 'Underweight' ? rand(15, 25) : rand(85, 100)));
-                                    } elseif ($age < 36) {
-                                        // Young adults
-                                        $height = rand(150, 180);
-                                        $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
-                                    } elseif ($age < 66) {
-                                        // Adults
-                                        $height = rand(150, 180);
-                                        $weight = $bmi_category === 'Normal' ? rand(50, 80) : ($bmi_category === 'Overweight' ? rand(85, 100) : ($bmi_category === 'Underweight' ? rand(40, 55) : rand(105, 140)));
-                                    } else {
-                                        // Seniors
-                                        $height = rand(145, 175);
-                                        $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
-                                    }
-                                    
-                                    $bmi = round($weight / pow($height/100, 2), 1);
-                                    
-                                    $family_history_options = [['None'], ['Hypertension'], ['Diabetes'], ['Heart Disease'], ['Hypertension', 'Diabetes'], ['Obesity'], ['Malnutrition'], ['Tuberculosis'], ['Kidney Disease']];
-                                    $family_history = $family_history_options[array_rand($family_history_options)];
-                                    
-                                    $risk_factors = [];
-                                    if ($bmi_category !== 'Normal') $risk_factors[] = 'BMI: ' . $bmi_category;
-                                    if ($meal_assessment === 'At Risk') $risk_factors[] = 'Unbalanced Diet';
-                                    if ($lifestyle === 'Sedentary') $risk_factors[] = 'Sedentary Lifestyle';
-                                    if ($family_history[0] !== 'None') $risk_factors[] = 'Family History: ' . implode(', ', $family_history);
-                                    if (empty($risk_factors)) $risk_factors[] = 'None';
-                                    
-                                    $sample_users[] = [
-                                        'name' => $names[$i % count($names)],
-                                        'age' => (string)$age,
-                                        'sex' => $sex,
-                                        'pregnant' => $pregnant,
-                                        'municipality' => 'Balanga',
-                                        'barangay' => $barangays[$i % count($barangays)],
-                                        'height' => (string)$height,
-                                        'weight' => (string)$weight,
-                                        'bmi' => (string)$bmi,
-                                        'bmi_category' => $bmi_category,
-                                        'meal_assessment' => $meal_assessment,
-                                        'family_history' => $family_history,
-                                        'lifestyle' => $lifestyle,
-                                        'immunization_status' => 'Complete',
-                                        'risk_factors' => $risk_factors,
-                                        'risk_score' => (string)$risk_score,
-                                        'risk_level' => $risk_level,
-                                        'recommendation' => $risk_level === 'Low Risk' ? 'Maintain current healthy lifestyle' : ($risk_level === 'Medium Risk' ? 'Nutrition intervention needed' : 'Immediate lifestyle intervention needed'),
-                                        'intervention' => $risk_level === 'Low Risk' ? 'Regular monitoring' : ($risk_level === 'Medium Risk' ? 'DOH feeding program, nutrition counseling' : 'Nutrition counseling, physical activity program, regular health monitoring')
-                                    ];
-                                }
-                                ?>
-                                
-                                <?php 
-                                // Filter users by age groups
-                                $children_users = array_filter($sample_users, function($user) { return $user['age'] >= 0 && $user['age'] <= 17; });
-                                $young_adults_users = array_filter($sample_users, function($user) { return $user['age'] >= 18 && $user['age'] <= 35; });
-                                $adults_users = array_filter($sample_users, function($user) { return $user['age'] >= 36 && $user['age'] <= 65; });
-                                $seniors_users = array_filter($sample_users, function($user) { return $user['age'] >= 65; });
-                                $pregnant_users = array_filter($sample_users, function($user) { return $user['pregnant'] === 'Yes'; });
-                                ?>
-                                
-                                <!-- Children Cards -->
-                                <?php foreach ($children_users as $index => $user): ?>
-                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="children">
-                                    <div class="card-main">
-                                        <div class="card-header">
-                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
-                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
-                                        </div>
-                                        <div class="card-content">
-                                            <div class="card-stat">
-                                                <span class="stat-label">Age/Sex</span>
-                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">BMI</span>
-                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Diet</span>
-                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Lifestyle</span>
-                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Risk Level</span>
-                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php endforeach; ?>
+                            <div class="filter-container">
+                                <select id="riskFilter" onchange="filterByRisk()" class="filter-select">
+                                    <option value="">All Risk Levels</option>
+                                    <option value="low">Low Risk</option>
+                                    <option value="medium">Medium Risk</option>
+                                    <option value="high">High Risk</option>
+                                </select>
+                            </div>
+                            <div class="filter-container">
+                                <select id="locationFilter" onchange="filterByLocation()" class="filter-select">
+                                    <option value="">All Locations</option>
+                                    <option value="ABUCAY">ABUCAY</option>
+                                    <option value="BAGAC">BAGAC</option>
+                                    <option value="CITY OF BALANGA">CITY OF BALANGA</option>
+                                    <option value="DINALUPIHAN">DINALUPIHAN</option>
+                                    <option value="HERMOSA">HERMOSA</option>
+                                    <option value="LIMAY">LIMAY</option>
+                                    <option value="MARIVELES">MARIVELES</option>
+                                    <option value="MORONG">MORONG</option>
+                                    <option value="ORANI">ORANI</option>
+                                    <option value="ORION">ORION</option>
+                                    <option value="PILAR">PILAR</option>
+                                    <option value="SAMAL">SAMAL</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Young Adults Section -->
-                    <div class="deck-wrapper">
-                        <div class="deck-header-section">
-                            <h3 class="section-title">Young Adults (18-35 years)</h3>
-                        </div>
-                        <div class="deck-container">
-                            <div class="deck-cards young-adults-cards">
-                                <?php foreach ($young_adults_users as $index => $user): ?>
-                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="young-adults">
-                                    <div class="card-main">
-                                        <div class="card-header">
-                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
-                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
-                                        </div>
-                                        <div class="card-content">
-                                            <div class="card-stat">
-                                                <span class="stat-label">Age/Sex</span>
-                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
-                                            </div>
-                                            <?php if ($user['pregnant'] !== 'Not Applicable'): ?>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Pregnancy</span>
-                                                <span class="stat-value pregnancy-<?php echo strtolower($user['pregnant']); ?>"><?php echo $user['pregnant']; ?></span>
-                                            </div>
-                                            <?php endif; ?>
-                                            <div class="card-stat">
-                                                <span class="stat-label">BMI</span>
-                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Diet</span>
-                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Lifestyle</span>
-                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Risk Level</span>
-                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Adults Section -->
-                    <div class="deck-wrapper">
-                        <div class="deck-header-section">
-                            <h3 class="section-title">Adults (36-65 years)</h3>
-                        </div>
-                        <div class="deck-container">
-                            <div class="deck-cards adults-cards">
-                                <?php foreach ($adults_users as $index => $user): ?>
-                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="adults">
-                                    <div class="card-main">
-                                        <div class="card-header">
-                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
-                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
-                                        </div>
-                                        <div class="card-content">
-                                            <div class="card-stat">
-                                                <span class="stat-label">Age/Sex</span>
-                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
-                                            </div>
-                                            <?php if ($user['pregnant'] !== 'Not Applicable'): ?>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Pregnancy</span>
-                                                <span class="stat-value pregnancy-<?php echo strtolower($user['pregnant']); ?>"><?php echo $user['pregnant']; ?></span>
-                                            </div>
-                                            <?php endif; ?>
-                                            <div class="card-stat">
-                                                <span class="stat-label">BMI</span>
-                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Diet</span>
-                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Lifestyle</span>
-                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Risk Level</span>
-                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Seniors Section -->
-                    <div class="deck-wrapper">
-                        <div class="deck-header-section">
-                            <h3 class="section-title">Seniors (65+ years)</h3>
-                        </div>
-                        <div class="deck-container">
-                            <div class="deck-cards seniors-cards">
-                                <?php foreach ($seniors_users as $index => $user): ?>
-                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="seniors">
-                                    <div class="card-main">
-                                        <div class="card-header">
-                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
-                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
-                                        </div>
-                                        <div class="card-content">
-                                            <div class="card-stat">
-                                                <span class="stat-label">Age/Sex</span>
-                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">BMI</span>
-                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Diet</span>
-                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Lifestyle</span>
-                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Risk Level</span>
-                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pregnant Women Section -->
-                    <div class="deck-wrapper">
-                        <div class="deck-header-section">
-                            <h3 class="section-title">Pregnant Women</h3>
-                        </div>
-                        <div class="deck-container">
-                            <div class="deck-cards pregnant-cards">
-                                <?php foreach ($pregnant_users as $index => $user): ?>
-                                <div class="deck-card" data-index="<?php echo $index; ?>" data-age-group="pregnant">
-                                    <div class="card-main">
-                                        <div class="card-header">
-                                            <h4><?php echo htmlspecialchars($user['name']); ?></h4>
-                                            <span class="card-location"><?php echo htmlspecialchars($user['barangay'] . ', ' . $user['municipality']); ?></span>
-                                        </div>
-                                        <div class="card-content">
-                                            <div class="card-stat">
-                                                <span class="stat-label">Age/Sex</span>
-                                                <span class="stat-value"><?php echo $user['age']; ?>y, <?php echo $user['sex']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Pregnancy</span>
-                                                <span class="stat-value pregnancy-yes">Yes</span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">BMI</span>
-                                                <span class="stat-value bmi-<?php echo strtolower($user['bmi_category']); ?>"><?php echo $user['bmi']; ?> (<?php echo $user['bmi_category']; ?>)</span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Diet</span>
-                                                <span class="stat-value diet-<?php echo strtolower(str_replace(' ', '-', $user['meal_assessment'])); ?>"><?php echo $user['meal_assessment']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Lifestyle</span>
-                                                <span class="stat-value lifestyle-<?php echo strtolower($user['lifestyle']); ?>"><?php echo $user['lifestyle']; ?></span>
-                                            </div>
-                                            <div class="card-stat">
-                                                <span class="stat-label">Risk Level</span>
-                                                <span class="stat-value risk-<?php echo strtolower(str_replace(' ', '-', $user['risk_level'])); ?>"><?php echo $user['risk_level']; ?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php endforeach; ?>
-                            </div>
+                        <div class="action-row">
+                            <button class="btn btn-view" onclick="exportData()">📊 Export Data</button>
+                            <button class="btn btn-view" onclick="refreshTable()">🔄 Refresh</button>
+                            <button class="btn btn-view" onclick="showStats()">📈 Statistics</button>
                         </div>
                     </div>
                 </div>
 
-
+                <div class="table-responsive">
+                    <table class="mho-table" id="mhoTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Age/Sex</th>
+                                <th>Location</th>
+                                <th>BMI</th>
+                                <th>Risk Level</th>
+                                <th>Assessment Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            // Enhanced sample user data with diverse age groups and pregnancy status - 120 placeholder users
+                            $sample_users = [];
+                            
+                            // Extended names list for more variety
+                            $names = [
+                                // Children and Teens (0-17)
+                                'Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales',
+                                'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
+                                'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
+                                'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
+                                'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
+                                // Young Adults (18-35)
+                                'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
+                                'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
+                                // Adults (36-65)
+                                'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
+                                'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
+                                // Seniors (65+)
+                                'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas'
+                            ];
+                            
+                            $barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose', 'Munting Batangas', 'Cataning', 'Central', 'Dangcol', 'Dona Francisca', 'Lote', 'Malabia', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Juan', 'Talisay', 'Tanato', 'Tortugas', 'Wawa'];
+                            
+                            $bmi_categories = ['Normal', 'Overweight', 'Underweight', 'Obese'];
+                            $meal_assessments = ['Balanced', 'At Risk'];
+                            $lifestyles = ['Active', 'Sedentary'];
+                            $risk_levels = ['Low Risk', 'Medium Risk', 'High Risk'];
+                            
+                            // Create diverse age groups and pregnancy status
+                            for ($i = 0; $i < 120; $i++) {
+                                $bmi_category = $bmi_categories[array_rand($bmi_categories)];
+                                $meal_assessment = $meal_assessments[array_rand($meal_assessments)];
+                                $lifestyle = $lifestyles[array_rand($lifestyles)];
+                                $risk_level = $risk_levels[array_rand($risk_levels)];
+                                
+                                // Generate age based on groups for diversity
+                                $age_group = $i % 4; // 0-3 for different age groups
+                                if ($age_group === 0) {
+                                    // Children and Teens (0-17)
+                                    $age = rand(5, 17);
+                                    $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                    $pregnant = 'Not Applicable';
+                                } elseif ($age_group === 1) {
+                                    // Young Adults (18-35) - High pregnancy chance
+                                    $age = rand(18, 35);
+                                    $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                    $pregnant = $sex === 'Female' ? (rand(0, 3) === 0 ? 'Yes' : 'No') : 'Not Applicable';
+                                } elseif ($age_group === 2) {
+                                    // Adults (36-65) - Medium pregnancy chance
+                                    $age = rand(36, 65);
+                                    $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                    $pregnant = $sex === 'Female' && $age <= 50 ? (rand(0, 5) === 0 ? 'Yes' : 'No') : 'Not Applicable';
+                                } else {
+                                    // Seniors (65+)
+                                    $age = rand(65, 85);
+                                    $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
+                                    $pregnant = 'Not Applicable';
+                                }
+                                
+                                // Generate realistic data based on age and risk level
+                                $risk_score = $risk_level === 'Low Risk' ? rand(5, 12) : ($risk_level === 'Medium Risk' ? rand(13, 20) : rand(21, 30));
+                                
+                                // Adjust height and weight based on age
+                                if ($age < 18) {
+                                    // Children and teens
+                                    $height = rand(100, 170);
+                                    $weight = $bmi_category === 'Normal' ? rand(20, 60) : ($bmi_category === 'Overweight' ? rand(65, 80) : ($bmi_category === 'Underweight' ? rand(15, 25) : rand(85, 100)));
+                                } elseif ($age < 36) {
+                                    // Young adults
+                                    $height = rand(150, 180);
+                                    $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
+                                } elseif ($age < 66) {
+                                    // Adults
+                                    $height = rand(150, 180);
+                                    $weight = $bmi_category === 'Normal' ? rand(50, 80) : ($bmi_category === 'Overweight' ? rand(85, 100) : ($bmi_category === 'Underweight' ? rand(40, 55) : rand(105, 140)));
+                                } else {
+                                    // Seniors
+                                    $height = rand(145, 175);
+                                    $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
+                                }
+                                
+                                $bmi = round($weight / pow($height/100, 2), 1);
+                                
+                                $family_history_options = [['None'], ['Hypertension'], ['Diabetes'], ['Heart Disease'], ['Hypertension', 'Diabetes'], ['Obesity'], ['Malnutrition'], ['Tuberculosis'], ['Kidney Disease']];
+                                $family_history = $family_history_options[array_rand($family_history_options)];
+                                
+                                $risk_factors = [];
+                                if ($bmi_category !== 'Normal') $risk_factors[] = 'BMI: ' . $bmi_category;
+                                if ($meal_assessment === 'At Risk') $risk_factors[] = 'Unbalanced Diet';
+                                if ($lifestyle === 'Sedentary') $risk_factors[] = 'Sedentary Lifestyle';
+                                if ($family_history[0] !== 'None') $risk_factors[] = 'Family History: ' . implode(', ', $family_history);
+                                if (empty($risk_factors)) $risk_factors[] = 'None';
+                                
+                                $sample_users[] = [
+                                    'id' => $i + 1,
+                                    'name' => $names[$i % count($names)],
+                                    'age' => (string)$age,
+                                    'sex' => $sex,
+                                    'pregnant' => $pregnant,
+                                    'municipality' => 'Balanga',
+                                    'barangay' => $barangays[$i % count($barangays)],
+                                    'height' => (string)$height,
+                                    'weight' => (string)$weight,
+                                    'bmi' => (string)$bmi,
+                                    'bmi_category' => $bmi_category,
+                                    'meal_assessment' => $meal_assessment,
+                                    'family_history' => $family_history,
+                                    'lifestyle' => $lifestyle,
+                                    'immunization_status' => 'Complete',
+                                    'risk_factors' => $risk_factors,
+                                    'risk_score' => (string)$risk_score,
+                                    'risk_level' => $risk_level,
+                                    'recommendation' => $risk_level === 'Low Risk' ? 'Maintain current healthy lifestyle' : ($risk_level === 'Medium Risk' ? 'Nutrition intervention needed' : 'Immediate lifestyle intervention needed'),
+                                    'intervention' => $risk_level === 'Low Risk' ? 'Regular monitoring' : ($risk_level === 'Medium Risk' ? 'DOH feeding program, nutrition counseling' : 'Nutrition counseling, physical activity program, regular health monitoring'),
+                                    'created_at' => date('Y-m-d', strtotime('-' . rand(0, 365) . ' days'))
+                                ];
+                            }
+                            ?>
+                            
+                            <?php if (!empty($sample_users)): ?>
+                                <?php foreach ($sample_users as $assessment): ?>
+                                    <?php
+                                    // Calculate risk level based on BMI and other factors
+                                    $bmi = floatval($assessment['bmi']);
+                                    $riskLevel = 'low';
+                                    $riskClass = 'low';
+                                    
+                                    if ($bmi < 18.5 || $bmi > 30) {
+                                        $riskLevel = 'high';
+                                        $riskClass = 'high';
+                                    } elseif ($bmi < 20 || $bmi > 25) {
+                                        $riskLevel = 'medium';
+                                        $riskClass = 'medium';
+                                    }
+                                    
+                                    // Get user info
+                                    $userName = $assessment['name'] ?? 'Unknown User';
+                                    $age = $assessment['age'] ?? 'N/A';
+                                    $sex = $assessment['sex'] ?? 'N/A';
+                                    $municipality = $assessment['municipality'] ?? 'N/A';
+                                    $barangay = $assessment['barangay'] ?? 'N/A';
+                                    $bmiValue = $assessment['bmi'] ?? 'N/A';
+                                    $createdAt = $assessment['created_at'] ?? 'N/A';
+                                    ?>
+                                    <tr data-risk="<?php echo $riskClass; ?>" data-location="<?php echo htmlspecialchars($municipality); ?>">
+                                        <td><?php echo htmlspecialchars($assessment['id']); ?></td>
+                                        <td class="tooltip">
+                                            <?php echo htmlspecialchars($userName); ?>
+                                            <span class="tooltiptext">User: <?php echo htmlspecialchars($userName); ?><br>Email: user@example.com</span>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($age . 'y, ' . $sex); ?></td>
+                                        <td class="tooltip">
+                                            <?php echo htmlspecialchars($barangay . ', ' . $municipality); ?>
+                                            <span class="tooltiptext">Municipality: <?php echo htmlspecialchars($municipality); ?><br>Barangay: <?php echo htmlspecialchars($barangay); ?></span>
+                                        </td>
+                                        <td class="tooltip">
+                                            <?php echo htmlspecialchars($bmiValue); ?>
+                                            <span class="tooltiptext">BMI: <?php echo htmlspecialchars($bmiValue); ?><br>Category: <?php echo $bmi < 18.5 ? 'Underweight' : ($bmi < 25 ? 'Normal' : ($bmi < 30 ? 'Overweight' : 'Obese')); ?></span>
+                                        </td>
+                                        <td>
+                                            <span class="risk-badge <?php echo $riskClass; ?>"><?php echo ucfirst($riskLevel); ?> Risk</span>
+                                        </td>
+                                        <td><?php echo date('M d, Y', strtotime($createdAt)); ?></td>
+                                        <td>
+                                            <span class="status-indicator status-active"></span>
+                                            Active
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-view" onclick="viewAssessment(<?php echo $assessment['id']; ?>)" title="View Details">👁️</button>
+                                                <button class="btn btn-edit" onclick="editAssessment(<?php echo $assessment['id']; ?>)" title="Edit Assessment">✏️</button>
+                                                <button class="btn btn-delete" onclick="deleteAssessment(<?php echo $assessment['id']; ?>)" title="Delete Assessment">🗑️</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="9" class="no-data-message">
+                                        <div>No MHO assessments found. Start by creating new assessments.</div>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2509,187 +2748,158 @@ header {
             }
         });
 
-        // Card Deck Modal JavaScript
+        // Enhanced MHO Assessment Table JavaScript
         document.addEventListener('DOMContentLoaded', function() {
-            const deckCards = document.querySelectorAll('.deck-card');
-            
-            deckCards.forEach((card, index) => {
-                // Click to show modal
-                card.addEventListener('click', function() {
-                    showCardModal(index);
-                });
-            });
-            
-            function showCardModal(cardIndex) {
-                const card = deckCards[cardIndex];
-                const cardData = <?php echo json_encode($sample_users); ?>;
-                const user = cardData[cardIndex];
-                
-                // Create modal
-                const modal = document.createElement('div');
-                modal.className = 'card-modal';
-                modal.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.7);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 9999;
-                    backdrop-filter: blur(5px);
-                `;
-                
-                const modalContent = document.createElement('div');
-                modalContent.style.cssText = `
-                    background: var(--color-card);
-                    border-radius: 16px;
-                    padding: 30px;
-                    max-width: 600px;
-                    width: 90%;
-                    max-height: 80vh;
-                    overflow-y: auto;
-                    border: 1px solid var(--color-highlight);
-                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-                    position: relative;
-                `;
-                
-                const closeBtn = document.createElement('button');
-                closeBtn.innerHTML = '✕';
-                closeBtn.style.cssText = `
-                    position: absolute;
-                    top: 15px;
-                    right: 20px;
-                    background: none;
-                    border: none;
-                    color: var(--color-highlight);
-                    font-size: 24px;
-                    cursor: pointer;
-                    padding: 5px;
-                    border-radius: 50%;
-                    width: 40px;
-                    height: 40px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    transition: all 0.3s ease;
-                `;
-                
-                closeBtn.addEventListener('mouseenter', function() {
-                    this.style.background = 'var(--color-highlight)';
-                    this.style.color = 'var(--color-bg)';
-                });
-                
-                closeBtn.addEventListener('mouseleave', function() {
-                    this.style.background = 'none';
-                    this.style.color = 'var(--color-highlight)';
-                });
-                
-                closeBtn.addEventListener('click', function() {
-                    modal.remove();
-                });
-                
-                // Risk level calculation
-                let riskLevel = 'Low Risk';
-                let riskColor = '#4CAF50';
-                if (user.risk_score > 20) {
-                    riskLevel = 'High Risk';
-                    riskColor = '#F44336';
-                } else if (user.risk_score > 10) {
-                    riskLevel = 'Medium Risk';
-                    riskColor = '#FF9800';
-                }
-                
-                // Recommendation
-                let recommendation = 'Maintain current status';
-                if (user.risk_score > 20) {
-                    recommendation = 'Immediate intervention needed';
-                } else if (user.risk_score > 10) {
-                    recommendation = 'Regular monitoring';
-                }
-                
-                modalContent.innerHTML = `
-                    <h2 style="color: var(--color-highlight); margin-bottom: 25px; text-align: center; font-size: 28px;">
-                        ${user.name} - Decision Tree Assessment
-                    </h2>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                        <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
-                            <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">📋 Basic Information</h3>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Name:</strong> ${user.name}</p>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Age:</strong> ${user.age} years</p>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Sex:</strong> ${user.sex}</p>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Pregnant:</strong> ${user.pregnant}</p>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Location:</strong> ${user.barangay}, ${user.municipality}</p>
-                        </div>
-                        
-                        <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
-                            <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">📏 Anthropometric Data</h3>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Height:</strong> ${user.height} cm</p>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Weight:</strong> ${user.weight} kg</p>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>BMI:</strong> ${user.bmi}</p>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Category:</strong> <span style="color: ${user.bmi_category === 'Normal' ? '#4CAF50' : user.bmi_category === 'Overweight' ? '#FF9800' : user.bmi_category === 'Underweight' ? '#F44336' : '#D32F2F'}">${user.bmi_category}</span></p>
-                        </div>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                        <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
-                            <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">🍽️ Meal Assessment</h3>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>24-Hour Recall:</strong> <span style="color: ${user.meal_assessment === 'Balanced' ? '#4CAF50' : '#FF9800'}">${user.meal_assessment}</span></p>
-                        </div>
-                        
-                        <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
-                            <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">🏃 Lifestyle</h3>
-                            <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Activity Level:</strong> <span style="color: ${user.lifestyle === 'Active' ? '#4CAF50' : '#FF9800'}">${user.lifestyle}</span></p>
-                        </div>
-                    </div>
-                    
-                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border); margin-bottom: 20px;">
-                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">👨‍👩‍👧‍👦 Family History</h3>
-                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Conditions:</strong> ${user.family_history.join(', ')}</p>
-                    </div>
-                    
-                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border); margin-bottom: 20px;">
-                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">💉 Immunization Status</h3>
-                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Status:</strong> <span style="color: ${user.immunization_status === 'Complete' ? '#4CAF50' : '#FF9800'}">${user.immunization_status}</span></p>
-                    </div>
-                    
-                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border); margin-bottom: 20px;">
-                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">⚠️ Risk Factors</h3>
-                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Identified:</strong> ${user.risk_factors.join(', ')}</p>
-                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Risk Score:</strong> ${user.risk_score}</p>
-                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Risk Level:</strong> <span style="color: ${riskColor}">${user.risk_level}</span></p>
-                    </div>
-                    
-                    <div style="background: rgba(161, 180, 84, 0.15); padding: 15px; border-radius: 12px; border: 1px solid var(--color-highlight);">
-                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">💡 Decision Tree Recommendation</h3>
-                        <p style="color: var(--color-text); margin-bottom: 8px; font-size: 14px;"><strong>Assessment:</strong> ${user.recommendation}</p>
-                        <p style="color: var(--color-text); margin-bottom: 0; font-size: 14px;"><strong>Intervention:</strong> ${user.intervention}</p>
-                    </div>
-                `;
-                
-                modalContent.appendChild(closeBtn);
-                modal.appendChild(modalContent);
-                document.body.appendChild(modal);
-                
-                // Close modal when clicking outside
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.remove();
-                    }
-                });
-            }
+            console.log('DOM loaded, initializing MHO assessment table...');
+            initializeTableFunctionality();
         });
 
-        function showFanCardDetails(fanCard) {
-            const cardType = fanCard.dataset.type;
-            const content = fanCard.querySelector('.fan-content').innerHTML;
+        function initializeTableFunctionality() {
+            // Add row hover effects
+            const tableRows = document.querySelectorAll('.mho-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.01)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        }
+
+        function searchAssessments() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const tableRows = document.querySelectorAll('.mho-table tbody tr');
             
-            // Create modal for detailed view
+            let visibleCount = 0;
+            
+            tableRows.forEach(row => {
+                const name = row.cells[1].textContent.toLowerCase();
+                const location = row.cells[3].textContent.toLowerCase();
+                const riskLevel = row.cells[5].textContent.toLowerCase();
+                
+                const matchesSearch = name.includes(searchTerm) || 
+                                   location.includes(searchTerm) || 
+                                   riskLevel.includes(searchTerm);
+                
+                if (matchesSearch) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            updateNoDataMessage(visibleCount);
+        }
+
+        function filterByRisk() {
+            const riskFilter = document.getElementById('riskFilter').value;
+            const tableRows = document.querySelectorAll('.mho-table tbody tr');
+            
+            let visibleCount = 0;
+            
+            tableRows.forEach(row => {
+                const riskLevel = row.cells[5].textContent.toLowerCase();
+                
+                if (!riskFilter || riskLevel.includes(riskFilter)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            updateNoDataMessage(visibleCount);
+        }
+
+        function filterByLocation() {
+            const locationFilter = document.getElementById('locationFilter').value;
+            const tableRows = document.querySelectorAll('.mho-table tbody tr');
+            
+            let visibleCount = 0;
+            
+            tableRows.forEach(row => {
+                const location = row.cells[3].textContent.toLowerCase();
+                
+                if (!locationFilter || location.includes(locationFilter.toLowerCase())) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            updateNoDataMessage(visibleCount);
+        }
+
+        function updateNoDataMessage(visibleCount) {
+            const noDataMessage = document.querySelector('.no-data-message');
+            const tbody = document.querySelector('.mho-table tbody');
+            
+            if (visibleCount === 0) {
+                if (!noDataMessage) {
+                    const message = document.createElement('tr');
+                    message.className = 'no-data-message';
+                    message.innerHTML = '<td colspan="9"><div>No assessments found matching your criteria.</div></td>';
+                    tbody.appendChild(message);
+                }
+            } else if (noDataMessage) {
+                noDataMessage.remove();
+            }
+        }
+
+        function viewAssessment(id) {
+            // Get assessment data (in real implementation, this would fetch from database)
+            const assessmentData = getAssessmentData(id);
+            showAssessmentModal(assessmentData);
+        }
+
+        function editAssessment(id) {
+            // In real implementation, this would redirect to edit form
+            alert(`Edit assessment ${id} - Redirecting to edit form...`);
+        }
+
+        function deleteAssessment(id) {
+            if (confirm('Are you sure you want to delete this assessment?')) {
+                // In real implementation, this would delete from database
+                const row = document.querySelector(`tr[data-id="${id}"]`);
+                if (row) {
+                    row.remove();
+                    alert('Assessment deleted successfully!');
+                }
+            }
+        }
+
+        function getAssessmentData(id) {
+            // Mock data - in real implementation, this would fetch from database
+            return {
+                id: id,
+                name: 'Sample User',
+                age: '25',
+                sex: 'Female',
+                municipality: 'Balanga',
+                barangay: 'Bagumbayan',
+                height: '160',
+                weight: '55',
+                bmi: '21.5',
+                risk_level: 'Low Risk',
+                created_at: '2024-01-15',
+                meal_assessment: 'Balanced',
+                lifestyle: 'Active',
+                family_history: ['None'],
+                immunization_status: 'Complete',
+                risk_factors: ['None'],
+                recommendation: 'Maintain current healthy lifestyle',
+                intervention: 'Regular monitoring'
+            };
+        }
+
+        function showAssessmentModal(assessment) {
             const modal = document.createElement('div');
-            modal.className = 'fan-modal';
+            modal.className = 'assessment-modal';
             modal.style.cssText = `
                 position: fixed;
                 top: 0;
@@ -2709,7 +2919,7 @@ header {
                 background: var(--color-card);
                 border-radius: 16px;
                 padding: 30px;
-                max-width: 500px;
+                max-width: 700px;
                 width: 90%;
                 max-height: 80vh;
                 overflow-y: auto;
@@ -2754,11 +2964,49 @@ header {
             });
             
             modalContent.innerHTML = `
-                <h3 style="color: var(--color-highlight); margin-bottom: 20px; text-align: center; font-size: 24px;">
-                    ${cardType.charAt(0).toUpperCase() + cardType.slice(1)} Assessment Details
-                </h3>
-                <div style="color: var(--color-text);">
-                    ${content}
+                <h2 style="color: var(--color-highlight); margin-bottom: 25px; text-align: center; font-size: 28px;">
+                    MHO Assessment Details - ${assessment.name}
+                </h2>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
+                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">📋 Basic Information</h3>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Name:</strong> ${assessment.name}</p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Age:</strong> ${assessment.age} years</p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Sex:</strong> ${assessment.sex}</p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Location:</strong> ${assessment.barangay}, ${assessment.municipality}</p>
+                    </div>
+                    
+                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
+                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">📏 Anthropometric Data</h3>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Height:</strong> ${assessment.height} cm</p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Weight:</strong> ${assessment.weight} kg</p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>BMI:</strong> ${assessment.bmi}</p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Risk Level:</strong> <span style="color: ${assessment.risk_level === 'Low Risk' ? '#4CAF50' : assessment.risk_level === 'Medium Risk' ? '#FF9800' : '#F44336'}">${assessment.risk_level}</span></p>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
+                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">🍽️ Meal Assessment</h3>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>24-Hour Recall:</strong> <span style="color: ${assessment.meal_assessment === 'Balanced' ? '#4CAF50' : '#FF9800'}">${assessment.meal_assessment}</span></p>
+                    </div>
+                    
+                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
+                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">🏃 Lifestyle</h3>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Activity Level:</strong> <span style="color: ${assessment.lifestyle === 'Active' ? '#4CAF50' : '#FF9800'}">${assessment.lifestyle}</span></p>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border); margin-bottom: 20px;">
+                    <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">👨‍👩‍👧‍👦 Family History</h3>
+                    <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Conditions:</strong> ${assessment.family_history.join(', ')}</p>
+                </div>
+                
+                <div style="background: rgba(161, 180, 84, 0.15); padding: 15px; border-radius: 12px; border: 1px solid var(--color-highlight);">
+                    <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">💡 Recommendations</h3>
+                    <p style="color: var(--color-text); margin-bottom: 8px; font-size: 14px;"><strong>Assessment:</strong> ${assessment.recommendation}</p>
+                    <p style="color: var(--color-text); margin-bottom: 0; font-size: 14px;"><strong>Intervention:</strong> ${assessment.intervention}</p>
                 </div>
             `;
             
@@ -2774,147 +3022,113 @@ header {
             });
         }
 
-        function testSearch() {
-            const searchInput = document.getElementById('searchInput');
-            const cards = document.querySelectorAll('.deck-card');
-            console.log('=== TEST SEARCH FUNCTION ===');
-            console.log('Cards found:', cards.length);
-            
-            if (cards.length > 0) {
-                const firstCard = cards[0];
-                const nameElement = firstCard.querySelector('.card-header h4');
-                const locationElement = firstCard.querySelector('.card-location');
-                const riskElement = firstCard.querySelector('.card-stat .stat-value.risk-low-risk, .card-stat .stat-value.risk-medium-risk, .card-stat .stat-value.risk-high-risk');
-                
-                console.log('First card elements:', {
-                    name: nameElement ? nameElement.textContent : 'NOT FOUND',
-                    location: locationElement ? locationElement.textContent : 'NOT FOUND',
-                    risk: riskElement ? riskElement.textContent : 'NOT FOUND'
-                });
-                
-                if (nameElement) {
-                    searchInput.value = nameElement.textContent.substring(0, 3);
-                    searchInput.dispatchEvent(new Event('input'));
-                    console.log('Test search triggered with:', nameElement.textContent.substring(0, 3));
-                }
-            }
+        function exportData() {
+            alert('Exporting assessment data to CSV...');
+            // In real implementation, this would generate and download CSV
         }
 
-        function initializeSearchAndFilter() {
-            const searchInput = document.getElementById('searchInput');
-            const filterButtons = document.querySelectorAll('.filter-btn');
-            const cards = document.querySelectorAll('.deck-card');
+        function refreshTable() {
+            location.reload();
+        }
 
-            console.log('Initializing search and filter...');
-            console.log('Found cards:', cards.length);
-            console.log('Found filter buttons:', filterButtons.length);
-
-            // Search functionality
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase().trim();
-                    console.log('Search term:', searchTerm);
-                    filterCards(searchTerm, getActiveFilter());
-                });
-            } else {
-                console.error('Search input not found!');
-            }
-
-            // Filter functionality
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    console.log('Filter button clicked:', this.dataset.filter);
-                    // Remove active class from all buttons
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
-                    // Add active class to clicked button
-                    this.classList.add('active');
-                    
-                    const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
-                    filterCards(searchTerm, this.dataset.filter);
-                });
+        function showStats() {
+            const tableRows = document.querySelectorAll('.mho-table tbody tr');
+            const totalAssessments = tableRows.length;
+            
+            let lowRisk = 0, mediumRisk = 0, highRisk = 0;
+            
+            tableRows.forEach(row => {
+                const riskLevel = row.cells[5].textContent.toLowerCase();
+                if (riskLevel.includes('low')) lowRisk++;
+                else if (riskLevel.includes('medium')) mediumRisk++;
+                else if (riskLevel.includes('high')) highRisk++;
             });
-
-            function getActiveFilter() {
-                const activeButton = document.querySelector('.filter-btn.active');
-                return activeButton ? activeButton.dataset.filter : 'all';
-            }
-
-            function filterCards(searchTerm, filterType) {
-                console.log('Filtering with search:', searchTerm, 'filter:', filterType);
-                let visibleCount = 0;
-                
-                cards.forEach((card, index) => {
-                    // Get card data from the DOM elements
-                    const nameElement = card.querySelector('.card-header h4');
-                    const locationElement = card.querySelector('.card-location');
-                    const riskLevelElement = card.querySelector('.card-stat .stat-value.risk-low-risk, .card-stat .stat-value.risk-medium-risk, .card-stat .stat-value.risk-high-risk');
-                    const ageSexElement = card.querySelector('.card-stat .stat-value');
-                    const pregnancyElement = card.querySelector('.card-stat .stat-value.pregnancy-yes, .card-stat .stat-value.pregnancy-no');
-                    
-                    if (!nameElement || !locationElement || !riskLevelElement || !ageSexElement) {
-                        console.log('Missing elements in card', index);
-                        return;
-                    }
-
-                    const name = nameElement.textContent.toLowerCase();
-                    const barangay = locationElement.textContent.toLowerCase();
-                    const riskLevel = riskLevelElement.textContent.toLowerCase().replace(/\s+/g, '-');
-                    const ageSex = ageSexElement.textContent.toLowerCase();
-                    const isPregnant = pregnancyElement && pregnancyElement.textContent.toLowerCase() === 'yes';
-                    
-                    // Extract age from age/sex text (e.g., "25y, female")
-                    const ageMatch = ageSex.match(/(\d+)y/);
-                    const age = ageMatch ? parseInt(ageMatch[1]) : 0;
-                    
-                    console.log(`Card ${index} data:`, { name, barangay, riskLevel, age, isPregnant });
-                    
-                    const matchesSearch = searchTerm === '' || name.includes(searchTerm) || barangay.includes(searchTerm);
-                    
-                    // Enhanced filter logic
-                    let matchesFilter = filterType === 'all';
-                    
-                    if (filterType === 'low-risk' || filterType === 'medium-risk' || filterType === 'high-risk') {
-                        matchesFilter = riskLevel === filterType;
-                    } else if (filterType === 'children') {
-                        matchesFilter = age >= 0 && age <= 17;
-                    } else if (filterType === 'young-adults') {
-                        matchesFilter = age >= 18 && age <= 35;
-                    } else if (filterType === 'adults') {
-                        matchesFilter = age >= 36 && age <= 65;
-                    } else if (filterType === 'seniors') {
-                        matchesFilter = age >= 65;
-                    } else if (filterType === 'pregnant') {
-                        matchesFilter = isPregnant;
-                    }
-                    
-                    console.log(`Card ${index} matches:`, { matchesSearch, matchesFilter });
-                    
-                    if (matchesSearch && matchesFilter) {
-                        card.style.display = 'block';
-                        card.classList.remove('hidden');
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                        card.classList.add('hidden');
-                    }
-                });
-                
-                console.log('Visible cards:', visibleCount);
-                
-                // Show/hide no results message
-                const noResultsMessage = document.querySelector('.no-results-message');
-                if (visibleCount === 0) {
-                    if (!noResultsMessage) {
-                        const message = document.createElement('div');
-                        message.className = 'no-results-message';
-                        message.innerHTML = '<p>No results found for your search criteria.</p>';
-                        message.style.cssText = 'text-align: center; padding: 20px; color: var(--color-text); font-style: italic;';
-                        document.querySelector('.deck-cards').appendChild(message);
-                    }
-                } else if (noResultsMessage) {
-                    noResultsMessage.remove();
+            
+            const statsModal = document.createElement('div');
+            statsModal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                backdrop-filter: blur(5px);
+            `;
+            
+            const statsContent = document.createElement('div');
+            statsContent.style.cssText = `
+                background: var(--color-card);
+                border-radius: 16px;
+                padding: 30px;
+                max-width: 500px;
+                width: 90%;
+                border: 1px solid var(--color-highlight);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                position: relative;
+            `;
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '✕';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 15px;
+                right: 20px;
+                background: none;
+                border: none;
+                color: var(--color-highlight);
+                font-size: 24px;
+                cursor: pointer;
+                padding: 5px;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+            `;
+            
+            closeBtn.addEventListener('click', function() {
+                statsModal.remove();
+            });
+            
+            statsContent.innerHTML = `
+                <h3 style="color: var(--color-highlight); margin-bottom: 20px; text-align: center; font-size: 24px;">
+                    Assessment Statistics
+                </h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
+                        <h4 style="color: var(--color-highlight); margin-bottom: 8px;">Total Assessments</h4>
+                        <p style="color: var(--color-text); font-size: 24px; font-weight: bold;">${totalAssessments}</p>
+                    </div>
+                    <div style="background: rgba(76, 175, 80, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
+                        <h4 style="color: #4CAF50; margin-bottom: 8px;">Low Risk</h4>
+                        <p style="color: var(--color-text); font-size: 24px; font-weight: bold;">${lowRisk}</p>
+                    </div>
+                    <div style="background: rgba(255, 152, 0, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
+                        <h4 style="color: #FF9800; margin-bottom: 8px;">Medium Risk</h4>
+                        <p style="color: var(--color-text); font-size: 24px; font-weight: bold;">${mediumRisk}</p>
+                    </div>
+                    <div style="background: rgba(244, 67, 54, 0.1); padding: 15px; border-radius: 12px; text-align: center;">
+                        <h4 style="color: #F44336; margin-bottom: 8px;">High Risk</h4>
+                        <p style="color: var(--color-text); font-size: 24px; font-weight: bold;">${highRisk}</p>
+                    </div>
+                </div>
+            `;
+            
+            statsContent.appendChild(closeBtn);
+            statsModal.appendChild(statsContent);
+            document.body.appendChild(statsModal);
+            
+            statsModal.addEventListener('click', function(e) {
+                if (e.target === statsModal) {
+                    statsModal.remove();
                 }
-            }
+            });
         }
     </script>
 </body>
