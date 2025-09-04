@@ -88,10 +88,10 @@
     <div class="container">
         <div class="header">
             <h1>🧪 Email Test Tool</h1>
-            <p>Test email sending functionality for Nutrisaur</p>
+            <p>Test multiple email sending methods for Nutrisaur</p>
         </div>
 
-        <!-- Test 1: Simple PHP mail() -->
+        <!-- Test 1: PHP mail() -->
         <div class="test-section">
             <h3>Test 1: PHP mail() Function</h3>
             <p>Send a simple test email using PHP's built-in mail() function.</p>
@@ -107,18 +107,34 @@
             <div id="node-result" class="result" style="display: none;"></div>
         </div>
 
-        <!-- Test 3: Send Verification Email -->
+        <!-- Test 3: cURL Email -->
         <div class="test-section">
-            <h3>Test 3: Send Verification Email</h3>
-            <p>Send a verification email with a generated code.</p>
-            <button onclick="sendVerificationEmail()">Send Verification Email</button>
-            <div id="verification-result" class="result" style="display: none;"></div>
+            <h3>Test 3: cURL Email Service</h3>
+            <p>Send email using cURL to external email service.</p>
+            <button onclick="testCurlEmail()">Send Test Email (cURL)</button>
+            <div id="curl-result" class="result" style="display: none;"></div>
         </div>
 
-        <!-- Test 4: Working Email Solution -->
+        <!-- Test 4: File-based Email -->
         <div class="test-section">
-            <h3>Test 4: Working Email Solution</h3>
-            <p>Send email using a working solution that bypasses Railway's email restrictions.</p>
+            <h3>Test 4: File-based Email</h3>
+            <p>Create email file that can be processed by system mail.</p>
+            <button onclick="testFileEmail()">Send Test Email (File-based)</button>
+            <div id="file-result" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 5: SendGrid API -->
+        <div class="test-section">
+            <h3>Test 5: SendGrid API</h3>
+            <p>Send email using SendGrid API (if configured).</p>
+            <button onclick="testSendGrid()">Send Test Email (SendGrid)</button>
+            <div id="sendgrid-result" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- Test 6: Working Email Solution -->
+        <div class="test-section">
+            <h3>Test 6: Working Email Solution</h3>
+            <p>Send email using multiple fallback methods.</p>
             <button onclick="testWorkingEmail()">Send Working Email</button>
             <div id="working-result" class="result" style="display: none;"></div>
         </div>
@@ -190,14 +206,12 @@
             });
         }
 
-        function sendVerificationEmail() {
+        function testCurlEmail() {
             const button = event.target;
             button.disabled = true;
             button.textContent = 'Sending...';
 
-            const code = Math.floor(1000 + Math.random() * 9000).toString();
-
-            fetch('/api/test_verification_email.php', {
+            fetch('/api/test_curl_email.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -205,20 +219,77 @@
                 body: JSON.stringify({
                     email: 'kevinpingol123@gmail.com',
                     username: 'TestUser',
-                    verificationCode: code
+                    verificationCode: '1234'
                 })
             })
             .then(response => response.json())
             .then(data => {
-                const message = `Code: ${code}\n\nResponse: ${JSON.stringify(data, null, 2)}`;
-                showResult('verification-result', message, data.success ? 'success' : 'error');
+                showResult('curl-result', JSON.stringify(data, null, 2), data.success ? 'success' : 'error');
             })
             .catch(error => {
-                showResult('verification-result', 'Error: ' + error.message, 'error');
+                showResult('curl-result', 'Error: ' + error.message, 'error');
             })
             .finally(() => {
                 button.disabled = false;
-                button.textContent = 'Send Verification Email';
+                button.textContent = 'Send Test Email (cURL)';
+            });
+        }
+
+        function testFileEmail() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Sending...';
+
+            fetch('/api/test_file_email.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: 'kevinpingol123@gmail.com',
+                    username: 'TestUser',
+                    verificationCode: '1234'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult('file-result', JSON.stringify(data, null, 2), data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                showResult('file-result', 'Error: ' + error.message, 'error');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Send Test Email (File-based)';
+            });
+        }
+
+        function testSendGrid() {
+            const button = event.target;
+            button.disabled = true;
+            button.textContent = 'Sending...';
+
+            fetch('/api/test_sendgrid.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: 'kevinpingol123@gmail.com',
+                    username: 'TestUser',
+                    verificationCode: '1234'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResult('sendgrid-result', JSON.stringify(data, null, 2), data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                showResult('sendgrid-result', 'Error: ' + error.message, 'error');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Send Test Email (SendGrid)';
             });
         }
 
