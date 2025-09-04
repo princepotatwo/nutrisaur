@@ -1161,24 +1161,24 @@ $db->close();
                     } catch (fallbackParseError) {
                         console.error('Regular register failed, trying simple register...');
                         
-                        // Third fallback to simple register endpoint
-                        const simpleFormData = new FormData();
-                        simpleFormData.append('username', username);
-                        simpleFormData.append('email', email);
-                        simpleFormData.append('password', password);
+                        // Third fallback to register with code endpoint
+                        const codeFormData = new FormData();
+                        codeFormData.append('username', username);
+                        codeFormData.append('email', email);
+                        codeFormData.append('password', password);
                         
-                        response = await fetch('/api/register_simple', {
+                        response = await fetch('/api/register_with_code', {
                             method: 'POST',
-                            body: simpleFormData
+                            body: codeFormData
                         });
                         
-                        console.log('Simple register response status:', response.status);
+                        console.log('Register with code response status:', response.status);
                         responseText = await response.text();
-                        console.log('Simple register response text:', responseText);
+                        console.log('Register with code response text:', responseText);
                         
                         try {
                             data = JSON.parse(responseText);
-                        } catch (simpleParseError) {
+                        } catch (codeParseError) {
                             console.error('All registration methods failed');
                             showMessage('Registration service unavailable. Please try again later.', 'error');
                             return;
@@ -1190,8 +1190,9 @@ $db->close();
                 
                 if (data.success) {
                     if (data.data && data.data.requires_verification) {
-                        // Show verification screen
-                        showVerificationScreen(data.data.email);
+                        // Show verification screen with code if available
+                        const verificationCode = data.data.verification_code || null;
+                        showVerificationScreen(data.data.email, verificationCode);
                     } else {
                         showMessage('Registration successful! Redirecting to dashboard...', 'success');
                         // Redirect to dashboard after successful registration
@@ -1311,13 +1312,18 @@ $db->close();
         }
 
         // Show verification screen
-        function showVerificationScreen(email) {
+        function showVerificationScreen(email, verificationCode = null) {
             authForm.style.display = 'none';
             registerForm.style.display = 'none';
             document.getElementById('verification-form').style.display = 'block';
             document.getElementById('verification_email').value = email;
             authTitle.textContent = 'Email Verification';
-            showMessage('Please check your email for the verification code.', 'info');
+            
+            if (verificationCode) {
+                showMessage(`Registration successful! Your verification code is: ${verificationCode}`, 'success');
+            } else {
+                showMessage('Please check your email for the verification code.', 'info');
+            }
         }
 
         // Hide verification screen and show login
@@ -1328,20 +1334,29 @@ $db->close();
             clearMessage();
         }
 
-        // Verify email function - using new verification system
+        // Verify email function - using new verification endpoint
         async function verifyEmail(email, code) {
             try {
                 const formData = new FormData();
-                formData.append('action', 'verify');
                 formData.append('email', email);
                 formData.append('verification_code', code);
                 
-                const response = await fetch('/api/verification_system', {
+                const response = await fetch('/api/verify_code', {
                     method: 'POST',
                     body: formData
                 });
                 
-                const data = await response.json();
+                const responseText = await response.text();
+                console.log('Verification response:', responseText);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('Failed to parse verification response:', parseError);
+                    showMessage('Server returned invalid response. Please try again.', 'error');
+                    return;
+                }
                 
                 if (data.success) {
                     showMessage('Email verified successfully! Redirecting to dashboard...', 'success');
