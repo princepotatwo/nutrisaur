@@ -157,10 +157,10 @@ class DatabaseAPI {
             
             // First check in users table
             if ($isEmail) {
-                $stmt = $this->pdo->prepare("SELECT user_id, username, email, password FROM users WHERE email = :email");
+                $stmt = $this->pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE email = :email");
                 $stmt->bindParam(':email', $usernameOrEmail);
             } else {
-                $stmt = $this->pdo->prepare("SELECT user_id, username, email, password FROM users WHERE username = :username");
+                $stmt = $this->pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE username = :username");
                 $stmt->bindParam(':username', $usernameOrEmail);
             }
             
@@ -170,6 +170,19 @@ class DatabaseAPI {
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 
                 if (password_verify($password, $user['password'])) {
+                    // Check if email is verified
+                    if (!$user['email_verified']) {
+                        return [
+                            'success' => false,
+                            'message' => 'Please verify your email address before logging in. Check your email for the verification code.',
+                            'requires_verification' => true,
+                            'data' => [
+                                'user_id' => $user['user_id'],
+                                'email' => $user['email']
+                            ]
+                        ];
+                    }
+                    
                     // Check if user is also admin
                     $adminData = $this->getAdminByEmail($user['email']);
                     
@@ -183,6 +196,7 @@ class DatabaseAPI {
                             'user_id' => $user['user_id'],
                             'username' => $user['username'],
                             'email' => $user['email'],
+                            'email_verified' => true,
                             'is_admin' => !empty($adminData),
                             'admin_data' => $adminData
                         ]
@@ -204,7 +218,7 @@ class DatabaseAPI {
     }
     
     /**
-     * Register new user
+     * Register new user with email verification
      */
     public function registerUser($username, $email, $password) {
         try {
@@ -216,6 +230,10 @@ class DatabaseAPI {
                     'database_status' => $this->getDatabaseStatus()
                 ];
             }
+            
+            // Include email verification files
+            require_once __DIR__ . "/EmailService.php";
+            require_once __DIR__ . "/../../email_config.php";
             
             $this->pdo->beginTransaction();
             
@@ -229,33 +247,70 @@ class DatabaseAPI {
                 return ['success' => false, 'message' => 'Username or email already exists'];
             }
             
+            // Generate verification code
+            $verificationCode = generateVerificationCode();
+            $verificationExpiry = getVerificationExpiryTime();
+            
             // Hash password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             
-            // Insert new user
-            $stmt = $this->pdo->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
+            // Insert new user with verification data
+            $stmt = $this->pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, verification_sent_at, created_at) VALUES (:username, :email, :password, :verification_code, :verification_expiry, NOW(), NOW())");
             $stmt->bindParam(':username', $username);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':password', $hashedPassword);
+            $stmt->bindParam(':verification_code', $verificationCode);
+            $stmt->bindParam(':verification_expiry', $verificationExpiry);
             $stmt->execute();
             
             $userId = $this->pdo->lastInsertId();
             
             $this->pdo->commit();
             
-            // Auto-login the user after successful registration
-            $this->autoLoginUser($userId, $username, $email);
-            
-            return [
-                'success' => true,
-                'message' => 'Registration successful! You are now logged in.',
-                'data' => [
-                    'user_id' => $userId,
-                    'username' => $username,
-                    'email' => $email,
-                    'auto_logged_in' => true
-                ]
-            ];
+            // Send verification email
+            try {
+                $emailService = new EmailService();
+                $emailSent = $emailService->sendVerificationEmail($email, $username, $verificationCode);
+                
+                if ($emailSent) {
+                    return [
+                        'success' => true,
+                        'message' => 'Registration successful! Please check your email for verification code.',
+                        'data' => [
+                            'user_id' => $userId,
+                            'username' => $username,
+                            'email' => $email,
+                            'requires_verification' => true
+                        ]
+                    ];
+                } else {
+                    // If email fails, still create account but mark as unverified
+                    return [
+                        'success' => true,
+                        'message' => 'Registration successful! However, verification email could not be sent. Please contact support.',
+                        'data' => [
+                            'user_id' => $userId,
+                            'username' => $username,
+                            'email' => $email,
+                            'requires_verification' => true,
+                            'email_sent' => false
+                        ]
+                    ];
+                }
+            } catch (Exception $e) {
+                error_log("Email service error: " . $e->getMessage());
+                return [
+                    'success' => true,
+                    'message' => 'Registration successful! However, verification email could not be sent. Please contact support.',
+                    'data' => [
+                        'user_id' => $userId,
+                        'username' => $username,
+                        'email' => $email,
+                        'requires_verification' => true,
+                        'email_sent' => false
+                    ]
+                ];
+            }
             
         } catch (Exception $e) {
             if ($this->pdo) {

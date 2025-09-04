@@ -928,6 +928,21 @@ $db->close();
                 </button>
                 <a href="#" class="toggle-link" id="toggle-link-register">Already have an account? Login</a>
             </form>
+            
+            <!-- Hidden verification form -->
+            <form id="verification-form" method="post" action="" style="display: none;">
+                <div class="input-group">
+                    <label for="verification_email">Email</label>
+                    <input type="email" id="verification_email" name="verification_email" readonly>
+                </div>
+                <div class="input-group">
+                    <label for="verification_code">Verification Code</label>
+                    <input type="text" id="verification_code" name="verification_code" placeholder="Enter 4-digit code" maxlength="4" pattern="[0-9]{4}" required>
+                </div>
+                <button type="submit" class="auth-btn" id="verify-btn">Verify Email</button>
+                <button type="button" class="google-btn" id="resend-btn">Resend Code</button>
+                <a href="#" class="toggle-link" id="back-to-login">Back to Login</a>
+            </form>
         </div>
     </div>
 
@@ -1089,7 +1104,12 @@ $db->close();
                         window.location.href = '/dash';
                     }, 1000);
                 } else {
-                    showMessage(data.message || 'Login failed. Please try again.', 'error');
+                    if (data.requires_verification) {
+                        // Show verification screen for login
+                        showVerificationScreen(data.data.email);
+                    } else {
+                        showMessage(data.message || 'Login failed. Please try again.', 'error');
+                    }
                 }
             } catch (error) {
                 showMessage('An error occurred. Please try again later.', 'error');
@@ -1117,11 +1137,16 @@ $db->close();
                 const data = await response.json();
                 
                 if (data.success) {
-                    showMessage('Registration successful! Redirecting to dashboard...', 'success');
-                    // Redirect to dashboard after successful registration
-                    setTimeout(() => {
-                        window.location.href = '/dash';
-                    }, 1000);
+                    if (data.data && data.data.requires_verification) {
+                        // Show verification screen
+                        showVerificationScreen(data.data.email);
+                    } else {
+                        showMessage('Registration successful! Redirecting to dashboard...', 'success');
+                        // Redirect to dashboard after successful registration
+                        setTimeout(() => {
+                            window.location.href = '/dash';
+                        }, 1000);
+                    }
                 } else {
                     showMessage(data.message || 'Registration failed. Please try again.', 'error');
                     // Stay on registration form
@@ -1195,6 +1220,80 @@ $db->close();
             authForm.style.display = 'block';
         }
 
+        // Show verification screen
+        function showVerificationScreen(email) {
+            authForm.style.display = 'none';
+            registerForm.style.display = 'none';
+            document.getElementById('verification-form').style.display = 'block';
+            document.getElementById('verification_email').value = email;
+            authTitle.textContent = 'Email Verification';
+            showMessage('Please check your email for the verification code.', 'info');
+        }
+
+        // Hide verification screen and show login
+        function hideVerificationScreen() {
+            document.getElementById('verification-form').style.display = 'none';
+            authForm.style.display = 'block';
+            authTitle.textContent = 'Login';
+            clearMessage();
+        }
+
+        // Verify email function
+        async function verifyEmail(email, code) {
+            try {
+                const response = await fetch('/api/verify_email.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        verification_code: code
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Email verified successfully! You can now login.', 'success');
+                    setTimeout(() => {
+                        hideVerificationScreen();
+                    }, 2000);
+                } else {
+                    showMessage(data.message || 'Verification failed. Please try again.', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Verification error:', error);
+            }
+        }
+
+        // Resend verification code function
+        async function resendVerificationCode(email) {
+            try {
+                const response = await fetch('/api/resend_verification.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Verification code sent successfully! Please check your email.', 'success');
+                } else {
+                    showMessage(data.message || 'Failed to resend verification code.', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Resend error:', error);
+            }
+        }
+
         // Password visibility toggle functionality
         function setupPasswordToggles() {
             const toggleLogin = document.getElementById('toggle-password-login');
@@ -1238,6 +1337,47 @@ $db->close();
                 }, 150);
             });
         }
+
+        // Setup verification form event listeners
+        function setupVerificationForm() {
+            const verificationForm = document.getElementById('verification-form');
+            const verifyBtn = document.getElementById('verify-btn');
+            const resendBtn = document.getElementById('resend-btn');
+            const backToLoginBtn = document.getElementById('back-to-login');
+
+            // Verification form submission
+            verificationForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('verification_email').value;
+                const code = document.getElementById('verification_code').value;
+                
+                if (!code || code.length !== 4) {
+                    showMessage('Please enter a valid 4-digit verification code.', 'error');
+                    return;
+                }
+                
+                await verifyEmail(email, code);
+            });
+
+            // Resend verification code
+            resendBtn.addEventListener('click', async () => {
+                const email = document.getElementById('verification_email').value;
+                await resendVerificationCode(email);
+            });
+
+            // Back to login
+            backToLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                hideVerificationScreen();
+            });
+        }
+
+        // Initialize all event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            setupPasswordToggles();
+            setupVerificationForm();
+        });
 
 
     </script>
