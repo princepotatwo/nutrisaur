@@ -1111,18 +1111,19 @@ $db->close();
             }
         }
 
-        // Register function - using direct API endpoint
+        // Register function - using new verification system
         async function register(username, email, password) {
             try {
                 // Show a loading message
                 showMessage('Processing registration...', 'info');
                 
                 const formData = new FormData();
+                formData.append('action', 'register');
                 formData.append('username', username);
                 formData.append('email', email);
                 formData.append('password', password);
                 
-                const response = await fetch('/api/register', {
+                const response = await fetch('/api/verification_system', {
                     method: 'POST',
                     body: formData
                 });
@@ -1227,18 +1228,17 @@ $db->close();
             clearMessage();
         }
 
-        // Verify email function
+        // Verify email function - using new verification system
         async function verifyEmail(email, code) {
             try {
-                const response = await fetch('/api/verify_email.php', {
+                const formData = new FormData();
+                formData.append('action', 'verify');
+                formData.append('email', email);
+                formData.append('verification_code', code);
+                
+                const response = await fetch('/api/verification_system', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        verification_code: code
-                    })
+                    body: formData
                 });
                 
                 const data = await response.json();
@@ -1257,17 +1257,16 @@ $db->close();
             }
         }
 
-        // Resend verification code function
+        // Resend verification code function - using new verification system
         async function resendVerificationCode(email) {
             try {
-                const response = await fetch('/api/resend_verification.php', {
+                const formData = new FormData();
+                formData.append('action', 'resend');
+                formData.append('email', email);
+                
+                const response = await fetch('/api/verification_system', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: email
-                    })
+                    body: formData
                 });
                 
                 const data = await response.json();
