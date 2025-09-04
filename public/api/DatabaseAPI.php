@@ -993,10 +993,9 @@ class DatabaseAPI {
             
             $stmt = $this->pdo->prepare("
                 SELECT 
-                    up.*, u.username, u.email,
+                    up.*,
                     DATE_FORMAT(up.created_at, '%Y-%m-%d') as screening_date
                 FROM user_preferences up
-                LEFT JOIN users u ON up.user_email = u.email
                 $whereClause
                 ORDER BY up.created_at DESC
                 LIMIT 100
@@ -1189,14 +1188,19 @@ class DatabaseAPI {
             
             $stmt = $this->pdo->prepare("
                 SELECT 
-                    up.*, u.username, u.email,
+                    up.*,
                     CASE 
                         WHEN up.risk_score >= 80 THEN 'Severe Risk'
                         WHEN up.risk_score >= 50 THEN 'High Risk'
                         ELSE 'Moderate Risk'
-                    END as alert_level
+                    END as alert_level,
+                    CASE 
+                        WHEN up.age < 5 THEN 'Child'
+                        WHEN up.age < 18 THEN 'Youth'
+                        WHEN up.age < 65 THEN 'Adult'
+                        ELSE 'Elderly'
+                    END as age_group
                 FROM user_preferences up
-                LEFT JOIN users u ON up.user_email = u.email
                 WHERE up.risk_score >= 30
                 ORDER BY up.risk_score DESC, up.created_at DESC
                 LIMIT 50

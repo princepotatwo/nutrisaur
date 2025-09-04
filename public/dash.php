@@ -7479,17 +7479,28 @@ body {
         function generateCriticalAlertsHTML(data) {
             if (data && data.length > 0) {
                 return data.map(alert => {
-                    const title = alert.message || 'High malnutrition risk detected';
-                    const user = alert.user || 'Unknown user';
-                    const time = alert.time || 'Recent';
-                    const type = alert.type || 'critical';
+                    const riskLevel = alert.alert_level || 'Unknown Risk';
+                    const ageGroup = alert.age_group || 'Unknown Age';
+                    const barangay = alert.barangay || 'Unknown Location';
+                    const riskScore = alert.risk_score || 0;
+                    const age = alert.age || 'Unknown';
+                    const gender = alert.gender || 'Unknown';
+                    
+                    let type = 'warning';
+                    if (riskLevel === 'Severe Risk') type = 'critical';
+                    else if (riskLevel === 'High Risk') type = 'warning';
+                    else type = 'info';
+                    
+                    const title = `${riskLevel} - ${ageGroup}`;
+                    const user = `Age: ${age} | Gender: ${gender} | Location: ${barangay}`;
+                    const time = alert.created_at || 'Recent';
                     const userEmail = alert.user_email || '';
                     
                     return `
                         <li class="alert-item ${type}">
                             <div class="alert-content">
                                 <h4>${title}</h4>
-                                <p>${user} - Requires immediate attention</p>
+                                <p>Risk Score: ${riskScore} | ${user}</p>
                             </div>
                             <div class="alert-actions">
                                 <div class="alert-time">${time}</div>
