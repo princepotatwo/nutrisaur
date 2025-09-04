@@ -828,7 +828,13 @@ class DatabaseAPI {
             }
             
             // Recent registrations (last 7 days, filtered by barangay if specified)
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as recent FROM user_preferences" . $whereClause . " AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
+            $recentWhereClause = $whereClause;
+            if (!empty($recentWhereClause)) {
+                $recentWhereClause .= " AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+            } else {
+                $recentWhereClause = " WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+            }
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as recent FROM user_preferences" . $recentWhereClause);
             $stmt->execute($params);
             $metrics['recent_registrations'] = $stmt->fetch(PDO::FETCH_ASSOC)['recent'];
             
