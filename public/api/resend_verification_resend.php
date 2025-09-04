@@ -103,7 +103,7 @@ function sendResendEmail($email, $username, $verificationCode) {
     try {
         // Resend API configuration
         $resendApiKey = 're_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB';
-        $fromEmail = 'kevinpingol123@gmail.com'; // Your Gmail address
+        $fromEmail = 'onboarding@resend.dev';
         
         // Create email data
         $emailData = [

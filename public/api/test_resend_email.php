@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Resend API configuration
     $resendApiKey = 're_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB'; // Your real API key
-    $fromEmail = 'kevinpingol123@gmail.com'; // Your Gmail address
+    $fromEmail = 'onboarding@resend.dev'; // Resend's default sender
     
     // Create email data
     $emailData = [

@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $resend = Resend::client('re_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB');
         
         $result = $resend->emails->send([
-            'from' => 'kevinpingol123@gmail.com',
+            'from' => 'onboarding@resend.dev',
             'to' => $email,
             'subject' => "Nutrisaur Verification Code: $verificationCode",
             'html' => "

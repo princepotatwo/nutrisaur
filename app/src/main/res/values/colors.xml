@@ -57,4 +57,19 @@
     <color name="light_gray">#F5F5F5</color>
     <color name="green">#4CAF50</color>
     <color name="notification_color">#4CAF50</color>
+    
+    <!-- Meal Planner Colors -->
+    <color name="orange">#FF9800</color>
+    <color name="blue">#2196F3</color>
+    
+    <!-- Nutrition Bubble Colors -->
+    <color name="calories_bubble">#FF6B6B</color>
+    <color name="carbs_bubble">#4ECDC4</color>
+    <color name="protein_bubble">#45B7D1</color>
+    <color name="fat_bubble">#96CEB4</color>
+    <color name="fiber_bubble">#FFEAA7</color>
+    <color name="sugar_bubble">#DDA0DD</color>
+    
+    <!-- Progress Bar Colors -->
+    <color name="progress_background">#E0E0E0</color>
 </resources>

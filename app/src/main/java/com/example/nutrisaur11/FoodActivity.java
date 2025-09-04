@@ -3,12 +3,15 @@ package com.example.nutrisaur11;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.*;
+import java.util.Random;
 import android.util.Log;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,19 +21,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import java.io.IOException;
 
-public class FoodActivity extends AppCompatActivity {
+public class FoodActivity extends AppCompatActivity implements HorizontalFoodAdapter.OnFoodClickListener {
     private static final String TAG = "FoodActivity";
-    private ViewPager2 viewPager;
-    private FoodRecommendationAdapter adapter;
-    private List<FoodRecommendation> recommendations = new ArrayList<>();
+    
+    // RecyclerViews for different categories
+    private RecyclerView traditionalRecycler, healthyRecycler, internationalRecycler, budgetRecycler;
+    
+    // Adapters for different categories
+    private HorizontalFoodAdapter traditionalAdapter, healthyAdapter, internationalAdapter, budgetAdapter;
+    
+    // Food lists for different categories
+    private List<FoodRecommendation> traditionalFoods = new ArrayList<>();
+    private List<FoodRecommendation> healthyFoods = new ArrayList<>();
+    private List<FoodRecommendation> internationalFoods = new ArrayList<>();
+    private List<FoodRecommendation> budgetFoods = new ArrayList<>();
+
+    // Featured banner views
+    private ImageView featuredFoodImage;
+    private TextView featuredFoodName, featuredFoodDescription;
+    
     private ExecutorService executorService;
     private Set<String> generatedFoodNames = new HashSet<>();
     private int generationCount = 0;
     private int foodsPerBatch = 10; // Track foods per batch
-    private int lastPreloadPosition = -1; // Track last preload position to avoid duplicate triggers
     private boolean isPreloading = false; // Prevent multiple simultaneous preloads
     private int consecutiveFailures = 0; // Track consecutive failures to prevent infinite loops
-    private boolean shouldLoadImages = false; // Flag to control when images start loading
     
     // Nutrition insights views
     private TextView tvBmiStatus, tvCaloriesTarget, tvProteinTarget, tvFatTarget, tvCarbsTarget, tvHealthRecommendation;
@@ -84,9 +99,7 @@ public class FoodActivity extends AppCompatActivity {
         // Initialize views
         initializeViews();
         
-        // Initialize recommendations list
-        recommendations = new ArrayList<>();
-        Log.d(TAG, "Recommendations list initialized");
+        Log.d(TAG, "Food lists initialized");
         
         // Load user profile
         loadUserProfile();
@@ -94,10 +107,9 @@ public class FoodActivity extends AppCompatActivity {
         // Initialize nutrition insights
         initializeNutritionInsights();
         
-        // Setup ViewPager first, then check for preloaded data or start background preload
-        Log.d(TAG, "Setting up ViewPager and checking for preloaded data");
-        setupViewPager();
-        loadPreloadedDataOrStartPreload();
+        // Load food data for all categories
+        Log.d(TAG, "Loading food data for all categories");
+        loadFoodDataForAllCategories();
         
 
         
@@ -106,8 +118,18 @@ public class FoodActivity extends AppCompatActivity {
     }
     
     private void initializeViews() {
-        viewPager = findViewById(R.id.view_pager);
-        Log.d(TAG, "ViewPager2 initialized: " + (viewPager != null ? "success" : "failed"));
+        // Initialize RecyclerViews
+        traditionalRecycler = findViewById(R.id.traditional_recycler);
+        healthyRecycler = findViewById(R.id.healthy_recycler);
+        internationalRecycler = findViewById(R.id.international_recycler);
+        budgetRecycler = findViewById(R.id.budget_recycler);
+        
+        // Initialize featured banner views
+        featuredFoodImage = findViewById(R.id.featured_food_image);
+        featuredFoodName = findViewById(R.id.featured_food_name);
+        featuredFoodDescription = findViewById(R.id.featured_food_description);
+        
+        Log.d(TAG, "Views initialized");
         
         // Set header title
         TextView pageTitle = findViewById(R.id.page_title);
@@ -121,6 +143,12 @@ public class FoodActivity extends AppCompatActivity {
         
         // Setup edit personalization button
         setupEditPersonalizationButton();
+        
+        // Setup RecyclerViews with horizontal layout managers
+        setupRecyclerViews();
+        
+        // Setup featured banner
+        setupFeaturedBanner();
     }
     
     private void setupEditPersonalizationButton() {
@@ -313,6 +341,171 @@ public class FoodActivity extends AppCompatActivity {
         }
     }
     
+    private void setupRecyclerViews() {
+        // Setup Traditional RecyclerView
+        traditionalRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        traditionalAdapter = new HorizontalFoodAdapter(traditionalFoods, this, this);
+        traditionalRecycler.setAdapter(traditionalAdapter);
+        
+        // Setup Healthy RecyclerView
+        healthyRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        healthyAdapter = new HorizontalFoodAdapter(healthyFoods, this, this);
+        healthyRecycler.setAdapter(healthyAdapter);
+        
+        // Setup International RecyclerView
+        internationalRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        internationalAdapter = new HorizontalFoodAdapter(internationalFoods, this, this);
+        internationalRecycler.setAdapter(internationalAdapter);
+        
+        // Setup Budget RecyclerView
+        budgetRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        budgetAdapter = new HorizontalFoodAdapter(budgetFoods, this, this);
+        budgetRecycler.setAdapter(budgetAdapter);
+        
+        Log.d(TAG, "All RecyclerViews setup completed");
+    }
+    
+    private void setupFeaturedBanner() {
+        // Load a featured food image and set banner content
+        executorService.execute(() -> {
+            try {
+                List<FoodRecommendation> featuredFoods = callGeminiAPIForMultiple();
+                if (featuredFoods != null && !featuredFoods.isEmpty()) {
+                    FoodRecommendation featuredFood = featuredFoods.get(0);
+                    runOnUiThread(() -> {
+                        // Set featured food image
+                        FoodImageService foodImageService = new FoodImageService();
+                        foodImageService.loadFoodImage(featuredFood.getFoodName(), featuredFoodImage, null);
+                        
+                        // Set featured food name and description
+                        featuredFoodName.setText(featuredFood.getFoodName());
+                        featuredFoodDescription.setText(featuredFood.getDescription());
+                        
+                        Log.d(TAG, "Featured banner setup with: " + featuredFood.getFoodName());
+                    });
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error setting up featured banner: " + e.getMessage());
+                // Set default content
+                runOnUiThread(() -> {
+                    featuredFoodName.setText("Adobo");
+                    featuredFoodDescription.setText("A classic Filipino dish featuring tender meat braised in savory soy-vinegar sauce");
+                });
+            }
+        });
+    }
+    
+    private void loadFoodDataForAllCategories() {
+        // Load traditional Filipino foods
+        loadTraditionalFoods();
+        
+        // Load healthy options
+        loadHealthyFoods();
+        
+        // Load international cuisine
+        loadInternationalFoods();
+        
+        // Load budget-friendly options
+        loadBudgetFoods();
+    }
+    
+    private void loadTraditionalFoods() {
+        // Traditional Filipino dishes
+        String[] traditionalDishes = {
+            "Adobo", "Sinigang", "Kare-kare", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
+            "Pancit", "Lumpia", "Tapsilog", "Sisig", "Bicol Express", "Chicken Inasal", "Lechon",
+            "Crispy Pata", "Dinuguan", "Laing", "Ginataang Gulay", "Pinakbet"
+        };
+        
+        List<FoodRecommendation> foods = createFoodListFromNames(traditionalDishes, "Traditional Filipino");
+        traditionalFoods.clear();
+        traditionalFoods.addAll(foods);
+        traditionalAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Loaded " + foods.size() + " traditional foods");
+    }
+    
+    private void loadHealthyFoods() {
+        // Healthy Filipino dishes
+        String[] healthyDishes = {
+            "Ginisang Munggo", "Ginisang Ampalaya", "Ginisang Kangkong", "Ginisang Malunggay",
+            "Sinigang na Isda", "Tinolang Manok", "Ginisang Togue", "Ginisang Baguio Beans",
+            "Ginisang Sayote", "Ginisang Kalabasa", "Ginisang Talong", "Ginisang Okra"
+        };
+        
+        List<FoodRecommendation> foods = createFoodListFromNames(healthyDishes, "Healthy");
+        healthyFoods.clear();
+        healthyFoods.addAll(foods);
+        healthyAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Loaded " + foods.size() + " healthy foods");
+    }
+    
+    private void loadInternationalFoods() {
+        // International dishes popular in Philippines
+        String[] internationalDishes = {
+            "Chicken Teriyaki", "Beef Bulgogi", "Pad Thai", "Spaghetti Carbonara", "Burger",
+            "Fried Chicken", "Pizza", "Sushi", "Ramen", "Curry", "Stir Fry", "Fish and Chips",
+            "Chicken Curry", "Beef Steak", "Pork Chop", "Chicken Wings", "Tacos", "Burrito"
+        };
+        
+        List<FoodRecommendation> foods = createFoodListFromNames(internationalDishes, "International");
+        internationalFoods.clear();
+        internationalFoods.addAll(foods);
+        internationalAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Loaded " + foods.size() + " international foods");
+    }
+    
+    private void loadBudgetFoods() {
+        // Budget-friendly Filipino dishes
+        String[] budgetDishes = {
+            "Ginisang Munggo", "Ginisang Togue", "Ginisang Kangkong", "Ginisang Ampalaya",
+            "Lugaw", "Arroz Caldo", "Goto", "Taho", "Pancit Canton", "Pancit Bihon",
+            "Ginisang Sayote", "Ginisang Kalabasa", "Ginisang Talong", "Ginisang Okra"
+        };
+        
+        List<FoodRecommendation> foods = createFoodListFromNames(budgetDishes, "Budget-Friendly");
+        budgetFoods.clear();
+        budgetFoods.addAll(foods);
+        budgetAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Loaded " + foods.size() + " budget foods");
+    }
+    
+    private List<FoodRecommendation> createFoodListFromNames(String[] dishNames, String category) {
+        List<FoodRecommendation> foods = new ArrayList<>();
+        Random random = new Random();
+        
+        for (String dishName : dishNames) {
+            // Generate varied nutritional values
+            int calories = 150 + random.nextInt(300); // 150-450 calories
+            double protein = 8.0 + random.nextInt(20); // 8-28g protein
+            double fat = 3.0 + random.nextInt(15); // 3-18g fat
+            double carbs = 10.0 + random.nextInt(30); // 10-40g carbs
+            
+            FoodRecommendation food = new FoodRecommendation(
+                dishName, calories, protein, fat, carbs, "1 serving", category, 
+                "Delicious " + category.toLowerCase() + " dish"
+            );
+            foods.add(food);
+        }
+        
+        return foods;
+    }
+    
+    private List<FoodRecommendation> createFallbackFoods() {
+        String[] fallbackDishes = {
+            "Adobo", "Sinigang", "Kare-kare", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
+            "Pancit", "Lumpia", "Tapsilog", "Sisig", "Bicol Express", "Chicken Inasal", "Lechon"
+        };
+        
+        return createFoodListFromNames(fallbackDishes, "Traditional Filipino");
+    }
+    
+    @Override
+    public void onFoodClick(FoodRecommendation food) {
+        // Handle food item click - show detailed view or add to favorites
+        Log.d(TAG, "Food clicked: " + food.getFoodName());
+        // TODO: Implement detailed food view or add to favorites functionality
+    }
+    
     private void setupNavigation() {
         // Home navigation
         findViewById(R.id.nav_home).setOnClickListener(new View.OnClickListener() {
@@ -356,54 +549,7 @@ public class FoodActivity extends AppCompatActivity {
         });
     }
     
-    private void setupViewPager() {
-        // Start with empty list - no loading state
-        recommendations.clear();
-        
-        adapter = new FoodRecommendationAdapter(recommendations, this);
-        viewPager.setAdapter(adapter);
-        
-        // Disable any ViewPager2 indicators or page transformers that might cause blue bars
-        viewPager.setPageTransformer(null);
-        
-        // Setup swipe listeners
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                Log.d(TAG, "Showing recommendation at position: " + position + ", isPreloading: " + isPreloading + ", total foods: " + recommendations.size());
-                
-                // Only start loading images when user actually starts swiping
-                // This prevents unnecessary API calls when user is just browsing other parts of the app
-                if (!shouldLoadImages) {
-                    shouldLoadImages = true;
-                    Log.d(TAG, "User started viewing food cards - enabling image loading");
-                }
-                
-                // Load current image + preload next 2 images for smooth experience
-                if (shouldLoadImages && adapter != null) {
-                    // Removed progressive loading - images are loaded when cards are displayed
-                }
-                
-                // Preload logic: Trigger when user is near the end of available foods
-                // This ensures next batch is ready before user reaches the end
-                if (position >= recommendations.size() - 3 && !isPreloading) {
-                    Log.d(TAG, "Triggering preload at position: " + position + " (near end of available foods: " + recommendations.size() + ")");
-                    isPreloading = true;
-                    generateNextRecommendation();
-                }
-                
-                // Emergency fallback: Only if we're truly at the end and no preload is happening
-                if (recommendations.size() > 2 && position >= recommendations.size() - 2 && !isPreloading) {
-                    Log.d(TAG, "Emergency fallback: At very end of available foods (position " + position + ", size " + recommendations.size() + "), forcing preload");
-                    isPreloading = true;
-                    generateNextRecommendation();
-                }
-            }
-        });
-        
-        Log.d(TAG, "ViewPager2 setup completed");
-    }
+
     
 
     
@@ -615,261 +761,32 @@ public class FoodActivity extends AppCompatActivity {
         userPregnancyStatus = "Not Applicable";
     }
     
-        private void loadPreloadedDataOrStartPreload() {
-        // Check if we have preloaded data from the background service
-        if (FoodPreloadService.isPreloaded()) {
-            Log.d(TAG, "Using preloaded food data - cards ready instantly!");
-            loadPreloadedData();
-                    } else {
-            Log.d(TAG, "No preloaded data available, starting immediate preload");
-            // Start preloading immediately but don't block the UI
-            preloadFoodDataImmediately();
-        }
-    }
 
-    private void loadPreloadedData() {
-        List<FoodRecommendation> preloadedRecommendations = FoodPreloadService.getPreloadedRecommendations();
-        Set<String> preloadedFoodNames = FoodPreloadService.getPreloadedFoodNames();
-        
-        if (preloadedRecommendations != null && !preloadedRecommendations.isEmpty()) {
-            // Clear any existing data and add preloaded recommendations
-            recommendations.clear();
-            generatedFoodNames.clear();
-            
-            // Add all preloaded recommendations
-            for (FoodRecommendation recommendation : preloadedRecommendations) {
-                recommendations.add(recommendation);
-                generatedFoodNames.add(recommendation.getFoodName().toLowerCase());
-            }
-            
-            Log.d(TAG, "Loaded " + preloadedRecommendations.size() + " preloaded food cards (no images loaded yet)");
-            
-            // Notify adapter that data is ready - use range inserted to avoid ViewPager reset
-            if (adapter != null) {
-                adapter.notifyItemRangeInserted(0, preloadedRecommendations.size());
-            }
-            
-            // DON'T load images yet - wait for user to actually view the activity
-            Log.d(TAG, "Preloaded food cards ready! Images will load when user views them.");
-                    } else {
-            Log.e(TAG, "Preloaded data is empty, falling back to background preload");
-            preloadFoodDataImmediately();
-        }
-    }
 
     
 
-    private void generateRecommendation() {
-        executorService.execute(() -> {
-            try {
-                Log.d(TAG, "Starting initial recommendation generation");
-                List<FoodRecommendation> newRecommendations = callGeminiAPIForMultiple();
-                if (newRecommendations != null && !newRecommendations.isEmpty()) {
-                    // The recommendations are already verified by callGeminiAPIForMultiple()
-                runOnUiThread(() -> {
-                        // Clear the loading state and start fresh
-                        recommendations.clear();
-                        generatedFoodNames.clear();
-                        
-                        int addedCount = 0;
-                        // Add only unique recommendations
-                        for (FoodRecommendation rec : newRecommendations) {
-                            String foodNameLower = rec.getFoodName().toLowerCase().trim();
-                            if (!generatedFoodNames.contains(foodNameLower)) {
-                                recommendations.add(rec);
-                                generatedFoodNames.add(foodNameLower);
-                                addedCount++;
-                                Log.d(TAG, "Added verified recommendation: " + rec.getFoodName());
-                            } else {
-                                Log.d(TAG, "Skipped duplicate: " + rec.getFoodName());
-                            }
-                        }
-                        
-                        if (addedCount >= 6) {
-                            adapter.notifyItemRangeInserted(0, addedCount);
-                            Log.d(TAG, "Added " + addedCount + " verified recommendations from initial batch");
-                            
-                            // Load first image + preload next 2 for smooth experience
-                            // Removed progressive loading - images are loaded when cards are displayed
-                            
-                            // Always ensure we have exactly 10 items
-                            if (addedCount < 10) {
-                                int remaining = 10 - addedCount;
-                                Log.d(TAG, "Adding " + remaining + " fallback foods to complete initial batch");
-                                addFallbacksToCompleteBatch(remaining);
-                            }
-                        } else {
-                            Log.d(TAG, "Only " + addedCount + " unique foods added, generating fallbacks to reach exactly 10 items");
-                            // Add fallbacks to ensure we have exactly 10 foods
-                            addFallbacksToCompleteBatch(10 - addedCount);
-                        }
-                        
-                        Log.d(TAG, "Final initial recommendations size: " + recommendations.size());
-                    });
-                } else {
-                    runOnUiThread(() -> {
-                        Log.d(TAG, "No initial recommendations generated, using fallbacks");
-                        addFallbacksToCompleteBatch(10);
-                    });
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error generating initial recommendation: " + e.getMessage());
-                runOnUiThread(() -> {
-                    addFallbacksToCompleteBatch(10);
-                });
-            }
-        });
-    }
+
     
-        private void generateNextRecommendation() {
-        executorService.execute(() -> {
-            try {
-                Log.d(TAG, "Starting generateNextRecommendation - current size: " + recommendations.size());
-                // Always generate 10 foods per batch for consistency
-                List<FoodRecommendation> newRecommendations = callGeminiAPIForMultiple();
-                if (newRecommendations != null && !newRecommendations.isEmpty()) {
-                    runOnUiThread(() -> {
-                        int addedCount = 0;
-                        // Add only unique recommendations
-                        for (FoodRecommendation rec : newRecommendations) {
-                            String foodNameLower = rec.getFoodName().toLowerCase().trim();
-                            if (!generatedFoodNames.contains(foodNameLower)) {
-                                recommendations.add(rec);
-                                generatedFoodNames.add(foodNameLower);
-                                addedCount++;
-                                Log.d(TAG, "Added unique recommendation: " + rec.getFoodName());
-                            } else {
-                                Log.d(TAG, "Skipped duplicate: " + rec.getFoodName());
-                            }
-                        }
-                        
-                        if (addedCount > 0) {
-                            int oldSize = recommendations.size() - addedCount;
-                            
-                            // Always ensure we have exactly 10 items in the current batch
-                            int currentBatchSize = recommendations.size() % 10;
-                            if (currentBatchSize != 0) {
-                                int remaining = 10 - currentBatchSize;
-                                Log.d(TAG, "Adding " + remaining + " fallback foods to complete current batch");
-                                addFallbacksToCompleteBatch(remaining);
-                            }
-                            
-                            // Use notifyItemRangeInserted to add new items without affecting current view
-                            adapter.notifyItemRangeInserted(oldSize, addedCount);
-                            Log.d(TAG, "Added " + addedCount + " new unique recommendations from batch");
-                            
-                            // Load images progressively for the new batch
-                            int newBatchStartIndex = recommendations.size() - addedCount;
-                            // Removed progressive loading - images are loaded when cards are displayed
-                        } else {
-                            Log.d(TAG, "No unique foods added, generating more recommendations");
-                            // Generate more recommendations instead of fallbacks
-                            generateNextRecommendation();
-                        }
-                        
-                        Log.d(TAG, "Final recommendations size after batch: " + recommendations.size());
-                        
-                        // Don't call ensureEnoughFoodsAvailable here as it can cause conflicts
-                        // The preload logic in onPageSelected will handle the next batch
-                        isPreloading = false; // Reset preload flag
-                        consecutiveFailures = 0; // Reset failure counter on success
-                    });
-                } else {
-                    runOnUiThread(() -> {
-                        Log.d(TAG, "No recommendations generated, trying again");
-                        generateNextRecommendation();
-                        consecutiveFailures++; // Increment failure counter
-                        Log.d(TAG, "Retrying generation due to empty response");
-                    });
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error generating next recommendation: " + e.getMessage());
-                runOnUiThread(() -> {
-                    Log.d(TAG, "Exception occurred, retrying generation");
-                    generateNextRecommendation();
-                    consecutiveFailures++; // Increment failure counter
-                    Log.d(TAG, "Retrying generation after exception");
-                });
-            }
-        });
-    }
+
     
-    private void ensureEnoughFoodsAvailable() {
-        // Ensure we have enough foods for the next batch
-        // Calculate how many foods we need for the next batch
-        int currentSize = recommendations.size();
-        int currentBatch = currentSize / 10;
-        int nextBatchStart = (currentBatch + 1) * 10;
-        int foodsNeeded = nextBatchStart + 10; // Need 10 more foods for the next batch
-        
-        Log.d(TAG, "Checking food availability - current size: " + currentSize + ", isPreloading: " + isPreloading + ", need: " + foodsNeeded);
-        
-        // Prevent infinite loops by checking if we're making progress and haven't failed too many times
-        if (currentSize < foodsNeeded && !isPreloading && currentSize > 0 && consecutiveFailures < 3) {
-            Log.d(TAG, "Need more foods (" + currentSize + " < " + foodsNeeded + "), triggering additional preload");
-            isPreloading = true;
-            generateNextRecommendation();
-        } else if (consecutiveFailures >= 3) {
-            Log.w(TAG, "Too many consecutive failures (" + consecutiveFailures + "), stopping preload attempts");
-        }
-    }
-    
-    private void addFallbacksToCompleteBatch(int count) {
-        List<FoodRecommendation> fallbacks = createFallbackRecommendations();
-        int added = 0;
-        
-        for (FoodRecommendation fallback : fallbacks) {
-            if (added >= count) break;
-            
-            String foodNameLower = fallback.getFoodName().toLowerCase().trim();
-            if (!generatedFoodNames.contains(foodNameLower)) {
-                recommendations.add(fallback);
-                generatedFoodNames.add(foodNameLower);
-                added++;
-                Log.d(TAG, "Added fallback to complete batch: " + fallback.getFoodName());
-            }
-        }
-        
-        // If we still don't have enough, create generic fallbacks
-        if (added < count) {
-            int remaining = count - added;
-            Log.d(TAG, "Creating " + remaining + " generic fallbacks to complete batch");
-            for (int i = 0; i < remaining; i++) {
-                // Use timestamp to ensure unique names
-                long timestamp = System.currentTimeMillis();
-                String genericName = "Filipino Dish " + timestamp + "_" + i;
-                FoodRecommendation generic = new FoodRecommendation(
-                    genericName, 250, 15.0, 8.0, 25.0, "1 serving", "Balanced", "Traditional Filipino dish"
-                );
-                recommendations.add(generic);
-                generatedFoodNames.add(genericName.toLowerCase().trim());
-                Log.d(TAG, "Added generic fallback: " + genericName);
-            }
-        }
-        
-        if (added > 0) {
-            int oldSize = recommendations.size() - added;
-            adapter.notifyItemRangeInserted(oldSize, added);
-        Log.d(TAG, "Added " + added + " fallback foods to complete batch. Total foods: " + recommendations.size());
-        }
-    }
+
     
     public List<FoodRecommendation> callGeminiAPIForMultiple() {
         return callGeminiAPIForMultipleWithRetry(0);
     }
     
     private FoodRecommendation callGeminiAPI() {
-        List<FoodRecommendation> recommendations = callGeminiAPIForMultiple();
-        if (!recommendations.isEmpty()) {
-            return recommendations.get(0);
+        List<FoodRecommendation> foods = callGeminiAPIForMultiple();
+        if (!foods.isEmpty()) {
+            return foods.get(0);
         }
         return null;
     }
     
         private List<FoodRecommendation> callGeminiAPIForMultipleWithRetry(int retryCount) {
         if (retryCount > 3) {
-            Log.w(TAG, "Max retry count reached, returning fallback recommendations");
-            return createFallbackRecommendations();
+            Log.w(TAG, "Max retry count reached, returning fallback foods");
+            return createFallbackFoods();
         }
         
         try {
@@ -920,7 +837,7 @@ public class FoodActivity extends AppCompatActivity {
                         
                         // Return any unique foods we have (no minimum requirement)
                         if (uniqueRecommendations.size() > 0) {
-                            Log.d(TAG, "Generated " + uniqueRecommendations.size() + " unique verified foods out of " + recommendations.size() + " total");
+                            Log.d(TAG, "Generated " + uniqueRecommendations.size() + " unique verified foods out of " + verifiedRecommendations.size() + " total");
                             return uniqueRecommendations;
         } else {
                             Log.d(TAG, "No unique foods found, retrying... (attempt " + (retryCount + 1) + ")");
@@ -951,9 +868,9 @@ public class FoodActivity extends AppCompatActivity {
     }
     
     private FoodRecommendation callGeminiAPIWithRetry(int retryCount) {
-        List<FoodRecommendation> recommendations = callGeminiAPIForMultipleWithRetry(retryCount);
-        if (recommendations != null && !recommendations.isEmpty()) {
-            return recommendations.get(0);
+        List<FoodRecommendation> foods = callGeminiAPIForMultipleWithRetry(retryCount);
+        if (foods != null && !foods.isEmpty()) {
+            return foods.get(0);
         }
         return null;
     }
@@ -1051,13 +968,13 @@ public class FoodActivity extends AppCompatActivity {
         }
     }
     
-    private List<FoodRecommendation> verifyFoodNames(List<FoodRecommendation> recommendations) {
+    private List<FoodRecommendation> verifyFoodNames(List<FoodRecommendation> foods) {
         try {
             // Create verification prompt
             StringBuilder foodNames = new StringBuilder();
-            for (int i = 0; i < recommendations.size(); i++) {
-                foodNames.append((i + 1)).append(". ").append(recommendations.get(i).getFoodName());
-                if (i < recommendations.size() - 1) {
+            for (int i = 0; i < foods.size(); i++) {
+                foodNames.append((i + 1)).append(". ").append(foods.get(i).getFoodName());
+                if (i < foods.size() - 1) {
                     foodNames.append("\n");
                 }
             }
@@ -1114,16 +1031,16 @@ public class FoodActivity extends AppCompatActivity {
                         for (String numberStr : numbers) {
                             try {
                                 int index = Integer.parseInt(numberStr.trim()) - 1; // Convert to 0-based index
-                                if (index >= 0 && index < recommendations.size()) {
-                                    verifiedRecommendations.add(recommendations.get(index));
-                                    Log.d(TAG, "Verified food dish: " + recommendations.get(index).getFoodName());
+                                if (index >= 0 && index < foods.size()) {
+                                    verifiedRecommendations.add(foods.get(index));
+                                    Log.d(TAG, "Verified food dish: " + foods.get(index).getFoodName());
                                 }
                             } catch (NumberFormatException e) {
                                 Log.w(TAG, "Invalid number in verification response: " + numberStr);
                             }
                         }
                         
-                        Log.d(TAG, "Verification complete: " + verifiedRecommendations.size() + " out of " + recommendations.size() + " are actual food dishes");
+                        Log.d(TAG, "Verification complete: " + verifiedRecommendations.size() + " out of " + foods.size() + " are actual food dishes");
                         return verifiedRecommendations;
                     }
                         }
@@ -1132,23 +1049,23 @@ public class FoodActivity extends AppCompatActivity {
             Log.e(TAG, "Error during food verification: " + e.getMessage());
         }
         
-        // If verification fails, return original recommendations
-        Log.w(TAG, "Food name verification failed, returning original recommendations");
-        return recommendations;
+        // If verification fails, return original foods
+        Log.w(TAG, "Food name verification failed, returning original foods");
+        return foods;
     }
     
-    private List<FoodRecommendation> verifyNutritionData(List<FoodRecommendation> recommendations) {
+    private List<FoodRecommendation> verifyNutritionData(List<FoodRecommendation> foods) {
         try {
             // Create nutrition verification prompt
             StringBuilder nutritionData = new StringBuilder();
-            for (int i = 0; i < recommendations.size(); i++) {
-                FoodRecommendation rec = recommendations.get(i);
+            for (int i = 0; i < foods.size(); i++) {
+                FoodRecommendation rec = foods.get(i);
                 nutritionData.append((i + 1)).append(". ").append(rec.getFoodName())
                            .append(" - Calories: ").append(rec.getCalories())
                            .append(", Protein: ").append(rec.getProtein()).append("g")
                            .append(", Fat: ").append(rec.getFat()).append("g")
                            .append(", Carbs: ").append(rec.getCarbs()).append("g");
-                if (i < recommendations.size() - 1) {
+                if (i < foods.size() - 1) {
                     nutritionData.append("\n");
                 }
             }
@@ -1202,16 +1119,16 @@ public class FoodActivity extends AppCompatActivity {
                         for (String numberStr : numbers) {
                             try {
                                 int index = Integer.parseInt(numberStr.trim()) - 1; // Convert to 0-based index
-                                if (index >= 0 && index < recommendations.size()) {
-                                    verifiedRecommendations.add(recommendations.get(index));
-                                    Log.d(TAG, "Verified nutrition for: " + recommendations.get(index).getFoodName());
+                                if (index >= 0 && index < foods.size()) {
+                                    verifiedRecommendations.add(foods.get(index));
+                                    Log.d(TAG, "Verified nutrition for: " + foods.get(index).getFoodName());
                                 }
                             } catch (NumberFormatException e) {
                                 Log.w(TAG, "Invalid number in nutrition verification response: " + numberStr);
                             }
                         }
                         
-                        Log.d(TAG, "Nutrition verification complete: " + verifiedRecommendations.size() + " out of " + recommendations.size() + " have accurate nutrition");
+                        Log.d(TAG, "Nutrition verification complete: " + verifiedRecommendations.size() + " out of " + foods.size() + " have accurate nutrition");
                         return verifiedRecommendations;
                     }
                 }
@@ -1222,9 +1139,9 @@ public class FoodActivity extends AppCompatActivity {
             Log.e(TAG, "Error during nutrition verification: " + e.getMessage());
         }
         
-        // If verification fails, return original recommendations
-        Log.w(TAG, "Nutrition verification failed, returning original recommendations");
-        return recommendations;
+        // If verification fails, return original foods
+        Log.w(TAG, "Nutrition verification failed, returning original foods");
+        return foods;
     }
     
     private String extractTextFromGeminiResponse(String responseText) {
@@ -1343,7 +1260,7 @@ public class FoodActivity extends AppCompatActivity {
     }
     
     private List<FoodRecommendation> parseFoodRecommendations(String responseText) {
-        List<FoodRecommendation> recommendations = new ArrayList<>();
+        List<FoodRecommendation> foods = new ArrayList<>();
         
         try {
             // Parse the Gemini response structure
@@ -1403,7 +1320,7 @@ public class FoodActivity extends AppCompatActivity {
                                         foodName, calories, protein, fat, carbs, servingSize, dietType, description
                                     );
                                     
-                                    recommendations.add(recommendation);
+                                    foods.add(recommendation);
                                 } catch (JSONException e) {
                                     Log.w(TAG, "Error parsing food at index " + j + ": " + e.getMessage() + ", skipping");
                                     continue;
@@ -1418,168 +1335,18 @@ public class FoodActivity extends AppCompatActivity {
             Log.e(TAG, "Response text: " + responseText);
         }
         
-        return recommendations;
+        return foods;
     }
     
     private FoodRecommendation parseFoodRecommendation(String responseText) {
-        List<FoodRecommendation> recommendations = parseFoodRecommendations(responseText);
-        if (!recommendations.isEmpty()) {
-            return recommendations.get(0);
+        List<FoodRecommendation> foods = parseFoodRecommendations(responseText);
+        if (!foods.isEmpty()) {
+            return foods.get(0);
         }
         return null;
     }
 
-    private void showFallbackRecommendations() {
-        List<FoodRecommendation> fallbacks = createFallbackRecommendations();
-        for (FoodRecommendation fallback : fallbacks) {
-            recommendations.add(fallback);
-            generatedFoodNames.add(fallback.getFoodName().toLowerCase().trim());
-            Log.d(TAG, "Fallback recommendation added: " + fallback.getFoodName());
-        }
-        // Use range inserted to avoid ViewPager reset
-        int oldSize = recommendations.size() - fallbacks.size();
-        adapter.notifyItemRangeInserted(oldSize, fallbacks.size());
-        Log.d(TAG, "Added " + fallbacks.size() + " fallback recommendations");
-    }
-    
-    private void showFallbackRecommendation() {
-        FoodRecommendation fallback = createFallbackRecommendation();
-        recommendations.add(fallback);
-        generatedFoodNames.add(fallback.getFoodName().toLowerCase().trim());
-        // Use range inserted to avoid ViewPager reset
-        adapter.notifyItemRangeInserted(recommendations.size() - 1, 1);
-        Log.d(TAG, "Fallback recommendation added: " + fallback.getFoodName());
-    }
-    
-    private List<FoodRecommendation> createFallbackRecommendations() {
-        // Dynamic fallback generation based on user profile
-        String[] baseDishes = {
-            "Adobo", "Sinigang", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
-            "Kare-kare", "Pancit", "Lumpia", "Tapsilog", "Sisig", "Bicol Express",
-            "Chicken Inasal", "Lechon", "Crispy Pata", "Dinuguan", "Laing",
-            "Ginataang Gulay", "Pinakbet", "Chopsuey", "Beef Steak", "Pork Chop",
-            "Chicken Teriyaki", "Beef Bulgogi", "Pad Thai", "Spaghetti", "Burger",
-            "Fried Chicken", "Pizza", "Sushi", "Ramen", "Curry", "Stir Fry"
-        };
-        
-        String[] cookingMethods = {
-            "Adobo", "Sinigang", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
-            "Escabeche", "Pochero", "Morcon", "Ginisang", "Tortang", "Inihaw", "Lechon",
-            "Crispy", "Steamed", "Braised", "Stir-Fried", "Curried", "Escabeche"
-        };
-        
-        String[] regionalStyles = {
-            "Bicol", "Ilocos", "Visayas", "Mindanao", "Pampanga", "Batangas", "Cebu", "Davao",
-            "Zamboanga", "Iloilo", "Negros", "Palawan", "Batanes", "Cagayan", "Pangasinan", "Quezon"
-        };
-        
-        List<FoodRecommendation> fallbacks = new ArrayList<>();
-        Random random = new Random();
-        
-        // Generate dynamic fallback foods based on user profile
-        int attempts = 0;
-        int maxAttempts = 150; // Increased attempts for more variety
-        
-        while (fallbacks.size() < 10 && attempts < maxAttempts) {
-            String foodName;
-            
-            // Use complete dish names instead of combining ingredients
-            foodName = baseDishes[random.nextInt(baseDishes.length)];
-            
-            if (!generatedFoodNames.contains(foodName.toLowerCase().trim())) {
-                // Generate varied nutritional values based on food type
-                int calories;
-                double protein, fat, carbs;
-                
-                if (foodName.toLowerCase().contains("fish") || foodName.toLowerCase().contains("bangus") || 
-                    foodName.toLowerCase().contains("tilapia") || foodName.toLowerCase().contains("galunggong")) {
-                    // Fish dishes: lower calories, higher protein
-                    calories = 150 + random.nextInt(100); // 150-250 calories
-                    protein = 15.0 + random.nextInt(10); // 15-25g protein
-                    fat = 3.0 + random.nextInt(8); // 3-11g fat
-                    carbs = 5.0 + random.nextInt(15); // 5-20g carbs
-                } else if (foodName.toLowerCase().contains("chicken")) {
-                    // Chicken dishes: moderate calories, good protein
-                    calories = 200 + random.nextInt(120); // 200-320 calories
-                    protein = 18.0 + random.nextInt(12); // 18-30g protein
-                    fat = 8.0 + random.nextInt(12); // 8-20g fat
-                    carbs = 8.0 + random.nextInt(17); // 8-25g carbs
-                } else if (foodName.toLowerCase().contains("beef")) {
-                    // Beef dishes: higher calories, good protein
-                    calories = 250 + random.nextInt(150); // 250-400 calories
-                    protein = 20.0 + random.nextInt(15); // 20-35g protein
-                    fat = 12.0 + random.nextInt(18); // 12-30g fat
-                    carbs = 10.0 + random.nextInt(20); // 10-30g carbs
-                } else if (foodName.toLowerCase().contains("pork")) {
-                    // Pork dishes: higher calories, moderate protein
-                    calories = 280 + random.nextInt(170); // 280-450 calories
-                    protein = 16.0 + random.nextInt(14); // 16-30g protein
-                    fat = 15.0 + random.nextInt(20); // 15-35g fat
-                    carbs = 12.0 + random.nextInt(23); // 12-35g carbs
-                } else if (foodName.toLowerCase().contains("ginisang") || foodName.toLowerCase().contains("vegetable")) {
-                    // Vegetable dishes: lower calories, lower protein
-                    calories = 120 + random.nextInt(80); // 120-200 calories
-                    protein = 5.0 + random.nextInt(8); // 5-13g protein
-                    fat = 3.0 + random.nextInt(7); // 3-10g fat
-                    carbs = 15.0 + random.nextInt(20); // 15-35g carbs
-                } else {
-                    // Default balanced values
-                    calories = 200 + random.nextInt(150); // 200-350 calories
-                    protein = 12.0 + random.nextInt(13); // 12-25g protein
-                    fat = 8.0 + random.nextInt(12); // 8-20g fat
-                    carbs = 15.0 + random.nextInt(20); // 15-35g carbs
-                }
-                
-                fallbacks.add(new FoodRecommendation(
-                    foodName, calories, protein, fat, carbs, "1 serving", "Balanced", "Traditional Filipino dish"
-                ));
-                generatedFoodNames.add(foodName.toLowerCase().trim());
-                Log.d(TAG, "Added fallback: " + foodName + " (calories: " + calories + ")");
-            }
-            attempts++;
-        }
-        
-        // If we still don't have enough unique foods, create regional variations
-        if (fallbacks.size() < 10) {
-            Log.d(TAG, "Creating regional variations to complete fallback batch");
-            String[] regions = {"Bicol", "Ilocos", "Visayas", "Mindanao", "Pampanga", "Batangas", "Cebu", "Davao"};
-            String[] regionalBaseDishes = {"Adobo", "Sinigang", "Tinola", "Kaldereta", "Afritada", "Mechado", "Kare-kare", "Pancit", "Lumpia", "Tapsilog", "Sisig", "Bicol Express", "Chicken Teriyaki", "Beef Bulgogi", "Pad Thai", "Spaghetti", "Burger"};
-            
-            while (fallbacks.size() < 10) {
-                String region = regions[random.nextInt(regions.length)];
-                String baseDish = regionalBaseDishes[random.nextInt(regionalBaseDishes.length)];
-                String regionalDish = region + " " + baseDish;
-                
-                if (!generatedFoodNames.contains(regionalDish.toLowerCase().trim())) {
-                    int calories = 200 + random.nextInt(150);
-                    double protein = 12.0 + random.nextInt(13);
-                    double fat = 8.0 + random.nextInt(12);
-                    double carbs = 15.0 + random.nextInt(20);
-                    
-                    fallbacks.add(new FoodRecommendation(
-                        regionalDish, calories, protein, fat, carbs, "1 serving", "Regional", "Regional Filipino variation"
-                    ));
-                    generatedFoodNames.add(regionalDish.toLowerCase().trim());
-                    Log.d(TAG, "Added regional variation: " + regionalDish);
-                }
-            }
-        }
-        
-        Log.d(TAG, "Created " + fallbacks.size() + " fallback recommendations");
-        return fallbacks;
-    }
-    
-    private FoodRecommendation createFallbackRecommendation() {
-        List<FoodRecommendation> fallbacks = createFallbackRecommendations();
-        if (!fallbacks.isEmpty()) {
-            return fallbacks.get(0);
-        }
-        
-        // If all fallbacks are used, return a generic one
-        return new FoodRecommendation(
-            "Ginisang Munggo", 200, 12.0, 6.0, 20.0, "1 serving", "Balanced", "Traditional Filipino mung bean dish"
-        );
-    }
+
 
     @Override
     public void onBackPressed() {
@@ -1594,98 +1361,5 @@ public class FoodActivity extends AppCompatActivity {
         }
     }
     
-    private void preloadFoodDataImmediately() {
-        // Start with some placeholder cards so user sees something immediately
-        Log.d(TAG, "Creating immediate placeholder cards while loading real data");
-        createPlaceholderCards();
-        
-        // Then load real data in background
-        executorService.execute(() -> {
-            try {
-                Log.d(TAG, "Loading real food data in background (cards only, no images)");
-                List<FoodRecommendation> newRecommendations = callGeminiAPIForMultiple();
-                if (newRecommendations != null && !newRecommendations.isEmpty()) {
-                    runOnUiThread(() -> {
-                        // Replace placeholder cards with real data
-                        int oldSize = recommendations.size();
-                        recommendations.clear();
-                        generatedFoodNames.clear();
-                        
-                        // Add all new recommendations
-                        for (FoodRecommendation recommendation : newRecommendations) {
-                            recommendations.add(recommendation);
-                            generatedFoodNames.add(recommendation.getFoodName().toLowerCase());
-                        }
-                        
-                        // Ensure we always have exactly 10 items
-                        if (recommendations.size() < 10) {
-                            int remaining = 10 - recommendations.size();
-                            Log.d(TAG, "Adding " + remaining + " fallback foods to complete batch");
-                            addFallbacksToCompleteBatch(remaining);
-                        } else if (recommendations.size() > 10) {
-                            // Trim to exactly 10 items
-                            while (recommendations.size() > 10) {
-                                recommendations.remove(recommendations.size() - 1);
-                            }
-                            Log.d(TAG, "Trimmed recommendations to exactly 10 items");
-                        }
-                        
-                        // Update adapter with proper notification - use range changed to avoid ViewPager reset
-                        adapter.notifyItemRangeChanged(0, recommendations.size());
-                        
-                        // DON'T load images yet - wait for user to actually view the activity
-                        Log.d(TAG, "Real food cards ready! Images will load when user views them.");
-                    });
-                } else {
-                    Log.e(TAG, "Failed to generate recommendations, keeping placeholder cards");
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error in immediate preload: " + e.getMessage());
-            }
-        });
-    }
-    
-    private void createPlaceholderCards() {
-        Log.d(TAG, "Creating 10 placeholder food cards for immediate display");
-        recommendations.clear();
-        generatedFoodNames.clear();
-        
-        // Create 10 placeholder cards with specific Filipino food names and descriptions
-        String[] placeholderFoods = {
-            "Adobo", "Sinigang", "Kare-kare", "Lechon", "Pancit",
-            "Lumpia", "Tapsilog", "Sisig", "Bicol Express", "Chicken Inasal"
-        };
-        
-        String[] placeholderDescriptions = {
-            "A classic Filipino dish featuring tender meat braised in savory soy-vinegar sauce.",
-            "Hearty Filipino soup with tender meat and vegetables in tangy tamarind broth.",
-            "Rich Filipino stew with tender meat and vegetables in creamy peanut sauce.",
-            "Crispy roasted pork with golden skin and tender, flavorful meat.",
-            "Fresh rice noodles stir-fried with vegetables and savory sauce.",
-            "Crispy spring rolls filled with fresh vegetables and savory meat.",
-            "Filipino breakfast favorite with cured beef, eggs, and garlic rice.",
-            "Sizzling pork dish with onions, chili peppers, and citrus juice.",
-            "Spicy Filipino dish with pork and vegetables in coconut milk.",
-            "Grilled chicken marinated in citrus and spices with smoky flavor."
-        };
-        
-        for (int i = 0; i < 10; i++) {
-            FoodRecommendation placeholder = new FoodRecommendation(
-                placeholderFoods[i],
-                100 + (i * 10), // Varying calories
-                5.0 + i, // Varying protein
-                3.0 + (i * 0.5), // Varying fat
-                10.0 + (i * 2), // Varying carbs
-                "1 serving",
-                "Filipino",
-                placeholderDescriptions[i]
-            );
-            recommendations.add(placeholder);
-            generatedFoodNames.add(placeholderFoods[i].toLowerCase());
-        }
-        
-        // Update adapter - use range inserted to avoid ViewPager reset
-        adapter.notifyItemRangeInserted(0, recommendations.size());
-        Log.d(TAG, "Placeholder cards created - user can start swiping immediately!");
-    }
+
 } 
