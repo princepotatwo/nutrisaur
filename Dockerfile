@@ -38,10 +38,7 @@ RUN echo '<VirtualHost *:80>' > /etc/apache2/sites-available/000-default.conf &&
 # Create startup script that uses Railway's PORT
 RUN echo '#!/bin/bash' > /start.sh && \
     echo 'set -e' >> /start.sh && \
-    echo 'echo "Environment variables:"' >> /start.sh && \
-    echo 'env | grep -E "(PORT|RAILWAY)" || echo "No PORT or RAILWAY variables found"' >> /start.sh && \
     echo 'PORT=${PORT:-80}' >> /start.sh && \
-    echo 'echo "Using port: $PORT"' >> /start.sh && \
     echo 'echo "Starting Apache on port $PORT"' >> /start.sh && \
     echo 'sed -i "s/Listen 80/Listen $PORT/" /etc/apache2/ports.conf' >> /start.sh && \
     echo 'apache2-foreground' >> /start.sh && \
