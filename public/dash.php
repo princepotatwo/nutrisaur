@@ -2,7 +2,7 @@
 // Use centralized session management
 require_once __DIR__ . "/config.php";
 require_once __DIR__ . "/api/DatabaseAPI.php";
-$db = new DatabaseAPI();
+$db = DatabaseAPI::getInstance();
 
 // Check if user is logged in using centralized method
 if (!$db->isUserLoggedIn()) {

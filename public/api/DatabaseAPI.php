@@ -106,7 +106,10 @@ class DatabaseAPI {
             $this->pdo->query("SELECT 1");
             return true;
         } catch (PDOException $e) {
-            return false;
+            error_log("Database connection test failed: " . $e->getMessage());
+            // Try to re-establish connection
+            $this->pdo = $this->establishPDOConnection();
+            return $this->pdo !== null;
         }
     }
     

@@ -20,7 +20,7 @@ if ($isLoggedIn) {
 // Use the centralized Database API with Railway configuration
 require_once __DIR__ . "/config.php";
 require_once __DIR__ . "/api/DatabaseAPI.php";
-$db = new DatabaseAPI();
+$db = DatabaseAPI::getInstance();
 
 // Get database connection
 $conn = $db->getPDO();

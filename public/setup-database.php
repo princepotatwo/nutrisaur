@@ -10,7 +10,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . "/api/DatabaseAPI.php";
 
 try {
-    $db = new DatabaseAPI();
+    $db = DatabaseAPI::getInstance();
     
     $setupInfo = [
         'timestamp' => date('Y-m-d H:i:s'),
