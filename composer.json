@@ -1,0 +1,17 @@
+{
+    "name": "nutrisaur/nutrisaur11",
+    "description": "Nutrisaur Nutrition App",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "phpmailer/phpmailer": "^6.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nutrisaur\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

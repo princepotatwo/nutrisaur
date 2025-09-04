@@ -18,6 +18,9 @@ session_start();
 try {
     // Use the same working approach as debug_database_api.php
     require_once __DIR__ . "/../config.php";
+    require_once __DIR__ . "/EmailService.php";
+    require_once __DIR__ . "/../../email_config.php";
+    
     $pdo = getDatabaseConnection();
     
     if (!$pdo) {
@@ -54,26 +57,67 @@ try {
             exit;
         }
         
-        // Hash password and insert user
+        // Generate verification code
+        $verificationCode = generateVerificationCode();
+        $verificationExpiry = getVerificationExpiryTime();
+        
+        // Hash password and insert user with verification data
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, created_at) VALUES (:username, :email, :password, NOW())");
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, verification_sent_at, created_at) VALUES (:username, :email, :password, :verification_code, :verification_expiry, NOW(), NOW())");
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $hashedPassword);
+        $stmt->bindParam(':verification_code', $verificationCode);
+        $stmt->bindParam(':verification_expiry', $verificationExpiry);
         
         if ($stmt->execute()) {
             $userId = $pdo->lastInsertId();
             
-            echo json_encode([
-                'success' => true,
-                'message' => 'Registration successful!',
-                'data' => [
-                    'user_id' => $userId,
-                    'username' => $username,
-                    'email' => $email
-                ]
-            ]);
+            // Send verification email
+            try {
+                $emailService = new EmailService();
+                $emailSent = $emailService->sendVerificationEmail($email, $username, $verificationCode);
+                
+                if ($emailSent) {
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Registration successful! Please check your email for verification code.',
+                        'data' => [
+                            'user_id' => $userId,
+                            'username' => $username,
+                            'email' => $email,
+                            'requires_verification' => true
+                        ]
+                    ]);
+                } else {
+                    // If email fails, still create account but mark as unverified
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Registration successful! However, verification email could not be sent. Please contact support.',
+                        'data' => [
+                            'user_id' => $userId,
+                            'username' => $username,
+                            'email' => $email,
+                            'requires_verification' => true,
+                            'email_sent' => false
+                        ]
+                    ]);
+                }
+            } catch (Exception $e) {
+                error_log("Email service error: " . $e->getMessage());
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Registration successful! However, verification email could not be sent. Please contact support.',
+                    'data' => [
+                        'user_id' => $userId,
+                        'username' => $username,
+                        'email' => $email,
+                        'requires_verification' => true,
+                        'email_sent' => false
+                    ]
+                ]);
+            }
         } else {
             echo json_encode(['success' => false, 'message' => 'Registration failed']);
         }

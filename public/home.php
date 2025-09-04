@@ -18,7 +18,7 @@ if ($isLoggedIn) {
 }
 
 // Use the centralized Database API with Railway configuration
-require_once __DIR__ . "/config.php";
+require_once __DIR__ . "/api/DatabaseAPI.php";
 require_once __DIR__ . "/api/DatabaseAPI.php";
 $db = DatabaseAPI::getInstance();
 

@@ -1289,7 +1289,7 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
         
         // If not found locally, try to get from unified_api.php
         if (!$editEvent) {
-            $apiUrl = 'https://nutrisaur-production.up.railway.app/api/unified_api.php';
+            $apiUrl = 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php';
             $postData = [
                 'action' => 'get_event_data',
                 'event_id' => $editId
@@ -5107,7 +5107,7 @@ header:hover {
             if (confirm('WARNING: This will delete ALL events permanently!\n\nAre you absolutely sure you want to continue?')) {
                 if (confirm('FINAL WARNING: This action cannot be undone!\n\nClick OK to delete ALL events.')) {
                     // Use AJAX instead of redirecting
-                    fetch('https://nutrisaur-production.up.railway.app/api/unified_api.php?endpoint=delete_all_events', {
+                    fetch('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=delete_all_events', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -6182,7 +6182,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             importBtn.innerHTML = '🔄 Uploading...';
             importStatus.style.display = 'block';
             
-            fetch('https://nutrisaur-production.up.railway.app/api/unified_api.php?endpoint=import_csv', {
+            fetch('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=import_csv', {
                 method: 'POST',
                 body: formData
             })
@@ -6231,7 +6231,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 return;
             }
             
-            fetch('https://nutrisaur-production.up.railway.app/unified_api.php', {
+            fetch('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -6345,7 +6345,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         function showNotificationPanel() {
             const currentUserEmail = '<?php echo htmlspecialchars($email); ?>';
             
-            fetch('https://nutrisaur-production.up.railway.app/unified_api.php', {
+            fetch('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
