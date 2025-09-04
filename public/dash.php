@@ -1,6 +1,6 @@
 <?php
 // Use centralized session management
-require_once __DIR__ . "/config.php";
+require_once __DIR__ . "/api/DatabaseAPI.php";
 require_once __DIR__ . "/api/DatabaseAPI.php";
 $db = DatabaseAPI::getInstance();
 
@@ -249,18 +249,18 @@ function getScreeningResponsesByTimeFrame($pdo, $timeFrame, $barangay = null) {
         $heightQuery = "
             SELECT 
                 CASE 
-                    WHEN up.height < 100 THEN 'Under 100 cm'
-                    WHEN up.height < 120 THEN '100-119 cm'
-                    WHEN up.height < 140 THEN '120-139 cm'
-                    WHEN up.height < 160 THEN '140-159 cm'
-                    WHEN up.height < 180 THEN '160-179 cm'
+                    WHEN up.height_cm < 100 THEN 'Under 100 cm'
+                    WHEN up.height_cm < 120 THEN '100-119 cm'
+                    WHEN up.height_cm < 140 THEN '120-139 cm'
+                    WHEN up.height_cm < 160 THEN '140-159 cm'
+                    WHEN up.height_cm < 180 THEN '160-179 cm'
                     ELSE '180+ cm'
                 END as height_range,
                 COUNT(*) as count
             FROM user_preferences up
             $whereClause
             GROUP BY height_range
-            ORDER BY MIN(up.height)
+            ORDER BY MIN(up.height_cm)
         ";
         
         $stmt = $pdo->prepare($heightQuery);

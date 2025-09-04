@@ -355,9 +355,9 @@ class DatabaseAPI {
                 $_SESSION['email'] = $userData['email'];
                 $_SESSION['is_admin'] = $userData['is_admin'] ?? false;
                 
-                if (isset($userData['admin_data'])) {
-                    $_SESSION['admin_id'] = $userData['admin_data']['admin_id'];
-                    $_SESSION['role'] = $userData['admin_data']['role'];
+                if (isset($userData['admin_data']) && is_array($userData['admin_data']) && !empty($userData['admin_data'])) {
+                    $_SESSION['admin_id'] = $userData['admin_data']['admin_id'] ?? null;
+                    $_SESSION['role'] = $userData['admin_data']['role'] ?? null;
                 }
             }
             
