@@ -6609,7 +6609,8 @@ body {
             samCases: null,
             samChange: null,
             criticalAlerts: null,
-            lastUpdate: null
+            lastUpdate: null,
+            isFirstLoad: true
         };
 
         // Function to update community metrics
@@ -6741,18 +6742,28 @@ body {
                     console.log('New moderateValue:', moderateValue);
                     
                     // Force update on first load or if data has changed
-                    if (dashboardState.highRisk === null || dashboardState.highRisk !== highRiskValue) {
+                    if (dashboardState.isFirstLoad || dashboardState.highRisk === null || dashboardState.highRisk !== highRiskValue) {
                         console.log('✅ Updating highRisk.textContent to:', highRiskValue);
+                        console.log('Before update - highRisk.textContent:', highRisk.textContent);
                         highRisk.textContent = highRiskValue;
+                        console.log('After update - highRisk.textContent:', highRisk.textContent);
                         dashboardState.highRisk = highRiskValue;
+                        if (dashboardState.isFirstLoad) {
+                            console.log('🎯 First load completed for highRisk');
+                        }
                     } else {
                         console.log('❌ Skipping highRisk update - no change');
                     }
                     
-                    if (dashboardState.moderateRisk === null || dashboardState.moderateRisk !== moderateValue) {
+                    if (dashboardState.isFirstLoad || dashboardState.moderateRisk === null || dashboardState.moderateRisk !== moderateValue) {
                         console.log('✅ Updating riskChange.textContent to:', moderateValue);
+                        console.log('Before update - riskChange.textContent:', riskChange.textContent);
                         riskChange.textContent = moderateValue;
+                        console.log('After update - riskChange.textContent:', riskChange.textContent);
                         dashboardState.moderateRisk = moderateValue;
+                        if (dashboardState.isFirstLoad) {
+                            console.log('🎯 First load completed for moderateRisk');
+                        }
                     } else {
                         console.log('❌ Skipping moderateRisk update - no change');
                     }
@@ -6778,18 +6789,28 @@ body {
                         console.log('New samChangeValue:', samChangeValue);
                         
                         // Force update on first load or if data has changed
-                        if (dashboardState.samCases === null || dashboardState.samCases !== samCasesValue) {
+                        if (dashboardState.isFirstLoad || dashboardState.samCases === null || dashboardState.samCases !== samCasesValue) {
                             console.log('✅ Updating samCases.textContent to:', samCasesValue);
+                            console.log('Before update - samCases.textContent:', samCases.textContent);
                             samCases.textContent = samCasesValue;
+                            console.log('After update - samCases.textContent:', samCases.textContent);
                             dashboardState.samCases = samCasesValue;
+                            if (dashboardState.isFirstLoad) {
+                                console.log('🎯 First load completed for samCases');
+                            }
                         } else {
                             console.log('❌ Skipping samCases update - no change');
                         }
                         
-                        if (dashboardState.samChange === null || dashboardState.samChange !== samChangeValue) {
+                        if (dashboardState.isFirstLoad || dashboardState.samChange === null || dashboardState.samChange !== samChangeValue) {
                             console.log('✅ Updating samChange.textContent to:', samChangeValue);
+                            console.log('Before update - samChange.textContent:', samChange.textContent);
                             samChange.textContent = samChangeValue;
+                            console.log('After update - samChange.textContent:', samChange.textContent);
                             dashboardState.samChange = samChangeValue;
+                            if (dashboardState.isFirstLoad) {
+                                console.log('🎯 First load completed for samChange');
+                            }
                         } else {
                             console.log('❌ Skipping samChange update - no change');
                         }
@@ -6817,6 +6838,12 @@ body {
                 console.log('🔄 Alerts Data received:', alertsData);
                 if (alertsData && typeof alertsData === 'object') {
                     updateCriticalAlertsDisplay(alertsData);
+                }
+                
+                // Mark first load as complete
+                if (dashboardState.isFirstLoad) {
+                    dashboardState.isFirstLoad = false;
+                    console.log('🎯 Dashboard first load completed - state management now active');
                 }
                 
                 // Update Nutritional Status Overview Card
