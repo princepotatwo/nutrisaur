@@ -109,6 +109,18 @@ switch ($path) {
         include_once 'fcm_diagnostic.php';
         break;
         
+    case 'check_verification_fields':
+    case 'check_verification_fields.php':
+        // Route to verification fields checker
+        include_once 'check_verification_fields.php';
+        break;
+        
+    case 'test_email':
+    case 'test_email.php':
+        // Route to email test page
+        include_once 'test_email.php';
+        break;
+        
     case 'logo.png':
         // Serve logo as static file
         $logoPath = __DIR__ . '/logo.png';
