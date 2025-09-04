@@ -7569,11 +7569,15 @@ body {
                 const response = await fetch(url);
                 
                 if (!response.ok) {
+                    console.error('Response not OK:', response.status, response.statusText);
+                    const errorText = await response.text();
+                    console.error('Error response body:', errorText);
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
                 const data = await response.json();
                 console.log('DatabaseAPI response for', endpoint, ':', data);
+                console.log('Returning data:', data.data || data);
                 return data.data || data; // Return data field if exists, otherwise return full response
             } catch (error) {
                 console.error('DatabaseAPI error for', endpoint, ':', error);
