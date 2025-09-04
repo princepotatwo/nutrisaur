@@ -6756,19 +6756,22 @@ body {
 
                 // Update Screening Responses (Age, Gender, Income, Height, Swelling, Weight Loss, Feeding, Physical Signs, Dietary, Clinical)
                 const screeningData = await fetchDataFromAPI('detailed_screening_responses', params);
-                if (screeningData && Array.isArray(screeningData)) {
+                console.log('🔄 Screening Data received:', screeningData);
+                if (screeningData && typeof screeningData === 'object') {
                     updateScreeningResponsesDisplay(screeningData);
                 }
 
                 // Update Geographic Distribution Chart
                 const geoData = await fetchDataFromAPI('geographic_distribution', params);
-                if (geoData && Array.isArray(geoData)) {
+                console.log('🔄 Geographic Data received:', geoData);
+                if (geoData && typeof geoData === 'object') {
                     updateGeographicChartDisplay(geoData);
                 }
 
                 // Update Critical Alerts
                 const alertsData = await fetchDataFromAPI('critical_alerts', params);
-                if (alertsData && Array.isArray(alertsData)) {
+                console.log('🔄 Alerts Data received:', alertsData);
+                if (alertsData && typeof alertsData === 'object') {
                     updateCriticalAlertsDisplay(alertsData);
                 }
                 
