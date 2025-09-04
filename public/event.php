@@ -552,7 +552,7 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
             
             // Send via the working notification API (same as dash.php)
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/send_notification.php');
+            curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
                 'notification_data' => json_encode($notificationPayload)
@@ -619,7 +619,7 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
 // Helper function to send notification via API
 function sendNotificationViaAPI($notificationData) {
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/send_notification.php');
+    curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
         'notification_data' => json_encode($notificationData)
@@ -4830,7 +4830,7 @@ header:hover {
             
             try {
                 // 🚨 USE THE SAME EXTERNAL API APPROACH AS DASH.PHP - NO INTERNAL AJAX HANDLING!
-                const response = await fetch('/api/send_notification.php', {
+                const response = await fetch('/api/DatabaseAPI.php?action=send_notification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -7694,7 +7694,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 
                 // 🚨 STEP 2: SEND NOTIFICATION USING THE SAME EXTERNAL API AS DASH.PHP
                 // 🎯 RESPECT LOCATION SELECTION - Don't send to everyone!
-                const notificationResponse = await fetch('/api/send_notification.php', {
+                const notificationResponse = await fetch('/api/DatabaseAPI.php?action=send_notification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',

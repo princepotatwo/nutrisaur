@@ -2308,7 +2308,7 @@ header {
 
         function viewAssessmentDetails(id) {
             // Fetch assessment details via AJAX
-            fetch(`/api/comprehensive_screening.php?screening_id=${id}`)
+                            fetch(`/api/DatabaseAPI.php?action=comprehensive_screening&screening_id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
