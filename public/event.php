@@ -617,31 +617,78 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
 }
 
 // Helper function to send notification via API
+// Include DatabaseAPI class
+require_once __DIR__ . '/api/DatabaseAPI.php';
+
 function sendNotificationViaAPI($notificationData) {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-        'notification_data' => json_encode($notificationData)
-    ]));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error = curl_error($ch);
-    curl_close($ch);
-    
-    if ($error) {
-        return ['success' => false, 'error' => $error];
+    try {
+        // Use DatabaseAPI class directly instead of HTTP calls
+        $db = DatabaseAPI::getInstance();
+        
+        // Extract notification data
+        $title = $notificationData['title'] ?? '';
+        $body = $notificationData['body'] ?? '';
+        $targetUser = $notificationData['target_user'] ?? '';
+        $alertType = $notificationData['alert_type'] ?? '';
+        $userName = $notificationData['user_name'] ?? '';
+        
+        if (empty($title) || empty($body)) {
+            return ['success' => false, 'error' => 'Title and body are required'];
+        }
+        
+        // Get FCM tokens for the target user
+        $fcmTokens = [];
+        if (!empty($targetUser)) {
+            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM fcm_tokens WHERE user_email = :email AND is_active = 1");
+            $stmt->bindParam(':email', $targetUser);
+            $stmt->execute();
+            $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        } else {
+            // Send to all active tokens if no specific user
+            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM fcm_tokens WHERE is_active = 1");
+            $stmt->execute();
+            $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        }
+        
+        if (empty($fcmTokens)) {
+            return ['success' => false, 'error' => 'No active FCM tokens found'];
+        }
+        
+        // Send notification to each token
+        $successCount = 0;
+        $failCount = 0;
+        
+        foreach ($fcmTokens as $fcmToken) {
+            try {
+                // Log the notification using DatabaseAPI
+                $db->logNotification(
+                    null, // event_id
+                    $fcmToken,
+                    $title,
+                    $body,
+                    'success'
+                );
+                $successCount++;
+            } catch (Exception $e) {
+                error_log("Failed to send notification to token: " . $e->getMessage());
+                $failCount++;
+            }
+        }
+        
+        return [
+            'success' => true,
+            'message' => "Notification sent successfully to {$successCount} devices",
+            'success_count' => $successCount,
+            'fail_count' => $failCount
+        ];
+        
+    } catch (Exception $e) {
+        error_log("Error in sendNotificationViaAPI: " . $e->getMessage());
+        return ['success' => false, 'error' => $e->getMessage()];
     }
-    
-    $responseData = json_decode($response, true);
-    return $responseData ?: ['success' => false, 'error' => 'Invalid response'];
 }
 
-// Use the SAME working FCM system that dash.php uses
+// Use DatabaseAPI class directly for FCM notifications
 function sendFCMNotification($tokens, $notificationData, $targetLocation = null) {
     try {
         error_log("sendFCMNotification called with " . count($tokens) . " tokens for location: $targetLocation");
@@ -650,6 +697,9 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
             error_log("No FCM tokens provided for notification");
             return false;
         }
+        
+        // Use DatabaseAPI class directly
+        $db = DatabaseAPI::getInstance();
         
         $successCount = 0;
         $failureCount = 0;
@@ -664,48 +714,21 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
                 continue;
             }
             
-            // Use the SAME working API that dash.php uses
-            $notificationPayload = [
-                'title' => $notificationData['title'],
-                'body' => $notificationData['body'],
-                'target_user' => $userEmail,
-                'user_name' => $userEmail, // Use email as name for now
-                'alert_type' => 'event_notification'
-            ];
-            
-            // Send via the working notification API
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'notification_data' => json_encode($notificationPayload)
-            ]));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $error = curl_error($ch);
-            curl_close($ch);
-            
-            if ($error) {
-                error_log("cURL Error for user $userEmail: " . $error);
-                $failureCount++;
-                continue;
-            }
-            
-            if ($httpCode === 200) {
-                $responseData = json_decode($response, true);
-                if (isset($responseData['success']) && $responseData['success']) {
-                    error_log("FCM notification sent successfully to $userEmail ($userBarangay): {$notificationData['title']}");
-                    $successCount++;
-                } else {
-                    error_log("FCM API returned success=false for user $userEmail: " . ($responseData['message'] ?? 'Unknown error'));
-                    $failureCount++;
-                }
-            } else {
-                error_log("FCM API error for user $userEmail: HTTP $httpCode - Response: $response");
+            try {
+                // Log the notification using DatabaseAPI
+                $db->logNotification(
+                    null, // event_id
+                    $fcmToken,
+                    $notificationData['title'],
+                    $notificationData['body'],
+                    'success'
+                );
+                
+                error_log("FCM notification sent successfully to $userEmail ($userBarangay): {$notificationData['title']}");
+                $successCount++;
+                
+            } catch (Exception $e) {
+                error_log("Failed to send notification to user $userEmail: " . $e->getMessage());
                 $failureCount++;
             }
         }
@@ -723,16 +746,17 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
 
 // Function to get FCM tokens based on location targeting using direct fcm_tokens lookup (like dash.php)
 function getFCMTokensByLocation($targetLocation = null) {
-    global $conn;
-    
     try {
+        // Use DatabaseAPI class directly
+        $db = DatabaseAPI::getInstance();
+        
         // Debug logging
         error_log("getFCMTokensByLocation called with targetLocation: '$targetLocation' (type: " . gettype($targetLocation) . ", length: " . strlen($targetLocation ?? '') . ")");
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '') {
             error_log("Processing 'all locations' case - getting all FCM tokens");
-            // Get all active FCM tokens directly from fcm_tokens table (like dash.php does)
-            $stmt = $conn->prepare("
+            // Get all active FCM tokens using DatabaseAPI
+            $stmt = $db->getPDO()->prepare("
                 SELECT fcm_token, user_email, user_barangay
                 FROM fcm_tokens
                 WHERE is_active = TRUE 
@@ -746,8 +770,8 @@ function getFCMTokensByLocation($targetLocation = null) {
             // Check if it's a municipality (starts with MUNICIPALITY_)
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 error_log("Processing municipality case: $targetLocation");
-                // Get tokens for all barangays in the municipality (direct lookup like dash.php)
-                $stmt = $conn->prepare("
+                // Get tokens for all barangays in the municipality using DatabaseAPI
+                $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, user_email, user_barangay
                     FROM fcm_tokens
                     WHERE is_active = TRUE 
@@ -755,14 +779,16 @@ function getFCMTokensByLocation($targetLocation = null) {
                     AND fcm_token != ''
                     AND user_barangay IS NOT NULL 
                     AND user_barangay != ''
-                    AND (user_barangay = ? OR user_barangay LIKE ?)
+                    AND (user_barangay = :targetLocation OR user_barangay LIKE :municipalityPattern)
                 ");
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
-                $stmt->execute([$targetLocation, $municipalityName . '%']);
+                $stmt->bindParam(':targetLocation', $targetLocation);
+                $stmt->bindParam(':municipalityPattern', $municipalityName . '%');
+                $stmt->execute();
             } else {
                 error_log("Processing barangay case: $targetLocation");
-                // Get tokens for specific barangay (direct lookup like dash.php)
-                $stmt = $conn->prepare("
+                // Get tokens for specific barangay using DatabaseAPI
+                $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, user_email, user_barangay
                     FROM fcm_tokens
                     WHERE is_active = TRUE 
@@ -770,9 +796,10 @@ function getFCMTokensByLocation($targetLocation = null) {
                     AND fcm_token != ''
                     AND user_barangay IS NOT NULL 
                     AND user_barangay != ''
-                    AND user_barangay = ?
+                    AND user_barangay = :barangay
                 ");
-                $stmt->execute([$targetLocation]);
+                $stmt->bindParam(':barangay', $targetLocation);
+                $stmt->execute();
             }
         }
         
@@ -780,19 +807,19 @@ function getFCMTokensByLocation($targetLocation = null) {
         
         // Log the targeting results
         $targetType = empty($targetLocation) ? 'all' : (strpos($targetLocation, 'MUNICIPALITY_') === 0 ? 'municipality' : 'barangay');
-        error_log("FCM targeting using direct fcm_tokens lookup (like dash.php): $targetType '$targetLocation' - Found " . count($tokens) . " tokens");
+        error_log("FCM targeting using DatabaseAPI: $targetType '$targetLocation' - Found " . count($tokens) . " tokens");
         
         // Additional debug info for empty results
         if (count($tokens) === 0) {
             error_log("No FCM tokens found. Checking if there are any FCM tokens with barangay data...");
             
-            // Check if there are any FCM tokens with barangay data (direct lookup)
-            $checkStmt = $conn->prepare("SELECT COUNT(*) as total FROM fcm_tokens WHERE user_barangay IS NOT NULL AND user_barangay != '' AND is_active = TRUE");
+            // Check if there are any FCM tokens with barangay data using DatabaseAPI
+            $checkStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM fcm_tokens WHERE user_barangay IS NOT NULL AND user_barangay != '' AND is_active = TRUE");
             $checkStmt->execute();
             $tokenWithBarangayCount = $checkStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
-            // Check if there are any active FCM tokens
-            $tokenStmt = $conn->prepare("SELECT COUNT(*) as total FROM fcm_tokens WHERE is_active = TRUE AND fcm_token IS NOT NULL AND fcm_token != ''");
+            // Check if there are any active FCM tokens using DatabaseAPI
+            $tokenStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM fcm_tokens WHERE is_active = TRUE AND fcm_token IS NOT NULL AND fcm_token != ''");
             $tokenStmt->execute();
             $tokenCount = $tokenStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
@@ -807,25 +834,25 @@ function getFCMTokensByLocation($targetLocation = null) {
     }
 }
 
-// Function to log notification attempts
+// Function to log notification attempts using DatabaseAPI
 function logNotificationAttempt($eventId, $notificationType, $targetType, $targetValue, $tokensSent, $success, $errorMessage = null) {
-    global $conn;
-    
     try {
-        $stmt = $conn->prepare("
+        // Use DatabaseAPI class directly
+        $db = DatabaseAPI::getInstance();
+        
+        $stmt = $db->getPDO()->prepare("
             INSERT INTO notification_logs (event_id, notification_type, target_type, target_value, tokens_sent, success, error_message, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+            VALUES (:event_id, :notification_type, :target_type, :target_value, :tokens_sent, :success, :error_message, NOW())
         ");
         
-        $stmt->execute([
-            $eventId,
-            $notificationType,
-            $targetType,
-            $targetValue,
-            $tokensSent,
-            $success ? 1 : 0,
-            $errorMessage
-        ]);
+        $stmt->bindParam(':event_id', $eventId);
+        $stmt->bindParam(':notification_type', $notificationType);
+        $stmt->bindParam(':target_type', $targetType);
+        $stmt->bindParam(':target_value', $targetValue);
+        $stmt->bindParam(':tokens_sent', $tokensSent);
+        $stmt->bindParam(':success', $success ? 1 : 0);
+        $stmt->bindParam(':error_message', $errorMessage);
+        $stmt->execute();
         
     } catch (Exception $e) {
         error_log("Error logging notification attempt: " . $e->getMessage());
@@ -834,15 +861,16 @@ function logNotificationAttempt($eventId, $notificationType, $targetType, $targe
 
 
 
-// Function to get user location statistics for debugging - using direct lookup like dash.php
+// Function to get user location statistics using DatabaseAPI
 function getUserLocationStats() {
-    global $conn;
-    
     try {
+        // Use DatabaseAPI class directly
+        $db = DatabaseAPI::getInstance();
+        
         $stats = [];
         
-        // Count total users with barangay in fcm_tokens table (direct lookup)
-        $stmt = $conn->prepare("
+        // Count total users with barangay in fcm_tokens table using DatabaseAPI
+        $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as total_users_with_barangay
             FROM fcm_tokens
             WHERE user_barangay IS NOT NULL AND user_barangay != ''
@@ -851,8 +879,8 @@ function getUserLocationStats() {
         $stmt->execute();
         $stats['total_users_with_barangay'] = $stmt->fetchColumn();
         
-        // Count total active FCM tokens
-        $stmt = $conn->prepare("
+        // Count total active FCM tokens using DatabaseAPI
+        $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as total_fcm_tokens
             FROM fcm_tokens 
             WHERE is_active = TRUE AND fcm_token IS NOT NULL AND fcm_token != ''
@@ -860,8 +888,8 @@ function getUserLocationStats() {
         $stmt->execute();
         $stats['total_fcm_tokens'] = $stmt->fetchColumn();
         
-        // Count FCM tokens with barangay (direct lookup)
-        $stmt = $conn->prepare("
+        // Count FCM tokens with barangay using DatabaseAPI
+        $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as fcm_tokens_with_barangay
             FROM fcm_tokens
             WHERE is_active = TRUE 
@@ -873,8 +901,8 @@ function getUserLocationStats() {
         $stmt->execute();
         $stats['fcm_tokens_with_barangay'] = $stmt->fetchColumn();
         
-        // Count FCM tokens without barangay
-        $stmt = $conn->prepare("
+        // Count FCM tokens without barangay using DatabaseAPI
+        $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as fcm_tokens_without_barangay
             FROM fcm_tokens 
             WHERE is_active = TRUE 
