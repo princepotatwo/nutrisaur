@@ -97,29 +97,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert into database
-        $stmt = $conn->prepare("INSERT INTO screening_assessments (
-            user_id, municipality, barangay, age, age_months, sex, pregnant, 
-            weight, height, bmi, meal_recall, family_history, lifestyle, 
-            lifestyle_other, immunization, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO user_preferences (
+            user_email, username, name, age, gender, weight, height, bmi, 
+            barangay, risk_score, screening_answers, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+        
+        // Get user email from session or use a default
+        $user_email = $_SESSION['user_email'] ?? 'user_' . $screening_data['user_id'] . '@example.com';
+        $username = $_SESSION['username'] ?? 'User_' . $screening_data['user_id'];
+        $name = $_SESSION['name'] ?? 'User ' . $screening_data['user_id'];
+        
+        // Calculate risk score based on screening data
+        $risk_score = 0;
+        if ($screening_data['age'] < 2) $risk_score += 2;
+        if ($screening_data['bmi'] < 18.5) $risk_score += 3;
+        if ($screening_data['pregnant'] == 'yes') $risk_score += 2;
+        if ($screening_data['family_history'] == 'yes') $risk_score += 1;
+        
+        // Create screening answers JSON
+        $screening_answers = json_encode([
+            'municipality' => $screening_data['municipality'],
+            'age_months' => $screening_data['age_months'],
+            'pregnant' => $screening_data['pregnant'],
+            'meal_recall' => $screening_data['meal_recall'],
+            'family_history' => $screening_data['family_history'],
+            'lifestyle' => $screening_data['lifestyle'],
+            'lifestyle_other' => $screening_data['lifestyle_other'],
+            'immunization' => $screening_data['immunization']
+        ]);
         
         $stmt->execute([
-            $screening_data['user_id'],
-            $screening_data['municipality'],
-            $screening_data['barangay'],
-            $screening_data['age'],
-            $screening_data['age_months'],
-            $screening_data['sex'],
-            $screening_data['pregnant'],
-            $screening_data['weight'],
-            $screening_data['height'],
+            $user_email, 
+            $username, 
+            $name, 
+            $screening_data['age'], 
+            $screening_data['sex'], 
+            $screening_data['weight'], 
+            $screening_data['height'], 
             $screening_data['bmi'],
-            $screening_data['meal_recall'],
-            json_encode($screening_data['family_history']),
-            $screening_data['lifestyle'],
-            $screening_data['lifestyle_other'],
-            json_encode($screening_data['immunization']),
-            $screening_data['created_at']
+            $screening_data['barangay'], 
+            $risk_score, 
+            $screening_answers
         ]);
 
         $success_message = "Screening assessment saved successfully!";
@@ -133,8 +151,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $screening_assessments = [];
 if ($conn) {
     try {
-        $stmt = $conn->prepare("SELECT * FROM screening_assessments WHERE user_id = ? ORDER BY created_at DESC");
-        $stmt->execute([$user_id]);
+        $stmt = $conn->prepare("SELECT * FROM user_preferences WHERE user_email = ? ORDER BY created_at DESC");
+        $user_email = $_SESSION['user_email'] ?? 'user_' . $user_id . '@example.com';
+        $stmt->execute([$user_email]);
         $screening_assessments = $stmt->fetchAll();
     } catch (Exception $e) {
         error_log("Error fetching screening assessments: " . $e->getMessage());
