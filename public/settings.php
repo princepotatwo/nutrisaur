@@ -2,11 +2,49 @@
 // Start the session
 session_start();
 
-// Include DatabaseAPI for direct database operations
-require_once __DIR__ . '/api/DatabaseAPI.php';
+// Database connection - same as screening.php
+$mysql_host = 'mainline.proxy.rlwy.net';
+$mysql_port = 26063;
+$mysql_user = 'root';
+$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
+$mysql_database = 'railway';
 
-// Initialize DatabaseAPI
-$db = DatabaseAPI::getInstance();
+if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
+    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
+    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
+    if (preg_match($pattern, $mysql_url, $matches)) {
+        $mysql_user = $matches[1];
+        $mysql_password = $matches[2];
+        $mysql_host = $matches[3];
+        $mysql_port = $matches[4];
+        $mysql_database = $matches[5];
+    }
+}
+
+try {
+    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
+    
+    $pdoOptions = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_TIMEOUT => 30,
+        PDO::ATTR_PERSISTENT => false,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
+        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
+    ];
+    
+    $conn = new PDO($dsn, $mysql_user, $mysql_password, $pdoOptions);
+    $conn->query("SELECT 1");
+    
+} catch (PDOException $e) {
+    error_log("Database connection failed: " . $e->getMessage());
+    $conn = null;
+    $dbError = "Database connection failed: " . $e->getMessage();
+}
+
+// Get user info
+$username = $_SESSION['username'] ?? 'Unknown User';
+$user_id = $_SESSION['user_id'] ?? $_SESSION['admin_id'] ?? null;
 
 // Handle AJAX requests for user management
 $isAjax = ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) || 
@@ -83,9 +121,8 @@ if ($isAjax) {
                 break;
                 
             case 'get_users':
-                // Use DatabaseAPI to get user preferences data
-                $pdo = $db->getPDO();
-                if (!$pdo) {
+                // Use direct database connection to get user preferences data
+                if (!$conn) {
                     throw new Exception('Database connection not available');
                 }
                 
@@ -103,7 +140,7 @@ if ($isAjax) {
                         FROM user_preferences
                         ORDER BY updated_at DESC";
                 
-                $stmt = $pdo->prepare($sql);
+                $stmt = $conn->prepare($sql);
                 $stmt->execute();
                 $preferences = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
@@ -139,7 +176,7 @@ if ($isAjax) {
                 break;
                 
             case 'add_user':
-                // Add new user to user_preferences table
+                // Add new user to user_preferences table using direct connection
                 $requiredFields = ['user_email', 'username', 'name'];
                 foreach ($requiredFields as $field) {
                     if (empty($_POST[$field])) {
@@ -147,62 +184,79 @@ if ($isAjax) {
                     }
                 }
                 
-                $userEmail = $_POST['user_email'];
-                $preferences = [
-                    'username' => $_POST['username'],
-                    'name' => $_POST['name'],
-                    'barangay' => $_POST['barangay'] ?? '',
-                    'income' => $_POST['income'] ?? '',
-                    'age' => $_POST['age'] ?? null,
-                    'gender' => $_POST['gender'] ?? '',
-                    'height' => $_POST['height'] ?? null,
-                    'weight' => $_POST['weight'] ?? null,
-                    'risk_score' => $_POST['risk_score'] ?? 0
-                ];
-                
-                $result = $db->saveUserPreferences($userEmail, $preferences);
-                
-                if ($result['success']) {
-                    $response['success'] = true;
-                    $response['data'] = ['user_email' => $userEmail];
-                    $response['message'] = 'User added successfully';
-                } else {
-                    throw new Exception($result['message']);
+                if (!$conn) {
+                    throw new Exception('Database connection not available');
                 }
+                
+                $userEmail = $_POST['user_email'];
+                $username = $_POST['username'];
+                $name = $_POST['name'];
+                $barangay = $_POST['barangay'] ?? '';
+                $income = $_POST['income'] ?? '';
+                $age = $_POST['age'] ?? null;
+                $gender = $_POST['gender'] ?? '';
+                $height = $_POST['height'] ?? null;
+                $weight = $_POST['weight'] ?? null;
+                $riskScore = $_POST['risk_score'] ?? 0;
+                
+                // Check if user already exists
+                $stmt = $conn->prepare("SELECT id FROM user_preferences WHERE user_email = ?");
+                $stmt->execute([$userEmail]);
+                
+                if ($stmt->rowCount() > 0) {
+                    // Update existing user
+                    $stmt = $conn->prepare("UPDATE user_preferences SET 
+                        username = ?, name = ?, barangay = ?, income = ?, age = ?, 
+                        gender = ?, height = ?, weight = ?, risk_score = ?, updated_at = NOW()
+                        WHERE user_email = ?");
+                    $stmt->execute([$username, $name, $barangay, $income, $age, $gender, $height, $weight, $riskScore, $userEmail]);
+                } else {
+                    // Insert new user
+                    $stmt = $conn->prepare("INSERT INTO user_preferences 
+                        (user_email, username, name, barangay, income, age, gender, height, weight, risk_score, created_at, updated_at) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+                    $stmt->execute([$userEmail, $username, $name, $barangay, $income, $age, $gender, $height, $weight, $riskScore]);
+                }
+                
+                $response['success'] = true;
+                $response['data'] = ['user_email' => $userEmail];
+                $response['message'] = 'User added successfully';
                 break;
                 
             case 'update_user':
-                // Update user in user_preferences table
+                // Update user in user_preferences table using direct connection
                 if (empty($_POST['user_email'])) {
                     throw new Exception('User email is required');
                 }
                 
-                $userEmail = $_POST['user_email'];
-                $preferences = [
-                    'username' => $_POST['username'] ?? '',
-                    'name' => $_POST['name'] ?? '',
-                    'barangay' => $_POST['barangay'] ?? '',
-                    'income' => $_POST['income'] ?? '',
-                    'age' => $_POST['age'] ?? null,
-                    'gender' => $_POST['gender'] ?? '',
-                    'height' => $_POST['height'] ?? null,
-                    'weight' => $_POST['weight'] ?? null,
-                    'risk_score' => $_POST['risk_score'] ?? 0
-                ];
-                
-                $result = $db->saveUserPreferences($userEmail, $preferences);
-                
-                if ($result['success']) {
-                    $response['success'] = true;
-                    $response['message'] = 'User updated successfully';
-                } else {
-                    throw new Exception($result['message']);
+                if (!$conn) {
+                    throw new Exception('Database connection not available');
                 }
+                
+                $userEmail = $_POST['user_email'];
+                $username = $_POST['username'] ?? '';
+                $name = $_POST['name'] ?? '';
+                $barangay = $_POST['barangay'] ?? '';
+                $income = $_POST['income'] ?? '';
+                $age = $_POST['age'] ?? null;
+                $gender = $_POST['gender'] ?? '';
+                $height = $_POST['height'] ?? null;
+                $weight = $_POST['weight'] ?? null;
+                $riskScore = $_POST['risk_score'] ?? 0;
+                
+                // Update user preferences
+                $stmt = $conn->prepare("UPDATE user_preferences SET 
+                    username = ?, name = ?, barangay = ?, income = ?, age = ?, 
+                    gender = ?, height = ?, weight = ?, risk_score = ?, updated_at = NOW()
+                    WHERE user_email = ?");
+                $stmt->execute([$username, $name, $barangay, $income, $age, $gender, $height, $weight, $riskScore, $userEmail]);
+                
+                $response['success'] = true;
+                $response['message'] = 'User updated successfully';
                 break;
                 
             case 'delete_user':
-                $pdo = $db->getPDO();
-                if (!$pdo) {
+                if (!$conn) {
                     throw new Exception('Database connection not available');
                 }
                 
@@ -212,8 +266,8 @@ if ($isAjax) {
                 
                 $userId = $_POST['user_id'];
                 
-                $stmt = $pdo->prepare("DELETE FROM user_preferences WHERE id = :id");
-                $result = $stmt->execute([':id' => $userId]);
+                $stmt = $conn->prepare("DELETE FROM user_preferences WHERE id = ?");
+                $result = $stmt->execute([$userId]);
                 
                 if ($stmt->rowCount() > 0) {
                     $response['success'] = true;
@@ -224,8 +278,7 @@ if ($isAjax) {
                 break;
                 
             case 'delete_users_by_location':
-                $pdo = $db->getPDO();
-                if (!$pdo) {
+                if (!$conn) {
                     throw new Exception('Database connection not available');
                 }
                 
@@ -254,7 +307,7 @@ if ($isAjax) {
                 $sql = "DELETE FROM user_preferences 
                         WHERE $whereClause";
                 
-                $stmt = $pdo->prepare($sql);
+                $stmt = $conn->prepare($sql);
                 $stmt->execute($params);
                 $deletedCount = $stmt->rowCount();
                 
@@ -264,8 +317,7 @@ if ($isAjax) {
                 break;
                 
             case 'delete_all_users':
-                $pdo = $db->getPDO();
-                if (!$pdo) {
+                if (!$conn) {
                     throw new Exception('Database connection not available');
                 }
                 
@@ -274,7 +326,7 @@ if ($isAjax) {
                     throw new Exception('Confirmation required for deleting all user preferences');
                 }
                 
-                $stmt = $pdo->prepare("DELETE FROM user_preferences");
+                $stmt = $conn->prepare("DELETE FROM user_preferences");
                 $stmt->execute();
                 $deletedCount = $stmt->rowCount();
                 
@@ -5044,8 +5096,8 @@ optgroup option {
     var users = [];
 
     // API URLs
-        // Use DatabaseAPI.php for API calls
-        const API_BASE_URL = window.location.origin + '/api/DatabaseAPI.php';
+        // Use settings.php itself for API calls (direct database connection)
+        const API_BASE_URL = window.location.origin + '/settings.php';
     
     // Function to load users from the server with smooth updates
     window.loadUsersInProgress = false;
@@ -5301,7 +5353,7 @@ optgroup option {
             }
         };
         
-        xhr.send('action=get_user_preferences');
+        xhr.send('action=get_users');
         
         // Reset the flag when XHR completes (either success or error)
         xhr.onloadend = function() {
