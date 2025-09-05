@@ -2,18 +2,6 @@
 // Start the session
 session_start();
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    // Redirect to login page if not logged in
-    header("Location: home.php");
-    exit;
-}
-
-// Get user info from session
-$userId = $_SESSION['user_id'];
-$username = $_SESSION['username'];
-$email = $_SESSION['email'];
-
 // Include DatabaseAPI for direct database operations
 require_once __DIR__ . '/api/DatabaseAPI.php';
 
@@ -25,6 +13,35 @@ $isAjax = ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) ||
           ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) ||
           (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
 
+if ($isAjax) {
+    // Set JSON header and prevent any HTML output
+    header('Content-Type: application/json');
+    ob_clean(); // Clean any previous output
+    
+    // Check if user is logged in for AJAX requests
+    if (!isset($_SESSION['user_id'])) {
+        echo json_encode(['success' => false, 'error' => 'Not logged in']);
+        exit;
+    }
+    
+    // Get user info from session
+    $userId = $_SESSION['user_id'];
+    $username = $_SESSION['username'];
+    $email = $_SESSION['email'];
+} else {
+    // Check if user is logged in for regular page requests
+    if (!isset($_SESSION['user_id'])) {
+        // Redirect to login page if not logged in
+        header("Location: home.php");
+        exit;
+    }
+    
+    // Get user info from session
+    $userId = $_SESSION['user_id'];
+    $username = $_SESSION['username'];
+    $email = $_SESSION['email'];
+}
+
 // Debug logging
 error_log('Settings Debug: REQUEST_METHOD=' . $_SERVER['REQUEST_METHOD']);
 error_log('Settings Debug: POST action=' . ($_POST['action'] ?? 'not set'));
@@ -33,10 +50,6 @@ error_log('Settings Debug: X-Requested-With=' . ($_SERVER['HTTP_X_REQUESTED_WITH
 error_log('Settings Debug: isAjax=' . ($isAjax ? 'true' : 'false'));
 
 if ($isAjax) {
-    // Set JSON header and prevent any HTML output
-    header('Content-Type: application/json');
-    ob_clean(); // Clean any previous output
-    
     // Log the AJAX request for debugging
     error_log('Settings AJAX Request: ' . json_encode([
         'method' => $_SERVER['REQUEST_METHOD'],
