@@ -183,8 +183,8 @@ if ($isAjax) {
                 
                 $userId = $_POST['user_id'];
                 
-                $stmt = $pdo->prepare("DELETE FROM user_preferences WHERE user_id = :user_id");
-                $result = $stmt->execute([':user_id' => $userId]);
+                $stmt = $pdo->prepare("DELETE FROM user_preferences WHERE id = :id");
+                $result = $stmt->execute([':id' => $userId]);
                 
                 if ($stmt->rowCount() > 0) {
                     $response['success'] = true;
@@ -211,7 +211,7 @@ if ($isAjax) {
                 $params = [];
                 
                 if (!empty($barangay)) {
-                    $whereConditions[] = "u.barangay = :barangay";
+                    $whereConditions[] = "up.barangay = :barangay";
                     $params[':barangay'] = $barangay;
                 }
                 
@@ -222,7 +222,7 @@ if ($isAjax) {
                 
                 $whereClause = implode(' AND ', $whereConditions);
                 $sql = "DELETE up FROM user_preferences up 
-                        LEFT JOIN users u ON up.user_id = u.id 
+                        LEFT JOIN users u ON up.user_email = u.email 
                         WHERE $whereClause";
                 
                 $stmt = $pdo->prepare($sql);
@@ -4424,18 +4424,20 @@ optgroup option {
                     if ($pdo) {
                         try {
                             $sql = "SELECT 
-                                        up.user_id,
-                                        up.preferences,
+                                        up.id,
+                                        up.user_email,
+                                        up.username,
+                                        up.name,
+                                        up.barangay,
+                                        up.risk_score,
                                         up.created_at,
                                         up.updated_at,
-                                        u.username,
                                         u.email,
                                         u.first_name,
                                         u.last_name,
-                                        u.barangay,
                                         u.municipality
                                     FROM user_preferences up
-                                    LEFT JOIN users u ON up.user_id = u.id
+                                    LEFT JOIN users u ON up.user_email = u.email
                                     ORDER BY up.updated_at DESC";
                             
                             $stmt = $pdo->prepare($sql);
@@ -4444,20 +4446,29 @@ optgroup option {
                             
                             if (!empty($users)) {
                                 foreach ($users as $user) {
-                                    $preferences = json_decode($user['preferences'], true);
-                                    $riskLevel = $preferences['risk_level'] ?? 'Unknown';
-                                    $riskClass = strtolower(str_replace(' ', '-', $riskLevel));
+                                    // Determine risk level from risk_score
+                                    $riskScore = $user['risk_score'] ?? 0;
+                                    if ($riskScore >= 8) {
+                                        $riskLevel = 'High Risk';
+                                        $riskClass = 'high-risk';
+                                    } elseif ($riskScore >= 5) {
+                                        $riskLevel = 'Medium Risk';
+                                        $riskClass = 'medium-risk';
+                                    } else {
+                                        $riskLevel = 'Low Risk';
+                                        $riskClass = 'low-risk';
+                                    }
                                     
                                     echo '<tr>';
-                                    echo '<td>' . htmlspecialchars($user['user_id']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['id']) . '</td>';
                                     echo '<td>' . htmlspecialchars($user['username'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars(trim($user['first_name'] . ' ' . $user['last_name'])) . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['barangay'] . ', ' . $user['municipality']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['user_email'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['barangay'] . ', ' . ($user['municipality'] ?? 'Unknown')) . '</td>';
                                     echo '<td><span class="risk-badge ' . $riskClass . '">' . htmlspecialchars($riskLevel) . '</span></td>';
                                     echo '<td>';
-                                    echo '<button class="btn-edit" onclick="editUser(' . $user['user_id'] . ')">Edit</button>';
-                                    echo '<button class="btn-delete" onclick="deleteUser(' . $user['user_id'] . ')">Delete</button>';
+                                    echo '<button class="btn-edit" onclick="editUser(' . $user['id'] . ')">Edit</button>';
+                                    echo '<button class="btn-delete" onclick="deleteUser(' . $user['id'] . ')">Delete</button>';
                                     echo '</td>';
                                     echo '</tr>';
                                 }
