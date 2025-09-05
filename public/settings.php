@@ -5057,8 +5057,8 @@ optgroup option {
     var users = [];
 
     // API URLs
-        // Use settings.php itself for API calls (direct database connection)
-        const API_BASE_URL = window.location.origin + '/settings.php';
+        // Use dedicated Settings API that uses Universal DatabaseAPI internally
+        const API_BASE_URL = window.location.origin + '/api/settings_api.php';
     
     // Function to load users from the server with smooth updates
     window.loadUsersInProgress = false;
@@ -5100,7 +5100,7 @@ optgroup option {
             return;
         }
         
-        // Create an XMLHttpRequest to fetch app users with risk data
+        // Create an XMLHttpRequest to fetch app users with risk data using Universal DatabaseAPI
         const xhr = new XMLHttpRequest();
         
         xhr.open('POST', API_BASE_URL, true);
