@@ -132,28 +132,16 @@ if ($isAjax) {
                             $checkColumns->execute();
                             $columns = $checkColumns->fetchAll(PDO::FETCH_COLUMN);
                             
-                            // Build dynamic SELECT based on actual columns
-                            $selectFields = [];
-                            $availableColumns = [
-                                'id', 'user_email', 'username', 'name', 'birthday', 'age', 
-                                'gender', 'height', 'weight', 'bmi', 'muac', 'swelling', 
-                                'weight_loss', 'dietary_diversity', 'feeding_behavior', 
-                                'physical_thin', 'physical_shorter', 'physical_weak', 
-                                'physical_none', 'physical_signs', 'has_recent_illness', 
-                                'has_eating_difficulty', 'has_food_insecurity', 
-                                'has_micronutrient_deficiency', 'has_functional_decline', 
-                                'goal', 'risk_score', 'screening_answers', 'allergies', 
-                                'diet_prefs', 'avoid_foods', 'barangay', 'income', 
-                                'created_at', 'updated_at'
-                            ];
-                            
-                            foreach ($availableColumns as $col) {
-                                if (in_array($col, $columns)) {
-                                    $selectFields[] = $col;
-                                }
-                            }
-                            
-                            $sql = "SELECT " . implode(', ', $selectFields) . " FROM user_preferences ORDER BY updated_at DESC";
+                            // Use only the columns that actually exist in the database
+                            $sql = "SELECT 
+                                        id, user_email, age, gender, barangay, municipality, province,
+                                        weight_kg, height_cm, bmi, risk_score, malnutrition_risk, 
+                                        screening_date, created_at, updated_at, name, birthday, income,
+                                        muac, screening_answers, allergies, diet_prefs, avoid_foods,
+                                        swelling, weight_loss, feeding_behavior, physical_signs,
+                                        dietary_diversity, clinical_risk_factors, whz_score, income_level
+                                    FROM user_preferences 
+                                    ORDER BY updated_at DESC";
                 
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
@@ -4506,16 +4494,16 @@ optgroup option {
                     <tr>
                         <th>ID</th>
                         <th>Email</th>
-                        <th>Username</th>
                         <th>Name</th>
                         <th>Age</th>
                         <th>Gender</th>
-                        <th>Height</th>
-                        <th>Weight</th>
+                        <th>Height (cm)</th>
+                        <th>Weight (kg)</th>
                         <th>BMI</th>
                         <th>Barangay</th>
-                        <th>Income</th>
+                        <th>Municipality</th>
                         <th>Risk Score</th>
+                        <th>Malnutrition Risk</th>
                         <th>Created</th>
                         <th>Actions</th>
                     </tr>
@@ -4546,16 +4534,16 @@ optgroup option {
                                     echo '<tr>';
                                     echo '<td>' . htmlspecialchars($user['id'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['user_email'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['username'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['age'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['gender'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['height_cm'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['weight_kg'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['bmi'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['income'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['risk_score'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['malnutrition_risk'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
                                     echo '<td>';
                                     echo '<button class="btn-edit" onclick="editUser(' . ($user['id'] ?? 0) . ')">Edit</button>';

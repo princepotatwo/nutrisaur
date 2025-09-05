@@ -98,19 +98,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insert into database
         $stmt = $conn->prepare("INSERT INTO user_preferences (
-            user_email, username, name, age, gender, weight, height, bmi, 
-            barangay, risk_score, screening_answers, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+            user_email, name, age, gender, weight_kg, height_cm, bmi, 
+            barangay, municipality, risk_score, malnutrition_risk, screening_answers, 
+            screening_date, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
         
         // Get user email from session or use a default
         $user_email = $_SESSION['user_email'] ?? 'user_' . $screening_data['user_id'] . '@example.com';
-        $username = $_SESSION['username'] ?? 'User_' . $screening_data['user_id'];
         $name = $_SESSION['name'] ?? 'User ' . $screening_data['user_id'];
         
-        // Calculate risk score based on screening data
+        // Calculate risk score and malnutrition risk based on screening data
         $risk_score = 0;
+        $malnutrition_risk = 'Low';
+        
         if ($screening_data['age'] < 2) $risk_score += 2;
-        if ($screening_data['bmi'] < 18.5) $risk_score += 3;
+        if ($screening_data['bmi'] < 18.5) {
+            $risk_score += 3;
+            $malnutrition_risk = 'High';
+        } elseif ($screening_data['bmi'] < 20) {
+            $malnutrition_risk = 'Medium';
+        }
         if ($screening_data['pregnant'] == 'yes') $risk_score += 2;
         if ($screening_data['family_history'] == 'yes') $risk_score += 1;
         
@@ -128,7 +135,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $stmt->execute([
             $user_email, 
-            $username, 
             $name, 
             $screening_data['age'], 
             $screening_data['sex'], 
@@ -136,8 +142,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $screening_data['height'], 
             $screening_data['bmi'],
             $screening_data['barangay'], 
+            $screening_data['municipality'],
             $risk_score, 
-            $screening_answers
+            $malnutrition_risk,
+            $screening_answers,
+            date('Y-m-d H:i:s')
         ]);
 
         $success_message = "Screening assessment saved successfully!";
