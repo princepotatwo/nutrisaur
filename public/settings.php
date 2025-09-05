@@ -56,9 +56,14 @@ if ($isAjax) {
     header('Content-Type: application/json');
     ob_clean(); // Clean any previous output
     
+    // Debug: Log session info
+    error_log('AJAX Debug - Session user_id: ' . ($_SESSION['user_id'] ?? 'not set'));
+    error_log('AJAX Debug - Session username: ' . ($_SESSION['username'] ?? 'not set'));
+    
     // Check if user is logged in for AJAX requests
     if (!isset($_SESSION['user_id'])) {
-        echo json_encode(['success' => false, 'error' => 'Not logged in']);
+        error_log('AJAX Debug - User not logged in, returning JSON error');
+        echo json_encode(['success' => false, 'error' => 'Not logged in', 'debug' => 'Session user_id not set']);
         exit;
     }
     
