@@ -2410,8 +2410,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             echo json_encode(['success' => true, 'data' => $timeFrameData]);
             break;
             
-        case 'get_users':
-            // Get all users from user_preferences table
+        case 'get_user_preferences':
+            // Get all user preferences data from user_preferences table (NOT users table)
+            // This is used by settings.php to display user management interface
             try {
                 $pdo = $db->getPDO();
                 if (!$pdo) {

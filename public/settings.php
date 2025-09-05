@@ -5301,7 +5301,7 @@ optgroup option {
             }
         };
         
-        xhr.send('action=get_users');
+        xhr.send('action=get_user_preferences');
         
         // Reset the flag when XHR completes (either success or error)
         xhr.onloadend = function() {
