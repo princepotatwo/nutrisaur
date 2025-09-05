@@ -1882,7 +1882,7 @@ body {
 /* Ensure table fits container */
 .user-table {
     width: 100%;
-    min-width: 900px;
+    min-width: 1200px; /* Updated for 14 columns */
 }
 
 /* Responsive table wrapper */
@@ -1890,18 +1890,29 @@ body {
     overflow-x: auto;
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    max-width: 100%;
+    min-width: 1200px; /* Ensure minimum width for all 14 columns */
 }
 
 .user-table td:last-child {
     text-align: center;
 }
 
-/* Set specific widths for columns - Balanced for 5 columns */
-.user-table th:nth-child(1), .user-table td:nth-child(1) { width: 12%; } /* User ID */
-.user-table th:nth-child(2), .user-table td:nth-child(2) { width: 23%; } /* Username */
-.user-table th:nth-child(3), .user-table td:nth-child(3) { width: 20%; text-align: center; } /* Risk Level */
-.user-table th:nth-child(4), .user-table td:nth-child(4) { width: 25%; } /* Location */
-.user-table th:nth-child(5), .user-table td:nth-child(5) { width: 20%; text-align: center; } /* Actions */
+/* Set specific widths for columns - Balanced for 14 columns */
+.user-table th:nth-child(1), .user-table td:nth-child(1) { width: 5%; } /* ID */
+.user-table th:nth-child(2), .user-table td:nth-child(2) { width: 12%; } /* EMAIL */
+.user-table th:nth-child(3), .user-table td:nth-child(3) { width: 10%; } /* NAME */
+.user-table th:nth-child(4), .user-table td:nth-child(4) { width: 6%; } /* AGE */
+.user-table th:nth-child(5), .user-table td:nth-child(5) { width: 8%; } /* GENDER */
+.user-table th:nth-child(6), .user-table td:nth-child(6) { width: 8%; } /* HEIGHT */
+.user-table th:nth-child(7), .user-table td:nth-child(7) { width: 8%; } /* WEIGHT */
+.user-table th:nth-child(8), .user-table td:nth-child(8) { width: 6%; } /* BMI */
+.user-table th:nth-child(9), .user-table td:nth-child(9) { width: 10%; } /* BARANGAY */
+.user-table th:nth-child(10), .user-table td:nth-child(10) { width: 10%; } /* MUNICIPALITY */
+.user-table th:nth-child(11), .user-table td:nth-child(11) { width: 8%; } /* RISK SCORE */
+.user-table th:nth-child(12), .user-table td:nth-child(12) { width: 10%; text-align: center; } /* RISK LEVEL */
+.user-table th:nth-child(13), .user-table td:nth-child(13) { width: 8%; } /* CREATED */
+.user-table th:nth-child(14), .user-table td:nth-child(14) { width: 9%; text-align: center; } /* ACTIONS */
 
 .user-table th {
     color: var(--color-highlight);
@@ -4456,19 +4467,19 @@ optgroup option {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Email</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Gender</th>
-                        <th>Height (cm)</th>
-                        <th>Weight (kg)</th>
+                        <th>EMAIL</th>
+                        <th>NAME</th>
+                        <th>AGE</th>
+                        <th>GENDER</th>
+                        <th>HEIGHT (CM)</th>
+                        <th>WEIGHT (KG)</th>
                         <th>BMI</th>
-                        <th>Barangay</th>
-                        <th>Municipality</th>
-                        <th>Risk Score</th>
-                        <th>Malnutrition Risk</th>
-                        <th>Created</th>
-                        <th>Actions</th>
+                        <th>BARANGAY</th>
+                        <th>MUNICIPALITY</th>
+                        <th>RISK SCORE</th>
+                        <th>RISK LEVEL</th>
+                        <th>CREATED</th>
+                        <th>ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
@@ -5065,8 +5076,8 @@ optgroup option {
             'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales',
             'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez'
         ];
-        const barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose'];
-        const municipalities = ['Balanga', 'Abucay', 'Bagac', 'Dinalupihan', 'Hermosa'];
+        const barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose', 'Munting Batangas', 'Cataning', 'Central', 'Dangcol'];
+        const municipalities = ['Balanga', 'Abucay', 'Bagac', 'Dinalupihan', 'Hermosa', 'Limay', 'Mariveles', 'Morong', 'Orani', 'Orion'];
         const riskLevels = ['Low', 'Moderate', 'High', 'Severe'];
         
         for (let i = 0; i < 15; i++) {
@@ -5086,7 +5097,7 @@ optgroup option {
                 weight_kg: weight,
                 bmi: bmi,
                 barangay: barangays[i % barangays.length],
-                municipality: municipalities[i % municipalities.length],
+                municipality: municipalities[Math.floor(Math.random() * municipalities.length)],
                 risk_score: Math.floor(Math.random() * 30) + 5,
                 malnutrition_risk: riskLevels[i % riskLevels.length],
                 created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
