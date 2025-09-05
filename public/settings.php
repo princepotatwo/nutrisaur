@@ -22,165 +22,113 @@ $db = DatabaseAPI::getInstance();
 
 // Handle AJAX requests for user management
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    // Set JSON header and prevent any HTML output
     header('Content-Type: application/json');
+    ob_clean(); // Clean any previous output
     
     $response = ['success' => false, 'message' => '', 'data' => null];
     
     try {
         switch ($_POST['action']) {
             case 'get_users':
+                // Use DatabaseAPI to get user preferences data
                 $pdo = $db->getPDO();
                 if (!$pdo) {
                     throw new Exception('Database connection not available');
                 }
                 
+                // Get user preferences data using the existing DatabaseAPI method
                 $sql = "SELECT 
-                            u.id,
+                            up.user_id,
+                            up.preferences,
+                            up.created_at,
+                            up.updated_at,
                             u.username,
                             u.email,
                             u.first_name,
                             u.last_name,
-                            u.date_of_birth,
-                            u.gender,
-                            u.weight,
-                            u.height,
                             u.barangay,
-                            u.municipality,
-                            u.income_level,
-                            u.created_at,
-                            u.last_login,
-                            u.is_verified,
-                            u.is_active,
-                            COUNT(s.id) as screening_count
-                        FROM users u
-                        LEFT JOIN screening_responses s ON u.id = s.user_id
-                        GROUP BY u.id
-                        ORDER BY u.created_at DESC";
+                            u.municipality
+                        FROM user_preferences up
+                        LEFT JOIN users u ON up.user_id = u.id
+                        ORDER BY up.updated_at DESC";
                 
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
-                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $preferences = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 $formattedUsers = [];
-                foreach ($users as $user) {
+                foreach ($preferences as $pref) {
+                    $preferencesData = json_decode($pref['preferences'], true);
                     $formattedUsers[] = [
-                        'id' => $user['id'],
-                        'username' => $user['username'],
-                        'email' => $user['email'],
-                        'name' => trim($user['first_name'] . ' ' . $user['last_name']),
-                        'date_of_birth' => $user['date_of_birth'],
-                        'gender' => $user['gender'],
-                        'weight' => $user['weight'],
-                        'height' => $user['height'],
-                        'barangay' => $user['barangay'],
-                        'municipality' => $user['municipality'],
-                        'income_level' => $user['income_level'],
-                        'created_at' => $user['created_at'],
-                        'last_login' => $user['last_login'],
-                        'is_verified' => (bool)$user['is_verified'],
-                        'is_active' => (bool)$user['is_active'],
-                        'screening_count' => (int)$user['screening_count']
+                        'id' => $pref['user_id'],
+                        'username' => $pref['username'],
+                        'email' => $pref['email'],
+                        'name' => trim($pref['first_name'] . ' ' . $pref['last_name']),
+                        'barangay' => $pref['barangay'],
+                        'municipality' => $pref['municipality'],
+                        'preferences' => $preferencesData,
+                        'created_at' => $pref['created_at'],
+                        'updated_at' => $pref['updated_at']
                     ];
                 }
                 
                 $response['success'] = true;
                 $response['data'] = $formattedUsers;
-                $response['message'] = 'Users retrieved successfully';
+                $response['message'] = 'User preferences retrieved successfully';
                 break;
                 
             case 'add_user':
-                $pdo = $db->getPDO();
-                if (!$pdo) {
-                    throw new Exception('Database connection not available');
-                }
-                
-                $requiredFields = ['username', 'email', 'password', 'first_name', 'last_name'];
+                // Use DatabaseAPI to save user preferences
+                $requiredFields = ['user_id', 'preferences'];
                 foreach ($requiredFields as $field) {
                     if (empty($_POST[$field])) {
                         throw new Exception("Field '$field' is required");
                     }
                 }
                 
-                $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                $userId = $_POST['user_id'];
+                $preferences = json_decode($_POST['preferences'], true);
                 
-                $sql = "INSERT INTO users (
-                            username, email, password, first_name, last_name,
-                            date_of_birth, gender, weight, height, barangay,
-                            municipality, income_level, is_verified, is_active
-                        ) VALUES (
-                            :username, :email, :password, :first_name, :last_name,
-                            :date_of_birth, :gender, :weight, :height, :barangay,
-                            :municipality, :income_level, :is_verified, :is_active
-                        )";
+                if (!$preferences) {
+                    throw new Exception('Invalid preferences JSON format');
+                }
                 
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute([
-                    ':username' => $_POST['username'],
-                    ':email' => $_POST['email'],
-                    ':password' => $hashedPassword,
-                    ':first_name' => $_POST['first_name'],
-                    ':last_name' => $_POST['last_name'],
-                    ':date_of_birth' => $_POST['date_of_birth'] ?? null,
-                    ':gender' => $_POST['gender'] ?? null,
-                    ':weight' => $_POST['weight'] ?? null,
-                    ':height' => $_POST['height'] ?? null,
-                    ':barangay' => $_POST['barangay'] ?? null,
-                    ':municipality' => $_POST['municipality'] ?? null,
-                    ':income_level' => $_POST['income_level'] ?? null,
-                    ':is_verified' => $_POST['is_verified'] ?? 1,
-                    ':is_active' => $_POST['is_active'] ?? 1
-                ]);
+                $result = $db->saveUserPreferences($userId, $preferences);
                 
-                $response['success'] = true;
-                $response['data'] = ['user_id' => $pdo->lastInsertId()];
-                $response['message'] = 'User created successfully';
+                if ($result['success']) {
+                    $response['success'] = true;
+                    $response['data'] = ['user_id' => $userId];
+                    $response['message'] = 'User preferences saved successfully';
+                } else {
+                    throw new Exception($result['message']);
+                }
                 break;
                 
             case 'update_user':
-                $pdo = $db->getPDO();
-                if (!$pdo) {
-                    throw new Exception('Database connection not available');
-                }
-                
-                if (empty($_POST['id'])) {
+                // Use DatabaseAPI to update user preferences
+                if (empty($_POST['user_id'])) {
                     throw new Exception('User ID is required');
                 }
                 
-                $userId = $_POST['id'];
-                $updateFields = [];
-                $params = [':id' => $userId];
-                
-                $allowedFields = [
-                    'username', 'email', 'first_name', 'last_name', 'date_of_birth',
-                    'gender', 'weight', 'height', 'barangay', 'municipality',
-                    'income_level', 'is_verified', 'is_active'
-                ];
-                
-                foreach ($allowedFields as $field) {
-                    if (isset($_POST[$field])) {
-                        $updateFields[] = "$field = :$field";
-                        $params[":$field"] = $_POST[$field];
-                    }
+                if (empty($_POST['preferences'])) {
+                    throw new Exception('Preferences data is required');
                 }
                 
-                if (!empty($_POST['password'])) {
-                    $updateFields[] = "password = :password";
-                    $params[':password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                $userId = $_POST['user_id'];
+                $preferences = json_decode($_POST['preferences'], true);
+                
+                if (!$preferences) {
+                    throw new Exception('Invalid preferences JSON format');
                 }
                 
-                if (empty($updateFields)) {
-                    throw new Exception('No fields to update');
-                }
+                $result = $db->saveUserPreferences($userId, $preferences);
                 
-                $sql = "UPDATE users SET " . implode(', ', $updateFields) . " WHERE id = :id";
-                $stmt = $pdo->prepare($sql);
-                $stmt->execute($params);
-                
-                if ($stmt->rowCount() > 0) {
+                if ($result['success']) {
                     $response['success'] = true;
-                    $response['message'] = 'User updated successfully';
+                    $response['message'] = 'User preferences updated successfully';
                 } else {
-                    $response['message'] = 'No changes made or user not found';
+                    throw new Exception($result['message']);
                 }
                 break;
                 
@@ -195,28 +143,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 }
                 
                 $userId = $_POST['user_id'];
-                $pdo->beginTransaction();
                 
-                try {
-                    $pdo->exec("DELETE FROM screening_responses WHERE user_id = $userId");
-                    $pdo->exec("DELETE FROM fcm_tokens WHERE user_id = $userId");
-                    $pdo->exec("DELETE FROM ai_recommendations WHERE user_email = (SELECT email FROM users WHERE id = $userId)");
-                    $pdo->exec("DELETE FROM user_preferences WHERE user_id = $userId");
-                    
-                    $stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
-                    $stmt->execute([':id' => $userId]);
-                    
-                    if ($stmt->rowCount() > 0) {
-                        $pdo->commit();
-                        $response['success'] = true;
-                        $response['message'] = 'User deleted successfully';
-                    } else {
-                        $pdo->rollback();
-                        $response['message'] = 'User not found';
-                    }
-                } catch (Exception $e) {
-                    $pdo->rollback();
-                    throw $e;
+                $stmt = $pdo->prepare("DELETE FROM user_preferences WHERE user_id = :user_id");
+                $result = $stmt->execute([':user_id' => $userId]);
+                
+                if ($stmt->rowCount() > 0) {
+                    $response['success'] = true;
+                    $response['message'] = 'User preferences deleted successfully';
+                } else {
+                    $response['message'] = 'User preferences not found';
                 }
                 break;
                 
@@ -237,43 +172,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $params = [];
                 
                 if (!empty($barangay)) {
-                    $whereConditions[] = "barangay = :barangay";
+                    $whereConditions[] = "u.barangay = :barangay";
                     $params[':barangay'] = $barangay;
                 }
                 
                 if (!empty($municipality)) {
-                    $whereConditions[] = "municipality = :municipality";
+                    $whereConditions[] = "u.municipality = :municipality";
                     $params[':municipality'] = $municipality;
                 }
                 
                 $whereClause = implode(' AND ', $whereConditions);
-                $sql = "SELECT id FROM users WHERE $whereClause";
+                $sql = "DELETE up FROM user_preferences up 
+                        LEFT JOIN users u ON up.user_id = u.id 
+                        WHERE $whereClause";
+                
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute($params);
-                $userIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                $deletedCount = $stmt->rowCount();
                 
-                if (empty($userIds)) {
-                    $response['message'] = 'No users found for the specified location';
-                } else {
-                    $pdo->beginTransaction();
-                    $deletedCount = 0;
-                    
-                    foreach ($userIds as $userId) {
-                        $pdo->exec("DELETE FROM screening_responses WHERE user_id = $userId");
-                        $pdo->exec("DELETE FROM fcm_tokens WHERE user_id = $userId");
-                        $pdo->exec("DELETE FROM ai_recommendations WHERE user_email = (SELECT email FROM users WHERE id = $userId)");
-                        $pdo->exec("DELETE FROM user_preferences WHERE user_id = $userId");
-                        
-                        $stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
-                        $stmt->execute([':id' => $userId]);
-                        $deletedCount += $stmt->rowCount();
-                    }
-                    
-                    $pdo->commit();
-                    $response['success'] = true;
-                    $response['data'] = ['deleted_count' => $deletedCount];
-                    $response['message'] = "Deleted $deletedCount users from the specified location";
-                }
+                $response['success'] = true;
+                $response['data'] = ['deleted_count' => $deletedCount];
+                $response['message'] = "Deleted $deletedCount user preferences from the specified location";
                 break;
                 
             case 'delete_all_users':
@@ -284,29 +203,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 
                 $confirm = $_POST['confirm'] ?? false;
                 if (!$confirm) {
-                    throw new Exception('Confirmation required for deleting all users');
+                    throw new Exception('Confirmation required for deleting all user preferences');
                 }
                 
-                $pdo->beginTransaction();
+                $stmt = $pdo->prepare("DELETE FROM user_preferences");
+                $stmt->execute();
+                $deletedCount = $stmt->rowCount();
                 
-                try {
-                    $pdo->exec("DELETE FROM screening_responses");
-                    $pdo->exec("DELETE FROM fcm_tokens");
-                    $pdo->exec("DELETE FROM ai_recommendations");
-                    $pdo->exec("DELETE FROM user_preferences");
-                    
-                    $stmt = $pdo->prepare("DELETE FROM users");
-                    $stmt->execute();
-                    $deletedCount = $stmt->rowCount();
-                    
-                    $pdo->commit();
-                    $response['success'] = true;
-                    $response['data'] = ['deleted_count' => $deletedCount];
-                    $response['message'] = "Deleted all $deletedCount users";
-                } catch (Exception $e) {
-                    $pdo->rollback();
-                    throw $e;
-                }
+                $response['success'] = true;
+                $response['data'] = ['deleted_count' => $deletedCount];
+                $response['message'] = "Deleted all $deletedCount user preferences";
                 break;
                 
             default:
