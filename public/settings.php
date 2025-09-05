@@ -21,15 +21,32 @@ require_once __DIR__ . '/api/DatabaseAPI.php';
 $db = DatabaseAPI::getInstance();
 
 // Handle AJAX requests for user management
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+$isAjax = ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) || 
+          (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
+
+if ($isAjax) {
     // Set JSON header and prevent any HTML output
     header('Content-Type: application/json');
     ob_clean(); // Clean any previous output
+    
+    // Log the AJAX request for debugging
+    error_log('Settings AJAX Request: ' . json_encode([
+        'method' => $_SERVER['REQUEST_METHOD'],
+        'action' => $_POST['action'] ?? 'none',
+        'headers' => getallheaders(),
+        'post_data' => $_POST
+    ]));
     
     $response = ['success' => false, 'message' => '', 'data' => null];
     
     try {
         switch ($_POST['action']) {
+            case 'test':
+                $response['success'] = true;
+                $response['message'] = 'AJAX is working correctly';
+                $response['data'] = ['timestamp' => date('Y-m-d H:i:s')];
+                break;
+                
             case 'get_users':
                 // Use DatabaseAPI to get user preferences data
                 $pdo = $db->getPDO();
@@ -37,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     throw new Exception('Database connection not available');
                 }
                 
-                // Get user preferences data using the existing DatabaseAPI method
+                // Simple query to get all user preferences with user details
                 $sql = "SELECT 
                             up.user_id,
                             up.preferences,
