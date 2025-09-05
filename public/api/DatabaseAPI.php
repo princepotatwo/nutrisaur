@@ -1898,11 +1898,263 @@ class DatabaseAPI {
     }
     
     // ========================================
+    // UNIVERSAL DATABASE OPERATIONS
+    // ========================================
+    
+    /**
+     * Universal SELECT operation
+     */
+    public function universalSelect($table, $columns = '*', $where = '', $orderBy = '', $limit = '', $params = []) {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
+            // Build SQL query
+            $sql = "SELECT $columns FROM $table";
+            
+            if (!empty($where)) {
+                $sql .= " WHERE $where";
+            }
+            
+            if (!empty($orderBy)) {
+                $sql .= " ORDER BY $orderBy";
+            }
+            
+            if (!empty($limit)) {
+                $sql .= " LIMIT $limit";
+            }
+            
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return [
+                'success' => true,
+                'data' => $results,
+                'count' => count($results),
+                'sql' => $sql
+            ];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Universal INSERT operation
+     */
+    public function universalInsert($table, $data) {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
+            if (empty($data) || !is_array($data)) {
+                return ['success' => false, 'message' => 'Data must be a non-empty array'];
+            }
+            
+            $columns = array_keys($data);
+            $placeholders = ':' . implode(', :', $columns);
+            $columnsList = implode(', ', $columns);
+            
+            $sql = "INSERT INTO $table ($columnsList) VALUES ($placeholders)";
+            
+            $stmt = $this->pdo->prepare($sql);
+            
+            // Bind parameters
+            $params = [];
+            foreach ($data as $key => $value) {
+                $params[':' . $key] = $value;
+            }
+            
+            $result = $stmt->execute($params);
+            
+            if ($result) {
+                return [
+                    'success' => true,
+                    'message' => 'Record inserted successfully',
+                    'insert_id' => $this->pdo->lastInsertId(),
+                    'sql' => $sql
+                ];
+            } else {
+                return ['success' => false, 'message' => 'Failed to insert record'];
+            }
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Universal UPDATE operation
+     */
+    public function universalUpdate($table, $data, $where, $whereParams = []) {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
+            if (empty($data) || !is_array($data)) {
+                return ['success' => false, 'message' => 'Data must be a non-empty array'];
+            }
+            
+            if (empty($where)) {
+                return ['success' => false, 'message' => 'WHERE condition is required for UPDATE'];
+            }
+            
+            $setParts = [];
+            $params = [];
+            
+            foreach ($data as $key => $value) {
+                $setParts[] = "$key = :set_$key";
+                $params[':set_' . $key] = $value;
+            }
+            
+            // Merge WHERE parameters
+            $params = array_merge($params, $whereParams);
+            
+            $setClause = implode(', ', $setParts);
+            $sql = "UPDATE $table SET $setClause WHERE $where";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            
+            if ($result) {
+                return [
+                    'success' => true,
+                    'message' => 'Record updated successfully',
+                    'affected_rows' => $stmt->rowCount(),
+                    'sql' => $sql
+                ];
+            } else {
+                return ['success' => false, 'message' => 'Failed to update record'];
+            }
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Universal DELETE operation
+     */
+    public function universalDelete($table, $where, $params = []) {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
+            if (empty($where)) {
+                return ['success' => false, 'message' => 'WHERE condition is required for DELETE'];
+            }
+            
+            $sql = "DELETE FROM $table WHERE $where";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            
+            if ($result) {
+                return [
+                    'success' => true,
+                    'message' => 'Record deleted successfully',
+                    'affected_rows' => $stmt->rowCount(),
+                    'sql' => $sql
+                ];
+            } else {
+                return ['success' => false, 'message' => 'Failed to delete record'];
+            }
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Universal custom query operation
+     */
+    public function universalQuery($sql, $params = []) {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
+            $stmt = $this->pdo->prepare($sql);
+            $result = $stmt->execute($params);
+            
+            // Check if it's a SELECT query
+            if (stripos(trim($sql), 'SELECT') === 0) {
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return [
+                    'success' => true,
+                    'data' => $data,
+                    'count' => count($data),
+                    'sql' => $sql
+                ];
+            } else {
+                // For INSERT, UPDATE, DELETE
+                return [
+                    'success' => true,
+                    'message' => 'Query executed successfully',
+                    'affected_rows' => $stmt->rowCount(),
+                    'insert_id' => $this->pdo->lastInsertId(),
+                    'sql' => $sql
+                ];
+            }
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Describe table structure
+     */
+    public function describeTable($table) {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
+            $stmt = $this->pdo->prepare("DESCRIBE $table");
+            $stmt->execute();
+            $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            return [
+                'success' => true,
+                'table' => $table,
+                'columns' => $columns,
+                'count' => count($columns)
+            ];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * List all tables in database
+     */
+    public function listTables() {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return ['success' => false, 'message' => 'Database connection not available'];
+            }
+            
+            $stmt = $this->pdo->prepare("SHOW TABLES");
+            $stmt->execute();
+            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            
+            return [
+                'success' => true,
+                'tables' => $tables,
+                'count' => count($tables)
+            ];
+        } catch (PDOException $e) {
+            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+        }
+    }
+    
+    // ========================================
     // UTILITY METHODS
     // ========================================
     
     /**
-     * Execute custom query
+     * Execute custom query (legacy method)
      */
     public function executeQuery($sql, $params = []) {
         try {
@@ -2872,34 +3124,169 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // UNIVERSAL DATABASE OPERATIONS
+        // ========================================
+        case 'select':
+            // Universal SELECT operation
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+                
+                $table = $input['table'] ?? '';
+                $columns = $input['columns'] ?? '*';
+                $where = $input['where'] ?? '';
+                $orderBy = $input['order_by'] ?? '';
+                $limit = $input['limit'] ?? '';
+                $params = $input['params'] ?? [];
+                
+                if (empty($table)) {
+                    echo json_encode(['success' => false, 'message' => 'Table name is required']);
+                    break;
+                }
+                
+                $result = $db->universalSelect($table, $columns, $where, $orderBy, $limit, $params);
+                echo json_encode($result);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'POST method required']);
+            }
+            break;
+            
+        case 'insert':
+            // Universal INSERT operation
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+                
+                $table = $input['table'] ?? '';
+                $data = $input['data'] ?? [];
+                
+                if (empty($table) || empty($data)) {
+                    echo json_encode(['success' => false, 'message' => 'Table and data are required']);
+                    break;
+                }
+                
+                $result = $db->universalInsert($table, $data);
+                echo json_encode($result);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'POST method required']);
+            }
+            break;
+            
+        case 'update':
+            // Universal UPDATE operation
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+                
+                $table = $input['table'] ?? '';
+                $data = $input['data'] ?? [];
+                $where = $input['where'] ?? '';
+                $params = $input['params'] ?? [];
+                
+                if (empty($table) || empty($data) || empty($where)) {
+                    echo json_encode(['success' => false, 'message' => 'Table, data, and where conditions are required']);
+                    break;
+                }
+                
+                $result = $db->universalUpdate($table, $data, $where, $params);
+                echo json_encode($result);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'POST method required']);
+            }
+            break;
+            
+        case 'delete':
+            // Universal DELETE operation
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+                
+                $table = $input['table'] ?? '';
+                $where = $input['where'] ?? '';
+                $params = $input['params'] ?? [];
+                
+                if (empty($table) || empty($where)) {
+                    echo json_encode(['success' => false, 'message' => 'Table and where conditions are required']);
+                    break;
+                }
+                
+                $result = $db->universalDelete($table, $where, $params);
+                echo json_encode($result);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'POST method required']);
+            }
+            break;
+            
+        case 'query':
+            // Universal custom query operation
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+                
+                $sql = $input['sql'] ?? '';
+                $params = $input['params'] ?? [];
+                
+                if (empty($sql)) {
+                    echo json_encode(['success' => false, 'message' => 'SQL query is required']);
+                    break;
+                }
+                
+                $result = $db->universalQuery($sql, $params);
+                echo json_encode($result);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'POST method required']);
+            }
+            break;
+            
+        case 'describe':
+            // Get table structure
+            if ($_SERVER['REQUEST_METHOD'] === 'GET' || $_SERVER['REQUEST_METHOD'] === 'POST') {
+                $table = $_GET['table'] ?? $_POST['table'] ?? '';
+                
+                if (empty($table)) {
+                    echo json_encode(['success' => false, 'message' => 'Table name is required']);
+                    break;
+                }
+                
+                $result = $db->describeTable($table);
+                echo json_encode($result);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'GET or POST method required']);
+            }
+            break;
+            
+        case 'tables':
+            // List all tables
+            $result = $db->listTables();
+            echo json_encode($result);
+            break;
+            
+        // ========================================
         // DEFAULT: SHOW USAGE
         // ========================================
         default:
             echo json_encode([
                 'success' => true,
-                'message' => 'Nutrisaur Database API',
-                'usage' => [
-                            'login' => 'POST /DatabaseAPI.php?action=login',
-        'register' => 'POST /DatabaseAPI.php?action=register',
-        'register_fcm' => 'POST /DatabaseAPI.php?action=register_fcm',
-        'save_recommendation' => 'POST /DatabaseAPI.php?action=save_recommendation',
-        'get_recommendations' => 'GET /DatabaseAPI.php?action=get_recommendations&user_email=...',
-        'save_preferences' => 'POST /DatabaseAPI.php?action=save_preferences',
-        'get_preferences' => 'GET /DatabaseAPI.php?action=get_preferences&user_id=...',
-        'community_metrics' => 'GET /DatabaseAPI.php?action=community_metrics',
-        'geographic_distribution' => 'GET /DatabaseAPI.php?action=geographic_distribution',
-        'risk_distribution' => 'GET /DatabaseAPI.php?action=risk_distribution',
-        'detailed_screening_responses' => 'GET /DatabaseAPI.php?action=detailed_screening_responses',
-        'critical_alerts' => 'GET /DatabaseAPI.php?action=critical_alerts',
-        'analysis_data' => 'GET /DatabaseAPI.php?action=analysis_data',
-        'ai_food_recommendations' => 'GET /DatabaseAPI.php?action=get_recommendations&user_email=...',
-        'intelligent_programs' => 'GET /DatabaseAPI.php?action=intelligent_programs',
-        'send_notification' => 'POST /DatabaseAPI.php?action=send_notification',
-        'notification_stats' => 'GET /DatabaseAPI.php?action=notification_stats',
-        'recent_notifications' => 'GET /DatabaseAPI.php?action=recent_notifications&limit=50',
-        'test' => 'GET /DatabaseAPI.php?action=test'
+                'message' => 'Nutrisaur Universal Database API',
+                'universal_operations' => [
+                    'select' => 'POST /DatabaseAPI.php?action=select (table, columns, where, order_by, limit, params)',
+                    'insert' => 'POST /DatabaseAPI.php?action=insert (table, data)',
+                    'update' => 'POST /DatabaseAPI.php?action=update (table, data, where, params)',
+                    'delete' => 'POST /DatabaseAPI.php?action=delete (table, where, params)',
+                    'query' => 'POST /DatabaseAPI.php?action=query (sql, params)',
+                    'describe' => 'GET /DatabaseAPI.php?action=describe&table=table_name',
+                    'tables' => 'GET /DatabaseAPI.php?action=tables'
                 ],
-                'note' => 'This file contains both the DatabaseAPI class and API endpoints. Use ?action=... to access specific endpoints.'
+                'legacy_operations' => [
+                    'login' => 'POST /DatabaseAPI.php?action=login',
+                    'register' => 'POST /DatabaseAPI.php?action=register',
+                    'register_fcm' => 'POST /DatabaseAPI.php?action=register_fcm',
+                    'save_recommendation' => 'POST /DatabaseAPI.php?action=save_recommendation',
+                    'get_recommendations' => 'GET /DatabaseAPI.php?action=get_recommendations&user_email=...',
+                    'save_preferences' => 'POST /DatabaseAPI.php?action=save_preferences',
+                    'get_preferences' => 'GET /DatabaseAPI.php?action=get_preferences&user_id=...',
+                    'community_metrics' => 'GET /DatabaseAPI.php?action=community_metrics',
+                    'geographic_distribution' => 'GET /DatabaseAPI.php?action=geographic_distribution',
+                    'risk_distribution' => 'GET /DatabaseAPI.php?action=risk_distribution',
+                    'get_user_preferences' => 'GET /DatabaseAPI.php?action=get_user_preferences',
+                    'test' => 'GET /DatabaseAPI.php?action=test'
+                ],
+                'note' => 'Universal Database API - handles ALL database operations centrally. No more hardcoded connections!'
             ], JSON_PRETTY_PRINT);
             break;
     }

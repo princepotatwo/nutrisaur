@@ -2,44 +2,16 @@
 // Start the session
 session_start();
 
-// Database connection - same as screening.php
-$mysql_host = 'mainline.proxy.rlwy.net';
-$mysql_port = 26063;
-$mysql_user = 'root';
-$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-$mysql_database = 'railway';
+// Use Universal DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
+require_once __DIR__ . '/api/DatabaseHelper.php';
 
-if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
-    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
-    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
-    if (preg_match($pattern, $mysql_url, $matches)) {
-        $mysql_user = $matches[1];
-        $mysql_password = $matches[2];
-        $mysql_host = $matches[3];
-        $mysql_port = $matches[4];
-        $mysql_database = $matches[5];
-    }
-}
+// Get database helper instance
+$db = DatabaseHelper::getInstance();
 
-try {
-    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-    
-    $pdoOptions = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_TIMEOUT => 30,
-        PDO::ATTR_PERSISTENT => false,
-        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
-        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-    ];
-    
-    $conn = new PDO($dsn, $mysql_user, $mysql_password, $pdoOptions);
-    $conn->query("SELECT 1");
-    
-} catch (PDOException $e) {
-    error_log("Database connection failed: " . $e->getMessage());
-    $conn = null;
-    $dbError = "Database connection failed: " . $e->getMessage();
+// Check if database is available
+if (!$db->isAvailable()) {
+    $dbError = "Database connection not available";
+    error_log($dbError);
 }
 
 // Get user info
@@ -126,31 +98,20 @@ if ($isAjax) {
                 break;
                 
             case 'get_users':
-                // Use direct database connection to get user preferences data
-                if (!$conn) {
-                    throw new Exception('Database connection not available');
+                // Use Universal DatabaseAPI to get user preferences data
+                $result = $db->select(
+                    'user_preferences',
+                    'id, user_email, age, gender, barangay, municipality, province, weight_kg, height_cm, bmi, risk_score, malnutrition_risk, screening_date, created_at, updated_at, name, birthday, income, muac, screening_answers, allergies, diet_prefs, avoid_foods, swelling, weight_loss, feeding_behavior, physical_signs, dietary_diversity, clinical_risk_factors, whz_score, income_level',
+                    '',
+                    [],
+                    'updated_at DESC'
+                );
+                
+                if (!$result['success']) {
+                    throw new Exception($result['message']);
                 }
                 
-                // Simple query to get all user preferences with user details
-                                            // First, let's check what columns actually exist in the table
-                            $checkColumns = $conn->prepare("DESCRIBE user_preferences");
-                            $checkColumns->execute();
-                            $columns = $checkColumns->fetchAll(PDO::FETCH_COLUMN);
-                            
-                            // Use only the columns that actually exist in the database
-                            $sql = "SELECT 
-                                        id, user_email, age, gender, barangay, municipality, province,
-                                        weight_kg, height_cm, bmi, risk_score, malnutrition_risk, 
-                                        screening_date, created_at, updated_at, name, birthday, income,
-                                        muac, screening_answers, allergies, diet_prefs, avoid_foods,
-                                        swelling, weight_loss, feeding_behavior, physical_signs,
-                                        dietary_diversity, clinical_risk_factors, whz_score, income_level
-                                    FROM user_preferences 
-                                    ORDER BY updated_at DESC";
-                
-                $stmt = $conn->prepare($sql);
-                $stmt->execute();
-                $preferences = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $preferences = $result['data'];
                 
                 $formattedUsers = [];
                 foreach ($preferences as $pref) {
@@ -184,16 +145,12 @@ if ($isAjax) {
                 break;
                 
             case 'add_user':
-                // Add new user to user_preferences table using direct connection
+                // Add new user to user_preferences table using Universal DatabaseAPI
                 $requiredFields = ['user_email', 'username', 'name'];
                 foreach ($requiredFields as $field) {
                     if (empty($_POST[$field])) {
                         throw new Exception("Field '$field' is required");
                     }
-                }
-                
-                if (!$conn) {
-                    throw new Exception('Database connection not available');
                 }
                 
                 $userEmail = $_POST['user_email'];
@@ -208,76 +165,82 @@ if ($isAjax) {
                 $riskScore = $_POST['risk_score'] ?? 0;
                 
                 // Check if user already exists
-                $stmt = $conn->prepare("SELECT id FROM user_preferences WHERE user_email = ?");
-                $stmt->execute([$userEmail]);
+                $existsResult = $db->exists('user_preferences', 'user_email = ?', [$userEmail]);
                 
-                if ($stmt->rowCount() > 0) {
+                $userData = [
+                    'username' => $username,
+                    'name' => $name,
+                    'barangay' => $barangay,
+                    'income' => $income,
+                    'age' => $age,
+                    'gender' => $gender,
+                    'height' => $height,
+                    'weight' => $weight,
+                    'risk_score' => $riskScore,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+                
+                if ($existsResult) {
                     // Update existing user
-                    $stmt = $conn->prepare("UPDATE user_preferences SET 
-                        username = ?, name = ?, barangay = ?, income = ?, age = ?, 
-                        gender = ?, height = ?, weight = ?, risk_score = ?, updated_at = NOW()
-                        WHERE user_email = ?");
-                    $stmt->execute([$username, $name, $barangay, $income, $age, $gender, $height, $weight, $riskScore, $userEmail]);
+                    $result = $db->update('user_preferences', $userData, 'user_email = ?', [$userEmail]);
                 } else {
                     // Insert new user
-                    $stmt = $conn->prepare("INSERT INTO user_preferences 
-                        (user_email, username, name, barangay, income, age, gender, height, weight, risk_score, created_at, updated_at) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
-                    $stmt->execute([$userEmail, $username, $name, $barangay, $income, $age, $gender, $height, $weight, $riskScore]);
+                    $userData['user_email'] = $userEmail;
+                    $userData['created_at'] = date('Y-m-d H:i:s');
+                    $result = $db->insert('user_preferences', $userData);
                 }
                 
-                $response['success'] = true;
-                $response['data'] = ['user_email' => $userEmail];
-                $response['message'] = 'User added successfully';
+                if ($result['success']) {
+                    $response['success'] = true;
+                    $response['data'] = ['user_email' => $userEmail];
+                    $response['message'] = 'User added successfully';
+                } else {
+                    throw new Exception($result['message']);
+                }
                 break;
                 
             case 'update_user':
-                // Update user in user_preferences table using direct connection
+                // Update user in user_preferences table using Universal DatabaseAPI
                 if (empty($_POST['user_email'])) {
                     throw new Exception('User email is required');
                 }
                 
-                if (!$conn) {
-                    throw new Exception('Database connection not available');
-                }
-                
                 $userEmail = $_POST['user_email'];
-                $username = $_POST['username'] ?? '';
-                $name = $_POST['name'] ?? '';
-                $barangay = $_POST['barangay'] ?? '';
-                $income = $_POST['income'] ?? '';
-                $age = $_POST['age'] ?? null;
-                $gender = $_POST['gender'] ?? '';
-                $height = $_POST['height'] ?? null;
-                $weight = $_POST['weight'] ?? null;
-                $riskScore = $_POST['risk_score'] ?? 0;
+                $userData = [
+                    'username' => $_POST['username'] ?? '',
+                    'name' => $_POST['name'] ?? '',
+                    'barangay' => $_POST['barangay'] ?? '',
+                    'income' => $_POST['income'] ?? '',
+                    'age' => $_POST['age'] ?? null,
+                    'gender' => $_POST['gender'] ?? '',
+                    'height' => $_POST['height'] ?? null,
+                    'weight' => $_POST['weight'] ?? null,
+                    'risk_score' => $_POST['risk_score'] ?? 0,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
                 
                 // Update user preferences
-                $stmt = $conn->prepare("UPDATE user_preferences SET 
-                    username = ?, name = ?, barangay = ?, income = ?, age = ?, 
-                    gender = ?, height = ?, weight = ?, risk_score = ?, updated_at = NOW()
-                    WHERE user_email = ?");
-                $stmt->execute([$username, $name, $barangay, $income, $age, $gender, $height, $weight, $riskScore, $userEmail]);
+                $result = $db->update('user_preferences', $userData, 'user_email = ?', [$userEmail]);
                 
-                $response['success'] = true;
-                $response['message'] = 'User updated successfully';
+                if ($result['success']) {
+                    $response['success'] = true;
+                    $response['message'] = 'User updated successfully';
+                } else {
+                    throw new Exception($result['message']);
+                }
                 break;
                 
             case 'delete_user':
-                if (!$conn) {
-                    throw new Exception('Database connection not available');
-                }
-                
                 if (empty($_POST['user_id'])) {
                     throw new Exception('User ID is required');
                 }
                 
                 $userId = $_POST['user_id'];
                 
-                $stmt = $conn->prepare("DELETE FROM user_preferences WHERE id = ?");
-                $result = $stmt->execute([$userId]);
+                // Delete user using Universal DatabaseAPI
+                $result = $db->delete('user_preferences', 'id = ?', [$userId]);
                 
-                if ($stmt->rowCount() > 0) {
+                if ($result['success'] && $result['affected_rows'] > 0) {
                     $response['success'] = true;
                     $response['message'] = 'User preferences deleted successfully';
                 } else {
@@ -286,10 +249,6 @@ if ($isAjax) {
                 break;
                 
             case 'delete_users_by_location':
-                if (!$conn) {
-                    throw new Exception('Database connection not available');
-                }
-                
                 $barangay = $_POST['barangay'] ?? null;
                 $municipality = $_POST['municipality'] ?? null;
                 
@@ -301,46 +260,45 @@ if ($isAjax) {
                 $params = [];
                 
                 if (!empty($barangay)) {
-                    $whereConditions[] = "up.barangay = :barangay";
-                    $params[':barangay'] = $barangay;
+                    $whereConditions[] = "barangay = ?";
+                    $params[] = $barangay;
                 }
                 
                 if (!empty($municipality)) {
-                    // Municipality filtering not available as column doesn't exist in user_preferences
-                    // Could be implemented by adding municipality column or using barangay mapping
-                    $whereConditions[] = "1=0"; // Disable municipality filtering for now
+                    $whereConditions[] = "municipality = ?";
+                    $params[] = $municipality;
                 }
                 
                 $whereClause = implode(' AND ', $whereConditions);
-                $sql = "DELETE FROM user_preferences 
-                        WHERE $whereClause";
                 
-                $stmt = $conn->prepare($sql);
-                $stmt->execute($params);
-                $deletedCount = $stmt->rowCount();
+                // Delete users by location using Universal DatabaseAPI
+                $result = $db->delete('user_preferences', $whereClause, $params);
                 
-                $response['success'] = true;
-                $response['data'] = ['deleted_count' => $deletedCount];
-                $response['message'] = "Deleted $deletedCount user preferences from the specified location";
+                if ($result['success']) {
+                    $response['success'] = true;
+                    $response['data'] = ['deleted_count' => $result['affected_rows']];
+                    $response['message'] = "Deleted {$result['affected_rows']} user preferences from the specified location";
+                } else {
+                    throw new Exception($result['message']);
+                }
                 break;
                 
             case 'delete_all_users':
-                if (!$conn) {
-                    throw new Exception('Database connection not available');
-                }
-                
                 $confirm = $_POST['confirm'] ?? false;
                 if (!$confirm) {
                     throw new Exception('Confirmation required for deleting all user preferences');
                 }
                 
-                $stmt = $conn->prepare("DELETE FROM user_preferences");
-                $stmt->execute();
-                $deletedCount = $stmt->rowCount();
+                // Delete all users using Universal DatabaseAPI
+                $result = $db->query("DELETE FROM user_preferences", []);
                 
-                $response['success'] = true;
-                $response['data'] = ['deleted_count' => $deletedCount];
-                $response['message'] = "Deleted all $deletedCount user preferences";
+                if ($result['success']) {
+                    $response['success'] = true;
+                    $response['data'] = ['deleted_count' => $result['affected_rows']];
+                    $response['message'] = "Deleted all {$result['affected_rows']} user preferences";
+                } else {
+                    throw new Exception($result['message']);
+                }
                 break;
                 
             default:
@@ -4516,23 +4474,18 @@ optgroup option {
                 <tbody id="usersTableBody">
                     <?php
                     // Get user preferences data directly from database
-                    if ($conn) {
+                    if ($db->isAvailable()) {
                         try {
-                            $sql = "SELECT 
-                                        id,
-                                        user_email,
-                                        username,
-                                        name,
-                                        barangay,
-                                        risk_score,
-                                        created_at,
-                                        updated_at
-                                    FROM user_preferences
-                                    ORDER BY updated_at DESC";
+                            // Use Universal DatabaseAPI to get users for HTML display
+                            $result = $db->select(
+                                'user_preferences',
+                                'id, user_email, username, name, barangay, risk_score, created_at, updated_at, age, gender, height_cm, weight_kg, bmi, municipality, malnutrition_risk',
+                                '',
+                                [],
+                                'updated_at DESC'
+                            );
                             
-                            $stmt = $conn->prepare($sql);
-                            $stmt->execute();
-                            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            $users = $result['success'] ? $result['data'] : [];
                             
                             if (!empty($users)) {
                                 foreach ($users as $user) {
