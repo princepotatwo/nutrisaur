@@ -4381,12 +4381,12 @@ optgroup option {
                             <span class="btn-icon">📁</span>
                             <span class="btn-text">Import CSV</span>
                         </button>
-                        <button class="btn btn-danger" onclick="deleteUsersByLocation()">
+                        <button class="btn btn-danger" onclick="showDeleteByLocationModal()">
                             <span class="btn-icon">🗑️</span>
                             <span class="btn-text">Delete by Location</span>
                         </button>
-                        <button class="btn btn-danger" onclick="deleteAllUsers()">
-                            <span class="btn-icon">🗑️</span>
+                        <button class="btn btn-danger" onclick="showDeleteAllModal()">
+                            <span class="btn-icon">⚠️</span>
                             <span class="btn-text">Delete All Users</span>
                         </button>
 
@@ -4411,13 +4411,66 @@ optgroup option {
                         <th>User ID</th>
                         <th>Username</th>
                         <th>Email</th>
-                        <th>Risk Level</th>
+                        <th>Name</th>
                         <th>Location</th>
+                        <th>Risk Level</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                        <tbody id="usersTableBody">
-                    <!-- Table data will be loaded via AJAX -->
+                <tbody id="usersTableBody">
+                    <?php
+                    // Get user preferences data directly from database
+                    $pdo = $db->getPDO();
+                    if ($pdo) {
+                        try {
+                            $sql = "SELECT 
+                                        up.user_id,
+                                        up.preferences,
+                                        up.created_at,
+                                        up.updated_at,
+                                        u.username,
+                                        u.email,
+                                        u.first_name,
+                                        u.last_name,
+                                        u.barangay,
+                                        u.municipality
+                                    FROM user_preferences up
+                                    LEFT JOIN users u ON up.user_id = u.id
+                                    ORDER BY up.updated_at DESC";
+                            
+                            $stmt = $pdo->prepare($sql);
+                            $stmt->execute();
+                            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            
+                            if (!empty($users)) {
+                                foreach ($users as $user) {
+                                    $preferences = json_decode($user['preferences'], true);
+                                    $riskLevel = $preferences['risk_level'] ?? 'Unknown';
+                                    $riskClass = strtolower(str_replace(' ', '-', $riskLevel));
+                                    
+                                    echo '<tr>';
+                                    echo '<td>' . htmlspecialchars($user['user_id']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['username'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars(trim($user['first_name'] . ' ' . $user['last_name'])) . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['barangay'] . ', ' . $user['municipality']) . '</td>';
+                                    echo '<td><span class="risk-badge ' . $riskClass . '">' . htmlspecialchars($riskLevel) . '</span></td>';
+                                    echo '<td>';
+                                    echo '<button class="btn-edit" onclick="editUser(' . $user['user_id'] . ')">Edit</button>';
+                                    echo '<button class="btn-delete" onclick="deleteUser(' . $user['user_id'] . ')">Delete</button>';
+                                    echo '</td>';
+                                    echo '</tr>';
+                                }
+                            } else {
+                                echo '<tr><td colspan="7" class="no-data-message">No users found in the database.</td></tr>';
+                            }
+                        } catch (Exception $e) {
+                            echo '<tr><td colspan="7" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+                        }
+                    } else {
+                        echo '<tr><td colspan="7" class="no-data-message">Database connection failed.</td></tr>';
+                    }
+                    ?>
                 </tbody>
             </table>
             
@@ -8838,6 +8891,143 @@ jane_smith@example.com,Jane Smith,1985-05-15,female,60,165,Pilar,PHP 12,031–20
             }
         }
         
+        // New delete functions with confirmation modals
+        function showDeleteByLocationModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: var(--color-card); padding: 30px; border-radius: 15px; max-width: 500px; width: 90%;">
+                    <h3 style="color: var(--color-danger); margin-bottom: 20px;">Delete Users by Location</h3>
+                    <p style="color: var(--color-text); margin-bottom: 20px;">Select a location to delete all users from that area:</p>
+                    
+                    <select id="deleteLocationSelect" style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-card); color: var(--color-text);">
+                        <option value="">Select Location...</option>
+                        <optgroup label="Municipalities">
+                            <option value="ABUCAY">ABUCAY</option>
+                            <option value="BAGAC">BAGAC</option>
+                            <option value="CITY OF BALANGA (Capital)">CITY OF BALANGA (Capital)</option>
+                            <option value="DINALUPIHAN">DINALUPIHAN</option>
+                            <option value="HERMOSA">HERMOSA</option>
+                            <option value="LIMAY">LIMAY</option>
+                            <option value="MARIVELES">MARIVELES</option>
+                            <option value="MORONG">MORONG</option>
+                            <option value="ORANI">ORANI</option>
+                            <option value="ORION">ORION</option>
+                            <option value="PILAR">PILAR</option>
+                            <option value="SAMAL">SAMAL</option>
+                        </optgroup>
+                    </select>
+                    
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button onclick="this.closest('.modal').remove()" style="padding: 10px 20px; background: var(--color-accent3); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+                        <button onclick="confirmDeleteByLocation()" style="padding: 10px 20px; background: var(--color-danger); color: white; border: none; border-radius: 8px; cursor: pointer;">Delete Users</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function showDeleteAllModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: var(--color-card); padding: 30px; border-radius: 15px; max-width: 500px; width: 90%;">
+                    <h3 style="color: var(--color-danger); margin-bottom: 20px;">⚠️ Delete ALL Users</h3>
+                    <p style="color: var(--color-text); margin-bottom: 20px;">This will permanently delete ALL users from the database. This action cannot be undone!</p>
+                    
+                    <div style="background: rgba(207, 134, 134, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--color-danger);">
+                        <p style="color: var(--color-danger); margin: 0; font-weight: bold;">⚠️ WARNING: This will delete ALL user data!</p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button onclick="this.closest('.modal').remove()" style="padding: 10px 20px; background: var(--color-accent3); color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
+                        <button onclick="confirmDeleteAll()" style="padding: 10px 20px; background: var(--color-danger); color: white; border: none; border-radius: 8px; cursor: pointer;">Delete ALL Users</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function confirmDeleteByLocation() {
+            const location = document.getElementById('deleteLocationSelect').value;
+            if (!location) {
+                alert('Please select a location first.');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete ALL users from ${location}? This action cannot be undone!`)) {
+                deleteUsersByLocationFromDatabase(location).then(() => {
+                    alert('Users deleted successfully!');
+                    location.reload(); // Reload the page to show updated data
+                }).catch(error => {
+                    alert('Error deleting users: ' + error);
+                });
+            }
+            
+            // Close modal
+            document.querySelector('.modal').remove();
+        }
+
+        function confirmDeleteAll() {
+            if (confirm('Are you ABSOLUTELY SURE you want to delete ALL users? This will permanently remove all user data and cannot be undone!')) {
+                if (confirm('This is your LAST WARNING! Click OK to permanently delete ALL users from the database!')) {
+                    deleteAllUsersFromDatabase().then(() => {
+                        alert('All users deleted successfully!');
+                        location.reload(); // Reload the page to show updated data
+                    }).catch(error => {
+                        alert('Error deleting users: ' + error);
+                    });
+                }
+            }
+            
+            // Close modal
+            document.querySelector('.modal').remove();
+        }
+
+        function editUser(userId) {
+            // Simple edit function - you can expand this
+            alert('Edit user ' + userId + ' - This feature can be expanded');
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user? This action cannot be undone!')) {
+                // Call the existing delete function
+                deleteUserFromDatabase(userId).then(() => {
+                    alert('User deleted successfully!');
+                    location.reload(); // Reload the page to show updated data
+                }).catch(error => {
+                    alert('Error deleting user: ' + error);
+                });
+            }
+        }
 
     </script>
 </body>
