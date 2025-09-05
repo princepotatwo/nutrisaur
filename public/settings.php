@@ -5056,6 +5056,46 @@ optgroup option {
     // User data model and controller
     var users = [];
 
+    // Generate sample users for demonstration
+    function generateSampleUsers() {
+        const sampleUsers = [];
+        const names = [
+            'Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 
+            'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales',
+            'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez'
+        ];
+        const barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose'];
+        const municipalities = ['Balanga', 'Abucay', 'Bagac', 'Dinalupihan', 'Hermosa'];
+        const riskLevels = ['Low', 'Moderate', 'High', 'Severe'];
+        
+        for (let i = 0; i < 15; i++) {
+            const age = Math.floor(Math.random() * 50) + 18;
+            const height = Math.floor(Math.random() * 30) + 150;
+            const weight = Math.floor(Math.random() * 30) + 50;
+            const bmi = (weight / Math.pow(height/100, 2)).toFixed(1);
+            
+            sampleUsers.push({
+                id: i + 1,
+                username: `user${i + 1}`,
+                email: `user${i + 1}@example.com`,
+                name: names[i % names.length],
+                age: age,
+                gender: Math.random() > 0.5 ? 'Male' : 'Female',
+                height_cm: height,
+                weight_kg: weight,
+                bmi: bmi,
+                barangay: barangays[i % barangays.length],
+                municipality: municipalities[i % municipalities.length],
+                risk_score: Math.floor(Math.random() * 30) + 5,
+                malnutrition_risk: riskLevels[i % riskLevels.length],
+                created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                updated_at: new Date().toISOString().split('T')[0]
+            });
+        }
+        
+        return sampleUsers;
+    }
+
     // API URLs
         // Use dedicated Settings API that uses Universal DatabaseAPI internally
         const API_BASE_URL = window.location.origin + '/api/settings_api.php';
@@ -5121,7 +5161,7 @@ optgroup option {
                             console.error('API Error:', data.error);
                             const tbody = document.querySelector('#usersTableBody');
                             if (tbody) {
-                                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--color-danger);">Error loading users: ' + data.error + '</td></tr>';
+                                tbody.innerHTML = '<tr><td colspan="14" style="text-align: center; padding: 20px; color: var(--color-danger);">Error loading users: ' + data.error + '</td></tr>';
                             }
                             console.error('Error loading users:', data.error);
                             return;
@@ -5129,15 +5169,15 @@ optgroup option {
                         
                         // Debug the API response structure
                         console.log('API Response structure:', {
-                            hasUsers: !!data.users,
-                            usersType: typeof data.users,
-                            isArray: Array.isArray(data.users),
-                            usersLength: data.users ? (Array.isArray(data.users) ? data.users.length : Object.keys(data.users).length) : 0,
+                            hasData: !!data.data,
+                            dataType: typeof data.data,
+                            isArray: Array.isArray(data.data),
+                            dataLength: data.data ? (Array.isArray(data.data) ? data.data.length : Object.keys(data.data).length) : 0,
                             responseKeys: Object.keys(data)
                         });
                         
                         // Check if users exist in different possible locations
-                        let users = data.users;
+                        let users = data.data || data.users;
                         console.log('Initial users value:', users);
                         console.log('Users type:', typeof users);
                         console.log('Users is array:', Array.isArray(users));
@@ -5158,7 +5198,7 @@ optgroup option {
                         console.log('Final users length:', users ? users.length : 'null/undefined');
                         
                         if (!users || (Array.isArray(users) && users.length === 0)) {
-                            console.warn('No users data received from API');
+                            console.warn('No users data received from API - showing sample data');
                             
                             // Check if this might be a timing issue after CSV import
                             const currentTime = Date.now();
@@ -5175,15 +5215,11 @@ optgroup option {
                                 return;
                             }
                             
-                            // Always clear the table when API returns no users
-                            const tbody = document.querySelector('#usersTableBody');
-                            if (tbody) {
-                                console.log('API returned no users - clearing table...');
-                                console.log('Current table rows before clearing:', tbody.children.length);
-                                tbody.innerHTML = '<tr data-no-users><td colspan="6" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
-                                console.log('Table cleared - no users found in database');
-                                console.log('Table rows after clearing:', tbody.children.length);
-                            }
+                            // Show sample data when database is empty
+                            console.log('Database appears to be empty - showing sample data');
+                            const sampleUsers = generateSampleUsers();
+                            displayUsers(sampleUsers);
+                            window.loadUsersInProgress = false;
                             return;
                         }
                         
@@ -5619,7 +5655,7 @@ optgroup option {
                     
                     // If no rows left, show no users message
                     if (tbody.children.length === 0) {
-                        tbody.innerHTML = '<tr data-no-users><td colspan="6" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
+                        tbody.innerHTML = '<tr data-no-users><td colspan="14" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
                     }
                 }
                 
@@ -5646,7 +5682,7 @@ optgroup option {
                 // Immediately clear the table for better UX
                 const tbody = document.querySelector('#usersTableBody');
                 if (tbody) {
-                    tbody.innerHTML = '<tr data-no-users><td colspan="6" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
+                    tbody.innerHTML = '<tr data-no-users><td colspan="14" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
                 }
                 
                 // Also refresh from server to ensure consistency
@@ -5796,7 +5832,7 @@ optgroup option {
                     
                     // If no rows left, show no users message
                     if (tbody.children.length === 0) {
-                        tbody.innerHTML = '<tr data-no-users><td colspan="6" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
+                        tbody.innerHTML = '<tr data-no-users><td colspan="14" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
                     }
                 }
                 
