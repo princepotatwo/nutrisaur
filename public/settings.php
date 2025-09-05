@@ -127,18 +127,44 @@ if ($isAjax) {
                 }
                 
                 // Simple query to get all user preferences with user details
-                $sql = "SELECT 
-                            id,
-                            user_email,
-                            username,
-                            name,
-                            barangay,
-                            income,
-                            risk_score,
-                            created_at,
-                            updated_at
-                        FROM user_preferences
-                        ORDER BY updated_at DESC";
+                                            $sql = "SELECT 
+                                        id,
+                                        user_email,
+                                        username,
+                                        name,
+                                        birthday,
+                                        age,
+                                        gender,
+                                        height,
+                                        weight,
+                                        bmi,
+                                        muac,
+                                        swelling,
+                                        weight_loss,
+                                        dietary_diversity,
+                                        feeding_behavior,
+                                        physical_thin,
+                                        physical_shorter,
+                                        physical_weak,
+                                        physical_none,
+                                        physical_signs,
+                                        has_recent_illness,
+                                        has_eating_difficulty,
+                                        has_food_insecurity,
+                                        has_micronutrient_deficiency,
+                                        has_functional_decline,
+                                        goal,
+                                        risk_score,
+                                        screening_answers,
+                                        allergies,
+                                        diet_prefs,
+                                        avoid_foods,
+                                        barangay,
+                                        income,
+                                        created_at,
+                                        updated_at
+                                    FROM user_preferences
+                                    ORDER BY updated_at DESC";
                 
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
@@ -4490,11 +4516,18 @@ optgroup option {
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Username</th>
                         <th>Email</th>
+                        <th>Username</th>
                         <th>Name</th>
-                        <th>Location</th>
-                        <th>Risk Level</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Height</th>
+                        <th>Weight</th>
+                        <th>BMI</th>
+                        <th>Barangay</th>
+                        <th>Income</th>
+                        <th>Risk Score</th>
+                        <th>Created</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -4521,26 +4554,20 @@ optgroup option {
                             
                             if (!empty($users)) {
                                 foreach ($users as $user) {
-                                    // Determine risk level from risk_score
-                                    $riskScore = $user['risk_score'] ?? 0;
-                                    if ($riskScore >= 8) {
-                                        $riskLevel = 'High Risk';
-                                        $riskClass = 'high-risk';
-                                    } elseif ($riskScore >= 5) {
-                                        $riskLevel = 'Medium Risk';
-                                        $riskClass = 'medium-risk';
-                                    } else {
-                                        $riskLevel = 'Low Risk';
-                                        $riskClass = 'low-risk';
-                                    }
-                                    
                                     echo '<tr>';
                                     echo '<td>' . htmlspecialchars($user['id']) . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['username'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['user_email'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['username'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['age'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['gender'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['bmi'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
-                                    echo '<td><span class="risk-badge ' . $riskClass . '">' . htmlspecialchars($riskLevel) . '</span></td>';
+                                    echo '<td>' . htmlspecialchars($user['income'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['risk_score'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
                                     echo '<td>';
                                     echo '<button class="btn-edit" onclick="editUser(' . $user['id'] . ')">Edit</button>';
                                     echo '<button class="btn-delete" onclick="deleteUser(' . $user['id'] . ')">Delete</button>';
@@ -4548,13 +4575,13 @@ optgroup option {
                                     echo '</tr>';
                                 }
                             } else {
-                                echo '<tr><td colspan="7" class="no-data-message">No users found in the database.</td></tr>';
+                                echo '<tr><td colspan="14" class="no-data-message">No users found in the database.</td></tr>';
                             }
                         } catch (Exception $e) {
-                            echo '<tr><td colspan="7" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+                            echo '<tr><td colspan="14" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                         }
                     } else {
-                        echo '<tr><td colspan="7" class="no-data-message">Database connection failed.</td></tr>';
+                        echo '<tr><td colspan="14" class="no-data-message">Database connection failed.</td></tr>';
                     }
                     ?>
                 </tbody>
