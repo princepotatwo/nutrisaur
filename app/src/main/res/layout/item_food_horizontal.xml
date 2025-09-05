@@ -2,22 +2,23 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/food_card"
-    android:layout_width="120dp"
+    android:layout_width="140dp"
     android:layout_height="200dp"
     android:layout_margin="4dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/primary_color">
+    app:cardBackgroundColor="@android:color/transparent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/food_card_gradient">
 
         <!-- Food Image -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp">
+            android:layout_height="150dp">
 
             <ImageView
                 android:id="@+id/food_image"
@@ -34,12 +35,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Adobo"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="sans-serif-black"
             android:gravity="center"
-            android:maxLines="2"
+            android:maxLines="1"
             android:ellipsize="end"
             android:padding="8dp"
             android:paddingBottom="4dp" />
@@ -50,10 +51,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="250 cal"
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:textColor="@color/white"
-            android:alpha="0.9"
-            android:fontFamily="sans-serif"
+            android:alpha="0.95"
+            android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:padding="4dp"
             android:paddingTop="0dp" />

@@ -37,7 +37,7 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     private List<FoodRecommendation> budgetFoods = new ArrayList<>();
 
     // Featured banner views
-    private ImageView featuredFoodImage;
+    private ImageView featuredBackgroundImage;
     private TextView featuredFoodName, featuredFoodDescription;
     
     private ExecutorService executorService;
@@ -125,7 +125,7 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         budgetRecycler = findViewById(R.id.budget_recycler);
         
         // Initialize featured banner views
-        featuredFoodImage = findViewById(R.id.featured_food_image);
+        featuredBackgroundImage = findViewById(R.id.featured_background_image);
         featuredFoodName = findViewById(R.id.featured_food_name);
         featuredFoodDescription = findViewById(R.id.featured_food_description);
         
@@ -366,32 +366,16 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     }
     
     private void setupFeaturedBanner() {
-        // Load a featured food image and set banner content
-        executorService.execute(() -> {
-            try {
-                List<FoodRecommendation> featuredFoods = callGeminiAPIForMultiple();
-                if (featuredFoods != null && !featuredFoods.isEmpty()) {
-                    FoodRecommendation featuredFood = featuredFoods.get(0);
-                    runOnUiThread(() -> {
-                        // Set featured food image
-                        FoodImageService foodImageService = new FoodImageService();
-                        foodImageService.loadFoodImage(featuredFood.getFoodName(), featuredFoodImage, null);
-                        
-                        // Set featured food name and description
-                        featuredFoodName.setText(featuredFood.getFoodName());
-                        featuredFoodDescription.setText(featuredFood.getDescription());
-                        
-                        Log.d(TAG, "Featured banner setup with: " + featuredFood.getFoodName());
-                    });
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error setting up featured banner: " + e.getMessage());
-                // Set default content
-                runOnUiThread(() -> {
-                    featuredFoodName.setText("Adobo");
-                    featuredFoodDescription.setText("A classic Filipino dish featuring tender meat braised in savory soy-vinegar sauce");
-                });
-            }
+        // Set featured banner with static adobo image
+        runOnUiThread(() -> {
+            // Set featured food image to adobo.jpg
+            featuredBackgroundImage.setImageResource(R.drawable.adobo);
+            
+            // Set featured food name and description
+            featuredFoodName.setText("Chicken Adobo");
+            featuredFoodDescription.setText("A classic Filipino dish featuring tender chicken braised in savory soy-vinegar sauce with aromatic garlic and bay leaves");
+            
+            Log.d(TAG, "Featured banner setup with static adobo image");
         });
     }
     
@@ -569,24 +553,24 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         );
         
         if (cursor.moveToFirst()) {
-                    // Load all user profile data
-                    userAge = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_AGE));
-                    userSex = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_GENDER));
-                    userBMI = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_BMI));
-                    userHeight = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_HEIGHT));
-                    userWeight = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_WEIGHT));
-                    userAllergies = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_ALLERGIES));
-                    userDietPrefs = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_DIET_PREFS));
-                    userAvoidFoods = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_AVOID_FOODS));
-                    userRiskScore = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_RISK_SCORE));
-                    userBarangay = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_BARANGAY));
-                    userIncome = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_INCOME));
+                    // Load all user profile data with safe column access
+                    userAge = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_USER_AGE);
+                    userSex = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_GENDER);
+                    userBMI = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_USER_BMI);
+                    userHeight = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_USER_HEIGHT);
+                    userWeight = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_USER_WEIGHT);
+                    userAllergies = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_ALLERGIES);
+                    userDietPrefs = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_DIET_PREFS);
+                    userAvoidFoods = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_AVOID_FOODS);
+                    userRiskScore = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_RISK_SCORE);
+                    userBarangay = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_BARANGAY);
+                    userIncome = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_INCOME);
                     
                     // Load health conditions
                     userHealthConditions = buildHealthConditionsString(cursor);
                     
                     // Load pregnancy status from screening_answers JSON
-                    String screeningAnswersJson = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_SCREENING_ANSWERS));
+                    String screeningAnswersJson = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_SCREENING_ANSWERS);
                     userPregnancyStatus = loadPregnancyStatusFromScreeningJson(screeningAnswersJson);
                     
                     // Determine activity level based on risk score
@@ -621,7 +605,7 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         StringBuilder conditions = new StringBuilder();
         
         // Check BMI category first
-        double bmi = cursor.getDouble(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_BMI));
+        double bmi = getDoubleFromCursor(cursor, UserPreferencesDbHelper.COL_USER_BMI);
         if (bmi > 0) {
             if (bmi < 18.5) {
                 conditions.append("Underweight, ");
@@ -631,7 +615,7 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         }
         
         // Check for physical signs from screening
-        String physicalSigns = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_PHYSICAL_SIGNS));
+        String physicalSigns = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_PHYSICAL_SIGNS);
         if (physicalSigns != null && !physicalSigns.isEmpty()) {
             if (physicalSigns.contains("thin")) {
                 conditions.append("Physical thinness, ");
@@ -645,7 +629,7 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         }
         
         // Check for feeding behavior issues
-        String feedingBehavior = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_FEEDING_BEHAVIOR));
+        String feedingBehavior = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_FEEDING_BEHAVIOR);
         if (feedingBehavior != null && !feedingBehavior.isEmpty()) {
             if (feedingBehavior.contains("difficulty")) {
                 conditions.append("Eating difficulty, ");
@@ -653,7 +637,7 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         }
         
         // Check for weight loss
-        String weightLoss = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_WEIGHT_LOSS));
+        String weightLoss = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_WEIGHT_LOSS);
         if (weightLoss != null && !weightLoss.isEmpty()) {
             if (weightLoss.contains("yes")) {
                 conditions.append("Recent weight loss, ");
@@ -661,7 +645,7 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         }
         
         // Check for swelling
-        String swelling = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_SWELLING));
+        String swelling = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_SWELLING);
         if (swelling != null && !swelling.isEmpty()) {
             if (swelling.contains("yes")) {
                 conditions.append("Edema/swelling, ");
@@ -670,7 +654,7 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         
         // Extract additional health conditions from screening_answers JSON
         try {
-            String screeningAnswersJson = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_SCREENING_ANSWERS));
+            String screeningAnswersJson = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_SCREENING_ANSWERS);
             if (screeningAnswersJson != null && !screeningAnswersJson.isEmpty()) {
                 JSONObject screeningData = new JSONObject(screeningAnswersJson);
                 
@@ -1361,5 +1345,58 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         }
     }
     
+    /**
+     * Safe method to get string value from cursor, handling missing columns gracefully
+     */
+    private String getStringFromCursor(android.database.Cursor cursor, String columnName) {
+        try {
+            int columnIndex = cursor.getColumnIndex(columnName);
+            if (columnIndex >= 0) {
+                return cursor.getString(columnIndex);
+            } else {
+                Log.w(TAG, "Column not found: " + columnName);
+                return null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error accessing column " + columnName + ": " + e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Safe method to get double value from cursor, handling missing columns gracefully
+     */
+    private double getDoubleFromCursor(android.database.Cursor cursor, String columnName) {
+        try {
+            int columnIndex = cursor.getColumnIndex(columnName);
+            if (columnIndex >= 0) {
+                return cursor.getDouble(columnIndex);
+            } else {
+                Log.w(TAG, "Column not found: " + columnName);
+                return 0.0;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error accessing column " + columnName + ": " + e.getMessage());
+            return 0.0;
+        }
+    }
+    
+    /**
+     * Safe method to get int value from cursor, handling missing columns gracefully
+     */
+    private int getIntFromCursor(android.database.Cursor cursor, String columnName) {
+        try {
+            int columnIndex = cursor.getColumnIndex(columnName);
+            if (columnIndex >= 0) {
+                return cursor.getInt(columnIndex);
+            } else {
+                Log.w(TAG, "Column not found: " + columnName);
+                return 0;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error accessing column " + columnName + ": " + e.getMessage());
+            return 0;
+        }
+    }
 
 } 

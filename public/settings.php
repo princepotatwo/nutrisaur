@@ -78,19 +78,17 @@ if ($isAjax) {
                 
                 // Simple query to get all user preferences with user details
                 $sql = "SELECT 
-                            up.user_id,
-                            up.preferences,
-                            up.created_at,
-                            up.updated_at,
-                            u.username,
-                            u.email,
-                            u.first_name,
-                            u.last_name,
-                            u.barangay,
-                            u.municipality
-                        FROM user_preferences up
-                        LEFT JOIN users u ON up.user_id = u.id
-                        ORDER BY up.updated_at DESC";
+                            id,
+                            user_email,
+                            username,
+                            name,
+                            barangay,
+                            income,
+                            risk_score,
+                            created_at,
+                            updated_at
+                        FROM user_preferences
+                        ORDER BY updated_at DESC";
                 
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
@@ -98,14 +96,24 @@ if ($isAjax) {
                 
                 $formattedUsers = [];
                 foreach ($preferences as $pref) {
-                    $preferencesData = json_decode($pref['preferences'], true);
+                    // Build preferences data from available columns
+                    $preferencesData = [
+                        'age' => $pref['age'] ?? null,
+                        'gender' => $pref['gender'] ?? null,
+                        'height' => $pref['height'] ?? null,
+                        'weight' => $pref['weight'] ?? null,
+                        'bmi' => $pref['bmi'] ?? null,
+                        'risk_score' => $pref['risk_score'] ?? null,
+                        'barangay' => $pref['barangay'] ?? null,
+                        'income' => $pref['income'] ?? null
+                    ];
                     $formattedUsers[] = [
-                        'id' => $pref['user_id'],
+                        'id' => $pref['id'],
                         'username' => $pref['username'],
-                        'email' => $pref['email'],
-                        'name' => trim($pref['first_name'] . ' ' . $pref['last_name']),
+                        'email' => $pref['user_email'],
+                        'name' => $pref['name'] ?? 'N/A',
                         'barangay' => $pref['barangay'],
-                        'municipality' => $pref['municipality'],
+                        'municipality' => 'N/A', // Municipality not stored in user_preferences table
                         'preferences' => $preferencesData,
                         'created_at' => $pref['created_at'],
                         'updated_at' => $pref['updated_at']
@@ -216,13 +224,13 @@ if ($isAjax) {
                 }
                 
                 if (!empty($municipality)) {
-                    $whereConditions[] = "u.municipality = :municipality";
-                    $params[':municipality'] = $municipality;
+                    // Municipality filtering not available as column doesn't exist in user_preferences
+                    // Could be implemented by adding municipality column or using barangay mapping
+                    $whereConditions[] = "1=0"; // Disable municipality filtering for now
                 }
                 
                 $whereClause = implode(' AND ', $whereConditions);
-                $sql = "DELETE up FROM user_preferences up 
-                        LEFT JOIN users u ON up.user_email = u.email 
+                $sql = "DELETE FROM user_preferences 
                         WHERE $whereClause";
                 
                 $stmt = $pdo->prepare($sql);
@@ -4424,21 +4432,16 @@ optgroup option {
                     if ($pdo) {
                         try {
                             $sql = "SELECT 
-                                        up.id,
-                                        up.user_email,
-                                        up.username,
-                                        up.name,
-                                        up.barangay,
-                                        up.risk_score,
-                                        up.created_at,
-                                        up.updated_at,
-                                        u.email,
-                                        u.first_name,
-                                        u.last_name,
-                                        u.municipality
-                                    FROM user_preferences up
-                                    LEFT JOIN users u ON up.user_email = u.email
-                                    ORDER BY up.updated_at DESC";
+                                        id,
+                                        user_email,
+                                        username,
+                                        name,
+                                        barangay,
+                                        risk_score,
+                                        created_at,
+                                        updated_at
+                                    FROM user_preferences
+                                    ORDER BY updated_at DESC";
                             
                             $stmt = $pdo->prepare($sql);
                             $stmt->execute();

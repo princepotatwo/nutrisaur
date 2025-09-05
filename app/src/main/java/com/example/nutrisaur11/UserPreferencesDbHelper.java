@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class UserPreferencesDbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "userprefs.db";
-    public static final int DATABASE_VERSION = 17; // Force upgrade to add missing columns
-    public static final String TABLE_NAME = "preferences";
+    public static final int DATABASE_VERSION = 18; // Force upgrade to match user_preferences table structure
+    public static final String TABLE_NAME = "user_preferences";
     public static final String COL_ID = "id";
     public static final String COL_ALLERGIES = "allergies";
     public static final String COL_DIET_PREFS = "diet_prefs";
@@ -68,6 +68,18 @@ public class UserPreferencesDbHelper extends SQLiteOpenHelper {
     public static final String COL_PHYSICAL_SIGNS = "physical_signs";
     public static final String COL_DIETARY_DIVERSITY = "dietary_diversity"; // Add constant for consistency
     
+    // Additional columns from user_preferences table
+    public static final String COL_MUAC = "muac";
+    public static final String COL_PHYSICAL_THIN = "physical_thin";
+    public static final String COL_PHYSICAL_SHORTER = "physical_shorter";
+    public static final String COL_PHYSICAL_WEAK = "physical_weak";
+    public static final String COL_PHYSICAL_NONE = "physical_none";
+    public static final String COL_HAS_RECENT_ILLNESS = "has_recent_illness";
+    public static final String COL_HAS_EATING_DIFFICULTY = "has_eating_difficulty";
+    public static final String COL_HAS_FOOD_INSECURITY = "has_food_insecurity";
+    public static final String COL_HAS_MICRONUTRIENT_DEFICIENCY = "has_micronutrient_deficiency";
+    public static final String COL_HAS_FUNCTIONAL_DECLINE = "has_functional_decline";
+    
     // Food recommendations table columns
     public static final String COL_FOOD_RECS_ID = "id";
     public static final String COL_FOOD_RECS_USER_EMAIL = "user_email";
@@ -79,30 +91,38 @@ public class UserPreferencesDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE =
         "CREATE TABLE " + TABLE_NAME + " (" +
         COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-        COL_USER_EMAIL + " TEXT UNIQUE, " + // Make user_email unique
-        COL_ALLERGIES + " TEXT, " +
-        COL_DIET_PREFS + " TEXT, " +
-        COL_AVOID_FOODS + " TEXT, " +
-        COL_RISK_SCORE + " INTEGER, " +
-        COL_SCREENING_ANSWERS + " TEXT, " + // Add screening_answers column
-        COL_GENDER + " TEXT, " +
-        COL_SWELLING + " TEXT, " +
-        COL_WEIGHT_LOSS + " TEXT, " +
-        COL_FEEDING_BEHAVIOR + " TEXT, " +
-        COL_FEEDING + " TEXT, " + // Add feeding column as alias
-        COL_PHYSICAL_SIGNS + " TEXT, " +
-        "dietary_diversity TEXT, " +
-        COL_BARANGAY + " TEXT, " +
-        COL_INCOME + " TEXT, " +
-        // User profile columns integrated into main table (matching web database structure)
+        COL_USER_EMAIL + " TEXT UNIQUE, " +
+        "username TEXT, " +
         COL_USER_NAME + " TEXT, " +
+        COL_USER_BIRTHDAY + " TEXT, " +
         COL_USER_AGE + " INTEGER, " +
+        COL_GENDER + " TEXT, " +
         COL_USER_HEIGHT + " REAL, " +
         COL_USER_WEIGHT + " REAL, " +
         COL_USER_BMI + " REAL, " +
+        "muac REAL, " +
+        COL_SWELLING + " TEXT, " +
+        COL_WEIGHT_LOSS + " TEXT, " +
+        "dietary_diversity INTEGER, " +
+        COL_FEEDING_BEHAVIOR + " TEXT, " +
+        "physical_thin INTEGER DEFAULT 0, " +
+        "physical_shorter INTEGER DEFAULT 0, " +
+        "physical_weak INTEGER DEFAULT 0, " +
+        "physical_none INTEGER DEFAULT 0, " +
+        COL_PHYSICAL_SIGNS + " TEXT, " +
+        "has_recent_illness INTEGER DEFAULT 0, " +
+        "has_eating_difficulty INTEGER DEFAULT 0, " +
+        "has_food_insecurity INTEGER DEFAULT 0, " +
+        "has_micronutrient_deficiency INTEGER DEFAULT 0, " +
+        "has_functional_decline INTEGER DEFAULT 0, " +
         COL_USER_GOAL + " TEXT, " +
-        COL_USER_BIRTHDAY + " TEXT, " +
-        // Timestamps to match web database
+        COL_RISK_SCORE + " INTEGER, " +
+        COL_SCREENING_ANSWERS + " TEXT, " +
+        COL_ALLERGIES + " TEXT, " +
+        COL_DIET_PREFS + " TEXT, " +
+        COL_AVOID_FOODS + " TEXT, " +
+        COL_BARANGAY + " TEXT, " +
+        COL_INCOME + " TEXT, " +
         "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
         "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
         ")";
@@ -321,6 +341,78 @@ public class UserPreferencesDbHelper extends SQLiteOpenHelper {
             }
             
             android.util.Log.d("UserPreferencesDbHelper", "Version 16 upgrade completed - all columns ensured");
+        }
+        if (oldVersion < 18) {
+            // Major upgrade: Migrate from "preferences" table to "user_preferences" table structure
+            // This matches the web database structure exactly
+            android.util.Log.d("UserPreferencesDbHelper", "Starting migration to user_preferences table structure");
+            
+            try {
+                // Create new user_preferences table with correct structure
+                db.execSQL("CREATE TABLE IF NOT EXISTS user_preferences_new (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "user_email TEXT UNIQUE, " +
+                    "username TEXT, " +
+                    "name TEXT, " +
+                    "birthday TEXT, " +
+                    "age INTEGER, " +
+                    "gender TEXT, " +
+                    "height REAL, " +
+                    "weight REAL, " +
+                    "bmi REAL, " +
+                    "muac REAL, " +
+                    "swelling TEXT, " +
+                    "weight_loss TEXT, " +
+                    "dietary_diversity INTEGER, " +
+                    "feeding_behavior TEXT, " +
+                    "physical_thin INTEGER DEFAULT 0, " +
+                    "physical_shorter INTEGER DEFAULT 0, " +
+                    "physical_weak INTEGER DEFAULT 0, " +
+                    "physical_none INTEGER DEFAULT 0, " +
+                    "physical_signs TEXT, " +
+                    "has_recent_illness INTEGER DEFAULT 0, " +
+                    "has_eating_difficulty INTEGER DEFAULT 0, " +
+                    "has_food_insecurity INTEGER DEFAULT 0, " +
+                    "has_micronutrient_deficiency INTEGER DEFAULT 0, " +
+                    "has_functional_decline INTEGER DEFAULT 0, " +
+                    "goal TEXT, " +
+                    "risk_score INTEGER, " +
+                    "screening_answers TEXT, " +
+                    "allergies TEXT, " +
+                    "diet_prefs TEXT, " +
+                    "avoid_foods TEXT, " +
+                    "barangay TEXT, " +
+                    "income TEXT, " +
+                    "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
+                    "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                    ")");
+                
+                // Migrate data from old preferences table to new user_preferences table
+                db.execSQL("INSERT OR REPLACE INTO user_preferences_new (" +
+                    "id, user_email, username, name, birthday, age, gender, height, weight, bmi, " +
+                    "swelling, weight_loss, dietary_diversity, feeding_behavior, physical_signs, " +
+                    "goal, risk_score, screening_answers, allergies, diet_prefs, avoid_foods, " +
+                    "barangay, income, created_at, updated_at" +
+                    ") SELECT " +
+                    "id, user_email, username, name, birthday, age, gender, height, weight, bmi, " +
+                    "swelling, weight_loss, dietary_diversity, feeding_behavior, physical_signs, " +
+                    "goal, risk_score, screening_answers, allergies, diet_prefs, avoid_foods, " +
+                    "barangay, income, created_at, updated_at " +
+                    "FROM " + TABLE_NAME);
+                
+                // Drop old table and rename new table
+                db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+                db.execSQL("ALTER TABLE user_preferences_new RENAME TO " + TABLE_NAME);
+                
+                android.util.Log.d("UserPreferencesDbHelper", "Successfully migrated to user_preferences table structure");
+                
+            } catch (Exception e) {
+                android.util.Log.e("UserPreferencesDbHelper", "Error during migration: " + e.getMessage());
+                // If migration fails, recreate the table with correct structure
+                db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+                db.execSQL("DROP TABLE IF EXISTS user_preferences_new");
+                onCreate(db);
+            }
         }
     }
 
