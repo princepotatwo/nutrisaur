@@ -126,54 +126,62 @@ if ($isAjax) {
                 break;
                 
             case 'add_user':
-                // Use DatabaseAPI to save user preferences
-                $requiredFields = ['user_id', 'preferences'];
+                // Add new user to user_preferences table
+                $requiredFields = ['user_email', 'username', 'name'];
                 foreach ($requiredFields as $field) {
                     if (empty($_POST[$field])) {
                         throw new Exception("Field '$field' is required");
                     }
                 }
                 
-                $userId = $_POST['user_id'];
-                $preferences = json_decode($_POST['preferences'], true);
+                $userEmail = $_POST['user_email'];
+                $preferences = [
+                    'username' => $_POST['username'],
+                    'name' => $_POST['name'],
+                    'barangay' => $_POST['barangay'] ?? '',
+                    'income' => $_POST['income'] ?? '',
+                    'age' => $_POST['age'] ?? null,
+                    'gender' => $_POST['gender'] ?? '',
+                    'height' => $_POST['height'] ?? null,
+                    'weight' => $_POST['weight'] ?? null,
+                    'risk_score' => $_POST['risk_score'] ?? 0
+                ];
                 
-                if (!$preferences) {
-                    throw new Exception('Invalid preferences JSON format');
-                }
-                
-                $result = $db->saveUserPreferences($userId, $preferences);
+                $result = $db->saveUserPreferences($userEmail, $preferences);
                 
                 if ($result['success']) {
                     $response['success'] = true;
-                    $response['data'] = ['user_id' => $userId];
-                    $response['message'] = 'User preferences saved successfully';
+                    $response['data'] = ['user_email' => $userEmail];
+                    $response['message'] = 'User added successfully';
                 } else {
                     throw new Exception($result['message']);
                 }
                 break;
                 
             case 'update_user':
-                // Use DatabaseAPI to update user preferences
-                if (empty($_POST['user_id'])) {
-                    throw new Exception('User ID is required');
+                // Update user in user_preferences table
+                if (empty($_POST['user_email'])) {
+                    throw new Exception('User email is required');
                 }
                 
-                if (empty($_POST['preferences'])) {
-                    throw new Exception('Preferences data is required');
-                }
+                $userEmail = $_POST['user_email'];
+                $preferences = [
+                    'username' => $_POST['username'] ?? '',
+                    'name' => $_POST['name'] ?? '',
+                    'barangay' => $_POST['barangay'] ?? '',
+                    'income' => $_POST['income'] ?? '',
+                    'age' => $_POST['age'] ?? null,
+                    'gender' => $_POST['gender'] ?? '',
+                    'height' => $_POST['height'] ?? null,
+                    'weight' => $_POST['weight'] ?? null,
+                    'risk_score' => $_POST['risk_score'] ?? 0
+                ];
                 
-                $userId = $_POST['user_id'];
-                $preferences = json_decode($_POST['preferences'], true);
-                
-                if (!$preferences) {
-                    throw new Exception('Invalid preferences JSON format');
-                }
-                
-                $result = $db->saveUserPreferences($userId, $preferences);
+                $result = $db->saveUserPreferences($userEmail, $preferences);
                 
                 if ($result['success']) {
                     $response['success'] = true;
-                    $response['message'] = 'User preferences updated successfully';
+                    $response['message'] = 'User updated successfully';
                 } else {
                     throw new Exception($result['message']);
                 }

@@ -929,7 +929,7 @@ class DatabaseAPI {
     /**
      * Save user preferences
      */
-    public function saveUserPreferences($userId, $preferences) {
+    public function saveUserPreferences($userEmail, $preferences) {
         try {
             // Check if database connection is available
             if (!$this->pdo) {
@@ -937,39 +937,41 @@ class DatabaseAPI {
             }
             
             // Check if preferences exist
-            $stmt = $this->pdo->prepare("SELECT id FROM user_preferences WHERE user_id = :user_id");
-            $stmt->bindParam(':user_id', $userId);
+            $stmt = $this->pdo->prepare("SELECT id FROM user_preferences WHERE user_email = :user_email");
+            $stmt->bindParam(':user_email', $userEmail);
             $stmt->execute();
             
             if ($stmt->rowCount() > 0) {
                 // Update existing preferences
                 $stmt = $this->pdo->prepare("UPDATE user_preferences SET 
-                    dietary_restrictions = :dietary_restrictions,
-                    health_goals = :health_goals,
-                    activity_level = :activity_level,
+                    username = :username,
+                    name = :name,
                     age = :age,
                     weight = :weight,
                     height = :height,
                     gender = :gender,
                     barangay = :barangay,
+                    income = :income,
+                    risk_score = :risk_score,
                     updated_at = CURRENT_TIMESTAMP
-                    WHERE user_id = :user_id");
+                    WHERE user_email = :user_email");
             } else {
                 // Insert new preferences
                 $stmt = $this->pdo->prepare("INSERT INTO user_preferences 
-                    (user_id, dietary_restrictions, health_goals, activity_level, age, weight, height, gender, barangay) 
-                    VALUES (:user_id, :dietary_restrictions, :health_goals, :activity_level, :age, :weight, :height, :gender, :barangay)");
+                    (user_email, username, name, age, weight, height, gender, barangay, income, risk_score, created_at, updated_at) 
+                    VALUES (:user_email, :username, :name, :age, :weight, :height, :gender, :barangay, :income, :risk_score, NOW(), NOW())");
             }
             
-            $stmt->bindParam(':user_id', $userId);
-            $stmt->bindParam(':dietary_restrictions', $preferences['dietary_restrictions'] ?? null);
-            $stmt->bindParam(':health_goals', $preferences['health_goals'] ?? null);
-            $stmt->bindParam(':activity_level', $preferences['activity_level'] ?? null);
+            $stmt->bindParam(':user_email', $userEmail);
+            $stmt->bindParam(':username', $preferences['username'] ?? null);
+            $stmt->bindParam(':name', $preferences['name'] ?? null);
             $stmt->bindParam(':age', $preferences['age'] ?? null);
             $stmt->bindParam(':weight', $preferences['weight'] ?? null);
             $stmt->bindParam(':height', $preferences['height'] ?? null);
             $stmt->bindParam(':gender', $preferences['gender'] ?? null);
             $stmt->bindParam(':barangay', $preferences['barangay'] ?? null);
+            $stmt->bindParam(':income', $preferences['income'] ?? null);
+            $stmt->bindParam(':risk_score', $preferences['risk_score'] ?? 0);
             $stmt->execute();
             
             return ['success' => true];
