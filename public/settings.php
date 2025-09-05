@@ -5044,8 +5044,8 @@ optgroup option {
     var users = [];
 
     // API URLs
-        // Use settings.php itself for API calls
-        const API_BASE_URL = window.location.origin + '/settings.php';
+        // Use DatabaseAPI.php for API calls
+        const API_BASE_URL = window.location.origin + '/api/DatabaseAPI.php';
     
     // Function to load users from the server with smooth updates
     window.loadUsersInProgress = false;

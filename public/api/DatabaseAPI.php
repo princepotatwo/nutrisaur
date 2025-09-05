@@ -2410,6 +2410,59 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             echo json_encode(['success' => true, 'data' => $timeFrameData]);
             break;
             
+        case 'get_users':
+            // Get all users from user_preferences table
+            try {
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                    break;
+                }
+                
+                $sql = "SELECT 
+                            id,
+                            user_email,
+                            username,
+                            name,
+                            barangay,
+                            income,
+                            risk_score,
+                            created_at,
+                            updated_at
+                        FROM user_preferences
+                        ORDER BY updated_at DESC";
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                // Format users data for settings.php
+                $formattedUsers = [];
+                foreach ($users as $user) {
+                    $formattedUsers[] = [
+                        'id' => $user['id'],
+                        'username' => $user['username'],
+                        'email' => $user['user_email'],
+                        'name' => $user['name'] ?? 'N/A',
+                        'barangay' => $user['barangay'],
+                        'municipality' => 'N/A', // Municipality not stored in user_preferences table
+                        'income' => $user['income'],
+                        'risk_score' => $user['risk_score'],
+                        'created_at' => $user['created_at'],
+                        'updated_at' => $user['updated_at']
+                    ];
+                }
+                
+                echo json_encode([
+                    'success' => true,
+                    'data' => $formattedUsers,
+                    'message' => 'User preferences retrieved successfully'
+                ]);
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => 'Failed to get users: ' . $e->getMessage()]);
+            }
+            break;
+            
         // ========================================
         // EMAIL VERIFICATION API (RESEND)
         // ========================================
