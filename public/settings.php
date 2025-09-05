@@ -4510,7 +4510,8 @@ optgroup option {
                                     echo '</tr>';
                                 }
                             } else {
-                                echo '<tr><td colspan="14" class="no-data-message">No users found in the database.</td></tr>';
+                                // Let JavaScript handle empty database with sample data
+                                echo '<!-- No users in database - JavaScript will show sample data -->';
                             }
                         } catch (Exception $e) {
                             echo '<tr><td colspan="14" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
@@ -5297,11 +5298,19 @@ optgroup option {
                             }
                             
                             const newRowHTML = `
-                                <td>${index + 1}</td>
-                                <td>${user.username || user.name || 'N/A'}</td>
+                                <td>${user.id || index + 1}</td>
                                 <td>${user.email || 'N/A'}</td>
+                                <td>${user.name || user.username || 'N/A'}</td>
+                                <td>${user.age || 'N/A'}</td>
+                                <td>${user.gender || 'N/A'}</td>
+                                <td>${user.height_cm || 'N/A'}</td>
+                                <td>${user.weight_kg || 'N/A'}</td>
+                                <td>${user.bmi || 'N/A'}</td>
+                                <td>${user.barangay || 'N/A'}</td>
+                                <td>${user.municipality || 'N/A'}</td>
+                                <td>${user.risk_score || 'N/A'}</td>
                                 <td><span class="risk-badge ${riskClass}">${riskLevel}</span></td>
-                                <td>${userLocation}</td>
+                                <td>${user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}</td>
                                 <td>
                                     <button class="btn-edit" data-email="${user.email}" onclick="viewUserDetails('${user.email}')">View</button>
                                     <button class="btn-edit btn-warning" data-email="${user.email}" onclick="editUser('${user.email}')">Edit</button>
@@ -5325,10 +5334,16 @@ optgroup option {
                         
                         // Clear any existing "No users found" message
                         if (tbody) {
-                            const noUsersRow = tbody.querySelector('tr td[colspan="5"]');
+                            const noUsersRow = tbody.querySelector('tr td[colspan="14"]');
                             if (noUsersRow && noUsersRow.textContent.includes('No users found')) {
                                 noUsersRow.closest('tr').remove();
                             }
+                        }
+                        
+                        // Hide the "No users found" message div
+                        const noUsersMessage = document.getElementById('no-users-message');
+                        if (noUsersMessage) {
+                            noUsersMessage.style.display = 'none';
                         }
                         
                         // Update user count if element exists
