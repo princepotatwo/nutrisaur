@@ -4489,7 +4489,7 @@ optgroup option {
             <table class="user-table">
                 <thead>
                     <tr>
-                        <th>User ID</th>
+                        <th>ID</th>
                         <th>Username</th>
                         <th>Email</th>
                         <th>Name</th>
@@ -4501,8 +4501,7 @@ optgroup option {
                 <tbody id="usersTableBody">
                     <?php
                     // Get user preferences data directly from database
-                    $pdo = $db->getPDO();
-                    if ($pdo) {
+                    if ($conn) {
                         try {
                             $sql = "SELECT 
                                         id,
@@ -4516,7 +4515,7 @@ optgroup option {
                                     FROM user_preferences
                                     ORDER BY updated_at DESC";
                             
-                            $stmt = $pdo->prepare($sql);
+                            $stmt = $conn->prepare($sql);
                             $stmt->execute();
                             $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             
@@ -4540,7 +4539,7 @@ optgroup option {
                                     echo '<td>' . htmlspecialchars($user['username'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['user_email'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['barangay'] . ', ' . ($user['municipality'] ?? 'Unknown')) . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
                                     echo '<td><span class="risk-badge ' . $riskClass . '">' . htmlspecialchars($riskLevel) . '</span></td>';
                                     echo '<td>';
                                     echo '<button class="btn-edit" onclick="editUser(' . $user['id'] . ')">Edit</button>';
