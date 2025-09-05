@@ -22,11 +22,13 @@ $db = DatabaseAPI::getInstance();
 
 // Handle AJAX requests for user management
 $isAjax = ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) || 
+          ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) ||
           (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
 
 // Debug logging
 error_log('Settings Debug: REQUEST_METHOD=' . $_SERVER['REQUEST_METHOD']);
 error_log('Settings Debug: POST action=' . ($_POST['action'] ?? 'not set'));
+error_log('Settings Debug: GET action=' . ($_GET['action'] ?? 'not set'));
 error_log('Settings Debug: X-Requested-With=' . ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? 'not set'));
 error_log('Settings Debug: isAjax=' . ($isAjax ? 'true' : 'false'));
 
@@ -46,7 +48,10 @@ if ($isAjax) {
     $response = ['success' => false, 'message' => '', 'data' => null];
     
     try {
-        switch ($_POST['action']) {
+        // Get action from either POST or GET
+        $action = $_POST['action'] ?? $_GET['action'] ?? '';
+        
+        switch ($action) {
             case 'test':
                 $response['success'] = true;
                 $response['message'] = 'AJAX is working correctly';
