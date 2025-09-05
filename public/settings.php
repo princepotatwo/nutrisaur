@@ -127,44 +127,33 @@ if ($isAjax) {
                 }
                 
                 // Simple query to get all user preferences with user details
-                                            $sql = "SELECT 
-                                        id,
-                                        user_email,
-                                        username,
-                                        name,
-                                        birthday,
-                                        age,
-                                        gender,
-                                        height,
-                                        weight,
-                                        bmi,
-                                        muac,
-                                        swelling,
-                                        weight_loss,
-                                        dietary_diversity,
-                                        feeding_behavior,
-                                        physical_thin,
-                                        physical_shorter,
-                                        physical_weak,
-                                        physical_none,
-                                        physical_signs,
-                                        has_recent_illness,
-                                        has_eating_difficulty,
-                                        has_food_insecurity,
-                                        has_micronutrient_deficiency,
-                                        has_functional_decline,
-                                        goal,
-                                        risk_score,
-                                        screening_answers,
-                                        allergies,
-                                        diet_prefs,
-                                        avoid_foods,
-                                        barangay,
-                                        income,
-                                        created_at,
-                                        updated_at
-                                    FROM user_preferences
-                                    ORDER BY updated_at DESC";
+                                            // First, let's check what columns actually exist in the table
+                            $checkColumns = $conn->prepare("DESCRIBE user_preferences");
+                            $checkColumns->execute();
+                            $columns = $checkColumns->fetchAll(PDO::FETCH_COLUMN);
+                            
+                            // Build dynamic SELECT based on actual columns
+                            $selectFields = [];
+                            $availableColumns = [
+                                'id', 'user_email', 'username', 'name', 'birthday', 'age', 
+                                'gender', 'height', 'weight', 'bmi', 'muac', 'swelling', 
+                                'weight_loss', 'dietary_diversity', 'feeding_behavior', 
+                                'physical_thin', 'physical_shorter', 'physical_weak', 
+                                'physical_none', 'physical_signs', 'has_recent_illness', 
+                                'has_eating_difficulty', 'has_food_insecurity', 
+                                'has_micronutrient_deficiency', 'has_functional_decline', 
+                                'goal', 'risk_score', 'screening_answers', 'allergies', 
+                                'diet_prefs', 'avoid_foods', 'barangay', 'income', 
+                                'created_at', 'updated_at'
+                            ];
+                            
+                            foreach ($availableColumns as $col) {
+                                if (in_array($col, $columns)) {
+                                    $selectFields[] = $col;
+                                }
+                            }
+                            
+                            $sql = "SELECT " . implode(', ', $selectFields) . " FROM user_preferences ORDER BY updated_at DESC";
                 
                 $stmt = $conn->prepare($sql);
                 $stmt->execute();
@@ -4555,7 +4544,7 @@ optgroup option {
                             if (!empty($users)) {
                                 foreach ($users as $user) {
                                     echo '<tr>';
-                                    echo '<td>' . htmlspecialchars($user['id']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['id'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['user_email'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['username'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
@@ -4569,8 +4558,8 @@ optgroup option {
                                     echo '<td>' . htmlspecialchars($user['risk_score'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
                                     echo '<td>';
-                                    echo '<button class="btn-edit" onclick="editUser(' . $user['id'] . ')">Edit</button>';
-                                    echo '<button class="btn-delete" onclick="deleteUser(' . $user['id'] . ')">Delete</button>';
+                                    echo '<button class="btn-edit" onclick="editUser(' . ($user['id'] ?? 0) . ')">Edit</button>';
+                                    echo '<button class="btn-delete" onclick="deleteUser(' . ($user['id'] ?? 0) . ')">Delete</button>';
                                     echo '</td>';
                                     echo '</tr>';
                                 }
