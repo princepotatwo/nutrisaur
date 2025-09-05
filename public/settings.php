@@ -13,6 +13,314 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 $email = $_SESSION['email'];
+
+// Include DatabaseAPI for direct database operations
+require_once __DIR__ . '/api/DatabaseAPI.php';
+
+// Initialize DatabaseAPI
+$db = DatabaseAPI::getInstance();
+
+// Handle AJAX requests for user management
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    header('Content-Type: application/json');
+    
+    $response = ['success' => false, 'message' => '', 'data' => null];
+    
+    try {
+        switch ($_POST['action']) {
+            case 'get_users':
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    throw new Exception('Database connection not available');
+                }
+                
+                $sql = "SELECT 
+                            u.id,
+                            u.username,
+                            u.email,
+                            u.first_name,
+                            u.last_name,
+                            u.date_of_birth,
+                            u.gender,
+                            u.weight,
+                            u.height,
+                            u.barangay,
+                            u.municipality,
+                            u.income_level,
+                            u.created_at,
+                            u.last_login,
+                            u.is_verified,
+                            u.is_active,
+                            COUNT(s.id) as screening_count
+                        FROM users u
+                        LEFT JOIN screening_responses s ON u.id = s.user_id
+                        GROUP BY u.id
+                        ORDER BY u.created_at DESC";
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute();
+                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                $formattedUsers = [];
+                foreach ($users as $user) {
+                    $formattedUsers[] = [
+                        'id' => $user['id'],
+                        'username' => $user['username'],
+                        'email' => $user['email'],
+                        'name' => trim($user['first_name'] . ' ' . $user['last_name']),
+                        'date_of_birth' => $user['date_of_birth'],
+                        'gender' => $user['gender'],
+                        'weight' => $user['weight'],
+                        'height' => $user['height'],
+                        'barangay' => $user['barangay'],
+                        'municipality' => $user['municipality'],
+                        'income_level' => $user['income_level'],
+                        'created_at' => $user['created_at'],
+                        'last_login' => $user['last_login'],
+                        'is_verified' => (bool)$user['is_verified'],
+                        'is_active' => (bool)$user['is_active'],
+                        'screening_count' => (int)$user['screening_count']
+                    ];
+                }
+                
+                $response['success'] = true;
+                $response['data'] = $formattedUsers;
+                $response['message'] = 'Users retrieved successfully';
+                break;
+                
+            case 'add_user':
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    throw new Exception('Database connection not available');
+                }
+                
+                $requiredFields = ['username', 'email', 'password', 'first_name', 'last_name'];
+                foreach ($requiredFields as $field) {
+                    if (empty($_POST[$field])) {
+                        throw new Exception("Field '$field' is required");
+                    }
+                }
+                
+                $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                
+                $sql = "INSERT INTO users (
+                            username, email, password, first_name, last_name,
+                            date_of_birth, gender, weight, height, barangay,
+                            municipality, income_level, is_verified, is_active
+                        ) VALUES (
+                            :username, :email, :password, :first_name, :last_name,
+                            :date_of_birth, :gender, :weight, :height, :barangay,
+                            :municipality, :income_level, :is_verified, :is_active
+                        )";
+                
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([
+                    ':username' => $_POST['username'],
+                    ':email' => $_POST['email'],
+                    ':password' => $hashedPassword,
+                    ':first_name' => $_POST['first_name'],
+                    ':last_name' => $_POST['last_name'],
+                    ':date_of_birth' => $_POST['date_of_birth'] ?? null,
+                    ':gender' => $_POST['gender'] ?? null,
+                    ':weight' => $_POST['weight'] ?? null,
+                    ':height' => $_POST['height'] ?? null,
+                    ':barangay' => $_POST['barangay'] ?? null,
+                    ':municipality' => $_POST['municipality'] ?? null,
+                    ':income_level' => $_POST['income_level'] ?? null,
+                    ':is_verified' => $_POST['is_verified'] ?? 1,
+                    ':is_active' => $_POST['is_active'] ?? 1
+                ]);
+                
+                $response['success'] = true;
+                $response['data'] = ['user_id' => $pdo->lastInsertId()];
+                $response['message'] = 'User created successfully';
+                break;
+                
+            case 'update_user':
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    throw new Exception('Database connection not available');
+                }
+                
+                if (empty($_POST['id'])) {
+                    throw new Exception('User ID is required');
+                }
+                
+                $userId = $_POST['id'];
+                $updateFields = [];
+                $params = [':id' => $userId];
+                
+                $allowedFields = [
+                    'username', 'email', 'first_name', 'last_name', 'date_of_birth',
+                    'gender', 'weight', 'height', 'barangay', 'municipality',
+                    'income_level', 'is_verified', 'is_active'
+                ];
+                
+                foreach ($allowedFields as $field) {
+                    if (isset($_POST[$field])) {
+                        $updateFields[] = "$field = :$field";
+                        $params[":$field"] = $_POST[$field];
+                    }
+                }
+                
+                if (!empty($_POST['password'])) {
+                    $updateFields[] = "password = :password";
+                    $params[':password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                }
+                
+                if (empty($updateFields)) {
+                    throw new Exception('No fields to update');
+                }
+                
+                $sql = "UPDATE users SET " . implode(', ', $updateFields) . " WHERE id = :id";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($params);
+                
+                if ($stmt->rowCount() > 0) {
+                    $response['success'] = true;
+                    $response['message'] = 'User updated successfully';
+                } else {
+                    $response['message'] = 'No changes made or user not found';
+                }
+                break;
+                
+            case 'delete_user':
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    throw new Exception('Database connection not available');
+                }
+                
+                if (empty($_POST['user_id'])) {
+                    throw new Exception('User ID is required');
+                }
+                
+                $userId = $_POST['user_id'];
+                $pdo->beginTransaction();
+                
+                try {
+                    $pdo->exec("DELETE FROM screening_responses WHERE user_id = $userId");
+                    $pdo->exec("DELETE FROM fcm_tokens WHERE user_id = $userId");
+                    $pdo->exec("DELETE FROM ai_recommendations WHERE user_email = (SELECT email FROM users WHERE id = $userId)");
+                    $pdo->exec("DELETE FROM user_preferences WHERE user_id = $userId");
+                    
+                    $stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
+                    $stmt->execute([':id' => $userId]);
+                    
+                    if ($stmt->rowCount() > 0) {
+                        $pdo->commit();
+                        $response['success'] = true;
+                        $response['message'] = 'User deleted successfully';
+                    } else {
+                        $pdo->rollback();
+                        $response['message'] = 'User not found';
+                    }
+                } catch (Exception $e) {
+                    $pdo->rollback();
+                    throw $e;
+                }
+                break;
+                
+            case 'delete_users_by_location':
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    throw new Exception('Database connection not available');
+                }
+                
+                $barangay = $_POST['barangay'] ?? null;
+                $municipality = $_POST['municipality'] ?? null;
+                
+                if (empty($barangay) && empty($municipality)) {
+                    throw new Exception('Barangay or municipality is required');
+                }
+                
+                $whereConditions = [];
+                $params = [];
+                
+                if (!empty($barangay)) {
+                    $whereConditions[] = "barangay = :barangay";
+                    $params[':barangay'] = $barangay;
+                }
+                
+                if (!empty($municipality)) {
+                    $whereConditions[] = "municipality = :municipality";
+                    $params[':municipality'] = $municipality;
+                }
+                
+                $whereClause = implode(' AND ', $whereConditions);
+                $sql = "SELECT id FROM users WHERE $whereClause";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($params);
+                $userIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                
+                if (empty($userIds)) {
+                    $response['message'] = 'No users found for the specified location';
+                } else {
+                    $pdo->beginTransaction();
+                    $deletedCount = 0;
+                    
+                    foreach ($userIds as $userId) {
+                        $pdo->exec("DELETE FROM screening_responses WHERE user_id = $userId");
+                        $pdo->exec("DELETE FROM fcm_tokens WHERE user_id = $userId");
+                        $pdo->exec("DELETE FROM ai_recommendations WHERE user_email = (SELECT email FROM users WHERE id = $userId)");
+                        $pdo->exec("DELETE FROM user_preferences WHERE user_id = $userId");
+                        
+                        $stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
+                        $stmt->execute([':id' => $userId]);
+                        $deletedCount += $stmt->rowCount();
+                    }
+                    
+                    $pdo->commit();
+                    $response['success'] = true;
+                    $response['data'] = ['deleted_count' => $deletedCount];
+                    $response['message'] = "Deleted $deletedCount users from the specified location";
+                }
+                break;
+                
+            case 'delete_all_users':
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    throw new Exception('Database connection not available');
+                }
+                
+                $confirm = $_POST['confirm'] ?? false;
+                if (!$confirm) {
+                    throw new Exception('Confirmation required for deleting all users');
+                }
+                
+                $pdo->beginTransaction();
+                
+                try {
+                    $pdo->exec("DELETE FROM screening_responses");
+                    $pdo->exec("DELETE FROM fcm_tokens");
+                    $pdo->exec("DELETE FROM ai_recommendations");
+                    $pdo->exec("DELETE FROM user_preferences");
+                    
+                    $stmt = $pdo->prepare("DELETE FROM users");
+                    $stmt->execute();
+                    $deletedCount = $stmt->rowCount();
+                    
+                    $pdo->commit();
+                    $response['success'] = true;
+                    $response['data'] = ['deleted_count' => $deletedCount];
+                    $response['message'] = "Deleted all $deletedCount users";
+                } catch (Exception $e) {
+                    $pdo->rollback();
+                    throw $e;
+                }
+                break;
+                
+            default:
+                $response['message'] = 'Invalid action';
+                break;
+        }
+    } catch (Exception $e) {
+        $response['message'] = 'Error: ' . $e->getMessage();
+        error_log('Settings API Error: ' . $e->getMessage());
+    }
+    
+    echo json_encode($response);
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -4703,9 +5011,8 @@ optgroup option {
     var users = [];
 
     // API URLs
-        const API_BASE_URL = window.location.origin + '/unified_api.php';
-    const GET_USERS_URL = API_BASE_URL;
-    const MANAGE_USER_URL = API_BASE_URL;
+        // Use settings.php itself for API calls
+        const API_BASE_URL = window.location.origin + '/settings.php';
     
     // Function to load users from the server with smooth updates
     window.loadUsersInProgress = false;
@@ -4750,7 +5057,8 @@ optgroup option {
         // Create an XMLHttpRequest to fetch app users with risk data
         const xhr = new XMLHttpRequest();
         
-        xhr.open('GET', API_BASE_URL + '?endpoint=usm&t=' + Date.now(), true);
+        xhr.open('POST', API_BASE_URL, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         
         xhr.onreadystatechange = function() {
@@ -4960,7 +5268,7 @@ optgroup option {
             }
         };
         
-        xhr.send();
+        xhr.send('action=get_users');
         
         // Reset the flag when XHR completes (either success or error)
         xhr.onloadend = function() {
@@ -5032,8 +5340,8 @@ optgroup option {
     function addUserToDatabase(userData) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', API_BASE_URL + '?endpoint=add_user', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.open('POST', API_BASE_URL, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
@@ -5055,15 +5363,21 @@ optgroup option {
             };
             
             xhr.onerror = () => reject(new Error('Network error'));
-            xhr.send(JSON.stringify(userData));
+            // Convert userData to form data
+            const formData = new URLSearchParams();
+            formData.append('action', 'add_user');
+            Object.keys(userData).forEach(key => {
+                formData.append(key, userData[key]);
+            });
+            xhr.send(formData);
         });
     }
 
     function updateUserInDatabase(userData) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', API_BASE_URL + '?endpoint=update_user', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.open('POST', API_BASE_URL, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
@@ -5085,18 +5399,24 @@ optgroup option {
             };
             
             xhr.onerror = () => reject(new Error('Network error'));
-            xhr.send(JSON.stringify(userData));
+            // Convert userData to form data
+            const formData = new URLSearchParams();
+            formData.append('action', 'update_user');
+            Object.keys(userData).forEach(key => {
+                formData.append(key, userData[key]);
+            });
+            xhr.send(formData);
         });
     }
 
     function deleteUserFromDatabase(userEmail) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            const url = API_BASE_URL + '?endpoint=delete_user';
+            const url = API_BASE_URL;
             console.log('deleteUserFromDatabase: Calling URL:', url);
             
             xhr.open('POST', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
@@ -5124,18 +5444,21 @@ optgroup option {
             };
             
             xhr.onerror = () => reject(new Error('Network error'));
-            xhr.send(JSON.stringify({ user_email: userEmail }));
+            const formData = new URLSearchParams();
+            formData.append('action', 'delete_user');
+            formData.append('user_id', userEmail); // Assuming userEmail is actually user ID
+            xhr.send(formData);
         });
     }
 
     function deleteUsersByLocationFromDatabase(location) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            const url = API_BASE_URL + '?endpoint=delete_users_by_location';
+            const url = API_BASE_URL;
             console.log('deleteUsersByLocationFromDatabase: Calling URL:', url);
             
             xhr.open('POST', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
@@ -5163,18 +5486,22 @@ optgroup option {
             };
             
             xhr.onerror = () => reject(new Error('Network error'));
-            xhr.send(JSON.stringify({ location: location }));
+            const formData = new URLSearchParams();
+            formData.append('action', 'delete_users_by_location');
+            formData.append('barangay', location.barangay || '');
+            formData.append('municipality', location.municipality || '');
+            xhr.send(formData);
         });
     }
 
     function deleteAllUsersFromDatabase() {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            const url = API_BASE_URL + '?endpoint=delete_all_users';
+            const url = API_BASE_URL;
             console.log('deleteAllUsersFromDatabase: Calling URL:', url);
             
             xhr.open('POST', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
@@ -5202,7 +5529,10 @@ optgroup option {
             };
             
             xhr.onerror = () => reject(new Error('Network error'));
-            xhr.send(JSON.stringify({}));
+            const formData = new URLSearchParams();
+            formData.append('action', 'delete_all_users');
+            formData.append('confirm', 'true');
+            xhr.send(formData);
         });
     }
 
