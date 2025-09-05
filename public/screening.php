@@ -2518,130 +2518,30 @@ header {
                     </thead>
                     <tbody id="assessmentsTableBody">
                         <?php
-                        // Enhanced sample user data with diverse age groups and pregnancy status - 120 placeholder users
-                        $sample_users = [];
-                        
-                        // Extended names list for more variety
-                        $names = [
-                            // Children and Teens (0-17)
-                            'Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales',
-                            'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
-                            'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
-                            'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
-                            'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
-                            // Young Adults (18-35)
-                            'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas',
-                            'Adriana Luna', 'Ricardo Salazar', 'Daniela Moreno', 'Javier Paredes', 'Gabriela Soto', 'Manuel Acosta', 'Valeria Rojas', 'Roberto Miranda', 'Lucia Fuentes', 'Eduardo Leon',
-                            // Adults (36-65)
-                            'Mariana Ramos', 'Felipe Cordova', 'Isabela Mendoza', 'Andres Valdez', 'Carolina Espinoza', 'Oscar Medina', 'Victoria Guerrero', 'Sebastian Luna', 'Adriana Ponce', 'Mateo Rios',
-                            'Sofia Herrera', 'Nicolas Castro', 'Valentina Silva', 'Diego Morales', 'Isabella Cruz', 'Carlos Lopez', 'Ana Reyes', 'Juan Dela Cruz', 'Maria Santos', 'Pedro Martinez',
-                            // Seniors (65+)
-                            'Luz Fernandez', 'Miguel Torres', 'Sofia Rodriguez', 'Gabriel Herrera', 'Natalia Jimenez', 'Rafael Castro', 'Elena Mendoza', 'Fernando Ortega', 'Carmen Rios', 'Hector Vargas'
-                        ];
-                        
-                        $barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose', 'Munting Batangas', 'Cataning', 'Central', 'Dangcol', 'Dona Francisca', 'Lote', 'Malabia', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Juan', 'Talisay', 'Tanato', 'Tortugas', 'Wawa'];
-                        
-                        $bmi_categories = ['Normal', 'Overweight', 'Underweight', 'Obese'];
-                        $meal_assessments = ['Balanced', 'At Risk'];
-                        $lifestyles = ['Active', 'Sedentary'];
-                        $risk_levels = ['Low Risk', 'Medium Risk', 'High Risk'];
-                        
-                        // Create diverse age groups and pregnancy status
-                        for ($i = 0; $i < 120; $i++) {
-                            $bmi_category = $bmi_categories[array_rand($bmi_categories)];
-                            $meal_assessment = $meal_assessments[array_rand($meal_assessments)];
-                            $lifestyle = $lifestyles[array_rand($lifestyles)];
-                            $risk_level = $risk_levels[array_rand($risk_levels)];
-                            
-                            // Generate age based on groups for diversity
-                            $age_group = $i % 4; // 0-3 for different age groups
-                            if ($age_group === 0) {
-                                // Children and Teens (0-17)
-                                $age = rand(5, 17);
-                                $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                $pregnant = 'Not Applicable';
-                            } elseif ($age_group === 1) {
-                                // Young Adults (18-35) - High pregnancy chance
-                                $age = rand(18, 35);
-                                $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                $pregnant = $sex === 'Female' ? (rand(0, 3) === 0 ? 'Yes' : 'No') : 'Not Applicable';
-                            } elseif ($age_group === 2) {
-                                // Adults (36-65) - Medium pregnancy chance
-                                $age = rand(36, 65);
-                                $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                $pregnant = $sex === 'Female' && $age <= 50 ? (rand(0, 5) === 0 ? 'Yes' : 'No') : 'Not Applicable';
-                            } else {
-                                // Seniors (65+)
-                                $age = rand(65, 85);
-                                $sex = rand(0, 1) === 0 ? 'Female' : 'Male';
-                                $pregnant = 'Not Applicable';
+                        // Load real data from user_preferences table
+                        $assessments = [];
+                        if ($conn) {
+                            try {
+                                $stmt = $conn->prepare("SELECT 
+                                    id, user_email, name, age, gender, height_cm, weight_kg, bmi, 
+                                    barangay, municipality, risk_score, malnutrition_risk, 
+                                    created_at, updated_at
+                                    FROM user_preferences 
+                                    ORDER BY created_at DESC 
+                                    LIMIT 100");
+                                $stmt->execute();
+                                $assessments = $stmt->fetchAll();
+                            } catch (Exception $e) {
+                                error_log("Error fetching assessments: " . $e->getMessage());
                             }
-                            
-                            // Generate realistic data based on age and risk level
-                            $risk_score = $risk_level === 'Low Risk' ? rand(5, 12) : ($risk_level === 'Medium Risk' ? rand(13, 20) : rand(21, 30));
-                            
-                            // Adjust height and weight based on age
-                            if ($age < 18) {
-                                // Children and teens
-                                $height = rand(100, 170);
-                                $weight = $bmi_category === 'Normal' ? rand(20, 60) : ($bmi_category === 'Overweight' ? rand(65, 80) : ($bmi_category === 'Underweight' ? rand(15, 25) : rand(85, 100)));
-                            } elseif ($age < 36) {
-                                // Young adults
-                                $height = rand(150, 180);
-                                $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
-                            } elseif ($age < 66) {
-                                // Adults
-                                $height = rand(150, 180);
-                                $weight = $bmi_category === 'Normal' ? rand(50, 80) : ($bmi_category === 'Overweight' ? rand(85, 100) : ($bmi_category === 'Underweight' ? rand(40, 55) : rand(105, 140)));
-                            } else {
-                                // Seniors
-                                $height = rand(145, 175);
-                                $weight = $bmi_category === 'Normal' ? rand(45, 75) : ($bmi_category === 'Overweight' ? rand(80, 95) : ($bmi_category === 'Underweight' ? rand(35, 50) : rand(100, 130)));
-                            }
-                            
-                            $bmi = round($weight / pow($height/100, 2), 1);
-                            
-                            $family_history_options = [['None'], ['Hypertension'], ['Diabetes'], ['Heart Disease'], ['Hypertension', 'Diabetes'], ['Obesity'], ['Malnutrition'], ['Tuberculosis'], ['Kidney Disease']];
-                            $family_history = $family_history_options[array_rand($family_history_options)];
-                            
-                            $risk_factors = [];
-                            if ($bmi_category !== 'Normal') $risk_factors[] = 'BMI: ' . $bmi_category;
-                            if ($meal_assessment === 'At Risk') $risk_factors[] = 'Unbalanced Diet';
-                            if ($lifestyle === 'Sedentary') $risk_factors[] = 'Sedentary Lifestyle';
-                            if ($family_history[0] !== 'None') $risk_factors[] = 'Family History: ' . implode(', ', $family_history);
-                            if (empty($risk_factors)) $risk_factors[] = 'None';
-                            
-                            $sample_users[] = [
-                                'id' => $i + 1,
-                                'name' => $names[$i % count($names)],
-                                'age' => (string)$age,
-                                'sex' => $sex,
-                                'pregnant' => $pregnant,
-                                'municipality' => 'Balanga',
-                                'barangay' => $barangays[$i % count($barangays)],
-                                'height' => (string)$height,
-                                'weight' => (string)$weight,
-                                'bmi' => (string)$bmi,
-                                'bmi_category' => $bmi_category,
-                                'meal_assessment' => $meal_assessment,
-                                'family_history' => $family_history,
-                                'lifestyle' => $lifestyle,
-                                'immunization_status' => 'Complete',
-                                'risk_factors' => $risk_factors,
-                                'risk_score' => (string)$risk_score,
-                                'risk_level' => $risk_level,
-                                'recommendation' => $risk_level === 'Low Risk' ? 'Maintain current healthy lifestyle' : ($risk_level === 'Medium Risk' ? 'Nutrition intervention needed' : 'Immediate lifestyle intervention needed'),
-                                'intervention' => $risk_level === 'Low Risk' ? 'Regular monitoring' : ($risk_level === 'Medium Risk' ? 'DOH feeding program, nutrition counseling' : 'Nutrition counseling, physical activity program, regular health monitoring'),
-                                'created_at' => date('Y-m-d', strtotime('-' . rand(0, 365) . ' days'))
-                            ];
                         }
                         ?>
                         
-                        <?php if (!empty($sample_users)): ?>
-                            <?php foreach ($sample_users as $assessment): ?>
+                        <?php if (!empty($assessments)): ?>
+                            <?php foreach ($assessments as $assessment): ?>
                                 <?php
                                 // Calculate risk level based on BMI and other factors
-                                $bmi = floatval($assessment['bmi']);
+                                $bmi = floatval($assessment['bmi'] ?? 0);
                                 $riskLevel = 'low';
                                 $riskClass = 'low';
                                 
@@ -2656,7 +2556,7 @@ header {
                                 // Get user info
                                 $userName = $assessment['name'] ?? 'Unknown User';
                                 $age = $assessment['age'] ?? 'N/A';
-                                $sex = $assessment['sex'] ?? 'N/A';
+                                $gender = $assessment['gender'] ?? 'N/A';
                                 $municipality = $assessment['municipality'] ?? 'N/A';
                                 $barangay = $assessment['barangay'] ?? 'N/A';
                                 $bmiValue = $assessment['bmi'] ?? 'N/A';
@@ -2665,7 +2565,7 @@ header {
                                 <tr data-risk="<?php echo $riskClass; ?>" data-location="<?php echo htmlspecialchars($municipality); ?>">
                                     <td><?php echo htmlspecialchars($assessment['id']); ?></td>
                                     <td><?php echo htmlspecialchars($userName); ?></td>
-                                    <td><?php echo htmlspecialchars($age . 'y, ' . $sex); ?></td>
+                                    <td><?php echo htmlspecialchars($age . 'y, ' . $gender); ?></td>
                                     <td><?php echo htmlspecialchars($barangay . ', ' . $municipality); ?></td>
                                     <td><?php echo htmlspecialchars($bmiValue); ?></td>
                                     <td>
@@ -2677,7 +2577,7 @@ header {
                         <?php else: ?>
                             <tr>
                                 <td colspan="7" class="no-data-message">
-                                    <div>No MHO assessments found. Start by creating new assessments.</div>
+                                    <div>No MHO assessments found in database. Start by creating new assessments.</div>
                                 </td>
                             </tr>
                         <?php endif; ?>
