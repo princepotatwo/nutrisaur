@@ -24,6 +24,12 @@ $db = DatabaseAPI::getInstance();
 $isAjax = ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) || 
           (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
 
+// Debug logging
+error_log('Settings Debug: REQUEST_METHOD=' . $_SERVER['REQUEST_METHOD']);
+error_log('Settings Debug: POST action=' . ($_POST['action'] ?? 'not set'));
+error_log('Settings Debug: X-Requested-With=' . ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? 'not set'));
+error_log('Settings Debug: isAjax=' . ($isAjax ? 'true' : 'false'));
+
 if ($isAjax) {
     // Set JSON header and prevent any HTML output
     header('Content-Type: application/json');
@@ -45,6 +51,17 @@ if ($isAjax) {
                 $response['success'] = true;
                 $response['message'] = 'AJAX is working correctly';
                 $response['data'] = ['timestamp' => date('Y-m-d H:i:s')];
+                break;
+                
+            case 'debug':
+                $response['success'] = true;
+                $response['message'] = 'Debug info';
+                $response['data'] = [
+                    'method' => $_SERVER['REQUEST_METHOD'],
+                    'action' => $_POST['action'] ?? 'none',
+                    'headers' => getallheaders(),
+                    'post_data' => $_POST
+                ];
                 break;
                 
             case 'get_users':
