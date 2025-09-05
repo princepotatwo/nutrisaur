@@ -5151,6 +5151,7 @@ optgroup option {
         const xhr = new XMLHttpRequest();
         
         xhr.open('POST', API_BASE_URL, true);
+        xhr.withCredentials = true; // Include session cookies
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         
@@ -5434,6 +5435,7 @@ optgroup option {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.open('POST', API_BASE_URL, true);
+            xhr.withCredentials = true; // Include session cookies
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
@@ -5470,6 +5472,7 @@ optgroup option {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.open('POST', API_BASE_URL, true);
+            xhr.withCredentials = true; // Include session cookies
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
@@ -5509,6 +5512,7 @@ optgroup option {
             console.log('deleteUserFromDatabase: Calling URL:', url);
             
             xhr.open('POST', url, true);
+            xhr.withCredentials = true; // Include session cookies
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
@@ -5551,6 +5555,7 @@ optgroup option {
             console.log('deleteUsersByLocationFromDatabase: Calling URL:', url);
             
             xhr.open('POST', url, true);
+            xhr.withCredentials = true; // Include session cookies
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
@@ -5594,6 +5599,7 @@ optgroup option {
             console.log('deleteAllUsersFromDatabase: Calling URL:', url);
             
             xhr.open('POST', url, true);
+            xhr.withCredentials = true; // Include session cookies
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
             xhr.onreadystatechange = function() {
@@ -5864,6 +5870,7 @@ optgroup option {
             // Fetch user data for editing using fetch API
             const response = await fetch(API_BASE_URL, {
                 method: 'POST',
+                credentials: 'include', // Include session cookies
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -6552,6 +6559,7 @@ optgroup option {
             // Fetch fresh user data from API using POST with get_user_data action
             const response = await fetch(API_BASE_URL, {
                 method: 'POST',
+                credentials: 'include', // Include session cookies
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -8267,6 +8275,7 @@ optgroup option {
         try {
             const response = await fetch(API_BASE_URL, {
                 method: 'POST',
+                credentials: 'include', // Include session cookies
                 headers: {
                     'Content-Type': 'application/json',
                 },
