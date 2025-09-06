@@ -4435,14 +4435,6 @@ optgroup option {
                             <span class="btn-icon">📥</span>
                             <span class="btn-text">Download Template</span>
                         </button>
-                        <button class="btn btn-info" onclick="downloadDetailedTemplate()">
-                            <span class="btn-icon">📋</span>
-                            <span class="btn-text">Download Detailed Template</span>
-                        </button>
-                        <button class="btn btn-secondary" onclick="downloadBasicTemplate()">
-                            <span class="btn-icon">📝</span>
-                            <span class="btn-text">Download Basic Template</span>
-                        </button>
                         <button class="btn btn-add" onclick="showCSVImportModal()">
                             <span class="btn-icon">📁</span>
                             <span class="btn-text">Import CSV</span>
@@ -8654,179 +8646,19 @@ optgroup option {
             // In a real implementation, this would show a modal form
         }
 
-        // Download CSV Template Function - Updated to match comprehensive screening database
+        // Download CSV Template Function - Updated to match user_preferences table structure
         function downloadCSVTemplate() {
-            // Create comprehensive CSV template that aligns with both user_preferences and comprehensive_screening tables
-            const csvContent = `user_email,name,birthday,gender,weight,height,barangay,income,age,muac,swelling,weight_loss,dietary_diversity,feeding_behavior,physical_thin,physical_shorter,physical_weak,physical_none,has_recent_illness,has_eating_difficulty,has_food_insecurity,has_micronutrient_deficiency,has_functional_decline,goal,risk_score,allergies,diet_prefs,avoid_foods,municipality,birthdate,age_months,sex,pregnant,bmi,bmi_category,food_carbs,food_protein,food_veggies_fruits,food_dairy,meal_details,dietary_diversity_score,family_diabetes,family_hypertension,family_heart_disease,family_kidney_disease,family_tuberculosis,family_obesity,family_malnutrition,family_other,family_none,lifestyle,lifestyle_other,physical_activity_hours,smoking_status,alcohol_consumption,medication_use,chronic_conditions,recent_illnesses,healthcare_access,income_level,education_level,occupation,family_size,water_source,sanitation_facilities,risk_level,malnutrition_status,assessment_summary,recommendations,intervention_needed,follow_up_date,screening_type,screening_version,created_by
-john_doe@example.com,John Doe,1990-01-01,Male,70.5,175.0,Lamao,PHP 20001-40000/month (Middle),34,25.5,no,<5% or none,6,good appetite,0,0,0,1,0,0,0,0,0,Maintain healthy weight,25,None,balanced diet,None,A. Rivera (Pob.),1990-01-01,408,Male,Not Applicable,23.0,Normal,1,1,1,1,Good variety of foods,6,0,0,0,0,0,0,0,1,Active,Regular exercise,2.0,Non-smoker,Occasional,None,None,None,Good,Medium,High School,Office Worker,4,Tap water,Flush toilet,Low,Normal,Healthy individual,Continue current lifestyle,0,,comprehensive,1.0,admin
-jane_smith@example.com,Jane Smith,1985-05-15,Female,60.0,165.0,Pilar,PHP 12031-20000/month (Low),39,22.0,no,<5% or none,5,fair appetite,1,0,0,0,1,0,1,0,0,Improve nutrition,45,Shellfish,vegetarian,processed foods,Cupang North,1985-05-15,468,Female,Not Applicable,22.0,Normal,1,1,0,1,Limited variety,5,1,0,0,0,0,0,1,0,Moderate,Some exercise,1.0,Non-smoker,None,Blood pressure medication,Hypertension,Recent cold,Moderate,Low,Elementary,Housewife,5,Well water,Pit latrine,Moderate,Mild,At risk for malnutrition,Increase protein intake,1,2024-12-15,comprehensive,1.0,admin`;
+            // Create CSV template that aligns with user_preferences table structure
+            const csvContent = `user_email,username,name,birthday,age,gender,height,weight,bmi,muac,swelling,weight_loss,dietary_diversity,feeding_behavior,physical_thin,physical_shorter,physical_weak,physical_none,physical_signs,has_recent_illness,has_eating_difficulty,has_food_insecurity,has_micronutrient_deficiency,has_functional_decline,goal,risk_score,screening_answers,allergies,diet_prefs,avoid_foods,barangay,income
+john_doe@example.com,johndoe,John Doe,1990-01-01,34,male,175.0,70.5,23.0,25.5,no,<5% or none,6,good appetite,0,0,0,1,None,0,0,0,0,0,Maintain healthy weight,25,"{""gender"":""male"",""weight"":70.5,""height"":175.0}",None,balanced diet,None,Lamao,PHP 20001-40000/month (Middle)
+jane_smith@example.com,janesmith,Jane Smith,1985-05-15,39,female,165.0,60.0,22.0,22.0,no,<5% or none,5,fair appetite,1,0,0,0,"[""thin""]",1,0,1,0,0,Improve nutrition,45,"{""gender"":""female"",""weight"":60.0,""height"":165.0}",Shellfish,vegetarian,processed foods,Pilar,PHP 12031-20000/month (Low)`;
 
             // Create blob and download
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', 'comprehensive_screening_template.csv');
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Download Detailed Template Function with field descriptions
-        function downloadDetailedTemplate() {
-            // Create detailed CSV template with field descriptions and validation rules
-            const detailedContent = `# COMPREHENSIVE SCREENING DATA TEMPLATE
-# This template includes all fields from both user_preferences and comprehensive_screening tables
-# 
-# FIELD DESCRIPTIONS AND VALIDATION RULES:
-# ======================================
-#
-# BASIC INFORMATION (Required):
-# - user_email: Valid email address (REQUIRED)
-# - name: Full name (REQUIRED)
-# - birthday: Date in YYYY-MM-DD format (REQUIRED)
-# - gender: Male or Female (REQUIRED)
-# - age: Integer (REQUIRED)
-# - barangay: Barangay name (REQUIRED)
-# - income: Income level description (REQUIRED)
-#
-# ANTHROPOMETRIC DATA:
-# - weight: Decimal number (kg)
-# - height: Decimal number (cm)
-# - bmi: Decimal number (calculated as weight/(height/100)^2)
-# - bmi_category: Normal, Underweight, Overweight, Obese
-# - muac: Decimal number (cm) - Mid-Upper Arm Circumference
-#
-# PHYSICAL ASSESSMENT:
-# - swelling: yes, no
-# - weight_loss: <5% or none, 5-10%, >10%
-# - feeding_behavior: good appetite, fair appetite, poor appetite
-# - physical_thin: 1 (yes) or 0 (no)
-# - physical_shorter: 1 (yes) or 0 (no)
-# - physical_weak: 1 (yes) or 0 (no)
-# - physical_none: 1 (yes) or 0 (no)
-#
-# HEALTH CONDITIONS (1 = yes, 0 = no):
-# - has_recent_illness: 1 or 0
-# - has_eating_difficulty: 1 or 0
-# - has_food_insecurity: 1 or 0
-# - has_micronutrient_deficiency: 1 or 0
-# - has_functional_decline: 1 or 0
-#
-# DIETARY ASSESSMENT:
-# - dietary_diversity: Integer (0-10)
-# - food_carbs: 1 or 0
-# - food_protein: 1 or 0
-# - food_veggies_fruits: 1 or 0
-# - food_dairy: 1 or 0
-# - meal_details: Text description
-# - dietary_diversity_score: Integer (0-10)
-#
-# FAMILY HISTORY (1 = yes, 0 = no):
-# - family_diabetes: 1 or 0
-# - family_hypertension: 1 or 0
-# - family_heart_disease: 1 or 0
-# - family_kidney_disease: 1 or 0
-# - family_tuberculosis: 1 or 0
-# - family_obesity: 1 or 0
-# - family_malnutrition: 1 or 0
-# - family_none: 1 or 0
-# - family_other: Text description
-#
-# LIFESTYLE:
-# - lifestyle: Active, Sedentary, Moderate, Other
-# - lifestyle_other: Text description
-# - physical_activity_hours: Decimal number
-# - smoking_status: Non-smoker, Former smoker, Current smoker
-# - alcohol_consumption: None, Occasional, Regular, Heavy
-#
-# HEALTH STATUS:
-# - medication_use: Text description
-# - chronic_conditions: Text description
-# - recent_illnesses: Text description
-# - healthcare_access: Good, Moderate, Poor
-#
-# SOCIOECONOMIC:
-# - income_level: Very Low, Low, Medium, High
-# - education_level: Elementary, High School, College, Graduate
-# - occupation: Text description
-# - family_size: Integer
-# - water_source: Tap water, Well water, Spring water, Other
-# - sanitation_facilities: Flush toilet, Pit latrine, Open defecation, Other
-#
-# ASSESSMENT RESULTS:
-# - risk_score: Integer (0-100)
-# - risk_level: Low, Moderate, High, Severe
-# - malnutrition_status: Normal, Mild, Moderate, Severe
-# - assessment_summary: Text description
-# - recommendations: Text description
-# - intervention_needed: 1 or 0
-# - follow_up_date: Date in YYYY-MM-DD format
-#
-# METADATA:
-# - screening_type: comprehensive
-# - screening_version: 1.0
-# - created_by: admin, user, mobile_app
-#
-# SAMPLE DATA (Remove this section when using):
-# ============================================
-user_email,name,birthday,gender,weight,height,barangay,income,age,muac,swelling,weight_loss,dietary_diversity,feeding_behavior,physical_thin,physical_shorter,physical_weak,physical_none,has_recent_illness,has_eating_difficulty,has_food_insecurity,has_micronutrient_deficiency,has_functional_decline,goal,risk_score,allergies,diet_prefs,avoid_foods,municipality,birthdate,age_months,sex,pregnant,bmi,bmi_category,food_carbs,food_protein,food_veggies_fruits,food_dairy,meal_details,dietary_diversity_score,family_diabetes,family_hypertension,family_heart_disease,family_kidney_disease,family_tuberculosis,family_obesity,family_malnutrition,family_other,family_none,lifestyle,lifestyle_other,physical_activity_hours,smoking_status,alcohol_consumption,medication_use,chronic_conditions,recent_illnesses,healthcare_access,income_level,education_level,occupation,family_size,water_source,sanitation_facilities,risk_level,malnutrition_status,assessment_summary,recommendations,intervention_needed,follow_up_date,screening_type,screening_version,created_by
-john_doe@example.com,John Doe,1990-01-01,Male,70.5,175.0,Lamao,PHP 20001-40000/month (Middle),34,25.5,no,<5% or none,6,good appetite,0,0,0,1,0,0,0,0,0,Maintain healthy weight,25,None,balanced diet,None,A. Rivera (Pob.),1990-01-01,408,Male,Not Applicable,23.0,Normal,1,1,1,1,Good variety of foods,6,0,0,0,0,0,0,0,1,Active,Regular exercise,2.0,Non-smoker,Occasional,None,None,None,Good,Medium,High School,Office Worker,4,Tap water,Flush toilet,Low,Normal,Healthy individual,Continue current lifestyle,0,,comprehensive,1.0,admin
-jane_smith@example.com,Jane Smith,1985-05-15,Female,60.0,165.0,Pilar,PHP 12031-20000/month (Low),39,22.0,no,<5% or none,5,fair appetite,1,0,0,0,1,0,1,0,0,Improve nutrition,45,Shellfish,vegetarian,processed foods,Cupang North,1985-05-15,468,Female,Not Applicable,22.0,Normal,1,1,0,1,Limited variety,5,1,0,0,0,0,0,1,0,Moderate,Some exercise,1.0,Non-smoker,None,Blood pressure medication,Hypertension,Recent cold,Moderate,Low,Elementary,Housewife,5,Well water,Pit latrine,Moderate,Mild,At risk for malnutrition,Increase protein intake,1,2024-12-15,comprehensive,1.0,admin`;
-
-            // Create blob and download
-            const blob = new Blob([detailedContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'comprehensive_screening_detailed_template.csv');
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Download Basic Template Function - Simple version for quick data entry
-        function downloadBasicTemplate() {
-            // Create basic CSV template with essential fields only
-            const basicContent = `# BASIC SCREENING DATA TEMPLATE
-# This template includes only the essential fields for quick data entry
-# 
-# REQUIRED FIELDS:
-# - user_email: Valid email address (REQUIRED)
-# - name: Full name (REQUIRED)
-# - birthday: Date in YYYY-MM-DD format (REQUIRED)
-# - gender: Male or Female (REQUIRED)
-# - age: Integer (REQUIRED)
-# - barangay: Barangay name (REQUIRED)
-# - income: Income level description (REQUIRED)
-#
-# OPTIONAL FIELDS (can be left empty):
-# - weight: Decimal number (kg)
-# - height: Decimal number (cm)
-# - muac: Decimal number (cm) - Mid-Upper Arm Circumference
-# - swelling: yes, no
-# - weight_loss: <5% or none, 5-10%, >10%
-# - dietary_diversity: Integer (0-10)
-# - feeding_behavior: good appetite, fair appetite, poor appetite
-# - risk_score: Integer (0-100)
-# - allergies: Text description
-# - diet_prefs: Text description
-# - avoid_foods: Text description
-#
-# SAMPLE DATA (Remove this section when using):
-# ============================================
-user_email,name,birthday,gender,age,barangay,income,weight,height,muac,swelling,weight_loss,dietary_diversity,feeding_behavior,risk_score,allergies,diet_prefs,avoid_foods
-john_doe@example.com,John Doe,1990-01-01,Male,34,Lamao,PHP 20001-40000/month (Middle),70.5,175.0,25.5,no,<5% or none,6,good appetite,25,None,balanced diet,None
-jane_smith@example.com,Jane Smith,1985-05-15,Female,39,Pilar,PHP 12031-20000/month (Low),60.0,165.0,22.0,no,<5% or none,5,fair appetite,45,Shellfish,vegetarian,processed foods`;
-
-            // Create blob and download
-            const blob = new Blob([basicContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'basic_screening_template.csv');
+            link.setAttribute('download', 'user_preferences_template.csv');
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
