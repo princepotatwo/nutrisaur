@@ -5068,6 +5068,82 @@ optgroup option {
     // User data model and controller
     var users = [];
 
+    // Display users in the table
+    function displayUsers(users) {
+        const tbody = document.getElementById('usersTableBody');
+        if (!tbody) {
+            console.error('usersTableBody element not found');
+            return;
+        }
+        
+        tbody.innerHTML = '';
+        
+        if (!users || users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center">No users found</td></tr>';
+            return;
+        }
+        
+        users.forEach((user, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${user.name || user.username || 'N/A'}</td>
+                <td>${user.user_email || user.email || 'N/A'}</td>
+                <td>${user.barangay || 'N/A'}</td>
+                <td>${user.age || 'N/A'}</td>
+                <td>${user.gender || 'N/A'}</td>
+                <td>${user.risk_score || 'N/A'}</td>
+                <td>${user.income || 'N/A'}</td>
+                <td>
+                    <button class="btn btn-sm btn-edit" onclick="editUser(${index})">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.user_email || user.email}')">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Edit user function
+    function editUser(index) {
+        const user = window.currentUsers[index];
+        if (!user) {
+            alert('User not found');
+            return;
+        }
+        
+        // For now, just show an alert - you can implement a modal later
+        alert(`Edit user: ${user.name || user.username} (${user.user_email || user.email})`);
+        console.log('Edit user:', user);
+    }
+
+    // Delete user function
+    async function deleteUser(email) {
+        if (!confirm(`Are you sure you want to delete user: ${email}?`)) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(API_BASE_URL + '?endpoint=delete_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `user_email=${encodeURIComponent(email)}`
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('User deleted successfully');
+                loadUsers(); // Refresh the table
+            } else {
+                alert('Failed to delete user: ' + (result.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            alert('Error deleting user: ' + error.message);
+        }
+    }
+
     // Generate sample users for demonstration
     function generateSampleUsers() {
         const sampleUsers = [];
@@ -7832,12 +7908,13 @@ optgroup option {
             
             const requestBody = {
                 user_email: userData.user_email,
+                username: userData.username || userData.user_email.split('@')[0], // Generate username from email
                 name: userData.name,
                 birthday: userData.birthday,
                 age: age,
                 gender: userData.gender,
-                height_cm: parseFloat(userData.height) || 0,
-                weight_kg: parseFloat(userData.weight) || 0,
+                height: parseFloat(userData.height) || 0,
+                weight: parseFloat(userData.weight) || 0,
                 bmi: bmi,
                 muac: parseFloat(userData.muac) || 0,
                 risk_score: parseInt(userData.risk_score) || 0,
@@ -7853,12 +7930,17 @@ optgroup option {
             
             console.log('Sending to API:', requestBody);
             
+            // Convert to form data for the API
+            const formData = new FormData();
+            Object.keys(requestBody).forEach(key => {
+                if (requestBody[key] !== null && requestBody[key] !== undefined) {
+                    formData.append(key, requestBody[key]);
+                }
+            });
+            
             const userResponse = await fetch(API_BASE_URL + '?endpoint=add_user', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody)
+                body: formData
             });
             
             console.log('User API response status:', userResponse.status);
