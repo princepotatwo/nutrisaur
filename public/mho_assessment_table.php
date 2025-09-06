@@ -13,29 +13,19 @@ $userId = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 $email = $_SESSION['email'];
 
-// Database connection
-$mysql_host = 'mainline.proxy.rlwy.net';
-$mysql_port = 26063;
-$mysql_user = 'root';
-$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-$mysql_database = 'railway';
+// Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
+require_once __DIR__ . '/api/EasyDB.php';
 
-try {
-    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-    $pdo = new PDO($dsn, $mysql_user, $mysql_password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-} catch (PDOException $e) {
-    error_log("Database connection failed: " . $e->getMessage());
-    $pdo = null;
+// Check database connection
+if (!isDBConnected()) {
+    error_log("MHO Assessment Table: Database connection not available");
 }
 
-// Fetch MHO assessment data
+// Fetch MHO assessment data using centralized database
 $assessments = [];
-if ($pdo) {
+if (isDBConnected()) {
     try {
-        $stmt = $pdo->query("
+        $assessments = runQuery("
             SELECT 
                 sa.*,
                 u.username,
@@ -46,9 +36,8 @@ if ($pdo) {
             ORDER BY sa.created_at DESC
             LIMIT 100
         ");
-        $assessments = $stmt->fetchAll();
     } catch (Exception $e) {
-        error_log("Error fetching assessments: " . $e->getMessage());
+        error_log("Failed to fetch assessments: " . $e->getMessage());
     }
 }
 ?>

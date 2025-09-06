@@ -8,43 +8,17 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
     exit;
 }
 
-$mysql_host = 'mainline.proxy.rlwy.net';
-$mysql_port = 26063;
-$mysql_user = 'root';
-$mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-$mysql_database = 'railway';
+// Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
+require_once __DIR__ . '/api/DatabaseHelper.php';
 
-if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
-    $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
-    $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
-    if (preg_match($pattern, $mysql_url, $matches)) {
-        $mysql_user = $matches[1];
-        $mysql_password = $matches[2];
-        $mysql_host = $matches[3];
-        $mysql_port = $matches[4];
-        $mysql_database = $matches[5];
-    }
-}
+// Get database helper instance
+$db = DatabaseHelper::getInstance();
 
-try {
-    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-    
-    $pdoOptions = [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_TIMEOUT => 30,
-        PDO::ATTR_PERSISTENT => false,
-        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
-        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
-    ];
-    
-    $conn = new PDO($dsn, $mysql_user, $mysql_password, $pdoOptions);
-    $conn->query("SELECT 1");
-    
-} catch (PDOException $e) {
-    error_log("Database connection failed: " . $e->getMessage());
-    $conn = null;
-    $dbError = "Database connection failed: " . $e->getMessage();
+// Check if database is available
+$dbError = null;
+if (!$db->isAvailable()) {
+    $dbError = "Database connection not available";
+    error_log($dbError);
 }
 
 // Get user info

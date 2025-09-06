@@ -4,12 +4,16 @@ header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Include database connection
-require_once __DIR__ . '/../config.php';
+// Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
+require_once __DIR__ . '/DatabaseAPI.php';
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db = DatabaseAPI::getInstance();
+    $conn = $db->getPDO();
+    
+    if (!$conn) {
+        throw new Exception("Database connection not available");
+    }
     
     // Check if user_preferences table exists
     $stmt = $conn->prepare("SHOW TABLES LIKE 'user_preferences'");

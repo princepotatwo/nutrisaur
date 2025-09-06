@@ -18,15 +18,16 @@ if ($isLoggedIn) {
 }
 
 // Use the centralized Database API with Railway configuration
+require_once __DIR__ . "/api/DatabaseHelper.php";
 require_once __DIR__ . "/api/DatabaseAPI.php";
-require_once __DIR__ . "/api/DatabaseAPI.php";
-$db = DatabaseAPI::getInstance();
 
-// Get database connection
-$conn = $db->getPDO();
+$db = DatabaseHelper::getInstance();
 
-if (!$conn) {
+// Check database availability
+$dbError = null;
+if (!$db->isAvailable()) {
     $dbError = "Database connection failed";
+    error_log("Home page: Database connection not available");
 }
 
 $loginError = "";
@@ -41,12 +42,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     if (empty($usernameOrEmail) || empty($password)) {
         $loginError = "Please enter both username/email and password";
     } else {
-        // Use the centralized authentication method
-        $result = $db->authenticateUser($usernameOrEmail, $password);
+        // Use the centralized authentication method through DatabaseAPI
+        $dbAPI = DatabaseAPI::getInstance();
+        $result = $dbAPI->authenticateUser($usernameOrEmail, $password);
         
         if ($result['success']) {
             // Use centralized session management
-            $db->setUserSession($result['data'], $result['user_type'] === 'admin');
+            $dbAPI->setUserSession($result['data'], $result['user_type'] === 'admin');
             
             // Redirect to dashboard
             header("Location: /dash");

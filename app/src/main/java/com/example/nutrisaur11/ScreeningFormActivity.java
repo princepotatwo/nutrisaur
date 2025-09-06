@@ -835,8 +835,8 @@ public class ScreeningFormActivity extends AppCompatActivity {
                 requestData.put("risk_score", riskScore);
                 requestData.put("screening_data", screeningData.toString());
                 
-                // Make HTTP request to comprehensive screening API
-                java.net.URL url = new java.net.URL(Constants.API_BASE_URL + "/api/comprehensive_screening.php");
+                // Make HTTP request to FLEXIBLE comprehensive screening API
+                java.net.URL url = new java.net.URL(Constants.API_BASE_URL + "api/comprehensive_screening.php?action=save");
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");

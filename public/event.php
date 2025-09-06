@@ -80,80 +80,34 @@ if (!$userId || !$username || !$email) {
     exit;
 }
 
-// Create a safe database wrapper that won't crash the page
-function safeDbQuery($conn, $sql, $params = []) {
-    if (!$conn) {
-        return null;
-    }
-    
-    try {
-        $stmt = $conn->prepare($sql);
-        if ($params) {
-            $stmt->execute($params);
-        } else {
-            $stmt->execute();
-        }
-        return $stmt;
-    } catch (Exception $e) {
-        error_log("Database query failed: " . $e->getMessage());
-        return null;
-    }
-}
+// Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
+require_once __DIR__ . '/api/DatabaseHelper.php';
 
-    // Use direct database connection like the working API
-    $mysql_host = 'mainline.proxy.rlwy.net';
-    $mysql_port = 26063;
-    $mysql_user = 'root';
-    $mysql_password = 'nZhQwfTnAJfFieCpIclAMtOQbBxcjwgy';
-    $mysql_database = 'railway';
-
-    // If MYSQL_PUBLIC_URL is set (Railway sets this), parse it
-    if (isset($_ENV['MYSQL_PUBLIC_URL'])) {
-        $mysql_url = $_ENV['MYSQL_PUBLIC_URL'];
-        $pattern = '/mysql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/';
-        if (preg_match($pattern, $mysql_url, $matches)) {
-            $mysql_user = $matches[1];
-            $mysql_password = $matches[2];
-            $mysql_host = $matches[3];
-            $mysql_port = $matches[4];
-            $mysql_database = $matches[5];
-        }
-    }
+// Get database helper instance
+$db = DatabaseHelper::getInstance();
 
 // Initialize variables
-$dbConnected = false;
+$dbConnected = $db->isAvailable();
 $errorMessage = null;
 $programs = [];
 
-try {
-    // Create database connection directly like the working API
-    $dsn = "mysql:host={$mysql_host};port={$mysql_port};dbname={$mysql_database};charset=utf8mb4";
-    $conn = new PDO($dsn, $mysql_user, $mysql_password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_TIMEOUT => 10
-    ]);
-    
-    if ($conn) {
-        $dbConnected = true;
-        
-        // Fetch programs from database using safe wrapper
-        $stmt = safeDbQuery($conn, "SELECT * FROM programs ORDER BY date_time DESC");
-        if ($stmt) {
-            $programs = $stmt->fetchAll();
+if ($dbConnected) {
+    try {
+        // Fetch programs from database using centralized API
+        $result = $db->select('programs', '*', '', [], 'date_time DESC');
+        if ($result['success']) {
+            $programs = $result['data'];
         } else {
             $programs = [];
+            $errorMessage = "Failed to fetch programs: " . ($result['message'] ?? 'Unknown error');
         }
-    } else {
+    } catch (Exception $e) {
         $dbConnected = false;
-        $errorMessage = "Database connection failed: Could not establish connection";
+        $errorMessage = "Database query failed: " . $e->getMessage();
         $programs = [];
     }
-    
-} catch(Exception $e) {
-    $dbConnected = false;
-    $errorMessage = "Database connection failed: " . $e->getMessage();
-    $programs = [];
+} else {
+    $errorMessage = "Database connection not available";
 }
 
 // Check if program recommendation was passed from community hub
