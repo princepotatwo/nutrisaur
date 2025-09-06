@@ -5154,8 +5154,8 @@ optgroup option {
     }
 
     // API URLs
-        // Use dedicated Settings API that uses Universal DatabaseAPI internally
-        const API_BASE_URL = window.location.origin + '/api/settings_api.php';
+        // Use simple Settings API for testing
+        const API_BASE_URL = window.location.origin + '/api/simple_settings_api.php';
     
     // Function to load users from the server with smooth updates
     window.loadUsersInProgress = false;
