@@ -5108,6 +5108,51 @@ optgroup option {
         return sampleUsers;
     }
 
+    // Display users in the table
+    function displayUsers(users) {
+        const tbody = document.getElementById('usersTableBody');
+        if (!tbody) {
+            console.error('Users table body not found');
+            return;
+        }
+
+        // Clear existing rows
+        tbody.innerHTML = '';
+
+        if (!users || users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--color-text);">No users found</td></tr>';
+            return;
+        }
+
+        // Add user rows
+        users.forEach((user, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${user.name || 'N/A'}</td>
+                <td>${user.email || 'N/A'}</td>
+                <td>${user.age || 'N/A'}</td>
+                <td>${user.gender || 'N/A'}</td>
+                <td>${user.barangay || 'N/A'}</td>
+                <td>${user.risk_score || 'N/A'}</td>
+                <td>${user.malnutrition_risk || 'N/A'}</td>
+                <td>
+                    <button class="btn btn-edit" onclick="editUser('${user.email || user.id}')" title="Edit User">
+                        <span class="btn-icon">✏️</span>
+                    </button>
+                    <button class="btn btn-suspend" onclick="suspendUser('${user.email || user.id}')" title="Suspend User">
+                        <span class="btn-icon">⏸️</span>
+                    </button>
+                    <button class="btn btn-delete" onclick="deleteUser('${user.email || user.id}')" title="Delete User">
+                        <span class="btn-icon">🗑️</span>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        console.log(`Displayed ${users.length} users in table`);
+    }
+
     // API URLs
         // Use dedicated Settings API that uses Universal DatabaseAPI internally
         const API_BASE_URL = window.location.origin + '/api/settings_api.php';
@@ -7790,7 +7835,7 @@ optgroup option {
     
     async function checkUserExists(email) {
         try {
-            const response = await fetch(API_BASE_URL + '?endpoint=usm&t=' + Date.now());
+            const response = await fetch(API_BASE_URL + '?action=usm&t=' + Date.now());
             const data = await response.json();
             
             if (data.users) {
@@ -7827,18 +7872,18 @@ optgroup option {
                 }
             }
             
-            // Create user with ALL data matching the actual database structure
-            console.log('Creating user with database-compatible data...');
+            // Create user with data matching the settings_api.php format
+            console.log('Creating user with API-compatible data...');
             
             const requestBody = {
                 user_email: userData.user_email,
+                username: userData.username || userData.user_email.split('@')[0],
                 name: userData.name,
                 birthday: userData.birthday,
-                age: age,
+                age: age || userData.age,
                 gender: userData.gender,
-                height_cm: parseFloat(userData.height) || 0,
-                weight_kg: parseFloat(userData.weight) || 0,
-                bmi: bmi,
+                height: parseFloat(userData.height_cm) || 0,
+                weight: parseFloat(userData.weight_kg) || 0,
                 muac: parseFloat(userData.muac) || 0,
                 risk_score: parseInt(userData.risk_score) || 0,
                 allergies: userData.allergies || '',
@@ -7847,18 +7892,36 @@ optgroup option {
                 barangay: userData.barangay || '',
                 income: userData.income || '',
                 municipality: userData.municipality || '',
-                province: userData.province || '',
-                screening_date: new Date().toISOString().split('T')[0]
+                province: userData.province || ''
             };
             
             console.log('Sending to API:', requestBody);
             
-            const userResponse = await fetch(API_BASE_URL + '?endpoint=add_user', {
+            const userResponse = await fetch(API_BASE_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify(requestBody)
+                body: new URLSearchParams({
+                    action: 'add_user',
+                    user_email: requestBody.user_email,
+                    username: requestBody.username,
+                    name: requestBody.name,
+                    birthday: requestBody.birthday,
+                    age: requestBody.age,
+                    gender: requestBody.gender,
+                    height: requestBody.height,
+                    weight: requestBody.weight,
+                    muac: requestBody.muac,
+                    risk_score: requestBody.risk_score,
+                    allergies: requestBody.allergies,
+                    diet_prefs: requestBody.diet_prefs,
+                    avoid_foods: requestBody.avoid_foods,
+                    barangay: requestBody.barangay,
+                    income: requestBody.income,
+                    municipality: requestBody.municipality,
+                    province: requestBody.province
+                })
             });
             
             console.log('User API response status:', userResponse.status);
@@ -8648,10 +8711,10 @@ optgroup option {
 
         // Download CSV Template Function
         function downloadCSVTemplate() {
-            // Create CSV template content - using the format that was working before
-            const csvContent = `user_email,name,birthday,gender,weight,height,barangay,income
-john_doe@example.com,John Doe,1990-01-01,male,70,175,Lamao,PHP 20,001–40,000/month (Middle)
-jane_smith@example.com,Jane Smith,1985-05-15,female,60,165,Pilar,PHP 12,031–20,000/month (Low)`;
+            // Create CSV template content - using the correct database schema format
+            const csvContent = `user_email,username,name,birthday,age,gender,height_cm,weight_kg,barangay,income,municipality,province,muac,risk_score,allergies,diet_prefs,avoid_foods
+john_doe@example.com,john_doe,John Doe,1990-01-01,34,male,175,70,Lamao,PHP 20,001–40,000/month (Middle),Mariveles,Bataan,25,5,None,Regular diet,None
+jane_smith@example.com,jane_smith,Jane Smith,1985-05-15,39,female,165,60,Pilar,PHP 12,031–20,000/month (Low),Mariveles,Bataan,23,3,Peanuts,Vegetarian,Shellfish`;
 
             // Create blob and download
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -8811,8 +8874,8 @@ jane_smith@example.com,Jane Smith,1985-05-15,female,60,165,Pilar,PHP 12,031–20
                 const lines = csvContent.split('\n');
                 const headers = lines[0].split(',').map(h => h.trim());
                 
-                // Validate headers - using the format that was working before
-                const requiredHeaders = ['user_email', 'name', 'birthday', 'gender', 'weight', 'height', 'barangay', 'income'];
+                // Validate headers - using the correct database schema format
+                const requiredHeaders = ['user_email', 'username', 'name', 'birthday', 'age', 'gender', 'height_cm', 'weight_kg', 'barangay', 'income'];
                 const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
                 
                 if (missingHeaders.length > 0) {
