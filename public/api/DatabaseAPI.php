@@ -23,34 +23,22 @@ class DatabaseAPI {
     private static $instance = null;
     
     public function __construct() {
-        try {
-            // Initialize connections with retry logic
-            $this->pdo = $this->establishPDOConnection();
-            
-            // Try to get MySQLi connection, but don't fail if it doesn't work
-            try {
-                $this->mysqli = getMysqliConnection();
-            } catch (Exception $e) {
-                error_log("DatabaseAPI: MySQLi connection failed: " . $e->getMessage());
-                $this->mysqli = null;
-            }
-            
-            // Ensure PDO connection is properly set up
-            if ($this->pdo) {
-                $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            }
-            
-            // Debug: Log connection status
-            error_log("DatabaseAPI Constructor - PDO: " . ($this->pdo ? 'success' : 'failed') . ", MySQLi: " . ($this->mysqli ? 'success' : 'failed'));
-            
-            // If PDO connection failed, throw an exception
-            if (!$this->pdo) {
-                throw new Exception("Failed to establish PDO connection");
-            }
-        } catch (Exception $e) {
-            error_log("DatabaseAPI Constructor Error: " . $e->getMessage());
-            throw $e;
+        // Initialize connections with retry logic
+        $this->pdo = $this->establishPDOConnection();
+        $this->mysqli = getMysqliConnection();
+        
+        // Ensure PDO connection is properly set up
+        if ($this->pdo) {
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        }
+        
+        // Debug: Log connection status
+        error_log("DatabaseAPI Constructor - PDO: " . ($this->pdo ? 'success' : 'failed') . ", MySQLi: " . ($this->mysqli ? 'success' : 'failed'));
+        
+        // If both connections failed, log a warning but don't crash
+        if (!$this->pdo && !$this->mysqli) {
+            error_log("Warning: Database connections failed. Application will run in limited mode.");
         }
     }
     

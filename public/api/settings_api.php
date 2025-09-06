@@ -8,7 +8,7 @@
 session_start();
 
 // Use Universal DatabaseAPI
-require_once __DIR__ . '/DatabaseAPI.php';
+require_once __DIR__ . '/DatabaseHelper.php';
 
 // Set JSON header
 header('Content-Type: application/json');
@@ -19,16 +19,11 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Get database API instance
-try {
-    $db = DatabaseAPI::getInstance();
-    
-    if (!$db->isAvailable()) {
-        echo json_encode(['success' => false, 'error' => 'Database not available']);
-        exit;
-    }
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+// Get database helper instance
+$db = DatabaseHelper::getInstance();
+
+if (!$db->isAvailable()) {
+    echo json_encode(['success' => false, 'error' => 'Database not available']);
     exit;
 }
 
@@ -38,11 +33,10 @@ $action = $_POST['action'] ?? $_GET['action'] ?? '';
 try {
     switch ($action) {
         case 'get_users':
-        case 'usm':
             // Get all user preferences using Universal DatabaseAPI
-            $result = $db->universalSelect(
+            $result = $db->select(
                 'user_preferences',
-                'id, user_email, username, age, gender, barangay, municipality, province, weight_kg, height_cm, bmi, risk_score, malnutrition_risk, screening_date, created_at, updated_at, name, birthday, income, muac, screening_answers, allergies, diet_prefs, avoid_foods, swelling, weight_loss, feeding_behavior, physical_signs, dietary_diversity, clinical_risk_factors, whz_score, income_level',
+                'id, user_email, age, gender, barangay, municipality, province, weight_kg, height_cm, bmi, risk_score, malnutrition_risk, screening_date, created_at, updated_at, name, birthday, income, muac, screening_answers, allergies, diet_prefs, avoid_foods, swelling, weight_loss, feeding_behavior, physical_signs, dietary_diversity, clinical_risk_factors, whz_score, income_level',
                 '',
                 [],
                 'updated_at DESC',
@@ -74,7 +68,6 @@ try {
                 
                 echo json_encode([
                     'success' => true,
-                    'users' => $formattedUsers,
                     'data' => $formattedUsers,
                     'count' => count($formattedUsers)
                 ]);
@@ -85,7 +78,7 @@ try {
             
         case 'add_user':
             // Add new user using Universal DatabaseAPI
-            $requiredFields = ['user_email', 'name'];
+            $requiredFields = ['user_email', 'username', 'name'];
             foreach ($requiredFields as $field) {
                 if (empty($_POST[$field])) {
                     echo json_encode(['success' => false, 'error' => "Field '$field' is required"]);
@@ -93,47 +86,31 @@ try {
                 }
             }
             
-            // Calculate BMI if height and weight are provided
-            $bmi = 0;
-            if (!empty($_POST['height']) && !empty($_POST['weight'])) {
-                $heightMeters = floatval($_POST['height']) / 100.0;
-                $bmi = $heightMeters > 0 ? round((floatval($_POST['weight']) / ($heightMeters * $heightMeters)), 1) : 0;
-            }
-            
             $userData = [
                 'user_email' => $_POST['user_email'],
-                'username' => $_POST['username'] ?? explode('@', $_POST['user_email'])[0],
+                'username' => $_POST['username'],
                 'name' => $_POST['name'],
-                'birthday' => $_POST['birthday'] ?? null,
-                'age' => $_POST['age'] ?? null,
-                'gender' => $_POST['gender'] ?? '',
-                'height_cm' => $_POST['height'] ?? null,
-                'weight_kg' => $_POST['weight'] ?? null,
-                'bmi' => $bmi,
-                'muac' => $_POST['muac'] ?? null,
-                'risk_score' => $_POST['risk_score'] ?? 0,
-                'allergies' => $_POST['allergies'] ?? '',
-                'diet_prefs' => $_POST['diet_prefs'] ?? '',
-                'avoid_foods' => $_POST['avoid_foods'] ?? '',
                 'barangay' => $_POST['barangay'] ?? '',
                 'income' => $_POST['income'] ?? '',
-                'municipality' => $_POST['municipality'] ?? '',
-                'province' => $_POST['province'] ?? '',
-                'screening_date' => date('Y-m-d'),
+                'age' => $_POST['age'] ?? null,
+                'gender' => $_POST['gender'] ?? '',
+                'height' => $_POST['height'] ?? null,
+                'weight' => $_POST['weight'] ?? null,
+                'risk_score' => $_POST['risk_score'] ?? 0,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ];
             
             // Check if user already exists
-            $exists = $db->universalSelect('user_preferences', 'id', 'user_email = ?', [], '', '', [$_POST['user_email']]);
+            $exists = $db->exists('user_preferences', 'user_email = ?', [$userData['user_email']]);
             
-            if ($exists['success'] && count($exists['data']) > 0) {
+            if ($exists) {
                 // Update existing user
                 unset($userData['created_at']); // Don't update created_at
-                $result = $db->universalUpdate('user_preferences', $userData, 'user_email = ?', [$_POST['user_email']]);
+                $result = $db->update('user_preferences', $userData, 'user_email = ?', [$userData['user_email']]);
             } else {
                 // Insert new user
-                $result = $db->universalInsert('user_preferences', $userData);
+                $result = $db->insert('user_preferences', $userData);
             }
             
             if ($result['success']) {
@@ -161,13 +138,13 @@ try {
                 'income' => $_POST['income'] ?? '',
                 'age' => $_POST['age'] ?? null,
                 'gender' => $_POST['gender'] ?? '',
-                'height_cm' => $_POST['height'] ?? null,
-                'weight_kg' => $_POST['weight'] ?? null,
+                'height' => $_POST['height'] ?? null,
+                'weight' => $_POST['weight'] ?? null,
                 'risk_score' => $_POST['risk_score'] ?? 0,
                 'updated_at' => date('Y-m-d H:i:s')
             ];
             
-            $result = $db->universalUpdate('user_preferences', $userData, 'user_email = ?', [$_POST['user_email']]);
+            $result = $db->update('user_preferences', $userData, 'user_email = ?', [$_POST['user_email']]);
             
             if ($result['success']) {
                 echo json_encode(['success' => true, 'message' => 'User updated successfully']);
@@ -183,7 +160,7 @@ try {
                 exit;
             }
             
-            $result = $db->universalDelete('user_preferences', 'id = ?', [$_POST['user_id']]);
+            $result = $db->delete('user_preferences', 'id = ?', [$_POST['user_id']]);
             
             if ($result['success'] && $result['affected_rows'] > 0) {
                 echo json_encode(['success' => true, 'message' => 'User deleted successfully']);
@@ -216,7 +193,7 @@ try {
             }
             
             $whereClause = implode(' AND ', $whereConditions);
-            $result = $db->universalDelete('user_preferences', $whereClause, $params);
+            $result = $db->delete('user_preferences', $whereClause, $params);
             
             if ($result['success']) {
                 echo json_encode([
@@ -237,7 +214,7 @@ try {
                 exit;
             }
             
-            $result = $db->universalQuery("DELETE FROM user_preferences", []);
+            $result = $db->query("DELETE FROM user_preferences", []);
             
             if ($result['success']) {
                 echo json_encode([
