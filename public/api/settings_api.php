@@ -20,10 +20,15 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Get database API instance
-$db = DatabaseAPI::getInstance();
-
-if (!$db->isAvailable()) {
-    echo json_encode(['success' => false, 'error' => 'Database not available']);
+try {
+    $db = DatabaseAPI::getInstance();
+    
+    if (!$db->isAvailable()) {
+        echo json_encode(['success' => false, 'error' => 'Database not available']);
+        exit;
+    }
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
     exit;
 }
 
@@ -156,8 +161,8 @@ try {
                 'income' => $_POST['income'] ?? '',
                 'age' => $_POST['age'] ?? null,
                 'gender' => $_POST['gender'] ?? '',
-                'height' => $_POST['height'] ?? null,
-                'weight' => $_POST['weight'] ?? null,
+                'height_cm' => $_POST['height'] ?? null,
+                'weight_kg' => $_POST['weight'] ?? null,
                 'risk_score' => $_POST['risk_score'] ?? 0,
                 'updated_at' => date('Y-m-d H:i:s')
             ];
