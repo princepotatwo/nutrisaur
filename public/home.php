@@ -157,8 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
     }
 }
 
-// Close the database connection
-$db->close();
+// Database connection is managed automatically by DatabaseAPI singleton
 ?>
 <!DOCTYPE html>
 <html lang="en">
