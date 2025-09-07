@@ -2098,14 +2098,20 @@ header {
             text-align: center;
         }
 
-        /* Set specific widths for columns - Balanced for 7 columns (removed Actions) */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 10%; } /* Assessment ID */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 20%; } /* Name */
-        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 15%; } /* Age/Sex */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 25%; } /* Location */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 10%; } /* BMI */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 10%; text-align: center; } /* Risk Level */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 10%; } /* Assessment Date */
+        /* Set specific widths for columns - Balanced for 13 columns */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 5%; } /* ID */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 12%; } /* EMAIL */
+        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 10%; } /* NAME */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 6%; } /* AGE */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 8%; } /* GENDER */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 8%; } /* HEIGHT */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 8%; } /* WEIGHT */
+        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 6%; } /* BMI */
+        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 10%; } /* BARANGAY */
+        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 10%; } /* MUNICIPALITY */
+        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 8%; } /* RISK SCORE */
+        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 10%; text-align: center; } /* RISK LEVEL */
+        .user-table th:nth-child(13), .user-table td:nth-child(13) { width: 8%; } /* CREATED */
 
         .user-table th {
             color: var(--color-highlight);
@@ -2650,88 +2656,99 @@ header {
                     </div>
                 </div>
 
-                <div id="no-assessments-message" style="display:none;" class="no-data-message">
-                    No assessments found in the database. Add your first assessment!
+                <div id="no-users-message" style="display:none;" class="no-data-message">
+                    No users found in the database. Add your first user!
                 </div>
 
                 <div class="table-responsive">
                 <table class="user-table">
                     <thead>
                         <tr>
-                            <th>Assessment ID</th>
-                            <th>Name</th>
-                            <th>Age/Sex</th>
-                            <th>Location</th>
+                            <th>ID</th>
+                            <th>EMAIL</th>
+                            <th>NAME</th>
+                            <th>AGE</th>
+                            <th>GENDER</th>
+                            <th>HEIGHT (CM)</th>
+                            <th>WEIGHT (KG)</th>
                             <th>BMI</th>
-                            <th>Risk Level</th>
-                            <th>Assessment Date</th>
+                            <th>BARANGAY</th>
+                            <th>MUNICIPALITY</th>
+                            <th>RISK SCORE</th>
+                            <th>RISK LEVEL</th>
+                            <th>CREATED</th>
                         </tr>
                     </thead>
-                    <tbody id="assessmentsTableBody">
+                    <tbody id="usersTableBody">
                         <?php
-                        // Load real data from user_preferences table using DatabaseHelper
-                        $assessments = [];
+                        // Get user preferences data directly from database
                         if ($db->isAvailable()) {
                             try {
+                                // Use Universal DatabaseAPI to get users for HTML display
                                 $result = $db->select(
                                     'user_preferences',
-                                    'id, user_email, name, age, gender, height_cm, weight_kg, bmi, barangay, municipality, risk_score, malnutrition_risk, created_at, updated_at',
+                                    'id, user_email, username, name, barangay, risk_score, created_at, updated_at, age, gender, height_cm, weight_kg, bmi, municipality, malnutrition_risk',
                                     '',
                                     [],
-                                    'created_at DESC',
-                                    '100'
+                                    'updated_at DESC'
                                 );
-                                $assessments = $result['success'] ? $result['data'] : [];
+                                
+                                $users = $result['success'] ? $result['data'] : [];
+                                
+                                if (!empty($users)) {
+                                    foreach ($users as $user) {
+                                        echo '<tr>';
+                                        echo '<td>' . htmlspecialchars($user['id'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['user_email'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['age'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['gender'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['height_cm'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['weight_kg'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['bmi'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['risk_score'] ?? 'N/A') . '</td>';
+                                        echo '<td>';
+                                        
+                                        // Calculate risk level from malnutrition_risk or risk_score
+                                        $riskLevel = 'Low';
+                                        $riskClass = 'low';
+                                        $malnutritionRisk = $user['malnutrition_risk'] ?? '';
+                                        $riskScore = intval($user['risk_score'] ?? 0);
+                                        
+                                        if (!empty($malnutritionRisk)) {
+                                            if (stripos($malnutritionRisk, 'high') !== false) {
+                                                $riskLevel = 'High';
+                                                $riskClass = 'high';
+                                            } elseif (stripos($malnutritionRisk, 'medium') !== false) {
+                                                $riskLevel = 'Medium';
+                                                $riskClass = 'medium';
+                                            }
+                                        } elseif ($riskScore > 60) {
+                                            $riskLevel = 'High';
+                                            $riskClass = 'high';
+                                        } elseif ($riskScore > 30) {
+                                            $riskLevel = 'Medium';
+                                            $riskClass = 'medium';
+                                        }
+                                        
+                                        echo '<span class="risk-badge ' . $riskClass . '">' . $riskLevel . ' Risk</span>';
+                                        echo '</td>';
+                                        echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
+                                        echo '</tr>';
+                                    }
+                                } else {
+                                    // Let JavaScript handle empty database with sample data
+                                    echo '<!-- No users in database - JavaScript will show sample data -->';
+                                }
                             } catch (Exception $e) {
-                                error_log("Error fetching assessments: " . $e->getMessage());
+                                echo '<tr><td colspan="13" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                             }
+                        } else {
+                            echo '<tr><td colspan="13" class="no-data-message">Database connection failed.</td></tr>';
                         }
                         ?>
-                        
-                        <?php if (!empty($assessments)): ?>
-                            <?php foreach ($assessments as $assessment): ?>
-                                <?php
-                                // Calculate risk level based on BMI and other factors
-                                $bmi = floatval($assessment['bmi'] ?? 0);
-                                $riskLevel = 'low';
-                                $riskClass = 'low';
-                                
-                                if ($bmi < 18.5 || $bmi > 30) {
-                                    $riskLevel = 'high';
-                                    $riskClass = 'high';
-                                } elseif ($bmi < 20 || $bmi > 25) {
-                                    $riskLevel = 'medium';
-                                    $riskClass = 'medium';
-                                }
-                                
-                                // Get user info
-                                $userName = $assessment['name'] ?? 'Unknown User';
-                                $age = $assessment['age'] ?? 'N/A';
-                                $gender = $assessment['gender'] ?? 'N/A';
-                                $municipality = $assessment['municipality'] ?? 'N/A';
-                                $barangay = $assessment['barangay'] ?? 'N/A';
-                                $bmiValue = $assessment['bmi'] ?? 'N/A';
-                                $createdAt = $assessment['created_at'] ?? 'N/A';
-                                ?>
-                                <tr data-risk="<?php echo $riskClass; ?>" data-location="<?php echo htmlspecialchars($municipality); ?>">
-                                    <td><?php echo htmlspecialchars($assessment['id']); ?></td>
-                                    <td><?php echo htmlspecialchars($userName); ?></td>
-                                    <td><?php echo htmlspecialchars($age . 'y, ' . $gender); ?></td>
-                                    <td><?php echo htmlspecialchars($barangay . ', ' . $municipality); ?></td>
-                                    <td><?php echo htmlspecialchars($bmiValue); ?></td>
-                                    <td>
-                                        <span class="risk-badge <?php echo $riskClass; ?>"><?php echo ucfirst($riskLevel); ?> Risk</span>
-                                    </td>
-                                    <td><?php echo date('M d, Y', strtotime($createdAt)); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="7" class="no-data-message">
-                                    <div>No MHO assessments found in database. Start by creating new assessments.</div>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
                     </tbody>
                 </table>
                 </div>
