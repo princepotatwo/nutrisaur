@@ -4522,8 +4522,8 @@ optgroup option {
                                     echo '</tr>';
                                 }
                             } else {
-                                // Let JavaScript handle empty database with sample data
-                                echo '<!-- No users in database - JavaScript will show sample data -->';
+                                // Show proper empty state message
+                                echo '<tr><td colspan="14" class="no-data-message">No users found in database. Add your first user!</td></tr>';
                             }
                         } catch (Exception $e) {
                             echo '<tr><td colspan="14" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
@@ -5081,27 +5081,65 @@ optgroup option {
         tbody.innerHTML = '';
         
         if (!users || users.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" class="text-center">No users found</td></tr>';
+            displayEmptyState();
             return;
         }
         
         users.forEach((user, index) => {
             const row = document.createElement('tr');
+            
+            // Calculate risk level
+            let riskLevel = 'Low';
+            let riskClass = 'low';
+            const malnutritionRisk = user.malnutrition_risk || '';
+            const riskScore = parseInt(user.risk_score) || 0;
+            
+            if (malnutritionRisk && malnutritionRisk.toLowerCase().includes('high')) {
+                riskLevel = 'High';
+                riskClass = 'high';
+            } else if (malnutritionRisk && malnutritionRisk.toLowerCase().includes('medium')) {
+                riskLevel = 'Medium';
+                riskClass = 'medium';
+            } else if (riskScore > 60) {
+                riskLevel = 'High';
+                riskClass = 'high';
+            } else if (riskScore > 30) {
+                riskLevel = 'Medium';
+                riskClass = 'medium';
+            }
+            
             row.innerHTML = `
-                <td>${user.name || user.username || 'N/A'}</td>
-                <td>${user.user_email || user.email || 'N/A'}</td>
-                <td>${user.barangay || 'N/A'}</td>
+                <td>${user.id || 'N/A'}</td>
+                <td>${user.user_email || 'N/A'}</td>
+                <td>${user.name || 'N/A'}</td>
                 <td>${user.age || 'N/A'}</td>
                 <td>${user.gender || 'N/A'}</td>
+                <td>${user.height_cm || 'N/A'}</td>
+                <td>${user.weight_kg || 'N/A'}</td>
+                <td>${user.bmi || 'N/A'}</td>
+                <td>${user.barangay || 'N/A'}</td>
+                <td>${user.municipality || 'N/A'}</td>
                 <td>${user.risk_score || 'N/A'}</td>
-                <td>${user.income || 'N/A'}</td>
+                <td><span class="risk-badge ${riskClass}">${riskLevel} Risk</span></td>
+                <td>${user.created_at || 'N/A'}</td>
                 <td>
-                    <button class="btn btn-sm btn-edit" onclick="editUser(${index})">Edit</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.user_email || user.email}')">Delete</button>
+                    <button class="btn-edit" onclick="editUser(${user.id || index})">Edit</button>
+                    <button class="btn-delete" onclick="deleteUser(${user.id || 0})">Delete</button>
                 </td>
             `;
             tbody.appendChild(row);
         });
+    }
+
+    // Display empty state when no users are found
+    function displayEmptyState() {
+        const tbody = document.getElementById('usersTableBody');
+        if (!tbody) {
+            console.error('usersTableBody element not found');
+            return;
+        }
+        
+        tbody.innerHTML = '<tr><td colspan="14" class="no-data-message">No users found in database. Add your first user!</td></tr>';
     }
 
     // Edit user function
@@ -5146,45 +5184,6 @@ optgroup option {
         }
     }
 
-    // Generate sample users for demonstration
-    function generateSampleUsers() {
-        const sampleUsers = [];
-        const names = [
-            'Maria Santos', 'Juan Dela Cruz', 'Ana Reyes', 'Pedro Martinez', 'Luz Fernandez', 
-            'Carlos Lopez', 'Isabella Cruz', 'Miguel Torres', 'Sofia Rodriguez', 'Diego Morales',
-            'Valentina Silva', 'Alejandro Ruiz', 'Camila Vega', 'Gabriel Herrera', 'Natalia Jimenez'
-        ];
-        const barangays = ['Bagumbayan', 'Cupang Proper', 'Poblacion', 'Sibacan', 'Tenejero', 'San Jose', 'Munting Batangas', 'Cataning', 'Central', 'Dangcol'];
-        const municipalities = ['Balanga', 'Abucay', 'Bagac', 'Dinalupihan', 'Hermosa', 'Limay', 'Mariveles', 'Morong', 'Orani', 'Orion'];
-        const riskLevels = ['Low', 'Moderate', 'High', 'Severe'];
-        
-        for (let i = 0; i < 15; i++) {
-            const age = Math.floor(Math.random() * 50) + 18;
-            const height = Math.floor(Math.random() * 30) + 150;
-            const weight = Math.floor(Math.random() * 30) + 50;
-            const bmi = (weight / Math.pow(height/100, 2)).toFixed(1);
-            
-            sampleUsers.push({
-                id: i + 1,
-                username: `user${i + 1}`,
-                email: `user${i + 1}@example.com`,
-                name: names[i % names.length],
-                age: age,
-                gender: Math.random() > 0.5 ? 'Male' : 'Female',
-                height_cm: height,
-                weight_kg: weight,
-                bmi: bmi,
-                barangay: barangays[i % barangays.length],
-                municipality: municipalities[Math.floor(Math.random() * municipalities.length)],
-                risk_score: Math.floor(Math.random() * 30) + 5,
-                malnutrition_risk: riskLevels[i % riskLevels.length],
-                created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                updated_at: new Date().toISOString().split('T')[0]
-            });
-        }
-        
-        return sampleUsers;
-    }
 
     // API URLs
         // Use dedicated Settings API that uses Universal DatabaseAPI internally
@@ -5288,7 +5287,7 @@ optgroup option {
                         console.log('Final users length:', users ? users.length : 'null/undefined');
                         
                         if (!users || (Array.isArray(users) && users.length === 0)) {
-                            console.warn('No users data received from API - showing sample data');
+                            console.warn('No users data received from API');
                             
                             // Check if this might be a timing issue after CSV import
                             const currentTime = Date.now();
@@ -5305,10 +5304,9 @@ optgroup option {
                                 return;
                             }
                             
-                            // Show sample data when database is empty
-                            console.log('Database appears to be empty - showing sample data');
-                            const sampleUsers = generateSampleUsers();
-                            displayUsers(sampleUsers);
+                            // Show proper empty state - no sample data
+                            console.log('Database appears to be empty - showing empty state');
+                            displayEmptyState();
                             window.loadUsersInProgress = false;
                             return;
                         }
