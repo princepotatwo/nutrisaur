@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $db->insert('user_preferences', $insertData);
         
         if ($result['success']) {
-            $success_message = "Screening assessment saved successfully!";
+        $success_message = "Screening assessment saved successfully!";
         } else {
             $error_message = "Error saving screening assessment: " . ($result['error'] ?? 'Unknown error');
         }
@@ -2634,7 +2634,7 @@ header {
                                 </select>
                             </div>
                         </div>
-                        
+
                         <!-- CSV Action Buttons -->
                         <div class="action-buttons" style="margin-top: 15px; text-align: center;">
                             <button class="btn btn-add" onclick="downloadCSVTemplate()">
@@ -2655,7 +2655,7 @@ header {
                 </div>
 
                 <div class="table-responsive">
-                    <table class="user-table">
+                <table class="user-table">
                     <thead>
                         <tr>
                             <th>Assessment ID</th>
@@ -2733,7 +2733,7 @@ header {
                             </tr>
                         <?php endif; ?>
                     </tbody>
-                    </table>
+                </table>
                 </div>
             </div>
         </div>
@@ -2794,208 +2794,13 @@ header {
         // Municipalities and Barangays data
         const municipalities = <?php echo json_encode($municipalities); ?>;
 
-        // Initialize form
+        // Initialize screening page
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing...');
-            initializeForm();
-            initializeSearchAndFilter();
-            
-            // Test search functionality
-            setTimeout(() => {
-                const searchInput = document.getElementById('searchInput');
-                const cards = document.querySelectorAll('.deck-card');
-                console.log('Test: Found', cards.length, 'cards');
-                console.log('Test: Search input exists:', !!searchInput);
-                
-                if (searchInput && cards.length > 0) {
-                    // Test with first card's name
-                    const firstCard = cards[0];
-                    const nameElement = firstCard.querySelector('.card-header h4');
-                    if (nameElement) {
-                        const testName = nameElement.textContent;
-                        console.log('Test: First card name is:', testName);
-                        
-                        // Simulate search
-                        searchInput.value = testName.substring(0, 3);
-                        searchInput.dispatchEvent(new Event('input'));
-                        console.log('Test: Triggered search with:', testName.substring(0, 3));
-                    }
-                }
-            }, 1000);
+            console.log('DOM loaded, initializing screening page...');
+            initializeTableFunctionality();
         });
 
-        function initializeForm() {
-            // Municipality change handler
-            document.getElementById('municipality').addEventListener('change', function() {
-                const municipality = this.value;
-                const barangaySelect = document.getElementById('barangay');
-                
-                barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-                
-                if (municipality && municipalities[municipality]) {
-                    municipalities[municipality].forEach(barangay => {
-                        const option = document.createElement('option');
-                        option.value = barangay;
-                        option.textContent = barangay;
-                        barangaySelect.appendChild(option);
-                    });
-                }
-            });
 
-            // Age input handler
-            document.getElementById('age').addEventListener('input', function() {
-                const age = parseInt(this.value);
-                const monthsField = document.getElementById('months-field');
-                
-                if (age < 1) {
-                    monthsField.classList.add('show');
-                } else {
-                    monthsField.classList.remove('show');
-                }
-                
-                // Show/hide immunization section
-                const immunizationSection = document.getElementById('immunization-section');
-                if (age <= 12) {
-                    immunizationSection.classList.add('show');
-                } else {
-                    immunizationSection.classList.remove('show');
-                }
-            });
-
-            // Sex change handler
-            document.querySelectorAll('input[name="sex"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    const pregnantField = document.getElementById('pregnant-field');
-                    const age = parseInt(document.getElementById('age').value);
-                    
-                    if (this.value === 'Female' && age >= 12 && age <= 50) {
-                        pregnantField.classList.add('show');
-                    } else {
-                        pregnantField.classList.remove('show');
-                    }
-                });
-            });
-
-            // BMI calculation
-            document.getElementById('weight').addEventListener('input', calculateBMI);
-            document.getElementById('height').addEventListener('input', calculateBMI);
-
-            // Lifestyle other field
-            document.querySelectorAll('input[name="lifestyle"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    const otherField = document.getElementById('lifestyle-other-field');
-                    if (this.value === 'Other') {
-                        otherField.classList.add('show');
-                    } else {
-                        otherField.classList.remove('show');
-                    }
-                });
-            });
-
-            // Meal analysis
-            document.getElementById('meal_recall').addEventListener('input', analyzeMeal);
-
-            // Form validation
-            document.getElementById('screeningForm').addEventListener('submit', validateForm);
-        }
-
-        function calculateBMI() {
-            const weight = parseFloat(document.getElementById('weight').value);
-            const height = parseFloat(document.getElementById('height').value);
-            
-            if (weight && height) {
-                const heightM = height / 100;
-                const bmi = weight / (heightM * heightM);
-                
-                document.getElementById('bmi-value').textContent = bmi.toFixed(2);
-                
-                let category = '';
-                if (bmi < 18.5) category = 'Underweight';
-                else if (bmi < 25) category = 'Normal';
-                else if (bmi < 30) category = 'Overweight';
-                else category = 'Obese';
-                
-                document.getElementById('bmi-category').textContent = 'Category: ' + category;
-                document.getElementById('bmi-display').style.display = 'block';
-            }
-        }
-
-        function analyzeMeal() {
-            const mealText = this.value.toLowerCase();
-            const foodGroups = {
-                carbs: ['rice', 'bread', 'pasta', 'potato', 'corn', 'cereal', 'oatmeal'],
-                protein: ['meat', 'fish', 'chicken', 'pork', 'beef', 'egg', 'milk', 'cheese', 'beans', 'tofu'],
-                vegetables: ['vegetable', 'carrot', 'broccoli', 'spinach', 'lettuce', 'tomato', 'onion'],
-                fruits: ['fruit', 'apple', 'banana', 'orange', 'mango', 'grape']
-            };
-            
-            let foundGroups = [];
-            Object.keys(foodGroups).forEach(group => {
-                if (foodGroups[group].some(food => mealText.includes(food))) {
-                    foundGroups.push(group);
-                }
-            });
-            
-            const analysis = document.getElementById('meal-analysis');
-            if (foundGroups.length >= 3) {
-                analysis.textContent = '✅ Balanced diet detected';
-                analysis.className = 'success-message';
-            } else {
-                analysis.textContent = '⚠️ At Risk: Missing major food groups';
-                analysis.className = 'error-message';
-            }
-        }
-
-        function validateForm(e) {
-            let isValid = true;
-            
-            // Age validation
-            const age = parseInt(document.getElementById('age').value);
-            if (age < 0 || age > 120) {
-                document.getElementById('age-error').textContent = 'Age cannot be negative or > 120 years';
-                isValid = false;
-            } else {
-                document.getElementById('age-error').textContent = '';
-            }
-            
-            // Weight validation
-            const weight = parseFloat(document.getElementById('weight').value);
-            const ageForValidation = parseInt(document.getElementById('age').value);
-            if (ageForValidation < 5 && weight > 50) {
-                document.getElementById('weight-error').textContent = 'Weight seems unusually high for age < 5';
-                isValid = false;
-            } else if (weight < 2 || weight > 250) {
-                document.getElementById('weight-error').textContent = 'Weight must be between 2-250 kg';
-                isValid = false;
-            } else {
-                document.getElementById('weight-error').textContent = '';
-            }
-            
-            // Height validation
-            const height = parseFloat(document.getElementById('height').value);
-            if (ageForValidation < 5 && height > 130) {
-                document.getElementById('height-error').textContent = 'Height seems unusually high for age < 5';
-                isValid = false;
-            } else if (height < 30 || height > 250) {
-                document.getElementById('height-error').textContent = 'Height must be between 30-250 cm';
-                isValid = false;
-            } else {
-                document.getElementById('height-error').textContent = '';
-            }
-            
-            // Family history validation
-            const familyHistoryCheckboxes = document.querySelectorAll('input[name="family_history[]"]:checked');
-            if (familyHistoryCheckboxes.length === 0) {
-                document.getElementById('family-history-error').textContent = 'Please select at least one option or choose None';
-                isValid = false;
-            } else {
-                document.getElementById('family-history-error').textContent = '';
-            }
-            
-            if (!isValid) {
-                e.preventDefault();
-            }
-        }
 
         function viewAssessmentDetails(id) {
             // Fetch assessment details via AJAX
