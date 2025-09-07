@@ -2065,7 +2065,7 @@ header {
 
         .user-table th,
         .user-table td {
-            padding: 8px 10px;
+            padding: 10px 8px;
             text-align: left;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             white-space: nowrap;
@@ -2075,6 +2075,7 @@ header {
             font-weight: 500;
             vertical-align: middle;
             position: relative;
+            line-height: 1.3;
         }
 
         /* Ensure actions column is always visible */
@@ -2098,20 +2099,20 @@ header {
             text-align: center;
         }
 
-        /* Set specific widths for columns - Balanced for 13 columns */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 5%; } /* ID */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 12%; } /* EMAIL */
-        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 10%; } /* NAME */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 6%; } /* AGE */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 8%; } /* GENDER */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 8%; } /* HEIGHT */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 8%; } /* WEIGHT */
-        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 6%; } /* BMI */
-        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 10%; } /* BARANGAY */
-        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 10%; } /* MUNICIPALITY */
-        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 8%; } /* RISK SCORE */
-        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 10%; text-align: center; } /* RISK LEVEL */
-        .user-table th:nth-child(13), .user-table td:nth-child(13) { width: 8%; } /* CREATED */
+        /* Set specific widths for columns - Optimized for 13 columns with better fit */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 4%; min-width: 40px; } /* ID */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 15%; min-width: 120px; } /* EMAIL */
+        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; min-width: 100px; } /* NAME */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 5%; min-width: 50px; } /* AGE */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 7%; min-width: 70px; } /* GENDER */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 7%; min-width: 70px; } /* HEIGHT */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 7%; min-width: 70px; } /* WEIGHT */
+        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 5%; min-width: 50px; } /* BMI */
+        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 12%; min-width: 100px; } /* BARANGAY */
+        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 10%; min-width: 90px; } /* MUNICIPALITY */
+        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 6%; min-width: 60px; } /* RISK SCORE */
+        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 8%; min-width: 80px; text-align: center; } /* RISK LEVEL */
+        .user-table th:nth-child(13), .user-table td:nth-child(13) { width: 8%; min-width: 80px; } /* CREATED */
 
         .user-table th {
             color: var(--color-highlight);
@@ -2188,8 +2189,8 @@ header {
             font-weight: 600;
             display: inline-block;
             text-align: center;
-            min-width: 60px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            min-width: 50px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
 

@@ -1304,25 +1304,25 @@ body {
 
 @media (max-width: 1200px) {
     .user-table {
-        min-width: 800px;
+        min-width: 900px;
     }
     
     .user-table th,
     .user-table td {
-        padding: 12px 8px;
-        font-size: 13px;
+        padding: 8px 6px;
+        font-size: 11px;
     }
     
     .btn-edit, .btn-suspend, .btn-delete {
-        padding: 6px 12px;
-        font-size: 11px;
-        min-width: 50px;
+        padding: 4px 8px;
+        font-size: 10px;
+        min-width: 40px;
     }
     
     /* Ensure actions column fits */
     .user-table th:last-child,
     .user-table td:last-child {
-        min-width: 100px;
+        min-width: 80px;
     }
 }
 
@@ -1858,16 +1858,17 @@ body {
 
 .user-table th,
 .user-table td {
-    padding: 15px 12px;
+    padding: 10px 8px;
     text-align: left;
     border-bottom: 1px solid rgba(161, 180, 84, 0.2);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     vertical-align: middle;
     position: relative;
+    line-height: 1.3;
 }
 
 /* Ensure actions column is always visible */
@@ -1882,7 +1883,7 @@ body {
 /* Ensure table fits container */
 .user-table {
     width: 100%;
-    min-width: 1200px; /* Updated for 14 columns */
+    min-width: 1000px; /* Optimized for 14 columns with better fit */
 }
 
 /* Responsive table wrapper */
@@ -1898,33 +1899,33 @@ body {
     text-align: center;
 }
 
-/* Set specific widths for columns - Balanced for 14 columns */
-.user-table th:nth-child(1), .user-table td:nth-child(1) { width: 5%; } /* ID */
-.user-table th:nth-child(2), .user-table td:nth-child(2) { width: 12%; } /* EMAIL */
-.user-table th:nth-child(3), .user-table td:nth-child(3) { width: 10%; } /* NAME */
-.user-table th:nth-child(4), .user-table td:nth-child(4) { width: 6%; } /* AGE */
-.user-table th:nth-child(5), .user-table td:nth-child(5) { width: 8%; } /* GENDER */
-.user-table th:nth-child(6), .user-table td:nth-child(6) { width: 8%; } /* HEIGHT */
-.user-table th:nth-child(7), .user-table td:nth-child(7) { width: 8%; } /* WEIGHT */
-.user-table th:nth-child(8), .user-table td:nth-child(8) { width: 6%; } /* BMI */
-.user-table th:nth-child(9), .user-table td:nth-child(9) { width: 10%; } /* BARANGAY */
-.user-table th:nth-child(10), .user-table td:nth-child(10) { width: 10%; } /* MUNICIPALITY */
-.user-table th:nth-child(11), .user-table td:nth-child(11) { width: 8%; } /* RISK SCORE */
-.user-table th:nth-child(12), .user-table td:nth-child(12) { width: 10%; text-align: center; } /* RISK LEVEL */
-.user-table th:nth-child(13), .user-table td:nth-child(13) { width: 8%; } /* CREATED */
-.user-table th:nth-child(14), .user-table td:nth-child(14) { width: 9%; text-align: center; } /* ACTIONS */
+/* Set specific widths for columns - Optimized for 14 columns with better fit */
+.user-table th:nth-child(1), .user-table td:nth-child(1) { width: 4%; min-width: 40px; } /* ID */
+.user-table th:nth-child(2), .user-table td:nth-child(2) { width: 15%; min-width: 120px; } /* EMAIL */
+.user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; min-width: 100px; } /* NAME */
+.user-table th:nth-child(4), .user-table td:nth-child(4) { width: 5%; min-width: 50px; } /* AGE */
+.user-table th:nth-child(5), .user-table td:nth-child(5) { width: 7%; min-width: 70px; } /* GENDER */
+.user-table th:nth-child(6), .user-table td:nth-child(6) { width: 7%; min-width: 70px; } /* HEIGHT */
+.user-table th:nth-child(7), .user-table td:nth-child(7) { width: 7%; min-width: 70px; } /* WEIGHT */
+.user-table th:nth-child(8), .user-table td:nth-child(8) { width: 5%; min-width: 50px; } /* BMI */
+.user-table th:nth-child(9), .user-table td:nth-child(9) { width: 12%; min-width: 100px; } /* BARANGAY */
+.user-table th:nth-child(10), .user-table td:nth-child(10) { width: 10%; min-width: 90px; } /* MUNICIPALITY */
+.user-table th:nth-child(11), .user-table td:nth-child(11) { width: 6%; min-width: 60px; } /* RISK SCORE */
+.user-table th:nth-child(12), .user-table td:nth-child(12) { width: 8%; min-width: 80px; text-align: center; } /* RISK LEVEL */
+.user-table th:nth-child(13), .user-table td:nth-child(13) { width: 8%; min-width: 80px; } /* CREATED */
+.user-table th:nth-child(14), .user-table td:nth-child(14) { width: 8%; min-width: 100px; text-align: center; } /* ACTIONS */
 
 .user-table th {
     color: var(--color-highlight);
     font-weight: 700;
-    font-size: 16px;
+    font-size: 13px;
     position: sticky;
     top: 0;
     background-color: var(--color-card);
     z-index: 10;
     border-bottom: 2px solid rgba(161, 180, 84, 0.4);
-    padding-bottom: 18px;
-    padding-top: 18px;
+    padding-bottom: 12px;
+    padding-top: 12px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -1952,18 +1953,18 @@ body {
 }
 
 .btn-edit, .btn-suspend, .btn-delete {
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
     font-weight: 600;
-    margin: 0 4px;
+    margin: 0 2px;
     transition: all 0.3s ease;
     cursor: pointer !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     border: none;
-    min-width: 60px;
-    max-width: 80px;
+    min-width: 50px;
+    max-width: 70px;
     display: inline-block !important;
     text-align: center;
     line-height: 1.2;
@@ -2144,14 +2145,14 @@ body {
 }
 
 .risk-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
     font-weight: 600;
     display: inline-block;
     text-align: center;
-    min-width: 80px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    min-width: 50px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .risk-badge.good {
@@ -3867,19 +3868,19 @@ optgroup option {
 @media (max-width: 768px) {
     .user-table th,
     .user-table td {
-        padding: 8px 10px;
-        font-size: 12px;
+        padding: 6px 4px;
+        font-size: 10px;
     }
     
     .action-buttons {
         display: flex;
         flex-wrap: wrap;
-        gap: 5px;
+        gap: 2px;
     }
     
     .btn {
-        padding: 5px 8px;
-        font-size: 11px;
+        padding: 4px 6px;
+        font-size: 9px;
     }
 }
 
