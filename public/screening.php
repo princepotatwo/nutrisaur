@@ -70,12 +70,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $screening_data['bmi'] = round($weight / ($height * $height), 2);
         }
 
-        // Insert into database
-        $stmt = $conn->prepare("INSERT INTO user_preferences (
-            user_email, name, age, gender, weight_kg, height_cm, bmi, 
-            barangay, municipality, risk_score, malnutrition_risk, screening_answers, 
-            screening_date, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+        // Insert into database using DatabaseHelper
+        $insertData = [
+            'user_email' => $_SESSION['user_email'] ?? 'user_' . $screening_data['user_id'] . '@example.com',
+            'name' => $_SESSION['name'] ?? 'User ' . $screening_data['user_id'],
+            'age' => $screening_data['age'],
+            'gender' => $screening_data['sex'],
+            'weight_kg' => $screening_data['weight'],
+            'height_cm' => $screening_data['height'],
+            'bmi' => $screening_data['bmi'],
+            'barangay' => $screening_data['barangay'],
+            'municipality' => $screening_data['municipality'],
+            'risk_score' => 0, // Will be calculated below
+            'malnutrition_risk' => 'Low', // Will be calculated below
+            'screening_answers' => '', // Will be set below
+            'screening_date' => date('Y-m-d H:i:s'),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
         
         // Get user email from session or use a default
         $user_email = $_SESSION['user_email'] ?? 'user_' . $screening_data['user_id'] . '@example.com';
@@ -93,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $malnutrition_risk = 'Medium';
         }
         if ($screening_data['pregnant'] == 'yes') $risk_score += 2;
-        if ($screening_data['family_history'] == 'yes') $risk_score += 1;
+        if (is_array($screening_data['family_history']) && in_array('yes', $screening_data['family_history'])) $risk_score += 1;
         
         // Create screening answers JSON
         $screening_answers = json_encode([
@@ -107,37 +119,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'immunization' => $screening_data['immunization']
         ]);
         
-        $stmt->execute([
-            $user_email, 
-            $name, 
-            $screening_data['age'], 
-            $screening_data['sex'], 
-            $screening_data['weight'], 
-            $screening_data['height'], 
-            $screening_data['bmi'],
-            $screening_data['barangay'], 
-            $screening_data['municipality'],
-            $risk_score, 
-            $malnutrition_risk,
-            $screening_answers,
-            date('Y-m-d H:i:s')
-        ]);
-
-        $success_message = "Screening assessment saved successfully!";
+        // Update the insertData with calculated values
+        $insertData['risk_score'] = $risk_score;
+        $insertData['malnutrition_risk'] = $malnutrition_risk;
+        $insertData['screening_answers'] = $screening_answers;
+        
+        // Insert using DatabaseHelper
+        $result = $db->insert('user_preferences', $insertData);
+        
+        if ($result['success']) {
+            $success_message = "Screening assessment saved successfully!";
+        } else {
+            $error_message = "Error saving screening assessment: " . ($result['error'] ?? 'Unknown error');
+        }
         
     } catch (Exception $e) {
         $error_message = "Error saving screening assessment: " . $e->getMessage();
     }
 }
 
-// Get existing screening assessments
+// Get existing screening assessments using DatabaseHelper
 $screening_assessments = [];
-if ($conn) {
+if ($db->isAvailable()) {
     try {
-        $stmt = $conn->prepare("SELECT * FROM user_preferences WHERE user_email = ? ORDER BY created_at DESC");
         $user_email = $_SESSION['user_email'] ?? 'user_' . $user_id . '@example.com';
-        $stmt->execute([$user_email]);
-        $screening_assessments = $stmt->fetchAll();
+        $result = $db->select(
+            'user_preferences', 
+            '*', 
+            'user_email = ?', 
+            [$user_email], 
+            'created_at DESC'
+        );
+        $screening_assessments = $result['success'] ? $result['data'] : [];
     } catch (Exception $e) {
         error_log("Error fetching screening assessments: " . $e->getMessage());
     }
@@ -2410,6 +2423,157 @@ header {
             font-style: italic;
         }
 
+        /* CSV Upload Styles */
+        .csv-upload-area {
+            background: linear-gradient(135deg, rgba(161, 180, 84, 0.1), rgba(161, 180, 84, 0.05));
+            border: 2px dashed rgba(161, 180, 84, 0.4);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .csv-upload-area:hover {
+            background: linear-gradient(135deg, rgba(161, 180, 84, 0.15), rgba(161, 180, 84, 0.1));
+            border-color: var(--color-highlight);
+            transform: translateY(-2px);
+        }
+
+        .csv-upload-area.dragover {
+            background: linear-gradient(135deg, rgba(161, 180, 84, 0.2), rgba(161, 180, 84, 0.15));
+            border-color: var(--color-highlight);
+            transform: scale(1.02);
+        }
+
+        .upload-text h4 {
+            color: var(--color-highlight);
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .upload-text p {
+            color: var(--color-text);
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .csv-format {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .csv-import-modal-content {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            margin: 0 !important;
+            height: 85vh !important;
+            width: 90% !important;
+            max-width: 800px !important;
+            border-radius: 15px !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+            overflow: hidden !important;
+            z-index: 1001 !important;
+        }
+
+        .csv-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .csv-preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .csv-preview-table th,
+        .csv-preview-table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid var(--color-border);
+        }
+
+        .csv-preview-table th {
+            background-color: var(--color-highlight);
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: var(--color-card);
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close {
+            color: var(--color-text);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--color-danger);
+        }
+
+        .btn-submit {
+            background-color: var(--color-highlight);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-submit:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-cancel {
+            background-color: var(--color-danger);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .csv-import-info {
+            background-color: rgba(161, 180, 84, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .csv-import-info h4 {
+            color: var(--color-highlight);
+            margin-bottom: 10px;
+        }
 
     </style>
 </head>
@@ -2470,6 +2634,18 @@ header {
                                 </select>
                             </div>
                         </div>
+                        
+                        <!-- CSV Action Buttons -->
+                        <div class="action-buttons" style="margin-top: 15px; text-align: center;">
+                            <button class="btn btn-add" onclick="downloadCSVTemplate()">
+                                <span class="btn-icon">📥</span>
+                                <span class="btn-text">Download Template</span>
+                            </button>
+                            <button class="btn btn-add" onclick="showCSVImportModal()">
+                                <span class="btn-icon">📁</span>
+                                <span class="btn-text">Import CSV</span>
+                            </button>
+                        </div>
 
                     </div>
                 </div>
@@ -2478,7 +2654,8 @@ header {
                     No assessments found in the database. Add your first assessment!
                 </div>
 
-                <table class="user-table">
+                <div class="table-responsive">
+                    <table class="user-table">
                     <thead>
                         <tr>
                             <th>Assessment ID</th>
@@ -2492,19 +2669,19 @@ header {
                     </thead>
                     <tbody id="assessmentsTableBody">
                         <?php
-                        // Load real data from user_preferences table
+                        // Load real data from user_preferences table using DatabaseHelper
                         $assessments = [];
-                        if ($conn) {
+                        if ($db->isAvailable()) {
                             try {
-                                $stmt = $conn->prepare("SELECT 
-                                    id, user_email, name, age, gender, height_cm, weight_kg, bmi, 
-                                    barangay, municipality, risk_score, malnutrition_risk, 
-                                    created_at, updated_at
-                                    FROM user_preferences 
-                                    ORDER BY created_at DESC 
-                                    LIMIT 100");
-                                $stmt->execute();
-                                $assessments = $stmt->fetchAll();
+                                $result = $db->select(
+                                    'user_preferences',
+                                    'id, user_email, name, age, gender, height_cm, weight_kg, bmi, barangay, municipality, risk_score, malnutrition_risk, created_at, updated_at',
+                                    '',
+                                    [],
+                                    'created_at DESC',
+                                    '100'
+                                );
+                                $assessments = $result['success'] ? $result['data'] : [];
                             } catch (Exception $e) {
                                 error_log("Error fetching assessments: " . $e->getMessage());
                             }
@@ -2556,7 +2733,59 @@ header {
                             </tr>
                         <?php endif; ?>
                     </tbody>
-                </table>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSV Import Modal -->
+    <div id="csvImportModal" class="modal">
+        <div class="modal-content csv-import-modal-content">
+            <span class="close" onclick="closeCSVImportModal()">&times;</span>
+            <h2>Import Assessments from CSV</h2>
+            <div style="height: calc(85vh - 120px); overflow-y: auto; padding-right: 10px;">
+            
+            <!-- Status Message Area -->
+            <div id="csvStatusMessage" style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 8px; font-weight: 600;"></div>
+            
+            <div class="csv-import-info">
+                <div style="background-color: rgba(233, 141, 124, 0.2); border: 2px solid var(--color-danger); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h4 style="color: var(--color-danger); margin: 0 0 10px 0;">⚠️ CRITICAL: EXACT FORMAT REQUIRED</h4>
+                            <p style="margin: 0; color: var(--color-danger); font-weight: 600;">CSV data MUST use EXACTLY the same answer options as the mobile app. Any deviation will cause validation errors and prevent import.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4>📋 CSV Import Instructions</h4>
+                <p><strong>1.</strong> Download template with exact mobile app formats</p>
+                <p><strong>2.</strong> Fill data using ONLY specified answer options</p>
+                <p><strong>3.</strong> Upload your completed CSV file</p>
+                <p><strong>4.</strong> Review and confirm import</p>
+            </div>
+            
+            <form id="csvImportForm">
+                <div class="csv-upload-area" id="uploadArea" onclick="document.getElementById('csvFile').click()" style="cursor: pointer;" 
+                     ondragover="handleDragOver(event)" 
+                     ondrop="handleDrop(event)" 
+                     ondragleave="handleDragLeave(event)">
+                    <input type="file" id="csvFile" accept=".csv" style="display: none;" onchange="handleFileSelect(event)">
+                    <div class="upload-text">
+                        <h4>Upload CSV File</h4>
+                        <p>Click here or drag and drop your CSV file</p>
+                        <small class="csv-format">Supported format: .csv</small>
+                    </div>
+                </div>
+                
+                <div id="csvPreview" style="display: none;"></div>
+                
+                <div class="csv-actions">
+                    <button type="button" class="btn btn-submit" id="importCSVBtn" disabled onclick="processCSVImport()">📥 Import CSV</button>
+                    <button type="button" class="btn btn-cancel" id="cancelBtn" style="display: none;" onclick="cancelUpload()">❌ Cancel Upload</button>
+                </div>
+            </form>
             </div>
         </div>
     </div>
@@ -3270,6 +3499,165 @@ header {
 
 
 
+
+        // CSV Functions
+        function downloadCSVTemplate() {
+            const csvContent = [
+                ['user_email', 'name', 'age', 'gender', 'weight_kg', 'height_cm', 'barangay', 'municipality', 'pregnant', 'meal_recall', 'family_history', 'lifestyle', 'immunization'],
+                ['user@example.com', 'John Doe', '25', 'Male', '70', '175', 'Bagumbayan', 'CITY OF BALANGA (Capital)', 'No', 'Rice, vegetables, fish', 'Diabetes', 'Active', 'Complete']
+            ];
+            
+            const csv = csvContent.map(row => row.map(field => `"${field}"`).join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'assessment_template.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function showCSVImportModal() {
+            const modal = document.getElementById('csvImportModal');
+            if (modal) {
+                modal.style.display = 'block';
+                resetCSVForm();
+            }
+        }
+
+        function closeCSVImportModal() {
+            const modal = document.getElementById('csvImportModal');
+            if (modal) {
+                modal.style.display = 'none';
+                resetCSVForm();
+            }
+        }
+
+        function resetCSVForm() {
+            document.getElementById('csvFile').value = '';
+            document.getElementById('csvPreview').style.display = 'none';
+            document.getElementById('importCSVBtn').disabled = true;
+            document.getElementById('cancelBtn').style.display = 'none';
+            hideCSVStatus();
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('uploadArea').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('uploadArea').classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('uploadArea').classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+                    document.getElementById('csvFile').files = files;
+                    handleFileSelect(document.getElementById('csvFile'));
+                } else {
+                    showCSVStatus('error', 'Please upload a CSV file.');
+                }
+            }
+        }
+
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if (file && (file.type === 'text/csv' || file.name.endsWith('.csv'))) {
+                previewCSV(file);
+            } else {
+                showCSVStatus('error', 'Please select a valid CSV file.');
+            }
+        }
+
+        function previewCSV(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csv = e.target.result;
+                const lines = csv.split('\n').filter(line => line.trim());
+                
+                if (lines.length < 2) {
+                    showCSVStatus('error', 'CSV file must contain at least a header row and one data row.');
+                    return;
+                }
+
+                const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+                const previewRows = lines.slice(1, 6);
+                
+                let tableHTML = '<h4>📋 Preview (First 5 rows)</h4>';
+                tableHTML += '<div style="overflow-x: auto;"><table class="csv-preview-table">';
+                tableHTML += '<thead><tr>';
+                headers.forEach(header => {
+                    tableHTML += `<th>${header}</th>`;
+                });
+                tableHTML += '</tr></thead><tbody>';
+                
+                previewRows.forEach(row => {
+                    const cells = row.split(',').map(cell => cell.replace(/"/g, '').trim());
+                    tableHTML += '<tr>';
+                    cells.forEach(cell => {
+                        tableHTML += `<td>${cell}</td>`;
+                    });
+                    tableHTML += '</tr>';
+                });
+                
+                tableHTML += '</tbody></table></div>';
+                
+                document.getElementById('csvPreview').innerHTML = tableHTML;
+                document.getElementById('csvPreview').style.display = 'block';
+                document.getElementById('importCSVBtn').disabled = false;
+                document.getElementById('cancelBtn').style.display = 'inline-block';
+                
+                showCSVStatus('success', `CSV loaded successfully! ${lines.length - 1} rows ready for import.`);
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function processCSVImport() {
+            showCSVStatus('info', 'CSV import functionality will be implemented in the backend.');
+        }
+
+        function showCSVStatus(type, message) {
+            const statusDiv = document.getElementById('csvStatusMessage');
+            statusDiv.style.display = 'block';
+            statusDiv.className = `csv-status ${type}`;
+            statusDiv.textContent = message;
+            
+            if (type === 'success') {
+                statusDiv.style.backgroundColor = 'rgba(161, 180, 84, 0.2)';
+                statusDiv.style.color = 'var(--color-highlight)';
+                statusDiv.style.border = '1px solid var(--color-highlight)';
+            } else if (type === 'info') {
+                statusDiv.style.backgroundColor = 'rgba(102, 187, 106, 0.2)';
+                statusDiv.style.color = 'var(--color-highlight)';
+                statusDiv.style.border = '1px solid var(--color-highlight)';
+            } else {
+                statusDiv.style.backgroundColor = 'rgba(233, 141, 124, 0.2)';
+                statusDiv.style.color = 'var(--color-danger)';
+                statusDiv.style.border = '1px solid var(--color-danger)';
+            }
+        }
+
+        function hideCSVStatus() {
+            const statusDiv = document.getElementById('csvStatusMessage');
+            statusDiv.style.display = 'none';
+        }
+
+        function cancelUpload() {
+            resetCSVForm();
+        }
 
     </script>
 </body>

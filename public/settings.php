@@ -4463,7 +4463,8 @@ optgroup option {
                 No users found in the database. Add your first user!
             </div>
             
-            <table class="user-table">
+            <div class="table-responsive">
+                <table class="user-table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -4532,7 +4533,8 @@ optgroup option {
                     }
                     ?>
                 </tbody>
-            </table>
+                </table>
+            </div>
             
             <!-- User Details Modal -->
             <div id="userDetailsModal" class="modal">
