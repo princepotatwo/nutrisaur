@@ -47,88 +47,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $screening_data = [
             'municipality' => $_POST['municipality'] ?? '',
             'barangay' => $_POST['barangay'] ?? '',
-            'age' => $_POST['age'] ?? '',
-            'age_months' => $_POST['age_months'] ?? '',
             'sex' => $_POST['sex'] ?? '',
-            'pregnant' => $_POST['pregnant'] ?? '',
+            'birthday' => $_POST['birthday'] ?? '',
+            'is_pregnant' => $_POST['is_pregnant'] ?? '',
             'weight' => $_POST['weight'] ?? '',
             'height' => $_POST['height'] ?? '',
-            'bmi' => $_POST['bmi'] ?? '',
-            'meal_recall' => $_POST['meal_recall'] ?? '',
-            'family_history' => $_POST['family_history'] ?? [],
-            'lifestyle' => $_POST['lifestyle'] ?? '',
-            'lifestyle_other' => $_POST['lifestyle_other'] ?? '',
-            'immunization' => $_POST['immunization'] ?? [],
-            'created_at' => date('Y-m-d H:i:s'),
-            'user_id' => $user_id
+            'muac' => $_POST['muac'] ?? '',
+            'screening_date' => date('Y-m-d H:i:s')
         ];
 
-        // Calculate BMI
-        if (!empty($screening_data['weight']) && !empty($screening_data['height'])) {
-            $weight = floatval($screening_data['weight']);
-            $height = floatval($screening_data['height']) / 100; // Convert cm to meters
-            $screening_data['bmi'] = round($weight / ($height * $height), 2);
-        }
+        // Get user info from session
+        $user_email = $_SESSION['user_email'] ?? 'user@example.com';
+        $name = $_SESSION['name'] ?? 'User';
+        $password = $_SESSION['password'] ?? 'default_password';
 
-        // Insert into database using DatabaseHelper
+        // Insert into community_users table using DatabaseHelper
         $insertData = [
-            'user_email' => $_SESSION['user_email'] ?? 'user_' . $screening_data['user_id'] . '@example.com',
-            'name' => $_SESSION['name'] ?? 'User ' . $screening_data['user_id'],
-            'age' => $screening_data['age'],
-            'gender' => $screening_data['sex'],
-            'weight_kg' => $screening_data['weight'],
-            'height_cm' => $screening_data['height'],
-            'bmi' => $screening_data['bmi'],
+            'name' => $name,
+            'email' => $user_email,
+            'password' => $password,
+            'municipality' => $screening_data['municipality'],
             'barangay' => $screening_data['barangay'],
-            'municipality' => $screening_data['municipality'],
-            'risk_score' => 0, // Will be calculated below
-            'malnutrition_risk' => 'Low', // Will be calculated below
-            'screening_answers' => '', // Will be set below
-            'screening_date' => date('Y-m-d H:i:s'),
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
+            'sex' => $screening_data['sex'],
+            'birthday' => $screening_data['birthday'],
+            'is_pregnant' => $screening_data['is_pregnant'],
+            'weight' => $screening_data['weight'],
+            'height' => $screening_data['height'],
+            'muac' => $screening_data['muac'],
+            'screening_date' => $screening_data['screening_date']
         ];
-        
-        // Get user email from session or use a default
-        $user_email = $_SESSION['user_email'] ?? 'user_' . $screening_data['user_id'] . '@example.com';
-        $name = $_SESSION['name'] ?? 'User ' . $screening_data['user_id'];
-        
-        // Calculate risk score and malnutrition risk based on screening data
-        $risk_score = 0;
-        $malnutrition_risk = 'Low';
-        
-        if ($screening_data['age'] < 2) $risk_score += 2;
-        if ($screening_data['bmi'] < 18.5) {
-            $risk_score += 3;
-            $malnutrition_risk = 'High';
-        } elseif ($screening_data['bmi'] < 20) {
-            $malnutrition_risk = 'Medium';
-        }
-        if ($screening_data['pregnant'] == 'yes') $risk_score += 2;
-        if (is_array($screening_data['family_history']) && in_array('yes', $screening_data['family_history'])) $risk_score += 1;
-        
-        // Create screening answers JSON
-        $screening_answers = json_encode([
-            'municipality' => $screening_data['municipality'],
-            'age_months' => $screening_data['age_months'],
-            'pregnant' => $screening_data['pregnant'],
-            'meal_recall' => $screening_data['meal_recall'],
-            'family_history' => $screening_data['family_history'],
-            'lifestyle' => $screening_data['lifestyle'],
-            'lifestyle_other' => $screening_data['lifestyle_other'],
-            'immunization' => $screening_data['immunization']
-        ]);
-        
-        // Update the insertData with calculated values
-        $insertData['risk_score'] = $risk_score;
-        $insertData['malnutrition_risk'] = $malnutrition_risk;
-        $insertData['screening_answers'] = $screening_answers;
         
         // Insert using DatabaseHelper
-        $result = $db->insert('user_preferences', $insertData);
+        $result = $db->insert('community_users', $insertData);
         
         if ($result['success']) {
-        $success_message = "Screening assessment saved successfully!";
+            $success_message = "Screening assessment saved successfully!";
         } else {
             $error_message = "Error saving screening assessment: " . ($result['error'] ?? 'Unknown error');
         }
@@ -142,13 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $screening_assessments = [];
 if ($db->isAvailable()) {
     try {
-        $user_email = $_SESSION['user_email'] ?? 'user_' . $user_id . '@example.com';
+        $user_email = $_SESSION['user_email'] ?? 'user@example.com';
         $result = $db->select(
-            'user_preferences', 
+            'community_users', 
             '*', 
-            'user_email = ?', 
+            'email = ?', 
             [$user_email], 
-            'created_at DESC'
+            'screening_date DESC'
         );
         $screening_assessments = $result['success'] ? $result['data'] : [];
     } catch (Exception $e) {
@@ -2099,20 +2052,18 @@ header {
             text-align: center;
         }
 
-        /* Set specific widths for columns - Optimized for 13 columns with better fit */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 4%; min-width: 40px; } /* ID */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 15%; min-width: 120px; } /* EMAIL */
-        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; min-width: 100px; } /* NAME */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 5%; min-width: 50px; } /* AGE */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 7%; min-width: 70px; } /* GENDER */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 7%; min-width: 70px; } /* HEIGHT */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 7%; min-width: 70px; } /* WEIGHT */
-        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 5%; min-width: 50px; } /* BMI */
-        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 12%; min-width: 100px; } /* BARANGAY */
-        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 10%; min-width: 90px; } /* MUNICIPALITY */
-        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 6%; min-width: 60px; } /* RISK SCORE */
-        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 8%; min-width: 80px; text-align: center; } /* RISK LEVEL */
-        .user-table th:nth-child(13), .user-table td:nth-child(13) { width: 8%; min-width: 80px; } /* CREATED */
+        /* Set specific widths for columns - Optimized for 11 columns with better fit */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 15%; min-width: 120px; } /* NAME */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 18%; min-width: 150px; } /* EMAIL */
+        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; min-width: 100px; } /* MUNICIPALITY */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 12%; min-width: 100px; } /* BARANGAY */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 6%; min-width: 60px; } /* SEX */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 10%; min-width: 90px; } /* BIRTHDAY */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 6%; min-width: 60px; } /* PREGNANT */
+        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 6%; min-width: 60px; } /* WEIGHT */
+        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 6%; min-width: 60px; } /* HEIGHT */
+        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 6%; min-width: 60px; } /* MUAC */
+        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 9%; min-width: 80px; } /* SCREENING DATE */
 
         .user-table th {
             color: var(--color-highlight);
@@ -2629,15 +2580,14 @@ header {
                     <div class="header-controls">
                         <div class="search-row" style="justify-content: center; gap: 20px;">
                             <div class="search-container" style="width: 300px;">
-                                <input type="text" id="searchInput" placeholder="Search by name, location, or risk level..." class="search-input">
+                                <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input">
                                 <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                             </div>
                             <div class="location-filter-container" style="width: 300px;">
-                                <select id="riskFilter" onchange="filterByRisk()" class="location-select">
-                                    <option value="">All Risk Levels</option>
-                                    <option value="low">Low Risk</option>
-                                    <option value="medium">Medium Risk</option>
-                                    <option value="high">High Risk</option>
+                                <select id="sexFilter" onchange="filterBySex()" class="location-select">
+                                    <option value="">All Genders</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
                                 </select>
                             </div>
                         </div>
@@ -2665,33 +2615,31 @@ header {
                 <table class="user-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>EMAIL</th>
                             <th>NAME</th>
-                            <th>AGE</th>
-                            <th>GENDER</th>
-                            <th>HEIGHT (CM)</th>
-                            <th>WEIGHT (KG)</th>
-                            <th>BMI</th>
-                            <th>BARANGAY</th>
+                            <th>EMAIL</th>
                             <th>MUNICIPALITY</th>
-                            <th>RISK SCORE</th>
-                            <th>RISK LEVEL</th>
-                            <th>CREATED</th>
+                            <th>BARANGAY</th>
+                            <th>SEX</th>
+                            <th>BIRTHDAY</th>
+                            <th>PREGNANT</th>
+                            <th>WEIGHT (KG)</th>
+                            <th>HEIGHT (CM)</th>
+                            <th>MUAC (CM)</th>
+                            <th>SCREENING DATE</th>
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
                         <?php
-                        // Get user preferences data directly from database
+                        // Get community_users data directly from database
                         if ($db->isAvailable()) {
                             try {
                                 // Use Universal DatabaseAPI to get users for HTML display
                                 $result = $db->select(
-                                    'user_preferences',
-                                    'id, user_email, username, name, barangay, risk_score, created_at, updated_at, age, gender, height_cm, weight_kg, bmi, municipality, malnutrition_risk',
+                                    'community_users',
+                                    '*',
                                     '',
                                     [],
-                                    'updated_at DESC'
+                                    'screening_date DESC'
                                 );
                                 
                                 $users = $result['success'] ? $result['data'] : [];
@@ -2699,44 +2647,17 @@ header {
                                 if (!empty($users)) {
                                     foreach ($users as $user) {
                                         echo '<tr>';
-                                        echo '<td>' . htmlspecialchars($user['id'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['user_email'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['age'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['gender'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['height_cm'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['weight_kg'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['bmi'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['risk_score'] ?? 'N/A') . '</td>';
-                                        echo '<td>';
-                                        
-                                        // Calculate risk level from malnutrition_risk or risk_score
-                                        $riskLevel = 'Low';
-                                        $riskClass = 'low';
-                                        $malnutritionRisk = $user['malnutrition_risk'] ?? '';
-                                        $riskScore = intval($user['risk_score'] ?? 0);
-                                        
-                                        if (!empty($malnutritionRisk)) {
-                                            if (stripos($malnutritionRisk, 'high') !== false) {
-                                                $riskLevel = 'High';
-                                                $riskClass = 'high';
-                                            } elseif (stripos($malnutritionRisk, 'medium') !== false) {
-                                                $riskLevel = 'Medium';
-                                                $riskClass = 'medium';
-                                            }
-                                        } elseif ($riskScore > 60) {
-                                            $riskLevel = 'High';
-                                            $riskClass = 'high';
-                                        } elseif ($riskScore > 30) {
-                                            $riskLevel = 'Medium';
-                                            $riskClass = 'medium';
-                                        }
-                                        
-                                        echo '<span class="risk-badge ' . $riskClass . '">' . $riskLevel . ' Risk</span>';
-                                        echo '</td>';
-                                        echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['is_pregnant'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['muac'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                     }
                                 } else {
@@ -2744,10 +2665,10 @@ header {
                                     echo '<!-- No users in database - JavaScript will show sample data -->';
                                 }
                             } catch (Exception $e) {
-                                echo '<tr><td colspan="13" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+                                echo '<tr><td colspan="11" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                             }
                         } else {
-                            echo '<tr><td colspan="13" class="no-data-message">Database connection failed.</td></tr>';
+                            echo '<tr><td colspan="11" class="no-data-message">Database connection failed.</td></tr>';
                         }
                         ?>
                     </tbody>
@@ -3071,13 +2992,17 @@ header {
             let visibleCount = 0;
             
             tableRows.forEach(row => {
-                const name = row.cells[1].textContent.toLowerCase();
-                const location = row.cells[3].textContent.toLowerCase();
-                const riskLevel = row.cells[5].textContent.toLowerCase();
+                const name = row.cells[0].textContent.toLowerCase();
+                const email = row.cells[1].textContent.toLowerCase();
+                const municipality = row.cells[2].textContent.toLowerCase();
+                const barangay = row.cells[3].textContent.toLowerCase();
+                const sex = row.cells[4].textContent.toLowerCase();
                 
                 const matchesSearch = name.includes(searchTerm) || 
-                                   location.includes(searchTerm) || 
-                                   riskLevel.includes(searchTerm);
+                                   email.includes(searchTerm) || 
+                                   municipality.includes(searchTerm) || 
+                                   barangay.includes(searchTerm) || 
+                                   sex.includes(searchTerm);
                 
                 if (matchesSearch) {
                     row.style.display = '';
@@ -3090,16 +3015,16 @@ header {
             updateNoDataMessage(visibleCount);
         }
 
-        function filterByRisk() {
-            const riskFilter = document.getElementById('riskFilter').value;
+        function filterBySex() {
+            const sexFilter = document.getElementById('sexFilter').value;
             const tableRows = document.querySelectorAll('.user-table tbody tr');
             
             let visibleCount = 0;
             
             tableRows.forEach(row => {
-                const riskLevel = row.cells[5].textContent.toLowerCase();
+                const sex = row.cells[4].textContent.trim();
                 
-                if (!riskFilter || riskLevel.includes(riskFilter)) {
+                if (!sexFilter || sex === sexFilter) {
                     row.style.display = '';
                     visibleCount++;
                 } else {
@@ -3326,8 +3251,8 @@ header {
         // CSV Functions
         function downloadCSVTemplate() {
             const csvContent = [
-                ['user_email', 'name', 'age', 'gender', 'weight_kg', 'height_cm', 'barangay', 'municipality', 'pregnant', 'meal_recall', 'family_history', 'lifestyle', 'immunization'],
-                ['user@example.com', 'John Doe', '25', 'Male', '70', '175', 'Bagumbayan', 'CITY OF BALANGA (Capital)', 'No', 'Rice, vegetables, fish', 'Diabetes', 'Active', 'Complete']
+                ['name', 'email', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight', 'height', 'muac', 'screening_date'],
+                ['John Doe', 'john@example.com', 'CITY OF BALANGA (Capital)', 'Bagumbayan', 'Male', '1999-01-15', 'No', '70', '175', '25', '2024-01-15 10:30:00']
             ];
             
             const csv = csvContent.map(row => row.map(field => `"${field}"`).join(',')).join('\n');
