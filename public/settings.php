@@ -69,8 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings - Nutrisaur</title>
-    <style>
-        :root {
+<style>
+:root {
             --color-primary: #a1b454;
             --color-secondary: #546048;
             --color-accent: #8a9a3a;
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             --color-card: #ffffff;
             --color-border: #e9ecef;
             --color-hover: #f1f3f4;
-            --color-shadow: rgba(0, 0, 0, 0.1);
+    --color-shadow: rgba(0, 0, 0, 0.1);
             --color-success: #28a745;
             --color-warning: #ffc107;
             --color-danger: #dc3545;
@@ -91,30 +91,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
 
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: var(--color-text);
-            line-height: 1.6;
+    line-height: 1.6;
             min-height: 100vh;
         }
 
         .container {
             max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
+    margin: 0 auto;
+    padding: 20px;
         }
 
         .header {
             background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
             color: white;
             padding: 20px 0;
-            margin-bottom: 30px;
+    margin-bottom: 30px;
             border-radius: 15px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         .header h1 {
             text-align: center;
             font-size: 2.5rem;
-            font-weight: 700;
+    font-weight: 700;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
@@ -131,41 +131,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             backdrop-filter: blur(10px);
             border-radius: 10px;
             padding: 15px;
-            margin-top: 20px;
-        }
+    margin-top: 20px;
+}
 
         .nav-links {
-            display: flex;
-            justify-content: center;
+    display: flex;
+        justify-content: center;
             gap: 30px;
-            flex-wrap: wrap;
-        }
-
+        flex-wrap: wrap;
+    }
+    
         .nav-links a {
             color: white;
             text-decoration: none;
             padding: 12px 24px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .nav-links a:hover {
             background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
 
         .nav-links a.active {
             background: rgba(255, 255, 255, 0.3);
-            font-weight: 600;
+    font-weight: 600;
         }
 
         .content-section {
             background: var(--color-card);
-            border-radius: 15px;
+    border-radius: 15px;
             padding: 30px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
@@ -175,12 +175,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             font-size: 1.8rem;
             color: var(--color-primary);
             margin-bottom: 20px;
-            text-align: center;
-            font-weight: 600;
+    text-align: center;
+    font-weight: 600;
         }
 
         .stats-grid {
-            display: grid;
+    display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
@@ -188,10 +188,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         .stat-card {
             background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
-            color: white;
-            padding: 25px;
+    color: white;
+    padding: 25px;
             border-radius: 12px;
-            text-align: center;
+    text-align: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
         }
@@ -202,9 +202,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
         .stat-card h3 {
             font-size: 1.1rem;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
 
         .stat-card p {
             font-size: 2rem;
@@ -216,12 +216,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             text-align: center;
             padding: 40px;
             color: var(--color-text-light);
-            font-style: italic;
-        }
+    font-style: italic;
+}
 
         .error {
             text-align: center;
-            padding: 20px;
+    padding: 20px;
             color: var(--color-danger);
             background: rgba(220, 53, 69, 0.1);
             border-radius: 8px;
@@ -229,11 +229,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
 
         .success {
-            text-align: center;
+    text-align: center;
             padding: 20px;
             color: var(--color-success);
             background: rgba(40, 167, 69, 0.1);
-            border-radius: 8px;
+    border-radius: 8px;
             margin: 20px 0;
         }
 
@@ -252,26 +252,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
 
         #users-table tbody tr:hover {
-            background-color: rgba(161, 180, 84, 0.1);
+    background-color: rgba(161, 180, 84, 0.1);
         }
 
         /* Button hover effects */
         button:hover {
             opacity: 0.9;
-            transform: translateY(-1px);
-            transition: all 0.3s ease;
-        }
+        transform: translateY(-1px);
+    transition: all 0.3s ease;
+}
 
         /* Search input focus */
         #search-input:focus {
-            outline: none;
+    outline: none;
             border-color: var(--color-primary);
             box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+    padding: 10px;
             }
             
             .header h1 {
@@ -313,8 +313,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     <a href="settings.php" class="active">Settings</a>
                     <a href="data_dashboard.html">Data Dashboard</a>
                 </div>
-            </div>
         </div>
+    </div>
 
         <!-- Stats Section -->
         <div class="content-section">
@@ -323,27 +323,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 <div class="stat-card">
                     <h3>Total Users</h3>
                     <p id="total-users">Loading...</p>
-                </div>
+            </div>
                 <div class="stat-card">
                     <h3>Municipalities</h3>
                     <p id="total-municipalities">Loading...</p>
-                </div>
+            </div>
                 <div class="stat-card">
                     <h3>Male Users</h3>
                     <p id="male-users">Loading...</p>
-                </div>
+                    </div>
                 <div class="stat-card">
                     <h3>Female Users</h3>
                     <p id="female-users">Loading...</p>
-                </div>
-            </div>
+                        </div>
+                    </div>
         </div>
 
         <!-- Loading Message -->
         <div id="loading" class="loading" style="display: none;">
             Loading community users data...
-        </div>
-
+            </div>
+            
         <!-- Error Message -->
         <div id="error" class="error" style="display: none;"></div>
 
@@ -362,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 <input type="text" id="search-input" placeholder="Search by name, email, or location..." 
                        style="flex: 1; min-width: 200px; padding: 10px; border: 2px solid var(--color-border); border-radius: 8px; font-size: 14px;">
             </div>
-
+            
             <!-- Table Container -->
             <div style="overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
                 <table id="users-table" style="width: 100%; border-collapse: collapse; min-width: 1000px;">
@@ -380,15 +380,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             <th style="padding: 15px 10px; text-align: left; font-weight: 600;">MUAC</th>
                             <th style="padding: 15px 10px; text-align: left; font-weight: 600;">Screening Date</th>
                             <th style="padding: 15px 10px; text-align: center; font-weight: 600;">Actions</th>
-                        </tr>
-                    </thead>
+                    </tr>
+                </thead>
                     <tbody id="users-tbody">
                         <tr>
                             <td colspan="12" style="text-align: center; padding: 40px; color: var(--color-text-light); font-style: italic;">
                                 Click "Refresh Data" to load users
                             </td>
                         </tr>
-                    </tbody>
+                </tbody>
                 </table>
             </div>
         </div>
@@ -416,10 +416,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
             try {
                 const response = await fetch('settings_new.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
                     body: 'action=get_users'
                 });
 
@@ -428,7 +428,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 if (data.success) {
                     updateStats(data.data);
                     statsGrid.style.display = 'grid';
-                } else {
+            } else {
                     throw new Error(data.message || 'Failed to load data');
                 }
             } catch (err) {
@@ -476,7 +476,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     allUsers = data.data;
                     filteredUsers = [...allUsers];
                     displayUsers(filteredUsers);
-                } else {
+                            } else {
                     throw new Error(data.message || 'Failed to load users');
                 }
             } catch (err) {
@@ -492,17 +492,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         // Display users in table
         function displayUsers(users) {
             const tbody = document.getElementById('users-tbody');
-            
-            if (!users || users.length === 0) {
+        
+        if (!users || users.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="12" style="text-align: center; padding: 40px; color: var(--color-text-light); font-style: italic;">No users found</td></tr>';
-                return;
-            }
-
+            return;
+        }
+        
             tbody.innerHTML = '';
-            users.forEach(user => {
-                const row = document.createElement('tr');
+        users.forEach(user => {
+            const row = document.createElement('tr');
                 row.style.borderBottom = '1px solid var(--color-border)';
-                row.innerHTML = `
+            row.innerHTML = `
                     <td style="padding: 12px 10px;">${user.name || 'N/A'}</td>
                     <td style="padding: 12px 10px;">${user.email || 'N/A'}</td>
                     <td style="padding: 12px 10px;">${user.municipality || 'N/A'}</td>
@@ -519,34 +519,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                                 style="padding: 6px 12px; background: var(--color-danger); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; margin: 0 2px;">
                             Delete
                         </button>
-                    </td>
-                `;
+                </td>
+            `;
                 tbody.appendChild(row);
             });
         }
 
         // Delete user function
-        async function deleteUser(email) {
+    async function deleteUser(email) {
             if (!confirm(`Are you sure you want to delete user: ${email}?`)) {
-                return;
-            }
+            return;
+        }
 
             try {
                 const response = await fetch('settings_new.php', {
-                    method: 'POST',
-                    headers: {
+                method: 'POST',
+                headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                    },
+                },
                     body: `action=delete_user&email=${encodeURIComponent(email)}`
-                });
-
-                const data = await response.json();
+            });
+            
+            const data = await response.json();
 
                 if (data.success) {
                     showMessage('success', data.message);
                     loadUsers(); // Refresh the table
                     loadStats(); // Refresh stats
-                } else {
+            } else {
                     showMessage('error', data.message);
                 }
             } catch (err) {
@@ -585,13 +585,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 success.textContent = message;
                 success.style.display = 'block';
             }
-            
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
                 error.style.display = 'none';
                 success.style.display = 'none';
-            }, 5000);
-        }
+        }, 5000);
+    }
     </script>
 </body>
 </html>
+                                                                        
