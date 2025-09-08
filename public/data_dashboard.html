@@ -333,7 +333,16 @@
             dataTable.style.display = 'none';
 
             try {
-                const response = await fetch('/api/get_community_data.php');
+                const response = await fetch('/api/DatabaseAPI.php?action=select', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        table: 'community_users',
+                        order_by: 'screening_date DESC'
+                    })
+                });
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -342,9 +351,19 @@
                 const data = await response.json();
                 
                 if (data.success && data.data) {
-                    displayData(data.data);
+                    // Transform data to match expected format
+                    const transformedData = {
+                        users: data.data,
+                        stats: {
+                            total_users: data.count,
+                            total_municipalities: [...new Set(data.data.map(user => user.municipality))].length,
+                            male_users: data.data.filter(user => user.sex.toLowerCase() === 'male').length,
+                            female_users: data.data.filter(user => user.sex.toLowerCase() === 'female').length
+                        }
+                    };
+                    displayData(transformedData);
                 } else {
-                    throw new Error(data.error || 'Failed to load data');
+                    throw new Error(data.message || 'Failed to load data');
                 }
             } catch (err) {
                 console.error('Error loading data:', err);
