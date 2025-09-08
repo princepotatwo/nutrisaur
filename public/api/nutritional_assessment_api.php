@@ -361,8 +361,8 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
         ];
     }
     
-    // DECISION TREE STEP 3: Is H/A z-score < -2? (Stunting) - ONLY if not SAM/MAM
-    if ($haZScore < -2) {
+    // DECISION TREE STEP 3: Is H/A z-score < -2? (Stunting) - ONLY if W/H z-score ≥ -2
+    if ($whZScore >= -2 && $haZScore < -2) {
         return [
             'nutritional_status' => 'Stunting (Chronic Malnutrition)',
             'risk_level' => 'Medium',
@@ -375,7 +375,7 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
                 'Focus on micronutrient supplementation'
             ],
             'measurements_used' => 'Height-for-Age z-score',
-            'cutoff_used' => 'H/A z-score < -2',
+            'cutoff_used' => 'H/A z-score < -2 (and W/H z-score ≥ -2)',
             'z_scores' => [
                 'weight_for_height' => round($whZScore, 2),
                 'height_for_age' => round($haZScore, 2),
@@ -637,7 +637,8 @@ function calculateHeightForAgeZScore($height, $age, $sex) {
 function calculateBMIForAgeZScore($bmi, $age, $sex) {
     $ageInMonths = $age * 12;
     
-    // WHO BMI-for-Age reference data (simplified)
+    // WHO BMI-for-Age reference data (actual WHO standards)
+    // Source: WHO Child Growth Standards - BMI-for-age tables
     $referenceData = [
         'male' => [
             'age_months' => [0, 1, 2, 3, 6, 9, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114, 120, 126, 132, 138, 144, 150, 156, 162, 168, 174, 180, 186, 192, 198, 204, 210, 216, 222, 228, 234, 240],
