@@ -346,23 +346,27 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         traditionalRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         traditionalAdapter = new HorizontalFoodAdapter(traditionalFoods, this, this);
         traditionalRecycler.setAdapter(traditionalAdapter);
+        traditionalAdapter.setLoading(true);
         
         // Setup Healthy RecyclerView
         healthyRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         healthyAdapter = new HorizontalFoodAdapter(healthyFoods, this, this);
         healthyRecycler.setAdapter(healthyAdapter);
+        healthyAdapter.setLoading(true);
         
         // Setup International RecyclerView
         internationalRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         internationalAdapter = new HorizontalFoodAdapter(internationalFoods, this, this);
         internationalRecycler.setAdapter(internationalAdapter);
+        internationalAdapter.setLoading(true);
         
         // Setup Budget RecyclerView
         budgetRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         budgetAdapter = new HorizontalFoodAdapter(budgetFoods, this, this);
         budgetRecycler.setAdapter(budgetAdapter);
+        budgetAdapter.setLoading(true);
         
-        Log.d(TAG, "All RecyclerViews setup completed");
+        Log.d(TAG, "All RecyclerViews setup completed with loading state");
     }
     
     private void setupFeaturedBanner() {
@@ -380,77 +384,75 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     }
     
     private void loadFoodDataForAllCategories() {
-        // Load traditional Filipino foods
-        loadTraditionalFoods();
-        
-        // Load healthy options
-        loadHealthyFoods();
-        
-        // Load international cuisine
-        loadInternationalFoods();
-        
-        // Load budget-friendly options
-        loadBudgetFoods();
+        // Use API integration for malnutrition recovery foods
+        FoodActivityIntegration.loadMalnutritionRecoveryFoods(
+            this,
+            userAge, userSex, userBMI, userHealthConditions, userBudgetLevel,
+            userAllergies, userDietPrefs, userPregnancyStatus,
+            traditionalFoods, healthyFoods, internationalFoods, budgetFoods,
+            traditionalAdapter, healthyAdapter, internationalAdapter, budgetAdapter
+        );
     }
     
     private void loadTraditionalFoods() {
-        // Traditional Filipino dishes
-        String[] traditionalDishes = {
-            "Adobo", "Sinigang", "Kare-kare", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
-            "Pancit", "Lumpia", "Tapsilog", "Sisig", "Bicol Express", "Chicken Inasal", "Lechon",
-            "Crispy Pata", "Dinuguan", "Laing", "Ginataang Gulay", "Pinakbet"
+        // Breakfast dishes
+        String[] breakfastDishes = {
+            "Tapsilog", "Tocilog", "Longsilog", "Bangsilog", "Cornsilog", "Spamsilog", "Hotsilog",
+            "Pancit Canton", "Lugaw", "Arroz Caldo", "Goto", "Champorado", "Pandesal", "Taho",
+            "Kakanin", "Bibingka", "Puto", "Suman", "Puto Bumbong", "Sapin-sapin"
         };
         
-        List<FoodRecommendation> foods = createFoodListFromNames(traditionalDishes, "Traditional Filipino");
+        List<FoodRecommendation> foods = createFoodListFromNames(breakfastDishes, "Breakfast");
         traditionalFoods.clear();
         traditionalFoods.addAll(foods);
         traditionalAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Loaded " + foods.size() + " traditional foods");
+        Log.d(TAG, "Loaded " + foods.size() + " breakfast foods");
     }
     
     private void loadHealthyFoods() {
-        // Healthy Filipino dishes
-        String[] healthyDishes = {
-            "Ginisang Munggo", "Ginisang Ampalaya", "Ginisang Kangkong", "Ginisang Malunggay",
-            "Sinigang na Isda", "Tinolang Manok", "Ginisang Togue", "Ginisang Baguio Beans",
-            "Ginisang Sayote", "Ginisang Kalabasa", "Ginisang Talong", "Ginisang Okra"
+        // Lunch dishes
+        String[] lunchDishes = {
+            "Adobo", "Sinigang", "Kare-kare", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
+            "Pancit", "Lumpia", "Sisig", "Bicol Express", "Chicken Inasal", "Lechon", "Crispy Pata",
+            "Dinuguan", "Laing", "Ginataang Gulay", "Pinakbet", "Ginisang Munggo"
         };
         
-        List<FoodRecommendation> foods = createFoodListFromNames(healthyDishes, "Healthy");
+        List<FoodRecommendation> foods = createFoodListFromNames(lunchDishes, "Lunch");
         healthyFoods.clear();
         healthyFoods.addAll(foods);
         healthyAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Loaded " + foods.size() + " healthy foods");
+        Log.d(TAG, "Loaded " + foods.size() + " lunch foods");
     }
     
     private void loadInternationalFoods() {
-        // International dishes popular in Philippines
-        String[] internationalDishes = {
+        // Dinner dishes
+        String[] dinnerDishes = {
             "Chicken Teriyaki", "Beef Bulgogi", "Pad Thai", "Spaghetti Carbonara", "Burger",
             "Fried Chicken", "Pizza", "Sushi", "Ramen", "Curry", "Stir Fry", "Fish and Chips",
-            "Chicken Curry", "Beef Steak", "Pork Chop", "Chicken Wings", "Tacos", "Burrito"
+            "Chicken Curry", "Beef Steak", "Pork Chop", "Chicken Wings", "Tacos", "Burrito",
+            "Pasta", "Grilled Fish", "Roast Chicken"
         };
         
-        List<FoodRecommendation> foods = createFoodListFromNames(internationalDishes, "International");
+        List<FoodRecommendation> foods = createFoodListFromNames(dinnerDishes, "Dinner");
         internationalFoods.clear();
         internationalFoods.addAll(foods);
         internationalAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Loaded " + foods.size() + " international foods");
+        Log.d(TAG, "Loaded " + foods.size() + " dinner foods");
     }
     
     private void loadBudgetFoods() {
-        // Budget-friendly Filipino dishes
-        String[] budgetDishes = {
-            "Ginisang Munggo", "Ginisang Togue", "Ginisang Kangkong", "Ginisang Ampalaya",
-            "Lugaw", "Arroz Caldo", "Goto", "Taho", "Pancit Canton", "Pancit Bihon",
-            "Ginisang Sayote", "Ginisang Kalabasa", "Ginisang Talong", "Ginisang Okra"
+        // Snack dishes
+        String[] snackDishes = {
+            "Taho", "Pandesal", "Kakanin", "Bibingka", "Puto", "Suman", "Puto Bumbong",
+            "Sapin-sapin", "Buko Pie", "Ensaymada", "Hopia", "Polvoron", "Chicharon",
+            "Banana Chips", "Crackers", "Nuts", "Fruits", "Yogurt", "Ice Cream", "Cake"
         };
         
-        List<FoodRecommendation> foods = createFoodListFromNames(budgetDishes, "Budget-Friendly");
+        List<FoodRecommendation> foods = createFoodListFromNames(snackDishes, "Snacks");
         budgetFoods.clear();
         budgetFoods.addAll(foods);
         budgetAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Loaded " + foods.size() + " budget foods");
+        Log.d(TAG, "Loaded " + foods.size() + " snack foods");
     }
     
     private List<FoodRecommendation> createFoodListFromNames(String[] dishNames, String category) {

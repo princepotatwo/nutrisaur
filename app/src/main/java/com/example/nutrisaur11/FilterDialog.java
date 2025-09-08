@@ -409,7 +409,7 @@ public class FilterDialog extends Dialog {
             UserPreferencesDbHelper dbHelper = new UserPreferencesDbHelper(context);
             try {
                 // Get current risk score to preserve it
-                int currentRiskScore = ScreeningResultStore.getRiskScore();
+                int currentRiskScore = 25; // Default risk score
                 android.util.Log.d("FilterDialog", "Current risk score: " + currentRiskScore);
                 
                 // Join the lists, but ensure we don't save empty strings

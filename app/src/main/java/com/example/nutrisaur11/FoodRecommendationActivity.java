@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
@@ -103,42 +104,61 @@ public class FoodRecommendationActivity extends AppCompatActivity {
     }
     
     private void loadUserProfile() {
-        // Load user profile from SharedPreferences or database
-        String userEmail = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE)
-                .getString("current_user_email", null);
+        // Load user profile from CommunityUserManager
+        CommunityUserManager userManager = new CommunityUserManager(this);
         
-        if (userEmail != null) {
-            // Try to load from database first
-            try {
-                UserPreferencesDbHelper dbHelper = new UserPreferencesDbHelper(this);
-                android.database.Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-                    "SELECT * FROM " + UserPreferencesDbHelper.TABLE_NAME + 
-                    " WHERE " + UserPreferencesDbHelper.COL_USER_EMAIL + "=?",
-                    new String[]{userEmail}
-                );
-                
-                if (cursor.moveToFirst()) {
-                    userAge = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_AGE));
-                    userSex = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_GENDER));
-                    userBMI = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_USER_BMI));
-                    userActivityLevel = "Moderate"; // Default
-                    userHealthConditions = "None"; // Default
-                    userBudgetLevel = "Medium"; // Default
-                    userDietaryRestrictions = "None"; // Default
-                    
-                    Log.d(TAG, "Loaded user profile: Age=" + userAge + ", Sex=" + userSex + ", BMI=" + userBMI);
+        if (userManager.isLoggedIn()) {
+            Map<String, String> userData = userManager.getCurrentUserData();
+            
+            if (!userData.isEmpty()) {
+                // Calculate age from birthday
+                String birthday = userData.get("birthday");
+                if (birthday != null && !birthday.isEmpty()) {
+                    try {
+                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+                        java.util.Date birthDate = sdf.parse(birthday);
+                        java.util.Date currentDate = new java.util.Date();
+                        long ageInMillis = currentDate.getTime() - birthDate.getTime();
+                        int age = (int) (ageInMillis / (365.25 * 24 * 60 * 60 * 1000));
+                        userAge = String.valueOf(age);
+                    } catch (Exception e) {
+                        userAge = "25"; // Default age
+                    }
                 } else {
-                    // Use defaults if no data found
-                    setDefaultUserProfile();
+                    userAge = "25"; // Default age
                 }
-                cursor.close();
-                dbHelper.close();
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading user profile: " + e.getMessage());
+                
+                userSex = userData.get("sex");
+                if (userSex == null || userSex.isEmpty()) {
+                    userSex = "Not specified";
+                }
+                
+                // Calculate BMI from weight and height
+                String weightStr = userData.get("weight");
+                String heightStr = userData.get("height");
+                if (weightStr != null && heightStr != null && !weightStr.isEmpty() && !heightStr.isEmpty()) {
+                    try {
+                        double weight = Double.parseDouble(weightStr);
+                        double height = Double.parseDouble(heightStr) / 100.0; // Convert cm to m
+                        double bmi = weight / (height * height);
+                        userBMI = String.format("%.1f", bmi);
+                    } catch (Exception e) {
+                        userBMI = "22.0"; // Default BMI
+                    }
+                } else {
+                    userBMI = "22.0"; // Default BMI
+                }
+                
+                userActivityLevel = "Moderate"; // Default
+                userHealthConditions = "None"; // Default
+                userBudgetLevel = "Medium"; // Default
+                userDietaryRestrictions = "None"; // Default
+                
+                Log.d(TAG, "Loaded user profile: Age=" + userAge + ", Sex=" + userSex + ", BMI=" + userBMI);
+            } else {
                 setDefaultUserProfile();
             }
         } else {
-            // Use defaults if no user email found
             setDefaultUserProfile();
         }
     }

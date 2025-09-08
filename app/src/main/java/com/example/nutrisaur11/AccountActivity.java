@@ -545,7 +545,7 @@ public class AccountActivity extends AppCompatActivity {
                             .putBoolean("is_logged_in", false)
                             .remove("current_user_email")
                             .apply();
-                        Intent intent = new Intent(AccountActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                         startActivity(intent);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();

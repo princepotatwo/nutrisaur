@@ -47,6 +47,11 @@
             android:name=".ScreeningFormActivity"
             android:exported="false"
             android:theme="@style/Theme.ScreeningForm" />
+            
+        <activity
+            android:name=".NutritionalScreeningActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ScreeningForm" />
         
         <activity
             android:name=".PersonalizationActivity"

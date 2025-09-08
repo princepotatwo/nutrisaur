@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Progress Text -->
+        <TextView
+            android:id="@+id/progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1/10"
+            android:textSize="16sp"
+            android:textColor="#666666" />
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Check-in"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:gravity="center"
+            android:layout_weight="1" />
+
+        <!-- Close Button -->
+        <TextView
+            android:id="@+id/close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✕"
+            android:textSize="20sp"
+            android:textColor="#666666"
+            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+    <!-- Question Text -->
+    <TextView
+        android:id="@+id/question_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="32dp"
+        android:text="Select your barangay"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:lineSpacingExtra="4dp"
+        app:layout_constraintTop_toBottomOf="@id/header_layout" />
+
+    <!-- Scrollable Options Container -->
+    <ScrollView
+        android:id="@+id/scrollable_options"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
+        android:scrollbars="none"
+        android:fadeScrollbars="false"
+        app:layout_constraintTop_toBottomOf="@id/question_text"
+        app:layout_constraintBottom_toTopOf="@id/next_button">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/options_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Option 1: Very often -->
+                <Button
+                    android:id="@+id/option_very_often"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Very often"
+                    android:textSize="16sp"
+                    android:textColor="#333333"
+                    android:background="@drawable/option_button_unselected"
+                    android:stateListAnimator="@null"
+                    android:elevation="0dp" />
+
+                <!-- Option 2: Fairly often -->
+                <Button
+                    android:id="@+id/option_fairly_often"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Fairly often"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/option_button_selected"
+                    android:stateListAnimator="@null"
+                    android:elevation="0dp" />
+
+                <!-- Option 3: Sometimes -->
+                <Button
+                    android:id="@+id/option_sometimes"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Sometimes"
+                    android:textSize="16sp"
+                    android:textColor="#333333"
+                    android:background="@drawable/option_button_unselected"
+                    android:stateListAnimator="@null"
+                    android:elevation="0dp" />
+
+                <!-- Option 4: Almost never -->
+                <Button
+                    android:id="@+id/option_almost_never"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Almost never"
+                    android:textSize="16sp"
+                    android:textColor="#333333"
+                    android:background="@drawable/option_button_unselected"
+                    android:stateListAnimator="@null"
+                    android:elevation="0dp" />
+
+                <!-- Option 5: Never -->
+                <Button
+                    android:id="@+id/option_never"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Never"
+                    android:textSize="16sp"
+                    android:textColor="#333333"
+                    android:background="@drawable/option_button_unselected"
+                    android:stateListAnimator="@null"
+                    android:elevation="0dp" />
+
+            </LinearLayout>
+
+            <!-- Weight Input Field -->
+            <EditText
+                android:id="@+id/weight_input"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:hint="Enter Weight (kg)"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:textColorHint="#999999"
+                android:background="@drawable/option_button_unselected"
+                android:inputType="numberDecimal"
+                android:padding="16dp"
+                android:gravity="center"
+                android:visibility="gone" />
+
+            <!-- Height Input Field -->
+            <EditText
+                android:id="@+id/height_input"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:hint="Enter Height (cm)"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:textColorHint="#999999"
+                android:background="@drawable/option_button_unselected"
+                android:inputType="numberDecimal"
+                android:padding="16dp"
+                android:gravity="center"
+                android:visibility="gone" />
+
+            <!-- MUAC Input Field -->
+            <EditText
+                android:id="@+id/muac_input"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:hint="Enter MUAC (cm)"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:textColorHint="#999999"
+                android:background="@drawable/option_button_unselected"
+                android:inputType="numberDecimal"
+                android:padding="16dp"
+                android:gravity="center"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Next Button -->
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="Next"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_next_active"
+        android:enabled="true"
+        android:stateListAnimator="@null"
+        android:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

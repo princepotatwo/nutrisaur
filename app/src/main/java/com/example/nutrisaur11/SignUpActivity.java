@@ -142,18 +142,33 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        // Save user profile to database
-        saveUserProfile(fullName, email, password);
+        // Show loading state
+        signUpButton.setText("Creating Account...");
+        signUpButton.setEnabled(false);
         
-        // Show success message and go to screening
-        Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
-        // Save current user email
-        getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).edit().putString("current_user_email", email).apply();
-        // Navigate to screening form
-        getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).edit().putBoolean("is_logged_in", true).apply();
-        Intent intent = new Intent(SignUpActivity.this, ScreeningFormActivity.class);
-        startActivity(intent);
-        finish();
+        // Register user with community_users database
+        CommunityUserManager userManager = new CommunityUserManager(this);
+        userManager.registerUser(fullName, email, password, "", "", "", "", "", "", "", "", new CommunityUserManager.RegisterCallback() {
+            @Override
+            public void onSuccess(String message) {
+                runOnUiThread(() -> {
+                    Toast.makeText(SignUpActivity.this, message, Toast.LENGTH_SHORT).show();
+                    // Navigate to screening form
+                    Intent intent = new Intent(SignUpActivity.this, NutritionalScreeningActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
+            }
+            
+            @Override
+            public void onError(String error) {
+                runOnUiThread(() -> {
+                    signUpButton.setText("Sign Up");
+                    signUpButton.setEnabled(true);
+                    Toast.makeText(SignUpActivity.this, error, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
     }
     
     private void saveUserProfile(String username, String email, String password) {

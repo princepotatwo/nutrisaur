@@ -131,87 +131,26 @@ public class LoginActivity extends AppCompatActivity {
     // Removed WebViewAPIClient - using direct HTTP requests
     
     private void validateUserAndLogin(String email, String password) {
-        // Use direct HTTP request to validate user
-        new Thread(() -> {
-            try {
-                // Create JSON request
-                org.json.JSONObject requestData = new org.json.JSONObject();
-                requestData.put("action", "validate_user");
-                requestData.put("email", email);
-                
-                // Make direct HTTP request
-                java.net.URL url = new java.net.URL(Constants.UNIFIED_API_URL);
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setDoOutput(true);
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
-                
-                java.io.OutputStream os = conn.getOutputStream();
-                os.write(requestData.toString().getBytes("UTF-8"));
-                os.close();
-                
-                int responseCode = conn.getResponseCode();
-                if (responseCode == 200) {
-                    java.io.BufferedReader reader = new java.io.BufferedReader(
-                        new java.io.InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-                    
-                    org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
-                    if (jsonResponse.optBoolean("valid", false)) {
-                        // User is valid, proceed with login
-                        runOnUiThread(() -> {
-                                Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                                // Save current user email and set login status
-                                getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).edit()
-                                    .putString("current_user_email", email)
-                                    .putBoolean("is_logged_in", true)
-                                    .apply();
-                                // Navigate to main activity (dashboard)
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            });
-                    } else {
-                        // User was deleted, clear local data and show error
-                        runOnUiThread(() -> {
-                            clearLocalUserData(email);
-                            Toast.makeText(LoginActivity.this, "Account not found. Please sign up again.", Toast.LENGTH_LONG).show();
-                        });
-                    }
-                } else {
-                    // HTTP error, proceed with local login as fallback
-                    runOnUiThread(() -> {
-                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                        getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).edit()
-                            .putString("current_user_email", email)
-                            .putBoolean("is_logged_in", true)
-                            .apply();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    });
-                }
-            } catch (Exception e) {
-                // Error with HTTP request, proceed with local login as fallback
+        CommunityUserManager userManager = new CommunityUserManager(this);
+        userManager.loginUser(email, password, new CommunityUserManager.LoginCallback() {
+            @Override
+            public void onSuccess(String message) {
                 runOnUiThread(() -> {
-                    Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                    getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).edit()
-                        .putString("current_user_email", email)
-                        .putBoolean("is_logged_in", true)
-                        .apply();
+                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                    // Navigate to main activity (dashboard)
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
                 });
             }
-        }).start();
+            
+            @Override
+            public void onError(String error) {
+                runOnUiThread(() -> {
+                    Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
     }
     
     private void clearLocalUserData(String email) {
@@ -281,7 +220,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.apply();
         
         // Navigate directly to screening activity with some pre-filled data
-        Intent intent = new Intent(LoginActivity.this, ScreeningFormActivity.class);
+        Intent intent = new Intent(LoginActivity.this, NutritionalScreeningActivity.class);
         intent.putExtra("test_mode", true);
         intent.putExtra("test_email", testEmail);
         intent.putExtra("test_username", testUsername);

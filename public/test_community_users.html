@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Users Test Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-info { background-color: #17a2b8; color: white; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        button:hover { opacity: 0.8; }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 Community Users Test Interface</h1>
+        
+        <div class="controls">
+            <button class="btn-primary" onclick="loadAllUsers()">📋 Load All Users</button>
+            <button class="btn-success" onclick="loadStats()">📊 Load Statistics</button>
+            <button class="btn-info" onclick="exportCSV()">📥 Export CSV</button>
+            
+            <input type="text" id="searchQuery" placeholder="Search by name or email...">
+            <button class="btn-warning" onclick="searchUsers()">🔍 Search</button>
+            
+            <select id="municipalitySelect">
+                <option value="">Select Municipality</option>
+            </select>
+            <button class="btn-info" onclick="loadByMunicipality()">🏘️ Filter by Municipality</button>
+            
+            <select id="barangaySelect">
+                <option value="">Select Barangay</option>
+            </select>
+            <button class="btn-info" onclick="loadByBarangay()">🏠 Filter by Barangay</button>
+        </div>
+        
+        <div id="statsContainer" class="stats" style="display: none;">
+            <!-- Stats will be loaded here -->
+        </div>
+        
+        <div id="messageContainer"></div>
+        
+        <div id="loadingIndicator" class="loading" style="display: none;">
+            Loading...
+        </div>
+        
+        <div id="resultsContainer">
+            <!-- Results will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'test_community_users.php';
+        
+        function showLoading() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('resultsContainer').innerHTML = '';
+            document.getElementById('statsContainer').style.display = 'none';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingIndicator').style.display = 'none';
+        }
+        
+        function showMessage(message, type = 'success') {
+            const container = document.getElementById('messageContainer');
+            container.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+        
+        async function makeRequest(action, params = {}) {
+            const url = new URL(API_BASE, window.location.href);
+            url.searchParams.set('action', action);
+            
+            Object.keys(params).forEach(key => {
+                if (params[key]) {
+                    url.searchParams.set(key, params[key]);
+                }
+            });
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Request failed:', error);
+                throw error;
+            }
+        }
+        
+        async function loadAllUsers() {
+            showLoading();
+            try {
+                const data = await makeRequest('list');
+                hideLoading();
+                
+                if (data.success) {
+                    displayUsers(data.data);
+                    showMessage(`Loaded ${data.count} users successfully`);
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showMessage('Error loading users: ' + error.message, 'error');
+            }
+        }
+        
+        async function loadStats() {
+            showLoading();
+            try {
+                const data = await makeRequest('stats');
+                hideLoading();
+                
+                if (data.success) {
+                    displayStats(data.data);
+                    showMessage('Statistics loaded successfully');
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showMessage('Error loading stats: ' + error.message, 'error');
+            }
+        }
+        
+        async function searchUsers() {
+            const query = document.getElementById('searchQuery').value.trim();
+            if (!query) {
+                showMessage('Please enter a search query', 'error');
+                return;
+            }
+            
+            showLoading();
+            try {
+                const data = await makeRequest('search', { q: query });
+                hideLoading();
+                
+                if (data.success) {
+                    displayUsers(data.data);
+                    showMessage(`Found ${data.count} users matching "${query}"`);
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showMessage('Error searching users: ' + error.message, 'error');
+            }
+        }
+        
+        async function loadByMunicipality() {
+            const municipality = document.getElementById('municipalitySelect').value;
+            if (!municipality) {
+                showMessage('Please select a municipality', 'error');
+                return;
+            }
+            
+            showLoading();
+            try {
+                const data = await makeRequest('by_municipality', { municipality });
+                hideLoading();
+                
+                if (data.success) {
+                    displayUsers(data.data);
+                    showMessage(`Found ${data.count} users in ${municipality}`);
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showMessage('Error loading by municipality: ' + error.message, 'error');
+            }
+        }
+        
+        async function loadByBarangay() {
+            const barangay = document.getElementById('barangaySelect').value;
+            if (!barangay) {
+                showMessage('Please select a barangay', 'error');
+                return;
+            }
+            
+            showLoading();
+            try {
+                const data = await makeRequest('by_barangay', { barangay });
+                hideLoading();
+                
+                if (data.success) {
+                    displayUsers(data.data);
+                    showMessage(`Found ${data.count} users in ${barangay}`);
+                } else {
+                    showMessage('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showMessage('Error loading by barangay: ' + error.message, 'error');
+            }
+        }
+        
+        function exportCSV() {
+            window.open(API_BASE + '?action=export', '_blank');
+            showMessage('CSV export started');
+        }
+        
+        function displayStats(stats) {
+            const container = document.getElementById('statsContainer');
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${stats.total_users}</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.recent_screenings}</div>
+                    <div class="stat-label">Recent Screenings (7 days)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Object.keys(stats.municipalities).length}</div>
+                    <div class="stat-label">Municipalities</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Object.keys(stats.barangays).length}</div>
+                    <div class="stat-label">Barangays</div>
+                </div>
+            `;
+            container.style.display = 'grid';
+        }
+        
+        function displayUsers(users) {
+            const container = document.getElementById('resultsContainer');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<p>No users found.</p>';
+                return;
+            }
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Municipality</th>
+                            <th>Barangay</th>
+                            <th>Sex</th>
+                            <th>Birthday</th>
+                            <th>Pregnant</th>
+                            <th>Weight</th>
+                            <th>Height</th>
+                            <th>MUAC</th>
+                            <th>Screening Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            users.forEach(user => {
+                html += `
+                    <tr>
+                        <td>${user.name || 'N/A'}</td>
+                        <td>${user.email || 'N/A'}</td>
+                        <td>${user.municipality || 'N/A'}</td>
+                        <td>${user.barangay || 'N/A'}</td>
+                        <td>${user.sex || 'N/A'}</td>
+                        <td>${user.birthday || 'N/A'}</td>
+                        <td>${user.is_pregnant || 'N/A'}</td>
+                        <td>${user.weight || 'N/A'}</td>
+                        <td>${user.height || 'N/A'}</td>
+                        <td>${user.muac || 'N/A'}</td>
+                        <td>${user.screening_date || 'N/A'}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        // Load initial data
+        window.onload = function() {
+            loadAllUsers();
+            loadStats();
+        };
+    </script>
+</body>
+</html>

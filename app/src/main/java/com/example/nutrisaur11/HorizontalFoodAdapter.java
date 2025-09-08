@@ -14,10 +14,14 @@ import java.util.List;
 
 public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAdapter.ViewHolder> {
     private static final String TAG = "HorizontalFoodAdapter";
+    private static final int VIEW_TYPE_LOADING = 0;
+    private static final int VIEW_TYPE_FOOD = 1;
+    
     private List<FoodRecommendation> foods;
     private Context context;
     private FoodImageService foodImageService;
     private OnFoodClickListener listener;
+    private boolean isLoading = false;
 
     public interface OnFoodClickListener {
         void onFoodClick(FoodRecommendation food);
@@ -30,16 +34,42 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
         this.foodImageService = new FoodImageService();
         Log.d(TAG, "HorizontalFoodAdapter created with " + foods.size() + " foods");
     }
+    
+    public void setLoading(boolean loading) {
+        this.isLoading = loading;
+        notifyDataSetChanged();
+        Log.d(TAG, "setLoading called with: " + loading);
+    }
+    
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return isLoading ? VIEW_TYPE_LOADING : VIEW_TYPE_FOOD;
+    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_food_horizontal, parent, false);
-        return new ViewHolder(view);
+        if (viewType == VIEW_TYPE_LOADING) {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_food_loading, parent, false);
+            return new ViewHolder(view, viewType);
+        } else {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_food_horizontal, parent, false);
+            return new ViewHolder(view, viewType);
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        if (holder.viewType == VIEW_TYPE_LOADING) {
+            // Loading state - no binding needed
+            Log.d(TAG, "Binding loading card at position " + position);
+            return;
+        }
+        
         FoodRecommendation food = foods.get(position);
         
         Log.d(TAG, "Binding food at position " + position + ": " + food.getFoodName());
@@ -47,9 +77,6 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
         // Set food name (shortened for horizontal layout)
         String shortName = shortenFoodName(food.getFoodName());
         holder.foodName.setText(shortName);
-        
-        // Set calories
-        holder.calories.setText(food.getCalories() + " cal");
         
         // Load image
         foodImageService.loadFoodImage(food.getFoodName(), holder.foodImage, null);
@@ -64,6 +91,9 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
 
     @Override
     public int getItemCount() {
+        if (isLoading) {
+            return 4; // Show 4 loading cards
+        }
         return foods.size();
     }
 
@@ -108,14 +138,18 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
         CardView foodCard;
         ImageView foodImage;
         TextView foodName;
-        TextView calories;
+        int viewType;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView, int viewType) {
             super(itemView);
-            foodCard = itemView.findViewById(R.id.food_card);
-            foodImage = itemView.findViewById(R.id.food_image);
-            foodName = itemView.findViewById(R.id.food_name);
-            calories = itemView.findViewById(R.id.calories);
+            this.viewType = viewType;
+            
+            if (viewType == VIEW_TYPE_FOOD) {
+                foodCard = itemView.findViewById(R.id.food_card);
+                foodImage = itemView.findViewById(R.id.food_image);
+                foodName = itemView.findViewById(R.id.food_name);
+            }
+            // For loading view, no specific views needed
         }
     }
 }
