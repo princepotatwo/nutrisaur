@@ -317,6 +317,9 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
     if ($whZScore < -3 || ($age >= 0.5 && $age < 5 && $muac < 11.5)) {
         return [
             'nutritional_status' => 'Severe Acute Malnutrition (SAM)',
+            'malnutrition_category' => 'Undernutrition',
+            'specific_condition' => 'Severe Acute Malnutrition (SAM)',
+            'type' => 'Severe Acute Malnutrition',
             'risk_level' => 'High',
             'category' => 'Undernutrition',
             'description' => 'Child has severe acute malnutrition. Immediate medical attention required.',
@@ -341,6 +344,9 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
     if (($whZScore < -2 && $whZScore >= -3) || ($age >= 0.5 && $age < 5 && $muac >= 11.5 && $muac < 12.5)) {
         return [
             'nutritional_status' => 'Moderate Acute Malnutrition (MAM)',
+            'malnutrition_category' => 'Undernutrition',
+            'specific_condition' => 'Moderate Acute Malnutrition (MAM)',
+            'type' => 'Moderate Acute Malnutrition',
             'risk_level' => 'Medium',
             'category' => 'Undernutrition',
             'description' => 'Child has moderate acute malnutrition. Nutritional support needed.',
@@ -361,10 +367,40 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
         ];
     }
     
-    // DECISION TREE STEP 3: Is H/A z-score < -2? (Stunting) - ONLY if not SAM/MAM
+    // DECISION TREE STEP 3: Is W/H z-score < -1 (≥ -2) OR MUAC 12.5-13.5 cm?
+    if (($whZScore < -1 && $whZScore >= -2) || ($age >= 0.5 && $age < 5 && $muac >= 12.5 && $muac < 13.5)) {
+        return [
+            'nutritional_status' => 'Mild Acute Malnutrition (Wasting)',
+            'malnutrition_category' => 'Undernutrition',
+            'specific_condition' => 'Mild Acute Malnutrition (Wasting)',
+            'type' => 'Mild Acute Malnutrition',
+            'risk_level' => 'Low-Medium',
+            'category' => 'Undernutrition',
+            'description' => 'Child shows mild acute malnutrition (wasting). Nutritional monitoring and support needed.',
+            'recommendations' => [
+                'Improve dietary quality and quantity',
+                'Monitor growth monthly',
+                'Ensure adequate protein intake',
+                'Follow up in 4-6 weeks'
+            ],
+            'measurements_used' => 'Weight-for-Height z-score OR MUAC',
+            'cutoff_used' => 'W/H z-score < -1 (≥ -2) OR MUAC 12.5-13.5 cm',
+            'z_scores' => [
+                'weight_for_height' => round($whZScore, 2),
+                'height_for_age' => round($haZScore, 2),
+                'bmi_for_age' => round($bmiForAgeZScore, 2)
+            ],
+            'bmi' => $bmi
+        ];
+    }
+    
+    // DECISION TREE STEP 4: Is H/A z-score < -2? (Stunting) - ONLY if not SAM/MAM
     if ($haZScore < -2) {
         return [
             'nutritional_status' => 'Stunting (Chronic Malnutrition)',
+            'malnutrition_category' => 'Undernutrition',
+            'specific_condition' => 'Stunting (Chronic Malnutrition)',
+            'type' => 'Chronic Malnutrition',
             'risk_level' => 'Medium',
             'category' => 'Undernutrition',
             'description' => 'Child shows signs of chronic malnutrition (stunting). Long-term nutritional support needed.',
@@ -388,6 +424,9 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
     // If none of the above conditions are met
     return [
         'nutritional_status' => 'Normal',
+        'malnutrition_category' => 'Normal',
+        'specific_condition' => 'Normal',
+        'type' => 'Adequate Nutritional Status',
         'risk_level' => 'Low',
         'category' => 'Normal',
         'description' => 'Child has normal nutritional status. Continue healthy eating habits.',
@@ -398,7 +437,7 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
             'Prevent malnutrition through good nutrition'
         ],
         'measurements_used' => 'All z-scores within normal range',
-        'cutoff_used' => 'All z-scores ≥ -2',
+        'cutoff_used' => 'All z-scores ≥ -1',
         'z_scores' => [
             'weight_for_height' => round($whZScore, 2),
             'height_for_age' => round($haZScore, 2),
@@ -415,35 +454,60 @@ function assessPregnantWoman($muac, $weight) {
     if ($muac < 23.0) {
         return [
             'nutritional_status' => 'Maternal Undernutrition (At-risk)',
+            'malnutrition_category' => 'Undernutrition',
+            'specific_condition' => 'Maternal Undernutrition (At-risk)',
+            'type' => 'Maternal Undernutrition',
             'risk_level' => 'High',
             'category' => 'Undernutrition',
-            'description' => 'Pregnant woman is at risk of undernutrition. Immediate nutritional support needed.',
+            'description' => 'Pregnant woman is at high risk of undernutrition. Immediate nutritional support needed.',
             'recommendations' => [
-                'Start nutritional supplementation',
-                'Increase caloric intake',
+                'Start nutritional supplementation immediately',
+                'Increase caloric intake significantly',
                 'Monitor pregnancy closely',
-                'Consult healthcare provider'
+                'Consult healthcare provider urgently'
             ],
             'measurements_used' => 'Arm circumference (MUAC)',
             'cutoff_used' => 'MUAC < 23.0 cm',
             'bmi' => null
         ];
+    } elseif ($muac >= 23.0 && $muac < 25.0) {
+        return [
+            'nutritional_status' => 'Maternal At-risk',
+            'malnutrition_category' => 'Undernutrition',
+            'specific_condition' => 'Maternal At-risk',
+            'type' => 'Maternal At-risk',
+            'risk_level' => 'Medium',
+            'category' => 'Undernutrition',
+            'description' => 'Pregnant woman is at moderate risk. Nutritional monitoring needed.',
+            'recommendations' => [
+                'Improve dietary quality and quantity',
+                'Monitor weight gain regularly',
+                'Ensure adequate nutrition',
+                'Follow up in 2-3 weeks'
+            ],
+            'measurements_used' => 'Arm circumference (MUAC)',
+            'cutoff_used' => 'MUAC 23.0-24.9 cm',
+            'bmi' => null
+        ];
+    } else {
+        return [
+            'nutritional_status' => 'Normal',
+            'malnutrition_category' => 'Normal',
+            'specific_condition' => 'Normal',
+            'type' => 'Adequate Nutritional Status',
+            'risk_level' => 'Low',
+            'category' => 'Normal',
+            'description' => 'Pregnant woman has adequate nutritional status. Continue healthy pregnancy nutrition.',
+            'recommendations' => [
+                'Maintain balanced pregnancy diet',
+                'Continue prenatal care',
+                'Monitor weight gain'
+            ],
+            'measurements_used' => 'Arm circumference (MUAC)',
+            'cutoff_used' => 'MUAC ≥ 25.0 cm',
+            'bmi' => null
+        ];
     }
-    
-    return [
-        'nutritional_status' => 'Normal',
-        'risk_level' => 'Low',
-        'category' => 'Normal',
-        'description' => 'Pregnant woman has adequate nutritional status. Continue healthy pregnancy nutrition.',
-        'recommendations' => [
-            'Maintain balanced pregnancy diet',
-            'Continue prenatal care',
-            'Monitor weight gain'
-        ],
-        'measurements_used' => 'Arm circumference (MUAC)',
-        'cutoff_used' => 'MUAC ≥ 23.0 cm',
-        'bmi' => null
-    ];
 }
 
 /**
@@ -452,12 +516,53 @@ function assessPregnantWoman($muac, $weight) {
 function assessAdultElderly($weight, $height, $muac) {
     $bmi = calculateBMI($weight, $height);
     
-    if ($bmi < 18.5) {
+    if ($bmi < 16.0) {
         return [
-            'nutritional_status' => 'Underweight',
+            'nutritional_status' => 'Severe Underweight',
+            'malnutrition_category' => 'Undernutrition',
+            'specific_condition' => 'Severe Underweight',
+            'type' => 'Severe Underweight',
+            'risk_level' => 'High',
+            'category' => 'Undernutrition',
+            'description' => 'Adult has severe underweight. Immediate nutritional intervention required.',
+            'recommendations' => [
+                'Seek immediate medical care',
+                'Start nutritional rehabilitation',
+                'Monitor closely for complications',
+                'Refer to specialized nutrition center'
+            ],
+            'measurements_used' => 'Body Mass Index (BMI)',
+            'cutoff_used' => 'BMI < 16.0',
+            'bmi' => $bmi
+        ];
+    } elseif ($bmi >= 16.0 && $bmi < 17.0) {
+        return [
+            'nutritional_status' => 'Moderate Underweight',
+            'malnutrition_category' => 'Undernutrition',
+            'specific_condition' => 'Moderate Underweight',
+            'type' => 'Moderate Underweight',
+            'risk_level' => 'High',
+            'category' => 'Undernutrition',
+            'description' => 'Adult has moderate underweight. Nutritional support needed.',
+            'recommendations' => [
+                'Increase caloric intake significantly',
+                'Focus on nutrient-dense foods',
+                'Consult healthcare provider',
+                'Monitor weight gain weekly'
+            ],
+            'measurements_used' => 'Body Mass Index (BMI)',
+            'cutoff_used' => 'BMI 16.0-16.9',
+            'bmi' => $bmi
+        ];
+    } elseif ($bmi >= 17.0 && $bmi < 18.5) {
+        return [
+            'nutritional_status' => 'Mild Underweight',
+            'malnutrition_category' => 'Undernutrition',
+            'specific_condition' => 'Mild Underweight',
+            'type' => 'Mild Underweight',
             'risk_level' => 'Medium',
             'category' => 'Undernutrition',
-            'description' => 'Adult is underweight. Nutritional improvement needed.',
+            'description' => 'Adult has mild underweight. Nutritional improvement needed.',
             'recommendations' => [
                 'Increase caloric intake',
                 'Focus on nutrient-dense foods',
@@ -465,12 +570,15 @@ function assessAdultElderly($weight, $height, $muac) {
                 'Monitor weight gain'
             ],
             'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI < 18.5',
+            'cutoff_used' => 'BMI 17.0-18.4',
             'bmi' => $bmi
         ];
     } elseif ($bmi >= 18.5 && $bmi < 25.0) {
         return [
             'nutritional_status' => 'Normal',
+            'malnutrition_category' => 'Normal',
+            'specific_condition' => 'Normal',
+            'type' => 'Adequate Nutritional Status',
             'risk_level' => 'Low',
             'category' => 'Normal',
             'description' => 'Adult has normal nutritional status. Maintain healthy lifestyle.',
@@ -486,6 +594,9 @@ function assessAdultElderly($weight, $height, $muac) {
     } elseif ($bmi >= 25.0 && $bmi < 30.0) {
         return [
             'nutritional_status' => 'Overweight',
+            'malnutrition_category' => 'Overnutrition',
+            'specific_condition' => 'Overweight',
+            'type' => 'Overweight',
             'risk_level' => 'Medium',
             'category' => 'Overnutrition',
             'description' => 'Adult is overweight. Weight management recommended.',
@@ -499,12 +610,15 @@ function assessAdultElderly($weight, $height, $muac) {
             'cutoff_used' => 'BMI 25.0-29.9',
             'bmi' => $bmi
         ];
-    } else {
+    } elseif ($bmi >= 30.0 && $bmi < 35.0) {
         return [
-            'nutritional_status' => 'Obesity',
+            'nutritional_status' => 'Obesity Class I',
+            'malnutrition_category' => 'Overnutrition',
+            'specific_condition' => 'Obesity Class I',
+            'type' => 'Obesity Class I',
             'risk_level' => 'High',
             'category' => 'Overnutrition',
-            'description' => 'Adult has obesity. Comprehensive weight management needed.',
+            'description' => 'Adult has Class I obesity. Comprehensive weight management needed.',
             'recommendations' => [
                 'Consult healthcare provider',
                 'Start structured weight loss program',
@@ -512,7 +626,45 @@ function assessAdultElderly($weight, $height, $muac) {
                 'Focus on sustainable lifestyle changes'
             ],
             'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI ≥ 30.0',
+            'cutoff_used' => 'BMI 30.0-34.9',
+            'bmi' => $bmi
+        ];
+    } elseif ($bmi >= 35.0 && $bmi < 40.0) {
+        return [
+            'nutritional_status' => 'Obesity Class II',
+            'malnutrition_category' => 'Overnutrition',
+            'specific_condition' => 'Obesity Class II',
+            'type' => 'Obesity Class II',
+            'risk_level' => 'High',
+            'category' => 'Overnutrition',
+            'description' => 'Adult has Class II obesity. Intensive weight management required.',
+            'recommendations' => [
+                'Seek specialized medical care',
+                'Consider bariatric surgery evaluation',
+                'Intensive lifestyle modification',
+                'Regular medical monitoring'
+            ],
+            'measurements_used' => 'Body Mass Index (BMI)',
+            'cutoff_used' => 'BMI 35.0-39.9',
+            'bmi' => $bmi
+        ];
+    } else {
+        return [
+            'nutritional_status' => 'Obesity Class III (Severe)',
+            'malnutrition_category' => 'Overnutrition',
+            'specific_condition' => 'Obesity Class III (Severe)',
+            'type' => 'Obesity Class III (Severe)',
+            'risk_level' => 'Very High',
+            'category' => 'Overnutrition',
+            'description' => 'Adult has severe obesity. Immediate medical intervention required.',
+            'recommendations' => [
+                'Seek immediate specialized medical care',
+                'Consider bariatric surgery',
+                'Intensive medical supervision',
+                'Comprehensive lifestyle intervention'
+            ],
+            'measurements_used' => 'Body Mass Index (BMI)',
+            'cutoff_used' => 'BMI ≥ 40.0',
             'bmi' => $bmi
         ];
     }
