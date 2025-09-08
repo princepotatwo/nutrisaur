@@ -361,8 +361,8 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
         ];
     }
     
-    // DECISION TREE STEP 3: Is H/A z-score < -2? (Stunting) - ONLY if W/H z-score ≥ -2
-    if ($whZScore >= -2 && $haZScore < -2) {
+    // DECISION TREE STEP 3: Is H/A z-score < -2? (Stunting) - ONLY if not SAM/MAM
+    if ($haZScore < -2) {
         return [
             'nutritional_status' => 'Stunting (Chronic Malnutrition)',
             'risk_level' => 'Medium',
@@ -375,7 +375,7 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
                 'Focus on micronutrient supplementation'
             ],
             'measurements_used' => 'Height-for-Age z-score',
-            'cutoff_used' => 'H/A z-score < -2 (and W/H z-score ≥ -2)',
+            'cutoff_used' => 'H/A z-score < -2',
             'z_scores' => [
                 'weight_for_height' => round($whZScore, 2),
                 'height_for_age' => round($haZScore, 2),
