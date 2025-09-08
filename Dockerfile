@@ -17,7 +17,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Create startup script
-RUN echo 'php -S 0.0.0.0:${PORT:-8080} -t public public/index.php' > /start.sh && \
+RUN echo 'php -S 0.0.0.0:${PORT:-8080} -t public' > /start.sh && \
     chmod +x /start.sh
 
 EXPOSE 8080
