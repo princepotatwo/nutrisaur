@@ -255,6 +255,13 @@
                         ${assessment.recommendations.map(rec => `<li>${rec}</li>`).join('')}
                     </ul>
                     
+                    ${assessment.z_scores ? `
+                        <h5>📊 Z-Scores (WHO Standards)</h5>
+                        <p><strong>Weight-for-Height:</strong> ${assessment.z_scores.weight_for_height} | 
+                           <strong>Height-for-Age:</strong> ${assessment.z_scores.height_for_age} | 
+                           <strong>BMI-for-Age:</strong> ${assessment.z_scores.bmi_for_age}</p>
+                    ` : ''}
+                    
                     <p><small><strong>Method Used:</strong> ${assessment.measurements_used} | <strong>Cutoff:</strong> ${assessment.cutoff_used}</small></p>
                 </div>
             `;
