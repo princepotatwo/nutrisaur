@@ -1089,7 +1089,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 formData.append('username', username);
                 formData.append('password', password);
                 
-                const response = await fetch('/api/login', {
+                const response = await fetch('/api/login.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -1203,7 +1203,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
         async function checkSession() {
             try {
                 console.log('Checking session...');
-                const response = await fetch('/api/check_session', {
+                const response = await fetch('/api/check_session.php', {
                     method: 'GET'
                 });
                 
@@ -1238,7 +1238,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
         async function testAPI() {
             try {
                 console.log('Testing API connectivity...');
-                const response = await fetch('/api/health', {
+                const response = await fetch('/api/health.php', {
                     method: 'GET'
                 });
                 
