@@ -98,13 +98,13 @@ if ($isAjax) {
                 break;
                 
             case 'get_users':
-                // Use Universal DatabaseAPI to get user preferences data
+                // Use Universal DatabaseAPI to get community_users data
                 $result = $db->select(
-                    'user_preferences',
-                    'id, user_email, age, gender, barangay, municipality, province, weight_kg, height_cm, bmi, risk_score, malnutrition_risk, screening_date, created_at, updated_at, name, birthday, income, muac, screening_answers, allergies, diet_prefs, avoid_foods, swelling, weight_loss, feeding_behavior, physical_signs, dietary_diversity, clinical_risk_factors, whz_score, income_level',
+                    'community_users',
+                    '*',
                     '',
                     [],
-                    'updated_at DESC'
+                    'screening_date DESC'
                 );
                 
                 if (!$result['success']) {
@@ -141,58 +141,59 @@ if ($isAjax) {
                 
                 $response['success'] = true;
                 $response['data'] = $formattedUsers;
-                $response['message'] = 'User preferences retrieved successfully';
+                $response['message'] = 'Community users retrieved successfully';
                 break;
                 
             case 'add_user':
-                // Add new user to user_preferences table using Universal DatabaseAPI
-                $requiredFields = ['user_email', 'username', 'name'];
+                // Add new user to community_users table using Universal DatabaseAPI
+                $requiredFields = ['email', 'name'];
                 foreach ($requiredFields as $field) {
                     if (empty($_POST[$field])) {
                         throw new Exception("Field '$field' is required");
                     }
                 }
                 
-                $userEmail = $_POST['user_email'];
-                $username = $_POST['username'];
+                $email = $_POST['email'];
                 $name = $_POST['name'];
+                $municipality = $_POST['municipality'] ?? '';
                 $barangay = $_POST['barangay'] ?? '';
-                $income = $_POST['income'] ?? '';
-                $age = $_POST['age'] ?? null;
-                $gender = $_POST['gender'] ?? '';
+                $sex = $_POST['sex'] ?? '';
+                $birthday = $_POST['birthday'] ?? null;
+                $is_pregnant = $_POST['is_pregnant'] ?? '';
                 $height = $_POST['height'] ?? null;
                 $weight = $_POST['weight'] ?? null;
-                $riskScore = $_POST['risk_score'] ?? 0;
+                $muac = $_POST['muac'] ?? null;
+                $password = $_POST['password'] ?? 'default_password';
                 
                 // Check if user already exists
-                $existsResult = $db->exists('user_preferences', 'user_email = ?', [$userEmail]);
+                $existsResult = $db->exists('community_users', 'email = ?', [$email]);
                 
                 $userData = [
-                    'username' => $username,
                     'name' => $name,
+                    'municipality' => $municipality,
                     'barangay' => $barangay,
-                    'income' => $income,
-                    'age' => $age,
-                    'gender' => $gender,
+                    'sex' => $sex,
+                    'birthday' => $birthday,
+                    'is_pregnant' => $is_pregnant,
                     'height' => $height,
                     'weight' => $weight,
-                    'risk_score' => $riskScore,
-                    'updated_at' => date('Y-m-d H:i:s')
+                    'muac' => $muac,
+                    'password' => $password,
+                    'screening_date' => date('Y-m-d H:i:s')
                 ];
                 
                 if ($existsResult) {
                     // Update existing user
-                    $result = $db->update('user_preferences', $userData, 'user_email = ?', [$userEmail]);
+                    $result = $db->update('community_users', $userData, 'email = ?', [$email]);
                 } else {
                     // Insert new user
-                    $userData['user_email'] = $userEmail;
-                    $userData['created_at'] = date('Y-m-d H:i:s');
-                    $result = $db->insert('user_preferences', $userData);
+                    $userData['email'] = $email;
+                    $result = $db->insert('community_users', $userData);
                 }
                 
                 if ($result['success']) {
                     $response['success'] = true;
-                    $response['data'] = ['user_email' => $userEmail];
+                    $response['data'] = ['email' => $email];
                     $response['message'] = 'User added successfully';
                 } else {
                     throw new Exception($result['message']);
@@ -200,27 +201,27 @@ if ($isAjax) {
                 break;
                 
             case 'update_user':
-                // Update user in user_preferences table using Universal DatabaseAPI
-                if (empty($_POST['user_email'])) {
+                // Update user in community_users table using Universal DatabaseAPI
+                if (empty($_POST['email'])) {
                     throw new Exception('User email is required');
                 }
                 
-                $userEmail = $_POST['user_email'];
+                $email = $_POST['email'];
                 $userData = [
-                    'username' => $_POST['username'] ?? '',
                     'name' => $_POST['name'] ?? '',
+                    'municipality' => $_POST['municipality'] ?? '',
                     'barangay' => $_POST['barangay'] ?? '',
-                    'income' => $_POST['income'] ?? '',
-                    'age' => $_POST['age'] ?? null,
-                    'gender' => $_POST['gender'] ?? '',
+                    'sex' => $_POST['sex'] ?? '',
+                    'birthday' => $_POST['birthday'] ?? null,
+                    'is_pregnant' => $_POST['is_pregnant'] ?? '',
                     'height' => $_POST['height'] ?? null,
                     'weight' => $_POST['weight'] ?? null,
-                    'risk_score' => $_POST['risk_score'] ?? 0,
-                    'updated_at' => date('Y-m-d H:i:s')
+                    'muac' => $_POST['muac'] ?? null,
+                    'screening_date' => date('Y-m-d H:i:s')
                 ];
                 
-                // Update user preferences
-                $result = $db->update('user_preferences', $userData, 'user_email = ?', [$userEmail]);
+                // Update user data
+                $result = $db->update('community_users', $userData, 'email = ?', [$email]);
                 
                 if ($result['success']) {
                     $response['success'] = true;
@@ -231,20 +232,20 @@ if ($isAjax) {
                 break;
                 
             case 'delete_user':
-                if (empty($_POST['user_id'])) {
-                    throw new Exception('User ID is required');
+                if (empty($_POST['email'])) {
+                    throw new Exception('User email is required');
                 }
                 
-                $userId = $_POST['user_id'];
+                $email = $_POST['email'];
                 
                 // Delete user using Universal DatabaseAPI
-                $result = $db->delete('user_preferences', 'id = ?', [$userId]);
+                $result = $db->delete('community_users', 'email = ?', [$email]);
                 
                 if ($result['success'] && $result['affected_rows'] > 0) {
                     $response['success'] = true;
-                    $response['message'] = 'User preferences deleted successfully';
+                    $response['message'] = 'Community user deleted successfully';
                 } else {
-                    $response['message'] = 'User preferences not found';
+                    $response['message'] = 'Community user not found';
                 }
                 break;
                 
@@ -272,12 +273,12 @@ if ($isAjax) {
                 $whereClause = implode(' AND ', $whereConditions);
                 
                 // Delete users by location using Universal DatabaseAPI
-                $result = $db->delete('user_preferences', $whereClause, $params);
+                $result = $db->delete('community_users', $whereClause, $params);
                 
                 if ($result['success']) {
                     $response['success'] = true;
                     $response['data'] = ['deleted_count' => $result['affected_rows']];
-                    $response['message'] = "Deleted {$result['affected_rows']} user preferences from the specified location";
+                    $response['message'] = "Deleted {$result['affected_rows']} community users from the specified location";
                 } else {
                     throw new Exception($result['message']);
                 }
@@ -286,16 +287,16 @@ if ($isAjax) {
             case 'delete_all_users':
                 $confirm = $_POST['confirm'] ?? false;
                 if (!$confirm) {
-                    throw new Exception('Confirmation required for deleting all user preferences');
+                    throw new Exception('Confirmation required for deleting all community users');
                 }
                 
                 // Delete all users using Universal DatabaseAPI
-                $result = $db->query("DELETE FROM user_preferences", []);
+                $result = $db->query("DELETE FROM community_users", []);
                 
                 if ($result['success']) {
                     $response['success'] = true;
                     $response['data'] = ['deleted_count' => $result['affected_rows']];
-                    $response['message'] = "Deleted all {$result['affected_rows']} user preferences";
+                    $response['message'] = "Deleted all {$result['affected_rows']} community users";
                 } else {
                     throw new Exception($result['message']);
                 }
@@ -1304,7 +1305,7 @@ body {
 
 @media (max-width: 1200px) {
     .user-table {
-        min-width: 900px;
+        min-width: 1000px;
     }
     
     .user-table th,
@@ -1372,7 +1373,7 @@ body {
     }
     
     .user-table {
-        min-width: 600px;
+        min-width: 800px;
     }
     
     .user-table th,
@@ -1404,7 +1405,7 @@ body {
     }
     
     .user-table {
-        min-width: 500px;
+        min-width: 700px;
     }
     
     .user-table th,
@@ -1883,7 +1884,7 @@ body {
 /* Ensure table fits container */
 .user-table {
     width: 100%;
-    min-width: 1000px; /* Optimized for 14 columns with better fit */
+    min-width: 1200px; /* Optimized for 12 columns with better fit */
 }
 
 /* Responsive table wrapper */
@@ -1892,28 +1893,26 @@ body {
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     max-width: 100%;
-    min-width: 1200px; /* Ensure minimum width for all 14 columns */
+    min-width: 1200px; /* Ensure minimum width for all 12 columns */
 }
 
 .user-table td:last-child {
     text-align: center;
 }
 
-/* Set specific widths for columns - Optimized for 14 columns with better fit */
-.user-table th:nth-child(1), .user-table td:nth-child(1) { width: 4%; min-width: 40px; } /* ID */
-.user-table th:nth-child(2), .user-table td:nth-child(2) { width: 15%; min-width: 120px; } /* EMAIL */
-.user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; min-width: 100px; } /* NAME */
-.user-table th:nth-child(4), .user-table td:nth-child(4) { width: 5%; min-width: 50px; } /* AGE */
-.user-table th:nth-child(5), .user-table td:nth-child(5) { width: 7%; min-width: 70px; } /* GENDER */
-.user-table th:nth-child(6), .user-table td:nth-child(6) { width: 7%; min-width: 70px; } /* HEIGHT */
-.user-table th:nth-child(7), .user-table td:nth-child(7) { width: 7%; min-width: 70px; } /* WEIGHT */
-.user-table th:nth-child(8), .user-table td:nth-child(8) { width: 5%; min-width: 50px; } /* BMI */
-.user-table th:nth-child(9), .user-table td:nth-child(9) { width: 12%; min-width: 100px; } /* BARANGAY */
-.user-table th:nth-child(10), .user-table td:nth-child(10) { width: 10%; min-width: 90px; } /* MUNICIPALITY */
-.user-table th:nth-child(11), .user-table td:nth-child(11) { width: 6%; min-width: 60px; } /* RISK SCORE */
-.user-table th:nth-child(12), .user-table td:nth-child(12) { width: 8%; min-width: 80px; text-align: center; } /* RISK LEVEL */
-.user-table th:nth-child(13), .user-table td:nth-child(13) { width: 8%; min-width: 80px; } /* CREATED */
-.user-table th:nth-child(14), .user-table td:nth-child(14) { width: 8%; min-width: 100px; text-align: center; } /* ACTIONS */
+/* Set specific widths for columns - Optimized for 12 columns with better fit */
+.user-table th:nth-child(1), .user-table td:nth-child(1) { width: 15%; min-width: 120px; } /* NAME */
+.user-table th:nth-child(2), .user-table td:nth-child(2) { width: 18%; min-width: 150px; } /* EMAIL */
+.user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; min-width: 100px; } /* MUNICIPALITY */
+.user-table th:nth-child(4), .user-table td:nth-child(4) { width: 12%; min-width: 100px; } /* BARANGAY */
+.user-table th:nth-child(5), .user-table td:nth-child(5) { width: 6%; min-width: 60px; } /* SEX */
+.user-table th:nth-child(6), .user-table td:nth-child(6) { width: 10%; min-width: 90px; } /* BIRTHDAY */
+.user-table th:nth-child(7), .user-table td:nth-child(7) { width: 6%; min-width: 60px; } /* PREGNANT */
+.user-table th:nth-child(8), .user-table td:nth-child(8) { width: 6%; min-width: 60px; } /* WEIGHT */
+.user-table th:nth-child(9), .user-table td:nth-child(9) { width: 6%; min-width: 60px; } /* HEIGHT */
+.user-table th:nth-child(10), .user-table td:nth-child(10) { width: 6%; min-width: 60px; } /* MUAC */
+.user-table th:nth-child(11), .user-table td:nth-child(11) { width: 9%; min-width: 80px; } /* SCREENING DATE */
+.user-table th:nth-child(12), .user-table td:nth-child(12) { width: 8%; min-width: 100px; text-align: center; } /* ACTIONS */
 
 .user-table th {
     color: var(--color-highlight);
@@ -4468,19 +4467,17 @@ optgroup option {
                 <table class="user-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>EMAIL</th>
                         <th>NAME</th>
-                        <th>AGE</th>
-                        <th>GENDER</th>
-                        <th>HEIGHT (CM)</th>
-                        <th>WEIGHT (KG)</th>
-                        <th>BMI</th>
-                        <th>BARANGAY</th>
+                        <th>EMAIL</th>
                         <th>MUNICIPALITY</th>
-                        <th>RISK SCORE</th>
-                        <th>RISK LEVEL</th>
-                        <th>CREATED</th>
+                        <th>BARANGAY</th>
+                        <th>SEX</th>
+                        <th>BIRTHDAY</th>
+                        <th>PREGNANT</th>
+                        <th>WEIGHT (KG)</th>
+                        <th>HEIGHT (CM)</th>
+                        <th>MUAC (CM)</th>
+                        <th>SCREENING DATE</th>
                         <th>ACTIONS</th>
                     </tr>
                 </thead>
@@ -4491,11 +4488,11 @@ optgroup option {
                         try {
                             // Use Universal DatabaseAPI to get users for HTML display
                             $result = $db->select(
-                                'user_preferences',
-                                'id, user_email, username, name, barangay, risk_score, created_at, updated_at, age, gender, height_cm, weight_kg, bmi, municipality, malnutrition_risk',
+                                'community_users',
+                                '*',
                                 '',
                                 [],
-                                'updated_at DESC'
+                                'screening_date DESC'
                             );
                             
                             $users = $result['success'] ? $result['data'] : [];
@@ -4503,19 +4500,17 @@ optgroup option {
                             if (!empty($users)) {
                                 foreach ($users as $user) {
                                     echo '<tr>';
-                                    echo '<td>' . htmlspecialchars($user['id'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['user_email'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['age'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['gender'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['height_cm'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['weight_kg'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['bmi'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['risk_score'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['malnutrition_risk'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['is_pregnant'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['muac'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                     echo '<td>';
                                     echo '<button class="btn-edit" onclick="editUser(' . ($user['id'] ?? 0) . ')">Edit</button>';
                                     echo '<button class="btn-delete" onclick="deleteUser(' . ($user['id'] ?? 0) . ')">Delete</button>';
@@ -4524,13 +4519,13 @@ optgroup option {
                                 }
                             } else {
                                 // Show proper empty state message
-                                echo '<tr><td colspan="14" class="no-data-message">No users found in database. Add your first user!</td></tr>';
+                                echo '<tr><td colspan="12" class="no-data-message">No users found in database. Add your first user!</td></tr>';
                             }
                         } catch (Exception $e) {
-                            echo '<tr><td colspan="14" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+                            echo '<tr><td colspan="12" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                         }
                     } else {
-                        echo '<tr><td colspan="14" class="no-data-message">Database connection failed.</td></tr>';
+                        echo '<tr><td colspan="12" class="no-data-message">Database connection failed.</td></tr>';
                     }
                     ?>
                 </tbody>
@@ -5089,43 +5084,21 @@ optgroup option {
         users.forEach((user, index) => {
             const row = document.createElement('tr');
             
-            // Calculate risk level
-            let riskLevel = 'Low';
-            let riskClass = 'low';
-            const malnutritionRisk = user.malnutrition_risk || '';
-            const riskScore = parseInt(user.risk_score) || 0;
-            
-            if (malnutritionRisk && malnutritionRisk.toLowerCase().includes('high')) {
-                riskLevel = 'High';
-                riskClass = 'high';
-            } else if (malnutritionRisk && malnutritionRisk.toLowerCase().includes('medium')) {
-                riskLevel = 'Medium';
-                riskClass = 'medium';
-            } else if (riskScore > 60) {
-                riskLevel = 'High';
-                riskClass = 'high';
-            } else if (riskScore > 30) {
-                riskLevel = 'Medium';
-                riskClass = 'medium';
-            }
-            
             row.innerHTML = `
-                <td>${user.id || 'N/A'}</td>
-                <td>${user.user_email || 'N/A'}</td>
                 <td>${user.name || 'N/A'}</td>
-                <td>${user.age || 'N/A'}</td>
-                <td>${user.gender || 'N/A'}</td>
-                <td>${user.height_cm || 'N/A'}</td>
-                <td>${user.weight_kg || 'N/A'}</td>
-                <td>${user.bmi || 'N/A'}</td>
-                <td>${user.barangay || 'N/A'}</td>
+                <td>${user.email || 'N/A'}</td>
                 <td>${user.municipality || 'N/A'}</td>
-                <td>${user.risk_score || 'N/A'}</td>
-                <td><span class="risk-badge ${riskClass}">${riskLevel} Risk</span></td>
-                <td>${user.created_at || 'N/A'}</td>
+                <td>${user.barangay || 'N/A'}</td>
+                <td>${user.sex || 'N/A'}</td>
+                <td>${user.birthday || 'N/A'}</td>
+                <td>${user.is_pregnant || 'N/A'}</td>
+                <td>${user.weight || 'N/A'}</td>
+                <td>${user.height || 'N/A'}</td>
+                <td>${user.muac || 'N/A'}</td>
+                <td>${user.screening_date || 'N/A'}</td>
                 <td>
-                    <button class="btn-edit" onclick="editUser(${user.id || index})">Edit</button>
-                    <button class="btn-delete" onclick="deleteUser(${user.id || 0})">Delete</button>
+                    <button class="btn-edit" onclick="editUser('${user.email || ''}')">Edit</button>
+                    <button class="btn-delete" onclick="deleteUser('${user.email || ''}')">Delete</button>
                 </td>
             `;
             tbody.appendChild(row);
@@ -5140,12 +5113,12 @@ optgroup option {
             return;
         }
         
-        tbody.innerHTML = '<tr><td colspan="14" class="no-data-message">No users found in database. Add your first user!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" class="no-data-message">No users found in database. Add your first user!</td></tr>';
     }
 
     // Edit user function
-    function editUser(index) {
-        const user = window.currentUsers[index];
+    function editUser(email) {
+        const user = window.currentUsers.find(u => u.email === email);
         if (!user) {
             alert('User not found');
             return;
@@ -5251,7 +5224,7 @@ optgroup option {
                             console.error('API Error:', data.error);
                             const tbody = document.querySelector('#usersTableBody');
                             if (tbody) {
-                                tbody.innerHTML = '<tr><td colspan="14" style="text-align: center; padding: 20px; color: var(--color-danger);">Error loading users: ' + data.error + '</td></tr>';
+                                tbody.innerHTML = '<tr><td colspan="12" style="text-align: center; padding: 20px; color: var(--color-danger);">Error loading users: ' + data.error + '</td></tr>';
                             }
                             console.error('Error loading users:', data.error);
                             return;
@@ -5758,7 +5731,7 @@ optgroup option {
                     
                     // If no rows left, show no users message
                     if (tbody.children.length === 0) {
-                        tbody.innerHTML = '<tr data-no-users><td colspan="14" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
+                        tbody.innerHTML = '<tr data-no-users><td colspan="12" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
                     }
                 }
                 
@@ -5935,7 +5908,7 @@ optgroup option {
                     
                     // If no rows left, show no users message
                     if (tbody.children.length === 0) {
-                        tbody.innerHTML = '<tr data-no-users><td colspan="14" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
+                        tbody.innerHTML = '<tr data-no-users><td colspan="12" style="text-align: center; padding: 20px; color: var(--color-text); font-style: italic;">No users found in database</td></tr>';
                     }
                 }
                 
