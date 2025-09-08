@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutritional Assessment Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .section h3 {
+            color: #27ae60;
+            margin-top: 0;
+        }
+        button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #219a52;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #27ae60;
+        }
+        .assessment-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .status-high { border-left: 4px solid #e74c3c; }
+        .status-medium { border-left: 4px solid #f39c12; }
+        .status-low { border-left: 4px solid #27ae60; }
+        .status-normal { border-left: 4px solid #3498db; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Nutritional Assessment Decision Tree</h1>
+            <p>Test the nutritional assessment API with your community database</p>
+        </div>
+
+        <div class="section">
+            <h3>📊 Assessment Statistics</h3>
+            <button onclick="getAssessmentStats()">Get Community Statistics</button>
+            <div id="statsResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>👤 Individual Assessment</h3>
+            <input type="email" id="userEmail" placeholder="Enter user email" style="padding: 8px; margin-right: 10px; width: 300px;">
+            <button onclick="assessUser()">Assess User</button>
+            <div id="userResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h3>👥 All Users Assessment</h3>
+            <button onclick="assessAllUsers()">Assess All Users</button>
+            <div id="allUsersResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        async function getAssessmentStats() {
+            try {
+                const response = await fetch('/api/nutritional_assessment_api.php?action=get_assessment_stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayStats(data.data);
+                } else {
+                    document.getElementById('statsResult').innerHTML = `<p style="color: red;">Error: ${data.message}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('statsResult').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+            document.getElementById('statsResult').style.display = 'block';
+        }
+
+        async function assessUser() {
+            const email = document.getElementById('userEmail').value;
+            if (!email) {
+                alert('Please enter an email address');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/nutritional_assessment_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=assess_user&email=${encodeURIComponent(email)}`
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayUserAssessment(data.data);
+                } else {
+                    document.getElementById('userResult').innerHTML = `<p style="color: red;">Error: ${data.message}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('userResult').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+            document.getElementById('userResult').style.display = 'block';
+        }
+
+        async function assessAllUsers() {
+            try {
+                const response = await fetch('/api/nutritional_assessment_api.php?action=assess_all_users');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayAllUsersAssessment(data.data);
+                } else {
+                    document.getElementById('allUsersResult').innerHTML = `<p style="color: red;">Error: ${data.message}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('allUsersResult').innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+            document.getElementById('allUsersResult').style.display = 'block';
+        }
+
+        function displayStats(stats) {
+            const html = `
+                <h4>Community Nutritional Assessment Statistics</h4>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.total_users}</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.children}</div>
+                        <div class="stat-label">Children (< 18)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.pregnant_women}</div>
+                        <div class="stat-label">Pregnant Women</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.adults}</div>
+                        <div class="stat-label">Adults (≥ 18)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.normal}</div>
+                        <div class="stat-label">Normal Status</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.underweight}</div>
+                        <div class="stat-label">Underweight</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.overweight}</div>
+                        <div class="stat-label">Overweight</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.obesity}</div>
+                        <div class="stat-label">Obesity</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.severe_malnutrition}</div>
+                        <div class="stat-label">Severe Malnutrition</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.moderate_malnutrition}</div>
+                        <div class="stat-label">Moderate Malnutrition</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.stunting}</div>
+                        <div class="stat-label">Stunting</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.maternal_undernutrition}</div>
+                        <div class="stat-label">Maternal Undernutrition</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('statsResult').innerHTML = html;
+        }
+
+        function displayUserAssessment(data) {
+            const assessment = data.assessment_result;
+            const riskClass = assessment.risk_level.toLowerCase();
+            
+            const html = `
+                <div class="assessment-card status-${riskClass}">
+                    <h4>👤 ${data.user_info.name}</h4>
+                    <p><strong>Age:</strong> ${data.user_info.age} years | <strong>Sex:</strong> ${data.user_info.sex} | <strong>Pregnant:</strong> ${data.user_info.is_pregnant}</p>
+                    <p><strong>Measurements:</strong> Weight: ${data.measurements.weight_kg} kg | Height: ${data.measurements.height_cm} cm | Arm Circumference: ${data.measurements.arm_circumference_cm} cm</p>
+                    
+                    <h5>🔍 Assessment Result</h5>
+                    <p><strong>Nutritional Status:</strong> ${assessment.nutritional_status}</p>
+                    <p><strong>Risk Level:</strong> ${assessment.risk_level}</p>
+                    <p><strong>Category:</strong> ${assessment.category}</p>
+                    <p><strong>Description:</strong> ${assessment.description}</p>
+                    
+                    <h5>📋 Recommendations</h5>
+                    <ul>
+                        ${assessment.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                    
+                    <p><small><strong>Method Used:</strong> ${assessment.measurements_used} | <strong>Cutoff:</strong> ${assessment.cutoff_used}</small></p>
+                </div>
+            `;
+            document.getElementById('userResult').innerHTML = html;
+        }
+
+        function displayAllUsersAssessment(assessments) {
+            let html = `<h4>👥 All Users Assessment Results (${assessments.length} users)</h4>`;
+            
+            assessments.forEach(data => {
+                const assessment = data.assessment_result;
+                const riskClass = assessment.risk_level.toLowerCase();
+                
+                html += `
+                    <div class="assessment-card status-${riskClass}">
+                        <h5>👤 ${data.user_info.name} (${data.user_info.age} years, ${data.user_info.sex})</h5>
+                        <p><strong>Status:</strong> ${assessment.nutritional_status} | <strong>Risk:</strong> ${assessment.risk_level}</p>
+                        <p><strong>Measurements:</strong> Weight: ${data.measurements.weight_kg} kg | Height: ${data.measurements.height_cm} cm | Arm: ${data.measurements.arm_circumference_cm} cm</p>
+                        <p><strong>Description:</strong> ${assessment.description}</p>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('allUsersResult').innerHTML = html;
+        }
+    </script>
+</body>
+</html>
