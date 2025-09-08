@@ -4,9 +4,9 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^api/.*\.php$ - [L]
 
-# Allow direct access to PHP files in public directory
+# Allow direct access to specific PHP files
 RewriteCond %{REQUEST_FILENAME} -f
-RewriteRule ^.*\.php$ - [L]
+RewriteRule ^(community_viewer|test_direct)\.php$ - [L]
 
 # Handle API routes that don't exist as files
 RewriteCond %{REQUEST_FILENAME} !-f
