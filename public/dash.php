@@ -6671,7 +6671,9 @@ body {
 
                 // Update Risk Distribution Chart - Use new assessment API
                 const riskData = await fetchDataFromAPI('dashboard_assessment_stats', params);
-                console.log('📈 Risk Distribution Data:', riskData);
+                console.log('📈 Risk Distribution Data (RAW):', riskData);
+                console.log('📈 Risk Data Type:', typeof riskData);
+                console.log('📈 Risk Data Keys:', Object.keys(riskData || {}));
                 console.log('📈 Risk Data Success:', riskData?.success);
                 console.log('📈 Risk Data Data:', riskData?.data);
                 
@@ -7686,7 +7688,13 @@ body {
                 const data = await response.json();
                 console.log('DatabaseAPI response for', endpoint, ':', data);
                 console.log('Returning data:', data.data || data);
-                return data.data || data; // Return data field if exists, otherwise return full response
+                
+                // For dashboard_assessment_stats, return the full response to preserve success field
+                if (endpoint === 'dashboard_assessment_stats') {
+                    return data;
+                } else {
+                    return data.data || data; // Return data field if exists, otherwise return full response
+                }
             } catch (error) {
                 console.error('DatabaseAPI error for', endpoint, ':', error);
                 return null;
