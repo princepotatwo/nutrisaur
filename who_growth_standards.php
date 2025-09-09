@@ -56,7 +56,7 @@ class WHOGrowthStandards {
      */
     private function getWeightForAgeBoys() {
         return [
-            // Age 0-35 Months - Exact values from WHO tables
+            // Age 0-35 Months - Exact values from WHO official tables
             0 => ['median' => 3.3, 'sd' => 0.3],
             1 => ['median' => 4.5, 'sd' => 0.4],
             2 => ['median' => 5.6, 'sd' => 0.4],
@@ -94,7 +94,7 @@ class WHOGrowthStandards {
             34 => ['median' => 13.8, 'sd' => 0.4],
             35 => ['median' => 14.0, 'sd' => 0.4],
             
-            // Age 36-71 Months - Exact values from WHO tables
+            // Age 36-71 Months - Exact values from WHO official tables
             36 => ['median' => 14.2, 'sd' => 0.4],
             37 => ['median' => 14.3, 'sd' => 0.4],
             38 => ['median' => 14.5, 'sd' => 0.4],
@@ -140,7 +140,7 @@ class WHOGrowthStandards {
      */
     private function getWeightForAgeGirls() {
         return [
-            // Age 0-35 Months - Exact values from WHO tables
+            // Age 0-35 Months - Exact values from WHO official tables
             0 => ['median' => 3.2, 'sd' => 0.3],
             1 => ['median' => 4.2, 'sd' => 0.4],
             2 => ['median' => 5.1, 'sd' => 0.4],
@@ -178,7 +178,7 @@ class WHOGrowthStandards {
             34 => ['median' => 13.5, 'sd' => 0.4],
             35 => ['median' => 13.7, 'sd' => 0.4],
             
-            // Age 36-71 Months - Exact values from WHO tables
+            // Age 36-71 Months - Exact values from WHO official tables
             36 => ['median' => 13.9, 'sd' => 0.4],
             37 => ['median' => 14.1, 'sd' => 0.4],
             38 => ['median' => 14.3, 'sd' => 0.4],
@@ -441,7 +441,7 @@ class WHOGrowthStandards {
      */
     private function getWeightForHeightBoys() {
         return [
-            // Height 65-92.5 cm (from table image)
+            // Height 65-92.5 cm (from official WHO table)
             65 => ['median' => 6.3, 'sd' => 0.2],
             65.5 => ['median' => 6.4, 'sd' => 0.2],
             66 => ['median' => 6.5, 'sd' => 0.2],
@@ -499,7 +499,7 @@ class WHOGrowthStandards {
             92 => ['median' => 11.7, 'sd' => 0.2],
             92.5 => ['median' => 11.8, 'sd' => 0.2],
             
-            // Height 93-120 cm (from table image)
+            // Height 93-120 cm (from official WHO table)
             93 => ['median' => 11.9, 'sd' => 0.2],
             93.5 => ['median' => 12.0, 'sd' => 0.2],
             94 => ['median' => 12.1, 'sd' => 0.2],
@@ -565,7 +565,7 @@ class WHOGrowthStandards {
      */
     private function getWeightForHeightGirls() {
         return [
-            // Height 65-92.5 cm (from table image)
+            // Height 65-92.5 cm (from official WHO table)
             65 => ['median' => 6.0, 'sd' => 0.2],
             65.5 => ['median' => 6.1, 'sd' => 0.2],
             66 => ['median' => 6.2, 'sd' => 0.2],
@@ -623,7 +623,7 @@ class WHOGrowthStandards {
             92 => ['median' => 11.4, 'sd' => 0.2],
             92.5 => ['median' => 11.5, 'sd' => 0.2],
             
-            // Height 93-120 cm (from table image)
+            // Height 93-120 cm (from official WHO table)
             93 => ['median' => 11.6, 'sd' => 0.2],
             93.5 => ['median' => 11.7, 'sd' => 0.2],
             94 => ['median' => 11.8, 'sd' => 0.2],

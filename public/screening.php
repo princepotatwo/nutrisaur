@@ -3037,41 +3037,12 @@ header {
                                             $wfl_display = $wfl_zscore !== null ? 'Z: ' . number_format($wfl_zscore, 2) . ' (' . $wfl_classification . ')' : 'N/A';
                                             $bmi_display = $bmi_zscore !== null ? 'Z: ' . number_format($bmi_zscore, 2) . ' (' . $bmi_classification . ')' : 'N/A';
                                         } else {
-                                            // Force fresh WHO calculation if assessment failed
-                                            try {
-                                                $wfaResult = $who->calculateWeightForAge(floatval($user['weight']), $ageInMonths, $user['sex']);
-                                                $hfaResult = $who->calculateHeightForAge(floatval($user['height']), $ageInMonths, $user['sex']);
-                                                $wfhResult = $who->calculateWeightForHeight(floatval($user['weight']), floatval($user['height']), $user['sex']);
-                                                $wflResult = $who->calculateWeightForLength(floatval($user['weight']), floatval($user['height']), $user['sex']);
-                                                $bmiResult = $who->calculateBMIForAge($bmi, $ageInMonths, $user['sex']);
-                                                
-                                                $wfa_classification = $wfaResult['classification'] ?? 'N/A';
-                                                $hfa_classification = $hfaResult['classification'] ?? 'N/A';
-                                                $wfh_classification = $wfhResult['classification'] ?? 'N/A';
-                                                $wfl_classification = $wflResult['classification'] ?? 'N/A';
-                                                $bmi_classification = $bmiResult['classification'] ?? 'N/A';
-                                                
-                                                // Format z-scores for display
-                                                $wfa_display = $wfaResult['z_score'] !== null ? 'Z: ' . number_format($wfaResult['z_score'], 2) . ' (' . $wfa_classification . ')' : 'N/A';
-                                                $hfa_display = $hfaResult['z_score'] !== null ? 'Z: ' . number_format($hfaResult['z_score'], 2) . ' (' . $hfa_classification . ')' : 'N/A';
-                                                $wfh_display = $wfhResult['z_score'] !== null ? 'Z: ' . number_format($wfhResult['z_score'], 2) . ' (' . $wfh_classification . ')' : 'N/A';
-                                                $wfl_display = $wflResult['z_score'] !== null ? 'Z: ' . number_format($wflResult['z_score'], 2) . ' (' . $wfl_classification . ')' : 'N/A';
-                                                $bmi_display = $bmiResult['z_score'] !== null ? 'Z: ' . number_format($bmiResult['z_score'], 2) . ' (' . $bmi_classification . ')' : 'N/A';
-                                            } catch (Exception $e2) {
-                                                // Final fallback to database values
-                                                $wfa_classification = $user['weight-for-age'] ?? $user['`weight-for-age`'] ?? 'N/A';
-                                                $hfa_classification = $user['height-for-age'] ?? $user['`height-for-age`'] ?? 'N/A';
-                                                $wfh_classification = $user['weight-for-height'] ?? $user['`weight-for-height`'] ?? 'N/A';
-                                                $wfl_classification = $user['weight-for-length'] ?? $user['`weight-for-length`'] ?? 'N/A';
-                                                $bmi_classification = $user['bmi_category'] ?? 'N/A';
-                                                
-                                                // Format z-scores for display
-                                                $wfa_display = is_numeric($wfa_classification) ? 'Z: ' . number_format($wfa_classification, 2) : $wfa_classification;
-                                                $hfa_display = is_numeric($hfa_classification) ? 'Z: ' . number_format($hfa_classification, 2) : $hfa_classification;
-                                                $wfh_display = is_numeric($wfh_classification) ? 'Z: ' . number_format($wfh_classification, 2) : $wfh_classification;
-                                                $wfl_display = is_numeric($wfl_classification) ? 'Z: ' . number_format($wfl_classification, 2) : $wfl_classification;
-                                                $bmi_display = is_numeric($bmi_classification) ? 'Z: ' . number_format($bmi_classification, 2) : $bmi_classification;
-                                            }
+                                            // If WHO calculation fails, show N/A
+                                            $wfa_display = 'N/A';
+                                            $hfa_display = 'N/A';
+                                            $wfh_display = 'N/A';
+                                            $wfl_display = 'N/A';
+                                            $bmi_display = 'N/A';
                                         }
                                         
                                         // Calculate age in years and months
