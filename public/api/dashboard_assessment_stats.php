@@ -241,6 +241,9 @@ try {
     $samCases = 0;
     $criticalMuac = 0;
     
+    // Critical alerts data
+    $criticalAlerts = [];
+    
     // Risk level counters
     $riskLevels = [
         'low' => 0,
@@ -292,6 +295,31 @@ try {
         if (in_array($assessment['risk_level'], ['High', 'Very High']) && 
             strpos($assessment['nutritional_status'], 'Malnutrition') !== false) {
             $criticalMuac++;
+        }
+        
+        // Add to critical alerts if high risk or severe risk
+        if (in_array($assessment['risk_level'], ['High', 'Very High'])) {
+            $criticalAlerts[] = [
+                'user_id' => $user['user_id'],
+                'name' => $user['first_name'] . ' ' . $user['last_name'],
+                'email' => $user['email'],
+                'fcm_token' => $user['fcm_token'],
+                'barangay' => $user['barangay'],
+                'municipality' => $user['municipality'],
+                'age' => round($age, 1),
+                'sex' => $user['sex'],
+                'nutritional_status' => $assessment['nutritional_status'],
+                'risk_level' => $assessment['risk_level'],
+                'category' => $assessment['category'],
+                'alert_type' => $assessment['risk_level'] === 'Very High' ? 'severe' : 'high',
+                'alert_title' => $assessment['risk_level'] === 'Very High' ? 'Severe Risk Case' : 'High Risk Case',
+                'alert_description' => $assessment['nutritional_status'] . ' - ' . $assessment['risk_level'] . ' risk level',
+                'screening_date' => $user['screening_date'],
+                'bmi' => calculateBMI($user['weight'], $user['height']),
+                'muac' => $user['muac'],
+                'weight' => $user['weight'],
+                'height' => $user['height']
+            ];
         }
         
         // Count risk levels
@@ -366,6 +394,7 @@ try {
             'nutritional_percentages' => $nutritionalPercentages,
             'age_groups' => $ageGroups,
             'age_group_percentages' => $ageGroupPercentages,
+            'critical_alerts' => $criticalAlerts,
             'time_frame' => $timeFrame,
             'start_date' => $startDateStr,
             'end_date' => $endDateStr,

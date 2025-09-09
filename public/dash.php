@@ -3184,6 +3184,31 @@ header .user-info {
     flex: 1;
 }
 
+.alert-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notification-btn {
+    background: #4CAF50;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.notification-btn:hover {
+    background: #45a049;
+    transform: scale(1.1);
+}
+
 .alert-list {
     list-style: none;
     margin: 0;
@@ -9240,6 +9265,9 @@ body {
             // Update critical alerts from screening data
             updateCriticalAlertsFromScreeningData(data);
             
+            // Also fetch and display individual high-risk users
+            fetchHighRiskUsers();
+            
         }
         
         // Function to update critical alerts based on screening response data
@@ -9251,7 +9279,8 @@ body {
             const dataHash = JSON.stringify({
                 sam_cases: data.sam_cases || 0,
                 high_risk_cases: data.high_risk_cases || 0,
-                critical_muac: data.critical_muac || 0
+                critical_muac: data.critical_muac || 0,
+                critical_alerts: data.critical_alerts || []
             });
             
             // Only update if data has actually changed
@@ -9262,14 +9291,41 @@ body {
             let alertsHtml = '';
             let hasRealAlerts = false;
             
+            // Use the detailed critical alerts from API if available
+            if (data.critical_alerts && data.critical_alerts.length > 0) {
+                hasRealAlerts = true;
+                data.critical_alerts.forEach(alert => {
+                    const alertClass = alert.alert_type === 'severe' ? 'danger' : 'warning';
+                    const alertIcon = alert.alert_type === 'severe' ? '🔴' : '⚠️';
+                    
+                    alertsHtml += `
+                        <li class="alert-item ${alertClass}">
+                            <div class="alert-content">
+                                <h4>${alertIcon} ${alert.alert_title}</h4>
+                                <p><strong>${alert.name}</strong> - ${alert.alert_description}</p>
+                                <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                                    📍 ${alert.barangay}, ${alert.municipality} • 👤 ${alert.age} years, ${alert.sex} • 📅 ${formatTimeAgo(alert.screening_date)}
+                                </div>
+                            </div>
+                            <div class="alert-actions">
+                                <button onclick="openNotificationModal('${alert.name}', '${alert.email}', '${alert.alert_title}')" 
+                                        class="notification-btn" title="Send Notification">
+                                    📱
+                                </button>
+                            </div>
+                        </li>
+                    `;
+                });
+            } else {
+                // Fallback to summary alerts if no detailed data
             // Check if data exists and has the required properties
             if (data && data.sam_cases > 0) {
                 hasRealAlerts = true;
                 alertsHtml += `
                     <li class="alert-item danger">
                         <div class="alert-content">
-                            <h4>🚨 SAM Cases Detected</h4>
-                            <p>${data.sam_cases} case(s) of Severe Acute Malnutrition requiring immediate medical attention</p>
+                                <h4>🚨 SAM Cases Detected</h4>
+                                <p>${data.sam_cases} case(s) of Severe Acute Malnutrition requiring immediate medical attention</p>
                         </div>
                         <div class="alert-time" data-time="${data.latest_update || 'now'}">
                             ${formatTimeAgo(data.latest_update || 'now')}
@@ -9283,8 +9339,8 @@ body {
                 alertsHtml += `
                     <li class="alert-item warning">
                         <div class="alert-content">
-                            <h4>⚠️ High Risk Cases</h4>
-                            <p>${data.high_risk_cases} case(s) with high/very high nutritional risk requiring monitoring</p>
+                                <h4>⚠️ High Risk Cases</h4>
+                                <p>${data.high_risk_cases} case(s) with high/very high nutritional risk requiring monitoring</p>
                         </div>
                         <div class="alert-time" data-time="${data.latest_update || 'now'}">
                             ${formatTimeAgo(data.latest_update || 'now')}
@@ -9298,14 +9354,15 @@ body {
                 alertsHtml += `
                     <li class="alert-item danger">
                         <div class="alert-content">
-                            <h4>🔴 Critical Malnutrition Cases</h4>
-                            <p>${data.critical_muac} case(s) with critical MUAC measurements requiring urgent intervention</p>
+                                <h4>🔴 Critical Malnutrition Cases</h4>
+                                <p>${data.critical_muac} case(s) with critical MUAC measurements requiring urgent intervention</p>
                         </div>
                         <div class="alert-time" data-time="${data.latest_update || 'now'}">
                             ${formatTimeAgo(data.latest_update || 'now')}
                         </div>
                     </li>
                 `;
+                }
             }
             
             // Add alerts for specific nutritional statuses if available
