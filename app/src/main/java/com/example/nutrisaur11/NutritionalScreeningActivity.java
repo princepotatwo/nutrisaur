@@ -779,6 +779,11 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
                     if (responseJson.getBoolean("success")) {
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Screening data saved successfully!", Toast.LENGTH_LONG).show();
+                            // Navigate to MainActivity after successful screening
+                            Intent intent = new Intent(NutritionalScreeningActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
                         });
                     } else {
                         runOnUiThread(() -> {

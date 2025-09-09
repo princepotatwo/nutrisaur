@@ -2668,7 +2668,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
                 
                 // Check if user exists
-                $checkResult = $db->select('community_users', 'email', 'email = ?', [$email]);
+                $checkResult = $db->universalSelect('community_users', 'email', 'email = ?', [$email]);
                 
                 if ($checkResult['success'] && !empty($checkResult['data'])) {
                     // User exists, update their screening data

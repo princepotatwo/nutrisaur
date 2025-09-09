@@ -3071,8 +3071,32 @@ header {
                                             'bmi-for-age' => ['display' => $bmi_display, 'classification' => $bmi_classification]
                                         ];
                                         
-                                        // Generate rows for each standard
+                                        // Default: Show only Weight-for-Age for users 1-71 months
+                                        // Other standards will be shown when user selects them from dropdown
+                                        $showWeightForAge = $ageInMonths >= 1 && $ageInMonths <= 71;
+                                        
+                                        if ($showWeightForAge) {
+                                            $data = $whoData['weight-for-age'];
+                                            echo '<tr data-standard="weight-for-age" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
+                                            echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                            echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
+                                            echo '<td>' . $ageDisplay . '</td>';
+                                            echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                            echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                            echo '<td>' . $bmi . '</td>';
+                                            echo '<td class="standard-value">' . htmlspecialchars($data['display']) . '</td>';
+                                            echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
+                                            echo '<td class="action-buttons">';
+                                            echo '<button class="btn-edit" onclick="editUser(\'' . htmlspecialchars($user['email']) . '\')" title="Edit User">✏️</button>';
+                                            echo '<button class="btn-delete" onclick="deleteUser(\'' . htmlspecialchars($user['email']) . '\')" title="Delete User">🗑️</button>';
+                                            echo '</td>';
+                                            echo '</tr>';
+                                        }
+                                        
+                                        // Generate hidden rows for all other standards (for filtering)
                                         foreach ($whoData as $standard => $data) {
+                                            if ($standard === 'weight-for-age') continue; // Already shown above
+                                            
                                             $ageLimit = in_array($standard, ['weight-for-age', 'height-for-age', 'bmi-for-age']) ? $ageInMonths <= 71 : true;
                                             $heightLimit = true;
                                             
@@ -3095,7 +3119,7 @@ header {
                                                     $data['display'] = 'BMI: ' . $bmi . ' (' . $adultBmiClassification . ')';
                                                 }
                                                 
-                                                echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '">';
+                                                echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
                                                 echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $ageDisplay . '</td>';
@@ -3527,46 +3551,7 @@ header {
         }
 
         function filterByStandard() {
-            const standardFilter = document.getElementById('standardFilter').value;
-            const tableRows = document.querySelectorAll('.user-table tbody tr');
-            const standardHeader = document.getElementById('standardHeader');
-            
-            // Update header based on selected standard
-            const standardNames = {
-                'weight-for-age': 'WEIGHT-FOR-AGE (0-71 months)',
-                'height-for-age': 'HEIGHT-FOR-AGE (0-71 months)', 
-                'weight-for-height': 'WEIGHT-FOR-HEIGHT (65-120 cm)',
-                'weight-for-length': 'WEIGHT-FOR-LENGTH (45-110 cm)',
-                'bmi-for-age': 'BMI-FOR-AGE (0-71 months) + Adult BMI (>71 months)'
-            };
-            
-            standardHeader.textContent = standardNames[standardFilter] || 'WEIGHT-FOR-AGE';
-            
-            let visibleCount = 0;
-            
-            tableRows.forEach(row => {
-                const rowStandard = row.dataset.standard;
-                
-                // For BMI-for-age, show both WHO standards (0-71 months) and adult BMI (>71 months)
-                if (standardFilter === 'bmi-for-age') {
-                    if (rowStandard === 'bmi-for-age') {
-                        row.style.display = '';
-                        visibleCount++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                } else {
-                    // For other standards, show only matching rows
-                    if (rowStandard === standardFilter) {
-                        row.style.display = '';
-                        visibleCount++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                }
-            });
-            
-            updateNoDataMessage(visibleCount);
+            applyAllFilters();
         }
 
         function updateNoDataMessage(visibleCount) {
@@ -3912,6 +3897,133 @@ header {
 
         function cancelUpload() {
             resetCSVForm();
+        }
+
+        // New filter functions for municipality, barangay, and age range
+        function filterByMunicipality() {
+            const municipality = document.getElementById('municipalityFilter').value;
+            const barangayFilter = document.getElementById('barangayFilter');
+            
+            // Clear barangay filter when municipality changes
+            barangayFilter.innerHTML = '<option value="">All Barangays</option>';
+            
+            if (municipality) {
+                // Populate barangay options based on selected municipality
+                const barangayOptions = getBarangayOptions(municipality);
+                barangayOptions.forEach(barangay => {
+                    const option = document.createElement('option');
+                    option.value = barangay;
+                    option.textContent = barangay;
+                    barangayFilter.appendChild(option);
+                });
+            }
+            
+            applyAllFilters();
+        }
+        
+        function filterByBarangay() {
+            applyAllFilters();
+        }
+        
+        function filterByAgeRange() {
+            applyAllFilters();
+        }
+        
+        function filterBySex() {
+            applyAllFilters();
+        }
+        
+        function getBarangayOptions(municipality) {
+            const barangayData = {
+                'ABUCAY': ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Poblacion', 'Saguing', 'Salapungan', 'Tala'],
+                'BAGAC': ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibayo', 'Paysawan', 'Quinaoayanan', 'San Antonio', 'Saysain', 'Sibucao', 'Tabing-Ilog', 'Tipo', 'Tugatog', 'Wawa'],
+                'BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Concepcion', 'Dangcol (Bilolo)', 'Doña Francisca', 'Lote', 'Malabia', 'Poblacion', 'Puerto Rivas Ibaba', 'Puerto Rivas Itaas', 'San Jose', 'Sibacan', 'Talipapa', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo'],
+                'DINALUPIHAN': ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar', 'General Luna', 'Governor Generoso', 'Hacienda', 'Jose Abad Santos (Pob.)', 'Kataasan', 'Layac', 'Lourdes', 'Mabini', 'Maligaya', 'Naparing', 'Paco', 'Pag-asa', 'Pagalanggang', 'Panggalan', 'Pinulot', 'Poblacion', 'Rizal', 'Saguing', 'San Benito', 'San Isidro', 'San Ramon', 'Santo Cristo', 'Sapang Balas', 'Sumalo', 'Tipo', 'Tuklasan', 'Turac', 'Zamora'],
+                'HERMOSA': ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culong', 'Daungan (Pob.)', 'Judicial (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Palihan', 'Pandatung', 'Pulong Gubat', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo'],
+                'LIMAY': ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reforma', 'San Francisco de Asis', 'Townsite'],
+                'MARIVELES': ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Mabayo', 'Malaya', 'Maligaya', 'Mountain View', 'Poblacion', 'San Carlos', 'San Isidro', 'San Nicolas', 'San Pedro', 'Saysain', 'Sisiman', 'Tukuran'],
+                'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang', 'San Pedro', 'Sitio Liyang'],
+                'ORANI': ['Apolinario (Pob.)', 'Bagong Paraiso', 'Balut', 'Bayan (Pob.)', 'Calero (Pob.)', 'Calutit', 'Camachile', 'Del Pilar', 'Kaparangan', 'Mabatang', 'Maria Fe', 'Pagtakhan', 'Paking-Carbonero (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang', 'Poblacion', 'Rizal (Pob.)', 'Sagrada', 'San Jose', 'Sibul', 'Sili', 'Sulong', 'Tagumpay', 'Tala', 'Talimundoc', 'Tugatog', 'Wawa'],
+                'ORION': ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daan Bago', 'Daan Bilolo', 'Daan Pare', 'General Lim (Kaput)', 'Kaput', 'Lati', 'Lusung', 'Puting Buhangin', 'Sabatan', 'San Vicente', 'Santa Elena', 'Santo Domingo', 'Villa Angeles', 'Wakas'],
+                'PILAR': ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Bantan', 'Burgos', 'Del Rosario', 'Diwa', 'Landing', 'Liwa', 'Nueva Vida', 'Panghulo', 'Pantingan', 'Poblacion', 'Rizal', 'Sagrada', 'San Nicolas', 'San Pedro', 'Santo Niño', 'Wakas'],
+                'SAMAL': ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan', 'San Roque', 'Santa Lucia', 'Santo Niño', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
+            };
+            
+            return barangayData[municipality] || [];
+        }
+        
+        function applyAllFilters() {
+            const municipality = document.getElementById('municipalityFilter').value;
+            const barangay = document.getElementById('barangayFilter').value;
+            const ageFrom = document.getElementById('ageFromFilter').value;
+            const ageTo = document.getElementById('ageToFilter').value;
+            const sex = document.getElementById('sexFilter').value;
+            const standard = document.getElementById('standardFilter').value;
+            
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
+            let visibleCount = 0;
+            
+            tableRows.forEach(row => {
+                let showRow = true;
+                
+                // Municipality filter
+                if (municipality && showRow) {
+                    const rowMunicipality = row.dataset.municipality;
+                    if (rowMunicipality !== municipality) {
+                        showRow = false;
+                    }
+                }
+                
+                // Barangay filter
+                if (barangay && showRow) {
+                    const rowBarangay = row.dataset.barangay;
+                    if (rowBarangay !== barangay) {
+                        showRow = false;
+                    }
+                }
+                
+                // Age range filter
+                if ((ageFrom || ageTo) && showRow) {
+                    const ageMonths = parseInt(row.dataset.ageMonths);
+                    if (ageFrom && ageMonths < parseInt(ageFrom)) {
+                        showRow = false;
+                    }
+                    if (ageTo && ageMonths > parseInt(ageTo)) {
+                        showRow = false;
+                    }
+                }
+                
+                // Sex filter
+                if (sex && showRow) {
+                    const rowSex = row.dataset.sex;
+                    if (rowSex !== sex) {
+                        showRow = false;
+                    }
+                }
+                
+                // Standard filter
+                if (standard && showRow) {
+                    const rowStandard = row.dataset.standard;
+                    if (standard === 'bmi-for-age') {
+                        if (rowStandard !== 'bmi-for-age') {
+                            showRow = false;
+                        }
+                    } else {
+                        if (rowStandard !== standard) {
+                            showRow = false;
+                        }
+                    }
+                }
+                
+                if (showRow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            updateNoDataMessage(visibleCount);
         }
 
     </script>
