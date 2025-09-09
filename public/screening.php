@@ -1988,7 +1988,6 @@ header {
         }
 
         .table-responsive {
-            overflow-x: auto;
             border-radius: 12px;
             border: 1px solid var(--color-border);
             width: 100%;
@@ -2079,14 +2078,20 @@ header {
         .user-table th,
         .user-table td {
             padding: 12px 8px;
-            text-align: center;
+            text-align: left;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
-            white-space: nowrap;
-            font-size: 12px;
+            white-space: normal;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            font-size: 14px;
             font-weight: 500;
             vertical-align: middle;
             position: relative;
             line-height: 1.4;
+            max-width: none;
+            overflow: visible;
+            text-overflow: clip;
         }
 
         /* Ensure actions column is always visible */
@@ -2096,6 +2101,7 @@ header {
             overflow: visible;
             text-overflow: clip;
             min-width: 120px;
+            text-align: center;
         }
 
 
@@ -2106,9 +2112,6 @@ header {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .user-table td:last-child {
-            text-align: center;
-        }
 
         /* Auto-fit columns - automatically distributes space equally */
         /* All columns will automatically get equal width distribution */
@@ -2117,14 +2120,14 @@ header {
         .user-table th {
             color: var(--color-highlight);
             font-weight: 700;
-            font-size: 12px;
+            font-size: 14px;
             position: sticky;
             top: 0;
             background-color: var(--color-card);
             z-index: 10;
             border-bottom: 2px solid rgba(161, 180, 84, 0.4);
-            padding-bottom: 6px;
-            padding-top: 6px;
+            padding-bottom: 12px;
+            padding-top: 12px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
             letter-spacing: 0.3px;
@@ -2967,18 +2970,12 @@ header {
                                         echo '<tr>';
                                         echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
-                                        // Get CSS class names for styling
-                                        $wfa_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $wfa_classification));
-                                        $hfa_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $hfa_classification));
-                                        $wfh_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $wfh_classification));
-                                        $wfl_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $wfl_classification));
-                                        $bmi_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $bmi_classification));
                                         
-                                        echo '<td class="who-classification ' . $wfa_class . '">' . htmlspecialchars($wfa_display) . '</td>';
-                                        echo '<td class="who-classification ' . $hfa_class . '">' . htmlspecialchars($hfa_display) . '</td>';
-                                        echo '<td class="who-classification ' . $wfh_class . '">' . htmlspecialchars($wfh_display) . '</td>';
-                                        echo '<td class="who-classification ' . $wfl_class . '">' . htmlspecialchars($wfl_display) . '</td>';
-                                        echo '<td class="who-classification ' . $bmi_class . '">' . htmlspecialchars($bmi_display) . '</td>';
+                                        echo '<td>' . htmlspecialchars($wfa_display) . '</td>';
+                                        echo '<td>' . htmlspecialchars($hfa_display) . '</td>';
+                                        echo '<td>' . htmlspecialchars($wfh_display) . '</td>';
+                                        echo '<td>' . htmlspecialchars($wfl_display) . '</td>';
+                                        echo '<td>' . htmlspecialchars($bmi_display) . '</td>';
                                         echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                     }

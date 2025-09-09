@@ -2547,11 +2547,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // ========================================
         case 'register_community_user':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Try to get JSON data first
-                $input = file_get_contents('php://input');
-                error_log("Raw input: " . $input);
-                $data = json_decode($input, true);
-                error_log("Decoded data: " . print_r($data, true));
+                try {
+                    // Try to get JSON data first
+                    $input = file_get_contents('php://input');
+                    error_log("Raw input: " . $input);
+                    $data = json_decode($input, true);
+                    error_log("Decoded data: " . print_r($data, true));
                 
                 // If JSON parsing fails, try form data
                 if (!$data) {
@@ -2598,13 +2599,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'name' => $name,
                     'email' => $email,
                     'password' => $hashedPassword,
-                    'municipality' => 'Not specified',
-                    'barangay' => 'Not specified',
-                    'sex' => 'Not specified',
-                    'birthday' => '1900-01-01',
-                    'is_pregnant' => 'No',
-                    'weight' => '0',
-                    'height' => '0',
+                    'municipality' => $data['municipality'] ?? 'Not specified',
+                    'barangay' => $data['barangay'] ?? 'Not specified',
+                    'sex' => $data['sex'] ?? 'Not specified',
+                    'birthday' => $data['birthday'] ?? '1900-01-01',
+                    'is_pregnant' => $data['is_pregnant'] ?? 'No',
+                    'weight' => $data['weight'] ?? '0',
+                    'height' => $data['height'] ?? '0',
                     'screening_date' => date('Y-m-d H:i:s')
                 ];
                 
@@ -2621,6 +2622,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     ]);
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Failed to register user: ' . $result['message']]);
+                }
+                } catch (Exception $e) {
+                    error_log("Registration error: " . $e->getMessage());
+                    echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
                 }
             } else {
                 echo json_encode(['success' => false, 'message' => 'Invalid request method']);
