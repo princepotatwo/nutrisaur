@@ -14,6 +14,14 @@ require_once __DIR__ . '/api/DatabaseHelper.php';
 // Use WHO Growth Standards directly
 require_once __DIR__ . '/../who_growth_standards.php';
 
+// Function to get adult BMI classification (for children over 71 months)
+function getAdultBMIClassification($bmi) {
+    if ($bmi < 18.5) return 'Underweight';
+    if ($bmi < 25) return 'Normal weight';
+    if ($bmi < 30) return 'Overweight';
+    return 'Obese';
+}
+
 // Wrapper function to use WHO Growth Standards
 function getNutritionalAssessment($user) {
     try {
@@ -3053,14 +3061,6 @@ header {
                                         
                                         // Calculate BMI
                                         $bmi = $user['weight'] && $user['height'] ? round($user['weight'] / pow($user['height'] / 100, 2), 1) : 'N/A';
-                                        
-                                        // Function to get adult BMI classification (for children over 71 months)
-                                        function getAdultBMIClassification($bmi) {
-                                            if ($bmi < 18.5) return 'Underweight';
-                                            if ($bmi < 25) return 'Normal weight';
-                                            if ($bmi < 30) return 'Overweight';
-                                            return 'Obese';
-                                        }
                                         
                                         // Generate all WHO Growth Standards data for this user
                                         $whoData = [
