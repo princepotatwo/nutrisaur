@@ -1,7 +1,7 @@
 <?php
 // Use centralized session management
 require_once __DIR__ . "/api/DatabaseAPI.php";
-require_once __DIR__ . "/api/nutritional_assessment_library.php";
+require_once __DIR__ . "/../who_growth_standards.php";
 $db = DatabaseAPI::getInstance();
 
 // Check if user is logged in using centralized method

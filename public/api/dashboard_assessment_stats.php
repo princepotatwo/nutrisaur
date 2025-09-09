@@ -30,12 +30,12 @@ function performNutritionalAssessment($user) {
     $age = calculateAge($user['birthday']);
     $weight = floatval($user['weight']);
     $height = floatval($user['height']);
-    $muac = floatval($user['muac']);
+    $muac = isset($user['muac']) ? floatval($user['muac']) : 0;
     $isPregnant = $user['is_pregnant'] === 'Yes';
     $sex = $user['sex'];
     
     // Simple validation
-    if ($age < 0 || $age > 120 || $weight <= 0 || $height <= 0 || $muac <= 0) {
+    if ($age < 0 || $age > 120 || $weight <= 0 || $height <= 0) {
         return [
             'nutritional_status' => 'Invalid Data',
             'risk_level' => 'Unknown',
