@@ -367,38 +367,90 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
  * Send verification email using hardcoded email functionality
  */
 function sendVerificationEmail($email, $username, $verificationCode) {
-    // Simple email sending using PHP's mail() function
-    $subject = "NUTRISAUR - Email Verification";
-    $message = "
-    <html>
-    <head>
-        <title>Email Verification</title>
-    </head>
-    <body>
-        <h2>Welcome to NUTRISAUR!</h2>
-        <p>Hello " . htmlspecialchars($username) . ",</p>
-        <p>Thank you for registering with NUTRISAUR. To complete your registration, please use the verification code below:</p>
-        <h3 style='color: #A1B454; font-size: 24px; text-align: center; padding: 10px; background: #2A3326; border-radius: 8px;'>" . $verificationCode . "</h3>
-        <p>This code will expire in 5 minutes.</p>
-        <p>If you did not create an account with NUTRISAUR, please ignore this email.</p>
-        <br>
-        <p>Best regards,<br>NUTRISAUR Team</p>
-    </body>
-    </html>
-    ";
+    // Use Resend API for reliable email delivery
+    $apiKey = 're_P6tUyJB2_FjTagamRhwJrJ29q22mmyU4V';
+    $apiUrl = 'https://api.resend.com/emails';
     
-    $headers = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: NUTRISAUR <noreply@nutrisaur.com>" . "\r\n";
+    $emailData = [
+        'from' => 'NUTRISAUR <noreply@nutrisaur.com>',
+        'to' => [$email],
+        'subject' => 'NUTRISAUR - Email Verification',
+        'html' => "
+        <html>
+        <head>
+            <title>Email Verification</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: #2A3326; color: #A1B454; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+                .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+                .verification-code { 
+                    background: #2A3326; 
+                    color: #A1B454; 
+                    font-size: 32px; 
+                    font-weight: bold; 
+                    text-align: center; 
+                    padding: 20px; 
+                    border-radius: 8px; 
+                    margin: 20px 0;
+                    letter-spacing: 4px;
+                }
+                .footer { text-align: center; margin-top: 30px; color: #666; }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='header'>
+                    <h1>Welcome to NUTRISAUR!</h1>
+                </div>
+                <div class='content'>
+                    <p>Hello " . htmlspecialchars($username) . ",</p>
+                    <p>Thank you for registering with NUTRISAUR. To complete your registration, please use the verification code below:</p>
+                    <div class='verification-code'>" . $verificationCode . "</div>
+                    <p><strong>This code will expire in 5 minutes.</strong></p>
+                    <p>If you did not create an account with NUTRISAUR, please ignore this email.</p>
+                    <div class='footer'>
+                        <p>Best regards,<br>NUTRISAUR Team</p>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+        "
+    ];
     
-    // Try to send email
-    try {
-        $result = mail($email, $subject, $message, $headers);
-        return $result;
-    } catch (Exception $e) {
-        error_log("Email sending failed: " . $e->getMessage());
+    // Send email via Resend API
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    
+    if ($curlError) {
+        error_log("Resend API cURL error: " . $curlError);
         return false;
     }
+    
+    if ($httpCode === 200) {
+        $responseData = json_decode($response, true);
+        if (isset($responseData['id'])) {
+            error_log("Email sent successfully via Resend API. Email ID: " . $responseData['id']);
+            return true;
+        }
+    }
+    
+    error_log("Resend API failed. HTTP Code: $httpCode, Response: $response");
+    return false;
 }
 ?>
 <!DOCTYPE html>
