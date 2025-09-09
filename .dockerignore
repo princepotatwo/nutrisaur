@@ -1,62 +1,64 @@
-# Git
-.git
-.gitignore
+# Android app files
+app/
+build/
+gradle/
+gradlew
+gradlew.bat
+gradle.properties
+settings.gradle.kts
+build.gradle.kts
+local.properties
+google-services.json
+proguard-rules.pro
 
-# Documentation
-README.md
+# Node.js files
+node_modules/
+package-lock.json
+package.json
+
+# Test files
+test_*.php
+test_*.html
+test_*.js
+test_*.py
+test_*.sql
+*test*.php
+*test*.html
+*test*.js
+*test*.py
+*test*.sql
+
+# Documentation files
 *.md
+*.dot
+
+# SQL files (except essential ones)
+*.sql
+!nutrisaur_db_fixed.sql
+
+# Temporary files
+*.tmp
+*.temp
+testing
 
 # IDE files
-.vscode
-.idea
-*.swp
-*.swo
+*.code-workspace
+.vscode/
+.idea/
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Logs
+# Log files
 *.log
-logs/
-
-# Temporary files
-tmp/
-temp/
-
-# Build artifacts
-build/
-dist/
-
-# Node modules (will be installed fresh)
-node_modules/
-
-# Vendor (will be installed fresh if needed)
-vendor/
-
-# Database files
-*.sql
-*.db
-
-# Environment files
-.env
-.env.local
-
-# Test files
-test/
-tests/
-testing/
 
 # Backup files
 *.bak
 *.backup
 
-# Large files
-*.zip
-*.tar.gz
-*.rar
+# Vendor directory (we'll install via composer)
+vendor/
 
-# Docker files
-Dockerfile*
-docker-compose*
-.dockerignore
+# Large directories that aren't needed
+sss/
