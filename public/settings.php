@@ -2164,12 +2164,13 @@ header {
         .user-table th:last-child,
         .user-table td:last-child {
             white-space: nowrap;
-            overflow: hidden;
+            overflow: visible;
             text-overflow: clip;
             text-align: center;
-            padding: 8px 6px;
+            padding: 8px 12px;
             max-width: 30%;
             box-sizing: border-box;
+            min-width: 140px;
         }
 
 
@@ -2227,10 +2228,10 @@ header {
         /* Action buttons styling */
         .action-buttons {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             justify-content: center;
             align-items: center;
-            padding: 4px;
+            padding: 8px;
             flex-wrap: nowrap;
             width: 100%;
             box-sizing: border-box;
@@ -2256,55 +2257,56 @@ header {
         }
 
         .action-buttons .btn-edit {
-            background-color: rgba(161, 180, 84, 0.15) !important;
-            color: var(--color-highlight) !important;
-            border: 2px solid rgba(161, 180, 84, 0.4) !important;
-            padding: 6px 12px !important;
+            background-color: var(--color-highlight) !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 16px !important;
             border-radius: 6px !important;
             font-size: 12px !important;
             font-weight: 600 !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
-            display: flex !important;
+            display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
             white-space: nowrap !important;
             flex-shrink: 0 !important;
-            min-width: 55px !important;
+            min-width: 60px !important;
             height: 32px !important;
+            margin-right: 4px !important;
         }
 
         .action-buttons .btn-edit:hover {
-            background-color: rgba(161, 180, 84, 0.25) !important;
+            background-color: #8CA86E !important;
             transform: translateY(-1px) !important;
             box-shadow: 0 4px 8px rgba(161, 180, 84, 0.3) !important;
         }
 
         .action-buttons .btn-delete {
-            background-color: rgba(207, 134, 134, 0.15) !important;
-            color: var(--color-danger) !important;
-            border: 2px solid rgba(207, 134, 134, 0.4) !important;
-            padding: 6px 12px !important;
+            background-color: #e74c3c !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 16px !important;
             border-radius: 6px !important;
             font-size: 12px !important;
             font-weight: 600 !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
-            display: flex !important;
+            display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
             white-space: nowrap !important;
             flex-shrink: 0 !important;
-            min-width: 55px !important;
+            min-width: 60px !important;
             height: 32px !important;
         }
 
         .action-buttons .btn-delete:hover {
-            background-color: rgba(207, 134, 134, 0.25) !important;
+            background-color: #c0392b !important;
             transform: translateY(-1px) !important;
-            box-shadow: 0 4px 8px rgba(207, 134, 134, 0.3) !important;
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3) !important;
         }
 
         .action-buttons .btn-edit:disabled,
