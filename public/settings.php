@@ -2068,6 +2068,84 @@ header {
             text-align: center;
         }
 
+        /* Action buttons styling */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+        }
+
+        .action-buttons .btn-edit,
+        .action-buttons .btn-delete {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 40px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-buttons .btn-edit {
+            background-color: rgba(161, 180, 84, 0.15);
+            color: var(--color-highlight);
+            border: 2px solid rgba(161, 180, 84, 0.4);
+        }
+
+        .action-buttons .btn-edit:hover {
+            background-color: rgba(161, 180, 84, 0.25);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(161, 180, 84, 0.3);
+        }
+
+        .action-buttons .btn-delete {
+            background-color: rgba(207, 134, 134, 0.15);
+            color: var(--color-danger);
+            border: 2px solid rgba(207, 134, 134, 0.4);
+        }
+
+        .action-buttons .btn-delete:hover {
+            background-color: rgba(207, 134, 134, 0.25);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(207, 134, 134, 0.3);
+        }
+
+        .action-buttons .btn-edit:disabled,
+        .action-buttons .btn-delete:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Light theme action buttons */
+        .light-theme .action-buttons .btn-edit {
+            background-color: rgba(102, 187, 106, 0.15);
+            color: var(--color-highlight);
+            border: 2px solid rgba(102, 187, 106, 0.4);
+        }
+
+        .light-theme .action-buttons .btn-edit:hover {
+            background-color: rgba(102, 187, 106, 0.25);
+        }
+
+        .light-theme .action-buttons .btn-delete {
+            background-color: rgba(229, 115, 115, 0.15);
+            color: var(--color-danger);
+            border: 2px solid rgba(229, 115, 115, 0.4);
+        }
+
+        .light-theme .action-buttons .btn-delete:hover {
+            background-color: rgba(229, 115, 115, 0.25);
+        }
+
         /* Auto-fit columns - automatically distributes space equally */
         /* All columns will automatically get equal width distribution */
         /* No need for specific nth-child rules - table will auto-adjust */
@@ -2628,7 +2706,7 @@ header {
                         <th>BARANGAY</th>
                         <th>SEX</th>
                         <th>BIRTHDAY</th>
-                        <th>SCREENING DATE</th>
+                        <th>ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
@@ -2649,14 +2727,17 @@ header {
                             
                             if (!empty($users)) {
                                 foreach ($users as $user) {
-                                    echo '<tr>';
+                                    echo '<tr data-user-id="' . htmlspecialchars($user['id'] ?? '') . '">';
                                     echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
+                                    echo '<td class="action-buttons">';
+                                    echo '<button class="btn-edit" onclick="editUser(' . htmlspecialchars($user['id'] ?? '0') . ')" title="Edit User">✏️</button>';
+                                    echo '<button class="btn-delete" onclick="deleteUser(' . htmlspecialchars($user['id'] ?? '0') . ')" title="Delete User">🗑️</button>';
+                                    echo '</td>';
                                     echo '</tr>';
                                 }
                             } else {
@@ -3404,6 +3485,114 @@ header {
 
         function cancelUpload() {
             resetCSVForm();
+        }
+
+        // User management functions
+        function editUser(userId) {
+            if (!userId || userId === '0') {
+                alert('Invalid user ID');
+                return;
+            }
+            
+            // For now, show an alert. In a real implementation, this would open an edit modal or redirect to edit page
+            alert(`Edit user with ID: ${userId}\n\nThis would open an edit form in a real implementation.`);
+        }
+
+        function deleteUser(userId) {
+            if (!userId || userId === '0') {
+                alert('Invalid user ID');
+                return;
+            }
+
+            // Confirm deletion
+            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                return;
+            }
+
+            // Show loading state
+            const deleteBtn = event.target;
+            const originalText = deleteBtn.innerHTML;
+            deleteBtn.innerHTML = '⏳';
+            deleteBtn.disabled = true;
+
+            // Send delete request to server
+            fetch('/api/delete_user.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the row from the table
+                    const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+                    if (row) {
+                        row.remove();
+                        showNotification('User deleted successfully!', 'success');
+                    }
+                } else {
+                    showNotification('Error deleting user: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error deleting user: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                deleteBtn.innerHTML = originalText;
+                deleteBtn.disabled = false;
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+
+            // Set background color based on type
+            if (type === 'success') {
+                notification.style.backgroundColor = '#4CAF50';
+            } else if (type === 'error') {
+                notification.style.backgroundColor = '#F44336';
+            } else {
+                notification.style.backgroundColor = '#2196F3';
+            }
+
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
         }
 
     </script>
