@@ -53,7 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'weight' => $_POST['weight'] ?? '',
             'height' => $_POST['height'] ?? '',
             'muac' => $_POST['muac'] ?? '',
-            'screening_date' => date('Y-m-d H:i:s')
+            'screening_date' => date('Y-m-d H:i:s'),
+            'fcm_token' => $_POST['fcm_token'] ?? null
         ];
 
         // Get user info from session
@@ -74,7 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'weight' => $screening_data['weight'],
             'height' => $screening_data['height'],
             'muac' => $screening_data['muac'],
-            'screening_date' => $screening_data['screening_date']
+            'screening_date' => $screening_data['screening_date'],
+            'fcm_token' => $screening_data['fcm_token']
         ];
         
         // Insert using DatabaseHelper

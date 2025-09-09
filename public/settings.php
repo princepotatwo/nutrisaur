@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+session_start();
 }
 
 if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insert into community_users table using DatabaseHelper
         $insertData = [
-            'name' => $name,
+                    'name' => $name,
             'email' => $user_email,
             'password' => $password,
             'municipality' => $screening_data['municipality'],
@@ -74,15 +74,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'weight' => $screening_data['weight'],
             'height' => $screening_data['height'],
             'muac' => $screening_data['muac'],
-            'screening_date' => $screening_data['screening_date']
+            'screening_date' => $screening_data['screening_date'],
+            'fcm_token' => $_POST['fcm_token'] ?? null
         ];
         
         // Insert using DatabaseHelper
         $result = $db->insert('community_users', $insertData);
-        
-        if ($result['success']) {
+                
+                if ($result['success']) {
             $success_message = "Screening assessment saved successfully!";
-        } else {
+                } else {
             $error_message = "Error saving screening assessment: " . ($result['error'] ?? 'Unknown error');
         }
         
@@ -1030,7 +1031,7 @@ header {
     box-shadow: 0 6px 16px rgba(102, 187, 106, 0.4);
 }
         .screening-container {
-            width: 100%;
+    width: 100%;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -1079,7 +1080,7 @@ header {
             border-radius: 8px;
             background: var(--input-bg);
             color: var(--text-color);
-            font-size: 16px;
+    font-size: 16px;
         }
 
         .form-input:focus, .form-select:focus {
@@ -1135,7 +1136,7 @@ header {
 
         .bmi-display {
             background: var(--accent-color);
-            color: white;
+    color: white;
             padding: 15px;
             border-radius: 8px;
             margin-top: 10px;
@@ -1191,7 +1192,7 @@ header {
         }
 
         .alert {
-            padding: 15px;
+        padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
         }
@@ -1431,7 +1432,7 @@ header {
         }
 
         .bmi-category {
-            display: block;
+    display: block;
             font-size: 0.9em;
             color: var(--text-color-secondary);
             margin-top: 5px;
@@ -1504,9 +1505,9 @@ header {
         }
 
         .modal-header {
-            display: flex;
+    display: flex;
             justify-content: space-between;
-            align-items: center;
+    align-items: center;
             margin-bottom: 20px;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 15px;
@@ -1520,7 +1521,7 @@ header {
         .close {
             color: var(--text-color);
             font-size: 28px;
-            font-weight: bold;
+    font-weight: bold;
             cursor: pointer;
         }
 
@@ -1537,7 +1538,7 @@ header {
         .detail-section {
             background: var(--bg-color);
             padding: 20px;
-            border-radius: 10px;
+    border-radius: 10px;
         }
 
         .detail-section h4 {
@@ -1672,47 +1673,47 @@ header {
             box-shadow: 0 6px 20px var(--color-shadow);
         }
 
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            background-color: var(--color-card);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--color-border);
-            position: relative;
-            z-index: 1;
-        }
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: var(--color-card);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--color-border);
+    position: relative;
+    z-index: 1;
+}
 
-        /* Dark theme table header styles */
-        .dark-theme .table-header {
-            background-color: var(--color-card);
-            border-color: var(--color-border);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
+/* Dark theme table header styles */
+.dark-theme .table-header {
+    background-color: var(--color-card);
+    border-color: var(--color-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
 
-        /* Light theme table header styles */
-        .light-theme .table-header {
-            background-color: var(--color-card);
-            border-color: var(--color-border);
-            box-shadow: 0 4px 15px var(--color-shadow);
-        }
+/* Light theme table header styles */
+.light-theme .table-header {
+    background-color: var(--color-card);
+    border-color: var(--color-border);
+    box-shadow: 0 4px 15px var(--color-shadow);
+}
 
-        .table-header h2 {
-            color: var(--color-highlight);
-            font-size: 24px;
-            margin: 0;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
+.table-header h2 {
+    color: var(--color-highlight);
+    font-size: 24px;
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
 
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+.header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 
         .header-controls {
             display: flex;
@@ -1738,211 +1739,211 @@ header {
             justify-content: center;
         }
 
-        .btn-add {
-            background-color: var(--color-highlight);
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+.btn-add {
+    background-color: var(--color-highlight);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
 
-        .btn-icon {
-            font-size: 16px;
-            line-height: 1;
-        }
+.btn-icon {
+    font-size: 16px;
+    line-height: 1;
+}
 
-        .btn-text {
-            font-size: 14px;
-            font-weight: 600;
-        }
+.btn-text {
+    font-size: 14px;
+    font-weight: 600;
+}
 
-        .btn-secondary {
-            background-color: var(--color-accent3);
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+.btn-secondary {
+    background-color: var(--color-accent3);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
 
-        .btn-secondary:hover {
-            background-color: var(--color-accent2);
-            transform: translateY(-1px);
-        }
+.btn-secondary:hover {
+    background-color: var(--color-accent2);
+    transform: translateY(-1px);
+}
 
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            flex-wrap: wrap;
-            align-items: center;
-        }
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
 
-        .btn {
-            padding: 14px 28px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
+.btn {
+    padding: 14px 28px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
 
-        .btn-edit, .btn-suspend, .btn-delete {
+.btn-edit, .btn-suspend, .btn-delete {
             padding: 8px 16px;
             border-radius: 8px;
             font-size: 12px;
-            font-weight: 600;
+    font-weight: 600;
             margin: 0 4px;
-            transition: all 0.3s ease;
-            cursor: pointer !important;
+    transition: all 0.3s ease;
+    cursor: pointer !important;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            border: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border: none;
             min-width: 60px;
             max-width: 80px;
-            display: inline-block !important;
-            text-align: center;
-            line-height: 1.2;
-            position: relative;
-            z-index: 10;
-        }
+    display: inline-block !important;
+    text-align: center;
+    line-height: 1.2;
+    position: relative;
+    z-index: 10;
+}
 
-        .btn-edit {
-            background-color: rgba(161, 180, 84, 0.15);
-            color: var(--color-highlight);
-            border: 2px solid rgba(161, 180, 84, 0.4);
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
-        }
+.btn-edit {
+    background-color: rgba(161, 180, 84, 0.15);
+    color: var(--color-highlight);
+    border: 2px solid rgba(161, 180, 84, 0.4);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+}
 
-        .btn-suspend {
-            background-color: rgba(224, 201, 137, 0.15);
-            color: var(--color-warning);
-            border: 2px solid rgba(224, 201, 137, 0.4);
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(224, 201, 137, 0.2);
-        }
+.btn-suspend {
+    background-color: rgba(224, 201, 137, 0.15);
+    color: var(--color-warning);
+    border: 2px solid rgba(224, 201, 137, 0.4);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(224, 201, 137, 0.2);
+}
 
-        .btn-delete {
-            background-color: rgba(207, 134, 134, 0.15);
-            color: var(--color-danger);
-            border: 2px solid rgba(207, 134, 134, 0.4);
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(207, 134, 134, 0.2);
-        }
+.btn-delete {
+    background-color: rgba(207, 134, 134, 0.15);
+    color: var(--color-danger);
+    border: 2px solid rgba(207, 134, 134, 0.4);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(207, 134, 134, 0.2);
+}
 
-        .light-theme .btn-edit {
-            background-color: rgba(102, 187, 106, 0.15);
-            color: var(--color-highlight);
-            border: 2px solid rgba(102, 187, 106, 0.4);
-            font-weight: 600;
-        }
+.light-theme .btn-edit {
+    background-color: rgba(102, 187, 106, 0.15);
+    color: var(--color-highlight);
+    border: 2px solid rgba(102, 187, 106, 0.4);
+    font-weight: 600;
+}
 
-        .light-theme .btn-suspend {
-            background-color: rgba(255, 183, 77, 0.15);
-            color: var(--color-warning);
-            border: 2px solid rgba(255, 183, 77, 0.4);
-            font-weight: 600;
-        }
+.light-theme .btn-suspend {
+    background-color: rgba(255, 183, 77, 0.15);
+    color: var(--color-warning);
+    border: 2px solid rgba(255, 183, 77, 0.4);
+    font-weight: 600;
+}
 
-        .light-theme .btn-delete {
-            background-color: rgba(229, 115, 115, 0.15);
-            color: var(--color-danger);
-            border: 2px solid rgba(229, 115, 115, 0.4);
-            font-weight: 600;
-        }
+.light-theme .btn-delete {
+    background-color: rgba(229, 115, 115, 0.15);
+    color: var(--color-danger);
+    border: 2px solid rgba(229, 115, 115, 0.4);
+    font-weight: 600;
+}
 
-        .btn-edit:hover, .btn-suspend:hover, .btn-delete:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            filter: brightness(1.1);
-            transform: translateY(-2px) scale(1.05);
-        }
+.btn-edit:hover, .btn-suspend:hover, .btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.1);
+    transform: translateY(-2px) scale(1.05);
+}
 
-        .btn-edit:active, .btn-suspend:active, .btn-delete:active {
-            transform: translateY(0) scale(0.98);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
+.btn-edit:active, .btn-suspend:active, .btn-delete:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
 
-        .btn-edit:focus, .btn-suspend:focus, .btn-delete:focus {
-            outline: 2px solid var(--color-highlight);
-            outline-offset: 2px;
-            transform: translateY(-1px);
-        }
+.btn-edit:focus, .btn-suspend:focus, .btn-delete:focus {
+    outline: 2px solid var(--color-highlight);
+    outline-offset: 2px;
+    transform: translateY(-1px);
+}
 
-        /* Ensure buttons look clickable */
-        .btn-edit, .btn-suspend, .btn-delete {
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            position: relative;
-            overflow: hidden;
-            pointer-events: auto !important;
-            touch-action: manipulation;
-        }
+/* Ensure buttons look clickable */
+.btn-edit, .btn-suspend, .btn-delete {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto !important;
+    touch-action: manipulation;
+}
 
-        /* Add a subtle background pattern to make buttons more visible */
-        .btn-edit::before, .btn-suspend::before, .btn-delete::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.5s ease;
-            pointer-events: none;
-        }
+/* Add a subtle background pattern to make buttons more visible */
+.btn-edit::before, .btn-suspend::before, .btn-delete::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+    pointer-events: none;
+}
 
-        .btn-edit:hover::before, .btn-suspend:hover::before, .btn-delete:hover::before {
-            left: 100%;
-        }
+.btn-edit:hover::before, .btn-suspend:hover::before, .btn-delete:hover::before {
+    left: 100%;
+}
 
-        /* Ensure buttons are always clickable */
-        .btn-edit, .btn-suspend, .btn-delete {
-            pointer-events: auto !important;
-            cursor: pointer !important;
-            position: relative;
-            z-index: 100;
-            /* Make buttons clearly look clickable */
-            background-image: linear-gradient(145deg, rgba(255,255,255,0.1), transparent);
-            border-style: solid;
-            border-width: 2px;
-            text-decoration: none;
-            /* Prevent text selection */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
+/* Ensure buttons are always clickable */
+.btn-edit, .btn-suspend, .btn-delete {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    position: relative;
+    z-index: 100;
+    /* Make buttons clearly look clickable */
+    background-image: linear-gradient(145deg, rgba(255,255,255,0.1), transparent);
+    border-style: solid;
+    border-width: 2px;
+    text-decoration: none;
+    /* Prevent text selection */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
-        .btn-add:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
+.btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
 
         .table-responsive {
             overflow-x: auto;
-            border-radius: 12px;
+    border-radius: 12px;
             border: 1px solid var(--color-border);
-            width: 100%;
+    width: 100%;
             max-width: 100%;
         }
 
@@ -1954,12 +1955,12 @@ header {
             table-layout: fixed;
             border-radius: 15px;
             overflow: hidden;
-            border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border);
             box-shadow: 0 4px 20px var(--color-shadow);
-        }
+}
 
         .user-table thead { 
-            background-color: var(--color-card);
+    background-color: var(--color-card);
         }
 
         .user-table tbody tr:nth-child(odd) {
@@ -1972,12 +1973,12 @@ header {
 
         /* Dark theme table styles */
         .dark-theme .user-table {
-            border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
+}
 
         .dark-theme .user-table thead {
-            background-color: var(--color-card);
+    background-color: var(--color-card);
         }
 
         .dark-theme .user-table tbody tr:nth-child(odd) {
@@ -1990,7 +1991,7 @@ header {
 
         /* Light theme table styles */
         .light-theme .user-table {
-            border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border);
             box-shadow: 0 4px 20px var(--color-shadow);
         }
 
@@ -1999,7 +2000,7 @@ header {
         }
 
         .light-theme .user-table tbody tr:nth-child(odd) {
-            background-color: rgba(102, 187, 106, 0.1);
+    background-color: rgba(102, 187, 106, 0.1);
         }
 
         .light-theme .user-table tbody tr:nth-child(even) {
@@ -2007,7 +2008,7 @@ header {
         }
 
         .user-table tbody tr {
-            transition: all 0.3s ease;
+    transition: all 0.3s ease;
             border-left: 3px solid transparent;
         }
 
@@ -2028,7 +2029,7 @@ header {
             word-break: break-word;
             overflow-wrap: break-word;
             font-size: 11px;
-            font-weight: 500;
+    font-weight: 500;
             vertical-align: middle;
             position: relative;
             line-height: 1.2;
@@ -2056,25 +2057,26 @@ header {
         }
 
         /* Set specific widths for columns - Optimized to fit without horizontal scroll */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 14%; } /* NAME */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 16%; } /* EMAIL */
-        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; } /* MUNICIPALITY */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 12%; } /* BARANGAY */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 6%; } /* SEX */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 9%; } /* BIRTHDAY */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 6%; } /* PREGNANT */
-        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 5%; } /* WEIGHT */
-        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 5%; } /* HEIGHT */
-        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 5%; } /* MUAC */
-        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 10%; } /* SCREENING DATE */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 12%; } /* NAME */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 14%; } /* EMAIL */
+        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 10%; } /* MUNICIPALITY */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 10%; } /* BARANGAY */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 5%; } /* SEX */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 8%; } /* BIRTHDAY */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 5%; } /* PREGNANT */
+        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 4%; } /* WEIGHT */
+        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 4%; } /* HEIGHT */
+        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 4%; } /* MUAC */
+        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 8%; } /* FCM TOKEN */
+        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 10%; } /* SCREENING DATE */
 
         .user-table th {
-            color: var(--color-highlight);
+    color: var(--color-highlight);
             font-weight: 700;
             font-size: 11px;
             position: sticky;
             top: 0;
-            background-color: var(--color-card);
+    background-color: var(--color-card);
             z-index: 10;
             border-bottom: 2px solid rgba(161, 180, 84, 0.4);
             padding-bottom: 12px;
@@ -2086,7 +2088,7 @@ header {
         }
 
         .tooltip {
-            position: relative;
+    position: relative;
             cursor: pointer;
         }
 
@@ -2094,7 +2096,7 @@ header {
             visibility: hidden;
             width: 200px;
             background: var(--color-card);
-            color: var(--color-text);
+    color: var(--color-text);
             text-align: center;
             border-radius: 8px;
             padding: 8px;
@@ -2107,7 +2109,7 @@ header {
             transition: opacity 0.3s;
             border: 1px solid var(--color-border);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            font-size: 12px;
+    font-size: 12px;
             line-height: 1.4;
         }
 
@@ -2140,12 +2142,12 @@ header {
             padding: 4px 8px;
             border-radius: 12px;
             font-size: 10px;
-            font-weight: 600;
+    font-weight: 600;
             display: inline-block;
             text-align: center;
             min-width: 50px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+    transition: all 0.3s ease;
         }
 
         .risk-badge.good {
@@ -2167,7 +2169,7 @@ header {
         /* Light theme risk badge styles */
         .light-theme .risk-badge.good {
             background-color: rgba(102, 187, 106, 0.15);
-            color: var(--color-highlight);
+    color: var(--color-highlight);
             border: 1px solid rgba(102, 187, 106, 0.3);
         }
 
@@ -2180,7 +2182,7 @@ header {
 
         .light-theme .risk-badge.malnourished {
             background-color: rgba(229, 115, 115, 0.15);
-            color: var(--color-danger);
+    color: var(--color-danger);
             border: 1px solid rgba(229, 115, 115, 0.3);
         }
 
@@ -2218,163 +2220,163 @@ header {
         }
 
         /* Add hover effects for table rows */
-        .user-table tbody tr {
+    .user-table tbody tr {
             transition: all 0.3s ease;
-            position: relative;
-        }
+        position: relative;
+    }
 
-        .user-table tbody tr::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.05), transparent);
-            opacity: 0;
+    .user-table tbody tr::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.05), transparent);
+        opacity: 0;
             transition: opacity 0.3s ease;
-        }
+    }
 
-        .user-table tbody tr:hover::after {
-            opacity: 1;
-        }
+    .user-table tbody tr:hover::after {
+        opacity: 1;
+    }
 
         .user-table tbody tr:hover {
             border-left-color: var(--color-highlight);
             background-color: rgba(161, 180, 84, 0.2);
-            transform: translateY(-1px);
+        transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(161, 180, 84, 0.15);
         }
 
         /* Add hover effects for search container */
         .search-container {
-            display: flex;
-            align-items: center;
-            background: var(--color-card);
-            border-radius: 8px;
-            padding: 8px 12px;
-            border: 1px solid rgba(161, 180, 84, 0.3);
-            transition: all 0.2s ease;
-            flex: 1;
-            min-width: 0;
-            max-width: 300px;
-        }
+    display: flex;
+    align-items: center;
+    background: var(--color-card);
+    border-radius: 8px;
+    padding: 8px 12px;
+    border: 1px solid rgba(161, 180, 84, 0.3);
+    transition: all 0.2s ease;
+    flex: 1;
+    min-width: 0;
+    max-width: 300px;
+}
 
-        .search-container:focus-within {
-            border-color: var(--color-highlight);
-            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+.search-container:focus-within {
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
             transform: translateY(-1px);
-        }
+}
 
-        .search-input {
-            border: none;
-            background: transparent;
-            color: var(--color-text);
-            padding: 6px 8px;
-            font-size: 14px;
-            outline: none;
-            width: 100%;
-            font-weight: 500;
-        }
+.search-input {
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    padding: 6px 8px;
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+    font-weight: 500;
+}
 
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 400;
-        }
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
+}
 
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
 
-        /* Dark theme search input styles */
-        .dark-theme .search-input {
-            background: transparent;
-            color: var(--color-text);
-        }
+/* Dark theme search input styles */
+.dark-theme .search-input {
+    background: transparent;
+    color: var(--color-text);
+}
 
-        .dark-theme .search-input::placeholder {
-            color: rgba(232, 240, 214, 0.6);
-        }
+.dark-theme .search-input::placeholder {
+    color: rgba(232, 240, 214, 0.6);
+}
 
-        /* Light theme search input styles */
-        .light-theme .search-input {
-            background: transparent;
-            color: var(--color-text);
-        }
+/* Light theme search input styles */
+.light-theme .search-input {
+    background: transparent;
+    color: var(--color-text);
+}
 
-        .light-theme .search-input::placeholder {
-            color: rgba(65, 89, 57, 0.6);
-        }
+.light-theme .search-input::placeholder {
+    color: rgba(65, 89, 57, 0.6);
+}
 
-        .search-btn {
-            background: var(--color-highlight);
-            border: none;
-            color: var(--color-bg);
-            padding: 6px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s ease;
-            font-weight: 600;
-            min-width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
+.search-btn {
+    background: var(--color-highlight);
+    border: none;
+    color: var(--color-bg);
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
 
-        .search-btn:hover {
-            background: var(--color-accent1);
-            transform: scale(1.02);
-        }
+.search-btn:hover {
+    background: var(--color-accent1);
+    transform: scale(1.02);
+}
 
-        /* Location filter styles */
-        .location-filter-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-            max-width: 250px;
-        }
+/* Location filter styles */
+.location-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 250px;
+}
 
-        .location-select {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--color-border);
-            background-color: var(--color-card);
-            color: var(--color-text);
-            font-size: 14px;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-        }
+.location-select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-card);
+    color: var(--color-text);
+    font-size: 14px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
 
-        /* Dark theme location select styles */
-        .dark-theme .location-select {
-            background-color: var(--color-card);
-            color: var(--color-text);
-            border-color: var(--color-border);
-        }
+/* Dark theme location select styles */
+.dark-theme .location-select {
+    background-color: var(--color-card);
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
 
-        .light-theme .location-select {
-            background-color: var(--color-card);
-            border: 1px solid var(--color-border);
-            color: var(--color-text);
-        }
+.light-theme .location-select {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+}
 
-        .location-select:focus {
-            outline: none;
-            border-color: var(--color-highlight);
-            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+.location-select:focus {
+    outline: none;
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
             transform: translateY(-1px);
-        }
+}
 
-        .light-theme .location-select:focus {
-            border-color: var(--color-highlight);
-            box-shadow: 0 0 0 2px var(--color-shadow);
-        }
+.light-theme .location-select:focus {
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 2px var(--color-shadow);
+}
 
         .no-data-message {
             text-align: center;
@@ -2393,7 +2395,7 @@ header {
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 20px;
+    margin-bottom: 20px;
         }
 
         .csv-upload-area:hover {
@@ -2444,26 +2446,26 @@ header {
             display: flex;
             gap: 15px;
             justify-content: center;
-            margin-top: 20px;
-        }
+    margin-top: 20px;
+}
 
-        .csv-preview-table {
-            width: 100%;
-            border-collapse: collapse;
+.csv-preview-table {
+    width: 100%;
+    border-collapse: collapse;
             margin-top: 15px;
             font-size: 12px;
-        }
+}
 
-        .csv-preview-table th,
-        .csv-preview-table td {
+.csv-preview-table th,
+.csv-preview-table td {
             padding: 8px;
-            text-align: left;
+    text-align: left;
             border: 1px solid var(--color-border);
-        }
+}
 
-        .csv-preview-table th {
-            background-color: var(--color-highlight);
-            color: white;
+.csv-preview-table th {
+    background-color: var(--color-highlight);
+    color: white;
         }
 
         .modal {
@@ -2472,7 +2474,7 @@ header {
             z-index: 1000;
             left: 0;
             top: 0;
-            width: 100%;
+    width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
         }
@@ -2481,22 +2483,22 @@ header {
             background-color: var(--color-card);
             margin: 15% auto;
             padding: 20px;
-            border-radius: 10px;
+    border-radius: 10px;
             width: 80%;
             max-width: 600px;
             position: relative;
         }
 
         .close {
-            color: var(--color-text);
+    color: var(--color-text);
             float: right;
             font-size: 28px;
-            font-weight: bold;
+    font-weight: bold;
             cursor: pointer;
         }
 
         .close:hover {
-            color: var(--color-danger);
+    color: var(--color-danger);
         }
 
         .btn-submit {
@@ -2504,7 +2506,7 @@ header {
             color: white;
             padding: 10px 20px;
             border: none;
-            border-radius: 8px;
+    border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
         }
@@ -2521,12 +2523,12 @@ header {
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
-        }
+    font-size: 14px;
+}
 
         .csv-import-info {
-            background-color: rgba(161, 180, 84, 0.1);
-            border-radius: 8px;
+    background-color: rgba(161, 180, 84, 0.1);
+    border-radius: 8px;
             padding: 15px;
             margin-bottom: 20px;
         }
@@ -2579,48 +2581,48 @@ header {
 
         <div class="screening-container">
             <div class="user-management-container">
-                <div class="table-header">
-                    <div class="header-controls">
-                        <div class="search-row" style="justify-content: center; gap: 20px;">
-                            <div class="search-container" style="width: 300px;">
+        <div class="table-header">
+            <div class="header-controls">
+                <div class="search-row" style="justify-content: center; gap: 20px;">
+                    <div class="search-container" style="width: 300px;">
                                 <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input">
                                 <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
-                            </div>
-                            <div class="location-filter-container" style="width: 300px;">
+                    </div>
+                    <div class="location-filter-container" style="width: 300px;">
                                 <select id="sexFilter" onchange="filterBySex()" class="location-select">
                                     <option value="">All Genders</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
-                                </select>
-                            </div>
+                            </select>
                         </div>
+                    </div>
 
                         <!-- CSV Action Buttons -->
                         <div class="action-buttons" style="margin-top: 15px; text-align: center;">
-                            <button class="btn btn-add" onclick="downloadCSVTemplate()">
-                                <span class="btn-icon">📥</span>
-                                <span class="btn-text">Download Template</span>
-                            </button>
-                            <button class="btn btn-add" onclick="showCSVImportModal()">
-                                <span class="btn-icon">📁</span>
-                                <span class="btn-text">Import CSV</span>
-                            </button>
+                        <button class="btn btn-add" onclick="downloadCSVTemplate()">
+                            <span class="btn-icon">📥</span>
+                            <span class="btn-text">Download Template</span>
+                        </button>
+                        <button class="btn btn-add" onclick="showCSVImportModal()">
+                            <span class="btn-icon">📁</span>
+                            <span class="btn-text">Import CSV</span>
+                        </button>
                         </div>
 
-                    </div>
                 </div>
-
-                <div id="no-users-message" style="display:none;" class="no-data-message">
-                    No users found in the database. Add your first user!
-                </div>
-
-                <div class="table-responsive">
+            </div>
+            
+            <div id="no-users-message" style="display:none;" class="no-data-message">
+                No users found in the database. Add your first user!
+            </div>
+            
+            <div class="table-responsive">
                 <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>NAME</th>
+                <thead>
+                    <tr>
+                        <th>NAME</th>
                             <th>EMAIL</th>
-                            <th>MUNICIPALITY</th>
+                        <th>MUNICIPALITY</th>
                             <th>BARANGAY</th>
                             <th>SEX</th>
                             <th>BIRTHDAY</th>
@@ -2628,31 +2630,32 @@ header {
                             <th>WEIGHT (KG)</th>
                             <th>HEIGHT (CM)</th>
                             <th>MUAC (CM)</th>
+                            <th>FCM TOKEN</th>
                             <th>SCREENING DATE</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                        <?php
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <?php
                         // Get community_users data directly from database
-                        if ($db->isAvailable()) {
-                            try {
-                                // Use Universal DatabaseAPI to get users for HTML display
-                                $result = $db->select(
+                    if ($db->isAvailable()) {
+                        try {
+                            // Use Universal DatabaseAPI to get users for HTML display
+                            $result = $db->select(
                                     'community_users',
                                     '*',
-                                    '',
-                                    [],
+                                '',
+                                [],
                                     'screening_date DESC'
-                                );
-                                
-                                $users = $result['success'] ? $result['data'] : [];
-                                
-                                if (!empty($users)) {
-                                    foreach ($users as $user) {
-                                        echo '<tr>';
-                                        echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                            );
+                            
+                            $users = $result['success'] ? $result['data'] : [];
+                            
+                            if (!empty($users)) {
+                                foreach ($users as $user) {
+                                    echo '<tr>';
+                                    echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
@@ -2660,74 +2663,75 @@ header {
                                         echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['muac'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['fcm_token'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
-                                        echo '</tr>';
-                                    }
-                                } else {
+                                    echo '</tr>';
+                                }
+                            } else {
                                     // Let JavaScript handle empty database with sample data
                                     echo '<!-- No users in database - JavaScript will show sample data -->';
-                                }
-                            } catch (Exception $e) {
-                                echo '<tr><td colspan="11" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                             }
-                        } else {
-                            echo '<tr><td colspan="11" class="no-data-message">Database connection failed.</td></tr>';
+                        } catch (Exception $e) {
+                                echo '<tr><td colspan="12" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                         }
-                        ?>
-                    </tbody>
+                    } else {
+                            echo '<tr><td colspan="12" class="no-data-message">Database connection failed.</td></tr>';
+                    }
+                    ?>
+                </tbody>
                 </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- CSV Import Modal -->
-    <div id="csvImportModal" class="modal">
-        <div class="modal-content csv-import-modal-content">
-            <span class="close" onclick="closeCSVImportModal()">&times;</span>
+        
+        <!-- CSV Import Modal -->
+        <div id="csvImportModal" class="modal">
+            <div class="modal-content csv-import-modal-content">
+                <span class="close" onclick="closeCSVImportModal()">&times;</span>
             <h2>Import Assessments from CSV</h2>
-            <div style="height: calc(85vh - 120px); overflow-y: auto; padding-right: 10px;">
-            
-            <!-- Status Message Area -->
-            <div id="csvStatusMessage" style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 8px; font-weight: 600;"></div>
-            
-            <div class="csv-import-info">
-                <div style="background-color: rgba(233, 141, 124, 0.2); border: 2px solid var(--color-danger); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                            <h4 style="color: var(--color-danger); margin: 0 0 10px 0;">⚠️ CRITICAL: EXACT FORMAT REQUIRED</h4>
-                            <p style="margin: 0; color: var(--color-danger); font-weight: 600;">CSV data MUST use EXACTLY the same answer options as the mobile app. Any deviation will cause validation errors and prevent import.</p>
-                        </div>
+                <div style="height: calc(85vh - 120px); overflow-y: auto; padding-right: 10px;">
+                
+                <!-- Status Message Area -->
+                <div id="csvStatusMessage" style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 8px; font-weight: 600;"></div>
+                
+                <div class="csv-import-info">
+                    <div style="background-color: rgba(233, 141, 124, 0.2); border: 2px solid var(--color-danger); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h4 style="color: var(--color-danger); margin: 0 0 10px 0;">⚠️ CRITICAL: EXACT FORMAT REQUIRED</h4>
+                                <p style="margin: 0; color: var(--color-danger); font-weight: 600;">CSV data MUST use EXACTLY the same answer options as the mobile app. Any deviation will cause validation errors and prevent import.</p>
+                            </div>
                     </div>
                 </div>
                 
                 <h4>📋 CSV Import Instructions</h4>
-                <p><strong>1.</strong> Download template with exact mobile app formats</p>
-                <p><strong>2.</strong> Fill data using ONLY specified answer options</p>
+                                        <p><strong>1.</strong> Download template with exact mobile app formats</p>
+                                        <p><strong>2.</strong> Fill data using ONLY specified answer options</p>
                 <p><strong>3.</strong> Upload your completed CSV file</p>
                 <p><strong>4.</strong> Review and confirm import</p>
-            </div>
+                                    </div>
             
-            <form id="csvImportForm">
-                <div class="csv-upload-area" id="uploadArea" onclick="document.getElementById('csvFile').click()" style="cursor: pointer;" 
-                     ondragover="handleDragOver(event)" 
-                     ondrop="handleDrop(event)" 
-                     ondragleave="handleDragLeave(event)">
+                <form id="csvImportForm">
+                    <div class="csv-upload-area" id="uploadArea" onclick="document.getElementById('csvFile').click()" style="cursor: pointer;" 
+                         ondragover="handleDragOver(event)" 
+                         ondrop="handleDrop(event)" 
+                         ondragleave="handleDragLeave(event)">
                     <input type="file" id="csvFile" accept=".csv" style="display: none;" onchange="handleFileSelect(event)">
-                    <div class="upload-text">
-                        <h4>Upload CSV File</h4>
+                        <div class="upload-text">
+                            <h4>Upload CSV File</h4>
                         <p>Click here or drag and drop your CSV file</p>
                         <small class="csv-format">Supported format: .csv</small>
+                        </div>
                     </div>
-                </div>
-                
+                    
                 <div id="csvPreview" style="display: none;"></div>
-                
-                <div class="csv-actions">
-                    <button type="button" class="btn btn-submit" id="importCSVBtn" disabled onclick="processCSVImport()">📥 Import CSV</button>
-                    <button type="button" class="btn btn-cancel" id="cancelBtn" style="display: none;" onclick="cancelUpload()">❌ Cancel Upload</button>
-                </div>
-            </form>
+                    
+                    <div class="csv-actions">
+                        <button type="button" class="btn btn-submit" id="importCSVBtn" disabled onclick="processCSVImport()">📥 Import CSV</button>
+                        <button type="button" class="btn btn-cancel" id="cancelBtn" style="display: none;" onclick="cancelUpload()">❌ Cancel Upload</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -2749,13 +2753,13 @@ header {
                             fetch(`/api/DatabaseAPI.php?action=comprehensive_screening&screening_id=${id}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.error) {
+                        if (data.error) {
                         alert('Error loading assessment details: ' + data.error);
-                        return;
-                    }
+                            return;
+                        }
                     showAssessmentModal(data);
-                })
-                .catch(error => {
+            })
+            .catch(error => {
                     console.error('Error:', error);
                     alert('Error loading assessment details');
                 });
@@ -2859,12 +2863,12 @@ header {
                             <h4>💡 Recommendations</h4>
                             <div class="detail-item">
                                 <span class="detail-value">${assessment.recommendations}</span>
-                            </div>
-                        </div>
-                        ` : ''}
-                    </div>
                 </div>
-            `;
+            </div>
+                        ` : ''}
+            </div>
+            </div>
+        `;
             
             document.body.appendChild(modal);
             modal.style.display = 'block';
@@ -2932,7 +2936,7 @@ header {
         }
 
         // Theme persistence and toggle
-        document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
             // Load saved theme from localStorage
             const savedTheme = localStorage.getItem('theme');
             const body = document.body;
@@ -2975,16 +2979,16 @@ header {
 
         function initializeTableFunctionality() {
             // Add row hover effects
-            const tableRows = document.querySelectorAll('.user-table tbody tr');
-            tableRows.forEach(row => {
-                row.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scale(1.01)';
-                });
-                
-                row.addEventListener('mouseleave', function() {
-                    this.style.transform = 'scale(1)';
-                });
+        const tableRows = document.querySelectorAll('.user-table tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.01)';
             });
+            
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
         }
 
         function searchAssessments() {
@@ -3039,7 +3043,7 @@ header {
         }
 
         function filterByLocation() {
-            const locationFilter = document.getElementById('locationFilter').value;
+        const locationFilter = document.getElementById('locationFilter').value;
             const tableRows = document.querySelectorAll('.user-table tbody tr');
             
             let visibleCount = 0;
@@ -3062,11 +3066,11 @@ header {
             const noDataMessage = document.querySelector('.no-data-message');
             const tbody = document.querySelector('.user-table tbody');
             
-            if (visibleCount === 0) {
+                if (visibleCount === 0) {
                 if (!noDataMessage) {
                     const message = document.createElement('tr');
                     message.className = 'no-data-message';
-                    message.innerHTML = '<td colspan="9"><div>No assessments found matching your criteria.</div></td>';
+                    message.innerHTML = '<td colspan="12"><div>No assessments found matching your criteria.</div></td>';
                     tbody.appendChild(message);
                 }
             } else if (noDataMessage) {
@@ -3338,20 +3342,20 @@ header {
                 const csv = e.target.result;
                 const lines = csv.split('\n').filter(line => line.trim());
                 
-                if (lines.length < 2) {
+                    if (lines.length < 2) {
                     showCSVStatus('error', 'CSV file must contain at least a header row and one data row.');
-                    return;
-                }
+                        return;
+                    }
 
                 const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
                 const previewRows = lines.slice(1, 6);
                 
                 let tableHTML = '<h4>📋 Preview (First 5 rows)</h4>';
                 tableHTML += '<div style="overflow-x: auto;"><table class="csv-preview-table">';
-                tableHTML += '<thead><tr>';
-                headers.forEach(header => {
-                    tableHTML += `<th>${header}</th>`;
-                });
+            tableHTML += '<thead><tr>';
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
                 tableHTML += '</tr></thead><tbody>';
                 
                 previewRows.forEach(row => {
@@ -3382,19 +3386,19 @@ header {
 
         function showCSVStatus(type, message) {
             const statusDiv = document.getElementById('csvStatusMessage');
-            statusDiv.style.display = 'block';
+                statusDiv.style.display = 'block';
             statusDiv.className = `csv-status ${type}`;
             statusDiv.textContent = message;
-            
-            if (type === 'success') {
-                statusDiv.style.backgroundColor = 'rgba(161, 180, 84, 0.2)';
-                statusDiv.style.color = 'var(--color-highlight)';
+                
+                if (type === 'success') {
+                    statusDiv.style.backgroundColor = 'rgba(161, 180, 84, 0.2)';
+                    statusDiv.style.color = 'var(--color-highlight)';
                 statusDiv.style.border = '1px solid var(--color-highlight)';
             } else if (type === 'info') {
                 statusDiv.style.backgroundColor = 'rgba(102, 187, 106, 0.2)';
                 statusDiv.style.color = 'var(--color-highlight)';
                 statusDiv.style.border = '1px solid var(--color-highlight)';
-            } else {
+                } else {
                 statusDiv.style.backgroundColor = 'rgba(233, 141, 124, 0.2)';
                 statusDiv.style.color = 'var(--color-danger)';
                 statusDiv.style.border = '1px solid var(--color-danger)';
@@ -3403,7 +3407,7 @@ header {
 
         function hideCSVStatus() {
             const statusDiv = document.getElementById('csvStatusMessage');
-            statusDiv.style.display = 'none';
+                        statusDiv.style.display = 'none';
         }
 
         function cancelUpload() {
@@ -3413,3 +3417,4 @@ header {
     </script>
 </body>
 </html>
+                                                                        
