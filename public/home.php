@@ -299,7 +299,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                     $updateStmt = $pdo->prepare("UPDATE users SET email_verified = 1, verification_code = NULL, verification_code_expires = NULL WHERE user_id = ?");
                     $updateStmt->execute([$user['user_id']]);
                     
-                    echo json_encode(['success' => true, 'message' => 'Email verified successfully!']);
+                    // Log the user in after successful verification
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $email;
+                    $_SESSION['is_admin'] = false;
+                    
+                    echo json_encode(['success' => true, 'message' => 'Email verified successfully! You are now logged in.', 'redirect' => '/dash']);
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Invalid or expired verification code']);
                 }
