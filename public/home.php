@@ -372,7 +372,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
     $apiUrl = 'https://api.resend.com/emails';
     
     $emailData = [
-        'from' => 'NUTRISAUR <noreply@nutrisaur.com>',
+        'from' => 'NUTRISAUR <onboarding@resend.dev>',
         'to' => [$email],
         'subject' => 'NUTRISAUR - Email Verification',
         'html' => "
