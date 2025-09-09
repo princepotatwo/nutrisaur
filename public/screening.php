@@ -3134,6 +3134,7 @@ header {
                             <th>BMI</th>
                             <th id="standardHeader">WEIGHT-FOR-AGE</th>
                             <th>CLASSIFICATION</th>
+                            <th>SCREENING DATE</th>
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
@@ -3231,6 +3232,7 @@ header {
                                             echo '<td>' . $bmi . '</td>';
                                             echo '<td class="standard-value">' . htmlspecialchars($data['display']) . '</td>';
                                             echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
+                                            echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                         }
                                         
@@ -3268,6 +3270,7 @@ header {
                                                 echo '<td>' . $bmi . '</td>';
                                                 echo '<td class="standard-value">' . $data['display'] . '</td>';
                                                 echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
                                                 echo '</tr>';
                                             }
                                         }
@@ -3277,10 +3280,10 @@ header {
                                     echo '<!-- No users in database -->';
                                 }
                             } catch (Exception $e) {
-                                echo '<tr><td colspan="8" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+                                    echo '<tr><td colspan="9" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                         }
                     } else {
-                            echo '<tr><td colspan="8" class="no-data-message">Database connection failed.</td></tr>';
+                            echo '<tr><td colspan="9" class="no-data-message">Database connection failed.</td></tr>';
                     }
                         ?>
                     </tbody>

@@ -1939,6 +1939,51 @@ header {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+.btn-edit {
+    background-color: var(--color-highlight);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-right: 4px;
+}
+
+.btn-delete {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+    background-color: var(--color-primary);
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    background-color: #c0392b;
+}
+
         .table-responsive {
             overflow-x: auto;
             border-radius: 12px;
@@ -2737,8 +2782,14 @@ header {
                                     echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
                                     echo '<td class="action-buttons">';
-                                    echo '<button class="btn-edit" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User">✏️</button>';
-                                    echo '<button class="btn-delete" onclick="deleteUser(\'' . $userIdentifier . '\')" title="Delete User">🗑️</button>';
+                                    echo '<button class="btn btn-edit" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User">';
+                                    echo '<span class="btn-icon">✏️</span>';
+                                    echo '<span class="btn-text">Edit</span>';
+                                    echo '</button>';
+                                    echo '<button class="btn btn-delete" onclick="deleteUser(\'' . $userIdentifier . '\')" title="Delete User">';
+                                    echo '<span class="btn-icon">🗑️</span>';
+                                    echo '<span class="btn-text">Delete</span>';
+                                    echo '</button>';
                                     echo '</td>';
                                     echo '</tr>';
                                 }
