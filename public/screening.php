@@ -2289,6 +2289,14 @@ header {
             line-height: 1.3;
             text-align: center;
         }
+        
+        /* Classification Styling */
+        .classification {
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--color-text);
+        }
 
 
 
@@ -3300,7 +3308,7 @@ header {
                                                 if ($ageInMonths > 71 && $standard === 'bmi-for-age') {
                                                     $adultBmiClassification = getAdultBMIClassification($bmi);
                                                     $data['classification'] = $adultBmiClassification;
-                                                    $data['display'] = 'BMI: ' . $bmi . '<br>' . $adultBmiClassification;
+                                                    $data['display'] = 'BMI: ' . $bmi;
                                                 }
                                                 
                                                 echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
@@ -3310,6 +3318,7 @@ header {
                                                 echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $bmi . '</td>';
                                                 echo '<td class="standard-value">' . $data['display'] . '</td>';
+                                                echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
                                                 echo '<td class="action-buttons">';
                                                 echo '<div class="action-buttons-row">';
                                                 echo '<button class="btn btn-edit" onclick="editUser(\'' . htmlspecialchars($user['email']) . '\')" title="Edit User">';
