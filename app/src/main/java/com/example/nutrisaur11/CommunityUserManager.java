@@ -85,6 +85,13 @@ public class CommunityUserManager {
                 Log.d(TAG, "Sending registration data: " + requestData.toString());
                 String response = makeApiRequest("register_community_user", requestData);
                 Log.d(TAG, "Received response: " + response);
+                
+                // Check if response is empty or invalid
+                if (response == null || response.trim().isEmpty()) {
+                    callback.onError("Empty response from server");
+                    return;
+                }
+                
                 JSONObject jsonResponse = new JSONObject(response);
                 
                 if (jsonResponse.getBoolean("success")) {
@@ -100,7 +107,9 @@ public class CommunityUserManager {
                     
                     callback.onSuccess("Registration successful!");
                 } else {
-                    callback.onError(jsonResponse.getString("message"));
+                    String errorMessage = jsonResponse.optString("message", "Unknown error");
+                    Log.e(TAG, "Registration failed: " + errorMessage);
+                    callback.onError(errorMessage);
                 }
                 
             } catch (Exception e) {
