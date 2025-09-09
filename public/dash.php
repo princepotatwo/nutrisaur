@@ -8324,16 +8324,155 @@ body {
             } catch (error) {
             }
             
-            setInterval(() => {
-                try {
-                    requestAnimationFrame(() => {
-                        updateCommunityMetrics(currentSelectedBarangay);
-                        updateCharts(currentSelectedBarangay);
-                        updateCriticalAlerts(currentSelectedBarangay);
-                    });
-                } catch (error) {
+            // Real-time dashboard updates using AJAX (same method as settings.php delete)
+            let lastStatsHash = '';
+            let updateInProgress = false;
+            
+            function updateDashboardStats() {
+                if (updateInProgress) return; // Prevent overlapping requests
+                
+                updateInProgress = true;
+                
+                fetch('/api/dashboard_stats.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Only update if data actually changed (efficient updates)
+                        const currentHash = JSON.stringify(data.stats).length + data.stats.last_updated;
+                        if (currentHash !== lastStatsHash) {
+                            updateDashboardUI(data.stats);
+                            lastStatsHash = currentHash;
+                            
+                            // Show notification for new users
+                            if (data.stats.new_today > 0) {
+                                showDashboardNotification(`+${data.stats.new_today} new users today!`, 'success');
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Dashboard update error:', error);
+                })
+                .finally(() => {
+                    updateInProgress = false;
+                });
+            }
+            
+            // Update every 10 seconds (more efficient than 3 seconds)
+            setInterval(updateDashboardStats, 10000);
+            
+            // Initial load
+            updateDashboardStats();
+            
+            // Function to update dashboard UI with new stats
+            function updateDashboardUI(stats) {
+                // Update total users
+                const totalUsersElement = document.querySelector('[data-metric="total-users"]');
+                if (totalUsersElement) {
+                    totalUsersElement.textContent = stats.total_users;
                 }
-            }, 3000);
+                
+                // Update new users today
+                const newTodayElement = document.querySelector('[data-metric="new-today"]');
+                if (newTodayElement) {
+                    newTodayElement.textContent = stats.new_today;
+                }
+                
+                // Update new users this week
+                const newWeekElement = document.querySelector('[data-metric="new-week"]');
+                if (newWeekElement) {
+                    newWeekElement.textContent = stats.new_this_week;
+                }
+                
+                // Update municipality chart if it exists
+                if (window.updateMunicipalityChart && stats.municipalities) {
+                    updateMunicipalityChart(stats.municipalities);
+                }
+                
+                // Update gender breakdown if it exists
+                if (window.updateGenderChart && stats.gender_breakdown) {
+                    updateGenderChart(stats.gender_breakdown);
+                }
+                
+                // Update recent users list
+                updateRecentUsersList(stats.recent_users);
+                
+                // Update screening by date chart
+                if (window.updateScreeningChart && stats.screening_by_date) {
+                    updateScreeningChart(stats.screening_by_date);
+                }
+                
+                console.log('Dashboard updated with new stats:', stats);
+            }
+            
+            // Function to show dashboard notifications (same as settings.php)
+            function showDashboardNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 600;
+                    z-index: 10000;
+                    max-width: 300px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                    transform: translateX(100%);
+                    transition: transform 0.3s ease;
+                `;
+                
+                // Set background color based on type
+                if (type === 'success') {
+                    notification.style.backgroundColor = '#4CAF50';
+                } else if (type === 'error') {
+                    notification.style.backgroundColor = '#F44336';
+                } else {
+                    notification.style.backgroundColor = '#2196F3';
+                }
+                
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                // Animate in
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+                
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Function to update recent users list
+            function updateRecentUsersList(recentUsers) {
+                const recentUsersContainer = document.getElementById('recent-users-list');
+                if (!recentUsersContainer) return;
+                
+                recentUsersContainer.innerHTML = '';
+                
+                recentUsers.forEach(user => {
+                    const userElement = document.createElement('div');
+                    userElement.className = 'recent-user-item';
+                    userElement.innerHTML = `
+                        <div class="user-info">
+                            <strong>${user.name}</strong>
+                            <span class="user-location">${user.municipality}, ${user.barangay}</span>
+                        </div>
+                        <div class="user-date">
+                            ${new Date(user.screening_date).toLocaleDateString()}
+                        </div>
+                    `;
+                    recentUsersContainer.appendChild(userElement);
+                });
+            }
             
             initializeAlertsState();
             
