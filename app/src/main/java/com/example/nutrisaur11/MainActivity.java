@@ -493,8 +493,8 @@ public class MainActivity extends AppCompatActivity {
         // Use direct HTTP request to fetch events
         new Thread(() -> {
             try {
-                // Fetch all events first
-                java.net.URL url = new java.net.URL(Constants.UNIFIED_API_URL + "?endpoint=events");
+                // Fetch all events first - use event.php directly
+                java.net.URL url = new java.net.URL(Constants.API_BASE_URL + "event.php?action=get_events");
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("User-Agent", "NutrisaurApp/1.0 (Android)");
@@ -1253,8 +1253,8 @@ public class MainActivity extends AppCompatActivity {
         // Use direct HTTP request to fetch events
         new Thread(() -> {
             try {
-                // Fetch all events first
-                java.net.URL url = new java.net.URL(Constants.UNIFIED_API_URL + "?endpoint=events");
+                // Fetch all events first - use event.php directly
+                java.net.URL url = new java.net.URL(Constants.API_BASE_URL + "event.php?action=get_events");
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("User-Agent", "NutrisaurApp/1.0 (Android)");
@@ -1538,7 +1538,7 @@ public class MainActivity extends AppCompatActivity {
                 );
                 
                 okhttp3.Request request = new okhttp3.Request.Builder()
-                    .url(Constants.API_BASE_URL + "community_users_simple_api.php")
+                    .url(Constants.API_BASE_URL + "api/register_fcm_token.php")
                     .post(body)
                     .addHeader("Content-Type", "application/json")
                     .build();

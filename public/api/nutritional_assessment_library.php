@@ -125,6 +125,27 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
     $haZScore = calculateHeightForAgeZScore($height, $age, $sex);
     $bmiForAgeZScore = calculateBMIForAgeZScore($bmi, $age, $sex);
     
+    // Get comprehensive WHO Growth Standards assessment
+    $whoGrowthStandards = null;
+    if ($age <= 5) { // Only for children 0-5 years (0-60 months)
+        try {
+            require_once __DIR__ . '/../../who_growth_standards.php';
+            $who = new WHOGrowthStandards();
+            
+            // Calculate age in months for WHO standards
+            $ageInMonths = $age * 12;
+            
+            // Get comprehensive assessment
+            $whoAssessment = $who->getComprehensiveAssessment($weight, $height, date('Y-m-d', strtotime("-$ageInMonths months")), $sex);
+            
+            if ($whoAssessment['success']) {
+                $whoGrowthStandards = $whoAssessment;
+            }
+        } catch (Exception $e) {
+            error_log("WHO Growth Standards error: " . $e->getMessage());
+        }
+    }
+    
     // DECISION TREE STEP 1: Is W/H z-score < -3 OR MUAC < 11.5 cm?
     if ($whZScore < -3 || ($age >= 0.5 && $age < 5 && $muac < 11.5)) {
         return [
@@ -148,7 +169,8 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
                 'height_for_age' => round($haZScore, 2),
                 'bmi_for_age' => round($bmiForAgeZScore, 2)
             ],
-            'bmi' => $bmi
+            'bmi' => $bmi,
+            'who_growth_standards' => $whoGrowthStandards
         ];
     }
     
@@ -175,7 +197,8 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
                 'height_for_age' => round($haZScore, 2),
                 'bmi_for_age' => round($bmiForAgeZScore, 2)
             ],
-            'bmi' => $bmi
+            'bmi' => $bmi,
+            'who_growth_standards' => $whoGrowthStandards
         ];
     }
     
@@ -202,7 +225,8 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
                 'height_for_age' => round($haZScore, 2),
                 'bmi_for_age' => round($bmiForAgeZScore, 2)
             ],
-            'bmi' => $bmi
+            'bmi' => $bmi,
+            'who_growth_standards' => $whoGrowthStandards
         ];
     }
     
@@ -229,7 +253,8 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
                 'height_for_age' => round($haZScore, 2),
                 'bmi_for_age' => round($bmiForAgeZScore, 2)
             ],
-            'bmi' => $bmi
+            'bmi' => $bmi,
+            'who_growth_standards' => $whoGrowthStandards
         ];
     }
     
@@ -255,7 +280,8 @@ function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
             'height_for_age' => round($haZScore, 2),
             'bmi_for_age' => round($bmiForAgeZScore, 2)
         ],
-        'bmi' => $bmi
+        'bmi' => $bmi,
+        'who_growth_standards' => $whoGrowthStandards
     ];
 }
 

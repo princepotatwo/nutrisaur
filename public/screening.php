@@ -11,12 +11,49 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 // Use centralized DatabaseAPI
 require_once __DIR__ . '/api/DatabaseHelper.php';
 
-// Use the comprehensive nutritional assessment library
-require_once __DIR__ . '/api/nutritional_assessment_library.php';
+// Use WHO Growth Standards directly
+require_once __DIR__ . '/../who_growth_standards.php';
 
-// Wrapper function to use the library assessment logic
+// Wrapper function to use WHO Growth Standards
 function getNutritionalAssessment($user) {
-    return performNutritionalAssessment($user);
+    try {
+        $who = new WHOGrowthStandards();
+        
+        // Calculate age in months for WHO standards
+        $birthDate = new DateTime($user['birthday']);
+        $today = new DateTime();
+        $age = $today->diff($birthDate);
+        $ageInMonths = ($age->y * 12) + $age->m;
+        
+        // Get comprehensive WHO Growth Standards assessment
+        $assessment = $who->getComprehensiveAssessment(
+            floatval($user['weight']), 
+            floatval($user['height']), 
+            $user['birthday'], 
+            $user['sex']
+        );
+        
+        if ($assessment['success']) {
+            return $assessment;
+        } else {
+            return [
+                'success' => false,
+                'error' => $assessment['error'] ?? 'Assessment failed',
+                'nutritional_status' => 'Assessment Error',
+                'risk_level' => 'Unknown',
+                'category' => 'Error'
+            ];
+        }
+    } catch (Exception $e) {
+        error_log("WHO Growth Standards error: " . $e->getMessage());
+        return [
+            'success' => false,
+            'error' => $e->getMessage(),
+            'nutritional_status' => 'Assessment Error',
+            'risk_level' => 'Unknown',
+            'category' => 'Error'
+        ];
+    }
 }
 
 
@@ -71,8 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = $_SESSION['name'] ?? 'User';
         $password = $_SESSION['password'] ?? 'default_password';
 
-        // Insert into community_users table using DatabaseHelper
-        $insertData = [
+        // Get WHO Growth Standards assessment
+        $user_data = [
             'name' => $name,
             'email' => $user_email,
             'password' => $password,
@@ -88,11 +125,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'fcm_token' => $screening_data['fcm_token']
         ];
         
+        // Get WHO Growth Standards assessment
+        $assessment = getNutritionalAssessment($user_data);
+        
+        // Insert into community_users table using DatabaseHelper
+        $insertData = $user_data;
+        
+        // Add WHO Growth Standards results if available
+        if ($assessment['success'] && isset($assessment['growth_standards'])) {
+            $growthStandards = $assessment['growth_standards'];
+            $insertData['bmi-for-age'] = $growthStandards['bmi_for_age']['z_score'] ?? null;
+            $insertData['weight-for-height'] = $growthStandards['weight_for_height']['z_score'] ?? null;
+            $insertData['weight-for-age'] = $growthStandards['weight_for_age']['z_score'] ?? null;
+            $insertData['weight-for-length'] = $growthStandards['weight_for_length']['z_score'] ?? null;
+            $insertData['height-for-age'] = $growthStandards['height_for_age']['z_score'] ?? null;
+            $insertData['bmi'] = $assessment['bmi'] ?? null;
+            $insertData['bmi_category'] = $growthStandards['bmi_for_age']['classification'] ?? null;
+            $insertData['nutritional_risk'] = $assessment['nutritional_risk'] ?? 'Low';
+            $insertData['muac_cm'] = $screening_data['muac'];
+            $insertData['muac_category'] = $assessment['muac_category'] ?? null;
+            $insertData['follow_up_required'] = ($assessment['nutritional_risk'] !== 'Low') ? 1 : 0;
+            $insertData['notes'] = 'Processed by WHO Growth Standards - ' . implode(', ', $assessment['recommendations'] ?? []);
+        }
+        
         // Insert using DatabaseHelper
         $result = $db->insert('community_users', $insertData);
         
         if ($result['success']) {
-            $success_message = "Screening assessment saved successfully!";
+            $success_message = "Screening assessment saved successfully with WHO Growth Standards analysis!";
         } else {
             $error_message = "Error saving screening assessment: " . ($result['error'] ?? 'Unknown error');
         }
@@ -2789,7 +2849,7 @@ header {
                             </div>
                             <div class="location-filter-container" style="width: 300px;">
                                 <select id="riskFilter" onchange="filterByRisk()" class="location-select">
-                                    <option value="">All Classifications</option>
+                                    <option value="">All WHO Classifications</option>
                                     <option value="Severely Underweight">Severely Underweight</option>
                                     <option value="Underweight">Underweight</option>
                                     <option value="Normal">Normal</option>
@@ -2797,6 +2857,7 @@ header {
                                     <option value="Obese">Obese</option>
                                     <option value="Height out of range">Height out of range</option>
                                     <option value="Age out of range">Age out of range</option>
+                                    <option value="N/A">Not Available</option>
                                 </select>
                             </div>
                         </div>
@@ -2826,11 +2887,11 @@ header {
                         <tr>
                             <th>NAME</th>
                             <th>EMAIL</th>
-                            <th>WEIGHT-FOR-AGE</th>
-                            <th>HEIGHT-FOR-AGE</th>
-                            <th>WEIGHT-FOR-HEIGHT</th>
-                            <th>WEIGHT-FOR-LENGTH</th>
-                            <th>BMI-FOR-AGE</th>
+                            <th>WEIGHT-FOR-AGE<br><small>(WHO Z-Score)</small></th>
+                            <th>HEIGHT-FOR-AGE<br><small>(WHO Z-Score)</small></th>
+                            <th>WEIGHT-FOR-HEIGHT<br><small>(WHO Z-Score)</small></th>
+                            <th>WEIGHT-FOR-LENGTH<br><small>(WHO Z-Score)</small></th>
+                            <th>BMI-FOR-AGE<br><small>(WHO Z-Score)</small></th>
                             <th>SCREENING DATE</th>
                         </tr>
                     </thead>
@@ -2859,14 +2920,21 @@ header {
                                         $wfl_classification = $user['weight-for-length'] ?? 'N/A';
                                         $bmi_classification = $user['bmi_category'] ?? 'N/A';
                                         
+                                        // Format z-scores for display
+                                        $wfa_display = is_numeric($wfa_classification) ? 'Z: ' . number_format($wfa_classification, 2) : $wfa_classification;
+                                        $hfa_display = is_numeric($hfa_classification) ? 'Z: ' . number_format($hfa_classification, 2) : $hfa_classification;
+                                        $wfh_display = is_numeric($wfh_classification) ? 'Z: ' . number_format($wfh_classification, 2) : $wfh_classification;
+                                        $wfl_display = is_numeric($wfl_classification) ? 'Z: ' . number_format($wfl_classification, 2) : $wfl_classification;
+                                        $bmi_display = is_numeric($bmi_classification) ? 'Z: ' . number_format($bmi_classification, 2) : $bmi_classification;
+                                        
                                         echo '<tr>';
                                         echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfa_classification)) . '">' . htmlspecialchars($wfa_classification) . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $hfa_classification)) . '">' . htmlspecialchars($hfa_classification) . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfh_classification)) . '">' . htmlspecialchars($wfh_classification) . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfl_classification)) . '">' . htmlspecialchars($wfl_classification) . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $bmi_classification)) . '">' . htmlspecialchars($bmi_classification) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfa_classification)) . '">' . htmlspecialchars($wfa_display) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $hfa_classification)) . '">' . htmlspecialchars($hfa_display) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfh_classification)) . '">' . htmlspecialchars($wfh_display) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfl_classification)) . '">' . htmlspecialchars($wfl_display) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $bmi_classification)) . '">' . htmlspecialchars($bmi_display) . '</td>';
                                         echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                     }
@@ -3243,6 +3311,7 @@ header {
                 let matchesFilter = true;
                 
                 if (classificationFilter) {
+                    // Check if any of the WHO Growth Standards columns contain the filter term
                     matchesFilter = wfa.includes(classificationFilter) || 
                                   hfa.includes(classificationFilter) || 
                                   wfh.includes(classificationFilter) || 

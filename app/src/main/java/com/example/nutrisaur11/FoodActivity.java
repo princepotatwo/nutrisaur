@@ -51,6 +51,10 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     private FoodSubstitutionManager substitutionManager;
     private FoodSubstitutionDialog currentSubstitutionDialog;
     
+    // Food details components
+    private FoodDetailsManager foodDetailsManager;
+    private FoodDetails currentFoodDetails;
+    
     // Nutrition insights views
     private TextView tvBmiStatus, tvCaloriesTarget, tvProteinTarget, tvFatTarget, tvCarbsTarget, tvHealthRecommendation;
     
@@ -103,6 +107,10 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         // Initialize substitution manager
         substitutionManager = new FoodSubstitutionManager(this);
         Log.d(TAG, "Food substitution manager initialized");
+        
+        // Initialize food details manager
+        foodDetailsManager = new FoodDetailsManager(this);
+        Log.d(TAG, "Food details manager initialized");
         
         // Initialize views
         initializeViews();
@@ -495,9 +503,9 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     
     @Override
     public void onFoodClick(FoodRecommendation food) {
-        // Handle food item click - show food details or add to favorites
+        // Handle food item click - show food details
         Log.d(TAG, "Food clicked: " + food.getFoodName());
-        // TODO: Implement food details view or add to favorites functionality
+        showFoodDetails(food);
     }
     
     @Override
@@ -1383,6 +1391,106 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         super.onBackPressed();
     }
 
+    /**
+     * Show detailed food information including nutrients and ingredients
+     */
+    private void showFoodDetails(FoodRecommendation food) {
+        Log.d(TAG, "Loading detailed information for: " + food.getFoodName());
+        
+        // Show loading indicator
+        // You can add a progress dialog here if needed
+        
+        foodDetailsManager.getFoodDetails(food, new FoodDetailsManager.FoodDetailsCallback() {
+            @Override
+            public void onFoodDetailsFound(FoodDetails foodDetails) {
+                runOnUiThread(() -> {
+                    currentFoodDetails = foodDetails;
+                    showFoodDetailsDialog(foodDetails);
+                });
+            }
+            
+            @Override
+            public void onError(String error) {
+                runOnUiThread(() -> {
+                    Log.e(TAG, "Error loading food details: " + error);
+                    // Show error message or fallback details
+                    showFoodDetailsDialog(getFallbackFoodDetails(food));
+                });
+            }
+        });
+    }
+    
+    /**
+     * Show food details dialog
+     */
+    private void showFoodDetailsDialog(FoodDetails foodDetails) {
+        // Create and show a dialog with food details
+        // This would typically be a custom dialog showing:
+        // - Food name and description
+        // - Nutritional information (calories, protein, fat, carbs, vitamins, minerals)
+        // - Ingredients list
+        // - Cooking instructions
+        // - Allergens and dietary tags
+        // - Health benefits
+        // - Storage and reheating instructions
+        
+        Log.d(TAG, "Showing food details for: " + foodDetails.getFoodName());
+        Log.d(TAG, "Calories: " + foodDetails.getCalories() + ", Protein: " + foodDetails.getProtein() + "g");
+        Log.d(TAG, "Ingredients: " + foodDetails.getIngredients().size() + " items");
+        Log.d(TAG, "Allergens: " + foodDetails.getAllergens().size() + " items");
+        
+        // TODO: Implement actual dialog UI
+        // For now, just log the details
+    }
+    
+    /**
+     * Get fallback food details when API fails
+     */
+    private FoodDetails getFallbackFoodDetails(FoodRecommendation food) {
+        FoodDetails fallbackDetails = new FoodDetails();
+        
+        // Set basic information
+        fallbackDetails.setFoodName(food.getFoodName());
+        fallbackDetails.setDescription(food.getDescription());
+        fallbackDetails.setServingSize("1 serving");
+        fallbackDetails.setCookingMethod("Traditional Filipino");
+        fallbackDetails.setCuisine("Filipino");
+        fallbackDetails.setDifficulty("Medium");
+        fallbackDetails.setPrepTime(15);
+        fallbackDetails.setCookTime(30);
+        fallbackDetails.setTotalTime(45);
+        fallbackDetails.setServings(4);
+        
+        // Set basic nutrition
+        fallbackDetails.setCalories(food.getCalories());
+        fallbackDetails.setProtein(food.getProtein());
+        fallbackDetails.setFat(food.getFat());
+        fallbackDetails.setCarbs(food.getCarbs());
+        
+        // Set basic ingredients
+        List<FoodDetails.Ingredient> ingredients = new ArrayList<>();
+        ingredients.add(new FoodDetails.Ingredient("Main protein", "200g", "grams"));
+        ingredients.add(new FoodDetails.Ingredient("Vegetables", "1 cup", "chopped"));
+        ingredients.add(new FoodDetails.Ingredient("Seasonings", "To taste", ""));
+        fallbackDetails.setIngredients(ingredients);
+        
+        // Set basic dietary tags
+        List<String> dietaryTags = new ArrayList<>();
+        dietaryTags.add("Traditional Filipino");
+        fallbackDetails.setDietaryTags(dietaryTags);
+        
+        // Set basic health benefits
+        List<String> healthBenefits = new ArrayList<>();
+        healthBenefits.add("Good source of protein");
+        healthBenefits.add("Contains essential vitamins and minerals");
+        fallbackDetails.setHealthBenefits(healthBenefits);
+        
+        fallbackDetails.setStorageInstructions("Store in refrigerator for up to 3 days");
+        fallbackDetails.setReheatingInstructions("Reheat in microwave or on stovetop until hot");
+        
+        return fallbackDetails;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -1391,6 +1499,9 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         }
         if (substitutionManager != null) {
             substitutionManager.shutdown();
+        }
+        if (foodDetailsManager != null) {
+            foodDetailsManager.shutdown();
         }
         if (currentSubstitutionDialog != null && currentSubstitutionDialog.isShowing()) {
             currentSubstitutionDialog.dismiss();

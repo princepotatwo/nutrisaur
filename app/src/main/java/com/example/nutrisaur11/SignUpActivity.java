@@ -41,7 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
     private Button appleSignUp;
     private TextView loginLink;
 
-    private static final String API_BASE_URL = Constants.UNIFIED_API_URL;
+    private static final String API_BASE_URL = Constants.API_BASE_URL + "api/DatabaseAPI.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +148,7 @@ public class SignUpActivity extends AppCompatActivity {
         
         // Register user with community_users database
         CommunityUserManager userManager = new CommunityUserManager(this);
-        userManager.registerUser(fullName, email, password, "", "", "", "", "", "", "", "", new CommunityUserManager.RegisterCallback() {
+        userManager.registerUser(fullName, email, password, "", "", "", "", "", "", "", new CommunityUserManager.RegisterCallback() {
             @Override
             public void onSuccess(String message) {
                 runOnUiThread(() -> {
@@ -212,13 +212,9 @@ public class SignUpActivity extends AppCompatActivity {
                     okhttp3.OkHttpClient client = new okhttp3.OkHttpClient();
                     
                     org.json.JSONObject json = new org.json.JSONObject();
-                    json.put("action", "save_screening");
                     json.put("email", email);
-                    json.put("username", username);
-                    json.put("screening_data", new org.json.JSONObject().toString());
-                    json.put("risk_score", 0);
-                    json.put("barangay", "Not specified"); // Will be set during screening
-                    json.put("municipality", "Not specified"); // Will be set during screening
+                    json.put("password", password);
+                    json.put("name", username);
                     
                     okhttp3.RequestBody body = okhttp3.RequestBody.create(
                         json.toString(), 
@@ -226,7 +222,7 @@ public class SignUpActivity extends AppCompatActivity {
                     );
                     
                     okhttp3.Request request = new okhttp3.Request.Builder()
-                        .url(Constants.UNIFIED_API_URL + "?type=mobile_signup")
+                        .url(API_BASE_URL + "?action=register_community_user")
                         .post(body)
                         .build();
                     
@@ -274,7 +270,7 @@ public class SignUpActivity extends AppCompatActivity {
                 );
                 
                 okhttp3.Request request = new okhttp3.Request.Builder()
-                    .url(Constants.UNIFIED_API_URL + "?type=mobile_signup")
+                    .url(API_BASE_URL + "?action=register")
                     .post(body)
                     .build();
                 

@@ -750,12 +750,15 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
     private void sendScreeningDataToAPI(JSONObject data) {
         new Thread(() -> {
             try {
-                String url = "https://nutrisaur-production.up.railway.app/community_users_simple_api.php?action=save_screening";
+                String url = "https://nutrisaur-production.up.railway.app/unified_api.php";
                 
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setDoOutput(true);
+                
+                // Add action parameter to data
+                data.put("action", "save_screening");
                 
                 // Send data
                 OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());

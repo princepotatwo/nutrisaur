@@ -2444,6 +2444,61 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
     switch ($action) {
         
         // ========================================
+        // COMMUNITY USER LOGIN API
+        // ========================================
+        case 'login_community_user':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Try to get JSON data first
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                // If JSON parsing fails, try form data
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data provided']);
+                    break;
+                }
+                
+                $email = $data['email'] ?? '';
+                $password = $data['password'] ?? '';
+                
+                if (empty($email) || empty($password)) {
+                    echo json_encode(['success' => false, 'message' => 'Please enter both email and password']);
+                    break;
+                }
+                
+                // Get user from community_users table
+                $result = $db->select('community_users', '*', 'email = ?', [$email]);
+                
+                if (!$result['success'] || empty($result['data'])) {
+                    echo json_encode(['success' => false, 'message' => 'Invalid email or password']);
+                    break;
+                }
+                
+                $user = $result['data'][0];
+                
+                // Verify password
+                if (!password_verify($password, $user['password'])) {
+                    echo json_encode(['success' => false, 'message' => 'Invalid email or password']);
+                    break;
+                }
+                
+                // Return user data (without password)
+                unset($user['password']);
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Login successful',
+                    'user' => $user
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        // ========================================
         // LOGIN API
         // ========================================
         case 'login':
@@ -2481,6 +2536,88 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     ]);
                 } else {
                     echo json_encode($result);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        // ========================================
+        // COMMUNITY USER REGISTRATION API
+        // ========================================
+        case 'register_community_user':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Try to get JSON data first
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                // If JSON parsing fails, try form data
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data provided']);
+                    break;
+                }
+                
+                $email = $data['email'] ?? '';
+                $password = $data['password'] ?? '';
+                $name = $data['name'] ?? $data['username'] ?? '';
+                
+                if (empty($email) || empty($password) || empty($name)) {
+                    echo json_encode(['success' => false, 'message' => 'Please fill in all required fields']);
+                    break;
+                }
+                
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+                    break;
+                }
+                
+                if (strlen($password) < 6) {
+                    echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+                    break;
+                }
+                
+                // Check if user already exists
+                $checkResult = $db->select('community_users', 'email', 'email = ?', [$email]);
+                if ($checkResult['success'] && !empty($checkResult['data'])) {
+                    echo json_encode(['success' => false, 'message' => 'User with this email already exists']);
+                    break;
+                }
+                
+                // Hash password
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                
+                // Insert into community_users table
+                $insertData = [
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => $hashedPassword,
+                    'municipality' => 'Not specified',
+                    'barangay' => 'Not specified',
+                    'sex' => 'Not specified',
+                    'birthday' => '1900-01-01',
+                    'is_pregnant' => 'No',
+                    'weight' => '0',
+                    'height' => '0',
+                    'screening_date' => date('Y-m-d H:i:s')
+                ];
+                
+                $result = $db->insert('community_users', $insertData);
+                
+                if ($result['success']) {
+                    echo json_encode([
+                        'success' => true, 
+                        'message' => 'User registered successfully',
+                        'user' => [
+                            'email' => $email,
+                            'name' => $name
+                        ]
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to register user: ' . $result['message']]);
                 }
             } else {
                 echo json_encode(['success' => false, 'message' => 'Invalid request method']);

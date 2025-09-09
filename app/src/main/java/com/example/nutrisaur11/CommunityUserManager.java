@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class CommunityUserManager {
     private static final String TAG = "CommunityUserManager";
-    private static final String API_BASE_URL = "https://nutrisaur-production.up.railway.app/community_users_simple_api.php";
+    private static final String API_BASE_URL = "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php";
     private static final String PREFS_NAME = "nutrisaur_prefs";
     
     private Context context;
@@ -36,7 +36,7 @@ public class CommunityUserManager {
                 requestData.put("email", email);
                 requestData.put("password", password);
                 
-                String response = makeApiRequest("login", requestData);
+                String response = makeApiRequest("login_community_user", requestData);
                 JSONObject jsonResponse = new JSONObject(response);
                 
                 if (jsonResponse.getBoolean("success")) {

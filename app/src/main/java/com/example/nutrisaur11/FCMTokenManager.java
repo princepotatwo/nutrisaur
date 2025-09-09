@@ -32,8 +32,8 @@ public class FCMTokenManager {
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_BARANGAY = "user_barangay";
     
-    // Server endpoint for FCM token registration - now using community_users table
-    private static final String SERVER_URL = Constants.API_BASE_URL + "community_users_simple_api.php";
+    // Server endpoint for FCM token registration - using correct API
+    private static final String SERVER_URL = Constants.API_BASE_URL + "api/register_fcm_token.php";
     
     // Registration intervals
     private static final long REGISTRATION_INTERVAL = TimeUnit.HOURS.toMillis(24); // 24 hours (daily sync)
@@ -61,7 +61,7 @@ public class FCMTokenManager {
      */
     private boolean tokenExistsOnServer(String token) {
         try {
-            // Use community_users API to check if token exists
+            // Use unified API to check if token exists
             JSONObject requestData = new JSONObject();
             requestData.put("action", "check_fcm_token");
             requestData.put("fcm_token", token);
@@ -308,7 +308,7 @@ public class FCMTokenManager {
         isRegistrationInProgress = true;
         
         try {
-            // Prepare request data for community_users API
+            // Prepare request data for unified API
             JSONObject requestData = new JSONObject();
             requestData.put("action", "register_fcm_token");
             requestData.put("fcm_token", token);

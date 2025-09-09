@@ -76,7 +76,7 @@ public class EventBackgroundService extends Service {
                 android.util.Log.d("EventBackgroundService", "Starting event check with direct HTTP...");
                 
                 // Make direct HTTP request to check for events
-                java.net.URL url = new java.net.URL(Constants.UNIFIED_API_URL + "?endpoint=events");
+                java.net.URL url = new java.net.URL(Constants.API_BASE_URL + "event.php?action=get_events");
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("User-Agent", "NutrisaurApp/1.0 (Android)");
