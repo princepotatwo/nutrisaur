@@ -17,23 +17,36 @@ if ($isLoggedIn) {
     exit;
 }
 
-// Hardcoded database connection
+// Database connection with environment variables
 $dbError = null;
 $pdo = null;
 
 try {
-    // Database configuration - update these values as needed
-    $host = 'localhost';
-    $dbname = 'nutrisaur_db';
-    $username = 'root';
-    $password = '';
+    // Try to get database config from environment variables first, then fallback to defaults
+    $host = $_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? 'localhost';
+    $dbname = $_ENV['DB_NAME'] ?? $_ENV['MYSQL_DATABASE'] ?? 'nutrisaur_db';
+    $username = $_ENV['DB_USER'] ?? $_ENV['MYSQL_USER'] ?? 'root';
+    $password = $_ENV['DB_PASS'] ?? $_ENV['MYSQL_PASSWORD'] ?? '';
+    $port = $_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? '3306';
     
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    // Try different connection methods
+    $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
+    
+    // First try with port
+    try {
+        $pdo = new PDO($dsn, $username, $password);
+    } catch (PDOException $e) {
+        // If that fails, try without port (for socket connections)
+        $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
+        $pdo = new PDO($dsn, $username, $password);
+    }
+    
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $dbError = "Database connection failed: " . $e->getMessage();
     error_log("Home page: Database connection failed - " . $e->getMessage());
+    $pdo = null; // Ensure $pdo is null on failure
 }
 
 $loginError = "";
@@ -48,57 +61,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     if (empty($usernameOrEmail) || empty($password)) {
         $loginError = "Please enter both username/email and password";
     } else {
-        try {
-            // Check if user exists in users table
-            $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE email = ? OR username = ?");
-            $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
-            $user = $stmt->fetch();
+        if ($pdo === null) {
+            $loginError = "Database connection unavailable. Please try again later.";
+        } else {
+            try {
+                // Check if user exists in users table
+                $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE email = ? OR username = ?");
+                $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
+                $user = $stmt->fetch();
             
-            if ($user && password_verify($password, $user['password'])) {
-                if (!$user['email_verified']) {
-                    $loginError = "Please verify your email before logging in";
+                if ($user && password_verify($password, $user['password'])) {
+                    if (!$user['email_verified']) {
+                        $loginError = "Please verify your email before logging in";
+                    } else {
+                        // Set session variables
+                        $_SESSION['user_id'] = $user['user_id'];
+                        $_SESSION['username'] = $user['username'];
+                        $_SESSION['email'] = $user['email'];
+                        $_SESSION['is_admin'] = false;
+                        
+                        // Update last login
+                        $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                        $updateStmt->execute([$user['user_id']]);
+                        
+                        // Redirect to dashboard
+                        header("Location: /dash");
+                        exit;
+                    }
                 } else {
-                    // Set session variables
-                    $_SESSION['user_id'] = $user['user_id'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['email'] = $user['email'];
-                    $_SESSION['is_admin'] = false;
+                    // Check admin table
+                    $adminStmt = $pdo->prepare("SELECT admin_id, username, email, password FROM admins WHERE email = ? OR username = ?");
+                    $adminStmt->execute([$usernameOrEmail, $usernameOrEmail]);
+                    $admin = $adminStmt->fetch();
                     
-                    // Update last login
-                    $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
-                    $updateStmt->execute([$user['user_id']]);
-                    
-                    // Redirect to dashboard
-                    header("Location: /dash");
-                    exit;
+                    if ($admin && password_verify($password, $admin['password'])) {
+                        // Set admin session variables
+                        $_SESSION['admin_id'] = $admin['admin_id'];
+                        $_SESSION['username'] = $admin['username'];
+                        $_SESSION['email'] = $admin['email'];
+                        $_SESSION['is_admin'] = true;
+                        
+                        // Update last login
+                        $updateStmt = $pdo->prepare("UPDATE admins SET last_login = NOW() WHERE admin_id = ?");
+                        $updateStmt->execute([$admin['admin_id']]);
+                        
+                        // Redirect to dashboard
+                        header("Location: /dash");
+                        exit;
+                    } else {
+                        $loginError = "Invalid username/email or password";
+                    }
                 }
-            } else {
-                // Check admin table
-                $adminStmt = $pdo->prepare("SELECT admin_id, username, email, password FROM admins WHERE email = ? OR username = ?");
-                $adminStmt->execute([$usernameOrEmail, $usernameOrEmail]);
-                $admin = $adminStmt->fetch();
-                
-                if ($admin && password_verify($password, $admin['password'])) {
-                    // Set admin session variables
-                    $_SESSION['admin_id'] = $admin['admin_id'];
-                    $_SESSION['username'] = $admin['username'];
-                    $_SESSION['email'] = $admin['email'];
-                    $_SESSION['is_admin'] = true;
-                    
-                    // Update last login
-                    $updateStmt = $pdo->prepare("UPDATE admins SET last_login = NOW() WHERE admin_id = ?");
-                    $updateStmt->execute([$admin['admin_id']]);
-                    
-                    // Redirect to dashboard
-                    header("Location: /dash");
-                    exit;
-                } else {
-                    $loginError = "Invalid username/email or password";
-                }
+            } catch (Exception $e) {
+                $loginError = "Login failed: " . $e->getMessage();
+                error_log("Login error: " . $e->getMessage());
             }
-        } catch (Exception $e) {
-            $loginError = "Login failed: " . $e->getMessage();
-            error_log("Login error: " . $e->getMessage());
         }
     }
 }
@@ -118,44 +135,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     } elseif (strlen($username) < 3) {
         $registrationError = "Username must be at least 3 characters long";
     } else {
-        try {
-            // Check if user already exists
-            $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
-            $stmt->execute([$email, $username]);
-            $existingUser = $stmt->fetch();
+        if ($pdo === null) {
+            $registrationError = "Database connection unavailable. Please try again later.";
+        } else {
+            try {
+                // Check if user already exists
+                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
+                $stmt->execute([$email, $username]);
+                $existingUser = $stmt->fetch();
             
-            if ($existingUser) {
-                $registrationError = "User with this email or username already exists";
-            } else {
-                // Generate verification code
-                $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
-                $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
-                
-                // Hash password
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                
-                // Insert user
-                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, 0, NOW())");
-                $result = $stmt->execute([$username, $email, $hashedPassword, $verificationCode, $expiresAt]);
-                
-                if ($result) {
-                    $userId = $pdo->lastInsertId();
-                    
-                    // Send verification email
-                    $emailSent = sendVerificationEmail($email, $username, $verificationCode);
-                    
-                    if ($emailSent) {
-                        $registrationSuccess = "Registration successful! Please check your email for verification code.";
-                    } else {
-                        $registrationSuccess = "Registration successful! However, email delivery failed. Your verification code is: " . $verificationCode;
-                    }
+                if ($existingUser) {
+                    $registrationError = "User with this email or username already exists";
                 } else {
-                    $registrationError = "Failed to create user account";
+                    // Generate verification code
+                    $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                    $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+                    
+                    // Hash password
+                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                    
+                    // Insert user
+                    $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, 0, NOW())");
+                    $result = $stmt->execute([$username, $email, $hashedPassword, $verificationCode, $expiresAt]);
+                    
+                    if ($result) {
+                        $userId = $pdo->lastInsertId();
+                        
+                        // Send verification email
+                        $emailSent = sendVerificationEmail($email, $username, $verificationCode);
+                        
+                        if ($emailSent) {
+                            $registrationSuccess = "Registration successful! Please check your email for verification code.";
+                        } else {
+                            $registrationSuccess = "Registration successful! However, email delivery failed. Your verification code is: " . $verificationCode;
+                        }
+                    } else {
+                        $registrationError = "Failed to create user account";
+                    }
                 }
+            } catch (Exception $e) {
+                $registrationError = "Registration failed: " . $e->getMessage();
+                error_log("Registration error: " . $e->getMessage());
             }
-        } catch (Exception $e) {
-            $registrationError = "Registration failed: " . $e->getMessage();
-            error_log("Registration error: " . $e->getMessage());
         }
     }
 }
@@ -171,6 +192,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
             if (empty($usernameOrEmail) || empty($password)) {
                 echo json_encode(['success' => false, 'message' => 'Please enter both username/email and password']);
+                exit;
+            }
+            
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
                 exit;
             }
             
@@ -252,6 +278,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 exit;
             }
             
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
             try {
                 // Check if user already exists
                 $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
@@ -323,6 +354,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 exit;
             }
             
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
             try {
                 // Check if verification code is valid and not expired
                 $stmt = $pdo->prepare("SELECT user_id, username FROM users WHERE email = ? AND verification_code = ? AND verification_code_expires > NOW() AND email_verified = 0");
@@ -348,6 +384,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
             if (empty($email)) {
                 echo json_encode(['success' => false, 'message' => 'Please provide email address']);
+                exit;
+            }
+            
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
                 exit;
             }
             
@@ -1113,6 +1154,9 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             <h2 id="auth-title">Login</h2>
             <div id="message" class="message">
                 <?php 
+                    if (!empty($dbError)) {
+                        echo '<div class="error">' . htmlspecialchars($dbError) . '</div>';
+                    }
                     if (!empty($loginError)) {
                         echo '<div class="error">' . htmlspecialchars($loginError) . '</div>';
                     }
