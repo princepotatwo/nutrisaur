@@ -400,10 +400,10 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     }
     
     private void loadFoodDataForAllCategories() {
-        Log.d(TAG, "Starting fast food loading with cache and fallback");
+        Log.d(TAG, "Starting optimized food loading with progressive display");
         
-        // Step 1: Show immediate fallback foods (instant display)
-        showImmediateFallbackFoods();
+        // Step 1: Show loading cards immediately
+        showLoadingCards();
         
         // Step 2: Check cache for recent data
         FoodCache cache = new FoodCache(this);
@@ -413,33 +413,33 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             return;
         }
         
-        // Step 3: Load from API in background while showing fallback
-        Log.d(TAG, "Cache invalid, loading from API in background");
-        loadFromAPIWithFallback();
+        // Step 3: Load from API with progressive updates
+        Log.d(TAG, "Cache invalid, loading from API with progressive updates");
+        loadFromAPIWithProgressiveUpdates();
     }
     
-    private void showImmediateFallbackFoods() {
-        Log.d(TAG, "Showing immediate fallback foods");
-        Map<String, List<FoodRecommendation>> fallbackFoods = FastFallbackFoods.getFastFallbackFoods();
+    private void showLoadingCards() {
+        Log.d(TAG, "Showing loading cards immediately");
         
-        // Update all categories with fallback foods
+        // Clear existing foods
         traditionalFoods.clear();
         healthyFoods.clear();
         internationalFoods.clear();
         budgetFoods.clear();
         
-        traditionalFoods.addAll(fallbackFoods.getOrDefault("traditional", new ArrayList<>()));
-        healthyFoods.addAll(fallbackFoods.getOrDefault("healthy", new ArrayList<>()));
-        internationalFoods.addAll(fallbackFoods.getOrDefault("international", new ArrayList<>()));
-        budgetFoods.addAll(fallbackFoods.getOrDefault("budget", new ArrayList<>()));
-        
-        // Update adapters immediately
+        // Set adapters to loading state
         runOnUiThread(() -> {
+            traditionalAdapter.setLoading(true);
+            healthyAdapter.setLoading(true);
+            internationalAdapter.setLoading(true);
+            budgetAdapter.setLoading(true);
+            
             traditionalAdapter.notifyDataSetChanged();
             healthyAdapter.notifyDataSetChanged();
             internationalAdapter.notifyDataSetChanged();
             budgetAdapter.notifyDataSetChanged();
-            Log.d(TAG, "Fallback foods displayed immediately");
+            
+            Log.d(TAG, "Loading cards displayed immediately");
         });
     }
     
@@ -458,6 +458,12 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             budgetFoods.addAll(cachedFoods.getOrDefault("budget", new ArrayList<>()));
             
             runOnUiThread(() -> {
+                // Turn off loading state
+                traditionalAdapter.setLoading(false);
+                healthyAdapter.setLoading(false);
+                internationalAdapter.setLoading(false);
+                budgetAdapter.setLoading(false);
+                
                 traditionalAdapter.notifyDataSetChanged();
                 healthyAdapter.notifyDataSetChanged();
                 internationalAdapter.notifyDataSetChanged();
@@ -466,15 +472,15 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             });
         } else {
             // Cache failed, load from API
-            loadFromAPIWithFallback();
+            loadFromAPIWithProgressiveUpdates();
         }
     }
     
-    private void loadFromAPIWithFallback() {
+    private void loadFromAPIWithProgressiveUpdates() {
         // Load from API in background
         executorService.execute(() -> {
             try {
-                Log.d(TAG, "Loading from API in background");
+                Log.d(TAG, "Loading from API with progressive updates");
                 
                 // Use API integration for malnutrition recovery foods
                 FoodActivityIntegration.loadMalnutritionRecoveryFoods(
@@ -484,6 +490,20 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
                     traditionalFoods, healthyFoods, internationalFoods, budgetFoods,
                     traditionalAdapter, healthyAdapter, internationalAdapter, budgetAdapter
                 );
+                
+                // Turn off loading state after API completes
+                runOnUiThread(() -> {
+                    traditionalAdapter.setLoading(false);
+                    healthyAdapter.setLoading(false);
+                    internationalAdapter.setLoading(false);
+                    budgetAdapter.setLoading(false);
+                    
+                    traditionalAdapter.notifyDataSetChanged();
+                    healthyAdapter.notifyDataSetChanged();
+                    internationalAdapter.notifyDataSetChanged();
+                    budgetAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "API foods loaded, loading state turned off");
+                });
                 
                 // Cache the results for next time
                 Map<String, List<FoodRecommendation>> apiFoods = new HashMap<>();
@@ -498,7 +518,18 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
                 
             } catch (Exception e) {
                 Log.e(TAG, "Error loading from API: " + e.getMessage());
-                // Keep showing fallback foods
+                // Turn off loading state even on error
+                runOnUiThread(() -> {
+                    traditionalAdapter.setLoading(false);
+                    healthyAdapter.setLoading(false);
+                    internationalAdapter.setLoading(false);
+                    budgetAdapter.setLoading(false);
+                    
+                    traditionalAdapter.notifyDataSetChanged();
+                    healthyAdapter.notifyDataSetChanged();
+                    internationalAdapter.notifyDataSetChanged();
+                    budgetAdapter.notifyDataSetChanged();
+                });
             }
         });
     }
@@ -1031,20 +1062,11 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     }
     
     private String buildMasterPrompt() {
-        return "Generate 10 Filipino/Asian/International food dishes for nutritional needs.\n\n" +
-               "User: " + (userAge != null ? userAge : "25") + "yo, " + (userSex != null ? userSex : "M") + 
-               ", BMI " + (userBMI != null ? userBMI : "22.5") + 
-               ", Health: " + (userHealthConditions != null ? userHealthConditions : "None") + 
+        return "10 Filipino/Asian/International dishes. User: " + (userAge != null ? userAge : "25") + 
+               "yo, BMI " + (userBMI != null ? userBMI : "22.5") + 
                ", Budget: " + (userBudgetLevel != null ? userBudgetLevel : "Low") + "\n\n" +
                
-               "Requirements:\n" +
-               "- Complete dish names only\n" +
-               "- Calories: 150-800, Protein: 5-40g, Fat: 2-30g, Carbs: 10-100g\n" +
-               "- Mix Filipino, Asian, international dishes\n" +
-               "- Each dish different\n\n" +
-               
-               "Return JSON array:\n" +
-               "[{\"food_name\": \"[DISH]\", \"calories\": <num>, \"protein_g\": <num>, \"fat_g\": <num>, \"carbs_g\": <num>, \"serving_size\": \"1 serving\", \"diet_type\": \"[TYPE]\", \"description\": \"[SHORT DESC]\"}, ...]";
+               "JSON: [{\"food_name\": \"[DISH]\", \"calories\": <num>, \"protein_g\": <num>, \"fat_g\": <num>, \"carbs_g\": <num>, \"serving_size\": \"1 serving\", \"diet_type\": \"[TYPE]\", \"description\": \"[SHORT]\"}, ...]";
     }
     
     private List<FoodRecommendation> verifyFoodRecommendations(List<FoodRecommendation> recommendations) {

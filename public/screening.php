@@ -3037,8 +3037,8 @@ header {
                             <div class="search-section">
                                 <div class="search-container">
                                     <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
-                                    <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
-                                </div>
+                                <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
+                            </div>
                             </div>
                             
                             <!-- Filters Grid -->
@@ -3060,7 +3060,7 @@ header {
                                         <option value="ORION">ORION</option>
                                         <option value="PILAR">PILAR</option>
                                         <option value="SAMAL">SAMAL</option>
-                                    </select>
+                                </select>
                                 </div>
                                 
                                 <!-- Barangay Filter -->
@@ -3170,6 +3170,7 @@ header {
                             <th>HEIGHT (cm)</th>
                             <th>BMI</th>
                             <th id="standardHeader">WEIGHT-FOR-AGE</th>
+                            <th>CLASSIFICATION</th>
                             <th>ACTIONS</th>
                         </tr>
                     </thead>
@@ -3220,12 +3221,12 @@ header {
                                             $wfl_classification = $results['weight_for_length']['classification'] ?? 'N/A';
                                             $bmi_classification = $results['bmi_for_age']['classification'] ?? 'N/A';
                                             
-                                            // Format z-scores for display
-                                            $wfa_display = $wfa_zscore !== null ? 'Z: ' . number_format($wfa_zscore, 2) . '<br>' . $wfa_classification : 'N/A';
-                                            $hfa_display = $hfa_zscore !== null ? 'Z: ' . number_format($hfa_zscore, 2) . '<br>' . $hfa_classification : 'N/A';
-                                            $wfh_display = $wfh_zscore !== null ? 'Z: ' . number_format($wfh_zscore, 2) . '<br>' . $wfh_classification : 'N/A';
-                                            $wfl_display = $wfl_zscore !== null ? 'Z: ' . number_format($wfl_zscore, 2) . '<br>' . $wfl_classification : 'N/A';
-                                            $bmi_display = $bmi_zscore !== null ? 'Z: ' . number_format($bmi_zscore, 2) . '<br>' . $bmi_classification : 'N/A';
+                                            // Format z-scores for display (only Z-score, no classification)
+                                            $wfa_display = $wfa_zscore !== null ? 'Z: ' . number_format($wfa_zscore, 2) : 'N/A';
+                                            $hfa_display = $hfa_zscore !== null ? 'Z: ' . number_format($hfa_zscore, 2) : 'N/A';
+                                            $wfh_display = $wfh_zscore !== null ? 'Z: ' . number_format($wfh_zscore, 2) : 'N/A';
+                                            $wfl_display = $wfl_zscore !== null ? 'Z: ' . number_format($wfl_zscore, 2) : 'N/A';
+                                            $bmi_display = $bmi_zscore !== null ? 'Z: ' . number_format($bmi_zscore, 2) : 'N/A';
                                         } else {
                                             // If WHO calculation fails, show N/A
                                             $wfa_display = 'N/A';
@@ -3261,8 +3262,8 @@ header {
                                         if ($showWeightForAge) {
                                             $data = $whoData['weight-for-age'];
                                             echo '<tr data-standard="weight-for-age" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
-                                            echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                            echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                             echo '<td>' . $ageDisplay . '</td>';
                                             echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                             echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
@@ -3273,7 +3274,7 @@ header {
                                             echo '<button class="btn-edit" onclick="editUser(\'' . htmlspecialchars($user['email']) . '\')" title="Edit User">✏️</button>';
                                             echo '<button class="btn-delete" onclick="deleteUser(\'' . htmlspecialchars($user['email']) . '\')" title="Delete User">🗑️</button>';
                                             echo '</td>';
-                                            echo '</tr>';
+                                        echo '</tr>';
                                         }
                                         
                                         // Generate hidden rows for all other standards (for filtering)
