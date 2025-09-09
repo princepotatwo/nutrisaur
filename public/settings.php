@@ -2008,37 +2008,37 @@ header {
         /* Professional column distribution */
         .user-table th:nth-child(1),
         .user-table td:nth-child(1) {
-            width: 15%; /* NAME */
+            width: 14%; /* NAME */
         }
         
         .user-table th:nth-child(2),
         .user-table td:nth-child(2) {
-            width: 20%; /* EMAIL */
+            width: 18%; /* EMAIL */
         }
         
         .user-table th:nth-child(3),
         .user-table td:nth-child(3) {
-            width: 18%; /* MUNICIPALITY */
+            width: 16%; /* MUNICIPALITY */
         }
         
         .user-table th:nth-child(4),
         .user-table td:nth-child(4) {
-            width: 15%; /* BARANGAY */
+            width: 14%; /* BARANGAY */
         }
         
         .user-table th:nth-child(5),
         .user-table td:nth-child(5) {
-            width: 8%; /* SEX */
+            width: 7%; /* SEX */
         }
         
         .user-table th:nth-child(6),
         .user-table td:nth-child(6) {
-            width: 12%; /* BIRTHDAY */
+            width: 11%; /* BIRTHDAY */
         }
         
         .user-table th:nth-child(7),
         .user-table td:nth-child(7) {
-            width: 12%; /* ACTIONS */
+            width: 20%; /* ACTIONS - Increased for better button fit */
         }
 
         .user-table thead { 
@@ -2167,7 +2167,7 @@ header {
             overflow: visible;
             text-overflow: clip;
             text-align: center;
-            padding: 8px 4px;
+            padding: 10px 8px;
         }
 
 
@@ -2190,10 +2190,10 @@ header {
             
             .action-buttons .btn-edit,
             .action-buttons .btn-delete {
-                padding: 5px 8px;
-                font-size: 11px;
-                min-width: 45px;
-                height: 28px;
+                padding: 6px 10px;
+                font-size: 12px;
+                min-width: 55px;
+                height: 32px;
             }
         }
 
@@ -2205,16 +2205,16 @@ header {
             }
             
             .action-buttons {
-                gap: 4px;
+                gap: 6px;
                 flex-direction: column;
             }
             
             .action-buttons .btn-edit,
             .action-buttons .btn-delete {
-                padding: 4px 6px;
-                font-size: 10px;
-                min-width: 40px;
-                height: 24px;
+                padding: 6px 8px;
+                font-size: 11px;
+                min-width: 50px;
+                height: 28px;
             }
         }
 
@@ -2225,28 +2225,28 @@ header {
         /* Action buttons styling */
         .action-buttons {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             justify-content: center;
             align-items: center;
-            padding: 4px;
+            padding: 6px;
             flex-wrap: nowrap;
         }
 
         .action-buttons .btn-edit,
         .action-buttons .btn-delete {
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
-            min-width: 50px;
-            height: 32px;
+            min-width: 60px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
             white-space: nowrap;
         }
 
