@@ -4,6 +4,69 @@ require_once __DIR__ . "/api/DatabaseAPI.php";
 require_once __DIR__ . "/../who_growth_standards.php";
 $db = DatabaseAPI::getInstance();
 
+// Helper function to calculate age
+function calculateAge($birthday) {
+    $birthDate = new DateTime($birthday);
+    $today = new DateTime();
+    $age = $today->diff($birthDate);
+    return $age->y + ($age->m / 12) + ($age->d / 365);
+}
+
+// Helper function to get nutritional assessment using WHO Growth Standards
+function getNutritionalAssessment($user) {
+    try {
+        $who = new WHOGrowthStandards();
+        
+        // Calculate age in months for WHO standards
+        $birthDate = new DateTime($user['birthday']);
+        $today = new DateTime();
+        $age = $today->diff($birthDate);
+        $ageInMonths = ($age->y * 12) + $age->m;
+        
+        // Get comprehensive WHO Growth Standards assessment
+        $assessment = $who->getComprehensiveAssessment(
+            floatval($user['weight']), 
+            floatval($user['height']), 
+            $user['birthday'], 
+            $user['sex']
+        );
+        
+        if ($assessment['success']) {
+            // Convert WHO Growth Standards format to expected format
+            return [
+                'nutritional_status' => $assessment['nutritional_status'] ?? 'Normal',
+                'risk_level' => $assessment['nutritional_risk'] ?? 'Low',
+                'category' => $assessment['category'] ?? 'Normal',
+                'bmi' => $assessment['bmi'] ?? 0,
+                'age' => $ageInMonths / 12, // Convert to years
+                'weight' => floatval($user['weight']),
+                'height' => floatval($user['height'])
+            ];
+        } else {
+            return [
+                'nutritional_status' => 'Assessment Error',
+                'risk_level' => 'Unknown',
+                'category' => 'Error',
+                'bmi' => 0,
+                'age' => $ageInMonths / 12,
+                'weight' => floatval($user['weight']),
+                'height' => floatval($user['height'])
+            ];
+        }
+    } catch (Exception $e) {
+        error_log("WHO Growth Standards error: " . $e->getMessage());
+        return [
+            'nutritional_status' => 'Assessment Error',
+            'risk_level' => 'Unknown',
+            'category' => 'Error',
+            'bmi' => 0,
+            'age' => 0,
+            'weight' => floatval($user['weight']),
+            'height' => floatval($user['height'])
+        ];
+    }
+}
+
 // Check if user is logged in using centralized method
 if (!$db->isUserLoggedIn()) {
     // Simple debug to see what's in the session
@@ -127,8 +190,8 @@ function getTimeFrameData($pdo, $timeFrame, $barangay = null) {
         $barangaysCovered = [];
         
         foreach ($users as $user) {
-            // Perform nutritional assessment
-            $assessment = performNutritionalAssessment($user);
+            // Perform nutritional assessment using WHO Growth Standards
+            $assessment = getNutritionalAssessment($user);
             
             // Count high risk cases (High or Very High risk level)
             if (in_array($assessment['risk_level'], ['High', 'Very High'])) {
@@ -267,7 +330,7 @@ function getScreeningResponsesByTimeFrame($pdo, $timeFrame, $barangay = null) {
         ];
         
         foreach ($users as $user) {
-            $assessment = performNutritionalAssessment($user);
+            $assessment = getNutritionalAssessment($user);
             $age = calculateAge($user['birthday']);
             
             // Age groups
