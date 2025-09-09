@@ -11,10 +11,10 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 // Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
 require_once __DIR__ . '/api/DatabaseHelper.php';
 
-// Use the comprehensive nutritional assessment API
-require_once __DIR__ . '/api/nutritional_assessment_api.php';
+// Use the comprehensive nutritional assessment library
+require_once __DIR__ . '/api/nutritional_assessment_library.php';
 
-// Wrapper function to use the API assessment logic
+// Wrapper function to use the library assessment logic
 function getNutritionalAssessment($user) {
     return performNutritionalAssessment($user);
 }

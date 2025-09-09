@@ -1,221 +1,11 @@
 <?php
-// Only set headers if this is being called as an API endpoint
-if (isset($_GET['action']) || isset($_POST['action'])) {
-    header('Content-Type: application/json');
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization');
-
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        exit(0);
-    }
-}
+/**
+ * Nutritional Assessment Library
+ * Pure library functions for nutritional assessment calculations
+ * No API endpoints, just functions
+ */
 
 require_once __DIR__ . "/../../config.php";
-require_once __DIR__ . "/DatabaseAPI.php";
-
-// Only run API logic if this is being called as an API endpoint
-if (isset($_GET['action']) || isset($_POST['action'])) {
-    $response = ['success' => false, 'message' => ''];
-
-    try {
-        $pdo = getDatabaseConnection();
-        if (!$pdo) {
-            throw new Exception("Database connection failed.");
-        }
-
-        $api = new DatabaseAPI($pdo);
-        
-        // Get action from request
-        $action = $_GET['action'] ?? $_POST['action'] ?? '';
-        
-        switch ($action) {
-            case 'assess_user':
-                $email = $_POST['email'] ?? '';
-                if (empty($email)) {
-                    throw new Exception("Email is required for assessment");
-                }
-                
-                $result = assessUserNutritionalStatus($api, $email);
-                $response = $result;
-                break;
-                
-            case 'assess_all_users':
-                $result = assessAllUsersNutritionalStatus($api);
-                $response = $result;
-                break;
-                
-            case 'get_assessment_stats':
-                $result = getAssessmentStatistics($api);
-                $response = $result;
-                break;
-                
-            default:
-                throw new Exception("Invalid action. Use: assess_user, assess_all_users, or get_assessment_stats");
-        }
-
-    } catch (Exception $e) {
-        $response['success'] = false;
-        $response['message'] = $e->getMessage();
-    }
-
-    echo json_encode($response, JSON_PRETTY_PRINT);
-}
-
-/**
- * Assess nutritional status for a single user
- */
-function assessUserNutritionalStatus($api, $email) {
-    // Get user data
-    $userData = $api->select('community_users', '*', 'email = ?', [$email]);
-    
-    if (!$userData['success'] || empty($userData['data'])) {
-        return [
-            'success' => false,
-            'message' => 'User not found'
-        ];
-    }
-    
-    $user = $userData['data'][0];
-    $assessment = performNutritionalAssessment($user);
-    
-    return [
-        'success' => true,
-        'data' => [
-            'user_info' => [
-                'name' => $user['name'],
-                'email' => $user['email'],
-                'age' => calculateAge($user['birthday']),
-                'sex' => $user['sex'],
-                'is_pregnant' => $user['is_pregnant']
-            ],
-            'measurements' => [
-                'weight_kg' => $user['weight'],
-                'height_cm' => $user['height'],
-                'arm_circumference_cm' => $user['muac']
-            ],
-            'assessment_result' => $assessment
-        ]
-    ];
-}
-
-/**
- * Assess nutritional status for all users
- */
-function assessAllUsersNutritionalStatus($api) {
-    $allUsers = $api->select('community_users', '*', '', [], 'screening_date DESC');
-    
-    if (!$allUsers['success']) {
-        return [
-            'success' => false,
-            'message' => 'Failed to fetch users'
-        ];
-    }
-    
-    $assessments = [];
-    foreach ($allUsers['data'] as $user) {
-        $assessment = performNutritionalAssessment($user);
-        $assessments[] = [
-            'user_info' => [
-                'name' => $user['name'],
-                'email' => $user['email'],
-                'age' => calculateAge($user['birthday']),
-                'sex' => $user['sex'],
-                'is_pregnant' => $user['is_pregnant']
-            ],
-            'measurements' => [
-                'weight_kg' => $user['weight'],
-                'height_cm' => $user['height'],
-                'arm_circumference_cm' => $user['muac']
-            ],
-            'assessment_result' => $assessment
-        ];
-    }
-    
-    return [
-        'success' => true,
-        'data' => $assessments,
-        'total_assessed' => count($assessments)
-    ];
-}
-
-/**
- * Get assessment statistics
- */
-function getAssessmentStatistics($api) {
-    $allUsers = $api->select('community_users', '*', '', [], 'screening_date DESC');
-    
-    if (!$allUsers['success']) {
-        return [
-            'success' => false,
-            'message' => 'Failed to fetch users'
-        ];
-    }
-    
-    $stats = [
-        'total_users' => 0,
-        'normal' => 0,
-        'underweight' => 0,
-        'overweight' => 0,
-        'obesity' => 0,
-        'severe_malnutrition' => 0,
-        'moderate_malnutrition' => 0,
-        'stunting' => 0,
-        'maternal_undernutrition' => 0,
-        'children' => 0,
-        'pregnant_women' => 0,
-        'adults' => 0
-    ];
-    
-    foreach ($allUsers['data'] as $user) {
-        $stats['total_users']++;
-        $assessment = performNutritionalAssessment($user);
-        $age = calculateAge($user['birthday']);
-        
-        // Count by age group
-        if ($age < 18) {
-            $stats['children']++;
-        } elseif ($user['is_pregnant'] === 'Yes') {
-            $stats['pregnant_women']++;
-        } else {
-            $stats['adults']++;
-        }
-        
-        // Count by nutritional status
-        $status = $assessment['nutritional_status'];
-        switch ($status) {
-            case 'Normal':
-                $stats['normal']++;
-                break;
-            case 'Underweight':
-                $stats['underweight']++;
-                break;
-            case 'Overweight':
-                $stats['overweight']++;
-                break;
-            case 'Obesity':
-                $stats['obesity']++;
-                break;
-            case 'Severe Acute Malnutrition (SAM)':
-                $stats['severe_malnutrition']++;
-                break;
-            case 'Moderate Acute Malnutrition (MAM)':
-                $stats['moderate_malnutrition']++;
-                break;
-            case 'Stunting (Chronic Malnutrition)':
-                $stats['stunting']++;
-                break;
-            case 'Maternal Undernutrition (At-risk)':
-                $stats['maternal_undernutrition']++;
-                break;
-        }
-    }
-    
-    return [
-        'success' => true,
-        'data' => $stats
-    ];
-}
 
 /**
  * Main nutritional assessment decision tree
@@ -305,6 +95,22 @@ function validateAssessmentData($age, $weight, $height, $muac, $sex, $isPregnant
         'valid' => empty($errors),
         'error' => implode(', ', $errors)
     ];
+}
+
+/**
+ * Helper Functions
+ */
+function calculateAge($birthday) {
+    $birthDate = new DateTime($birthday);
+    $today = new DateTime();
+    $age = $today->diff($birthDate);
+    return $age->y + ($age->m / 12); // Return age in years with decimal for months
+}
+
+function calculateBMI($weight, $height) {
+    if ($height <= 0) return 0;
+    $heightInMeters = $height / 100;
+    return round($weight / ($heightInMeters * $heightInMeters), 1);
 }
 
 /**
@@ -674,22 +480,6 @@ function assessAdultElderly($weight, $height, $muac) {
             'bmi' => $bmi
         ];
     }
-}
-
-/**
- * Helper Functions
- */
-function calculateAge($birthday) {
-    $birthDate = new DateTime($birthday);
-    $today = new DateTime();
-    $age = $today->diff($birthDate);
-    return $age->y + ($age->m / 12); // Return age in years with decimal for months
-}
-
-function calculateBMI($weight, $height) {
-    if ($height <= 0) return 0;
-    $heightInMeters = $height / 100;
-    return round($weight / ($heightInMeters * $heightInMeters), 1);
 }
 
 /**
