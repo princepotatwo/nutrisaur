@@ -15,6 +15,7 @@ require_once __DIR__ . '/api/DatabaseHelper.php';
 require_once __DIR__ . '/../who_growth_standards.php';
 
 // Function to get adult BMI classification (for children over 71 months)
+// This is only used as fallback for children over 71 months when WHO standards don't apply
 function getAdultBMIClassification($bmi) {
     if ($bmi < 18.5) return 'Underweight';
     if ($bmi < 25) return 'Normal weight';
@@ -3469,11 +3470,11 @@ header {
             });
         }
 
+        // BMI calculations are now handled by WHO Growth Standards PHP backend
+        // This function is kept for compatibility but should not be used
         function getBMICategory(bmi) {
-            if (bmi < 18.5) return 'Underweight';
-            if (bmi < 25) return 'Normal';
-            if (bmi < 30) return 'Overweight';
-            return 'Obese';
+            // All BMI calculations are now done by who_growth_standards.php
+            return 'N/A';
         }
 
         function getRiskLevel(score) {
