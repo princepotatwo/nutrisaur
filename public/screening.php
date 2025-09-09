@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
     exit;
 }
 
-// Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
+// Use centralized DatabaseAPI
 require_once __DIR__ . '/api/DatabaseHelper.php';
 
 // Use the comprehensive nutritional assessment library
@@ -2777,8 +2777,8 @@ header {
                                         echo '</tr>';
                                     }
                                 } else {
-                                    // Let JavaScript handle empty database with sample data
-                                    echo '<!-- No users in database - JavaScript will show sample data -->';
+                                    // No users in database
+                                    echo '<!-- No users in database -->';
                                 }
                             } catch (Exception $e) {
                                 echo '<tr><td colspan="6" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
@@ -2851,7 +2851,6 @@ header {
 
         // Initialize screening page
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing screening page...');
             initializeTableFunctionality();
         });
 
@@ -3082,7 +3081,6 @@ header {
 
         // Enhanced MHO Assessment Table JavaScript
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing MHO assessment table...');
             initializeTableFunctionality();
         });
 
@@ -3210,27 +3208,20 @@ header {
         }
 
         function getAssessmentData(id) {
-            // Mock data - in real implementation, this would fetch from database
-            return {
-                id: id,
-                name: 'Sample User',
-                age: '25',
-                sex: 'Female',
-                municipality: 'Balanga',
-                barangay: 'Bagumbayan',
-                height: '160',
-                weight: '55',
-                bmi: '21.5',
-                risk_level: 'Low Risk',
-                created_at: '2024-01-15',
-                meal_assessment: 'Balanced',
-                lifestyle: 'Active',
-                family_history: ['None'],
-                immunization_status: 'Complete',
-                risk_factors: ['None'],
-                recommendation: 'Maintain current healthy lifestyle',
-                intervention: 'Regular monitoring'
-            };
+            // Fetch assessment data from database via API
+            return fetch(`/api/nutritional_assessment_api.php?action=get_assessment&id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        return data.data;
+                    } else {
+                        throw new Error(data.message || 'Failed to fetch assessment data');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching assessment data:', error);
+                    throw error;
+                });
         }
 
         function showAssessmentModal(assessment) {
