@@ -67,7 +67,7 @@ public class CommunityUserManager {
      */
     public void registerUser(String name, String email, String password, String municipality, 
                            String barangay, String sex, String birthday, String isPregnant, 
-                           String weight, String height, String muac, RegisterCallback callback) {
+                           String weight, String height, RegisterCallback callback) {
         new Thread(() -> {
             try {
                 JSONObject requestData = new JSONObject();
@@ -81,7 +81,6 @@ public class CommunityUserManager {
                 requestData.put("is_pregnant", isPregnant);
                 requestData.put("weight", weight);
                 requestData.put("height", height);
-                requestData.put("muac", muac);
                 
                 String response = makeApiRequest("save_screening", requestData);
                 JSONObject jsonResponse = new JSONObject(response);
@@ -125,7 +124,6 @@ public class CommunityUserManager {
             userData.put("is_pregnant", prefs.getString("user_is_pregnant", ""));
             userData.put("weight", prefs.getString("user_weight", ""));
             userData.put("height", prefs.getString("user_height", ""));
-            userData.put("muac", prefs.getString("user_muac", ""));
             userData.put("screening_date", prefs.getString("user_screening_date", ""));
         }
         
@@ -162,7 +160,6 @@ public class CommunityUserManager {
             .remove("user_is_pregnant")
             .remove("user_weight")
             .remove("user_height")
-            .remove("user_muac")
             .remove("user_screening_date")
             .apply();
     }
@@ -181,7 +178,6 @@ public class CommunityUserManager {
             editor.putString("user_is_pregnant", user.optString("is_pregnant", ""));
             editor.putString("user_weight", user.optString("weight", ""));
             editor.putString("user_height", user.optString("height", ""));
-            editor.putString("user_muac", user.optString("muac", ""));
             editor.putString("user_screening_date", user.optString("screening_date", ""));
             editor.apply();
         } catch (Exception e) {

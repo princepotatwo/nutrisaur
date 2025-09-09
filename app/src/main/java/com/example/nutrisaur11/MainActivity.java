@@ -54,10 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private EventAdapter dashboardEventAdapter;
     private List<Event> dashboardEvents = new ArrayList<>();
     
-    // Add timer for periodic event checking
-    private android.os.Handler eventCheckHandler;
-    private Runnable eventCheckRunnable;
-    private static final long EVENT_CHECK_INTERVAL = 3 * 1000; // 3 seconds (real-time event detection)
+    // Event checking with smart updates
+    private long lastEventCheckTime = 0;
+    private static final long MIN_EVENT_CHECK_INTERVAL = 30 * 1000; // 30 seconds minimum between checks
+    private Set<Integer> lastKnownEventIds = new HashSet<>();
     
     // Broadcast receiver for real-time event updates
     private BroadcastReceiver eventRefreshReceiver;
@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
             
             // Setup UI components
             setupNavigation();
-            setupMalnutritionAnalysis();
             // Initialize RecyclerView for events
             eventsRecyclerView = findViewById(R.id.events_recycler_view);
             
@@ -138,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
             });
             eventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             eventsRecyclerView.setAdapter(dashboardEventAdapter);
-            // Update risk circle in background to avoid blocking UI
-            new android.os.Handler().post(() -> updateMalnutritionRiskCircle());
             
             // Initialize FCM with user context if available
             initializeFirebaseMessaging();
@@ -159,25 +156,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the malnutrition risk circle when returning to the app
-        updateMalnutritionRiskCircle();
-        
-        // Only refresh dashboard events, don't check for new events on every resume
-        fetchAndDisplayDashboardEvents(); // Refresh dashboard immediately
-        
-        // Start periodic checking only when dashboard is visible
+        // Smart event checking - only check if enough time has passed
         if (isLoggedIn) {
-            startPeriodicEventChecking();
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastEventCheckTime > MIN_EVENT_CHECK_INTERVAL) {
+                checkForNewEvents();
+            } else {
+                // Just refresh the display with existing data
+                fetchAndDisplayDashboardEvents();
+            }
         }
     }
     
     @Override
     protected void onPause() {
         super.onPause();
-        // Stop periodic checking when app goes to background
-        // This optimizes battery usage since we have Firebase notifications for real-time updates
-        stopPeriodicEventChecking();
-        
         // Stop the background service to save resources
         Intent eventServiceIntent = new Intent(this, EventBackgroundService.class);
         stopService(eventServiceIntent);
@@ -196,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // Clean up resources when activity is destroyed
-        stopPeriodicEventChecking();
         
         // Close database helper
         if (dbHelper != null) {
@@ -323,8 +315,6 @@ public class MainActivity extends AppCompatActivity {
                 setContentView(R.layout.activity_dashboard);
                 // Remove highlight nav_home setSelected calls (handled by icon tint in XML)
                 setupNavigation();
-                setupMalnutritionAnalysis();
-                updateMalnutritionRiskCircle();
                 
                 android.widget.Toast.makeText(MainActivity.this, 
                     "Welcome to Nutrisaur!", android.widget.Toast.LENGTH_SHORT).show();
@@ -469,20 +459,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupMalnutritionAnalysis() {
-        // Setup camera button
-        TextView cameraButton = findViewById(R.id.camera_button);
-        if (cameraButton != null) {
-            cameraButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showImageSourceDialog();
-                }
-            });
-        }
-        
-
-    }
     
     private void setupEvents() {
         // Setup "See More" button for events
@@ -649,6 +625,9 @@ public class MainActivity extends AppCompatActivity {
                 existingEventIds.add(existingEvent.getProgramId());
             }
             
+            // Update last known event IDs for new event detection
+            Set<Integer> currentEventIds = new HashSet<>();
+            
             for (int i = 0; i < eventsArray.length(); i++) {
                 try {
                     org.json.JSONObject eventObj = eventsArray.getJSONObject(i);
@@ -662,6 +641,9 @@ public class MainActivity extends AppCompatActivity {
                         eventObj.getString("organizer"),
                         eventObj.getLong("created_at")
                     );
+                    
+                    // Track event ID for new event detection
+                    currentEventIds.add(event.getProgramId());
                     
                     android.util.Log.d("MainActivity", "Processing event: " + event.getTitle() + " at " + event.getDateTime());
                     
@@ -740,6 +722,9 @@ public class MainActivity extends AppCompatActivity {
                         noEventsMessage.setVisibility(View.GONE);
                     }
                 }
+                
+                // Update last known event IDs for new event detection
+                lastKnownEventIds = currentEventIds;
                 
                 // Log for debugging
                 android.util.Log.d("MainActivity", "Dashboard events refreshed. Count: " + displayEvents.size());
@@ -1033,33 +1018,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void updateMalnutritionRiskCircle() {
-        // Use async method to avoid NetworkOnMainThreadException
-        // ScreeningResultStore.getRiskScoreAsync(this, new ScreeningResultStore.OnRiskScoreReceivedListener() {
-        //     @Override
-        //     public void onRiskScoreReceived(int percent) {
-        int percent = 25; // Default risk score
-                int color;
-                String riskLabel;
-                if (percent <= 30) {
-                    color = android.graphics.Color.parseColor("#4CAF50"); // Green
-                    riskLabel = "No Risk (" + percent + "% )";
-                } else if (percent <= 65) {
-                    color = android.graphics.Color.parseColor("#FFE066"); // Yellow
-                    riskLabel = "At Risk (" + percent + "% )";
-                } else {
-                    color = android.graphics.Color.parseColor("#FF6F61"); // Red
-                    riskLabel = "High Risk (" + percent + "% )";
-                }
-                com.example.nutrisaur11.AnimatedRingView ring = findViewById(R.id.animated_ring_view);
-                if (ring != null) {
-                    ring.setProgress(percent / 100f);
-                    ring.setRingColor(color);
-                    ring.setLabel(riskLabel);
-                }
-        //     }
-        // });
-    }
 
 
 
@@ -1279,33 +1237,121 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void startPeriodicEventChecking() {
-        // TEMPORARILY DISABLED: This was causing unwanted API calls every 3 seconds
-        Log.d("MainActivity", "Periodic event checking temporarily disabled to prevent unwanted API calls");
-        
-        /*
-        // Stop any existing timer
-        stopPeriodicEventChecking();
-        
-        // Only start the background service if we're logged in and the dashboard is visible
-        if (isLoggedIn && !isFinishing()) {
-            // Start new timer for periodic checking
-            eventCheckHandler.postDelayed(eventCheckRunnable, EVENT_CHECK_INTERVAL);
-            
-            // Start the background service for real-time event detection in foreground mode
-            Intent eventServiceIntent = new Intent(this, EventBackgroundService.class);
-            eventServiceIntent.putExtra("foreground", true);
-            startService(eventServiceIntent);
-            
-            Log.d("MainActivity", "Started periodic event checking and background service in foreground mode");
+    /**
+     * Check for new events efficiently - only when needed
+     */
+    private void checkForNewEvents() {
+        String userEmail = getCurrentUserEmail();
+        if (userEmail == null) {
+            android.util.Log.e("MainActivity", "User email is null, cannot check for new events");
+            return;
         }
-        */
-    }
-    
-    private void stopPeriodicEventChecking() {
-        if (eventCheckHandler != null && eventCheckRunnable != null) {
-            eventCheckHandler.removeCallbacks(eventCheckRunnable);
-        }
+        
+        android.util.Log.d("MainActivity", "Checking for new events for user: " + userEmail);
+        lastEventCheckTime = System.currentTimeMillis();
+        
+        // Use direct HTTP request to fetch events
+        new Thread(() -> {
+            try {
+                // Fetch all events first
+                java.net.URL url = new java.net.URL(Constants.UNIFIED_API_URL + "?endpoint=events");
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("User-Agent", "NutrisaurApp/1.0 (Android)");
+                conn.setRequestProperty("Accept", "text/plain, application/json");
+                conn.setConnectTimeout(15000);
+                conn.setReadTimeout(15000);
+                
+                int responseCode = conn.getResponseCode();
+                android.util.Log.d("MainActivity", "Events API response code: " + responseCode);
+                
+                if (responseCode == 200) {
+                    java.io.BufferedReader reader = new java.io.BufferedReader(
+                        new java.io.InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+                    
+                    android.util.Log.d("MainActivity", "Events API response: " + response.toString());
+                    
+                    org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
+                    if (jsonResponse.has("events")) {
+                        org.json.JSONArray eventsArray = jsonResponse.getJSONArray("events");
+                        android.util.Log.d("MainActivity", "Found " + eventsArray.length() + " events");
+                        
+                        // Check for new events
+                        Set<Integer> currentEventIds = new HashSet<>();
+                        List<Event> newEvents = new ArrayList<>();
+                        
+                        for (int i = 0; i < eventsArray.length(); i++) {
+                            try {
+                                org.json.JSONObject eventObj = eventsArray.getJSONObject(i);
+                                int eventId = eventObj.getInt("id");
+                                currentEventIds.add(eventId);
+                                
+                                // Check if this is a new event
+                                if (!lastKnownEventIds.contains(eventId)) {
+                                    Event event = new Event(
+                                        eventId,
+                                        eventObj.getString("title"),
+                                        eventObj.getString("type"),
+                                        eventObj.getString("description"),
+                                        eventObj.getString("date_time"),
+                                        eventObj.getString("location"),
+                                        eventObj.getString("organizer"),
+                                        eventObj.getLong("created_at")
+                                    );
+                                    newEvents.add(event);
+                                    android.util.Log.d("MainActivity", "New event detected: " + event.getTitle());
+                                }
+                            } catch (Exception e) {
+                                android.util.Log.e("MainActivity", "Error processing event at index " + i + ": " + e.getMessage());
+                            }
+                        }
+                        
+                        // Update known event IDs
+                        lastKnownEventIds = currentEventIds;
+                        
+                        // If there are new events, refresh the dashboard
+                        if (!newEvents.isEmpty()) {
+                            android.util.Log.d("MainActivity", "Found " + newEvents.size() + " new events, refreshing dashboard");
+                            runOnUiThread(() -> {
+                                // Show notification for new events
+                                for (Event newEvent : newEvents) {
+                                    android.widget.Toast.makeText(MainActivity.this, 
+                                        "New event: " + newEvent.getTitle(), 
+                                        android.widget.Toast.LENGTH_SHORT).show();
+                                }
+                                // Refresh dashboard
+                                fetchAndDisplayDashboardEvents();
+                            });
+                        } else {
+                            android.util.Log.d("MainActivity", "No new events found");
+                            // Still refresh dashboard to ensure data is current
+                            runOnUiThread(() -> fetchAndDisplayDashboardEvents());
+                        }
+                    } else {
+                        android.util.Log.e("MainActivity", "API returned no events data");
+                        runOnUiThread(() -> {
+                            showNoEventsMessage("No events data available");
+                        });
+                    }
+                } else {
+                    android.util.Log.e("MainActivity", "Failed to fetch events, response code: " + responseCode);
+                    runOnUiThread(() -> {
+                        showNoEventsMessage("Failed to load events");
+                    });
+                }
+            } catch (Exception e) {
+                android.util.Log.e("MainActivity", "Error checking for new events: " + e.getMessage(), e);
+                runOnUiThread(() -> {
+                    showNoEventsMessage("Error loading events");
+                });
+            }
+        }).start();
     }
     
     // Method to manually clear event tracking (for debugging)
@@ -1465,7 +1511,7 @@ public class MainActivity extends AppCompatActivity {
 
     
     private void sendTokenToServer(String token) {
-        // Send FCM token to your server for push notifications
+        // Send FCM token to community_users API for push notifications
         new Thread(() -> {
             try {
                 // Get user barangay from database if available
@@ -1473,31 +1519,40 @@ public class MainActivity extends AppCompatActivity {
                 String userBarangay = getUserBarangayFromDatabase(userEmail);
                 
                 okhttp3.OkHttpClient client = new okhttp3.OkHttpClient();
-                okhttp3.RequestBody body = new okhttp3.FormBody.Builder()
-                    .add("fcm_token", token)
-                    .add("user_email", userEmail)
-                    .add("user_barangay", userBarangay)
-                    .add("device_name", android.os.Build.MODEL)
-                    .add("app_version", "1.0.0")
-                    .add("android_version", android.os.Build.VERSION.RELEASE)
-                    .add("device_model", android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL)
-                    .build();
+                
+                // Use JSON format for community_users API
+                org.json.JSONObject requestData = new org.json.JSONObject();
+                requestData.put("action", "register_fcm_token");
+                requestData.put("fcm_token", token);
+                requestData.put("user_email", userEmail);
+                requestData.put("user_barangay", userBarangay);
+                requestData.put("device_name", android.os.Build.MODEL);
+                requestData.put("app_version", "1.0.0");
+                requestData.put("android_version", android.os.Build.VERSION.RELEASE);
+                requestData.put("device_model", android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
+                requestData.put("platform", "android");
+                
+                okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                    requestData.toString(), 
+                    okhttp3.MediaType.parse("application/json; charset=utf-8")
+                );
                 
                 okhttp3.Request request = new okhttp3.Request.Builder()
-                    .url(Constants.API_BASE_URL + "sss/api/auto_register_fcm.php")  // Use the correct FCM API endpoint
+                    .url(Constants.API_BASE_URL + "community_users_simple_api.php")
                     .post(body)
+                    .addHeader("Content-Type", "application/json")
                     .build();
                 
                 try (okhttp3.Response response = client.newCall(request).execute()) {
                     if (response.isSuccessful()) {
-                        Log.d("MainActivity", "FCM token registered with server successfully");
+                        Log.d("MainActivity", "FCM token registered with community_users API successfully");
                         // Store token locally to avoid re-sending
                         getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE)
                             .edit()
                             .putString("fcm_token_sent", token)
                             .apply();
                     } else {
-                        Log.e("MainActivity", "Failed to register FCM token with server. Response: " + response.code());
+                        Log.e("MainActivity", "Failed to register FCM token with community_users API. Response: " + response.code());
                     }
                 }
             } catch (Exception e) {

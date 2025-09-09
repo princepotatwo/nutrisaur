@@ -561,34 +561,63 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             String userEmail = prefs.getString("current_user_email", null);
             
             if (userEmail != null) {
-                // Load complete user profile from database
+                // Load basic user profile data from CommunityUserManager (community_users table)
+                CommunityUserManager userManager = new CommunityUserManager(this);
+                Map<String, String> userData = userManager.getCurrentUserData();
+                
+                if (!userData.isEmpty()) {
+                    // Load basic user data from community_users
+                    userSex = userData.get("sex");
+                    userHeight = userData.get("height");
+                    userWeight = userData.get("weight");
+                    userBarangay = userData.get("barangay");
+                    
+                    // Calculate age from birthday
+                    String birthday = userData.get("birthday");
+                    if (birthday != null && !birthday.isEmpty()) {
+                        userAge = calculateAgeFromBirthday(birthday);
+                    }
+                    
+                    // Calculate BMI from height and weight
+                    if (userHeight != null && userWeight != null && !userHeight.isEmpty() && !userWeight.isEmpty()) {
+                        try {
+                            double height = Double.parseDouble(userHeight);
+                            double weight = Double.parseDouble(userWeight);
+                            if (height > 0 && weight > 0) {
+                                double bmi = weight / ((height / 100) * (height / 100));
+                                userBMI = String.format("%.1f", bmi);
+                            }
+                        } catch (NumberFormatException e) {
+                            userBMI = "0";
+                        }
+                    }
+                    
+                    // Load pregnancy status from community_users data
+                    String isPregnant = userData.get("is_pregnant");
+                    if (isPregnant != null && isPregnant.equals("Yes")) {
+                        userPregnancyStatus = "Yes";
+                    } else {
+                        userPregnancyStatus = "No";
+                    }
+                }
+                
+                // Load user preferences and additional data from local database
                 UserPreferencesDbHelper dbHelper = new UserPreferencesDbHelper(this);
-        android.database.Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
+                android.database.Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
                     "SELECT * FROM " + UserPreferencesDbHelper.TABLE_NAME + 
                     " WHERE " + UserPreferencesDbHelper.COL_USER_EMAIL + "=?",
                     new String[]{userEmail}
-        );
-        
-        if (cursor.moveToFirst()) {
-                    // Load all user profile data with safe column access
-                    userAge = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_USER_AGE);
-                    userSex = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_GENDER);
-                    userBMI = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_USER_BMI);
-                    userHeight = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_USER_HEIGHT);
-                    userWeight = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_USER_WEIGHT);
+                );
+                
+                if (cursor.moveToFirst()) {
                     userAllergies = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_ALLERGIES);
                     userDietPrefs = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_DIET_PREFS);
                     userAvoidFoods = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_AVOID_FOODS);
                     userRiskScore = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_RISK_SCORE);
-                    userBarangay = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_BARANGAY);
                     userIncome = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_INCOME);
                     
                     // Load health conditions
                     userHealthConditions = buildHealthConditionsString(cursor);
-                    
-                    // Load pregnancy status from screening_answers JSON
-                    String screeningAnswersJson = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_SCREENING_ANSWERS);
-                    userPregnancyStatus = loadPregnancyStatusFromScreeningJson(screeningAnswersJson);
                     
                     // Determine activity level based on risk score
                     userActivityLevel = determineActivityLevel(userRiskScore);
@@ -601,10 +630,10 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
                           ", Pregnancy=" + userPregnancyStatus + ", Allergies=" + userAllergies + 
                           ", Diet=" + userDietPrefs);
                 } else {
-                    Log.w(TAG, "No user profile found in database, using defaults");
+                    Log.w(TAG, "No user preferences found in local database, using defaults");
                     setDefaultUserProfile();
                 }
-        cursor.close();
+                cursor.close();
                 dbHelper.close();
             } else {
                 Log.w(TAG, "No user email found, using defaults");
@@ -1605,6 +1634,27 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         } catch (Exception e) {
             Log.e(TAG, "Error accessing column " + columnName + ": " + e.getMessage());
             return 0;
+        }
+    }
+
+    private String calculateAgeFromBirthday(String birthday) {
+        try {
+            if (birthday == null || birthday.isEmpty()) {
+                return "25"; // Default age
+            }
+            
+            // Parse birthday in YYYY-MM-DD format
+            java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date birthDate = format.parse(birthday);
+            java.util.Date currentDate = new java.util.Date();
+            
+            long diffInMillis = currentDate.getTime() - birthDate.getTime();
+            long diffInYears = diffInMillis / (365L * 24L * 60L * 60L * 1000L);
+            
+            return String.valueOf(Math.max(1, diffInYears)); // Minimum age of 1
+        } catch (Exception e) {
+            Log.e(TAG, "Error calculating age from birthday: " + e.getMessage());
+            return "25"; // Default age on error
         }
     }
 

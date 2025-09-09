@@ -1,0 +1,70 @@
+digraph WHOGrowthStandardsSimpleDecisionTree {
+    // Graph styling
+    rankdir=TB;
+    node [shape=box, style=filled, fontname="Arial", fontsize=11];
+    edge [fontname="Arial", fontsize=10];
+    
+    // Start
+    start [label="START\nInput: Weight, Height, Birth Date, Sex", fillcolor="#e1f5fe", shape=ellipse];
+    
+    // Input validation
+    validate [label="Validate Input\n• Weight: 0.1-200 kg\n• Height: 1-300 cm\n• Age: 0-71 months\n• Sex: Male/Female", fillcolor="#fff3e0"];
+    
+    // Calculations
+    calc [label="Calculate\n• Age in months\n• BMI = Weight/(Height/100)²", fillcolor="#f3e5f5"];
+    
+    // Data lookup
+    lookup [label="Lookup WHO Standards\n• WFA: Age + Sex\n• HFA: Age + Sex\n• WFH: Height + Sex\n• WFL: Height + Sex\n• BFA: Age + Sex", fillcolor="#e8f5e8"];
+    
+    // Z-score calculations
+    zcalc [label="Calculate Z-Scores\nZ = (Observed - Median) / SD\nFor all 5 indicators", fillcolor="#fff9c4"];
+    
+    // Classification decisions
+    classify [label="Classify Each Indicator\nZ < -3: Severely Underweight\n-3 ≤ Z < -2: Underweight\n-2 ≤ Z ≤ 2: Normal\nZ > 2: Overweight", fillcolor="#ffebee"];
+    
+    // Risk assessment
+    risk [label="Assess Risk Level\n• Severe: Any Severely Underweight\n• Moderate: Any Underweight/Overweight\n• Low: All Normal", fillcolor="#e3f2fd"];
+    
+    // Recommendations
+    recommend [label="Generate Recommendations\n• Severe: Immediate medical attention\n• Moderate: Follow-up + counseling\n• Low: Regular monitoring", fillcolor="#f1f8e9"];
+    
+    // Database storage
+    save [label="Save to Database\n• All Z-scores\n• Classifications\n• Risk level", fillcolor="#fce4ec"];
+    
+    // Output
+    output [label="OUTPUT\nComplete Assessment", fillcolor="#e8f5e8", shape=ellipse];
+    
+    // Error
+    error [label="ERROR\nInvalid Input", fillcolor="#ffcdd2", shape=ellipse];
+    
+    // Flow
+    start -> validate;
+    validate -> calc [label="Valid"];
+    validate -> error [label="Invalid"];
+    
+    calc -> lookup;
+    lookup -> zcalc;
+    zcalc -> classify;
+    classify -> risk;
+    risk -> recommend;
+    recommend -> save;
+    save -> output;
+    
+    // Error flow
+    error -> start [label="Retry"];
+    
+    // Styling
+    subgraph cluster_process {
+        label="Processing Flow";
+        style=filled;
+        fillcolor="#f5f5f5";
+        validate; calc; lookup; zcalc; classify;
+    }
+    
+    subgraph cluster_assessment {
+        label="Assessment & Output";
+        style=filled;
+        fillcolor="#e3f2fd";
+        risk; recommend; save; output;
+    }
+}

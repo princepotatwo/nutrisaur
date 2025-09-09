@@ -131,7 +131,7 @@ public class FoodSubstitutionManager {
         
         StringBuilder prompt = new StringBuilder();
         prompt.append("You are an expert nutritionist and chef specializing in Filipino cuisine. ");
-        prompt.append("Provide EXACTLY 3 intelligent food substitutions for the following dish:\n\n");
+        prompt.append("Find EXACTLY 3 SIMILAR FOOD DISHES that are variations or related to the original dish:\n\n");
         
         prompt.append("ORIGINAL FOOD:\n");
         prompt.append("Name: ").append(originalFood.getFoodName()).append("\n");
@@ -141,57 +141,58 @@ public class FoodSubstitutionManager {
         prompt.append("Carbs: ").append(originalFood.getCarbs()).append("g\n");
         prompt.append("Description: ").append(originalFood.getDescription()).append("\n\n");
         
-        prompt.append("SUBSTITUTION REASON: ").append(substitutionReason).append("\n\n");
+        prompt.append("FIND SIMILAR FOODS LIKE:\n");
+        prompt.append("- If original is 'Adobo Manok' → find 'Adobong Sitaw', 'Adobong Kangkong', 'Adobong Tofu'\n");
+        prompt.append("- If original is 'Sinigang na Baboy' → find 'Sinigang na Bangus', 'Sinigang na Hipon', 'Sinigang na Isda'\n");
+        prompt.append("- If original is 'Kare-kare' → find 'Kare-kareng Gulay', 'Kare-kareng Tofu', 'Kare-kareng Bangus'\n");
+        prompt.append("- If original is 'Tapsilog' → find 'Tocilog', 'Longsilog', 'Bangsilog', 'Cornsilog'\n");
+        prompt.append("- If original is 'Pancit Canton' → find 'Pancit Bihon', 'Pancit Malabon', 'Pancit Palabok'\n");
+        prompt.append("- If original is 'Chicken Teriyaki' → find 'Beef Teriyaki', 'Salmon Teriyaki', 'Tofu Teriyaki'\n");
+        prompt.append("- If original is 'Pad Thai' → find 'Pad See Ew', 'Pad Kra Pao', 'Pad Woon Sen'\n\n");
         
-        prompt.append("USER PROFILE:\n");
-        if (userAge != null) prompt.append("Age: ").append(userAge).append("\n");
-        if (userSex != null) prompt.append("Sex: ").append(userSex).append("\n");
-        if (userBMI != null) prompt.append("BMI: ").append(userBMI).append("\n");
-        if (userHealthConditions != null) prompt.append("Health: ").append(userHealthConditions).append("\n");
-        if (userBudgetLevel != null) prompt.append("Budget: ").append(userBudgetLevel).append("\n");
-        if (userAllergies != null) prompt.append("Allergies: ").append(userAllergies).append("\n");
-        if (userDietPrefs != null) prompt.append("Diet: ").append(userDietPrefs).append("\n");
-        if (userPregnancyStatus != null) prompt.append("Pregnancy: ").append(userPregnancyStatus).append("\n");
+        prompt.append("SIMILARITY REQUIREMENTS:\n");
+        prompt.append("1. SAME COOKING METHOD (adobo, sinigang, stir-fry, grill, etc.)\n");
+        prompt.append("2. SAME SAUCE/BASE (soy-vinegar, sour soup, teriyaki, etc.)\n");
+        prompt.append("3. SAME CUISINE TYPE (Filipino, Asian, Western, etc.)\n");
+        prompt.append("4. DIFFERENT MAIN INGREDIENT (chicken→pork→fish→vegetables→tofu)\n");
+        prompt.append("5. SIMILAR NUTRITIONAL PROFILE (±15% calories)\n");
+        prompt.append("6. AVAILABLE IN PHILIPPINES\n");
+        prompt.append("7. APPROPRIATE FOR USER PROFILE\n\n");
         
-        prompt.append("\nREQUIREMENTS FOR SUBSTITUTIONS:\n");
-        prompt.append("1. Each substitution must be a COMPLETE DISH (not just ingredients)\n");
-        prompt.append("2. Substitutions should be available in the Philippines\n");
-        prompt.append("3. Consider the substitution reason when choosing alternatives\n");
-        prompt.append("4. Maintain similar nutritional profile (±20% calories)\n");
-        prompt.append("5. Ensure substitutions are appropriate for user's health conditions\n");
-        prompt.append("6. Consider budget constraints if applicable\n");
-        prompt.append("7. Avoid allergens if specified\n");
-        prompt.append("8. Match dietary preferences if specified\n");
-        prompt.append("9. Ensure pregnancy safety if applicable\n");
-        prompt.append("10. Provide diverse options (different cooking methods, cuisines)\n\n");
+        prompt.append("USER PROFILE CONSIDERATIONS:\n");
+        if (userHealthConditions != null && !userHealthConditions.equals("None")) {
+            prompt.append("Health: ").append(userHealthConditions).append(" - choose healthier variations\n");
+        }
+        if (userBudgetLevel != null) {
+            prompt.append("Budget: ").append(userBudgetLevel).append(" - consider cost-effective options\n");
+        }
+        if (userAllergies != null && !userAllergies.isEmpty()) {
+            prompt.append("Allergies: ").append(userAllergies).append(" - avoid allergen-containing variations\n");
+        }
+        if (userDietPrefs != null && !userDietPrefs.isEmpty()) {
+            prompt.append("Diet: ").append(userDietPrefs).append(" - match dietary preferences\n");
+        }
+        if ("Yes".equalsIgnoreCase(userPregnancyStatus)) {
+            prompt.append("Pregnancy: Safe for pregnant women - avoid raw/undercooked options\n");
+        }
         
-        prompt.append("SUBSTITUTION CATEGORIES TO CONSIDER:\n");
-        prompt.append("- Traditional Filipino dishes\n");
-        prompt.append("- Asian cuisine (Korean, Japanese, Chinese, Thai)\n");
-        prompt.append("- Western dishes popular in Philippines\n");
-        prompt.append("- Vegetarian/vegan options\n");
-        prompt.append("- Budget-friendly alternatives\n");
-        prompt.append("- Healthier cooking methods (grilled, steamed, boiled)\n");
-        prompt.append("- Different protein sources\n");
-        prompt.append("- Seasonal/local ingredients\n\n");
-        
-        prompt.append("NUTRITION REQUIREMENTS:\n");
+        prompt.append("\nNUTRITION REQUIREMENTS:\n");
         prompt.append("1. All nutritional information MUST be for 1 serving only\n");
         prompt.append("2. Use accurate, realistic nutrition data\n");
-        prompt.append("3. Calories should be within ±20% of original food\n");
+        prompt.append("3. Calories should be within ±15% of original food\n");
         prompt.append("4. Ensure total calories = (protein × 4) + (fat × 9) + (carbs × 4) ± 10%\n");
         prompt.append("5. Use realistic serving sizes\n\n");
         
         prompt.append("DESCRIPTION REQUIREMENTS:\n");
         prompt.append("1. Write simple, appetizing descriptions\n");
-        prompt.append("2. Explain why it's a good substitution\n");
-        prompt.append("3. Mention key nutritional benefits\n");
+        prompt.append("2. Explain the similarity to original dish\n");
+        prompt.append("3. Mention the key difference (main ingredient change)\n");
         prompt.append("4. Keep descriptions 1-2 sentences long\n\n");
         
         prompt.append("Return ONLY valid JSON array with 3 items:\n");
-        prompt.append("[{\"food_name\": \"[DISH NAME]\", \"calories\": <number>, \"protein_g\": <number>, ");
+        prompt.append("[{\"food_name\": \"[SIMILAR DISH NAME]\", \"calories\": <number>, \"protein_g\": <number>, ");
         prompt.append("\"fat_g\": <number>, \"carbs_g\": <number>, \"serving_size\": \"1 serving\", ");
-        prompt.append("\"diet_type\": \"[TYPE]\", \"description\": \"[WHY IT'S A GOOD SUBSTITUTION]\"}, ...]");
+        prompt.append("\"diet_type\": \"[TYPE]\", \"description\": \"[SIMILAR TO ORIGINAL WITH KEY DIFFERENCE]\"}, ...]");
         
         return prompt.toString();
     }

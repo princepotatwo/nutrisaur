@@ -1,0 +1,182 @@
+digraph WHOGrowthStandardsDetailedDecisionTree {
+    // Graph styling
+    rankdir=TB;
+    node [shape=box, style=filled, fontname="Arial", fontsize=9];
+    edge [fontname="Arial", fontsize=8];
+    
+    // Start
+    start [label="START\nInput: Weight, Height, Birth Date, Sex", fillcolor="#e1f5fe", shape=ellipse];
+    
+    // Input validation
+    validateWeight [label="Weight Valid?\n0.1 ≤ Weight ≤ 200 kg", fillcolor="#fff3e0", shape=diamond];
+    validateHeight [label="Height Valid?\n1 ≤ Height ≤ 300 cm", fillcolor="#fff3e0", shape=diamond];
+    validateAge [label="Age Valid?\n0 ≤ Age ≤ 71 months", fillcolor="#fff3e0", shape=diamond];
+    validateSex [label="Sex Valid?\nMale or Female", fillcolor="#fff3e0", shape=diamond];
+    
+    // Calculations
+    calcAge [label="Calculate Age\nAge = (Current - Birth) / 30.44", fillcolor="#f3e5f5"];
+    calcBMI [label="Calculate BMI\nBMI = Weight / (Height/100)²", fillcolor="#f3e5f5"];
+    
+    // Data lookup decisions
+    wfaLookup [label="WFA Data Lookup\nAge in months (0-71)\nSex: Male/Female", fillcolor="#e8f5e8"];
+    hfaLookup [label="HFA Data Lookup\nAge in months (0-71)\nSex: Male/Female", fillcolor="#e8f5e8"];
+    wfhLookup [label="WFH Data Lookup\nHeight in cm (45-120)\nSex: Male/Female", fillcolor="#e8f5e8"];
+    wflLookup [label="WFL Data Lookup\nHeight in cm (45-110)\nSex: Male/Female", fillcolor="#e8f5e8"];
+    bfaLookup [label="BFA Data Lookup\nAge in months (0-71)\nSex: Male/Female", fillcolor="#e8f5e8"];
+    
+    // Z-score calculations
+    wfaZ [label="WFA Z-Score\nZ = (Weight - Median) / SD", fillcolor="#fff9c4"];
+    hfaZ [label="HFA Z-Score\nZ = (Height - Median) / SD", fillcolor="#fff9c4"];
+    wfhZ [label="WFH Z-Score\nZ = (Weight - Median) / SD", fillcolor="#fff9c4"];
+    wflZ [label="WFL Z-Score\nZ = (Weight - Median) / SD", fillcolor="#fff9c4"];
+    bfaZ [label="BFA Z-Score\nZ = (BMI - Median) / SD", fillcolor="#fff9c4"];
+    
+    // Classification decisions
+    wfaDecision [label="WFA Classification\nZ < -3?", fillcolor="#ffebee", shape=diamond];
+    wfaSevere [label="Severely Underweight", fillcolor="#ffcdd2"];
+    wfaUnder [label="Z < -2?\nUnderweight", fillcolor="#ffcdd2", shape=diamond];
+    wfaNormal [label="Z ≤ 2?\nNormal", fillcolor="#c8e6c9", shape=diamond];
+    wfaOver [label="Overweight", fillcolor="#ffcdd2"];
+    
+    hfaDecision [label="HFA Classification\nZ < -3?", fillcolor="#ffebee", shape=diamond];
+    hfaSevere [label="Severely Underweight", fillcolor="#ffcdd2"];
+    hfaUnder [label="Z < -2?\nUnderweight", fillcolor="#ffcdd2", shape=diamond];
+    hfaNormal [label="Z ≤ 2?\nNormal", fillcolor="#c8e6c9", shape=diamond];
+    hfaOver [label="Overweight", fillcolor="#ffcdd2"];
+    
+    wfhDecision [label="WFH Classification\nZ < -3?", fillcolor="#ffebee", shape=diamond];
+    wfhSevere [label="Severely Underweight", fillcolor="#ffcdd2"];
+    wfhUnder [label="Z < -2?\nUnderweight", fillcolor="#ffcdd2", shape=diamond];
+    wfhNormal [label="Z ≤ 2?\nNormal", fillcolor="#c8e6c9", shape=diamond];
+    wfhOver [label="Overweight", fillcolor="#ffcdd2"];
+    
+    wflDecision [label="WFL Classification\nZ < -3?", fillcolor="#ffebee", shape=diamond];
+    wflSevere [label="Severely Underweight", fillcolor="#ffcdd2"];
+    wflUnder [label="Z < -2?\nUnderweight", fillcolor="#ffcdd2", shape=diamond];
+    wflNormal [label="Z ≤ 2?\nNormal", fillcolor="#c8e6c9", shape=diamond];
+    wflOver [label="Overweight", fillcolor="#ffcdd2"];
+    
+    bfaDecision [label="BFA Classification\nZ < -3?", fillcolor="#ffebee", shape=diamond];
+    bfaSevere [label="Severely Underweight", fillcolor="#ffcdd2"];
+    bfaUnder [label="Z < -2?\nUnderweight", fillcolor="#ffcdd2", shape=diamond];
+    bfaNormal [label="Z ≤ 2?\nNormal", fillcolor="#c8e6c9", shape=diamond];
+    bfaOver [label="Overweight", fillcolor="#ffcdd2"];
+    
+    // Risk assessment
+    riskCheck [label="Risk Assessment\nAny Severe?", fillcolor="#e3f2fd", shape=diamond];
+    riskSevere [label="SEVERE RISK\n• Immediate medical attention\n• Refer to nutritionist\n• Consider hospitalization", fillcolor="#ffcdd2"];
+    
+    riskModerate [label="Any Underweight/Overweight?", fillcolor="#e3f2fd", shape=diamond];
+    riskMod [label="MODERATE RISK\n• Follow-up within 2 weeks\n• Nutritional counseling\n• Monitor growth closely", fillcolor="#fff3e0"];
+    
+    riskLow [label="LOW RISK\n• Continue regular monitoring\n• Maintain healthy lifestyle", fillcolor="#c8e6c9"];
+    
+    // Database operations
+    saveResults [label="Save to Database\n• All Z-scores\n• Classifications\n• Risk level", fillcolor="#fce4ec"];
+    
+    // Final output
+    output [label="OUTPUT\n• Complete assessment\n• Risk level\n• Recommendations", fillcolor="#e8f5e8", shape=ellipse];
+    
+    // Error handling
+    error [label="ERROR\nInvalid input data", fillcolor="#ffcdd2", shape=ellipse];
+    
+    // Main flow
+    start -> validateWeight;
+    validateWeight -> validateHeight [label="Yes"];
+    validateWeight -> error [label="No"];
+    
+    validateHeight -> validateAge [label="Yes"];
+    validateHeight -> error [label="No"];
+    
+    validateAge -> validateSex [label="Yes"];
+    validateAge -> error [label="No"];
+    
+    validateSex -> calcAge [label="Yes"];
+    validateSex -> error [label="No"];
+    
+    calcAge -> calcBMI;
+    calcBMI -> wfaLookup;
+    calcBMI -> hfaLookup;
+    calcBMI -> wfhLookup;
+    calcBMI -> wflLookup;
+    calcBMI -> bfaLookup;
+    
+    // WFA flow
+    wfaLookup -> wfaZ;
+    wfaZ -> wfaDecision;
+    wfaDecision -> wfaSevere [label="Yes"];
+    wfaDecision -> wfaUnder [label="No"];
+    wfaUnder -> wfaNormal [label="No"];
+    wfaNormal -> wfaOver [label="No"];
+    
+    // HFA flow
+    hfaLookup -> hfaZ;
+    hfaZ -> hfaDecision;
+    hfaDecision -> hfaSevere [label="Yes"];
+    hfaDecision -> hfaUnder [label="No"];
+    hfaUnder -> hfaNormal [label="No"];
+    hfaNormal -> hfaOver [label="No"];
+    
+    // WFH flow
+    wfhLookup -> wfhZ;
+    wfhZ -> wfhDecision;
+    wfhDecision -> wfhSevere [label="Yes"];
+    wfhDecision -> wfhUnder [label="No"];
+    wfhUnder -> wfhNormal [label="No"];
+    wfhNormal -> wfhOver [label="No"];
+    
+    // WFL flow
+    wflLookup -> wflZ;
+    wflZ -> wflDecision;
+    wflDecision -> wflSevere [label="Yes"];
+    wflDecision -> wflUnder [label="No"];
+    wflUnder -> wflNormal [label="No"];
+    wflNormal -> wflOver [label="No"];
+    
+    // BFA flow
+    bfaLookup -> bfaZ;
+    bfaZ -> bfaDecision;
+    bfaDecision -> bfaSevere [label="Yes"];
+    bfaDecision -> bfaUnder [label="No"];
+    bfaUnder -> bfaNormal [label="No"];
+    bfaNormal -> bfaOver [label="No"];
+    
+    // Risk assessment flow
+    wfaSevere -> riskCheck;
+    hfaSevere -> riskCheck;
+    wfhSevere -> riskCheck;
+    wflSevere -> riskCheck;
+    bfaSevere -> riskCheck;
+    
+    wfaUnder -> riskModerate;
+    wfaNormal -> riskModerate;
+    wfaOver -> riskModerate;
+    hfaUnder -> riskModerate;
+    hfaNormal -> riskModerate;
+    hfaOver -> riskModerate;
+    wfhUnder -> riskModerate;
+    wfhNormal -> riskModerate;
+    wfhOver -> riskModerate;
+    wflUnder -> riskModerate;
+    wflNormal -> riskModerate;
+    wflOver -> riskModerate;
+    bfaUnder -> riskModerate;
+    bfaNormal -> riskModerate;
+    bfaOver -> riskModerate;
+    
+    riskCheck -> riskSevere [label="Yes"];
+    riskCheck -> riskModerate [label="No"];
+    
+    riskModerate -> riskMod [label="Yes"];
+    riskModerate -> riskLow [label="No"];
+    
+    // Final flow
+    riskSevere -> saveResults;
+    riskMod -> saveResults;
+    riskLow -> saveResults;
+    
+    saveResults -> output;
+    
+    // Error flow
+    error -> start [label="Retry"];
+}

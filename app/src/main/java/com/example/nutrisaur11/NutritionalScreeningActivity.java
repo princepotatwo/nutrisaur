@@ -49,11 +49,10 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         "What is your age?",
         "Are you pregnant?",
         "What is your weight (kg)?",
-        "What is your height (cm)?",
-        "What is your MUAC (cm) - if available?"
+        "What is your height (cm)?"
     };
     
-    private int totalQuestions = 8;
+    private int totalQuestions = 7;
     private int currentQuestionIndex = 0;
     
     // Complete municipality data from dash.php
@@ -216,7 +215,6 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
             case 4: showPregnancyQuestion(); break;
             case 5: showWeightQuestion(); break;
             case 6: showHeightQuestion(); break;
-            case 7: showMUACQuestion(); break;
         }
     }
     
@@ -606,65 +604,6 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         });
     }
     
-    private void showMUACQuestion() {
-        // Clear all dynamically added views from options container
-        optionsContainer.removeAllViews();
-        
-        // Hide all option buttons
-        optionVeryOften.setVisibility(View.GONE);
-        optionFairlyOften.setVisibility(View.GONE);
-        optionSometimes.setVisibility(View.GONE);
-        optionAlmostNever.setVisibility(View.GONE);
-        optionNever.setVisibility(View.GONE);
-        
-        // Hide other input fields
-        weightInput.setVisibility(View.GONE);
-        heightInput.setVisibility(View.GONE);
-        
-        // Show MUAC input field
-        muacInput.setVisibility(View.VISIBLE);
-        muacInput.setText("");
-        muacInput.setHint("Enter MUAC (cm)");
-        muacInput.setBackgroundResource(R.drawable.option_button_unselected);
-        muacInput.setTextColor(getResources().getColor(android.R.color.black));
-        
-        // Clear any existing text watchers
-        muacInput.removeTextChangedListener(null);
-        
-        // Set up text change listener
-        muacInput.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            
-            @Override
-            public void afterTextChanged(android.text.Editable s) {
-                String muac = s.toString().trim();
-                if (!muac.isEmpty()) {
-                    // Change background to selected state
-                    muacInput.setBackgroundResource(R.drawable.option_button_selected);
-                    muacInput.setTextColor(getResources().getColor(android.R.color.white));
-                    
-                    // Store answer
-                    answers.put("question_" + currentQuestionIndex, muac);
-                    
-                    // Enable next button
-        nextButton.setEnabled(true);
-        nextButton.setBackgroundResource(R.drawable.button_next_active);
-                } else {
-                    // Reset to unselected state
-                    muacInput.setBackgroundResource(R.drawable.option_button_unselected);
-                    muacInput.setTextColor(getResources().getColor(android.R.color.black));
-                    
-                    // Disable next button
-                    nextButton.setEnabled(false);
-                    nextButton.setBackgroundResource(R.drawable.button_next_inactive);
-                }
-            }
-        });
-    }
     
     
     
@@ -726,7 +665,6 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
                     screeningData.put("is_pregnant", answers.get("question_4"));
                     screeningData.put("weight", answers.get("question_5"));
                     screeningData.put("height", answers.get("question_6"));
-                    screeningData.put("muac", answers.get("question_7"));
                     
                     // Send to API
                     sendScreeningDataToAPI(screeningData);
@@ -792,7 +730,6 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
                 screeningData.put("is_pregnant", answers.get("question_4"));
                 screeningData.put("weight", answers.get("question_5"));
                 screeningData.put("height", answers.get("question_6"));
-                screeningData.put("muac", answers.get("question_7"));
                 
                 // Send to API
                 sendScreeningDataToAPI(screeningData);

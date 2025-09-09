@@ -32,8 +32,8 @@ public class FCMTokenManager {
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_BARANGAY = "user_barangay";
     
-    // Server endpoint for FCM token registration
-    private static final String SERVER_URL = Constants.API_BASE_URL + "api/register_fcm_token.php";
+    // Server endpoint for FCM token registration - now using community_users table
+    private static final String SERVER_URL = Constants.API_BASE_URL + "community_users_simple_api.php";
     
     // Registration intervals
     private static final long REGISTRATION_INTERVAL = TimeUnit.HOURS.toMillis(24); // 24 hours (daily sync)
@@ -61,21 +61,29 @@ public class FCMTokenManager {
      */
     private boolean tokenExistsOnServer(String token) {
         try {
-            okhttp3.HttpUrl url = okhttp3.HttpUrl.parse(Constants.API_BASE_URL + "api/auto_register_fcm.php")
-                .newBuilder()
-                .addQueryParameter("fcm_token", token)
+            // Use community_users API to check if token exists
+            JSONObject requestData = new JSONObject();
+            requestData.put("action", "check_fcm_token");
+            requestData.put("fcm_token", token);
+            
+            RequestBody body = RequestBody.create(
+                requestData.toString(), 
+                MediaType.parse("application/json; charset=utf-8")
+            );
+            
+            Request request = new Request.Builder()
+                .url(SERVER_URL)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
                 .build();
-            okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(url)
-                .get()
-                .build();
-            try (okhttp3.Response response = httpClient.newCall(request).execute()) {
+                
+            try (Response response = httpClient.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     return false;
                 }
-                String body = response.body() != null ? response.body().string() : "";
-                org.json.JSONObject json = new org.json.JSONObject(body);
-                return json.optBoolean("token_exists", false);
+                String responseBody = response.body() != null ? response.body().string() : "";
+                JSONObject json = new JSONObject(responseBody);
+                return json.optBoolean("success", false) && json.optBoolean("token_exists", false);
             }
         } catch (Exception e) {
             Log.w(TAG, "Failed to check token existence on server: " + e.getMessage());
@@ -300,8 +308,9 @@ public class FCMTokenManager {
         isRegistrationInProgress = true;
         
         try {
-            // Prepare request data
+            // Prepare request data for community_users API
             JSONObject requestData = new JSONObject();
+            requestData.put("action", "register_fcm_token");
             requestData.put("fcm_token", token);
             requestData.put("device_name", android.os.Build.MODEL);
             requestData.put("user_email", userEmail);

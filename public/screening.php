@@ -2595,6 +2595,91 @@ header {
             color: #9E9E9E;
         }
 
+        /* WHO Growth Standards Classification Styles */
+        .who-classification {
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            padding: 8px 4px;
+            white-space: nowrap;
+            border-radius: 6px;
+            margin: 2px;
+        }
+
+        .who-classification.severely-underweight {
+            color: #D32F2F;
+            background: rgba(211, 47, 47, 0.1);
+            border: 1px solid rgba(211, 47, 47, 0.3);
+        }
+
+        .who-classification.underweight {
+            color: #FF9800;
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .who-classification.normal {
+            color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .who-classification.overweight {
+            color: #FF5722;
+            background: rgba(255, 87, 34, 0.1);
+            border: 1px solid rgba(255, 87, 34, 0.3);
+        }
+
+        .who-classification.obese {
+            color: #8B4513;
+            background: rgba(139, 69, 19, 0.1);
+            border: 1px solid rgba(139, 69, 19, 0.3);
+        }
+
+        .who-classification.n/a {
+            color: #9E9E9E;
+            background: rgba(158, 158, 158, 0.1);
+            border: 1px solid rgba(158, 158, 158, 0.3);
+        }
+
+        .who-classification.height-out-of-range {
+            color: #9C27B0;
+            background: rgba(156, 39, 176, 0.1);
+            border: 1px solid rgba(156, 39, 176, 0.3);
+        }
+
+        .who-classification.age-out-of-range {
+            color: #607D8B;
+            background: rgba(96, 125, 139, 0.1);
+            border: 1px solid rgba(96, 125, 139, 0.3);
+        }
+
+        /* Hover effects for WHO classifications */
+        .who-classification:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .who-classification.severely-underweight:hover {
+            background: rgba(211, 47, 47, 0.2);
+        }
+
+        .who-classification.underweight:hover {
+            background: rgba(255, 152, 0, 0.2);
+        }
+
+        .who-classification.normal:hover {
+            background: rgba(76, 175, 80, 0.2);
+        }
+
+        .who-classification.overweight:hover {
+            background: rgba(255, 87, 34, 0.2);
+        }
+
+        .who-classification.obese:hover {
+            background: rgba(139, 69, 19, 0.2);
+        }
+
         .risk-level {
             font-size: 12px;
             font-weight: 600;
@@ -2699,18 +2784,19 @@ header {
                     <div class="header-controls">
                         <div class="search-row" style="justify-content: center; gap: 20px;">
                             <div class="search-container" style="width: 300px;">
-                                <input type="text" id="searchInput" placeholder="Search by name, email, nutritional status, risk level, or category..." class="search-input">
+                                <input type="text" id="searchInput" placeholder="Search by name, email, or WHO classifications..." class="search-input">
                                 <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                             </div>
                             <div class="location-filter-container" style="width: 300px;">
                                 <select id="riskFilter" onchange="filterByRisk()" class="location-select">
-                                    <option value="">All Risk Levels</option>
-                                    <option value="Low">Low Risk</option>
-                                    <option value="Low-Medium">Low-Medium Risk</option>
-                                    <option value="Medium">Medium Risk</option>
-                                    <option value="High">High Risk</option>
-                                    <option value="Very High">Very High Risk</option>
-                                    <option value="Unknown">Unknown Risk</option>
+                                    <option value="">All Classifications</option>
+                                    <option value="Severely Underweight">Severely Underweight</option>
+                                    <option value="Underweight">Underweight</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Overweight">Overweight</option>
+                                    <option value="Obese">Obese</option>
+                                    <option value="Height out of range">Height out of range</option>
+                                    <option value="Age out of range">Age out of range</option>
                                 </select>
                             </div>
                         </div>
@@ -2740,9 +2826,11 @@ header {
                         <tr>
                             <th>NAME</th>
                             <th>EMAIL</th>
-                            <th>NUTRITIONAL STATUS</th>
-                            <th>RISK LEVEL</th>
-                            <th>CATEGORY</th>
+                            <th>WEIGHT-FOR-AGE</th>
+                            <th>HEIGHT-FOR-AGE</th>
+                            <th>WEIGHT-FOR-HEIGHT</th>
+                            <th>WEIGHT-FOR-LENGTH</th>
+                            <th>BMI-FOR-AGE</th>
                             <th>SCREENING DATE</th>
                         </tr>
                     </thead>
@@ -2764,15 +2852,21 @@ header {
                                 
                                 if (!empty($users)) {
                                     foreach ($users as $user) {
-                                        // Calculate nutritional assessment using the API
-                                        $assessment = getNutritionalAssessment($user);
+                                        // Get WHO growth standards data from database columns
+                                        $wfa_classification = $user['weight-for-age'] ?? 'N/A';
+                                        $hfa_classification = $user['height-for-age'] ?? 'N/A';
+                                        $wfh_classification = $user['weight-for-height'] ?? 'N/A';
+                                        $wfl_classification = $user['weight-for-length'] ?? 'N/A';
+                                        $bmi_classification = $user['bmi_category'] ?? 'N/A';
                                         
                                         echo '<tr>';
                                         echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
-                                        echo '<td class="nutritional-status ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $assessment['nutritional_status'])) . '">' . htmlspecialchars($assessment['nutritional_status']) . '</td>';
-                                        echo '<td class="risk-level ' . strtolower(str_replace(' ', '-', $assessment['risk_level'])) . '">' . htmlspecialchars($assessment['risk_level']) . '</td>';
-                                        echo '<td class="category ' . strtolower($assessment['category']) . '">' . htmlspecialchars($assessment['category']) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfa_classification)) . '">' . htmlspecialchars($wfa_classification) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $hfa_classification)) . '">' . htmlspecialchars($hfa_classification) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfh_classification)) . '">' . htmlspecialchars($wfh_classification) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfl_classification)) . '">' . htmlspecialchars($wfl_classification) . '</td>';
+                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $bmi_classification)) . '">' . htmlspecialchars($bmi_classification) . '</td>';
                                         echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                     }
@@ -2781,10 +2875,10 @@ header {
                                     echo '<!-- No users in database -->';
                                 }
                             } catch (Exception $e) {
-                                echo '<tr><td colspan="6" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+                                echo '<tr><td colspan="8" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                         }
                     } else {
-                            echo '<tr><td colspan="6" class="no-data-message">Database connection failed.</td></tr>';
+                            echo '<tr><td colspan="8" class="no-data-message">Database connection failed.</td></tr>';
                     }
                         ?>
                     </tbody>
@@ -3108,15 +3202,19 @@ header {
             tableRows.forEach(row => {
                 const name = row.cells[0].textContent.toLowerCase();
                 const email = row.cells[1].textContent.toLowerCase();
-                const nutritionalStatus = row.cells[2].textContent.toLowerCase();
-                const riskLevel = row.cells[3].textContent.toLowerCase();
-                const category = row.cells[4].textContent.toLowerCase();
+                const wfa = row.cells[2].textContent.toLowerCase();
+                const hfa = row.cells[3].textContent.toLowerCase();
+                const wfh = row.cells[4].textContent.toLowerCase();
+                const wfl = row.cells[5].textContent.toLowerCase();
+                const bmi = row.cells[6].textContent.toLowerCase();
                 
                 const matchesSearch = name.includes(searchTerm) || 
                                    email.includes(searchTerm) || 
-                                   nutritionalStatus.includes(searchTerm) || 
-                                   riskLevel.includes(searchTerm) || 
-                                   category.includes(searchTerm);
+                                   wfa.includes(searchTerm) || 
+                                   hfa.includes(searchTerm) || 
+                                   wfh.includes(searchTerm) || 
+                                   wfl.includes(searchTerm) || 
+                                   bmi.includes(searchTerm);
                 
                 if (matchesSearch) {
                     row.style.display = '';
@@ -3130,15 +3228,29 @@ header {
         }
 
         function filterByRisk() {
-            const riskFilter = document.getElementById('riskFilter').value;
+            const classificationFilter = document.getElementById('riskFilter').value;
             const tableRows = document.querySelectorAll('.user-table tbody tr');
             
             let visibleCount = 0;
             
             tableRows.forEach(row => {
-                const riskLevel = row.cells[3].textContent.trim();
+                const wfa = row.cells[2].textContent.trim();
+                const hfa = row.cells[3].textContent.trim();
+                const wfh = row.cells[4].textContent.trim();
+                const wfl = row.cells[5].textContent.trim();
+                const bmi = row.cells[6].textContent.trim();
                 
-                if (!riskFilter || riskLevel === riskFilter) {
+                let matchesFilter = true;
+                
+                if (classificationFilter) {
+                    matchesFilter = wfa.includes(classificationFilter) || 
+                                  hfa.includes(classificationFilter) || 
+                                  wfh.includes(classificationFilter) || 
+                                  wfl.includes(classificationFilter) || 
+                                  bmi.includes(classificationFilter);
+                }
+                
+                if (matchesFilter) {
                     row.style.display = '';
                     visibleCount++;
                 } else {
@@ -3177,7 +3289,7 @@ header {
                     if (!noDataMessage) {
                         const message = document.createElement('tr');
                         message.className = 'no-data-message';
-                        message.innerHTML = '<td colspan="6"><div>No assessments found matching your criteria.</div></td>';
+                        message.innerHTML = '<td colspan="8"><div>No assessments found matching your criteria.</div></td>';
                         tbody.appendChild(message);
                     }
                 } else if (noDataMessage) {
