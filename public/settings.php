@@ -1960,6 +1960,14 @@ header {
             min-width: 100%;
         }
 
+        /* Auto-fit columns - automatically distributes space equally */
+        .user-table th,
+        .user-table td {
+            width: auto !important;
+            min-width: 60px;
+            max-width: none;
+        }
+
         .user-table thead { 
     background-color: var(--color-card);
         }
@@ -2060,19 +2068,9 @@ header {
             text-align: center;
         }
 
-        /* Set specific widths for columns - Full width utilization */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 12%; min-width: 120px; } /* NAME */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 15%; min-width: 150px; } /* EMAIL */
-        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; min-width: 100px; } /* MUNICIPALITY */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 12%; min-width: 100px; } /* BARANGAY */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 5%; min-width: 50px; } /* SEX */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 8%; min-width: 80px; } /* BIRTHDAY */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 5%; min-width: 50px; } /* PREGNANT */
-        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 4%; min-width: 40px; } /* WEIGHT */
-        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 4%; min-width: 40px; } /* HEIGHT */
-        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 4%; min-width: 40px; } /* MUAC */
-        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 8%; min-width: 80px; } /* FCM TOKEN */
-        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 11%; min-width: 120px; } /* SCREENING DATE */
+        /* Auto-fit columns - automatically distributes space equally */
+        /* All columns will automatically get equal width distribution */
+        /* No need for specific nth-child rules - table will auto-adjust */
 
         .user-table th {
             color: var(--color-highlight);
