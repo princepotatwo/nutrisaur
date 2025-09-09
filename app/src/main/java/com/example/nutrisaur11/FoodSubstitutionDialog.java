@@ -109,9 +109,9 @@ public class FoodSubstitutionDialog extends Dialog {
     
     private void setupSubstitutions() {
         // Set substitution count
-        substitutionCount.setText("Finding alternatives...");
+        substitutionCount.setText(substitutions.size() + " options");
         
-        // Setup RecyclerView with loading state
+        // Setup RecyclerView
         substitutionAdapter = new FoodSubstitutionAdapter(
             substitutions, getContext(), 
             new FoodSubstitutionAdapter.OnSubstitutionClickListener() {
@@ -127,9 +127,6 @@ public class FoodSubstitutionDialog extends Dialog {
             substitutionReason
         );
         
-        // Show loading state immediately
-        substitutionAdapter.setLoading(true);
-        
         substitutionsRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         substitutionsRecycler.setAdapter(substitutionAdapter);
         
@@ -139,13 +136,6 @@ public class FoodSubstitutionDialog extends Dialog {
     private void setupClickListeners() {
         refreshSubstitutionsButton.setOnClickListener(v -> {
             Log.d(TAG, "Refresh substitutions requested");
-            
-            // Show loading state immediately
-            substitutionAdapter.setLoading(true);
-            substitutionCount.setText("Finding alternatives...");
-            refreshSubstitutionsButton.setText("Loading...");
-            refreshSubstitutionsButton.setEnabled(false);
-            
             if (listener != null) {
                 listener.onRefreshSubstitutions();
             }
@@ -161,10 +151,6 @@ public class FoodSubstitutionDialog extends Dialog {
             substitutionAdapter.updateSubstitutions(newSubstitutions, reason);
             substitutionCount.setText(newSubstitutions.size() + " options");
             substitutionReasonText.setText(reason);
-            
-            // Turn off loading state and re-enable button
-            refreshSubstitutionsButton.setText("Find Other Options");
-            refreshSubstitutionsButton.setEnabled(true);
         }
         
         Log.d(TAG, "Updated substitutions: " + newSubstitutions.size() + " items");

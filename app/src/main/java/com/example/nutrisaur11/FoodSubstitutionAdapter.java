@@ -20,7 +20,6 @@ public class FoodSubstitutionAdapter extends RecyclerView.Adapter<FoodSubstituti
     private FoodImageService foodImageService;
     private OnSubstitutionClickListener listener;
     private String substitutionReason;
-    private boolean isLoading = false;
 
     public interface OnSubstitutionClickListener {
         void onSubstitutionClick(FoodRecommendation substitution);
@@ -39,15 +38,8 @@ public class FoodSubstitutionAdapter extends RecyclerView.Adapter<FoodSubstituti
     public void updateSubstitutions(List<FoodRecommendation> newSubstitutions, String reason) {
         this.substitutions = newSubstitutions;
         this.substitutionReason = reason;
-        this.isLoading = false;
         notifyDataSetChanged();
         Log.d(TAG, "Updated substitutions: " + newSubstitutions.size() + " items, reason: " + reason);
-    }
-    
-    public void setLoading(boolean loading) {
-        this.isLoading = loading;
-        notifyDataSetChanged();
-        Log.d(TAG, "setLoading called with: " + loading);
     }
 
     @NonNull
@@ -59,16 +51,6 @@ public class FoodSubstitutionAdapter extends RecyclerView.Adapter<FoodSubstituti
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (isLoading) {
-            // Show loading state
-            holder.substitutionName.setText("Loading...");
-            holder.substitutionReason.setText("Finding alternatives");
-            holder.substitutionImage.setImageResource(R.drawable.ic_food);
-            holder.substitutionCard.setOnClickListener(null);
-            Log.d(TAG, "Binding loading card at position " + position);
-            return;
-        }
-        
         FoodRecommendation substitution = substitutions.get(position);
         
         Log.d(TAG, "Binding substitution at position " + position + ": " + substitution.getFoodName());
@@ -97,9 +79,6 @@ public class FoodSubstitutionAdapter extends RecyclerView.Adapter<FoodSubstituti
 
     @Override
     public int getItemCount() {
-        if (isLoading) {
-            return 3; // Show 3 loading cards
-        }
         return substitutions.size();
     }
 

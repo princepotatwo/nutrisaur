@@ -22,10 +22,10 @@ public class ApiConfig {
     public static final String GROK_API_URL = "https://api.x.ai/v1/chat/completions";
     public static final String GROK_MODEL = "grok-beta";
     
-    // Timeout settings (in seconds) - Optimized for speed
-    public static final int CONNECT_TIMEOUT = 15; // Reduced from 30s
-    public static final int READ_TIMEOUT = 45; // Reduced from 120s to 45s
-    public static final int WRITE_TIMEOUT = 15; // Reduced from 30s
+    // Timeout settings (in seconds)
+    public static final int CONNECT_TIMEOUT = 30;
+    public static final int READ_TIMEOUT = 120; // Increased to 2 minutes
+    public static final int WRITE_TIMEOUT = 30;
     
     // Retry settings with exponential backoff
     public static final int MAX_RETRY_ATTEMPTS = 3;
