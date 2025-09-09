@@ -1,7 +1,7 @@
 <?php
 // Use centralized session management
 require_once __DIR__ . "/api/DatabaseAPI.php";
-require_once __DIR__ . "/api/DatabaseAPI.php";
+require_once __DIR__ . "/api/nutritional_assessment_library.php";
 $db = DatabaseAPI::getInstance();
 
 // Check if user is logged in using centralized method
@@ -67,7 +67,7 @@ function formatDatePHP($dateString, $format = 'relative') {
     }
 }
 
-// Function to get time frame data from user_preferences table
+// NEW: Function to get time frame data from community_users table with nutritional assessments
 function getTimeFrameData($pdo, $timeFrame, $barangay = null) {
     $now = new DateTime();
     $startDate = new DateTime();
@@ -98,33 +98,69 @@ function getTimeFrameData($pdo, $timeFrame, $barangay = null) {
     
     try {
         // Build the query based on barangay filter
-        $whereClause = "WHERE (up.created_at BETWEEN :start_date AND :end_date) OR (up.updated_at BETWEEN :start_date AND :end_date)";
+        $whereClause = "WHERE cu.screening_date BETWEEN :start_date AND :end_date";
         $params = [':start_date' => $startDateStr, ':end_date' => $endDateStr];
         
         if ($barangay && $barangay !== '') {
-            $whereClause .= " AND up.barangay = :barangay";
+            $whereClause .= " AND cu.barangay = :barangay";
             $params[':barangay'] = $barangay;
         }
         
+        // Get all users in time frame for assessment
         $query = "
             SELECT 
-                COUNT(*) as total_screened,
-                SUM(CASE WHEN up.risk_score >= 50 THEN 1 ELSE 0 END) as high_risk_cases,
-                SUM(CASE WHEN up.whz_score < -3 THEN 1 ELSE 0 END) as sam_cases,
-                SUM(CASE WHEN up.muac < 11.5 THEN 1 ELSE 0 END) as critical_muac,
-                AVG(up.risk_score) as avg_risk_score,
-                AVG(up.whz_score) as avg_whz_score,
-                AVG(up.muac) as avg_muac,
-                COUNT(DISTINCT up.barangay) as barangays_covered,
-                MIN(up.created_at) as earliest_screening,
-                MAX(up.updated_at) as latest_update
-            FROM user_preferences up
+                cu.*
+            FROM community_users cu
             $whereClause
+            ORDER BY cu.screening_date DESC
         ";
         
         $stmt = $pdo->prepare($query);
         $stmt->execute($params);
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Calculate metrics using nutritional assessments
+        $totalScreened = count($users);
+        $highRiskCases = 0;
+        $samCases = 0;
+        $criticalMuac = 0;
+        $barangaysCovered = [];
+        
+        foreach ($users as $user) {
+            // Perform nutritional assessment
+            $assessment = performNutritionalAssessment($user);
+            
+            // Count high risk cases (High or Very High risk level)
+            if (in_array($assessment['risk_level'], ['High', 'Very High'])) {
+                $highRiskCases++;
+            }
+            
+            // Count SAM cases (Severe Acute Malnutrition)
+            if (strpos($assessment['nutritional_status'], 'Severe Acute Malnutrition') !== false) {
+                $samCases++;
+            }
+            
+            // Count critical MUAC cases (High risk malnutrition)
+            if (in_array($assessment['risk_level'], ['High', 'Very High']) && 
+                strpos($assessment['nutritional_status'], 'Malnutrition') !== false) {
+                $criticalMuac++;
+            }
+            
+            // Track barangays
+            if ($user['barangay']) {
+                $barangaysCovered[] = $user['barangay'];
+            }
+        }
+        
+        $data = [
+            'total_screened' => $totalScreened,
+            'high_risk_cases' => $highRiskCases,
+            'sam_cases' => $samCases,
+            'critical_muac' => $criticalMuac,
+            'barangays_covered' => count(array_unique($barangaysCovered)),
+            'earliest_screening' => $totalScreened > 0 ? $users[count($users)-1]['screening_date'] : null,
+            'latest_update' => $totalScreened > 0 ? $users[0]['screening_date'] : null
+        ];
         
         // Add time frame info
         $data['time_frame'] = $timeFrame;
@@ -142,9 +178,6 @@ function getTimeFrameData($pdo, $timeFrame, $barangay = null) {
             'high_risk_cases' => 0,
             'sam_cases' => 0,
             'critical_muac' => 0,
-            'avg_risk_score' => 0,
-            'avg_whz_score' => 0,
-            'avg_muac' => 0,
             'barangays_covered' => 0,
             'time_frame' => $timeFrame,
             'start_date_formatted' => $startDate->format('M j, Y'),
@@ -153,7 +186,7 @@ function getTimeFrameData($pdo, $timeFrame, $barangay = null) {
     }
 }
 
-// Function to get screening responses by time frame
+// NEW: Function to get screening responses by time frame using community_users with assessments
 function getScreeningResponsesByTimeFrame($pdo, $timeFrame, $barangay = null) {
     $now = new DateTime();
     $startDate = new DateTime();
@@ -183,212 +216,121 @@ function getScreeningResponsesByTimeFrame($pdo, $timeFrame, $barangay = null) {
     $endDateStr = $now->format('Y-m-d H:i:s');
     
     try {
-        $whereClause = "WHERE (up.created_at BETWEEN :start_date AND :end_date) OR (up.updated_at BETWEEN :start_date AND :end_date)";
+        $whereClause = "WHERE cu.screening_date BETWEEN :start_date AND :end_date";
         $params = [':start_date' => $startDateStr, ':end_date' => $endDateStr];
         
         if ($barangay && $barangay !== '') {
-            $whereClause .= " AND up.barangay = :barangay";
+            $whereClause .= " AND cu.barangay = :barangay";
             $params[':barangay'] = $barangay;
         }
         
-        // Get age groups
-        $ageQuery = "
+        // Get all users in time frame
+        $query = "
             SELECT 
-                CASE 
-                    WHEN up.age < 1 THEN 'Under 1 year'
-                    WHEN up.age < 6 THEN '1-5 years'
-                    WHEN up.age < 12 THEN '6-11 years'
-                    WHEN up.age < 18 THEN '12-17 years'
-                    WHEN up.age < 25 THEN '18-24 years'
-                    WHEN up.age < 35 THEN '25-34 years'
-                    WHEN up.age < 45 THEN '35-44 years'
-                    WHEN up.age < 55 THEN '45-54 years'
-                    WHEN up.age < 65 THEN '55-64 years'
-                    ELSE '65+ years'
-                END as age_group,
-                COUNT(*) as count
-            FROM user_preferences up
+                cu.*
+            FROM community_users cu
             $whereClause
-            GROUP BY age_group
-            ORDER BY MIN(up.age)
+            ORDER BY cu.screening_date DESC
         ";
         
-        $stmt = $pdo->prepare($ageQuery);
+        $stmt = $pdo->prepare($query);
         $stmt->execute($params);
-        $ageGroups = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        // Get gender distribution
-        $genderQuery = "
-            SELECT 
-                up.gender,
-                COUNT(*) as count
-            FROM user_preferences up
-            $whereClause
-            GROUP BY up.gender
-        ";
+        // Calculate distributions using nutritional assessments
+        $ageGroups = [
+            'Under 1 year' => 0,
+            '1-5 years' => 0,
+            '6-12 years' => 0,
+            '13-17 years' => 0,
+            '18-59 years' => 0,
+            '60+ years' => 0
+        ];
         
-        $stmt = $pdo->prepare($genderQuery);
-        $stmt->execute($params);
-        $genderDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $riskLevels = [
+            'Low' => 0,
+            'Low-Medium' => 0,
+            'Medium' => 0,
+            'High' => 0,
+            'Very High' => 0
+        ];
         
-        // Get income levels
-        $incomeQuery = "
-            SELECT 
-                up.income,
-                COUNT(*) as count
-            FROM user_preferences up
-            $whereClause
-            GROUP BY up.income
-        ";
+        $nutritionalStatus = [
+            'Normal' => 0,
+            'Underweight' => 0,
+            'Overweight' => 0,
+            'Obesity' => 0,
+            'Severe Acute Malnutrition' => 0,
+            'Moderate Acute Malnutrition' => 0,
+            'Stunting' => 0,
+            'Maternal Undernutrition' => 0
+        ];
         
-        $stmt = $pdo->prepare($incomeQuery);
-        $stmt->execute($params);
-        $incomeLevels = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Get height distribution
-        $heightQuery = "
-            SELECT 
-                CASE 
-                    WHEN up.height_cm < 100 THEN 'Under 100 cm'
-                    WHEN up.height_cm < 120 THEN '100-119 cm'
-                    WHEN up.height_cm < 140 THEN '120-139 cm'
-                    WHEN up.height_cm < 160 THEN '140-159 cm'
-                    WHEN up.height_cm < 180 THEN '160-179 cm'
-                    ELSE '180+ cm'
-                END as height_range,
-                COUNT(*) as count
-            FROM user_preferences up
-            $whereClause
-            GROUP BY height_range
-            ORDER BY MIN(up.height_cm)
-        ";
-        
-        $stmt = $pdo->prepare($heightQuery);
-        $stmt->execute($params);
-        $heightDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Get swelling distribution
-        $swellingQuery = "
-            SELECT 
-                up.swelling,
-                COUNT(*) as count
-            FROM user_preferences up
-            $whereClause
-            GROUP BY up.swelling
-        ";
-        
-        $stmt = $pdo->prepare($swellingQuery);
-        $stmt->execute($params);
-        $swellingDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Get weight loss distribution
-        $weightLossQuery = "
-            SELECT 
-                up.weight_loss,
-                COUNT(*) as count
-            FROM user_preferences up
-            $whereClause
-            GROUP BY up.weight_loss
-        ";
-        
-        $stmt = $pdo->prepare($weightLossQuery);
-        $stmt->execute($params);
-        $weightLossDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Get feeding behavior distribution
-        $feedingQuery = "
-            SELECT 
-                up.feeding_behavior,
-                COUNT(*) as count
-            FROM user_preferences up
-            $whereClause
-            GROUP BY up.feeding_behavior
-        ";
-        
-        $stmt = $pdo->prepare($feedingQuery);
-        $stmt->execute($params);
-        $feedingBehaviorDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Get physical signs
-        $physicalQuery = "
-            SELECT 
-                CASE 
-                    WHEN up.physical_thin = 'yes' THEN 'Thin Appearance'
-                    WHEN up.physical_shorter = 'yes' THEN 'Shorter Stature'
-                    WHEN up.physical_weak = 'yes' THEN 'Weak Physical Condition'
-                    WHEN up.physical_none = 'yes' THEN 'No Physical Signs'
-                    ELSE 'Not Assessed'
-                END as physical_sign,
-                COUNT(*) as count
-            FROM user_preferences up
-            $whereClause
-            GROUP BY physical_sign
-        ";
-        
-        $stmt = $pdo->prepare($physicalQuery);
-        $stmt->execute($params);
-        $physicalSigns = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Get dietary diversity
-        $dietaryQuery = "
-            SELECT 
-                CASE 
-                    WHEN up.dietary_diversity_score = 0 THEN 'No Food Groups (0)'
-                    WHEN up.dietary_diversity_score <= 2 THEN 'Very Low Diversity (1-2 food groups)'
-                    WHEN up.dietary_diversity_score <= 4 THEN 'Low Diversity (3-4 food groups)'
-                    WHEN up.dietary_diversity_score <= 6 THEN 'Medium Diversity (5-6 food groups)'
-                    WHEN up.dietary_diversity_score <= 8 THEN 'Good Diversity (7-8 food groups)'
-                    ELSE 'High Diversity (9-10 food groups)'
-                END as dietary_diversity_level,
-                COUNT(*) as count
-            FROM user_preferences up
-            $whereClause
-            GROUP BY dietary_diversity_level
-            ORDER BY MIN(up.dietary_diversity_score)
-        ";
-        
-        $stmt = $pdo->prepare($dietaryQuery);
-        $stmt->execute($params);
-        $dietaryDiversityDistribution = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Get clinical risk factors
-        $clinicalQuery = "
-            SELECT 
-                CASE 
-                        WHEN up.diarrhea = 'yes' THEN 'Diarrhea'
-                    WHEN up.fever = 'yes' THEN 'Fever'
-                    WHEN up.cough = 'yes' THEN 'Cough'
-                    ELSE 'No Clinical Risk Factors'
-                END as clinical_risk_factor,
-                COUNT(*) as count
-            FROM user_preferences up
-            $whereClause
-            GROUP BY clinical_risk_factor
-        ";
-        
-        $stmt = $pdo->prepare($clinicalQuery);
-        $stmt->execute($params);
-        $clinicalRiskFactors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($users as $user) {
+            $assessment = performNutritionalAssessment($user);
+            $age = calculateAge($user['birthday']);
+            
+            // Age groups
+            if ($age < 1) {
+                $ageGroups['Under 1 year']++;
+            } elseif ($age < 6) {
+                $ageGroups['1-5 years']++;
+            } elseif ($age < 13) {
+                $ageGroups['6-12 years']++;
+            } elseif ($age < 18) {
+                $ageGroups['13-17 years']++;
+            } elseif ($age < 60) {
+                $ageGroups['18-59 years']++;
+            } else {
+                $ageGroups['60+ years']++;
+            }
+            
+            // Risk levels
+            $riskLevel = $assessment['risk_level'];
+            if (isset($riskLevels[$riskLevel])) {
+                $riskLevels[$riskLevel]++;
+            }
+            
+            // Nutritional status
+            $status = $assessment['nutritional_status'];
+            if (strpos($status, 'Normal') !== false) {
+                $nutritionalStatus['Normal']++;
+            } elseif (strpos($status, 'Underweight') !== false) {
+                $nutritionalStatus['Underweight']++;
+            } elseif (strpos($status, 'Overweight') !== false) {
+                $nutritionalStatus['Overweight']++;
+            } elseif (strpos($status, 'Obesity') !== false) {
+                $nutritionalStatus['Obesity']++;
+            } elseif (strpos($status, 'Severe Acute Malnutrition') !== false) {
+                $nutritionalStatus['Severe Acute Malnutrition']++;
+            } elseif (strpos($status, 'Moderate Acute Malnutrition') !== false) {
+                $nutritionalStatus['Moderate Acute Malnutrition']++;
+            } elseif (strpos($status, 'Stunting') !== false) {
+                $nutritionalStatus['Stunting']++;
+            } elseif (strpos($status, 'Maternal Undernutrition') !== false) {
+                $nutritionalStatus['Maternal Undernutrition']++;
+            }
+        }
         
         return [
             'age_groups' => $ageGroups,
-            'gender_distribution' => $genderDistribution,
-            'income_levels' => $incomeLevels,
-            'height_distribution' => $heightDistribution,
-            'swelling_distribution' => $swellingDistribution,
-            'weight_loss_distribution' => $weightLossDistribution,
-            'feeding_behavior_distribution' => $feedingBehaviorDistribution,
-            'physical_signs' => $physicalSigns,
-            'dietary_diversity_distribution' => $dietaryDiversityDistribution,
-            'clinical_risk_factors' => $clinicalRiskFactors,
+            'risk_levels' => $riskLevels,
+            'nutritional_status' => $nutritionalStatus,
             'time_frame' => $timeFrame,
             'start_date' => $startDateStr,
             'end_date' => $endDateStr
         ];
         
     } catch (PDOException $e) {
-        error_log("Error getting screening responses by time frame: " . $e->getMessage());
-        return [];
+        error_log("Error getting screening responses: " . $e->getMessage());
+        return [
+            'age_groups' => [],
+            'risk_levels' => [],
+            'nutritional_status' => [],
+            'time_frame' => $timeFrame,
+            'start_date' => $startDateStr,
+            'end_date' => $endDateStr
+        ];
     }
 }
 
@@ -428,6 +370,18 @@ try {
         $currentBarangay = '';
         $timeFrameData = getTimeFrameData($db->getPDO(), $currentTimeFrame, $currentBarangay);
         $screeningResponsesData = getScreeningResponsesByTimeFrame($db->getPDO(), $currentTimeFrame, $currentBarangay);
+        
+        // Get barangay list for dropdown
+        $barangayQuery = "SELECT DISTINCT barangay FROM community_users WHERE barangay IS NOT NULL AND barangay != '' ORDER BY barangay";
+        $barangayStmt = $db->getPDO()->prepare($barangayQuery);
+        $barangayStmt->execute();
+        $barangays = $barangayStmt->fetchAll(PDO::FETCH_COLUMN);
+        
+        // Get municipality list for dropdown
+        $municipalityQuery = "SELECT DISTINCT municipality FROM community_users WHERE municipality IS NOT NULL AND municipality != '' ORDER BY municipality";
+        $municipalityStmt = $db->getPDO()->prepare($municipalityQuery);
+        $municipalityStmt->execute();
+        $municipalities = $municipalityStmt->fetchAll(PDO::FETCH_COLUMN);
 
 if (isset($_GET['logout'])) {
     session_unset();
@@ -5990,7 +5944,7 @@ body {
                 <div class="metric-change" id="community-risk-change">
                     <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
                 </div>
-                <div class="metric-note">Risk score ≥30 (WHO standard)</div>
+                <div class="metric-note">High/Very High risk from nutritional assessment</div>
             </div>
             <div class="card">
                 <h2>SAM Cases</h2>
@@ -5998,15 +5952,15 @@ body {
                 <div class="metric-change" id="community-sam-change">
                     <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
                 </div>
-                <div class="metric-note">Severe Acute Malnutrition (WHZ < -3)</div>
+                <div class="metric-note">Severe Acute Malnutrition (SAM) detected</div>
             </div>
             <div class="card">
-                <h2>Critical MUAC</h2>
+                <h2>Critical Malnutrition</h2>
                 <div class="metric-value" id="community-critical-muac"><?php echo $timeFrameData['critical_muac']; ?></div>
                 <div class="metric-change" id="community-muac-change">
                     <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
                 </div>
-                <div class="metric-note">MUAC < 11.5cm (critical threshold)</div>
+                <div class="metric-note">Critical malnutrition cases requiring immediate attention</div>
             </div>
         </div>
 
@@ -6632,25 +6586,25 @@ body {
                         const municipality = barangay.replace('MUNICIPALITY_', '');
                     }
                 }
-                const data = await fetchDataFromAPI('community_metrics', params);
+                const data = await fetchDataFromAPI('dashboard_assessment_stats', params);
                 
                 console.log('📊 Community Metrics Data:', data);
                 console.log('📊 Data type:', typeof data);
                 console.log('📊 Data keys:', Object.keys(data));
                 
-                if (data && typeof data === 'object') {
-                    // Update Total Screened (using total_users from community metrics)
+                if (data && data.success && data.data) {
+                    // Update Total Screened (using total_screened from assessment data)
                     const totalScreened = document.getElementById('community-total-screened');
                     const screenedChange = document.getElementById('community-screened-change');
                     
                     console.log('Total Screened Element:', totalScreened);
                     console.log('Screened Change Element:', screenedChange);
-                    console.log('Total Users:', data.total_users);
-                    console.log('Recent Registrations:', data.recent_registrations);
+                    console.log('Total Users:', data.data.total_screened);
+                    console.log('Recent Registrations:', data.data.total_screened);
                     
                     if (totalScreened && screenedChange) {
-                        const totalUsersValue = data.total_users || 0;
-                        const recentRegValue = data.recent_registrations || 0;
+                        const totalUsersValue = data.data.total_screened || 0;
+                        const recentRegValue = data.data.total_screened || 0;
                         
                         // Only update if data has changed
                         if (dashboardState.totalScreened !== totalUsersValue) {
@@ -6715,12 +6669,12 @@ body {
                     params.barangay = barangay;
                 }
 
-                // Update Risk Distribution Chart
-                const riskData = await fetchDataFromAPI('risk_distribution', params);
+                // Update Risk Distribution Chart - Use new assessment API
+                const riskData = await fetchDataFromAPI('dashboard_assessment_stats', params);
                 console.log('📈 Risk Distribution Data:', riskData);
                 
-                if (riskData && typeof riskData === 'object') {
-                    updateRiskChart(riskData);
+                if (riskData && riskData.success && riskData.data) {
+                    updateRiskChart(riskData.data);
                     
                                     // Update individual cards with risk distribution data
                 const highRisk = document.getElementById('community-high-risk');
@@ -6728,13 +6682,13 @@ body {
                 
                 console.log('High Risk Element:', highRisk);
                 console.log('Risk Change Element:', riskChange);
-                console.log('High Risk Data:', riskData.high);
-                console.log('Moderate Risk Data:', riskData.moderate);
-                console.log('Severe Risk Data:', riskData.severe);
+                console.log('High Risk Data:', riskData.data?.high_risk_cases);
+                console.log('SAM Cases Data:', riskData.data?.sam_cases);
+                console.log('Critical MUAC Data:', riskData.data?.critical_muac);
                 
                 if (highRisk && riskChange) {
-                    const highRiskValue = riskData.high || 0;
-                    const moderateValue = riskData.moderate || 0;
+                    const highRiskValue = riskData.data?.high_risk_cases || 0;
+                    const moderateValue = riskData.data?.sam_cases || 0;
                     
                     console.log('Current dashboardState.highRisk:', dashboardState.highRisk);
                     console.log('New highRiskValue:', highRiskValue);
@@ -6776,12 +6730,12 @@ body {
                     
                     console.log('SAM Cases Element:', samCases);
                     console.log('SAM Change Element:', samChange);
-                    console.log('SAM Cases Data (severe):', riskData.severe);
-                    console.log('SAM Change Data (high):', riskData.high);
+                    console.log('SAM Cases Data (severe):', riskData.data?.sam_cases);
+                    console.log('SAM Change Data (high):', riskData.data?.critical_muac);
                     
                     if (samCases && samChange) {
-                        const samCasesValue = riskData.severe || 0;
-                        const samChangeValue = riskData.high || 0;
+                        const samCasesValue = riskData.data?.sam_cases || 0;
+                        const samChangeValue = riskData.data?.critical_muac || 0;
                         
                         console.log('Current dashboardState.samCases:', dashboardState.samCases);
                         console.log('New samCasesValue:', samCasesValue);
@@ -7753,50 +7707,54 @@ body {
                     segment.style.opacity = '0';
                 });
                 
-                // Define colors and labels for risk levels - MATCHING ANDROID APP LOGIC
-                // Risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)
+                // Define colors and labels for risk levels - NEW 5-LEVEL SYSTEM
+                // Risk levels: Low, Low-Medium, Medium, High, Very High
                 const isDarkTheme = document.body.classList.contains('dark-theme');
                 const colors = isDarkTheme ? [
-                    '#4CAF50',      // Green for Low Risk
-                    '#FF9800',      // Orange for Moderate Risk
-                    '#F44336',      // Red for High Risk
-                    '#D32F2F'       // Dark Red for Severe Risk
+                    '#4CAF50',      // Green for Low
+                    '#8BC34A',      // Light Green for Low-Medium
+                    '#FF9800',      // Orange for Medium
+                    '#F44336',      // Red for High
+                    '#D32F2F'       // Dark Red for Very High
                 ] : [
-                    '#4CAF50',      // Green for Low Risk
-                    '#FF9800',      // Orange for Moderate Risk
-                    '#F44336',      // Red for High Risk
-                    '#D32F2F'       // Dark Red for Severe Risk
+                    '#4CAF50',      // Green for Low
+                    '#8BC34A',      // Light Green for Low-Medium
+                    '#FF9800',      // Orange for Medium
+                    '#F44336',      // Red for High
+                    '#D32F2F'       // Dark Red for Very High
                 ];
-                
                 
                 const labels = [
-                    'Low Risk',
-                    'Moderate Risk',
-                    'High Risk',
-                    'Severe Risk'
+                    'Low',
+                    'Low-Medium',
+                    'Medium',
+                    'High',
+                    'Very High'
                 ];
                 
-                // Handle the API data structure correctly
-                // Risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)
-                let riskLevels = [0, 0, 0, 0]; // [Low, Moderate, High, Severe]
+                // Handle the API data structure correctly - NEW 5-LEVEL SYSTEM
+                // Risk levels: Low, Low-Medium, Medium, High, Very High
+                let riskLevels = [0, 0, 0, 0, 0]; // [Low, Low-Medium, Medium, High, Very High]
                 let totalUsers = 0;
                 let actualRiskScores = []; // Store actual risk scores from API
                 
                 if (data && typeof data === 'object') {
-                    // API now returns data in format: {low: 5, moderate: 3, high: 2, severe: 1}
-                    riskLevels[0] = data.low || 0;
-                    riskLevels[1] = data.moderate || 0;
-                    riskLevels[2] = data.high || 0;
-                    riskLevels[3] = data.severe || 0;
+                    // API now returns data in format: {risk_levels: {low: 5, low_medium: 3, medium: 2, high: 1, very_high: 1}}
+                    riskLevels[0] = data.risk_levels?.low || 0;
+                    riskLevels[1] = data.risk_levels?.low_medium || 0;
+                    riskLevels[2] = data.risk_levels?.medium || 0;
+                    riskLevels[3] = data.risk_levels?.high || 0;
+                    riskLevels[4] = data.risk_levels?.very_high || 0;
                     
-                    totalUsers = riskLevels[0] + riskLevels[1] + riskLevels[2] + riskLevels[3];
+                    totalUsers = data.total_screened || (riskLevels[0] + riskLevels[1] + riskLevels[2] + riskLevels[3] + riskLevels[4]);
                     
                     // Store actual risk scores for each user (using count as proxy)
                     // Since we don't have individual risk scores, we'll use the weighted average approach
-                    for (let i = 0; i < riskLevels[0]; i++) actualRiskScores.push(10);  // Low risk
-                    for (let i = 0; i < riskLevels[1]; i++) actualRiskScores.push(35); // Moderate risk
-                    for (let i = 0; i < riskLevels[2]; i++) actualRiskScores.push(65); // High risk
-                    for (let i = 0; i < riskLevels[3]; i++) actualRiskScores.push(90); // Severe risk
+                    for (let i = 0; i < riskLevels[0]; i++) actualRiskScores.push(10);  // Low
+                    for (let i = 0; i < riskLevels[1]; i++) actualRiskScores.push(25); // Low-Medium
+                    for (let i = 0; i < riskLevels[2]; i++) actualRiskScores.push(50); // Medium
+                    for (let i = 0; i < riskLevels[3]; i++) actualRiskScores.push(75); // High
+                    for (let i = 0; i < riskLevels[4]; i++) actualRiskScores.push(95); // Very High
                 }
                 
                 // If no data from API, clear the chart properly
@@ -7830,9 +7788,9 @@ body {
                 let averageRisk = 0;
                 
                 if (totalUsers > 0) {
-                    // Count users in moderate, high, and severe risk
-                    // Risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)
-                    const atRiskUsers = riskLevels[1] + riskLevels[2] + riskLevels[3];
+                    // Count users in medium, high, and very high risk (at-risk users)
+                    // New 5-level system: Low, Low-Medium, Medium, High, Very High
+                    const atRiskUsers = riskLevels[2] + riskLevels[3] + riskLevels[4]; // Medium + High + Very High
                     atRiskPercentage = Math.round((atRiskUsers / totalUsers) * 100);
                     
                     // Use the global average risk score from community metrics (more accurate)
@@ -7844,9 +7802,8 @@ body {
                         averageRisk = Math.round(sum / actualRiskScores.length);
                     } else {
                         // Final fallback to weighted average if no actual scores available
-                        // For 1 user with 100% risk, this should give 100
-                        // Updated to match Android app risk thresholds: Low(0-19), Moderate(20-49), High(50-79), Severe(80+)
-                        const weightedSum = (riskLevels[0] * 10) + (riskLevels[1] * 35) + (riskLevels[2] * 65) + (riskLevels[3] * 90);
+                        // New 5-level system: Low(10), Low-Medium(25), Medium(50), High(75), Very High(95)
+                        const weightedSum = (riskLevels[0] * 10) + (riskLevels[1] * 25) + (riskLevels[2] * 50) + (riskLevels[3] * 75) + (riskLevels[4] * 95);
                         averageRisk = Math.round(weightedSum / totalUsers);
                     }
                 }
@@ -7917,23 +7874,26 @@ body {
                     let currentAngle = 0;
                     
                     if (actualRiskScores.length > 0) {
-                        // Use actual risk scores for percentage labels - MATCHING ANDROID APP LOGIC
+                        // Use actual risk scores for percentage labels - NEW 5-LEVEL SYSTEM
                         const lowRiskCount = actualRiskScores.filter(score => score < 20).length;
-                        const moderateRiskCount = actualRiskScores.filter(score => score >= 20 && score < 50).length;
-                        const highRiskCount = actualRiskScores.filter(score => score >= 50 && score < 80).length;
-                        const severeRiskCount = actualRiskScores.filter(score => score >= 80).length;
+                        const lowMediumRiskCount = actualRiskScores.filter(score => score >= 20 && score < 40).length;
+                        const mediumRiskCount = actualRiskScores.filter(score => score >= 40 && score < 60).length;
+                        const highRiskCount = actualRiskScores.filter(score => score >= 60 && score < 80).length;
+                        const veryHighRiskCount = actualRiskScores.filter(score => score >= 80).length;
                         
                         const lowRiskPercentage = (lowRiskCount / actualRiskScores.length) * 100;
-                        const moderateRiskPercentage = (moderateRiskCount / actualRiskScores.length) * 100;
+                        const lowMediumRiskPercentage = (lowMediumRiskCount / actualRiskScores.length) * 100;
+                        const mediumRiskPercentage = (mediumRiskCount / actualRiskScores.length) * 100;
                         const highRiskPercentage = (highRiskCount / actualRiskScores.length) * 100;
-                        const severeRiskPercentage = (severeRiskCount / actualRiskScores.length) * 100;
+                        const veryHighRiskPercentage = (veryHighRiskCount / actualRiskScores.length) * 100;
                         
                         // Create labels for each risk level
                         const riskLabels = [
-                            { index: 0, percentage: lowRiskPercentage, count: lowRiskCount, label: 'Low Risk' },
-                            { index: 1, percentage: moderateRiskPercentage, count: moderateRiskCount, label: 'Moderate Risk' },
-                            { index: 2, percentage: highRiskPercentage, count: highRiskCount, label: 'High Risk' },
-                            { index: 3, percentage: severeRiskPercentage, count: severeRiskCount, label: 'Severe Risk' }
+                            { index: 0, percentage: lowRiskPercentage, count: lowRiskCount, label: 'Low' },
+                            { index: 1, percentage: lowMediumRiskPercentage, count: lowMediumRiskCount, label: 'Low-Medium' },
+                            { index: 2, percentage: mediumRiskPercentage, count: mediumRiskCount, label: 'Medium' },
+                            { index: 3, percentage: highRiskPercentage, count: highRiskCount, label: 'High' },
+                            { index: 4, percentage: veryHighRiskPercentage, count: veryHighRiskCount, label: 'Very High' }
                         ];
                         
                         riskLabels.forEach((segment, segmentIndex) => {
@@ -8448,7 +8408,7 @@ body {
                             notification.parentNode.removeChild(notification);
                         }
                     }, 300);
-                }, 3000);
+            }, 3000);
             }
             
             // Function to update recent users list
@@ -9297,7 +9257,7 @@ body {
                     <li class="alert-item warning">
                         <div class="alert-content">
                             <h4>High Risk Cases</h4>
-                            <p>${data.high_risk_cases} case(s) with risk score ≥30</p>
+                            <p>${data.high_risk_cases} case(s) with high/very high risk level</p>
                         </div>
                         <div class="alert-time" data-time="${data.latest_update || 'now'}">
                             ${formatTimeAgo(data.latest_update || 'now')}
@@ -9311,8 +9271,8 @@ body {
                 alertsHtml += `
                     <li class="alert-item danger">
                         <div class="alert-content">
-                            <h4>Critical MUAC Readings</h4>
-                            <p>${data.critical_muac} case(s) with MUAC < 11.5cm</p>
+                            <h4>Critical Malnutrition Cases</h4>
+                            <p>${data.critical_muac} case(s) requiring immediate attention</p>
                         </div>
                         <div class="alert-time" data-time="${data.latest_update || 'now'}">
                             ${formatTimeAgo(data.latest_update || 'now')}
