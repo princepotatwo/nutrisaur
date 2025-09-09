@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.*;
+import java.util.HashMap;
 import java.util.Random;
 import android.util.Log;
 import java.util.concurrent.ExecutorService;
@@ -399,14 +400,107 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     }
     
     private void loadFoodDataForAllCategories() {
-        // Use API integration for malnutrition recovery foods
-        FoodActivityIntegration.loadMalnutritionRecoveryFoods(
-            this,
-            userAge, userSex, userBMI, userHealthConditions, userBudgetLevel,
-            userAllergies, userDietPrefs, userPregnancyStatus,
-            traditionalFoods, healthyFoods, internationalFoods, budgetFoods,
-            traditionalAdapter, healthyAdapter, internationalAdapter, budgetAdapter
-        );
+        Log.d(TAG, "Starting fast food loading with cache and fallback");
+        
+        // Step 1: Show immediate fallback foods (instant display)
+        showImmediateFallbackFoods();
+        
+        // Step 2: Check cache for recent data
+        FoodCache cache = new FoodCache(this);
+        if (cache.isCacheValid()) {
+            Log.d(TAG, "Loading from cache (age: " + cache.getCacheAgeMinutes() + " minutes)");
+            loadFromCache(cache);
+            return;
+        }
+        
+        // Step 3: Load from API in background while showing fallback
+        Log.d(TAG, "Cache invalid, loading from API in background");
+        loadFromAPIWithFallback();
+    }
+    
+    private void showImmediateFallbackFoods() {
+        Log.d(TAG, "Showing immediate fallback foods");
+        Map<String, List<FoodRecommendation>> fallbackFoods = FastFallbackFoods.getFastFallbackFoods();
+        
+        // Update all categories with fallback foods
+        traditionalFoods.clear();
+        healthyFoods.clear();
+        internationalFoods.clear();
+        budgetFoods.clear();
+        
+        traditionalFoods.addAll(fallbackFoods.getOrDefault("traditional", new ArrayList<>()));
+        healthyFoods.addAll(fallbackFoods.getOrDefault("healthy", new ArrayList<>()));
+        internationalFoods.addAll(fallbackFoods.getOrDefault("international", new ArrayList<>()));
+        budgetFoods.addAll(fallbackFoods.getOrDefault("budget", new ArrayList<>()));
+        
+        // Update adapters immediately
+        runOnUiThread(() -> {
+            traditionalAdapter.notifyDataSetChanged();
+            healthyAdapter.notifyDataSetChanged();
+            internationalAdapter.notifyDataSetChanged();
+            budgetAdapter.notifyDataSetChanged();
+            Log.d(TAG, "Fallback foods displayed immediately");
+        });
+    }
+    
+    private void loadFromCache(FoodCache cache) {
+        Map<String, List<FoodRecommendation>> cachedFoods = cache.getCachedFoods();
+        if (cachedFoods != null && !cachedFoods.isEmpty()) {
+            // Update with cached data
+            traditionalFoods.clear();
+            healthyFoods.clear();
+            internationalFoods.clear();
+            budgetFoods.clear();
+            
+            traditionalFoods.addAll(cachedFoods.getOrDefault("traditional", new ArrayList<>()));
+            healthyFoods.addAll(cachedFoods.getOrDefault("healthy", new ArrayList<>()));
+            internationalFoods.addAll(cachedFoods.getOrDefault("international", new ArrayList<>()));
+            budgetFoods.addAll(cachedFoods.getOrDefault("budget", new ArrayList<>()));
+            
+            runOnUiThread(() -> {
+                traditionalAdapter.notifyDataSetChanged();
+                healthyAdapter.notifyDataSetChanged();
+                internationalAdapter.notifyDataSetChanged();
+                budgetAdapter.notifyDataSetChanged();
+                Log.d(TAG, "Cached foods loaded successfully");
+            });
+        } else {
+            // Cache failed, load from API
+            loadFromAPIWithFallback();
+        }
+    }
+    
+    private void loadFromAPIWithFallback() {
+        // Load from API in background
+        executorService.execute(() -> {
+            try {
+                Log.d(TAG, "Loading from API in background");
+                
+                // Use API integration for malnutrition recovery foods
+                FoodActivityIntegration.loadMalnutritionRecoveryFoods(
+                    FoodActivity.this,
+                    userAge, userSex, userBMI, userHealthConditions, userBudgetLevel,
+                    userAllergies, userDietPrefs, userPregnancyStatus,
+                    traditionalFoods, healthyFoods, internationalFoods, budgetFoods,
+                    traditionalAdapter, healthyAdapter, internationalAdapter, budgetAdapter
+                );
+                
+                // Cache the results for next time
+                Map<String, List<FoodRecommendation>> apiFoods = new HashMap<>();
+                apiFoods.put("traditional", new ArrayList<>(traditionalFoods));
+                apiFoods.put("healthy", new ArrayList<>(healthyFoods));
+                apiFoods.put("international", new ArrayList<>(internationalFoods));
+                apiFoods.put("budget", new ArrayList<>(budgetFoods));
+                
+                FoodCache cache = new FoodCache(FoodActivity.this);
+                cache.cacheFoods(apiFoods);
+                Log.d(TAG, "API foods loaded and cached");
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error loading from API: " + e.getMessage());
+                // Keep showing fallback foods
+            }
+        });
     }
     
     private void loadTraditionalFoods() {
@@ -937,32 +1031,20 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     }
     
     private String buildMasterPrompt() {
-        // Get screening answers for personalized nutrition assessment
-        String screeningAnswers = getScreeningAnswersForPrompt();
-        
-        return "You are a PROFESSIONAL NUTRITIONIST and EXPERT CHEF. " +
-               "Analyze this person's nutritional screening data and provide personalized food recommendations.\n\n" +
+        return "Generate 10 Filipino/Asian/International food dishes for nutritional needs.\n\n" +
+               "User: " + (userAge != null ? userAge : "25") + "yo, " + (userSex != null ? userSex : "M") + 
+               ", BMI " + (userBMI != null ? userBMI : "22.5") + 
+               ", Health: " + (userHealthConditions != null ? userHealthConditions : "None") + 
+               ", Budget: " + (userBudgetLevel != null ? userBudgetLevel : "Low") + "\n\n" +
                
-               "SCREENING DATA: " + screeningAnswers + "\n\n" +
+               "Requirements:\n" +
+               "- Complete dish names only\n" +
+               "- Calories: 150-800, Protein: 5-40g, Fat: 2-30g, Carbs: 10-100g\n" +
+               "- Mix Filipino, Asian, international dishes\n" +
+               "- Each dish different\n\n" +
                
-               "USER PROFILE:\n" +
-               "Age: " + (userAge != null ? userAge : "25") + " | Sex: " + (userSex != null ? userSex : "Not specified") + "\n" +
-               "BMI: " + (userBMI != null ? userBMI : "22.5") + " | Location: " + (userBarangay != null ? userBarangay : "Not specified") + "\n" +
-               "Health: " + (userHealthConditions != null ? userHealthConditions : "None") + "\n" +
-               "Budget: " + (userBudgetLevel != null ? userBudgetLevel : "Low") + "\n" +
-               "Allergies: " + (userAllergies != null && !userAllergies.isEmpty() ? userAllergies : "None") + "\n" +
-               "Diet: " + (userDietPrefs != null && !userDietPrefs.isEmpty() ? userDietPrefs : "None") + "\n" +
-               "Pregnancy: " + (userPregnancyStatus != null ? userPregnancyStatus : "Not Applicable") + "\n\n" +
-               
-               "GENERATE 10 DIFFERENT food dishes that address their nutritional needs:\n" +
-               "1. Include Filipino, Asian, and international dishes\n" +
-               "2. Use complete dish names (not ingredients)\n" +
-               "3. Calories: 150-800, Protein: 5-40g, Fat: 2-30g, Carbs: 10-100g\n" +
-               "4. Each dish must be different\n" +
-               "5. Focus on nutrient-dense foods for their health goals\n\n" +
-               
-               "Return ONLY valid JSON array with 10 items:\n" +
-               "[{\"food_name\": \"[DISH NAME]\", \"calories\": <number>, \"protein_g\": <number>, \"fat_g\": <number>, \"carbs_g\": <number>, \"serving_size\": \"1 serving\", \"diet_type\": \"[TYPE]\", \"description\": \"[SIMPLE DESCRIPTION]\"}, ...]";
+               "Return JSON array:\n" +
+               "[{\"food_name\": \"[DISH]\", \"calories\": <num>, \"protein_g\": <num>, \"fat_g\": <num>, \"carbs_g\": <num>, \"serving_size\": \"1 serving\", \"diet_type\": \"[TYPE]\", \"description\": \"[SHORT DESC]\"}, ...]";
     }
     
     private List<FoodRecommendation> verifyFoodRecommendations(List<FoodRecommendation> recommendations) {

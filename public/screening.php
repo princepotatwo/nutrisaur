@@ -3112,13 +3112,11 @@ header {
                     <thead id="tableHeaders">
                         <tr>
                             <th>NAME</th>
-                            <th>EMAIL</th>
                             <th>AGE</th>
                             <th>WEIGHT (kg)</th>
                             <th>HEIGHT (cm)</th>
                             <th>BMI</th>
                             <th id="standardHeader">WEIGHT-FOR-AGE</th>
-                            <th>CLASSIFICATION</th>
                             <th>ACTIONS</th>
                         </tr>
                     </thead>
@@ -3170,11 +3168,11 @@ header {
                                             $bmi_classification = $results['bmi_for_age']['classification'] ?? 'N/A';
                                             
                                             // Format z-scores for display
-                                            $wfa_display = $wfa_zscore !== null ? 'Z: ' . number_format($wfa_zscore, 2) . ' (' . $wfa_classification . ')' : 'N/A';
-                                            $hfa_display = $hfa_zscore !== null ? 'Z: ' . number_format($hfa_zscore, 2) . ' (' . $hfa_classification . ')' : 'N/A';
-                                            $wfh_display = $wfh_zscore !== null ? 'Z: ' . number_format($wfh_zscore, 2) . ' (' . $wfh_classification . ')' : 'N/A';
-                                            $wfl_display = $wfl_zscore !== null ? 'Z: ' . number_format($wfl_zscore, 2) . ' (' . $wfl_classification . ')' : 'N/A';
-                                            $bmi_display = $bmi_zscore !== null ? 'Z: ' . number_format($bmi_zscore, 2) . ' (' . $bmi_classification . ')' : 'N/A';
+                                            $wfa_display = $wfa_zscore !== null ? 'Z: ' . number_format($wfa_zscore, 2) . '<br>' . $wfa_classification : 'N/A';
+                                            $hfa_display = $hfa_zscore !== null ? 'Z: ' . number_format($hfa_zscore, 2) . '<br>' . $hfa_classification : 'N/A';
+                                            $wfh_display = $wfh_zscore !== null ? 'Z: ' . number_format($wfh_zscore, 2) . '<br>' . $wfh_classification : 'N/A';
+                                            $wfl_display = $wfl_zscore !== null ? 'Z: ' . number_format($wfl_zscore, 2) . '<br>' . $wfl_classification : 'N/A';
+                                            $bmi_display = $bmi_zscore !== null ? 'Z: ' . number_format($bmi_zscore, 2) . '<br>' . $bmi_classification : 'N/A';
                                         } else {
                                             // If WHO calculation fails, show N/A
                                             $wfa_display = 'N/A';
@@ -3253,16 +3251,20 @@ header {
                                                 
                                                 echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
                                                 echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                                echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $ageDisplay . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $bmi . '</td>';
-                                                echo '<td class="standard-value">' . htmlspecialchars($data['display']) . '</td>';
-                                                echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
+                                                echo '<td class="standard-value">' . $data['display'] . '</td>';
                                                 echo '<td class="action-buttons">';
-                                                echo '<button class="btn-edit" onclick="editUser(\'' . htmlspecialchars($user['email']) . '\')" title="Edit User">✏️</button>';
-                                                echo '<button class="btn-delete" onclick="deleteUser(\'' . htmlspecialchars($user['email']) . '\')" title="Delete User">🗑️</button>';
+                                                echo '<div class="action-buttons-row">';
+                                                echo '<button class="btn btn-edit" onclick="editUser(\'' . htmlspecialchars($user['email']) . '\')" title="Edit User">';
+                                                echo '<span class="btn-icon">Edit</span>';
+                                                echo '</button>';
+                                                echo '<button class="btn btn-delete" onclick="deleteUser(\'' . htmlspecialchars($user['email']) . '\')" title="Delete User">';
+                                                echo '<span class="btn-icon">Delete</span>';
+                                                echo '</button>';
+                                                echo '</div>';
                                                 echo '</td>';
                                                 echo '</tr>';
                                             }
