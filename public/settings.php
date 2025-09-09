@@ -2008,37 +2008,37 @@ header {
         /* Professional column distribution */
         .user-table th:nth-child(1),
         .user-table td:nth-child(1) {
-            width: 12%; /* NAME */
+            width: 15%; /* NAME */
         }
         
         .user-table th:nth-child(2),
         .user-table td:nth-child(2) {
-            width: 16%; /* EMAIL */
+            width: 20%; /* EMAIL */
         }
         
         .user-table th:nth-child(3),
         .user-table td:nth-child(3) {
-            width: 14%; /* MUNICIPALITY */
+            width: 18%; /* MUNICIPALITY */
         }
         
         .user-table th:nth-child(4),
         .user-table td:nth-child(4) {
-            width: 12%; /* BARANGAY */
+            width: 15%; /* BARANGAY */
         }
         
         .user-table th:nth-child(5),
         .user-table td:nth-child(5) {
-            width: 6%; /* SEX */
+            width: 8%; /* SEX */
         }
         
         .user-table th:nth-child(6),
         .user-table td:nth-child(6) {
-            width: 10%; /* BIRTHDAY */
+            width: 12%; /* BIRTHDAY */
         }
         
         .user-table th:nth-child(7),
         .user-table td:nth-child(7) {
-            width: 30%; /* ACTIONS - Much larger for proper button alignment */
+            width: 12%; /* ACTIONS - Reduced to just fit buttons */
         }
 
         .user-table thead { 
@@ -2167,10 +2167,10 @@ header {
             overflow: visible;
             text-overflow: clip;
             text-align: center;
-            padding: 8px 12px;
-            max-width: 30%;
+            padding: 8px 6px;
+            max-width: 12%;
             box-sizing: border-box;
-            min-width: 140px;
+            min-width: 120px;
         }
 
 
@@ -2194,9 +2194,9 @@ header {
             .action-buttons .btn-edit,
             .action-buttons .btn-delete {
                 padding: 5px 10px;
-                font-size: 11px;
-                min-width: 50px;
-                height: 30px;
+                font-size: 10px;
+                min-width: 45px;
+                height: 26px;
             }
         }
 
@@ -2208,16 +2208,16 @@ header {
             }
             
             .action-buttons {
-                gap: 4px;
+                gap: 3px;
                 flex-direction: column;
             }
             
             .action-buttons .btn-edit,
             .action-buttons .btn-delete {
-                padding: 5px 8px;
-                font-size: 10px;
-                min-width: 45px;
-                height: 26px;
+                padding: 4px 8px;
+                font-size: 9px;
+                min-width: 40px;
+                height: 24px;
             }
         }
 
@@ -2228,10 +2228,10 @@ header {
         /* Action buttons styling */
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 4px;
             justify-content: center;
             align-items: center;
-            padding: 8px;
+            padding: 4px;
             flex-wrap: nowrap;
             width: 100%;
             box-sizing: border-box;
@@ -2260,9 +2260,9 @@ header {
             background-color: var(--color-highlight) !important;
             color: white !important;
             border: none !important;
-            padding: 8px 16px !important;
+            padding: 6px 12px !important;
             border-radius: 6px !important;
-            font-size: 12px !important;
+            font-size: 11px !important;
             font-weight: 600 !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
@@ -2272,9 +2272,9 @@ header {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
             white-space: nowrap !important;
             flex-shrink: 0 !important;
-            min-width: 60px !important;
-            height: 32px !important;
-            margin-right: 4px !important;
+            min-width: 50px !important;
+            height: 28px !important;
+            margin-right: 3px !important;
         }
 
         .action-buttons .btn-edit:hover {
@@ -2287,9 +2287,9 @@ header {
             background-color: #e74c3c !important;
             color: white !important;
             border: none !important;
-            padding: 8px 16px !important;
+            padding: 6px 12px !important;
             border-radius: 6px !important;
-            font-size: 12px !important;
+            font-size: 11px !important;
             font-weight: 600 !important;
             cursor: pointer !important;
             transition: all 0.3s ease !important;
@@ -2299,8 +2299,8 @@ header {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
             white-space: nowrap !important;
             flex-shrink: 0 !important;
-            min-width: 60px !important;
-            height: 32px !important;
+            min-width: 50px !important;
+            height: 28px !important;
         }
 
         .action-buttons .btn-delete:hover {
