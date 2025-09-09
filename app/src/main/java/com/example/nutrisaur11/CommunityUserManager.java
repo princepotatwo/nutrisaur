@@ -82,7 +82,7 @@ public class CommunityUserManager {
                 requestData.put("weight", weight);
                 requestData.put("height", height);
                 
-                String response = makeApiRequest("save_screening", requestData);
+                String response = makeApiRequest("register_community_user", requestData);
                 JSONObject jsonResponse = new JSONObject(response);
                 
                 if (jsonResponse.getBoolean("success")) {

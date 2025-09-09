@@ -2929,17 +2929,18 @@ header {
                                         
                                         if ($assessment['success']) {
                                             // Get WHO Growth Standards results from decision tree
-                                            $wfa_zscore = $assessment['weight_for_age']['z_score'] ?? null;
-                                            $hfa_zscore = $assessment['height_for_age']['z_score'] ?? null;
-                                            $wfh_zscore = $assessment['weight_for_height']['z_score'] ?? null;
-                                            $wfl_zscore = $assessment['weight_for_length']['z_score'] ?? null;
-                                            $bmi_zscore = $assessment['bmi_for_age']['z_score'] ?? null;
+                                            $results = $assessment['results'];
+                                            $wfa_zscore = $results['weight_for_age']['z_score'] ?? null;
+                                            $hfa_zscore = $results['height_for_age']['z_score'] ?? null;
+                                            $wfh_zscore = $results['weight_for_height']['z_score'] ?? null;
+                                            $wfl_zscore = $results['weight_for_length']['z_score'] ?? null;
+                                            $bmi_zscore = $results['bmi_for_age']['z_score'] ?? null;
                                             
-                                            $wfa_classification = $assessment['weight_for_age']['classification'] ?? 'N/A';
-                                            $hfa_classification = $assessment['height_for_age']['classification'] ?? 'N/A';
-                                            $wfh_classification = $assessment['weight_for_height']['classification'] ?? 'N/A';
-                                            $wfl_classification = $assessment['weight_for_length']['classification'] ?? 'N/A';
-                                            $bmi_classification = $assessment['bmi_for_age']['classification'] ?? 'N/A';
+                                            $wfa_classification = $results['weight_for_age']['classification'] ?? 'N/A';
+                                            $hfa_classification = $results['height_for_age']['classification'] ?? 'N/A';
+                                            $wfh_classification = $results['weight_for_height']['classification'] ?? 'N/A';
+                                            $wfl_classification = $results['weight_for_length']['classification'] ?? 'N/A';
+                                            $bmi_classification = $results['bmi_for_age']['classification'] ?? 'N/A';
                                             
                                             // Format z-scores for display
                                             $wfa_display = $wfa_zscore !== null ? 'Z: ' . number_format($wfa_zscore, 2) . ' (' . $wfa_classification . ')' : 'N/A';
