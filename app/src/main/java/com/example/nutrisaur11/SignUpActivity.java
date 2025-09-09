@@ -238,8 +238,8 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }).start();
             
-            // Sync default food preferences
-            syncDefaultFoodPreferences(email);
+            // Note: Food preferences will be set during screening process
+            // syncDefaultFoodPreferences(email);
             
         } catch (Exception e) {
             android.util.Log.e("SignUpActivity", "Error saving user profile: " + e.getMessage());
