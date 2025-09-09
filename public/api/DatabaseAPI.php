@@ -2625,6 +2625,109 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // SAVE SCREENING DATA API
+        // ========================================
+        case 'save_screening':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Try to get JSON data first
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                // If JSON parsing fails, try form data
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data provided']);
+                    break;
+                }
+                
+                $email = $data['email'] ?? '';
+                $name = $data['name'] ?? '';
+                $password = $data['password'] ?? '';
+                $municipality = $data['municipality'] ?? '';
+                $barangay = $data['barangay'] ?? '';
+                $sex = $data['sex'] ?? '';
+                $birthday = $data['birthday'] ?? '';
+                $is_pregnant = $data['is_pregnant'] ?? 'No';
+                $weight = $data['weight'] ?? '0';
+                $height = $data['height'] ?? '0';
+                
+                if (empty($email)) {
+                    echo json_encode(['success' => false, 'message' => 'Email is required']);
+                    break;
+                }
+                
+                // Check if user exists
+                $checkResult = $db->select('community_users', 'email', 'email = ?', [$email]);
+                
+                if ($checkResult['success'] && !empty($checkResult['data'])) {
+                    // User exists, update their screening data
+                    $updateData = [
+                        'municipality' => $municipality,
+                        'barangay' => $barangay,
+                        'sex' => $sex,
+                        'birthday' => $birthday,
+                        'is_pregnant' => $is_pregnant,
+                        'weight' => $weight,
+                        'height' => $height,
+                        'screening_date' => date('Y-m-d H:i:s')
+                    ];
+                    
+                    $result = $db->update('community_users', $updateData, 'email = ?', [$email]);
+                    
+                    if ($result['success']) {
+                        echo json_encode([
+                            'success' => true, 
+                            'message' => 'Screening data updated successfully',
+                            'data' => $updateData
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to update screening data: ' . $result['message']]);
+                    }
+                } else {
+                    // User doesn't exist, create new user with screening data
+                    if (empty($name) || empty($password)) {
+                        echo json_encode(['success' => false, 'message' => 'Name and password are required for new users']);
+                        break;
+                    }
+                    
+                    // Hash password
+                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                    
+                    $insertData = [
+                        'name' => $name,
+                        'email' => $email,
+                        'password' => $hashedPassword,
+                        'municipality' => $municipality,
+                        'barangay' => $barangay,
+                        'sex' => $sex,
+                        'birthday' => $birthday,
+                        'is_pregnant' => $is_pregnant,
+                        'weight' => $weight,
+                        'height' => $height,
+                        'screening_date' => date('Y-m-d H:i:s')
+                    ];
+                    
+                    $result = $db->insert('community_users', $insertData);
+                    
+                    if ($result['success']) {
+                        echo json_encode([
+                            'success' => true, 
+                            'message' => 'User created and screening data saved successfully',
+                            'data' => $insertData
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to create user: ' . $result['message']]);
+                    }
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        // ========================================
         // REGISTER API
         // ========================================
         case 'register':
