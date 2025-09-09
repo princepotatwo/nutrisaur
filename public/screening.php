@@ -2914,10 +2914,11 @@ header {
                                 if (!empty($users)) {
                                     foreach ($users as $user) {
                                         // Get WHO growth standards data from database columns
-                                        $wfa_classification = $user['weight-for-age'] ?? 'N/A';
-                                        $hfa_classification = $user['height-for-age'] ?? 'N/A';
-                                        $wfh_classification = $user['weight-for-height'] ?? 'N/A';
-                                        $wfl_classification = $user['weight-for-length'] ?? 'N/A';
+                                        // Handle column names with hyphens by using array access
+                                        $wfa_classification = $user['weight-for-age'] ?? $user['`weight-for-age`'] ?? 'N/A';
+                                        $hfa_classification = $user['height-for-age'] ?? $user['`height-for-age`'] ?? 'N/A';
+                                        $wfh_classification = $user['weight-for-height'] ?? $user['`weight-for-height`'] ?? 'N/A';
+                                        $wfl_classification = $user['weight-for-length'] ?? $user['`weight-for-length`'] ?? 'N/A';
                                         $bmi_classification = $user['bmi_category'] ?? 'N/A';
                                         
                                         // Format z-scores for display
