@@ -2210,18 +2210,18 @@ header {
 
         .user-table th,
         .user-table td {
-            padding: 12px 8px;
+            padding: 8px 6px;
             text-align: left;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             white-space: normal;
             word-wrap: break-word;
             word-break: break-word;
             overflow-wrap: break-word;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
             vertical-align: middle;
             position: relative;
-            line-height: 1.4;
+            line-height: 1.3;
             max-width: none;
             overflow: visible;
             text-overflow: clip;
@@ -2233,7 +2233,60 @@ header {
             white-space: nowrap;
             overflow: visible;
             text-overflow: clip;
-            min-width: 120px;
+            min-width: 140px;
+            text-align: center;
+        }
+        
+        /* Action Buttons Row */
+        .action-buttons-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .btn-edit {
+            background: var(--color-highlight);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 50px;
+        }
+        
+        .btn-edit:hover {
+            background: var(--color-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.3);
+        }
+        
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 50px;
+        }
+        
+        .btn-delete:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+        }
+        
+        /* Standard Value Styling */
+        .standard-value {
+            font-size: 11px;
+            line-height: 1.3;
             text-align: center;
         }
 
@@ -3246,7 +3299,7 @@ header {
                                                 if ($ageInMonths > 71 && $standard === 'bmi-for-age') {
                                                     $adultBmiClassification = getAdultBMIClassification($bmi);
                                                     $data['classification'] = $adultBmiClassification;
-                                                    $data['display'] = 'BMI: ' . $bmi . ' (' . $adultBmiClassification . ')';
+                                                    $data['display'] = 'BMI: ' . $bmi . '<br>' . $adultBmiClassification;
                                                 }
                                                 
                                                 echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
