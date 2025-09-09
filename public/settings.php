@@ -2256,27 +2256,55 @@ header {
         }
 
         .action-buttons .btn-edit {
-            background-color: rgba(161, 180, 84, 0.15);
-            color: var(--color-highlight);
-            border: 2px solid rgba(161, 180, 84, 0.4);
+            background-color: rgba(161, 180, 84, 0.15) !important;
+            color: var(--color-highlight) !important;
+            border: 2px solid rgba(161, 180, 84, 0.4) !important;
+            padding: 6px 12px !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+            min-width: 55px !important;
+            height: 32px !important;
         }
 
         .action-buttons .btn-edit:hover {
-            background-color: rgba(161, 180, 84, 0.25);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(161, 180, 84, 0.3);
+            background-color: rgba(161, 180, 84, 0.25) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(161, 180, 84, 0.3) !important;
         }
 
         .action-buttons .btn-delete {
-            background-color: rgba(207, 134, 134, 0.15);
-            color: var(--color-danger);
-            border: 2px solid rgba(207, 134, 134, 0.4);
+            background-color: rgba(207, 134, 134, 0.15) !important;
+            color: var(--color-danger) !important;
+            border: 2px solid rgba(207, 134, 134, 0.4) !important;
+            padding: 6px 12px !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+            min-width: 55px !important;
+            height: 32px !important;
         }
 
         .action-buttons .btn-delete:hover {
-            background-color: rgba(207, 134, 134, 0.25);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(207, 134, 134, 0.3);
+            background-color: rgba(207, 134, 134, 0.25) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(207, 134, 134, 0.3) !important;
         }
 
         .action-buttons .btn-edit:disabled,
@@ -2912,11 +2940,11 @@ header {
                                     echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
                                     echo '<td class="action-buttons">';
-                                    echo '<button class="btn btn-add" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User" style="background-color: var(--color-highlight); margin-right: 4px;">';
-                                    echo '<span class="btn-text">Edit</span>';
+                                    echo '<button class="btn-edit" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User">';
+                                    echo 'Edit';
                                     echo '</button>';
-                                    echo '<button class="btn btn-add" onclick="deleteUser(\'' . $userIdentifier . '\')" title="Delete User" style="background-color: #e74c3c;">';
-                                    echo '<span class="btn-text">Delete</span>';
+                                    echo '<button class="btn-delete" onclick="deleteUser(\'' . $userIdentifier . '\')" title="Delete User">';
+                                    echo 'Delete';
                                     echo '</button>';
                                     echo '</td>';
                                     echo '</tr>';
