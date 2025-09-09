@@ -2237,51 +2237,6 @@ header {
             text-align: center;
         }
         
-        /* Action Buttons Row */
-        .action-buttons-row {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .btn-edit {
-            background: var(--color-highlight);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 50px;
-        }
-        
-        .btn-edit:hover {
-            background: var(--color-primary);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.3);
-        }
-        
-        .btn-delete {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 50px;
-        }
-        
-        .btn-delete:hover {
-            background: #c0392b;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
-        }
         
         /* Standard Value Styling */
         .standard-value {
@@ -3270,17 +3225,12 @@ header {
                                             $data = $whoData['weight-for-age'];
                                             echo '<tr data-standard="weight-for-age" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                         echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                             echo '<td>' . $ageDisplay . '</td>';
                                             echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                             echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             echo '<td>' . $bmi . '</td>';
                                             echo '<td class="standard-value">' . htmlspecialchars($data['display']) . '</td>';
                                             echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
-                                            echo '<td class="action-buttons">';
-                                            echo '<button class="btn-edit" onclick="editUser(\'' . htmlspecialchars($user['email']) . '\')" title="Edit User">✏️</button>';
-                                            echo '<button class="btn-delete" onclick="deleteUser(\'' . htmlspecialchars($user['email']) . '\')" title="Delete User">🗑️</button>';
-                                            echo '</td>';
                                         echo '</tr>';
                                         }
                                         
