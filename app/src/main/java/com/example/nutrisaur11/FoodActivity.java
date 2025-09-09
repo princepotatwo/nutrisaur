@@ -458,6 +458,11 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             budgetFoods.addAll(cachedFoods.getOrDefault("budget", new ArrayList<>()));
             
             runOnUiThread(() -> {
+                traditionalAdapter.setLoading(false);
+                healthyAdapter.setLoading(false);
+                internationalAdapter.setLoading(false);
+                budgetAdapter.setLoading(false);
+                
                 traditionalAdapter.notifyDataSetChanged();
                 healthyAdapter.notifyDataSetChanged();
                 internationalAdapter.notifyDataSetChanged();
@@ -485,6 +490,20 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
                     traditionalAdapter, healthyAdapter, internationalAdapter, budgetAdapter
                 );
                 
+                // Turn off loading state after API completes
+                runOnUiThread(() -> {
+                    traditionalAdapter.setLoading(false);
+                    healthyAdapter.setLoading(false);
+                    internationalAdapter.setLoading(false);
+                    budgetAdapter.setLoading(false);
+                    
+                    traditionalAdapter.notifyDataSetChanged();
+                    healthyAdapter.notifyDataSetChanged();
+                    internationalAdapter.notifyDataSetChanged();
+                    budgetAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "API foods loaded, loading state turned off");
+                });
+                
                 // Cache the results for next time
                 Map<String, List<FoodRecommendation>> apiFoods = new HashMap<>();
                 apiFoods.put("traditional", new ArrayList<>(traditionalFoods));
@@ -498,7 +517,18 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
                 
             } catch (Exception e) {
                 Log.e(TAG, "Error loading from API: " + e.getMessage());
-                // Keep showing fallback foods
+                // Turn off loading state even on error
+                runOnUiThread(() -> {
+                    traditionalAdapter.setLoading(false);
+                    healthyAdapter.setLoading(false);
+                    internationalAdapter.setLoading(false);
+                    budgetAdapter.setLoading(false);
+                    
+                    traditionalAdapter.notifyDataSetChanged();
+                    healthyAdapter.notifyDataSetChanged();
+                    internationalAdapter.notifyDataSetChanged();
+                    budgetAdapter.notifyDataSetChanged();
+                });
             }
         });
     }
