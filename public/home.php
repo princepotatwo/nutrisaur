@@ -50,23 +50,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
                 $user = $stmt->fetch();
             
                 if ($user && password_verify($password, $user['password'])) {
-                    if (!$user['email_verified']) {
-                        $loginError = "Please verify your email before logging in";
-                    } else {
-                        // Set session variables
-                        $_SESSION['user_id'] = $user['user_id'];
-                        $_SESSION['username'] = $user['username'];
-                        $_SESSION['email'] = $user['email'];
-                        $_SESSION['is_admin'] = false;
-                        
-                        // Update last login
-                        $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
-                        $updateStmt->execute([$user['user_id']]);
-                        
-                        // Redirect to dashboard
-                        header("Location: /dash");
-                        exit;
-                    }
+                    // Set session variables regardless of email verification status
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['is_admin'] = false;
+                    
+                    // Update last login
+                    $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                    $updateStmt->execute([$user['user_id']]);
+                    
+                    // Redirect to dashboard
+                    header("Location: /dash");
+                    exit;
                 } else {
                     $loginError = "Invalid username/email or password";
                 }
@@ -165,11 +161,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 $user = $stmt->fetch();
                 
                 if ($user && password_verify($password, $user['password'])) {
-                    if (!$user['email_verified']) {
-                        echo json_encode(['success' => false, 'message' => 'Please verify your email before logging in']);
-                        exit;
-                    }
-                    
                     // Set session variables
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
