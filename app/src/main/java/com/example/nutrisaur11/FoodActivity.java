@@ -937,102 +937,32 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     }
     
     private String buildMasterPrompt() {
-        // Parse age to determine life stage
-        int age = 25; // default
-        try {
-            age = Integer.parseInt(userAge != null ? userAge : "25");
-        } catch (NumberFormatException e) {
-            age = 25;
-        }
-        
-        // Determine life stage and special considerations
-        String lifeStage = determineLifeStage(age);
-        String specialConsiderations = buildSpecialConsiderations(age);
-        
         // Get screening answers for personalized nutrition assessment
         String screeningAnswers = getScreeningAnswersForPrompt();
         
-        return "You are a PROFESSIONAL NUTRITIONIST and EXPERT CHEF specializing in Filipino and international cuisine. " +
-               "Your task is to analyze this person's nutritional screening data and provide personalized food recommendations.\n\n" +
+        return "You are a PROFESSIONAL NUTRITIONIST and EXPERT CHEF. " +
+               "Analyze this person's nutritional screening data and provide personalized food recommendations.\n\n" +
                
-               "FIRST: ACT AS A NUTRITIONIST - Analyze and classify this person's nutritional needs based on their screening answers:\n" +
                "SCREENING DATA: " + screeningAnswers + "\n\n" +
                
-               "NUTRITIONAL ASSESSMENT REQUIRED:\n" +
-               "1. Classify their nutritional risk level (Low/Medium/High) based on screening responses\n" +
-               "2. Identify specific nutritional deficiencies or concerns\n" +
-               "3. Determine their primary nutritional needs (weight gain/weight loss/maintenance/malnutrition recovery)\n" +
-               "4. Assess their dietary restrictions and health considerations\n" +
-               "5. Evaluate their economic situation and food accessibility\n\n" +
-               
-               "USER PROFILE SUMMARY:\n" +
-               "Age: " + (userAge != null ? userAge : "25") + " (" + lifeStage + ")\n" +
-               "Sex: " + (userSex != null ? userSex : "Not specified") + "\n" +
-               "BMI: " + (userBMI != null ? userBMI : "22.5") + "\n" +
-               "Location: " + (userBarangay != null ? userBarangay : "Not specified") + "\n" +
-               "Health Conditions: " + (userHealthConditions != null ? userHealthConditions : "None") + "\n" +
-               "Budget Level: " + (userBudgetLevel != null ? userBudgetLevel : "Low") + "\n" +
+               "USER PROFILE:\n" +
+               "Age: " + (userAge != null ? userAge : "25") + " | Sex: " + (userSex != null ? userSex : "Not specified") + "\n" +
+               "BMI: " + (userBMI != null ? userBMI : "22.5") + " | Location: " + (userBarangay != null ? userBarangay : "Not specified") + "\n" +
+               "Health: " + (userHealthConditions != null ? userHealthConditions : "None") + "\n" +
+               "Budget: " + (userBudgetLevel != null ? userBudgetLevel : "Low") + "\n" +
                "Allergies: " + (userAllergies != null && !userAllergies.isEmpty() ? userAllergies : "None") + "\n" +
-               "Diet Preferences: " + (userDietPrefs != null && !userDietPrefs.isEmpty() ? userDietPrefs : "None") + "\n" +
-               "Pregnancy Status: " + (userPregnancyStatus != null ? userPregnancyStatus : "Not Applicable") + "\n\n" +
+               "Diet: " + (userDietPrefs != null && !userDietPrefs.isEmpty() ? userDietPrefs : "None") + "\n" +
+               "Pregnancy: " + (userPregnancyStatus != null ? userPregnancyStatus : "Not Applicable") + "\n\n" +
                
-               "SPECIAL CONSIDERATIONS: " + specialConsiderations + "\n\n" +
-               
-               "NOW: ACT AS A CHEF - Generate EXACTLY 10 DIFFERENT food dishes that address their specific nutritional needs:\n" +
-               "REQUIREMENTS:\n" +
-               "1. Choose dishes that directly address their nutritional deficiencies and health concerns\n" +
-               "2. Prioritize foods that are accessible in their location and budget\n" +
-               "3. Include traditional Filipino dishes, Asian cuisine, Western dishes, and international foods\n" +
-               "4. Consider ingredients commonly available in Philippine markets and restaurants\n" +
-               "5. Ensure dishes are appropriate for their age, health conditions, and dietary restrictions\n" +
-               "6. Include both popular and diverse food options that fit their economic situation\n" +
-               "7. Each dish must be completely different from the previous recommendations\n" +
-               "8. Focus on nutrient-dense foods that support their specific health goals\n\n" +
-               
-               "CRITICAL: Each dish must be different. NO REPEATS.\n\n" +
-               
-               "FOOD NAME RULES:\n" +
-               "1. Keep food names SHORT (maximum 30 characters)\n" +
-               "2. Use simple, clear names without unnecessary words\n" +
-               "3. NO parentheses, brackets, or extra descriptions in food_name\n" +
-               "4. NO words like 'Puree', 'Mash', 'Cream', 'Smoothie' in food_name\n" +
-               "5. Use actual dish names that people recognize and order\n" +
-               "6. Examples: 'Adobo', 'Sinigang', 'Kare-kare', 'Pancit', 'Tapsilog', 'Chicken Teriyaki', 'Beef Bulgogi', 'Pad Thai', 'Spaghetti', 'Burger'\n" +
-               "7. NO numbers or special characters in food names\n" +
-               "8. NO generic names like 'Dish' or 'Food'\n" +
-               "9. NEVER use single ingredients like 'Apple', 'Carrot', 'Pear', 'Banana', 'Rice', 'Chicken', 'Beef', 'Tomato' - ONLY complete dishes\n" +
-               "10. Avoid odd or made-up combinations\n" +
-               "11. CRITICAL: Each food_name must be a complete dish that people order at restaurants or cook at home\n" +
-               "12. Examples of GOOD names: 'Chicken Adobo', 'Beef Bulgogi', 'Pad Thai', 'Spaghetti Carbonara', 'Fish and Chips'\n" +
-               "13. Examples of BAD names: 'Apple', 'Carrot', 'Pear', 'Rice', 'Chicken' (these are ingredients, not dishes)\n\n" +
-               
-               "NUTRITION REQUIREMENTS:\n" +
-               "1. All nutritional information MUST be for 1 serving only\n" +
-               "2. Use accurate, realistic nutrition data from reliable sources\n" +
-               "3. Calories should be between 150-800 per serving\n" +
-               "4. Protein should be between 5-40g per serving\n" +
-               "5. Fat should be between 2-30g per serving\n" +
-               "6. Carbs should be between 10-100g per serving\n" +
-               "7. Ensure total calories = (protein × 4) + (fat × 9) + (carbs × 4) ± 10%\n" +
-               "8. Use realistic serving sizes (e.g., 1 cup rice, 1 piece chicken, 1 bowl soup)\n" +
-               "9. Verify nutrition data is appropriate for Filipino/Asian dishes\n" +
-               "10. Prioritize nutrients that address their specific health needs\n\n" +
-               
-               "DESCRIPTION REQUIREMENTS:\n" +
-               "1. Write simple, appetizing introductions for each dish\n" +
-               "2. Focus on what makes the dish appealing and unique\n" +
-               "3. Keep descriptions 1-2 sentences long\n" +
-               "4. NO generic phrases like 'delicious food recommendation'\n" +
-               "5. NO repetitive descriptions across different dishes\n" +
-               "6. NO detailed nutrition analysis (that goes in ingredients button)\n" +
-               "7. NO detailed ingredient lists (that goes in ingredients button)\n" +
-               "8. Examples of good descriptions:\n" +
-               "   - 'A classic Filipino dish featuring tender chicken braised in a savory soy-vinegar sauce with aromatic garlic and bay leaves.'\n" +
-               "   - 'Fresh rice noodles stir-fried with crisp vegetables and succulent shrimp in a perfectly balanced sweet-savory sauce.'\n" +
-               "   - 'Hearty beef stew simmered with root vegetables in a rich, flavorful broth that warms the soul.'\n\n" +
+               "GENERATE 10 DIFFERENT food dishes that address their nutritional needs:\n" +
+               "1. Include Filipino, Asian, and international dishes\n" +
+               "2. Use complete dish names (not ingredients)\n" +
+               "3. Calories: 150-800, Protein: 5-40g, Fat: 2-30g, Carbs: 10-100g\n" +
+               "4. Each dish must be different\n" +
+               "5. Focus on nutrient-dense foods for their health goals\n\n" +
                
                "Return ONLY valid JSON array with 10 items:\n" +
-               "[{\"food_name\": \"[SHORT DISH NAME]\", \"calories\": <number>, \"protein_g\": <number>, \"fat_g\": <number>, \"carbs_g\": <number>, \"serving_size\": \"1 serving\", \"diet_type\": \"[TYPE]\", \"description\": \"[SIMPLE APPETIZING INTRODUCTION]\"}, ...]";
+               "[{\"food_name\": \"[DISH NAME]\", \"calories\": <number>, \"protein_g\": <number>, \"fat_g\": <number>, \"carbs_g\": <number>, \"serving_size\": \"1 serving\", \"diet_type\": \"[TYPE]\", \"description\": \"[SIMPLE DESCRIPTION]\"}, ...]";
     }
     
     private List<FoodRecommendation> verifyFoodRecommendations(List<FoodRecommendation> recommendations) {
@@ -1660,13 +1590,6 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
                     Log.d(TAG, "Substitution selected: " + substitution.getFoodName());
                     // Handle substitution selection - could add to favorites, show details, etc.
                     showSubstitutionSelectedMessage(substitution);
-                }
-                
-                @Override
-                public void onKeepOriginal() {
-                    Log.d(TAG, "Keep original selected");
-                    // Handle keeping original food
-                    showKeepOriginalMessage(originalFood);
                 }
                 
                 @Override

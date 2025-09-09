@@ -31,11 +31,10 @@ public class FoodSubstitutionDialog extends Dialog {
     private TextView originalFoodName, originalFoodNutrition, substitutionReasonText;
     private TextView substitutionCount;
     private RecyclerView substitutionsRecycler;
-    private Button keepOriginalButton, refreshSubstitutionsButton;
+    private Button refreshSubstitutionsButton;
     
     public interface OnSubstitutionSelectedListener {
         void onSubstitutionSelected(FoodRecommendation substitution);
-        void onKeepOriginal();
         void onRefreshSubstitutions();
     }
     
@@ -80,7 +79,6 @@ public class FoodSubstitutionDialog extends Dialog {
         substitutionReasonText = findViewById(R.id.substitution_reason_text);
         substitutionCount = findViewById(R.id.substitution_count);
         substitutionsRecycler = findViewById(R.id.substitutions_recycler);
-        keepOriginalButton = findViewById(R.id.keep_original_button);
         refreshSubstitutionsButton = findViewById(R.id.refresh_substitutions_button);
         
         // Close button
@@ -136,14 +134,6 @@ public class FoodSubstitutionDialog extends Dialog {
     }
     
     private void setupClickListeners() {
-        keepOriginalButton.setOnClickListener(v -> {
-            Log.d(TAG, "Keep original selected");
-            if (listener != null) {
-                listener.onKeepOriginal();
-            }
-            dismiss();
-        });
-        
         refreshSubstitutionsButton.setOnClickListener(v -> {
             Log.d(TAG, "Refresh substitutions requested");
             if (listener != null) {

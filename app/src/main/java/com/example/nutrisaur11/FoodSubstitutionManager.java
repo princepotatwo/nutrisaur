@@ -130,69 +130,60 @@ public class FoodSubstitutionManager {
                                          String substitutionReason) {
         
         StringBuilder prompt = new StringBuilder();
-        prompt.append("You are an expert nutritionist and chef specializing in Filipino cuisine. ");
-        prompt.append("Find EXACTLY 3 SIMILAR FOOD DISHES that are variations or related to the original dish:\n\n");
+        prompt.append("You are a PROFESSIONAL NUTRITIONIST and EXPERT CHEF. ");
+        prompt.append("Provide EXACTLY 3 HEALTHIER, NUTRITIONALLY SUPERIOR alternatives to this dish:\n\n");
         
-        prompt.append("ORIGINAL FOOD:\n");
+        prompt.append("ORIGINAL DISH:\n");
         prompt.append("Name: ").append(originalFood.getFoodName()).append("\n");
         prompt.append("Calories: ").append(originalFood.getCalories()).append(" kcal\n");
-        prompt.append("Protein: ").append(originalFood.getProtein()).append("g\n");
-        prompt.append("Fat: ").append(originalFood.getFat()).append("g\n");
-        prompt.append("Carbs: ").append(originalFood.getCarbs()).append("g\n");
-        prompt.append("Description: ").append(originalFood.getDescription()).append("\n\n");
+        prompt.append("Protein: ").append(originalFood.getProtein()).append("g | Fat: ").append(originalFood.getFat()).append("g | Carbs: ").append(originalFood.getCarbs()).append("g\n\n");
         
-        prompt.append("FIND SIMILAR FOODS LIKE:\n");
-        prompt.append("- If original is 'Adobo Manok' → find 'Adobong Sitaw', 'Adobong Kangkong', 'Adobong Tofu'\n");
-        prompt.append("- If original is 'Sinigang na Baboy' → find 'Sinigang na Bangus', 'Sinigang na Hipon', 'Sinigang na Isda'\n");
-        prompt.append("- If original is 'Kare-kare' → find 'Kare-kareng Gulay', 'Kare-kareng Tofu', 'Kare-kareng Bangus'\n");
-        prompt.append("- If original is 'Tapsilog' → find 'Tocilog', 'Longsilog', 'Bangsilog', 'Cornsilog'\n");
-        prompt.append("- If original is 'Pancit Canton' → find 'Pancit Bihon', 'Pancit Malabon', 'Pancit Palabok'\n");
-        prompt.append("- If original is 'Chicken Teriyaki' → find 'Beef Teriyaki', 'Salmon Teriyaki', 'Tofu Teriyaki'\n");
-        prompt.append("- If original is 'Pad Thai' → find 'Pad See Ew', 'Pad Kra Pao', 'Pad Woon Sen'\n\n");
+        prompt.append("NUTRITIONIST REQUIREMENTS - Find alternatives that are:\n");
+        prompt.append("1. LOWER in calories, sodium, and saturated fat\n");
+        prompt.append("2. HIGHER in protein, fiber, vitamins, and minerals\n");
+        prompt.append("3. Use leaner proteins (fish, chicken breast, tofu, legumes)\n");
+        prompt.append("4. Add more vegetables and whole grains\n");
+        prompt.append("5. Reduce processed ingredients and oil\n");
+        prompt.append("6. Maintain similar cooking method but healthier preparation\n\n");
         
-        prompt.append("SIMILARITY REQUIREMENTS:\n");
-        prompt.append("1. SAME COOKING METHOD (adobo, sinigang, stir-fry, grill, etc.)\n");
-        prompt.append("2. SAME SAUCE/BASE (soy-vinegar, sour soup, teriyaki, etc.)\n");
-        prompt.append("3. SAME CUISINE TYPE (Filipino, Asian, Western, etc.)\n");
-        prompt.append("4. DIFFERENT MAIN INGREDIENT (chicken→pork→fish→vegetables→tofu)\n");
-        prompt.append("5. SIMILAR NUTRITIONAL PROFILE (±15% calories)\n");
-        prompt.append("6. AVAILABLE IN PHILIPPINES\n");
-        prompt.append("7. APPROPRIATE FOR USER PROFILE\n\n");
+        prompt.append("HEALTH-FOCUSED SUBSTITUTIONS:\n");
+        prompt.append("- If original is 'Adobo Manok' → 'Adobong Tofu with Vegetables', 'Adobong Sitaw', 'Adobong Kangkong'\n");
+        prompt.append("- If original is 'Sinigang na Baboy' → 'Sinigang na Bangus', 'Sinigang na Hipon', 'Sinigang na Gulay'\n");
+        prompt.append("- If original is 'Kare-kare' → 'Kare-kareng Gulay', 'Kare-kareng Tofu', 'Kare-kareng Bangus'\n");
+        prompt.append("- If original is 'Tapsilog' → 'Tocilog with Brown Rice', 'Fishsilog', 'Tofusilog'\n");
+        prompt.append("- If original is 'Pancit Canton' → 'Pancit Bihon with Vegetables', 'Pancit Gulay', 'Pancit Tofu'\n");
+        prompt.append("- If original is 'Chicken Teriyaki' → 'Salmon Teriyaki', 'Tofu Teriyaki', 'Chicken Breast Teriyaki'\n\n");
         
-        prompt.append("USER PROFILE CONSIDERATIONS:\n");
+        prompt.append("USER HEALTH PROFILE:\n");
         if (userHealthConditions != null && !userHealthConditions.equals("None")) {
-            prompt.append("Health: ").append(userHealthConditions).append(" - choose healthier variations\n");
+            prompt.append("Health Conditions: ").append(userHealthConditions).append(" - prioritize heart-healthy, low-sodium options\n");
         }
-        if (userBudgetLevel != null) {
-            prompt.append("Budget: ").append(userBudgetLevel).append(" - consider cost-effective options\n");
+        if (userBMI != null && Double.parseDouble(userBMI.replaceAll("[^0-9.]", "")) < 18.5) {
+            prompt.append("Underweight: Include calorie-dense but nutrient-rich alternatives\n");
+        } else if (userBMI != null && Double.parseDouble(userBMI.replaceAll("[^0-9.]", "")) > 25) {
+            prompt.append("Overweight: Focus on low-calorie, high-fiber alternatives\n");
         }
         if (userAllergies != null && !userAllergies.isEmpty()) {
-            prompt.append("Allergies: ").append(userAllergies).append(" - avoid allergen-containing variations\n");
+            prompt.append("Allergies: ").append(userAllergies).append(" - ensure all alternatives are allergen-free\n");
         }
         if (userDietPrefs != null && !userDietPrefs.isEmpty()) {
-            prompt.append("Diet: ").append(userDietPrefs).append(" - match dietary preferences\n");
+            prompt.append("Diet: ").append(userDietPrefs).append(" - match dietary requirements\n");
         }
         if ("Yes".equalsIgnoreCase(userPregnancyStatus)) {
-            prompt.append("Pregnancy: Safe for pregnant women - avoid raw/undercooked options\n");
+            prompt.append("Pregnancy: Ensure all alternatives are safe for pregnant women\n");
         }
         
-        prompt.append("\nNUTRITION REQUIREMENTS:\n");
-        prompt.append("1. All nutritional information MUST be for 1 serving only\n");
-        prompt.append("2. Use accurate, realistic nutrition data\n");
-        prompt.append("3. Calories should be within ±15% of original food\n");
-        prompt.append("4. Ensure total calories = (protein × 4) + (fat × 9) + (carbs × 4) ± 10%\n");
-        prompt.append("5. Use realistic serving sizes\n\n");
-        
-        prompt.append("DESCRIPTION REQUIREMENTS:\n");
-        prompt.append("1. Write simple, appetizing descriptions\n");
-        prompt.append("2. Explain the similarity to original dish\n");
-        prompt.append("3. Mention the key difference (main ingredient change)\n");
-        prompt.append("4. Keep descriptions 1-2 sentences long\n\n");
+        prompt.append("\nNUTRITIONAL ACCURACY:\n");
+        prompt.append("- Calories: ±10% of original (preferably lower)\n");
+        prompt.append("- Protein: Higher than original when possible\n");
+        prompt.append("- Fat: Lower than original, focus on healthy fats\n");
+        prompt.append("- Carbs: Similar or lower, prefer complex carbs\n");
+        prompt.append("- Serving size: 1 serving (realistic portions)\n\n");
         
         prompt.append("Return ONLY valid JSON array with 3 items:\n");
-        prompt.append("[{\"food_name\": \"[SIMILAR DISH NAME]\", \"calories\": <number>, \"protein_g\": <number>, ");
+        prompt.append("[{\"food_name\": \"[HEALTHY ALTERNATIVE]\", \"calories\": <number>, \"protein_g\": <number>, ");
         prompt.append("\"fat_g\": <number>, \"carbs_g\": <number>, \"serving_size\": \"1 serving\", ");
-        prompt.append("\"diet_type\": \"[TYPE]\", \"description\": \"[SIMILAR TO ORIGINAL WITH KEY DIFFERENCE]\"}, ...]");
+        prompt.append("\"diet_type\": \"[TYPE]\", \"description\": \"[HEALTH BENEFITS AND NUTRITIONAL IMPROVEMENTS]\"}, ...]");
         
         return prompt.toString();
     }
