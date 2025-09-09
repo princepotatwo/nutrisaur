@@ -97,6 +97,7 @@ public class CommunityUserManager {
                 if (jsonResponse.getBoolean("success")) {
                     // Save user data to SharedPreferences
                     JSONObject userData = jsonResponse.getJSONObject("user");
+                    Log.d(TAG, "User data from API: " + userData.toString());
                     saveUserToPrefs(userData);
                     
                     // Set login status
@@ -114,6 +115,7 @@ public class CommunityUserManager {
                 
             } catch (Exception e) {
                 Log.e(TAG, "Registration error: " + e.getMessage());
+                Log.e(TAG, "Registration error stack trace: " + e.getStackTrace());
                 callback.onError("Registration failed: " + e.getMessage());
             }
         }).start();
@@ -191,6 +193,8 @@ public class CommunityUserManager {
             editor.putString("user_height", user.optString("height", ""));
             editor.putString("user_screening_date", user.optString("screening_date", ""));
             editor.apply();
+            
+            Log.d(TAG, "User data saved to preferences successfully");
         } catch (Exception e) {
             Log.e(TAG, "Error saving user to prefs: " + e.getMessage());
         }

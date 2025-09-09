@@ -2845,19 +2845,92 @@ header {
             <div class="user-management-container">
                 <div class="table-header">
                     <div class="header-controls">
-                        <div class="search-row" style="justify-content: center; gap: 15px;">
+                        <div class="search-row" style="justify-content: center; gap: 15px; flex-wrap: wrap;">
                             <div class="search-container" style="width: 250px;">
                                 <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
                                 <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                             </div>
-                            <div class="location-filter-container" style="width: 200px;">
+                            
+                            <!-- Municipality Filter -->
+                            <div class="location-filter-container" style="width: 180px;">
+                                <select id="municipalityFilter" onchange="filterByMunicipality()" class="location-select">
+                                    <option value="">All Municipalities</option>
+                                    <option value="ABUCAY">ABUCAY</option>
+                                    <option value="BAGAC">BAGAC</option>
+                                    <option value="BALANGA">CITY OF BALANGA</option>
+                                    <option value="DINALUPIHAN">DINALUPIHAN</option>
+                                    <option value="HERMOSA">HERMOSA</option>
+                                    <option value="LIMAY">LIMAY</option>
+                                    <option value="MARIVELES">MARIVELES</option>
+                                    <option value="MORONG">MORONG</option>
+                                    <option value="ORANI">ORANI</option>
+                                    <option value="ORION">ORION</option>
+                                    <option value="PILAR">PILAR</option>
+                                    <option value="SAMAL">SAMAL</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Barangay Filter -->
+                            <div class="location-filter-container" style="width: 180px;">
+                                <select id="barangayFilter" onchange="filterByBarangay()" class="location-select">
+                                    <option value="">All Barangays</option>
+                                    <!-- Will be populated dynamically based on municipality -->
+                                </select>
+                            </div>
+                            
+                            <!-- Age Range Filter -->
+                            <div class="location-filter-container" style="width: 120px;">
+                                <select id="ageFromFilter" onchange="filterByAgeRange()" class="location-select">
+                                    <option value="">From Age</option>
+                                    <option value="0">0 months</option>
+                                    <option value="1">1 month</option>
+                                    <option value="6">6 months</option>
+                                    <option value="12">1 year</option>
+                                    <option value="24">2 years</option>
+                                    <option value="36">3 years</option>
+                                    <option value="48">4 years</option>
+                                    <option value="60">5 years</option>
+                                    <option value="72">6 years</option>
+                                    <option value="84">7 years</option>
+                                    <option value="96">8 years</option>
+                                    <option value="108">9 years</option>
+                                    <option value="120">10 years</option>
+                                    <option value="132">11 years</option>
+                                    <option value="144">12 years</option>
+                                    <option value="156">13 years</option>
+                                    <option value="168">14 years</option>
+                                    <option value="180">15 years</option>
+                                </select>
+                            </div>
+                            
+                            <div class="location-filter-container" style="width: 120px;">
+                                <select id="ageToFilter" onchange="filterByAgeRange()" class="location-select">
+                                    <option value="">To Age</option>
+                                    <option value="71">71 months (5y 11m)</option>
+                                    <option value="72">6 years</option>
+                                    <option value="84">7 years</option>
+                                    <option value="96">8 years</option>
+                                    <option value="108">9 years</option>
+                                    <option value="120">10 years</option>
+                                    <option value="132">11 years</option>
+                                    <option value="144">12 years</option>
+                                    <option value="156">13 years</option>
+                                    <option value="168">14 years</option>
+                                    <option value="180">15 years</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Gender Filter -->
+                            <div class="location-filter-container" style="width: 120px;">
                                 <select id="sexFilter" onchange="filterBySex()" class="location-select">
                                     <option value="">All Genders</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                 </select>
                             </div>
-                            <div class="location-filter-container" style="width: 250px;">
+                            
+                            <!-- Standard Filter -->
+                            <div class="location-filter-container" style="width: 200px;">
                                 <select id="standardFilter" onchange="filterByStandard()" class="location-select">
                                     <option value="weight-for-age">Weight-for-Age (0-71 months)</option>
                                     <option value="height-for-age">Height-for-Age (0-71 months)</option>

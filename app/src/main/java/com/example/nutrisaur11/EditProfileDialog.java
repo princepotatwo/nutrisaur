@@ -765,10 +765,10 @@ public class EditProfileDialog extends Dialog {
                                         });
                                     }
                                 }
-                            } else if (jsonResponse.has("data")) {
-                                // This is a single user response - use the data field directly
-                                org.json.JSONObject userData = jsonResponse.getJSONObject("data");
-                                Log.d("EditProfileDialog", "Found user data in data field for: " + userEmail);
+                            } else if (jsonResponse.has("user")) {                                                        
+                                // This is a single user response - use the user field directly                           
+                                org.json.JSONObject userData = jsonResponse.getJSONObject("user");                        
+                                Log.d("EditProfileDialog", "Found user data in user field for: " + userEmail);
                                 
                                                                     // Extract data directly from the comprehensive response
                                     final String gender = userData.optString("gender", "");
