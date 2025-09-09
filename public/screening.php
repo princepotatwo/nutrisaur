@@ -1946,7 +1946,6 @@ header {
             border: 1px solid var(--color-border);
             width: 100%;
             max-width: 100%;
-            min-width: 800px; /* Further reduced for better fit */
         }
 
         .user-table {
@@ -1954,11 +1953,12 @@ header {
             border-collapse: separate;
             border-spacing: 0;
             margin-top: 10px;
-            table-layout: fixed;
+            table-layout: auto;
             border-radius: 15px;
             overflow: hidden;
             border: 1px solid var(--color-border);
             box-shadow: 0 4px 20px var(--color-shadow);
+            min-width: 100%;
         }
 
         .user-table thead { 
@@ -2061,19 +2061,19 @@ header {
             text-align: center;
         }
 
-        /* Set specific widths for columns - Responsive layout */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 10%; min-width: 100px; max-width: 120px; } /* NAME */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 12%; min-width: 120px; max-width: 150px; } /* EMAIL */
-        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 8%; min-width: 80px; max-width: 100px; } /* MUNICIPALITY */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 8%; min-width: 80px; max-width: 100px; } /* BARANGAY */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 4%; min-width: 40px; max-width: 50px; } /* SEX */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 6%; min-width: 60px; max-width: 80px; } /* BIRTHDAY */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 4%; min-width: 40px; max-width: 50px; } /* PREGNANT */
-        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 3%; min-width: 30px; max-width: 40px; } /* WEIGHT */
-        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 3%; min-width: 30px; max-width: 40px; } /* HEIGHT */
-        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 3%; min-width: 30px; max-width: 40px; } /* MUAC */
-        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 6%; min-width: 60px; max-width: 80px; } /* FCM TOKEN */
-        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 8%; min-width: 80px; max-width: 100px; } /* SCREENING DATE */
+        /* Set specific widths for columns - Full width utilization */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 12%; min-width: 120px; } /* NAME */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 15%; min-width: 150px; } /* EMAIL */
+        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; min-width: 100px; } /* MUNICIPALITY */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 12%; min-width: 100px; } /* BARANGAY */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 5%; min-width: 50px; } /* SEX */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 8%; min-width: 80px; } /* BIRTHDAY */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 5%; min-width: 50px; } /* PREGNANT */
+        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 4%; min-width: 40px; } /* WEIGHT */
+        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 4%; min-width: 40px; } /* HEIGHT */
+        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 4%; min-width: 40px; } /* MUAC */
+        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 8%; min-width: 80px; } /* FCM TOKEN */
+        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 11%; min-width: 120px; } /* SCREENING DATE */
 
         .user-table th {
             color: var(--color-highlight);
