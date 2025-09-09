@@ -18,9 +18,8 @@ import java.io.IOException;
 public class FoodSubstitutionManager {
     private static final String TAG = "FoodSubstitutionManager";
     
-    // Gemini API configuration
-    private static final String GEMINI_API_KEY = "AIzaSyAR0YOJALZphmQaSbc5Ydzs5kZS6eCefJM";
-    private static final String GEMINI_TEXT_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
+    // Use centralized API configuration
+    private static final String GEMINI_TEXT_API_URL = ApiConfig.GEMINI_TEXT_API_URL;
     
     private Context context;
     private ExecutorService executorService;
@@ -129,63 +128,16 @@ public class FoodSubstitutionManager {
                                          String userAllergies, String userDietPrefs, String userPregnancyStatus, 
                                          String substitutionReason) {
         
-        StringBuilder prompt = new StringBuilder();
-        prompt.append("You are a PROFESSIONAL NUTRITIONIST and EXPERT CHEF. ");
-        prompt.append("Provide EXACTLY 3 HEALTHIER, NUTRITIONALLY SUPERIOR alternatives to this dish:\n\n");
-        
-        prompt.append("ORIGINAL DISH:\n");
-        prompt.append("Name: ").append(originalFood.getFoodName()).append("\n");
-        prompt.append("Calories: ").append(originalFood.getCalories()).append(" kcal\n");
-        prompt.append("Protein: ").append(originalFood.getProtein()).append("g | Fat: ").append(originalFood.getFat()).append("g | Carbs: ").append(originalFood.getCarbs()).append("g\n\n");
-        
-        prompt.append("NUTRITIONIST REQUIREMENTS - Find alternatives that are:\n");
-        prompt.append("1. LOWER in calories, sodium, and saturated fat\n");
-        prompt.append("2. HIGHER in protein, fiber, vitamins, and minerals\n");
-        prompt.append("3. Use leaner proteins (fish, chicken breast, tofu, legumes)\n");
-        prompt.append("4. Add more vegetables and whole grains\n");
-        prompt.append("5. Reduce processed ingredients and oil\n");
-        prompt.append("6. Maintain similar cooking method but healthier preparation\n\n");
-        
-        prompt.append("HEALTH-FOCUSED SUBSTITUTIONS:\n");
-        prompt.append("- If original is 'Adobo Manok' → 'Adobong Tofu with Vegetables', 'Adobong Sitaw', 'Adobong Kangkong'\n");
-        prompt.append("- If original is 'Sinigang na Baboy' → 'Sinigang na Bangus', 'Sinigang na Hipon', 'Sinigang na Gulay'\n");
-        prompt.append("- If original is 'Kare-kare' → 'Kare-kareng Gulay', 'Kare-kareng Tofu', 'Kare-kareng Bangus'\n");
-        prompt.append("- If original is 'Tapsilog' → 'Tocilog with Brown Rice', 'Fishsilog', 'Tofusilog'\n");
-        prompt.append("- If original is 'Pancit Canton' → 'Pancit Bihon with Vegetables', 'Pancit Gulay', 'Pancit Tofu'\n");
-        prompt.append("- If original is 'Chicken Teriyaki' → 'Salmon Teriyaki', 'Tofu Teriyaki', 'Chicken Breast Teriyaki'\n\n");
-        
-        prompt.append("USER HEALTH PROFILE:\n");
-        if (userHealthConditions != null && !userHealthConditions.equals("None")) {
-            prompt.append("Health Conditions: ").append(userHealthConditions).append(" - prioritize heart-healthy, low-sodium options\n");
-        }
-        if (userBMI != null && Double.parseDouble(userBMI.replaceAll("[^0-9.]", "")) < 18.5) {
-            prompt.append("Underweight: Include calorie-dense but nutrient-rich alternatives\n");
-        } else if (userBMI != null && Double.parseDouble(userBMI.replaceAll("[^0-9.]", "")) > 25) {
-            prompt.append("Overweight: Focus on low-calorie, high-fiber alternatives\n");
-        }
-        if (userAllergies != null && !userAllergies.isEmpty()) {
-            prompt.append("Allergies: ").append(userAllergies).append(" - ensure all alternatives are allergen-free\n");
-        }
-        if (userDietPrefs != null && !userDietPrefs.isEmpty()) {
-            prompt.append("Diet: ").append(userDietPrefs).append(" - match dietary requirements\n");
-        }
-        if ("Yes".equalsIgnoreCase(userPregnancyStatus)) {
-            prompt.append("Pregnancy: Ensure all alternatives are safe for pregnant women\n");
-        }
-        
-        prompt.append("\nNUTRITIONAL ACCURACY:\n");
-        prompt.append("- Calories: ±10% of original (preferably lower)\n");
-        prompt.append("- Protein: Higher than original when possible\n");
-        prompt.append("- Fat: Lower than original, focus on healthy fats\n");
-        prompt.append("- Carbs: Similar or lower, prefer complex carbs\n");
-        prompt.append("- Serving size: 1 serving (realistic portions)\n\n");
-        
-        prompt.append("Return ONLY valid JSON array with 3 items:\n");
-        prompt.append("[{\"food_name\": \"[HEALTHY ALTERNATIVE]\", \"calories\": <number>, \"protein_g\": <number>, ");
-        prompt.append("\"fat_g\": <number>, \"carbs_g\": <number>, \"serving_size\": \"1 serving\", ");
-        prompt.append("\"diet_type\": \"[TYPE]\", \"description\": \"[HEALTH BENEFITS AND NUTRITIONAL IMPROVEMENTS]\"}, ...]");
-        
-        return prompt.toString();
+        return "3 healthier alternatives to: " + originalFood.getFoodName() + 
+               " (" + originalFood.getCalories() + " cal, " + originalFood.getProtein() + "g protein)\n\n" +
+               
+               "Make healthier: lower calories/fat, higher protein/fiber, more vegetables\n" +
+               "User: BMI " + (userBMI != null ? userBMI : "22.5") + 
+               (userHealthConditions != null && !userHealthConditions.equals("None") ? ", Health: " + userHealthConditions : "") + "\n\n" +
+               
+               "JSON: [{\"food_name\": \"[HEALTHY ALTERNATIVE]\", \"calories\": <num>, \"protein_g\": <num>, " +
+               "\"fat_g\": <num>, \"carbs_g\": <num>, \"serving_size\": \"1 serving\", " +
+               "\"diet_type\": \"[TYPE]\", \"description\": \"[BENEFITS]\"}, ...]";
     }
     
     private List<FoodRecommendation> callGeminiForSubstitutions(String prompt) {
@@ -202,8 +154,13 @@ public class FoodSubstitutionManager {
             contents.put(content);
             requestBody.put("contents", contents);
             
-            // Make API call
-            OkHttpClient client = new OkHttpClient();
+            // Make API call with optimized timeouts
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(ApiConfig.READ_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(ApiConfig.WRITE_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .build();
+                
             RequestBody body = RequestBody.create(
                 requestBody.toString(), 
                 okhttp3.MediaType.parse("application/json")

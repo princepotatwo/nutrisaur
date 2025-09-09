@@ -20,6 +20,7 @@ public class FoodSubstitutionAdapter extends RecyclerView.Adapter<FoodSubstituti
     private FoodImageService foodImageService;
     private OnSubstitutionClickListener listener;
     private String substitutionReason;
+    private boolean isLoading = false;
 
     public interface OnSubstitutionClickListener {
         void onSubstitutionClick(FoodRecommendation substitution);

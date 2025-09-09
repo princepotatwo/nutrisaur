@@ -3179,7 +3179,6 @@ header {
                             <th>BMI</th>
                             <th id="standardHeader">WEIGHT-FOR-AGE</th>
                             <th>CLASSIFICATION</th>
-                            <th>ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
@@ -3229,12 +3228,12 @@ header {
                                             $wfl_classification = $results['weight_for_length']['classification'] ?? 'N/A';
                                             $bmi_classification = $results['bmi_for_age']['classification'] ?? 'N/A';
                                             
-                                            // Format z-scores for display (only Z-score, no classification)
-                                            $wfa_display = $wfa_zscore !== null ? 'Z: ' . number_format($wfa_zscore, 2) : 'N/A';
-                                            $hfa_display = $hfa_zscore !== null ? 'Z: ' . number_format($hfa_zscore, 2) : 'N/A';
-                                            $wfh_display = $wfh_zscore !== null ? 'Z: ' . number_format($wfh_zscore, 2) : 'N/A';
-                                            $wfl_display = $wfl_zscore !== null ? 'Z: ' . number_format($wfl_zscore, 2) : 'N/A';
-                                            $bmi_display = $bmi_zscore !== null ? 'Z: ' . number_format($bmi_zscore, 2) : 'N/A';
+                                            // Format z-scores for display (only Z-score value, no prefix)
+                                            $wfa_display = $wfa_zscore !== null ? number_format($wfa_zscore, 2) : 'N/A';
+                                            $hfa_display = $hfa_zscore !== null ? number_format($hfa_zscore, 2) : 'N/A';
+                                            $wfh_display = $wfh_zscore !== null ? number_format($wfh_zscore, 2) : 'N/A';
+                                            $wfl_display = $wfl_zscore !== null ? number_format($wfl_zscore, 2) : 'N/A';
+                                            $bmi_display = $bmi_zscore !== null ? number_format($bmi_zscore, 2) : 'N/A';
                                         } else {
                                             // If WHO calculation fails, show N/A
                                             $wfa_display = 'N/A';
@@ -3308,7 +3307,7 @@ header {
                                                 if ($ageInMonths > 71 && $standard === 'bmi-for-age') {
                                                     $adultBmiClassification = getAdultBMIClassification($bmi);
                                                     $data['classification'] = $adultBmiClassification;
-                                                    $data['display'] = 'BMI: ' . $bmi;
+                                                    $data['display'] = $bmi;
                                                 }
                                                 
                                                 echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
@@ -3319,16 +3318,6 @@ header {
                                                 echo '<td>' . $bmi . '</td>';
                                                 echo '<td class="standard-value">' . $data['display'] . '</td>';
                                                 echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
-                                                echo '<td class="action-buttons">';
-                                                echo '<div class="action-buttons-row">';
-                                                echo '<button class="btn btn-edit" onclick="editUser(\'' . htmlspecialchars($user['email']) . '\')" title="Edit User">';
-                                                echo '<span class="btn-icon">Edit</span>';
-                                                echo '</button>';
-                                                echo '<button class="btn btn-delete" onclick="deleteUser(\'' . htmlspecialchars($user['email']) . '\')" title="Delete User">';
-                                                echo '<span class="btn-icon">Delete</span>';
-                                                echo '</button>';
-                                                echo '</div>';
-                                                echo '</td>';
                                                 echo '</tr>';
                                             }
                                         }
