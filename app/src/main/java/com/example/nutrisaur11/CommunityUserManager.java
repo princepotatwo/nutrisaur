@@ -82,7 +82,9 @@ public class CommunityUserManager {
                 requestData.put("weight", weight);
                 requestData.put("height", height);
                 
+                Log.d(TAG, "Sending registration data: " + requestData.toString());
                 String response = makeApiRequest("register_community_user", requestData);
+                Log.d(TAG, "Received response: " + response);
                 JSONObject jsonResponse = new JSONObject(response);
                 
                 if (jsonResponse.getBoolean("success")) {
@@ -201,7 +203,17 @@ public class CommunityUserManager {
         os.write(data.toString());
         os.close();
         
-        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        // Check response code
+        int responseCode = conn.getResponseCode();
+        Log.d(TAG, "API Response Code: " + responseCode);
+        
+        BufferedReader reader;
+        if (responseCode >= 200 && responseCode < 300) {
+            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        }
+        
         StringBuilder response = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
@@ -209,7 +221,10 @@ public class CommunityUserManager {
         }
         reader.close();
         
-        return response.toString();
+        String responseString = response.toString();
+        Log.d(TAG, "API Response: " + responseString);
+        
+        return responseString;
     }
     
     /**

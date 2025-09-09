@@ -2549,15 +2549,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Try to get JSON data first
                 $input = file_get_contents('php://input');
+                error_log("Raw input: " . $input);
                 $data = json_decode($input, true);
+                error_log("Decoded data: " . print_r($data, true));
                 
                 // If JSON parsing fails, try form data
                 if (!$data) {
                     $data = $_POST;
+                    error_log("Using POST data: " . print_r($data, true));
                 }
                 
                 if (!$data) {
-                    echo json_encode(['success' => false, 'message' => 'No data provided']);
+                    echo json_encode(['success' => false, 'message' => 'No data provided', 'debug' => 'Input: ' . $input]);
                     break;
                 }
                 
