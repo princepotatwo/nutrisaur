@@ -10,6 +10,7 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 
 // Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
 require_once __DIR__ . '/api/DatabaseHelper.php';
+require_once __DIR__ . '/api/nutritional_assessment_api.php';
 
 // Get database helper instance
 $db = DatabaseHelper::getInstance();
@@ -2541,6 +2542,198 @@ header {
             margin-bottom: 10px;
         }
 
+        /* Nutritional Assessment Status Styles */
+        .nutritional-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            min-width: 60px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nutritional-status.severe-acute-malnutrition-sam {
+            background-color: rgba(244, 67, 54, 0.15);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .nutritional-status.moderate-acute-malnutrition-mam {
+            background-color: rgba(255, 152, 0, 0.15);
+            color: #FF9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .nutritional-status.mild-acute-malnutrition-wasting {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .nutritional-status.stunting-chronic-malnutrition {
+            background-color: rgba(156, 39, 176, 0.15);
+            color: #9C27B0;
+            border: 1px solid rgba(156, 39, 176, 0.3);
+        }
+
+        .nutritional-status.maternal-undernutrition-at-risk {
+            background-color: rgba(233, 30, 99, 0.15);
+            color: #E91E63;
+            border: 1px solid rgba(233, 30, 99, 0.3);
+        }
+
+        .nutritional-status.maternal-at-risk {
+            background-color: rgba(255, 87, 34, 0.15);
+            color: #FF5722;
+            border: 1px solid rgba(255, 87, 34, 0.3);
+        }
+
+        .nutritional-status.severe-underweight {
+            background-color: rgba(244, 67, 54, 0.15);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .nutritional-status.moderate-underweight {
+            background-color: rgba(255, 152, 0, 0.15);
+            color: #FF9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .nutritional-status.mild-underweight {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .nutritional-status.normal {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .nutritional-status.overweight {
+            background-color: rgba(255, 152, 0, 0.15);
+            color: #FF9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .nutritional-status.obesity-class-i {
+            background-color: rgba(255, 87, 34, 0.15);
+            color: #FF5722;
+            border: 1px solid rgba(255, 87, 34, 0.3);
+        }
+
+        .nutritional-status.obesity-class-ii {
+            background-color: rgba(244, 67, 54, 0.15);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .nutritional-status.obesity-class-iii-severe {
+            background-color: rgba(139, 69, 19, 0.15);
+            color: #8B4513;
+            border: 1px solid rgba(139, 69, 19, 0.3);
+        }
+
+        .nutritional-status.invalid-data {
+            background-color: rgba(158, 158, 158, 0.15);
+            color: #9E9E9E;
+            border: 1px solid rgba(158, 158, 158, 0.3);
+        }
+
+        .risk-level {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            min-width: 50px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .risk-level.very-high {
+            background-color: rgba(139, 69, 19, 0.15);
+            color: #8B4513;
+            border: 1px solid rgba(139, 69, 19, 0.3);
+        }
+
+        .risk-level.high {
+            background-color: rgba(244, 67, 54, 0.15);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .risk-level.medium {
+            background-color: rgba(255, 152, 0, 0.15);
+            color: #FF9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .risk-level.low-medium {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .risk-level.low {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .risk-level.unknown {
+            background-color: rgba(158, 158, 158, 0.15);
+            color: #9E9E9E;
+            border: 1px solid rgba(158, 158, 158, 0.3);
+        }
+
+        .category {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            min-width: 50px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .category.undernutrition {
+            background-color: rgba(255, 152, 0, 0.15);
+            color: #FF9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+        }
+
+        .category.overnutrition {
+            background-color: rgba(244, 67, 54, 0.15);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .category.normal {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .category.error {
+            background-color: rgba(158, 158, 158, 0.15);
+            color: #9E9E9E;
+            border: 1px solid rgba(158, 158, 158, 0.3);
+        }
+
+        .nutritional-status:hover, .risk-level:hover, .category:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
     </style>
 </head>
 <body>
@@ -2588,14 +2781,18 @@ header {
                     <div class="header-controls">
                         <div class="search-row" style="justify-content: center; gap: 20px;">
                             <div class="search-container" style="width: 300px;">
-                                <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input">
+                                <input type="text" id="searchInput" placeholder="Search by name, email, nutritional status, risk level, or category..." class="search-input">
                                 <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                             </div>
                             <div class="location-filter-container" style="width: 300px;">
-                                <select id="sexFilter" onchange="filterBySex()" class="location-select">
-                                    <option value="">All Genders</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
+                                <select id="riskFilter" onchange="filterByRisk()" class="location-select">
+                                    <option value="">All Risk Levels</option>
+                                    <option value="Low">Low Risk</option>
+                                    <option value="Low-Medium">Low-Medium Risk</option>
+                                    <option value="Medium">Medium Risk</option>
+                                    <option value="High">High Risk</option>
+                                    <option value="Very High">Very High Risk</option>
+                                    <option value="Unknown">Unknown Risk</option>
                                 </select>
                             </div>
                         </div>
@@ -2625,15 +2822,9 @@ header {
                         <tr>
                             <th>NAME</th>
                             <th>EMAIL</th>
-                            <th>MUNICIPALITY</th>
-                            <th>BARANGAY</th>
-                            <th>SEX</th>
-                            <th>BIRTHDAY</th>
-                            <th>PREGNANT</th>
-                            <th>WEIGHT (KG)</th>
-                            <th>HEIGHT (CM)</th>
-                            <th>MUAC (CM)</th>
-                            <th>FCM TOKEN</th>
+                            <th>NUTRITIONAL STATUS</th>
+                            <th>RISK LEVEL</th>
+                            <th>CATEGORY</th>
                             <th>SCREENING DATE</th>
                         </tr>
                     </thead>
@@ -2655,18 +2846,15 @@ header {
                                 
                                 if (!empty($users)) {
                                     foreach ($users as $user) {
+                                        // Calculate nutritional assessment using the API
+                                        $assessment = performNutritionalAssessment($user);
+                                        
                                         echo '<tr>';
                                         echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['is_pregnant'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['muac'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['fcm_token'] ?? 'N/A') . '</td>';
+                                        echo '<td><span class="nutritional-status ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $assessment['nutritional_status'])) . '">' . htmlspecialchars($assessment['nutritional_status']) . '</span></td>';
+                                        echo '<td><span class="risk-level ' . strtolower(str_replace(' ', '-', $assessment['risk_level'])) . '">' . htmlspecialchars($assessment['risk_level']) . '</span></td>';
+                                        echo '<td><span class="category ' . strtolower($assessment['category']) . '">' . htmlspecialchars($assessment['category']) . '</span></td>';
                                         echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                     }
@@ -2675,10 +2863,10 @@ header {
                                     echo '<!-- No users in database - JavaScript will show sample data -->';
                                 }
                             } catch (Exception $e) {
-                                echo '<tr><td colspan="12" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+                                echo '<tr><td colspan="6" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                         }
                     } else {
-                            echo '<tr><td colspan="12" class="no-data-message">Database connection failed.</td></tr>';
+                            echo '<tr><td colspan="6" class="no-data-message">Database connection failed.</td></tr>';
                     }
                         ?>
                     </tbody>
@@ -3004,15 +3192,15 @@ header {
             tableRows.forEach(row => {
                 const name = row.cells[0].textContent.toLowerCase();
                 const email = row.cells[1].textContent.toLowerCase();
-                const municipality = row.cells[2].textContent.toLowerCase();
-                const barangay = row.cells[3].textContent.toLowerCase();
-                const sex = row.cells[4].textContent.toLowerCase();
+                const nutritionalStatus = row.cells[2].textContent.toLowerCase();
+                const riskLevel = row.cells[3].textContent.toLowerCase();
+                const category = row.cells[4].textContent.toLowerCase();
                 
                 const matchesSearch = name.includes(searchTerm) || 
                                    email.includes(searchTerm) || 
-                                   municipality.includes(searchTerm) || 
-                                   barangay.includes(searchTerm) || 
-                                   sex.includes(searchTerm);
+                                   nutritionalStatus.includes(searchTerm) || 
+                                   riskLevel.includes(searchTerm) || 
+                                   category.includes(searchTerm);
                 
                 if (matchesSearch) {
                     row.style.display = '';
@@ -3025,16 +3213,16 @@ header {
             updateNoDataMessage(visibleCount);
         }
 
-        function filterBySex() {
-            const sexFilter = document.getElementById('sexFilter').value;
+        function filterByRisk() {
+            const riskFilter = document.getElementById('riskFilter').value;
             const tableRows = document.querySelectorAll('.user-table tbody tr');
             
             let visibleCount = 0;
             
             tableRows.forEach(row => {
-                const sex = row.cells[4].textContent.trim();
+                const riskLevel = row.cells[3].textContent.trim();
                 
-                if (!sexFilter || sex === sexFilter) {
+                if (!riskFilter || riskLevel === riskFilter) {
                     row.style.display = '';
                     visibleCount++;
                 } else {
@@ -3069,16 +3257,16 @@ header {
             const noDataMessage = document.querySelector('.no-data-message');
             const tbody = document.querySelector('.user-table tbody');
             
-            if (visibleCount === 0) {
-                if (!noDataMessage) {
-                    const message = document.createElement('tr');
-                    message.className = 'no-data-message';
-                    message.innerHTML = '<td colspan="9"><div>No assessments found matching your criteria.</div></td>';
-                    tbody.appendChild(message);
+                if (visibleCount === 0) {
+                    if (!noDataMessage) {
+                        const message = document.createElement('tr');
+                        message.className = 'no-data-message';
+                        message.innerHTML = '<td colspan="6"><div>No assessments found matching your criteria.</div></td>';
+                        tbody.appendChild(message);
+                    }
+                } else if (noDataMessage) {
+                    noDataMessage.remove();
                 }
-            } else if (noDataMessage) {
-                noDataMessage.remove();
-            }
         }
 
         function viewAssessment(id) {
