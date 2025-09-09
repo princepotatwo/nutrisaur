@@ -8351,10 +8351,10 @@ body {
                             updateDashboardUI(data.stats);
                             lastStatsHash = currentHash;
                             
-                            // Show notification for new users
-                            if (data.stats.new_today > 0) {
-                                showDashboardNotification(`+${data.stats.new_today} new users today!`, 'success');
-                            }
+                            // Show notification for new users - DISABLED
+                            // if (data.stats.new_today > 0) {
+                            //     showDashboardNotification(`+${data.stats.new_today} new users today!`, 'success');
+                            // }
                         }
                     }
                 })
