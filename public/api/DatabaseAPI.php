@@ -2636,20 +2636,23 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // SAVE SCREENING DATA API
         // ========================================
         case 'save_screening':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Try to get JSON data first
-                $input = file_get_contents('php://input');
-                $data = json_decode($input, true);
-                
-                // If JSON parsing fails, try form data
-                if (!$data) {
-                    $data = $_POST;
-                }
-                
-                if (!$data) {
-                    echo json_encode(['success' => false, 'message' => 'No data provided']);
-                    break;
-                }
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    // Try to get JSON data first
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    
+                    // If JSON parsing fails, try form data
+                    if (!$data) {
+                        $data = $_POST;
+                    }
+                    
+                    if (!$data) {
+                        echo json_encode(['success' => false, 'message' => 'No data provided']);
+                        break;
+                    }
+                    
+                    error_log("Save screening data: " . print_r($data, true));
                 
                 $email = $data['email'] ?? '';
                 $name = $data['name'] ?? '';
@@ -2668,7 +2671,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
                 
                 // Check if user exists
-                $checkResult = $db->universalSelect('community_users', 'email', 'email = ?', [$email]);
+                error_log("Checking if user exists for email: " . $email);
+                $checkResult = $db->universalSelect('community_users', 'email', 'email = ?', '', '', [$email]);
+                error_log("Check result: " . print_r($checkResult, true));
                 
                 if ($checkResult['success'] && !empty($checkResult['data'])) {
                     // User exists, update their screening data
@@ -2732,6 +2737,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
             } else {
                 echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            } catch (Exception $e) {
+                error_log("Save screening error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Server error: ' . $e->getMessage()]);
             }
             break;
             
