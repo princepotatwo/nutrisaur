@@ -17,17 +17,23 @@ if ($isLoggedIn) {
     exit;
 }
 
-// Direct database connection
-require_once __DIR__ . "/api/DatabaseHelper.php";
-require_once __DIR__ . "/api/DatabaseAPI.php";
-
-$db = DatabaseHelper::getInstance();
-
-// Check database availability
+// Hardcoded database connection
 $dbError = null;
-if (!$db->isAvailable()) {
-    $dbError = "Database connection failed";
-    error_log("Home page: Database connection not available");
+$pdo = null;
+
+try {
+    // Database configuration - update these values as needed
+    $host = 'localhost';
+    $dbname = 'nutrisaur_db';
+    $username = 'root';
+    $password = '';
+    
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $dbError = "Database connection failed: " . $e->getMessage();
+    error_log("Home page: Database connection failed - " . $e->getMessage());
 }
 
 $loginError = "";
@@ -42,19 +48,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     if (empty($usernameOrEmail) || empty($password)) {
         $loginError = "Please enter both username/email and password";
     } else {
-        // Use the centralized authentication method through DatabaseAPI
-        $dbAPI = DatabaseAPI::getInstance();
-        $result = $dbAPI->authenticateUser($usernameOrEmail, $password);
-        
-        if ($result['success']) {
-            // Use centralized session management
-            $dbAPI->setUserSession($result['data'], $result['user_type'] === 'admin');
+        try {
+            // Check if user exists in users table
+            $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE email = ? OR username = ?");
+            $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
+            $user = $stmt->fetch();
             
-            // Redirect to dashboard
-            header("Location: /dash");
-            exit;
-        } else {
-            $loginError = $result['message'];
+            if ($user && password_verify($password, $user['password'])) {
+                if (!$user['email_verified']) {
+                    $loginError = "Please verify your email before logging in";
+                } else {
+                    // Set session variables
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['is_admin'] = false;
+                    
+                    // Update last login
+                    $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                    $updateStmt->execute([$user['user_id']]);
+                    
+                    // Redirect to dashboard
+                    header("Location: /dash");
+                    exit;
+                }
+            } else {
+                // Check admin table
+                $adminStmt = $pdo->prepare("SELECT admin_id, username, email, password FROM admins WHERE email = ? OR username = ?");
+                $adminStmt->execute([$usernameOrEmail, $usernameOrEmail]);
+                $admin = $adminStmt->fetch();
+                
+                if ($admin && password_verify($password, $admin['password'])) {
+                    // Set admin session variables
+                    $_SESSION['admin_id'] = $admin['admin_id'];
+                    $_SESSION['username'] = $admin['username'];
+                    $_SESSION['email'] = $admin['email'];
+                    $_SESSION['is_admin'] = true;
+                    
+                    // Update last login
+                    $updateStmt = $pdo->prepare("UPDATE admins SET last_login = NOW() WHERE admin_id = ?");
+                    $updateStmt->execute([$admin['admin_id']]);
+                    
+                    // Redirect to dashboard
+                    header("Location: /dash");
+                    exit;
+                } else {
+                    $loginError = "Invalid username/email or password";
+                }
+            }
+        } catch (Exception $e) {
+            $loginError = "Login failed: " . $e->getMessage();
+            error_log("Login error: " . $e->getMessage());
         }
     }
 }
@@ -74,14 +118,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     } elseif (strlen($username) < 3) {
         $registrationError = "Username must be at least 3 characters long";
     } else {
-        // Direct registration with database
         try {
-            $pdo = $db->getPDO();
-            
             // Check if user already exists
             $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
             $stmt->execute([$email, $username]);
-            $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
+            $existingUser = $stmt->fetch();
             
             if ($existingUser) {
                 $registrationError = "User with this email or username already exists";
@@ -133,15 +174,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 exit;
             }
             
-            $result = $db->authenticateUser($usernameOrEmail, $password);
-            
-            if ($result['success']) {
-                // Use centralized session management
-                $db->setUserSession($result['data'], $result['user_type'] === 'admin');
+            try {
+                // Check if user exists in users table
+                $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE email = ? OR username = ?");
+                $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
+                $user = $stmt->fetch();
+                
+                if ($user && password_verify($password, $user['password'])) {
+                    if (!$user['email_verified']) {
+                        echo json_encode(['success' => false, 'message' => 'Please verify your email before logging in']);
+                        exit;
+                    }
+                    
+                    // Set session variables
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['is_admin'] = false;
+                    
+                    // Update last login
+                    $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                    $updateStmt->execute([$user['user_id']]);
+                    
+                    echo json_encode(['success' => true, 'message' => 'Login successful', 'user_type' => 'user', 'data' => $user]);
+                    exit;
+                } else {
+                    // Check admin table
+                    $adminStmt = $pdo->prepare("SELECT admin_id, username, email, password FROM admins WHERE email = ? OR username = ?");
+                    $adminStmt->execute([$usernameOrEmail, $usernameOrEmail]);
+                    $admin = $adminStmt->fetch();
+                    
+                    if ($admin && password_verify($password, $admin['password'])) {
+                        // Set admin session variables
+                        $_SESSION['admin_id'] = $admin['admin_id'];
+                        $_SESSION['username'] = $admin['username'];
+                        $_SESSION['email'] = $admin['email'];
+                        $_SESSION['is_admin'] = true;
+                        
+                        // Update last login
+                        $updateStmt = $pdo->prepare("UPDATE admins SET last_login = NOW() WHERE admin_id = ?");
+                        $updateStmt->execute([$admin['admin_id']]);
+                        
+                        echo json_encode(['success' => true, 'message' => 'Login successful', 'user_type' => 'admin', 'data' => $admin]);
+                        exit;
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Invalid username/email or password']);
+                        exit;
+                    }
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Login failed: ' . $e->getMessage()]);
+                exit;
             }
-            
-            echo json_encode($result);
-            exit;
             
         case 'register':
             $username = trim($_POST['username']);
@@ -168,14 +252,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 exit;
             }
             
-            // Direct registration with database
             try {
-                $pdo = $db->getPDO();
-                
                 // Check if user already exists
                 $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
                 $stmt->execute([$email, $username]);
-                $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
+                $existingUser = $stmt->fetch();
                 
                 if ($existingUser) {
                     echo json_encode(['success' => false, 'message' => 'User with this email or username already exists']);
@@ -222,28 +303,124 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             exit;
             
         case 'check_session':
-            $sessionData = $db->getCurrentUserSession();
+            $loggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
             echo json_encode([
                 'success' => true,
-                'logged_in' => $db->isUserLoggedIn(),
-                'user_id' => $sessionData['user_id'],
-                'admin_id' => $sessionData['admin_id'],
-                'username' => $sessionData['username'],
-                'is_admin' => $sessionData['is_admin']
+                'logged_in' => $loggedIn,
+                'user_id' => $_SESSION['user_id'] ?? null,
+                'admin_id' => $_SESSION['admin_id'] ?? null,
+                'username' => $_SESSION['username'] ?? null,
+                'is_admin' => $_SESSION['is_admin'] ?? false
             ]);
+            exit;
+            
+        case 'verify_email':
+            $email = trim($_POST['email']);
+            $verificationCode = trim($_POST['verification_code']);
+            
+            if (empty($email) || empty($verificationCode)) {
+                echo json_encode(['success' => false, 'message' => 'Please provide email and verification code']);
+                exit;
+            }
+            
+            try {
+                // Check if verification code is valid and not expired
+                $stmt = $pdo->prepare("SELECT user_id, username FROM users WHERE email = ? AND verification_code = ? AND verification_code_expires > NOW() AND email_verified = 0");
+                $stmt->execute([$email, $verificationCode]);
+                $user = $stmt->fetch();
+                
+                if ($user) {
+                    // Mark email as verified
+                    $updateStmt = $pdo->prepare("UPDATE users SET email_verified = 1, verification_code = NULL, verification_code_expires = NULL WHERE user_id = ?");
+                    $updateStmt->execute([$user['user_id']]);
+                    
+                    echo json_encode(['success' => true, 'message' => 'Email verified successfully!']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid or expired verification code']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Verification failed: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'resend_verification':
+            $email = trim($_POST['email']);
+            
+            if (empty($email)) {
+                echo json_encode(['success' => false, 'message' => 'Please provide email address']);
+                exit;
+            }
+            
+            try {
+                // Check if user exists and is not verified
+                $stmt = $pdo->prepare("SELECT user_id, username FROM users WHERE email = ? AND email_verified = 0");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch();
+                
+                if ($user) {
+                    // Generate new verification code
+                    $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                    $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+                    
+                    // Update verification code
+                    $updateStmt = $pdo->prepare("UPDATE users SET verification_code = ?, verification_code_expires = ? WHERE user_id = ?");
+                    $updateStmt->execute([$verificationCode, $expiresAt, $user['user_id']]);
+                    
+                    // Send verification email
+                    $emailSent = sendVerificationEmail($email, $user['username'], $verificationCode);
+                    
+                    if ($emailSent) {
+                        echo json_encode(['success' => true, 'message' => 'Verification code sent successfully!']);
+                    } else {
+                        echo json_encode(['success' => true, 'message' => 'Verification code updated. Code: ' . $verificationCode]);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'User not found or already verified']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Failed to resend verification: ' . $e->getMessage()]);
+            }
             exit;
     }
 }
 
 /**
- * Send verification email using centralized Resend API function
+ * Send verification email using hardcoded email functionality
  */
 function sendVerificationEmail($email, $username, $verificationCode) {
-    return sendResendEmail($email, $username, $verificationCode);
+    // Simple email sending using PHP's mail() function
+    $subject = "NUTRISAUR - Email Verification";
+    $message = "
+    <html>
+    <head>
+        <title>Email Verification</title>
+    </head>
+    <body>
+        <h2>Welcome to NUTRISAUR!</h2>
+        <p>Hello " . htmlspecialchars($username) . ",</p>
+        <p>Thank you for registering with NUTRISAUR. To complete your registration, please use the verification code below:</p>
+        <h3 style='color: #A1B454; font-size: 24px; text-align: center; padding: 10px; background: #2A3326; border-radius: 8px;'>" . $verificationCode . "</h3>
+        <p>This code will expire in 5 minutes.</p>
+        <p>If you did not create an account with NUTRISAUR, please ignore this email.</p>
+        <br>
+        <p>Best regards,<br>NUTRISAUR Team</p>
+    </body>
+    </html>
+    ";
+    
+    $headers = "MIME-Version: 1.0" . "\r\n";
+    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+    $headers .= "From: NUTRISAUR <noreply@nutrisaur.com>" . "\r\n";
+    
+    // Try to send email
+    try {
+        $result = mail($email, $subject, $message, $headers);
+        return $result;
+    } catch (Exception $e) {
+        error_log("Email sending failed: " . $e->getMessage());
+        return false;
+    }
 }
-
-
-// Database connection is managed automatically by DatabaseAPI singleton
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1168,14 +1345,15 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             console.error('registerForm element not found!');
         }
 
-        // Login function - using direct API endpoint
+        // Login function - using home.php AJAX
         async function login(username, password) {
             try {
                 const formData = new FormData();
                 formData.append('username', username);
                 formData.append('password', password);
+                formData.append('ajax_action', 'login');
                 
-                const response = await fetch('/api/login.php', {
+                const response = await fetch('/home.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -1198,42 +1376,24 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             }
         }
 
-        // Register function - using new verification system with fallback
+        // Register function - using home.php AJAX
         async function register(username, email, password) {
             try {
                 // Show a loading message
                 showMessage('Processing registration...', 'info');
                 
-                // Use simplified registration system
-                console.log('Using simplified registration system...');
                 const formData = new FormData();
                 formData.append('username', username);
                 formData.append('email', email);
                 formData.append('password', password);
                 formData.append('ajax_action', 'register');
                 
-                let response = await fetch('/home.php', {
+                const response = await fetch('/home.php', {
                     method: 'POST',
                     body: formData
                 });
                 
-                console.log('Registration response status:', response.status);
-                
-                let responseText = await response.text();
-                console.log('Registration response text:', responseText);
-                
-                let data;
-                try {
-                    data = JSON.parse(responseText);
-                } catch (parseError) {
-                    console.error('Registration response parsing failed');
-                    showMessage('Registration service unavailable. Please try again later.', 'error');
-                    return;
-                }
-                
-                console.log('Registration parsed data:', data);
-                console.log('requires_verification check:', data.requires_verification);
-                console.log('data.data check:', data.data);
+                const data = await response.json();
                 
                 if (data.success) {
                     if (data.requires_verification) {
@@ -1282,30 +1442,19 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             return re.test(email);
         }
 
-        // Check if user is already logged in - using direct API endpoint
+        // Check if user is already logged in - using home.php AJAX
         async function checkSession() {
             try {
                 console.log('Checking session...');
-                const response = await fetch('/api/check_session.php', {
-                    method: 'GET'
+                const formData = new FormData();
+                formData.append('ajax_action', 'check_session');
+                
+                const response = await fetch('/home.php', {
+                    method: 'POST',
+                    body: formData
                 });
                 
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
-                
-                const responseText = await response.text();
-                console.log('Response text:', responseText);
-                
-                let data;
-                try {
-                    data = JSON.parse(responseText);
-                } catch (parseError) {
-                    console.error('Failed to parse JSON:', parseError);
-                    console.error('Response was:', responseText);
-                    return;
-                }
-                
-                console.log('Parsed data:', data);
+                const data = await response.json();
                 
                 // Only redirect if user is actually logged in
                 if (data.success && data.logged_in && (data.user_id || data.admin_id)) {
@@ -1317,34 +1466,8 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             }
         }
 
-        // Test API connectivity
-        async function testAPI() {
-            try {
-                console.log('Testing API connectivity...');
-                const response = await fetch('/api/health.php', {
-                    method: 'GET'
-                });
-                
-                console.log('API test response status:', response.status);
-                const responseText = await response.text();
-                console.log('API test response text:', responseText);
-                
-                try {
-                    const data = JSON.parse(responseText);
-                    console.log('API test successful:', data);
-                } catch (parseError) {
-                    console.error('API test failed to parse JSON:', parseError);
-                }
-            } catch (error) {
-                console.error('API test error:', error);
-            }
-        }
-
         // Check session on page load
         checkSession();
-        
-        // Test API connectivity
-        testAPI();
 
         // Function to switch to login mode
         function switchToLoginMode() {
@@ -1382,33 +1505,20 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             clearMessage();
         }
 
-        // Verify email function - using Resend verification endpoint
+        // Verify email function - using home.php AJAX
         async function verifyEmail(email, code) {
             try {
-                const formData = {
-                    email: email,
-                    verification_code: code
-                };
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('verification_code', code);
+                formData.append('ajax_action', 'verify_email');
                 
-                const response = await fetch('/api/DatabaseAPI.php?action=verify_resend', {
+                const response = await fetch('/home.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
+                    body: formData
                 });
                 
-                const responseText = await response.text();
-                console.log('Resend verification response:', responseText);
-                
-                let data;
-                try {
-                    data = JSON.parse(responseText);
-                } catch (parseError) {
-                    console.error('Failed to parse verification response:', parseError);
-                    showMessage('Server returned invalid response. Please try again.', 'error');
-                    return;
-                }
+                const data = await response.json();
                 
                 if (data.success) {
                     showMessage('Email verified successfully! Welcome to Nutrisaur!', 'success');
@@ -1424,20 +1534,16 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             }
         }
 
-        // Resend verification code function - using Resend API
+        // Resend verification code function - using home.php AJAX
         async function resendVerificationCode(email) {
             try {
-                const formData = {
-                    email: email,
-                    username: 'User' // We'll get this from the database
-                };
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('ajax_action', 'resend_verification');
                 
-                const response = await fetch('/api/DatabaseAPI.php?action=resend_verification_resend', {
+                const response = await fetch('/home.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
+                    body: formData
                 });
                 
                 const data = await response.json();
