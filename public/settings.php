@@ -1997,7 +1997,7 @@ header {
             border-collapse: separate;
             border-spacing: 0;
             margin-top: 10px;
-            table-layout: fixed;
+            table-layout: auto;
             border-radius: 15px;
             overflow: hidden;
             border: 1px solid var(--color-border);
@@ -2005,40 +2005,47 @@ header {
             min-width: 100%;
         }
 
-        /* Professional column distribution */
+        /* Auto-fit column distribution - let table adjust automatically */
+        .user-table th,
+        .user-table td {
+            width: auto;
+            min-width: 80px;
+        }
+        
+        /* Specific minimum widths for different columns */
         .user-table th:nth-child(1),
         .user-table td:nth-child(1) {
-            width: 15%; /* NAME */
+            min-width: 120px; /* NAME */
         }
         
         .user-table th:nth-child(2),
         .user-table td:nth-child(2) {
-            width: 20%; /* EMAIL */
+            min-width: 150px; /* EMAIL */
         }
         
         .user-table th:nth-child(3),
         .user-table td:nth-child(3) {
-            width: 18%; /* MUNICIPALITY */
+            min-width: 120px; /* MUNICIPALITY */
         }
         
         .user-table th:nth-child(4),
         .user-table td:nth-child(4) {
-            width: 15%; /* BARANGAY */
+            min-width: 100px; /* BARANGAY */
         }
         
         .user-table th:nth-child(5),
         .user-table td:nth-child(5) {
-            width: 8%; /* SEX */
+            min-width: 60px; /* SEX */
         }
         
         .user-table th:nth-child(6),
         .user-table td:nth-child(6) {
-            width: 12%; /* BIRTHDAY */
+            min-width: 100px; /* BIRTHDAY */
         }
         
         .user-table th:nth-child(7),
         .user-table td:nth-child(7) {
-            width: 12%; /* ACTIONS - Reduced to just fit buttons */
+            min-width: 140px; /* ACTIONS - enough for both buttons */
         }
 
         .user-table thead { 
@@ -2168,9 +2175,8 @@ header {
             text-overflow: clip;
             text-align: center;
             padding: 8px 6px;
-            max-width: 12%;
             box-sizing: border-box;
-            min-width: 120px;
+            min-width: 140px;
         }
 
 
@@ -2181,6 +2187,8 @@ header {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow-x: auto;
             overflow-y: visible;
+            width: 100%;
+            max-width: 100%;
         }
 
         /* Responsive improvements */
@@ -2272,9 +2280,9 @@ header {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
             white-space: nowrap !important;
             flex-shrink: 0 !important;
-            min-width: 50px !important;
+            min-width: 55px !important;
             height: 28px !important;
-            margin-right: 3px !important;
+            margin-right: 4px !important;
         }
 
         .action-buttons .btn-edit:hover {
@@ -2299,7 +2307,7 @@ header {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
             white-space: nowrap !important;
             flex-shrink: 0 !important;
-            min-width: 50px !important;
+            min-width: 55px !important;
             height: 28px !important;
         }
 
