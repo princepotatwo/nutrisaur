@@ -2471,7 +2471,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
                 
                 // Get user from community_users table
-                $result = $db->select('community_users', '*', 'email = ?', [$email]);
+                $result = $db->universalSelect('community_users', '*', 'email = ?', '', '', [$email]);
                 
                 if (!$result['success'] || empty($result['data'])) {
                     echo json_encode(['success' => false, 'message' => 'Invalid email or password']);
@@ -2585,7 +2585,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
                 
                 // Check if user already exists
-                $checkResult = $db->select('community_users', 'email', 'email = ?', [$email]);
+                $checkResult = $db->universalSelect('community_users', 'email', 'email = ?', '', '', [$email]);
                 if ($checkResult['success'] && !empty($checkResult['data'])) {
                     echo json_encode(['success' => false, 'message' => 'User with this email already exists']);
                     break;
@@ -2609,7 +2609,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'screening_date' => date('Y-m-d H:i:s')
                 ];
                 
-                $result = $db->insert('community_users', $insertData);
+                $result = $db->universalInsert('community_users', $insertData);
                 
                 if ($result['success']) {
                     echo json_encode([
@@ -2683,7 +2683,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'screening_date' => date('Y-m-d H:i:s')
                     ];
                     
-                    $result = $db->update('community_users', $updateData, 'email = ?', [$email]);
+                    $result = $db->universalUpdate('community_users', $updateData, 'email = ?', [$email]);
                     
                     if ($result['success']) {
                         echo json_encode([
@@ -2718,7 +2718,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'screening_date' => date('Y-m-d H:i:s')
                     ];
                     
-                    $result = $db->insert('community_users', $insertData);
+                    $result = $db->universalInsert('community_users', $insertData);
                     
                     if ($result['success']) {
                         echo json_encode([
