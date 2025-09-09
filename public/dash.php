@@ -6443,8 +6443,8 @@ body {
             // Update geographic distribution chart
             updateGeographicChart(barangay);
             
-            // Update critical alerts
-            updateCriticalAlerts(barangay);
+            // Update critical alerts - Now handled by assessment data
+            // updateCriticalAlerts(barangay); // Deprecated - using assessment data instead
             
             // Automatically refresh intelligent programs for the selected location
             updateIntelligentPrograms(barangay);
@@ -6791,12 +6791,9 @@ body {
                     updateGeographicChartDisplay(geoData);
                 }
 
-                // Update Critical Alerts
-                const alertsData = await fetchDataFromAPI('critical_alerts', params);
-                console.log('🔄 Alerts Data received:', alertsData);
-                if (alertsData && typeof alertsData === 'object') {
-                    updateCriticalAlertsDisplay(alertsData);
-                }
+                // Update Critical Alerts - Use assessment data from dashboard stats
+                // The critical alerts are now updated via updateCriticalAlertsFromScreeningData()
+                // which is called from the dashboard_assessment_stats API data
                 
                 // Mark first load as complete
                 if (dashboardState.isFirstLoad) {
@@ -6870,31 +6867,13 @@ body {
             }
         }
 
-        // Function to update critical alerts
+        // Function to update critical alerts - DEPRECATED
+        // Critical alerts are now updated via updateCriticalAlertsFromScreeningData()
+        // which uses data from the dashboard_assessment_stats API
         async function updateCriticalAlerts(barangay = '') {
-            try {
-                // Debounce rapid successive calls to prevent flickering
-                if (updateCriticalAlerts.debounceTimer) {
-                    clearTimeout(updateCriticalAlerts.debounceTimer);
-                }
-                
-                updateCriticalAlerts.debounceTimer = setTimeout(async () => {
-                    const params = {};
-                    if (barangay && barangay !== '') {
-                        params.barangay = barangay;
-                    }
-
-                    const data = await fetchDataFromAPI('critical_alerts', params);
-                    console.log('Critical alerts data received:', data);
-                    
-                    if (data && data.success) {
-                        updateCriticalAlertsDisplay(data.data);
-                    }
-                }, 1000); // 1000ms debounce delay to prevent flickering
-                
-            } catch (error) {
-                console.error('Error updating critical alerts:', error);
-            }
+            // This function is no longer used - critical alerts are updated
+            // via the assessment data from dashboard_assessment_stats API
+            console.log('updateCriticalAlerts called but deprecated - using assessment data instead');
         }
 
         // Function to generate intelligent programs (manual trigger)
@@ -9289,8 +9268,8 @@ body {
                 alertsHtml += `
                     <li class="alert-item danger">
                         <div class="alert-content">
-                            <h4>SAM Cases Detected</h4>
-                            <p>${data.sam_cases} case(s) of Severe Acute Malnutrition</p>
+                            <h4>🚨 SAM Cases Detected</h4>
+                            <p>${data.sam_cases} case(s) of Severe Acute Malnutrition requiring immediate medical attention</p>
                         </div>
                         <div class="alert-time" data-time="${data.latest_update || 'now'}">
                             ${formatTimeAgo(data.latest_update || 'now')}
@@ -9304,8 +9283,8 @@ body {
                 alertsHtml += `
                     <li class="alert-item warning">
                         <div class="alert-content">
-                            <h4>High Risk Cases</h4>
-                            <p>${data.high_risk_cases} case(s) with high/very high risk level</p>
+                            <h4>⚠️ High Risk Cases</h4>
+                            <p>${data.high_risk_cases} case(s) with high/very high nutritional risk requiring monitoring</p>
                         </div>
                         <div class="alert-time" data-time="${data.latest_update || 'now'}">
                             ${formatTimeAgo(data.latest_update || 'now')}
@@ -9319,14 +9298,51 @@ body {
                 alertsHtml += `
                     <li class="alert-item danger">
                         <div class="alert-content">
-                            <h4>Critical Malnutrition Cases</h4>
-                            <p>${data.critical_muac} case(s) requiring immediate attention</p>
+                            <h4>🔴 Critical Malnutrition Cases</h4>
+                            <p>${data.critical_muac} case(s) with critical MUAC measurements requiring urgent intervention</p>
                         </div>
                         <div class="alert-time" data-time="${data.latest_update || 'now'}">
                             ${formatTimeAgo(data.latest_update || 'now')}
                         </div>
                     </li>
                 `;
+            }
+            
+            // Add alerts for specific nutritional statuses if available
+            if (data && data.nutritional_status) {
+                const status = data.nutritional_status;
+                
+                // Alert for Severe Underweight cases
+                if (status['Severe Underweight'] > 0) {
+                    hasRealAlerts = true;
+                    alertsHtml += `
+                        <li class="alert-item danger">
+                            <div class="alert-content">
+                                <h4>⚡ Severe Underweight Cases</h4>
+                                <p>${status['Severe Underweight']} case(s) with severe underweight (BMI < 16.0)</p>
+                            </div>
+                            <div class="alert-time" data-time="${data.latest_update || 'now'}">
+                                ${formatTimeAgo(data.latest_update || 'now')}
+                            </div>
+                        </li>
+                    `;
+                }
+                
+                // Alert for Obesity cases
+                if (status['Obesity'] > 0) {
+                    hasRealAlerts = true;
+                    alertsHtml += `
+                        <li class="alert-item warning">
+                            <div class="alert-content">
+                                <h4>📈 Obesity Cases</h4>
+                                <p>${status['Obesity']} case(s) with obesity requiring weight management</p>
+                            </div>
+                            <div class="alert-time" data-time="${data.latest_update || 'now'}">
+                                ${formatTimeAgo(data.latest_update || 'now')}
+                            </div>
+                        </li>
+                    `;
+                }
             }
             
             // Smart update logic: only show "no alerts" if we don't currently have alerts
