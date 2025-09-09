@@ -11,625 +11,14 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 // Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
 require_once __DIR__ . '/api/DatabaseHelper.php';
 
-// Comprehensive nutritional assessment function based on WHO standards
+// Use the comprehensive nutritional assessment API
+require_once __DIR__ . '/api/nutritional_assessment_api.php';
+
+// Wrapper function to use the API assessment logic
 function getNutritionalAssessment($user) {
-    $age = calculateAge($user['birthday']);
-    $weight = floatval($user['weight']);
-    $height = floatval($user['height']);
-    $muac = floatval($user['muac']); // Mid-Upper Arm Circumference
-    $isPregnant = $user['is_pregnant'] === 'Yes';
-    $sex = $user['sex'];
-    
-    // CRITICAL: Validate input data before assessment
-    $validation = validateAssessmentData($age, $weight, $height, $muac, $sex, $isPregnant);
-    if (!$validation['valid']) {
-        return [
-            'nutritional_status' => 'Invalid Data',
-            'risk_level' => 'Unknown',
-            'category' => 'Error',
-            'description' => 'Invalid measurement data: ' . $validation['error'],
-            'recommendations' => ['Please verify measurements and try again'],
-            'measurements_used' => 'Data validation failed',
-            'cutoff_used' => 'N/A',
-            'bmi' => null
-        ];
-    }
-    
-    // Decision Tree Implementation
-    if ($age < 18) {
-        // CHILD/ADOLESCENT ASSESSMENT
-        return assessChildAdolescent($age, $weight, $height, $muac, $sex);
-    } elseif ($isPregnant) {
-        // PREGNANT WOMAN ASSESSMENT
-        return assessPregnantWoman($muac, $weight);
-    } else {
-        // ADULT/ELDERLY ASSESSMENT
-        return assessAdultElderly($weight, $height, $muac);
-    }
+    return performNutritionalAssessment($user);
 }
 
-/**
- * Validate assessment data for medical accuracy
- */
-function validateAssessmentData($age, $weight, $height, $muac, $sex, $isPregnant) {
-    $errors = [];
-    
-    // Age validation
-    if ($age < 0 || $age > 120) {
-        $errors[] = "Invalid age: $age years";
-    }
-    
-    // Weight validation (kg)
-    if ($weight <= 0 || $weight > 500) {
-        $errors[] = "Invalid weight: $weight kg";
-    }
-    
-    // Height validation (cm)
-    if ($height <= 0 || $height > 250) {
-        $errors[] = "Invalid height: $height cm";
-    }
-    
-    // MUAC validation (cm)
-    if ($muac <= 0 || $muac > 50) {
-        $errors[] = "Invalid MUAC: $muac cm";
-    }
-    
-    // Sex validation
-    if (!in_array(strtolower($sex), ['male', 'female'])) {
-        $errors[] = "Invalid sex: $sex";
-    }
-    
-    // Pregnancy validation
-    if ($isPregnant && strtolower($sex) !== 'female') {
-        $errors[] = "Invalid: Male cannot be pregnant";
-    }
-    
-    // Age-specific validations
-    if ($age < 0.5 && $muac > 0) {
-        $errors[] = "MUAC not recommended for infants under 6 months";
-    }
-    
-    if ($age >= 5 && $age < 18 && $height < 50) {
-        $errors[] = "Height too low for age: $height cm at $age years";
-    }
-    
-    return [
-        'valid' => empty($errors),
-        'error' => implode(', ', $errors)
-    ];
-}
-
-function calculateAge($birthday) {
-    $birthDate = new DateTime($birthday);
-    $today = new DateTime();
-    $age = $today->diff($birthDate);
-    return $age->y + ($age->m / 12); // Return age in years with decimal for months
-}
-
-function calculateBMI($weight, $height) {
-    if ($height <= 0) return 0;
-    $heightInMeters = $height / 100;
-    return round($weight / ($heightInMeters * $heightInMeters), 1);
-}
-
-/**
- * Calculate Weight-for-Height Z-Score using WHO standards
- * Based on WHO Child Growth Standards - CRITICAL: This uses actual WHO reference data
- */
-function calculateWeightForHeightZScore($weight, $height, $age, $sex) {
-    $ageInMonths = $age * 12;
-    
-    // For children under 24 months, use length; for older children, use height
-    if ($ageInMonths < 24) {
-        // Use length-for-age reference for infants
-        return calculateLengthForAgeZScore($height, $age, $sex);
-    }
-    
-    // WHO Weight-for-Height reference data (actual WHO standards)
-    // Source: WHO Child Growth Standards - Weight-for-height tables
-    $referenceData = [
-        'male' => [
-            'height' => [65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190],
-            'median' => [6.5, 7.3, 8.0, 8.7, 9.3, 9.9, 10.4, 10.9, 11.3, 11.7, 12.1, 12.4, 12.7, 13.0, 13.3, 13.6, 13.9, 14.2, 14.5, 14.8, 15.1, 15.4, 15.7, 16.0, 16.3, 16.6],
-            'sd' => [0.7, 0.8, 0.8, 0.9, 0.9, 1.0, 1.0, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5, 1.5, 1.6, 1.6, 1.7, 1.7, 1.8, 1.8, 1.9, 1.9, 2.0]
-        ],
-        'female' => [
-            'height' => [65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190],
-            'median' => [6.0, 6.7, 7.3, 7.9, 8.4, 8.9, 9.3, 9.7, 10.1, 10.4, 10.7, 11.0, 11.3, 11.6, 11.9, 12.2, 12.5, 12.8, 13.1, 13.4, 13.7, 14.0, 14.3, 14.6, 14.9, 15.2],
-            'sd' => [0.6, 0.7, 0.7, 0.8, 0.8, 0.9, 0.9, 1.0, 1.0, 1.1, 1.1, 1.2, 1.2, 1.3, 1.3, 1.4, 1.4, 1.5, 1.5, 1.6, 1.6, 1.7, 1.7, 1.8, 1.8, 1.9]
-        ]
-    ];
-    
-    $sexKey = strtolower($sex) === 'male' ? 'male' : 'female';
-    $data = $referenceData[$sexKey];
-    
-    // Find closest height reference
-    $closestIndex = 0;
-    $minDiff = abs($height - $data['height'][0]);
-    
-    for ($i = 1; $i < count($data['height']); $i++) {
-        $diff = abs($height - $data['height'][$i]);
-        if ($diff < $minDiff) {
-            $minDiff = $diff;
-            $closestIndex = $i;
-        }
-    }
-    
-    $median = $data['median'][$closestIndex];
-    $sd = $data['sd'][$closestIndex];
-    
-    // Calculate z-score: (observed - median) / SD
-    $zScore = ($weight - $median) / $sd;
-    
-    return round($zScore, 2);
-}
-
-/**
- * Calculate Height-for-Age Z-Score using WHO standards
- */
-function calculateHeightForAgeZScore($height, $age, $sex) {
-    $ageInMonths = $age * 12;
-    
-    // WHO Height-for-Age reference data (actual WHO standards)
-    // Source: WHO Child Growth Standards - Length/height-for-age tables
-    $referenceData = [
-        'male' => [
-            'age_months' => [0, 1, 2, 3, 6, 9, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114, 120, 126, 132, 138, 144, 150, 156, 162, 168, 174, 180, 186, 192, 198, 204, 210, 216, 222, 228, 234, 240],
-            'median' => [49.9, 54.7, 58.4, 61.4, 67.6, 72.0, 75.7, 82.5, 87.1, 91.9, 96.1, 99.9, 103.3, 106.7, 109.9, 112.9, 115.7, 118.4, 121.0, 123.5, 125.9, 128.2, 130.4, 132.5, 134.5, 136.4, 138.2, 139.9, 141.5, 143.0, 144.4, 145.7, 146.9, 148.0, 149.0, 149.9, 150.7, 151.4, 152.0, 152.5, 152.9, 153.2, 153.4, 153.5, 153.6],
-            'sd' => [1.9, 2.1, 2.3, 2.4, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5]
-        ],
-        'female' => [
-            'age_months' => [0, 1, 2, 3, 6, 9, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114, 120, 126, 132, 138, 144, 150, 156, 162, 168, 174, 180, 186, 192, 198, 204, 210, 216, 222, 228, 234, 240],
-            'median' => [49.1, 53.7, 57.1, 59.8, 65.3, 70.1, 74.0, 80.7, 85.7, 90.4, 94.5, 98.1, 101.3, 104.5, 107.5, 110.3, 112.9, 115.4, 117.7, 119.9, 122.0, 124.0, 125.9, 127.7, 129.4, 131.0, 132.5, 133.9, 135.2, 136.4, 137.5, 138.5, 139.4, 140.2, 140.9, 141.5, 142.0, 142.4, 142.7, 142.9, 143.0, 143.0, 142.9, 142.7, 142.5],
-            'sd' => [1.9, 2.0, 2.1, 2.2, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3, 2.3]
-        ]
-    ];
-    
-    $sexKey = strtolower($sex) === 'male' ? 'male' : 'female';
-    $data = $referenceData[$sexKey];
-    
-    // Find closest age reference
-    $closestIndex = 0;
-    $minDiff = abs($ageInMonths - $data['age_months'][0]);
-    
-    for ($i = 1; $i < count($data['age_months']); $i++) {
-        $diff = abs($ageInMonths - $data['age_months'][$i]);
-        if ($diff < $minDiff) {
-            $minDiff = $diff;
-            $closestIndex = $i;
-        }
-    }
-    
-    $median = $data['median'][$closestIndex];
-    $sd = $data['sd'][$closestIndex];
-    
-    // Calculate z-score: (observed - median) / SD
-    $zScore = ($height - $median) / $sd;
-    
-    return round($zScore, 2);
-}
-
-/**
- * Calculate BMI-for-Age Z-Score using WHO standards
- */
-function calculateBMIForAgeZScore($bmi, $age, $sex) {
-    $ageInMonths = $age * 12;
-    
-    // WHO BMI-for-Age reference data (actual WHO standards)
-    // Source: WHO Child Growth Standards - BMI-for-age tables
-    $referenceData = [
-        'male' => [
-            'age_months' => [0, 1, 2, 3, 6, 9, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114, 120, 126, 132, 138, 144, 150, 156, 162, 168, 174, 180, 186, 192, 198, 204, 210, 216, 222, 228, 234, 240],
-            'median' => [13.4, 14.2, 15.1, 15.8, 16.5, 16.8, 16.9, 16.8, 16.4, 16.0, 15.6, 15.3, 15.1, 15.0, 15.0, 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7, 15.8, 15.9, 16.0, 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 16.9, 17.0, 17.1, 17.2, 17.3, 17.4, 17.5, 17.6, 17.7, 17.8, 17.9, 18.0],
-            'sd' => [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-        ],
-        'female' => [
-            'age_months' => [0, 1, 2, 3, 6, 9, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90, 96, 102, 108, 114, 120, 126, 132, 138, 144, 150, 156, 162, 168, 174, 180, 186, 192, 198, 204, 210, 216, 222, 228, 234, 240],
-            'median' => [13.3, 14.0, 14.8, 15.5, 16.1, 16.4, 16.5, 16.4, 16.0, 15.6, 15.2, 14.9, 14.7, 14.6, 14.6, 14.7, 14.8, 14.9, 15.0, 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.7, 15.8, 15.9, 16.0, 16.1, 16.2, 16.3, 16.4, 16.5, 16.6, 16.7, 16.8, 16.9, 17.0, 17.1, 17.2, 17.3, 17.4, 17.5, 17.6],
-            'sd' => [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-        ]
-    ];
-    
-    $sexKey = strtolower($sex) === 'male' ? 'male' : 'female';
-    $data = $referenceData[$sexKey];
-    
-    // Find closest age reference
-    $closestIndex = 0;
-    $minDiff = abs($ageInMonths - $data['age_months'][0]);
-    
-    for ($i = 1; $i < count($data['age_months']); $i++) {
-        $diff = abs($ageInMonths - $data['age_months'][$i]);
-        if ($diff < $minDiff) {
-            $minDiff = $diff;
-            $closestIndex = $i;
-        }
-    }
-    
-    $median = $data['median'][$closestIndex];
-    $sd = $data['sd'][$closestIndex];
-    
-    // Calculate z-score: (observed - median) / SD
-    $zScore = ($bmi - $median) / $sd;
-    
-    return round($zScore, 2);
-}
-
-/**
- * Calculate Length-for-Age Z-Score (for children under 24 months)
- */
-function calculateLengthForAgeZScore($length, $age, $sex) {
-    // This is a simplified version - in practice, you'd use complete WHO tables
-    return calculateHeightForAgeZScore($length, $age, $sex);
-}
-
-/**
- * Child/Adolescent Assessment (Age < 18) - Following WHO Growth Standards
- */
-function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
-    // Calculate BMI
-    $bmi = calculateBMI($weight, $height);
-    
-    // Calculate z-scores using WHO standards
-    $whZScore = calculateWeightForHeightZScore($weight, $height, $age, $sex);
-    $haZScore = calculateHeightForAgeZScore($height, $age, $sex);
-    $bmiForAgeZScore = calculateBMIForAgeZScore($bmi, $age, $sex);
-    
-    // DECISION TREE STEP 1: Is W/H z-score < -3 OR MUAC < 11.5 cm?
-    if ($whZScore < -3 || ($age >= 0.5 && $age < 5 && $muac < 11.5)) {
-        return [
-            'nutritional_status' => 'Severe Acute Malnutrition (SAM)',
-            'malnutrition_category' => 'Undernutrition',
-            'specific_condition' => 'Severe Acute Malnutrition (SAM)',
-            'type' => 'Severe Acute Malnutrition',
-            'risk_level' => 'High',
-            'category' => 'Undernutrition',
-            'description' => 'Child has severe acute malnutrition. Immediate medical attention required.',
-            'recommendations' => [
-                'Seek immediate medical care',
-                'Start therapeutic feeding program',
-                'Monitor closely for complications',
-                'Refer to specialized nutrition center'
-            ],
-            'measurements_used' => 'Weight-for-Height z-score OR MUAC',
-            'cutoff_used' => 'W/H z-score < -3 OR MUAC < 11.5 cm',
-            'z_scores' => [
-                'weight_for_height' => round($whZScore, 2),
-                'height_for_age' => round($haZScore, 2),
-                'bmi_for_age' => round($bmiForAgeZScore, 2)
-            ],
-            'bmi' => $bmi
-        ];
-    }
-    
-    // DECISION TREE STEP 2: Is W/H z-score < -2 (≥ -3) OR MUAC 11.5-12.5 cm?
-    if (($whZScore < -2 && $whZScore >= -3) || ($age >= 0.5 && $age < 5 && $muac >= 11.5 && $muac < 12.5)) {
-        return [
-            'nutritional_status' => 'Moderate Acute Malnutrition (MAM)',
-            'malnutrition_category' => 'Undernutrition',
-            'specific_condition' => 'Moderate Acute Malnutrition (MAM)',
-            'type' => 'Moderate Acute Malnutrition',
-            'risk_level' => 'Medium',
-            'category' => 'Undernutrition',
-            'description' => 'Child has moderate acute malnutrition. Nutritional support needed.',
-            'recommendations' => [
-                'Start supplementary feeding program',
-                'Monitor growth regularly',
-                'Ensure adequate nutrition',
-                'Follow up in 2-4 weeks'
-            ],
-            'measurements_used' => 'Weight-for-Height z-score OR MUAC',
-            'cutoff_used' => 'W/H z-score < -2 (≥ -3) OR MUAC 11.5-12.5 cm',
-            'z_scores' => [
-                'weight_for_height' => round($whZScore, 2),
-                'height_for_age' => round($haZScore, 2),
-                'bmi_for_age' => round($bmiForAgeZScore, 2)
-            ],
-            'bmi' => $bmi
-        ];
-    }
-    
-    // DECISION TREE STEP 3: Is W/H z-score < -1 (≥ -2) OR MUAC 12.5-13.5 cm?
-    if (($whZScore < -1 && $whZScore >= -2) || ($age >= 0.5 && $age < 5 && $muac >= 12.5 && $muac < 13.5)) {
-        return [
-            'nutritional_status' => 'Mild Acute Malnutrition (Wasting)',
-            'malnutrition_category' => 'Undernutrition',
-            'specific_condition' => 'Mild Acute Malnutrition (Wasting)',
-            'type' => 'Mild Acute Malnutrition',
-            'risk_level' => 'Low-Medium',
-            'category' => 'Undernutrition',
-            'description' => 'Child shows mild acute malnutrition (wasting). Nutritional monitoring and support needed.',
-            'recommendations' => [
-                'Improve dietary quality and quantity',
-                'Monitor growth monthly',
-                'Ensure adequate protein intake',
-                'Follow up in 4-6 weeks'
-            ],
-            'measurements_used' => 'Weight-for-Height z-score OR MUAC',
-            'cutoff_used' => 'W/H z-score < -1 (≥ -2) OR MUAC 12.5-13.5 cm',
-            'z_scores' => [
-                'weight_for_height' => round($whZScore, 2),
-                'height_for_age' => round($haZScore, 2),
-                'bmi_for_age' => round($bmiForAgeZScore, 2)
-            ],
-            'bmi' => $bmi
-        ];
-    }
-    
-    // DECISION TREE STEP 4: Is H/A z-score < -2? (Stunting) - ONLY if not SAM/MAM
-    if ($haZScore < -2) {
-        return [
-            'nutritional_status' => 'Stunting (Chronic Malnutrition)',
-            'malnutrition_category' => 'Undernutrition',
-            'specific_condition' => 'Stunting (Chronic Malnutrition)',
-            'type' => 'Chronic Malnutrition',
-            'risk_level' => 'Medium',
-            'category' => 'Undernutrition',
-            'description' => 'Child shows signs of chronic malnutrition (stunting). Long-term nutritional support needed.',
-            'recommendations' => [
-                'Improve overall nutrition quality',
-                'Monitor growth regularly',
-                'Address underlying causes',
-                'Focus on micronutrient supplementation'
-            ],
-            'measurements_used' => 'Height-for-Age z-score',
-            'cutoff_used' => 'H/A z-score < -2',
-            'z_scores' => [
-                'weight_for_height' => round($whZScore, 2),
-                'height_for_age' => round($haZScore, 2),
-                'bmi_for_age' => round($bmiForAgeZScore, 2)
-            ],
-            'bmi' => $bmi
-        ];
-    }
-    
-    // If none of the above conditions are met
-    return [
-        'nutritional_status' => 'Normal',
-        'malnutrition_category' => 'Normal',
-        'specific_condition' => 'Normal',
-        'type' => 'Adequate Nutritional Status',
-        'risk_level' => 'Low',
-        'category' => 'Normal',
-        'description' => 'Child has normal nutritional status. Continue healthy eating habits.',
-        'recommendations' => [
-            'Maintain balanced diet',
-            'Continue regular growth monitoring',
-            'Encourage physical activity',
-            'Prevent malnutrition through good nutrition'
-        ],
-        'measurements_used' => 'All z-scores within normal range',
-        'cutoff_used' => 'All z-scores ≥ -1',
-        'z_scores' => [
-            'weight_for_height' => round($whZScore, 2),
-            'height_for_age' => round($haZScore, 2),
-            'bmi_for_age' => round($bmiForAgeZScore, 2)
-        ],
-        'bmi' => $bmi
-    ];
-}
-
-/**
- * Pregnant Woman Assessment
- */
-function assessPregnantWoman($muac, $weight) {
-    if ($muac < 23.0) {
-        return [
-            'nutritional_status' => 'Maternal Undernutrition (At-risk)',
-            'malnutrition_category' => 'Undernutrition',
-            'specific_condition' => 'Maternal Undernutrition (At-risk)',
-            'type' => 'Maternal Undernutrition',
-            'risk_level' => 'High',
-            'category' => 'Undernutrition',
-            'description' => 'Pregnant woman is at high risk of undernutrition. Immediate nutritional support needed.',
-            'recommendations' => [
-                'Start nutritional supplementation immediately',
-                'Increase caloric intake significantly',
-                'Monitor pregnancy closely',
-                'Consult healthcare provider urgently'
-            ],
-            'measurements_used' => 'Arm circumference (MUAC)',
-            'cutoff_used' => 'MUAC < 23.0 cm',
-            'bmi' => null
-        ];
-    } elseif ($muac >= 23.0 && $muac < 25.0) {
-        return [
-            'nutritional_status' => 'Maternal At-risk',
-            'malnutrition_category' => 'Undernutrition',
-            'specific_condition' => 'Maternal At-risk',
-            'type' => 'Maternal At-risk',
-            'risk_level' => 'Medium',
-            'category' => 'Undernutrition',
-            'description' => 'Pregnant woman is at moderate risk. Nutritional monitoring needed.',
-            'recommendations' => [
-                'Improve dietary quality and quantity',
-                'Monitor weight gain regularly',
-                'Ensure adequate nutrition',
-                'Follow up in 2-3 weeks'
-            ],
-            'measurements_used' => 'Arm circumference (MUAC)',
-            'cutoff_used' => 'MUAC 23.0-24.9 cm',
-            'bmi' => null
-        ];
-    } else {
-        return [
-            'nutritional_status' => 'Normal',
-            'malnutrition_category' => 'Normal',
-            'specific_condition' => 'Normal',
-            'type' => 'Adequate Nutritional Status',
-            'risk_level' => 'Low',
-            'category' => 'Normal',
-            'description' => 'Pregnant woman has adequate nutritional status. Continue healthy pregnancy nutrition.',
-            'recommendations' => [
-                'Maintain balanced pregnancy diet',
-                'Continue prenatal care',
-                'Monitor weight gain'
-            ],
-            'measurements_used' => 'Arm circumference (MUAC)',
-            'cutoff_used' => 'MUAC ≥ 25.0 cm',
-            'bmi' => null
-        ];
-    }
-}
-
-/**
- * Adult/Elderly Assessment (Age ≥ 18, Not Pregnant)
- */
-function assessAdultElderly($weight, $height, $muac) {
-    $bmi = calculateBMI($weight, $height);
-    
-    if ($bmi < 16.0) {
-        return [
-            'nutritional_status' => 'Severe Underweight',
-            'malnutrition_category' => 'Undernutrition',
-            'specific_condition' => 'Severe Underweight',
-            'type' => 'Severe Underweight',
-            'risk_level' => 'High',
-            'category' => 'Undernutrition',
-            'description' => 'Adult has severe underweight. Immediate nutritional intervention required.',
-            'recommendations' => [
-                'Seek immediate medical care',
-                'Start nutritional rehabilitation',
-                'Monitor closely for complications',
-                'Refer to specialized nutrition center'
-            ],
-            'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI < 16.0',
-            'bmi' => $bmi
-        ];
-    } elseif ($bmi >= 16.0 && $bmi < 17.0) {
-        return [
-            'nutritional_status' => 'Moderate Underweight',
-            'malnutrition_category' => 'Undernutrition',
-            'specific_condition' => 'Moderate Underweight',
-            'type' => 'Moderate Underweight',
-            'risk_level' => 'High',
-            'category' => 'Undernutrition',
-            'description' => 'Adult has moderate underweight. Nutritional support needed.',
-            'recommendations' => [
-                'Increase caloric intake significantly',
-                'Focus on nutrient-dense foods',
-                'Consult healthcare provider',
-                'Monitor weight gain weekly'
-            ],
-            'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI 16.0-16.9',
-            'bmi' => $bmi
-        ];
-    } elseif ($bmi >= 17.0 && $bmi < 18.5) {
-        return [
-            'nutritional_status' => 'Mild Underweight',
-            'malnutrition_category' => 'Undernutrition',
-            'specific_condition' => 'Mild Underweight',
-            'type' => 'Mild Underweight',
-            'risk_level' => 'Medium',
-            'category' => 'Undernutrition',
-            'description' => 'Adult has mild underweight. Nutritional improvement needed.',
-            'recommendations' => [
-                'Increase caloric intake',
-                'Focus on nutrient-dense foods',
-                'Consult healthcare provider',
-                'Monitor weight gain'
-            ],
-            'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI 17.0-18.4',
-            'bmi' => $bmi
-        ];
-    } elseif ($bmi >= 18.5 && $bmi < 25.0) {
-        return [
-            'nutritional_status' => 'Normal',
-            'malnutrition_category' => 'Normal',
-            'specific_condition' => 'Normal',
-            'type' => 'Adequate Nutritional Status',
-            'risk_level' => 'Low',
-            'category' => 'Normal',
-            'description' => 'Adult has normal nutritional status. Maintain healthy lifestyle.',
-            'recommendations' => [
-                'Maintain balanced diet',
-                'Regular physical activity',
-                'Continue healthy habits'
-            ],
-            'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI 18.5-24.9',
-            'bmi' => $bmi
-        ];
-    } elseif ($bmi >= 25.0 && $bmi < 30.0) {
-        return [
-            'nutritional_status' => 'Overweight',
-            'malnutrition_category' => 'Overnutrition',
-            'specific_condition' => 'Overweight',
-            'type' => 'Overweight',
-            'risk_level' => 'Medium',
-            'category' => 'Overnutrition',
-            'description' => 'Adult is overweight. Weight management recommended.',
-            'recommendations' => [
-                'Reduce caloric intake',
-                'Increase physical activity',
-                'Focus on whole foods',
-                'Monitor portion sizes'
-            ],
-            'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI 25.0-29.9',
-            'bmi' => $bmi
-        ];
-    } elseif ($bmi >= 30.0 && $bmi < 35.0) {
-        return [
-            'nutritional_status' => 'Obesity Class I',
-            'malnutrition_category' => 'Overnutrition',
-            'specific_condition' => 'Obesity Class I',
-            'type' => 'Obesity Class I',
-            'risk_level' => 'High',
-            'category' => 'Overnutrition',
-            'description' => 'Adult has Class I obesity. Comprehensive weight management needed.',
-            'recommendations' => [
-                'Consult healthcare provider',
-                'Start structured weight loss program',
-                'Increase physical activity',
-                'Focus on sustainable lifestyle changes'
-            ],
-            'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI 30.0-34.9',
-            'bmi' => $bmi
-        ];
-    } elseif ($bmi >= 35.0 && $bmi < 40.0) {
-        return [
-            'nutritional_status' => 'Obesity Class II',
-            'malnutrition_category' => 'Overnutrition',
-            'specific_condition' => 'Obesity Class II',
-            'type' => 'Obesity Class II',
-            'risk_level' => 'High',
-            'category' => 'Overnutrition',
-            'description' => 'Adult has Class II obesity. Intensive weight management required.',
-            'recommendations' => [
-                'Seek specialized medical care',
-                'Consider bariatric surgery evaluation',
-                'Intensive lifestyle modification',
-                'Regular medical monitoring'
-            ],
-            'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI 35.0-39.9',
-            'bmi' => $bmi
-        ];
-    } else {
-        return [
-            'nutritional_status' => 'Obesity Class III (Severe)',
-            'malnutrition_category' => 'Overnutrition',
-            'specific_condition' => 'Obesity Class III (Severe)',
-            'type' => 'Obesity Class III (Severe)',
-            'risk_level' => 'Very High',
-            'category' => 'Overnutrition',
-            'description' => 'Adult has severe obesity. Immediate medical intervention required.',
-            'recommendations' => [
-                'Seek immediate specialized medical care',
-                'Consider bariatric surgery',
-                'Intensive medical supervision',
-                'Comprehensive lifestyle intervention'
-            ],
-            'measurements_used' => 'Body Mass Index (BMI)',
-            'cutoff_used' => 'BMI ≥ 40.0',
-            'bmi' => $bmi
-        ];
-    }
-}
 
 // Get database helper instance
 $db = DatabaseHelper::getInstance();
@@ -2651,21 +2040,15 @@ header {
 
         .user-table th,
         .user-table td {
-            padding: 6px 4px;
-            text-align: left;
+            padding: 12px 8px;
+            text-align: center;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             white-space: nowrap;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 500;
-            vertical-align: top;
+            vertical-align: middle;
             position: relative;
-            line-height: 1.2;
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            line-height: 1.4;
         }
 
         /* Ensure actions column is always visible */
@@ -2696,7 +2079,7 @@ header {
         .user-table th {
             color: var(--color-highlight);
             font-weight: 700;
-            font-size: 9px;
+            font-size: 12px;
             position: sticky;
             top: 0;
             background-color: var(--color-card);
@@ -3161,203 +2544,135 @@ header {
             margin-bottom: 10px;
         }
 
-        /* Nutritional Assessment Status Styles */
+        /* Nutritional Assessment Status Styles - Plain Text with Colors */
         .nutritional-status {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 600;
-            display: inline-block;
             text-align: center;
-            min-width: 60px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            padding: 8px 4px;
+            white-space: nowrap;
         }
 
         .nutritional-status.severe-acute-malnutrition-sam {
-            background-color: rgba(244, 67, 54, 0.15);
             color: #F44336;
-            border: 1px solid rgba(244, 67, 54, 0.3);
         }
 
         .nutritional-status.moderate-acute-malnutrition-mam {
-            background-color: rgba(255, 152, 0, 0.15);
             color: #FF9800;
-            border: 1px solid rgba(255, 152, 0, 0.3);
         }
 
         .nutritional-status.mild-acute-malnutrition-wasting {
-            background-color: rgba(255, 193, 7, 0.15);
             color: #FFC107;
-            border: 1px solid rgba(255, 193, 7, 0.3);
         }
 
         .nutritional-status.stunting-chronic-malnutrition {
-            background-color: rgba(156, 39, 176, 0.15);
             color: #9C27B0;
-            border: 1px solid rgba(156, 39, 176, 0.3);
         }
 
         .nutritional-status.maternal-undernutrition-at-risk {
-            background-color: rgba(233, 30, 99, 0.15);
             color: #E91E63;
-            border: 1px solid rgba(233, 30, 99, 0.3);
         }
 
         .nutritional-status.maternal-at-risk {
-            background-color: rgba(255, 87, 34, 0.15);
             color: #FF5722;
-            border: 1px solid rgba(255, 87, 34, 0.3);
         }
 
         .nutritional-status.severe-underweight {
-            background-color: rgba(244, 67, 54, 0.15);
             color: #F44336;
-            border: 1px solid rgba(244, 67, 54, 0.3);
         }
 
         .nutritional-status.moderate-underweight {
-            background-color: rgba(255, 152, 0, 0.15);
             color: #FF9800;
-            border: 1px solid rgba(255, 152, 0, 0.3);
         }
 
         .nutritional-status.mild-underweight {
-            background-color: rgba(255, 193, 7, 0.15);
             color: #FFC107;
-            border: 1px solid rgba(255, 193, 7, 0.3);
         }
 
         .nutritional-status.normal {
-            background-color: rgba(76, 175, 80, 0.15);
             color: #4CAF50;
-            border: 1px solid rgba(76, 175, 80, 0.3);
         }
 
         .nutritional-status.overweight {
-            background-color: rgba(255, 152, 0, 0.15);
             color: #FF9800;
-            border: 1px solid rgba(255, 152, 0, 0.3);
         }
 
         .nutritional-status.obesity-class-i {
-            background-color: rgba(255, 87, 34, 0.15);
             color: #FF5722;
-            border: 1px solid rgba(255, 87, 34, 0.3);
         }
 
         .nutritional-status.obesity-class-ii {
-            background-color: rgba(244, 67, 54, 0.15);
             color: #F44336;
-            border: 1px solid rgba(244, 67, 54, 0.3);
         }
 
         .nutritional-status.obesity-class-iii-severe {
-            background-color: rgba(139, 69, 19, 0.15);
             color: #8B4513;
-            border: 1px solid rgba(139, 69, 19, 0.3);
         }
 
         .nutritional-status.invalid-data {
-            background-color: rgba(158, 158, 158, 0.15);
             color: #9E9E9E;
-            border: 1px solid rgba(158, 158, 158, 0.3);
         }
 
         .nutritional-status.assessment-error {
-            background-color: rgba(158, 158, 158, 0.15);
             color: #9E9E9E;
-            border: 1px solid rgba(158, 158, 158, 0.3);
         }
 
         .risk-level {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 600;
-            display: inline-block;
             text-align: center;
-            min-width: 50px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            padding: 8px 4px;
+            white-space: nowrap;
         }
 
         .risk-level.very-high {
-            background-color: rgba(139, 69, 19, 0.15);
             color: #8B4513;
-            border: 1px solid rgba(139, 69, 19, 0.3);
         }
 
         .risk-level.high {
-            background-color: rgba(244, 67, 54, 0.15);
             color: #F44336;
-            border: 1px solid rgba(244, 67, 54, 0.3);
         }
 
         .risk-level.medium {
-            background-color: rgba(255, 152, 0, 0.15);
             color: #FF9800;
-            border: 1px solid rgba(255, 152, 0, 0.3);
         }
 
         .risk-level.low-medium {
-            background-color: rgba(255, 193, 7, 0.15);
             color: #FFC107;
-            border: 1px solid rgba(255, 193, 7, 0.3);
         }
 
         .risk-level.low {
-            background-color: rgba(76, 175, 80, 0.15);
             color: #4CAF50;
-            border: 1px solid rgba(76, 175, 80, 0.3);
         }
 
         .risk-level.unknown {
-            background-color: rgba(158, 158, 158, 0.15);
             color: #9E9E9E;
-            border: 1px solid rgba(158, 158, 158, 0.3);
         }
 
         .category {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 600;
-            display: inline-block;
             text-align: center;
-            min-width: 50px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            padding: 8px 4px;
+            white-space: nowrap;
         }
 
         .category.undernutrition {
-            background-color: rgba(255, 152, 0, 0.15);
             color: #FF9800;
-            border: 1px solid rgba(255, 152, 0, 0.3);
         }
 
         .category.overnutrition {
-            background-color: rgba(244, 67, 54, 0.15);
             color: #F44336;
-            border: 1px solid rgba(244, 67, 54, 0.3);
         }
 
         .category.normal {
-            background-color: rgba(76, 175, 80, 0.15);
             color: #4CAF50;
-            border: 1px solid rgba(76, 175, 80, 0.3);
         }
 
         .category.error {
-            background-color: rgba(158, 158, 158, 0.15);
             color: #9E9E9E;
-            border: 1px solid rgba(158, 158, 158, 0.3);
         }
 
-        .nutritional-status:hover, .risk-level:hover, .category:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
 
     </style>
 </head>
@@ -3477,9 +2792,9 @@ header {
                                         echo '<tr>';
                                         echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
-                                        echo '<td><span class="nutritional-status ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $assessment['nutritional_status'])) . '">' . htmlspecialchars($assessment['nutritional_status']) . '</span></td>';
-                                        echo '<td><span class="risk-level ' . strtolower(str_replace(' ', '-', $assessment['risk_level'])) . '">' . htmlspecialchars($assessment['risk_level']) . '</span></td>';
-                                        echo '<td><span class="category ' . strtolower($assessment['category']) . '">' . htmlspecialchars($assessment['category']) . '</span></td>';
+                                        echo '<td class="nutritional-status ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $assessment['nutritional_status'])) . '">' . htmlspecialchars($assessment['nutritional_status']) . '</td>';
+                                        echo '<td class="risk-level ' . strtolower(str_replace(' ', '-', $assessment['risk_level'])) . '">' . htmlspecialchars($assessment['risk_level']) . '</td>';
+                                        echo '<td class="category ' . strtolower($assessment['category']) . '">' . htmlspecialchars($assessment['category']) . '</td>';
                                         echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                     }

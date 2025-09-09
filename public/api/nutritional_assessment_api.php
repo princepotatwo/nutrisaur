@@ -1,60 +1,66 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+// Only set headers if this is being called as an API endpoint
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] !== '') {
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        exit(0);
+    }
 }
 
 require_once __DIR__ . "/../../config.php";
 require_once __DIR__ . "/DatabaseAPI.php";
 
-$response = ['success' => false, 'message' => ''];
+// Only run API logic if this is being called as an API endpoint
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] !== '') {
+    $response = ['success' => false, 'message' => ''];
 
-try {
-    $pdo = getDatabaseConnection();
-    if (!$pdo) {
-        throw new Exception("Database connection failed.");
+    try {
+        $pdo = getDatabaseConnection();
+        if (!$pdo) {
+            throw new Exception("Database connection failed.");
+        }
+
+        $api = new DatabaseAPI($pdo);
+        
+        // Get action from request
+        $action = $_GET['action'] ?? $_POST['action'] ?? '';
+        
+        switch ($action) {
+            case 'assess_user':
+                $email = $_POST['email'] ?? '';
+                if (empty($email)) {
+                    throw new Exception("Email is required for assessment");
+                }
+                
+                $result = assessUserNutritionalStatus($api, $email);
+                $response = $result;
+                break;
+                
+            case 'assess_all_users':
+                $result = assessAllUsersNutritionalStatus($api);
+                $response = $result;
+                break;
+                
+            case 'get_assessment_stats':
+                $result = getAssessmentStatistics($api);
+                $response = $result;
+                break;
+                
+            default:
+                throw new Exception("Invalid action. Use: assess_user, assess_all_users, or get_assessment_stats");
+        }
+
+    } catch (Exception $e) {
+        $response['success'] = false;
+        $response['message'] = $e->getMessage();
     }
 
-    $api = new DatabaseAPI($pdo);
-    
-    // Get action from request
-    $action = $_GET['action'] ?? $_POST['action'] ?? '';
-    
-    switch ($action) {
-        case 'assess_user':
-            $email = $_POST['email'] ?? '';
-            if (empty($email)) {
-                throw new Exception("Email is required for assessment");
-            }
-            
-            $result = assessUserNutritionalStatus($api, $email);
-            $response = $result;
-            break;
-            
-        case 'assess_all_users':
-            $result = assessAllUsersNutritionalStatus($api);
-            $response = $result;
-            break;
-            
-        case 'get_assessment_stats':
-            $result = getAssessmentStatistics($api);
-            $response = $result;
-            break;
-            
-        default:
-            throw new Exception("Invalid action. Use: assess_user, assess_all_users, or get_assessment_stats");
-    }
-
-} catch (Exception $e) {
-    $response['success'] = false;
-    $response['message'] = $e->getMessage();
+    echo json_encode($response, JSON_PRETTY_PRINT);
 }
-
-echo json_encode($response, JSON_PRETTY_PRINT);
 
 /**
  * Assess nutritional status for a single user
