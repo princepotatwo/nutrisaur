@@ -2617,10 +2617,7 @@ header {
                 No users found in the database. Add your first user!
             </div>
             
-            <div class="table-responsive" style="position: relative;">
-                <div style="position: absolute; top: 5px; right: 10px; background: rgba(161, 180, 84, 0.8); color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px; z-index: 10;">
-                    ← Scroll to see FCM TOKEN →
-                </div>
+            <div class="table-responsive">
                 <table class="user-table">
                 <thead>
                     <tr>

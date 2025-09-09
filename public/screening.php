@@ -1946,6 +1946,7 @@ header {
             border: 1px solid var(--color-border);
             width: 100%;
             max-width: 100%;
+            min-width: 1000px; /* Reduced minimum width for better fit */
         }
 
         .user-table {
@@ -2022,18 +2023,18 @@ header {
 
         .user-table th,
         .user-table td {
-            padding: 8px 6px;
+            padding: 4px 3px;
             text-align: left;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             white-space: normal;
             word-wrap: break-word;
             word-break: break-word;
             overflow-wrap: break-word;
-            font-size: 11px;
+            font-size: 9px;
             font-weight: 500;
             vertical-align: middle;
             position: relative;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         /* Ensure actions column is always visible */
@@ -2057,33 +2058,34 @@ header {
             text-align: center;
         }
 
-        /* Set specific widths for columns - Optimized to fit without horizontal scroll */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 14%; } /* NAME */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 16%; } /* EMAIL */
-        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 12%; } /* MUNICIPALITY */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 12%; } /* BARANGAY */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 6%; } /* SEX */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 9%; } /* BIRTHDAY */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 6%; } /* PREGNANT */
-        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 5%; } /* WEIGHT */
-        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 5%; } /* HEIGHT */
-        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 5%; } /* MUAC */
-        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 10%; } /* SCREENING DATE */
+        /* Set specific widths for columns - Compact layout for better fit */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 9%; min-width: 80px; } /* NAME */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 11%; min-width: 100px; } /* EMAIL */
+        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 7%; min-width: 70px; } /* MUNICIPALITY */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 7%; min-width: 70px; } /* BARANGAY */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 3%; min-width: 35px; } /* SEX */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 5%; min-width: 50px; } /* BIRTHDAY */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 3%; min-width: 35px; } /* PREGNANT */
+        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 2%; min-width: 25px; } /* WEIGHT */
+        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 2%; min-width: 25px; } /* HEIGHT */
+        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 2%; min-width: 25px; } /* MUAC */
+        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 5%; min-width: 50px; } /* FCM TOKEN */
+        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 7%; min-width: 70px; } /* SCREENING DATE */
 
         .user-table th {
             color: var(--color-highlight);
             font-weight: 700;
-            font-size: 11px;
+            font-size: 9px;
             position: sticky;
             top: 0;
             background-color: var(--color-card);
             z-index: 10;
             border-bottom: 2px solid rgba(161, 180, 84, 0.4);
-            padding-bottom: 12px;
-            padding-top: 12px;
+            padding-bottom: 6px;
+            padding-top: 6px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             backdrop-filter: blur(10px);
         }
 
@@ -2630,6 +2632,7 @@ header {
                             <th>WEIGHT (KG)</th>
                             <th>HEIGHT (CM)</th>
                             <th>MUAC (CM)</th>
+                            <th>FCM TOKEN</th>
                             <th>SCREENING DATE</th>
                         </tr>
                     </thead>
@@ -2662,6 +2665,7 @@ header {
                                         echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['muac'] ?? 'N/A') . '</td>';
+                                        echo '<td>' . htmlspecialchars($user['fcm_token'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                     }
@@ -2670,11 +2674,11 @@ header {
                                     echo '<!-- No users in database - JavaScript will show sample data -->';
                                 }
                             } catch (Exception $e) {
-                                echo '<tr><td colspan="11" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
-                            }
-                        } else {
-                            echo '<tr><td colspan="11" class="no-data-message">Database connection failed.</td></tr>';
+                                echo '<tr><td colspan="12" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                         }
+                    } else {
+                            echo '<tr><td colspan="12" class="no-data-message">Database connection failed.</td></tr>';
+                    }
                         ?>
                     </tbody>
                 </table>
