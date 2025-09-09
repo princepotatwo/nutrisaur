@@ -76,10 +76,9 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     private String userIncome;
     private String userPregnancyStatus;
     
-    // Gemini API configuration
-    private static final String GEMINI_API_KEY = "AIzaSyAR0YOJALZphmQaSbc5Ydzs5kZS6eCefJM";
-    private static final String GEMINI_TEXT_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
-    private static final String GEMINI_IMAGE_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=" + GEMINI_API_KEY;
+    // Use centralized API configuration
+    private static final String GEMINI_TEXT_API_URL = ApiConfig.GEMINI_TEXT_API_URL;
+    private static final String GEMINI_IMAGE_API_URL = ApiConfig.GEMINI_IMAGE_API_URL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -843,8 +842,13 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             contents.put(content);
             requestBody.put("contents", contents);
             
-            // Make API call
-            OkHttpClient client = new OkHttpClient();
+            // Make API call with extended timeout
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(ApiConfig.READ_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(ApiConfig.WRITE_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .build();
+            
             RequestBody body = RequestBody.create(
                 requestBody.toString(), 
                     okhttp3.MediaType.parse("application/json")
@@ -1063,8 +1067,12 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             contents.put(content);
             requestBody.put("contents", contents);
             
-            // Make API call
-            OkHttpClient client = new OkHttpClient();
+            // Make API call with extended timeout
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(ApiConfig.READ_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(ApiConfig.WRITE_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .build();
             RequestBody body = RequestBody.create(
                 requestBody.toString(), 
                 okhttp3.MediaType.parse("application/json")
@@ -1151,8 +1159,12 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             contents.put(content);
             requestBody.put("contents", contents);
             
-            // Make API call
-            OkHttpClient client = new OkHttpClient();
+            // Make API call with extended timeout
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(ApiConfig.READ_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(ApiConfig.WRITE_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .build();
             RequestBody body = RequestBody.create(
                 requestBody.toString(), 
                 okhttp3.MediaType.parse("application/json")

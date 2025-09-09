@@ -2,6 +2,7 @@ package com.example.nutrisaur11;
 
 import android.util.Log;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import okhttp3.*;
 import org.json.JSONObject;
 import org.json.JSONArray;
@@ -13,6 +14,12 @@ import org.json.JSONException;
  */
 public class FoodActivityIntegrationMethods {
     private static final String TAG = "FoodActivityIntegrationMethods";
+    
+    // Use centralized API configuration
+    private static final String GEMINI_API_URL = ApiConfig.GEMINI_TEXT_API_URL;
+    private static final String GROK_API_URL = ApiConfig.GROK_API_URL;
+    private static final String GROK_API_KEY = ApiConfig.GROK_API_KEY;
+    private static final String GROK_MODEL = ApiConfig.GROK_MODEL;
     
     public static String buildMainFoodPrompt(String userAge, String userSex, String userBMI, 
                                            String userHealthConditions, String userBudgetLevel,
@@ -99,6 +106,25 @@ public class FoodActivityIntegrationMethods {
     }
     
     public static Map<String, List<FoodRecommendation>> callGeminiForMainFoods(String prompt) {
+        // Try Gemini API first with extended timeout
+        Map<String, List<FoodRecommendation>> result = callGeminiAPIWithTimeout(prompt);
+        if (result != null) {
+            return result;
+        }
+        
+        // If Gemini fails, try Grok API as fallback
+        Log.w(TAG, "Gemini API failed, trying Grok API as fallback");
+        result = callGrokAPIWithTimeout(prompt);
+        if (result != null) {
+            return result;
+        }
+        
+        // If both APIs fail, return null to trigger fallback foods
+        Log.e(TAG, "Both Gemini and Grok APIs failed, will use fallback foods");
+        return null;
+    }
+    
+    private static Map<String, List<FoodRecommendation>> callGeminiAPIWithTimeout(String prompt) {
         try {
             // Create JSON request
             JSONObject requestBody = new JSONObject();
@@ -112,15 +138,20 @@ public class FoodActivityIntegrationMethods {
             contents.put(content);
             requestBody.put("contents", contents);
             
-            // Make API call
-            OkHttpClient client = new OkHttpClient();
+            // Create OkHttpClient with extended timeout
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(ApiConfig.READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(ApiConfig.WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .build();
+            
             RequestBody body = RequestBody.create(
                 requestBody.toString(), 
                 okhttp3.MediaType.parse("application/json")
             );
             
             Request request = new Request.Builder()
-                .url("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAR0YOJALZphmQaSbc5Ydzs5kZS6eCefJM")
+                .url(GEMINI_API_URL)
                 .post(body)
                 .build();
                 
@@ -130,10 +161,105 @@ public class FoodActivityIntegrationMethods {
                     Log.d(TAG, "Gemini main foods response: " + responseText);
                     
                     return parseMainFoodsResponse(responseText);
+                } else {
+                    Log.e(TAG, "Gemini API error: " + response.code() + " - " + response.message());
                 }
             }
         } catch (Exception e) {
             Log.e(TAG, "Error calling Gemini for main foods: " + e.getMessage());
+        }
+        
+        return null;
+    }
+    
+    private static Map<String, List<FoodRecommendation>> callGrokAPIWithTimeout(String prompt) {
+        try {
+            // Create JSON request for Grok API
+            JSONObject requestBody = new JSONObject();
+            requestBody.put("model", GROK_MODEL);
+            requestBody.put("max_tokens", 4000);
+            requestBody.put("temperature", 0.7);
+            
+            JSONArray messages = new JSONArray();
+            JSONObject message = new JSONObject();
+            message.put("role", "user");
+            message.put("content", prompt);
+            messages.put(message);
+            requestBody.put("messages", messages);
+            
+            // Create OkHttpClient with timeout
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(ApiConfig.READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(ApiConfig.WRITE_TIMEOUT, TimeUnit.SECONDS)
+                .build();
+            
+            RequestBody body = RequestBody.create(
+                requestBody.toString(), 
+                okhttp3.MediaType.parse("application/json")
+            );
+            
+            Request request = new Request.Builder()
+                .url(GROK_API_URL)
+                .post(body)
+                .addHeader("Authorization", "Bearer " + GROK_API_KEY)
+                .addHeader("Content-Type", "application/json")
+                .build();
+                
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseText = response.body().string();
+                    Log.d(TAG, "Grok main foods response: " + responseText);
+                    
+                    return parseGrokMainFoodsResponse(responseText);
+                } else {
+                    Log.e(TAG, "Grok API error: " + response.code() + " - " + response.message());
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error calling Grok for main foods: " + e.getMessage());
+        }
+        
+        return null;
+    }
+    
+    private static Map<String, List<FoodRecommendation>> parseGrokMainFoodsResponse(String responseText) {
+        Map<String, List<FoodRecommendation>> result = new HashMap<>();
+        
+        try {
+            // Parse the Grok response structure
+            JSONObject grokResponse = new JSONObject(responseText);
+            JSONArray choices = grokResponse.getJSONArray("choices");
+            
+            if (choices.length() > 0) {
+                JSONObject choice = choices.getJSONObject(0);
+                JSONObject message = choice.getJSONObject("message");
+                String content = message.getString("content");
+                
+                Log.d(TAG, "Extracted Grok main foods text: " + content);
+                
+                // Extract JSON object from the text content
+                int objectStart = content.indexOf("{");
+                int objectEnd = content.lastIndexOf("}") + 1;
+                
+                if (objectStart >= 0 && objectEnd > objectStart) {
+                    String jsonObjectString = content.substring(objectStart, objectEnd);
+                    Log.d(TAG, "Extracted Grok main foods JSON: " + jsonObjectString);
+                    
+                    JSONObject mainFoodsJson = new JSONObject(jsonObjectString);
+                    
+                    // Parse each category
+                    result.put("traditional", parseFoodArray(mainFoodsJson.optJSONArray("traditional")));
+                    result.put("healthy", parseFoodArray(mainFoodsJson.optJSONArray("healthy")));
+                    result.put("international", parseFoodArray(mainFoodsJson.optJSONArray("international")));
+                    result.put("budget", parseFoodArray(mainFoodsJson.optJSONArray("budget")));
+                    
+                    Log.d(TAG, "Successfully parsed Grok main foods: " + result.size() + " categories");
+                    return result;
+                }
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing Grok main foods JSON: " + e.getMessage());
         }
         
         return null;
