@@ -3209,6 +3209,133 @@ header {
         // Municipalities and Barangays data
         const municipalities = <?php echo json_encode($municipalities); ?>;
 
+        // Filter functions - defined early to avoid reference errors
+        function filterByMunicipality() {
+            const municipality = document.getElementById('municipalityFilter').value;
+            const barangayFilter = document.getElementById('barangayFilter');
+            
+            // Clear barangay filter when municipality changes
+            barangayFilter.innerHTML = '<option value="">All Barangays</option>';
+            
+            if (municipality) {
+                // Populate barangay options based on selected municipality
+                const barangayOptions = getBarangayOptions(municipality);
+                barangayOptions.forEach(barangay => {
+                    const option = document.createElement('option');
+                    option.value = barangay;
+                    option.textContent = barangay;
+                    barangayFilter.appendChild(option);
+                });
+            }
+            
+            applyAllFilters();
+        }
+        
+        function filterByBarangay() {
+            applyAllFilters();
+        }
+        
+        function filterByAgeRange() {
+            applyAllFilters();
+        }
+        
+        function filterBySex() {
+            applyAllFilters();
+        }
+        
+        function getBarangayOptions(municipality) {
+            const barangayData = {
+                'ABUCAY': ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Poblacion', 'Saguing', 'Salapungan', 'Tala'],
+                'BAGAC': ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibayo', 'Paysawan', 'Quinaoayanan', 'San Antonio', 'Saysain', 'Sibucao', 'Tabing-Ilog', 'Tipo', 'Tugatog', 'Wawa'],
+                'BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Concepcion', 'Dangcol (Bilolo)', 'Doña Francisca', 'Lote', 'Malabia', 'Poblacion', 'Puerto Rivas Ibaba', 'Puerto Rivas Itaas', 'San Jose', 'Sibacan', 'Talipapa', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo'],
+                'DINALUPIHAN': ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar', 'General Luna', 'Governor Generoso', 'Hacienda', 'Jose Abad Santos (Pob.)', 'Kataasan', 'Layac', 'Lourdes', 'Mabini', 'Maligaya', 'Naparing', 'Paco', 'Pag-asa', 'Pagalanggang', 'Panggalan', 'Pinulot', 'Poblacion', 'Rizal', 'Saguing', 'San Benito', 'San Isidro', 'San Ramon', 'Santo Cristo', 'Sapang Balas', 'Sumalo', 'Tipo', 'Tuklasan', 'Turac', 'Zamora'],
+                'HERMOSA': ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culong', 'Daungan (Pob.)', 'Judicial (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Palihan', 'Pandatung', 'Pulong Gubat', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo'],
+                'LIMAY': ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reforma', 'San Francisco de Asis', 'Townsite'],
+                'MARIVELES': ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Mabayo', 'Malaya', 'Maligaya', 'Mountain View', 'Poblacion', 'San Carlos', 'San Isidro', 'San Nicolas', 'San Pedro', 'Saysain', 'Sisiman', 'Tukuran'],
+                'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang', 'San Pedro', 'Sitio Liyang'],
+                'ORANI': ['Apolinario (Pob.)', 'Bagong Paraiso', 'Balut', 'Bayan (Pob.)', 'Calero (Pob.)', 'Calutit', 'Camachile', 'Del Pilar', 'Kaparangan', 'Mabatang', 'Maria Fe', 'Pagtakhan', 'Paking-Carbonero (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang', 'Poblacion', 'Rizal (Pob.)', 'Sagrada', 'San Jose', 'Sibul', 'Sili', 'Sulong', 'Tagumpay', 'Tala', 'Talimundoc', 'Tugatog', 'Wawa'],
+                'ORION': ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daan Bago', 'Daan Bilolo', 'Daan Pare', 'General Lim (Kaput)', 'Kaput', 'Lati', 'Lusung', 'Puting Buhangin', 'Sabatan', 'San Vicente', 'Santa Elena', 'Santo Domingo', 'Villa Angeles', 'Wakas'],
+                'PILAR': ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Bantan', 'Burgos', 'Del Rosario', 'Diwa', 'Landing', 'Liwa', 'Nueva Vida', 'Panghulo', 'Pantingan', 'Poblacion', 'Rizal', 'Sagrada', 'San Nicolas', 'San Pedro', 'Santo Niño', 'Wakas'],
+                'SAMAL': ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan', 'San Roque', 'Santa Lucia', 'Santo Niño', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
+            };
+            
+            return barangayData[municipality] || [];
+        }
+        
+        function applyAllFilters() {
+            const municipality = document.getElementById('municipalityFilter').value;
+            const barangay = document.getElementById('barangayFilter').value;
+            const ageFrom = document.getElementById('ageFromFilter').value;
+            const ageTo = document.getElementById('ageToFilter').value;
+            const sex = document.getElementById('sexFilter').value;
+            const standard = document.getElementById('standardFilter').value;
+            
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
+            let visibleCount = 0;
+            
+            tableRows.forEach(row => {
+                let showRow = true;
+                
+                // Municipality filter
+                if (municipality && showRow) {
+                    const rowMunicipality = row.dataset.municipality;
+                    if (rowMunicipality !== municipality) {
+                        showRow = false;
+                    }
+                }
+                
+                // Barangay filter
+                if (barangay && showRow) {
+                    const rowBarangay = row.dataset.barangay;
+                    if (rowBarangay !== barangay) {
+                        showRow = false;
+                    }
+                }
+                
+                // Age range filter
+                if ((ageFrom || ageTo) && showRow) {
+                    const ageMonths = parseInt(row.dataset.ageMonths);
+                    if (ageFrom && ageMonths < parseInt(ageFrom)) {
+                        showRow = false;
+                    }
+                    if (ageTo && ageMonths > parseInt(ageTo)) {
+                        showRow = false;
+                    }
+                }
+                
+                // Sex filter
+                if (sex && showRow) {
+                    const rowSex = row.dataset.sex;
+                    if (rowSex !== sex) {
+                        showRow = false;
+                    }
+                }
+                
+                // Standard filter
+                if (standard && showRow) {
+                    const rowStandard = row.dataset.standard;
+                    if (standard === 'bmi-for-age') {
+                        if (rowStandard !== 'bmi-for-age') {
+                            showRow = false;
+                        }
+                    } else {
+                        if (rowStandard !== standard) {
+                            showRow = false;
+                        }
+                    }
+                }
+                
+                if (showRow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            updateNoDataMessage(visibleCount);
+        }
+
         // Initialize screening page
         document.addEventListener('DOMContentLoaded', function() {
             initializeTableFunctionality();
@@ -3899,132 +4026,6 @@ header {
             resetCSVForm();
         }
 
-        // New filter functions for municipality, barangay, and age range
-        function filterByMunicipality() {
-            const municipality = document.getElementById('municipalityFilter').value;
-            const barangayFilter = document.getElementById('barangayFilter');
-            
-            // Clear barangay filter when municipality changes
-            barangayFilter.innerHTML = '<option value="">All Barangays</option>';
-            
-            if (municipality) {
-                // Populate barangay options based on selected municipality
-                const barangayOptions = getBarangayOptions(municipality);
-                barangayOptions.forEach(barangay => {
-                    const option = document.createElement('option');
-                    option.value = barangay;
-                    option.textContent = barangay;
-                    barangayFilter.appendChild(option);
-                });
-            }
-            
-            applyAllFilters();
-        }
-        
-        function filterByBarangay() {
-            applyAllFilters();
-        }
-        
-        function filterByAgeRange() {
-            applyAllFilters();
-        }
-        
-        function filterBySex() {
-            applyAllFilters();
-        }
-        
-        function getBarangayOptions(municipality) {
-            const barangayData = {
-                'ABUCAY': ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Poblacion', 'Saguing', 'Salapungan', 'Tala'],
-                'BAGAC': ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibayo', 'Paysawan', 'Quinaoayanan', 'San Antonio', 'Saysain', 'Sibucao', 'Tabing-Ilog', 'Tipo', 'Tugatog', 'Wawa'],
-                'BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Concepcion', 'Dangcol (Bilolo)', 'Doña Francisca', 'Lote', 'Malabia', 'Poblacion', 'Puerto Rivas Ibaba', 'Puerto Rivas Itaas', 'San Jose', 'Sibacan', 'Talipapa', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo'],
-                'DINALUPIHAN': ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar', 'General Luna', 'Governor Generoso', 'Hacienda', 'Jose Abad Santos (Pob.)', 'Kataasan', 'Layac', 'Lourdes', 'Mabini', 'Maligaya', 'Naparing', 'Paco', 'Pag-asa', 'Pagalanggang', 'Panggalan', 'Pinulot', 'Poblacion', 'Rizal', 'Saguing', 'San Benito', 'San Isidro', 'San Ramon', 'Santo Cristo', 'Sapang Balas', 'Sumalo', 'Tipo', 'Tuklasan', 'Turac', 'Zamora'],
-                'HERMOSA': ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culong', 'Daungan (Pob.)', 'Judicial (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Palihan', 'Pandatung', 'Pulong Gubat', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo'],
-                'LIMAY': ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reforma', 'San Francisco de Asis', 'Townsite'],
-                'MARIVELES': ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Mabayo', 'Malaya', 'Maligaya', 'Mountain View', 'Poblacion', 'San Carlos', 'San Isidro', 'San Nicolas', 'San Pedro', 'Saysain', 'Sisiman', 'Tukuran'],
-                'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang', 'San Pedro', 'Sitio Liyang'],
-                'ORANI': ['Apolinario (Pob.)', 'Bagong Paraiso', 'Balut', 'Bayan (Pob.)', 'Calero (Pob.)', 'Calutit', 'Camachile', 'Del Pilar', 'Kaparangan', 'Mabatang', 'Maria Fe', 'Pagtakhan', 'Paking-Carbonero (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang', 'Poblacion', 'Rizal (Pob.)', 'Sagrada', 'San Jose', 'Sibul', 'Sili', 'Sulong', 'Tagumpay', 'Tala', 'Talimundoc', 'Tugatog', 'Wawa'],
-                'ORION': ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daan Bago', 'Daan Bilolo', 'Daan Pare', 'General Lim (Kaput)', 'Kaput', 'Lati', 'Lusung', 'Puting Buhangin', 'Sabatan', 'San Vicente', 'Santa Elena', 'Santo Domingo', 'Villa Angeles', 'Wakas'],
-                'PILAR': ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Bantan', 'Burgos', 'Del Rosario', 'Diwa', 'Landing', 'Liwa', 'Nueva Vida', 'Panghulo', 'Pantingan', 'Poblacion', 'Rizal', 'Sagrada', 'San Nicolas', 'San Pedro', 'Santo Niño', 'Wakas'],
-                'SAMAL': ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan', 'San Roque', 'Santa Lucia', 'Santo Niño', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
-            };
-            
-            return barangayData[municipality] || [];
-        }
-        
-        function applyAllFilters() {
-            const municipality = document.getElementById('municipalityFilter').value;
-            const barangay = document.getElementById('barangayFilter').value;
-            const ageFrom = document.getElementById('ageFromFilter').value;
-            const ageTo = document.getElementById('ageToFilter').value;
-            const sex = document.getElementById('sexFilter').value;
-            const standard = document.getElementById('standardFilter').value;
-            
-            const tableRows = document.querySelectorAll('.user-table tbody tr');
-            let visibleCount = 0;
-            
-            tableRows.forEach(row => {
-                let showRow = true;
-                
-                // Municipality filter
-                if (municipality && showRow) {
-                    const rowMunicipality = row.dataset.municipality;
-                    if (rowMunicipality !== municipality) {
-                        showRow = false;
-                    }
-                }
-                
-                // Barangay filter
-                if (barangay && showRow) {
-                    const rowBarangay = row.dataset.barangay;
-                    if (rowBarangay !== barangay) {
-                        showRow = false;
-                    }
-                }
-                
-                // Age range filter
-                if ((ageFrom || ageTo) && showRow) {
-                    const ageMonths = parseInt(row.dataset.ageMonths);
-                    if (ageFrom && ageMonths < parseInt(ageFrom)) {
-                        showRow = false;
-                    }
-                    if (ageTo && ageMonths > parseInt(ageTo)) {
-                        showRow = false;
-                    }
-                }
-                
-                // Sex filter
-                if (sex && showRow) {
-                    const rowSex = row.dataset.sex;
-                    if (rowSex !== sex) {
-                        showRow = false;
-                    }
-                }
-                
-                // Standard filter
-                if (standard && showRow) {
-                    const rowStandard = row.dataset.standard;
-                    if (standard === 'bmi-for-age') {
-                        if (rowStandard !== 'bmi-for-age') {
-                            showRow = false;
-                        }
-                    } else {
-                        if (rowStandard !== standard) {
-                            showRow = false;
-                        }
-                    }
-                }
-                
-                if (showRow) {
-                    row.style.display = '';
-                    visibleCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            
-            updateNoDataMessage(visibleCount);
-        }
 
     </script>
 </body>
