@@ -2317,6 +2317,38 @@ header {
             box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3) !important;
         }
 
+        /* Delete All Users Button Styling */
+        .btn-delete-all {
+            background-color: #e74c3c !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+            min-width: 140px !important;
+            height: 36px !important;
+        }
+
+        .btn-delete-all:hover {
+            background-color: #c0392b !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3) !important;
+        }
+
+        .btn-delete-all:active {
+            transform: translateY(0) !important;
+            box-shadow: 0 2px 4px rgba(231, 76, 60, 0.2) !important;
+        }
+
         .action-buttons .btn-edit:disabled,
         .action-buttons .btn-delete:disabled {
             opacity: 0.6;
@@ -2899,6 +2931,10 @@ header {
                         <button class="btn btn-add" onclick="showCSVImportModal()">
                             <span class="btn-icon">📁</span>
                             <span class="btn-text">Import CSV</span>
+                        </button>
+                        <button class="btn-delete-all" onclick="deleteAllUsers()" style="margin-left: 10px;">
+                            <span class="btn-icon">🗑️</span>
+                            <span class="btn-text">Delete All Users</span>
                         </button>
                         </div>
 
@@ -3765,6 +3801,73 @@ header {
                 // Restore button state
                 deleteBtn.innerHTML = originalText;
                 deleteBtn.disabled = false;
+            });
+        }
+
+        function deleteAllUsers() {
+            // Get total number of users
+            const userRows = document.querySelectorAll('.user-table tbody tr');
+            const userCount = userRows.length;
+            
+            if (userCount === 0) {
+                showNotification('No users to delete!', 'info');
+                return;
+            }
+
+            // Double confirmation for delete all
+            const confirmMessage = `⚠️ WARNING: This will delete ALL ${userCount} users from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            // Second confirmation
+            if (!confirm('FINAL CONFIRMATION: Delete ALL users? This will permanently remove all user data.')) {
+                return;
+            }
+
+            // Show loading state
+            const deleteAllBtn = event.target;
+            const originalText = deleteAllBtn.innerHTML;
+            deleteAllBtn.innerHTML = '⏳ Deleting...';
+            deleteAllBtn.disabled = true;
+
+            // Send delete all request to server
+            fetch('/api/delete_all_users.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    confirm: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove all rows from the table
+                    const tbody = document.querySelector('.user-table tbody');
+                    tbody.innerHTML = '';
+                    
+                    // Show no users message
+                    const noUsersMessage = document.getElementById('no-users-message');
+                    if (noUsersMessage) {
+                        noUsersMessage.style.display = 'block';
+                    }
+                    
+                    showNotification(`Successfully deleted all ${data.deleted_count || userCount} users!`, 'success');
+                } else {
+                    showNotification('Error deleting all users: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error deleting all users: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                deleteAllBtn.innerHTML = originalText;
+                deleteAllBtn.disabled = false;
             });
         }
 
