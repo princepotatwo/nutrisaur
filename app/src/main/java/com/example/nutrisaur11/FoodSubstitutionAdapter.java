@@ -106,17 +106,36 @@ public class FoodSubstitutionAdapter extends RecyclerView.Adapter<FoodSubstituti
         // Clean up extra spaces
         cleaned = cleaned.replaceAll("\\s+", " ").trim();
         
-        // Limit to 25 characters for substitution layout (allows 2-3 word food names)
-        if (cleaned.length() > 25) {
-            cleaned = cleaned.substring(0, 22) + "...";
-        }
+        // Split into words for two-line display
+        String[] words = cleaned.split("\\s+");
         
-        // If name becomes too short, use a fallback
-        if (cleaned.length() < 2) {
-            cleaned = "Alternative";
+        if (words.length >= 2) {
+            // For two or more words, split them for two-line display
+            StringBuilder result = new StringBuilder();
+            int midPoint = (words.length + 1) / 2; // Split roughly in the middle
+            
+            // First line
+            for (int i = 0; i < midPoint; i++) {
+                if (i > 0) result.append(" ");
+                result.append(words[i]);
+            }
+            
+            result.append("\n"); // Line break
+            
+            // Second line
+            for (int i = midPoint; i < words.length; i++) {
+                if (i > midPoint) result.append(" ");
+                result.append(words[i]);
+            }
+            
+            return result.toString();
+        } else {
+            // Single word - keep as is but limit length
+            if (cleaned.length() > 20) {
+                cleaned = cleaned.substring(0, 17) + "...";
+            }
+            return cleaned;
         }
-        
-        return cleaned;
     }
     
     private String getShortReason(String reason) {
