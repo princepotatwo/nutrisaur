@@ -9470,10 +9470,12 @@ body {
         
         // New theme toggle functionality
         function newToggleTheme() {
+            console.log('Theme toggle clicked');
             const body = document.body;
             const toggleBtn = document.getElementById('new-theme-toggle');
             const icon = toggleBtn.querySelector('.new-theme-icon');
             const isCurrentlyLight = body.classList.contains('light-theme');
+            console.log('Currently light theme:', isCurrentlyLight);
             toggleBtn.style.transition = 'none'; // Temporarily disable transitions
 
             if (isCurrentlyLight) {
@@ -9487,6 +9489,7 @@ body {
                     setTimeout(() => { toggleBtn.style.transition = ''; }, 50);
                 });
                 localStorage.setItem('nutrisaur-theme', 'dark');
+                console.log('Switched to dark theme');
             } else {
                 requestAnimationFrame(() => {
                     body.classList.remove('dark-theme');
@@ -9499,6 +9502,7 @@ body {
                     setTimeout(() => { toggleBtn.style.transition = ''; }, 50);
                 });
                 localStorage.setItem('nutrisaur-theme', 'light');
+                console.log('Switched to light theme');
             }
             body.offsetHeight; // Force repaint
         }
@@ -9507,7 +9511,7 @@ body {
         
         // Initialize theme on page load
         document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = localStorage.getItem('nutrisaur-theme') || 'light';
+            const savedTheme = localStorage.getItem('nutrisaur-theme') || 'dark'; // Default to dark theme
             const newToggleBtn = document.getElementById('new-theme-toggle');
             const newIcon = newToggleBtn.querySelector('.new-theme-icon');
             
