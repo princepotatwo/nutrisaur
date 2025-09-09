@@ -2845,22 +2845,25 @@ header {
             <div class="user-management-container">
                 <div class="table-header">
                     <div class="header-controls">
-                        <div class="search-row" style="justify-content: center; gap: 20px;">
-                            <div class="search-container" style="width: 300px;">
-                                <input type="text" id="searchInput" placeholder="Search by name, email, or WHO classifications..." class="search-input">
+                        <div class="search-row" style="justify-content: center; gap: 15px;">
+                            <div class="search-container" style="width: 250px;">
+                                <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
                                 <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                             </div>
-                            <div class="location-filter-container" style="width: 300px;">
-                                <select id="riskFilter" onchange="filterByRisk()" class="location-select">
-                                    <option value="">All WHO Classifications</option>
-                                    <option value="Severely Underweight">Severely Underweight</option>
-                                    <option value="Underweight">Underweight</option>
-                                    <option value="Normal">Normal</option>
-                                    <option value="Overweight">Overweight</option>
-                                    <option value="Obese">Obese</option>
-                                    <option value="Height out of range">Height out of range</option>
-                                    <option value="Age out of range">Age out of range</option>
-                                    <option value="N/A">Not Available</option>
+                            <div class="location-filter-container" style="width: 200px;">
+                                <select id="sexFilter" onchange="filterBySex()" class="location-select">
+                                    <option value="">All Genders</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="location-filter-container" style="width: 250px;">
+                                <select id="standardFilter" onchange="filterByStandard()" class="location-select">
+                                    <option value="weight-for-age">Weight-for-Age (0-71 months)</option>
+                                    <option value="height-for-age">Height-for-Age (0-71 months)</option>
+                                    <option value="weight-for-height">Weight-for-Height (65-120 cm)</option>
+                                    <option value="weight-for-length">Weight-for-Length (45-110 cm)</option>
+                                    <option value="bmi-for-age">BMI-for-Age (0-71 months)</option>
                                 </select>
                             </div>
                         </div>
@@ -2886,16 +2889,17 @@ header {
 
                 <div class="table-responsive">
                 <table class="user-table">
-                    <thead>
+                    <thead id="tableHeaders">
                         <tr>
                             <th>NAME</th>
                             <th>EMAIL</th>
-                            <th>WEIGHT-FOR-AGE<br><small>(WHO Z-Score)</small></th>
-                            <th>HEIGHT-FOR-AGE<br><small>(WHO Z-Score)</small></th>
-                            <th>WEIGHT-FOR-HEIGHT<br><small>(WHO Z-Score)</small></th>
-                            <th>WEIGHT-FOR-LENGTH<br><small>(WHO Z-Score)</small></th>
-                            <th>BMI-FOR-AGE<br><small>(WHO Z-Score)</small></th>
-                            <th>SCREENING DATE</th>
+                            <th>AGE</th>
+                            <th>WEIGHT (kg)</th>
+                            <th>HEIGHT (cm)</th>
+                            <th>BMI</th>
+                            <th id="standardHeader">WEIGHT-FOR-AGE</th>
+                            <th>CLASSIFICATION</th>
+                            <th>ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
@@ -2967,17 +2971,53 @@ header {
                                             $bmi_display = is_numeric($bmi_classification) ? 'Z: ' . number_format($bmi_classification, 2) : $bmi_classification;
                                         }
                                         
-                                        echo '<tr>';
-                                        echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
+                                        // Calculate age in years and months
+                                        $birthDate = new DateTime($user['birthday']);
+                                        $today = new DateTime();
+                                        $age = $today->diff($birthDate);
+                                        $ageInMonths = ($age->y * 12) + $age->m;
+                                        $ageDisplay = $age->y . 'y ' . $age->m . 'm';
                                         
-                                        echo '<td>' . htmlspecialchars($wfa_display) . '</td>';
-                                        echo '<td>' . htmlspecialchars($hfa_display) . '</td>';
-                                        echo '<td>' . htmlspecialchars($wfh_display) . '</td>';
-                                        echo '<td>' . htmlspecialchars($wfl_display) . '</td>';
-                                        echo '<td>' . htmlspecialchars($bmi_display) . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
-                                        echo '</tr>';
+                                        // Calculate BMI
+                                        $bmi = $user['weight'] && $user['height'] ? round($user['weight'] / pow($user['height'] / 100, 2), 1) : 'N/A';
+                                        
+                                        // Generate all WHO Growth Standards data for this user
+                                        $whoData = [
+                                            'weight-for-age' => ['display' => $wfa_display, 'classification' => $wfa_classification],
+                                            'height-for-age' => ['display' => $hfa_display, 'classification' => $hfa_classification],
+                                            'weight-for-height' => ['display' => $wfh_display, 'classification' => $wfh_classification],
+                                            'weight-for-length' => ['display' => $wfl_display, 'classification' => $wfl_classification],
+                                            'bmi-for-age' => ['display' => $bmi_display, 'classification' => $bmi_classification]
+                                        ];
+                                        
+                                        // Generate rows for each standard
+                                        foreach ($whoData as $standard => $data) {
+                                            $ageLimit = in_array($standard, ['weight-for-age', 'height-for-age', 'bmi-for-age']) ? $ageInMonths <= 71 : true;
+                                            $heightLimit = true;
+                                            
+                                            if ($standard === 'weight-for-height') {
+                                                $heightLimit = $user['height'] >= 65 && $user['height'] <= 120;
+                                            } elseif ($standard === 'weight-for-length') {
+                                                $heightLimit = $user['height'] >= 45 && $user['height'] <= 110;
+                                            }
+                                            
+                                            if ($ageLimit && $heightLimit) {
+                                                echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '">';
+                                                echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . $ageDisplay . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . $bmi . '</td>';
+                                                echo '<td class="standard-value">' . htmlspecialchars($data['display']) . '</td>';
+                                                echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
+                                                echo '<td class="action-buttons">';
+                                                echo '<button class="btn-edit" onclick="editUser(\'' . htmlspecialchars($user['email']) . '\')" title="Edit User">✏️</button>';
+                                                echo '<button class="btn-delete" onclick="deleteUser(\'' . htmlspecialchars($user['email']) . '\')" title="Delete User">🗑️</button>';
+                                                echo '</td>';
+                                                echo '</tr>';
+                                            }
+                                        }
                                     }
                                 } else {
                                     // No users in database
@@ -3311,19 +3351,21 @@ header {
             tableRows.forEach(row => {
                 const name = row.cells[0].textContent.toLowerCase();
                 const email = row.cells[1].textContent.toLowerCase();
-                const wfa = row.cells[2].textContent.toLowerCase();
-                const hfa = row.cells[3].textContent.toLowerCase();
-                const wfh = row.cells[4].textContent.toLowerCase();
-                const wfl = row.cells[5].textContent.toLowerCase();
-                const bmi = row.cells[6].textContent.toLowerCase();
+                const age = row.cells[2].textContent.toLowerCase();
+                const weight = row.cells[3].textContent.toLowerCase();
+                const height = row.cells[4].textContent.toLowerCase();
+                const bmi = row.cells[5].textContent.toLowerCase();
+                const standardValue = row.cells[6].textContent.toLowerCase();
+                const classification = row.cells[7].textContent.toLowerCase();
                 
                 const matchesSearch = name.includes(searchTerm) || 
                                    email.includes(searchTerm) || 
-                                   wfa.includes(searchTerm) || 
-                                   hfa.includes(searchTerm) || 
-                                   wfh.includes(searchTerm) || 
-                                   wfl.includes(searchTerm) || 
-                                   bmi.includes(searchTerm);
+                                   age.includes(searchTerm) || 
+                                   weight.includes(searchTerm) || 
+                                   height.includes(searchTerm) ||
+                                   bmi.includes(searchTerm) ||
+                                   standardValue.includes(searchTerm) ||
+                                   classification.includes(searchTerm);
                 
                 if (matchesSearch) {
                     row.style.display = '';
@@ -3381,6 +3423,39 @@ header {
                 const location = row.cells[3].textContent.toLowerCase();
                 
                 if (!locationFilter || location.includes(locationFilter.toLowerCase())) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            updateNoDataMessage(visibleCount);
+        }
+
+        function filterByStandard() {
+            const standardFilter = document.getElementById('standardFilter').value;
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
+            const standardHeader = document.getElementById('standardHeader');
+            
+            // Update header based on selected standard
+            const standardNames = {
+                'weight-for-age': 'WEIGHT-FOR-AGE',
+                'height-for-age': 'HEIGHT-FOR-AGE', 
+                'weight-for-height': 'WEIGHT-FOR-HEIGHT',
+                'weight-for-length': 'WEIGHT-FOR-LENGTH',
+                'bmi-for-age': 'BMI-FOR-AGE'
+            };
+            
+            standardHeader.textContent = standardNames[standardFilter] || 'WEIGHT-FOR-AGE';
+            
+            let visibleCount = 0;
+            
+            tableRows.forEach(row => {
+                const rowStandard = row.dataset.standard;
+                
+                // Show only rows that match the selected standard
+                if (rowStandard === standardFilter) {
                     row.style.display = '';
                     visibleCount++;
                 } else {

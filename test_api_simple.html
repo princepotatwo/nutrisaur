@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Registration API</title>
+</head>
+<body>
+    <h1>Test Registration API</h1>
+    <button onclick="testAPI()">Test API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const url = 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=register_community_user';
+            
+            const data = {
+                name: 'Test User',
+                email: 'test@example.com',
+                password: 'testpassword123',
+                municipality: 'Test Municipality',
+                barangay: 'Test Barangay',
+                sex: 'Male',
+                birthday: '1990-01-01',
+                is_pregnant: 'No',
+                weight: '70',
+                height: '175'
+            };
+
+            try {
+                console.log('Sending request to:', url);
+                console.log('Data:', data);
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                console.log('Response status:', response.status);
+                const result = await response.text();
+                console.log('Response text:', result);
+                
+                document.getElementById('result').innerHTML = 
+                    '<h3>Status: ' + response.status + '</h3>' +
+                    '<h3>Response:</h3>' +
+                    '<pre>' + result + '</pre>';
+                    
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = 
+                    '<h3>Error: ' + error.message + '</h3>';
+            }
+        }
+    </script>
+</body>
+</html>

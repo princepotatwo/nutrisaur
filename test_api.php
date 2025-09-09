@@ -1,5 +1,7 @@
 <?php
-// Test script to check the API endpoint
+// Test the API directly
+echo "Testing API endpoint...\n";
+
 $url = 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=register_community_user';
 
 $data = [
@@ -27,4 +29,9 @@ $context = stream_context_create($options);
 $result = file_get_contents($url, false, $context);
 
 echo "Response: " . $result . "\n";
+
+// Also test with a simple GET to see if endpoint exists
+echo "\nTesting GET request...\n";
+$get_result = file_get_contents('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=register_community_user');
+echo "GET Response: " . $get_result . "\n";
 ?>
