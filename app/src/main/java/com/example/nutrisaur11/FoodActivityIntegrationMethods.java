@@ -17,9 +17,9 @@ public class FoodActivityIntegrationMethods {
     
     // Use centralized API configuration
     private static final String GEMINI_API_URL = ApiConfig.GEMINI_TEXT_API_URL;
-    private static final String GROK_API_URL = ApiConfig.GROK_API_URL;
-    private static final String GROK_API_KEY = ApiConfig.GROK_API_KEY;
-    private static final String GROK_MODEL = ApiConfig.GROK_MODEL;
+    private static final String GROQ_API_URL = ApiConfig.GROQ_API_URL;
+    private static final String GROQ_API_KEY = ApiConfig.GROQ_API_KEY;
+    private static final String GROQ_MODEL = ApiConfig.GROQ_MODEL;
     
     public static String buildMainFoodPrompt(String userAge, String userSex, String userBMI, 
                                            String userHealthConditions, String userBudgetLevel,
@@ -120,9 +120,9 @@ public class FoodActivityIntegrationMethods {
             return result;
         }
         
-        // If Gemini fails, try Grok API as fallback
-        Log.w(TAG, "Gemini API failed, trying Grok API as fallback");
-        result = callGrokAPIWithTimeout(prompt);
+        // If Gemini fails, try Groq API as fallback
+        Log.w(TAG, "Gemini API failed, trying Groq API as fallback");
+        result = callGroqAPIWithTimeout(prompt);
         if (result != null) {
             return result;
         }
@@ -180,11 +180,11 @@ public class FoodActivityIntegrationMethods {
         return null;
     }
     
-    private static Map<String, List<FoodRecommendation>> callGrokAPIWithTimeout(String prompt) {
+    public static Map<String, List<FoodRecommendation>> callGroqAPIWithTimeout(String prompt) {
         try {
-            // Create JSON request for Grok API
+            // Create JSON request for Groq API
             JSONObject requestBody = new JSONObject();
-            requestBody.put("model", GROK_MODEL);
+            requestBody.put("model", GROQ_MODEL);
             requestBody.put("max_tokens", 4000);
             requestBody.put("temperature", 0.7);
             
@@ -208,51 +208,54 @@ public class FoodActivityIntegrationMethods {
             );
             
             Request request = new Request.Builder()
-                .url(GROK_API_URL)
+                .url(GROQ_API_URL)
                 .post(body)
-                .addHeader("Authorization", "Bearer " + GROK_API_KEY)
+                .addHeader("Authorization", "Bearer " + GROQ_API_KEY)
                 .addHeader("Content-Type", "application/json")
                 .build();
                 
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful() && response.body() != null) {
                     String responseText = response.body().string();
-                    Log.d(TAG, "Grok main foods response: " + responseText);
+                    Log.d(TAG, "Groq main foods response: " + responseText);
                     
-                    return parseGrokMainFoodsResponse(responseText);
+                    return parseGroqMainFoodsResponse(responseText);
                 } else {
-                    Log.e(TAG, "Grok API error: " + response.code() + " - " + response.message());
+                    Log.e(TAG, "Groq API error: " + response.code() + " - " + response.message());
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error calling Grok for main foods: " + e.getMessage());
+            Log.e(TAG, "Error calling Groq for main foods: " + e.getMessage());
         }
         
         return null;
     }
     
-    private static Map<String, List<FoodRecommendation>> parseGrokMainFoodsResponse(String responseText) {
+    private static Map<String, List<FoodRecommendation>> parseGroqMainFoodsResponse(String responseText) {
         Map<String, List<FoodRecommendation>> result = new HashMap<>();
         
         try {
-            // Parse the Grok response structure
-            JSONObject grokResponse = new JSONObject(responseText);
-            JSONArray choices = grokResponse.getJSONArray("choices");
+            // Parse the Groq response structure
+            JSONObject groqResponse = new JSONObject(responseText);
+            JSONArray choices = groqResponse.getJSONArray("choices");
             
             if (choices.length() > 0) {
                 JSONObject choice = choices.getJSONObject(0);
                 JSONObject message = choice.getJSONObject("message");
                 String content = message.getString("content");
                 
-                Log.d(TAG, "Extracted Grok main foods text: " + content);
+                Log.d(TAG, "Extracted Groq main foods text: " + content);
                 
                 // Extract JSON object from the text content
-                int objectStart = content.indexOf("{");
-                int objectEnd = content.lastIndexOf("}") + 1;
+                // Remove markdown code blocks if present
+                String cleanedContent = content.replaceAll("```json\\s*", "").replaceAll("```\\s*", "");
+                
+                int objectStart = cleanedContent.indexOf("{");
+                int objectEnd = cleanedContent.lastIndexOf("}") + 1;
                 
                 if (objectStart >= 0 && objectEnd > objectStart) {
-                    String jsonObjectString = content.substring(objectStart, objectEnd);
-                    Log.d(TAG, "Extracted Grok main foods JSON: " + jsonObjectString);
+                    String jsonObjectString = cleanedContent.substring(objectStart, objectEnd);
+                    Log.d(TAG, "Extracted Groq main foods JSON: " + jsonObjectString);
                     
                     JSONObject mainFoodsJson = new JSONObject(jsonObjectString);
                     
@@ -262,12 +265,12 @@ public class FoodActivityIntegrationMethods {
                     result.put("international", parseFoodArray(mainFoodsJson.optJSONArray("international")));
                     result.put("budget", parseFoodArray(mainFoodsJson.optJSONArray("budget")));
                     
-                    Log.d(TAG, "Successfully parsed Grok main foods: " + result.size() + " categories");
+                    Log.d(TAG, "Successfully parsed Groq main foods: " + result.size() + " categories");
                     return result;
                 }
             }
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing Grok main foods JSON: " + e.getMessage());
+            Log.e(TAG, "Error parsing Groq main foods JSON: " + e.getMessage());
         }
         
         return null;
@@ -293,11 +296,14 @@ public class FoodActivityIntegrationMethods {
                         Log.d(TAG, "Extracted main foods text: " + textContent);
                         
                         // Extract JSON object from the text content
-                        int objectStart = textContent.indexOf("{");
-                        int objectEnd = textContent.lastIndexOf("}") + 1;
+                        // Remove markdown code blocks if present
+                        String cleanedText = textContent.replaceAll("```json\\s*", "").replaceAll("```\\s*", "");
+                        
+                        int objectStart = cleanedText.indexOf("{");
+                        int objectEnd = cleanedText.lastIndexOf("}") + 1;
                         
                         if (objectStart >= 0 && objectEnd > objectStart) {
-                            String jsonObjectString = textContent.substring(objectStart, objectEnd);
+                            String jsonObjectString = cleanedText.substring(objectStart, objectEnd);
                             Log.d(TAG, "Extracted main foods JSON: " + jsonObjectString);
                             
                             JSONObject mainFoodsJson = new JSONObject(jsonObjectString);

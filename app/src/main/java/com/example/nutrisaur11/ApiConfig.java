@@ -7,20 +7,25 @@ package com.example.nutrisaur11;
 public class ApiConfig {
     
     // Gemini API Configuration
-    public static final String GEMINI_API_KEY = "AIzaSyAR0YOJALZphmQaSbc5Ydzs5kZS6eCefJM";
+    // To get a Gemini API key:
+    // 1. Visit https://makersuite.google.com/app/apikey
+    // 2. Create an account or sign in
+    // 3. Generate a new API key
+    // 4. Replace the placeholder below with your actual API key
+    public static final String GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
     public static final String GEMINI_TEXT_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
     public static final String GEMINI_IMAGE_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=" + GEMINI_API_KEY;
     
-    // Grok API Configuration (xAI)
-    // To get a Grok API key:
-    // 1. Visit https://console.x.ai/
+    // Groq API Configuration
+    // To get a Groq API key:
+    // 1. Visit https://console.groq.com/
     // 2. Create an account or sign in
-    // 3. Navigate to API section
+    // 3. Navigate to API Keys section
     // 4. Generate a new API key
     // 5. Replace the placeholder below with your actual API key
-    public static final String GROK_API_KEY = "xai-1234567890abcdef"; // Replace with actual Grok API key
-    public static final String GROK_API_URL = "https://api.x.ai/v1/chat/completions";
-    public static final String GROK_MODEL = "grok-beta";
+    public static final String GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE";
+    public static final String GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+    public static final String GROQ_MODEL = "llama-3.1-8b-instant";
     
     // Timeout settings (in seconds)
     public static final int CONNECT_TIMEOUT = 30;
@@ -38,25 +43,25 @@ public class ApiConfig {
     
     // API Status
     public static boolean GEMINI_ENABLED = true;
-    public static boolean GROK_ENABLED = true; // Set to false if no Grok API key available
+    public static boolean GROQ_ENABLED = true; // Set to false if no Groq API key available
     
     /**
-     * Check if Grok API is properly configured
+     * Check if Groq API is properly configured
      */
-    public static boolean isGrokConfigured() {
-        return GROK_ENABLED && GROK_API_KEY != null && 
-               !GROK_API_KEY.isEmpty() && 
-               !GROK_API_KEY.equals("xai-1234567890abcdef");
+    public static boolean isGroqConfigured() {
+        return GROQ_ENABLED && GROQ_API_KEY != null && 
+               !GROQ_API_KEY.isEmpty() && 
+               !GROQ_API_KEY.equals("YOUR_GROQ_API_KEY_HERE");
     }
     
     /**
-     * Get the primary API to use (Gemini first, then Grok if available)
+     * Get the primary API to use (Gemini first, then Groq if available)
      */
     public static String getPrimaryApi() {
         if (GEMINI_ENABLED) {
             return "gemini";
-        } else if (isGrokConfigured()) {
-            return "grok";
+        } else if (isGroqConfigured()) {
+            return "groq";
         } else {
             return "fallback";
         }

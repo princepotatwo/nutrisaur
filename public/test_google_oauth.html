@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth Test - NUTRISAUR</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1A211A, #2A3326);
+            color: #E8F0D6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 600px;
+            background: rgba(42, 51, 38, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(161, 180, 84, 0.2);
+            text-align: center;
+        }
+        
+        h1 {
+            color: #A1B454;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(161, 180, 84, 0.2);
+        }
+        
+        .btn {
+            background: #A1B454;
+            color: #1A211A;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background: #8CA86E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+        }
+        
+        .btn.google {
+            background: #4285F4;
+            color: white;
+        }
+        
+        .btn.google:hover {
+            background: #3367D6;
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .status.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .status.error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+        
+        .status.info {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+        
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(161, 180, 84, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            text-align: left;
+            overflow-x: auto;
+        }
+        
+        .step {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .step h3 {
+            color: #A1B454;
+            margin-bottom: 10px;
+        }
+        
+        .step ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .step li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦕 Google OAuth Test</h1>
+        
+        <div class="test-section">
+            <h2>Configuration Status</h2>
+            <div id="config-status" class="status info">
+                Checking configuration...
+            </div>
+            <button class="btn" onclick="checkConfiguration()">Check Configuration</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Google OAuth Test</h2>
+            <p>Test the Google OAuth integration:</p>
+            <button class="btn google" onclick="testGoogleOAuth()">Test Google Sign-In</button>
+            <div id="oauth-status" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Database Test</h2>
+            <p>Test database connectivity and Google OAuth fields:</p>
+            <button class="btn" onclick="testDatabase()">Test Database</button>
+            <div id="db-status" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Setup Instructions</h2>
+            <div class="step">
+                <h3>1. Configure Google OAuth</h3>
+                <ol>
+                    <li>Update <code>google-oauth-config.js</code> with your Client ID</li>
+                    <li>Update <code>home.php</code> with your Client ID and Secret</li>
+                    <li>Add your domain to Google Cloud Console authorized origins</li>
+                </ol>
+            </div>
+            
+            <div class="step">
+                <h3>2. Run Database Migration</h3>
+                <ol>
+                    <li>Go to <a href="setup_google_oauth.php" style="color: #A1B454;">setup_google_oauth.php</a></li>
+                    <li>Click "Run Migration" to add Google OAuth fields</li>
+                    <li>Verify the migration was successful</li>
+                </ol>
+            </div>
+            
+            <div class="step">
+                <h3>3. Test the Integration</h3>
+                <ol>
+                    <li>Go to <a href="home.php" style="color: #A1B454;">home.php</a></li>
+                    <li>Click "Sign in with Google" or "Sign up with Google"</li>
+                    <li>Complete the OAuth flow</li>
+                    <li>Verify successful login</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>Quick Links</h2>
+            <a href="home.php" class="btn">Go to Home Page</a>
+            <a href="setup_google_oauth.php" class="btn">Setup Google OAuth</a>
+            <a href="dash.php" class="btn">Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        // Check configuration on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkConfiguration();
+        });
+        
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'status ' + type;
+            element.style.display = 'block';
+        }
+        
+        async function checkConfiguration() {
+            try {
+                showStatus('config-status', 'Checking configuration...', 'info');
+                
+                // Check if Google OAuth config is loaded
+                if (typeof GOOGLE_OAUTH_CONFIG !== 'undefined') {
+                    if (GOOGLE_OAUTH_CONFIG.clientId.includes('YOUR_GOOGLE_CLIENT_ID')) {
+                        showStatus('config-status', '⚠️ Google OAuth not configured. Please update the Client ID in google-oauth-config.js', 'error');
+                    } else {
+                        showStatus('config-status', '✅ Google OAuth configuration loaded successfully', 'success');
+                    }
+                } else {
+                    showStatus('config-status', '❌ Google OAuth configuration not loaded. Check if google-oauth-config.js is included.', 'error');
+                }
+            } catch (error) {
+                showStatus('config-status', '❌ Error checking configuration: ' + error.message, 'error');
+            }
+        }
+        
+        async function testGoogleOAuth() {
+            try {
+                showStatus('oauth-status', 'Testing Google OAuth...', 'info');
+                
+                // Check if Google API is loaded
+                if (typeof google === 'undefined' || !google.accounts) {
+                    showStatus('oauth-status', '❌ Google API not loaded. Check your internet connection and Google OAuth configuration.', 'error');
+                    return;
+                }
+                
+                // Try to initialize Google Sign-In
+                google.accounts.id.initialize({
+                    client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com', // This should be replaced with actual client ID
+                    callback: function(response) {
+                        showStatus('oauth-status', '✅ Google OAuth callback received successfully!', 'success');
+                        console.log('Google OAuth response:', response);
+                    },
+                    auto_select: false,
+                    cancel_on_tap_outside: true
+                });
+                
+                showStatus('oauth-status', '✅ Google OAuth initialized successfully. Click "Sign in with Google" on the home page to test.', 'success');
+                
+            } catch (error) {
+                showStatus('oauth-status', '❌ Google OAuth test failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testDatabase() {
+            try {
+                showStatus('db-status', 'Testing database...', 'info');
+                
+                const response = await fetch('setup_google_oauth.php?check_status=1');
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (data.has_google_fields) {
+                        showStatus('db-status', '✅ Database is ready for Google OAuth. Google fields are present.', 'success');
+                    } else {
+                        showStatus('db-status', '⚠️ Database needs migration. Google OAuth fields are missing. Run the migration first.', 'error');
+                    }
+                } else {
+                    showStatus('db-status', '❌ Database test failed: ' + data.message, 'error');
+                }
+            } catch (error) {
+                showStatus('db-status', '❌ Database test failed: ' + error.message, 'error');
+            }
+        }
+    </script>
+    
+    <!-- Load Google OAuth configuration -->
+    <script src="google-oauth-config.js"></script>
+</body>
+</html>

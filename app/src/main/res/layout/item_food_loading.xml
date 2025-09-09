@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/food_card"
     android:layout_width="140dp"
     android:layout_height="180dp"
     android:layout_margin="4dp"
@@ -11,23 +12,32 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/loading_shimmer_background">
+        android:background="@drawable/food_image_container">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@drawable/loading_shimmer_background" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:background="@drawable/loading_shimmer_overlay" />
+            android:background="@drawable/food_title_gradient_overlay" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Loading..."
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:fontFamily="sans-serif-black"
             android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:lineSpacingExtra="2dp"
             android:layout_gravity="bottom"
             android:padding="12dp"
             android:paddingBottom="8dp"

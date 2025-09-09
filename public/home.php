@@ -135,6 +135,219 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     }
 }
 
+// Handle Google OAuth requests
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
+    header('Content-Type: application/json');
+    
+    try {
+        $googleId = $_POST['google_id'];
+        $email = $_POST['email'];
+        $name = $_POST['name'];
+        $picture = $_POST['picture'] ?? '';
+        $givenName = $_POST['given_name'] ?? '';
+        $familyName = $_POST['family_name'] ?? '';
+        $emailVerified = $_POST['email_verified'] === '1';
+        
+        if (empty($googleId) || empty($email) || empty($name)) {
+            echo json_encode(['success' => false, 'message' => 'Missing required Google OAuth data']);
+            exit;
+        }
+        
+        if ($pdo === null) {
+            echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+            exit;
+        }
+        
+        // Check if user already exists by Google ID
+        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified FROM users WHERE google_id = ?");
+        $stmt->execute([$googleId]);
+        $existingUser = $stmt->fetch();
+        
+        if ($existingUser) {
+            // User exists, log them in
+            $_SESSION['user_id'] = $existingUser['user_id'];
+            $_SESSION['username'] = $existingUser['username'];
+            $_SESSION['email'] = $existingUser['email'];
+            $_SESSION['is_admin'] = false;
+            
+            // Update last login
+            $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+            $updateStmt->execute([$existingUser['user_id']]);
+            
+            echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
+        } else {
+            // Check if user exists by email
+            $stmt = $pdo->prepare("SELECT user_id, username, email FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            $userByEmail = $stmt->fetch();
+            
+            if ($userByEmail) {
+                // Link Google account to existing user
+                $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
+                $updateStmt->execute([$googleId, $name, $picture, $userByEmail['user_id']]);
+                
+                $_SESSION['user_id'] = $userByEmail['user_id'];
+                $_SESSION['username'] = $userByEmail['username'];
+                $_SESSION['email'] = $userByEmail['email'];
+                $_SESSION['is_admin'] = false;
+                
+                echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
+            } else {
+                // Create new user with Google OAuth
+                $username = $givenName ?: explode('@', $email)[0];
+                $username = preg_replace('/[^a-zA-Z0-9_]/', '', $username);
+                
+                // Ensure username is unique
+                $originalUsername = $username;
+                $counter = 1;
+                while (true) {
+                    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
+                    $stmt->execute([$username]);
+                    if (!$stmt->fetch()) break;
+                    $username = $originalUsername . $counter;
+                    $counter++;
+                }
+                
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, google_id, google_name, google_picture, google_given_name, google_family_name, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                $result = $stmt->execute([$username, $email, $googleId, $name, $picture, $givenName, $familyName, $emailVerified ? 1 : 0]);
+                
+                if ($result) {
+                    $userId = $pdo->lastInsertId();
+                    
+                    $_SESSION['user_id'] = $userId;
+                    $_SESSION['username'] = $username;
+                    $_SESSION['email'] = $email;
+                    $_SESSION['is_admin'] = false;
+                    
+                    echo json_encode(['success' => true, 'message' => 'Google registration successful', 'user_type' => 'user']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to create user account']);
+                }
+            }
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Google OAuth failed: ' . $e->getMessage()]);
+        error_log("Google OAuth error: " . $e->getMessage());
+    }
+    exit;
+}
+
+// Handle Google OAuth code exchange
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) {
+    header('Content-Type: application/json');
+    
+    try {
+        $code = $_POST['code'];
+        
+        if (empty($code)) {
+            echo json_encode(['success' => false, 'message' => 'Missing authorization code']);
+            exit;
+        }
+        
+        // Exchange code for token
+        $tokenData = exchangeGoogleCodeForToken($code);
+        
+        if (!$tokenData) {
+            echo json_encode(['success' => false, 'message' => 'Failed to exchange code for token']);
+            exit;
+        }
+        
+        // Get user info from Google
+        $userInfo = getGoogleUserInfo($tokenData['access_token']);
+        
+        if (!$userInfo) {
+            echo json_encode(['success' => false, 'message' => 'Failed to get user information from Google']);
+            exit;
+        }
+        
+        // Process the user (same logic as above)
+        $googleId = $userInfo['id'];
+        $email = $userInfo['email'];
+        $name = $userInfo['name'];
+        $picture = $userInfo['picture'] ?? '';
+        $givenName = $userInfo['given_name'] ?? '';
+        $familyName = $userInfo['family_name'] ?? '';
+        $emailVerified = $userInfo['verified_email'] ?? false;
+        
+        if ($pdo === null) {
+            echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+            exit;
+        }
+        
+        // Check if user already exists by Google ID
+        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified FROM users WHERE google_id = ?");
+        $stmt->execute([$googleId]);
+        $existingUser = $stmt->fetch();
+        
+        if ($existingUser) {
+            // User exists, log them in
+            $_SESSION['user_id'] = $existingUser['user_id'];
+            $_SESSION['username'] = $existingUser['username'];
+            $_SESSION['email'] = $existingUser['email'];
+            $_SESSION['is_admin'] = false;
+            
+            // Update last login
+            $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+            $updateStmt->execute([$existingUser['user_id']]);
+            
+            echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
+        } else {
+            // Check if user exists by email
+            $stmt = $pdo->prepare("SELECT user_id, username, email FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            $userByEmail = $stmt->fetch();
+            
+            if ($userByEmail) {
+                // Link Google account to existing user
+                $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
+                $updateStmt->execute([$googleId, $name, $picture, $userByEmail['user_id']]);
+                
+                $_SESSION['user_id'] = $userByEmail['user_id'];
+                $_SESSION['username'] = $userByEmail['username'];
+                $_SESSION['email'] = $userByEmail['email'];
+                $_SESSION['is_admin'] = false;
+                
+                echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
+            } else {
+                // Create new user with Google OAuth
+                $username = $givenName ?: explode('@', $email)[0];
+                $username = preg_replace('/[^a-zA-Z0-9_]/', '', $username);
+                
+                // Ensure username is unique
+                $originalUsername = $username;
+                $counter = 1;
+                while (true) {
+                    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
+                    $stmt->execute([$username]);
+                    if (!$stmt->fetch()) break;
+                    $username = $originalUsername . $counter;
+                    $counter++;
+                }
+                
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, google_id, google_name, google_picture, google_given_name, google_family_name, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                $result = $stmt->execute([$username, $email, $googleId, $name, $picture, $givenName, $familyName, $emailVerified ? 1 : 0]);
+                
+                if ($result) {
+                    $userId = $pdo->lastInsertId();
+                    
+                    $_SESSION['user_id'] = $userId;
+                    $_SESSION['username'] = $username;
+                    $_SESSION['email'] = $email;
+                    $_SESSION['is_admin'] = false;
+                    
+                    echo json_encode(['success' => true, 'message' => 'Google registration successful', 'user_type' => 'user']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to create user account']);
+                }
+            }
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Google OAuth failed: ' . $e->getMessage()]);
+        error_log("Google OAuth code exchange error: " . $e->getMessage());
+    }
+    exit;
+}
+
 // Handle AJAX requests for better user experience
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
     header('Content-Type: application/json');
@@ -361,6 +574,89 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
 }
 
 /**
+ * Exchange Google OAuth authorization code for access token
+ */
+function exchangeGoogleCodeForToken($code) {
+    $clientId = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+    $clientSecret = 'YOUR_GOOGLE_CLIENT_SECRET';
+    $redirectUri = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/home.php';
+    
+    $tokenUrl = 'https://oauth2.googleapis.com/token';
+    $data = [
+        'client_id' => $clientId,
+        'client_secret' => $clientSecret,
+        'code' => $code,
+        'grant_type' => 'authorization_code',
+        'redirect_uri' => $redirectUri
+    ];
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $tokenUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/x-www-form-urlencoded'
+    ]);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    
+    if ($curlError) {
+        error_log("Google OAuth token exchange cURL error: " . $curlError);
+        return false;
+    }
+    
+    if ($httpCode === 200) {
+        $tokenData = json_decode($response, true);
+        if (isset($tokenData['access_token'])) {
+            return $tokenData;
+        }
+    }
+    
+    error_log("Google OAuth token exchange failed. HTTP Code: $httpCode, Response: $response");
+    return false;
+}
+
+/**
+ * Get user information from Google using access token
+ */
+function getGoogleUserInfo($accessToken) {
+    $userInfoUrl = 'https://www.googleapis.com/oauth2/v2/userinfo?access_token=' . urlencode($accessToken);
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $userInfoUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $accessToken
+    ]);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    
+    if ($curlError) {
+        error_log("Google user info cURL error: " . $curlError);
+        return false;
+    }
+    
+    if ($httpCode === 200) {
+        $userInfo = json_decode($response, true);
+        if (isset($userInfo['id']) && isset($userInfo['email'])) {
+            return $userInfo;
+        }
+    }
+    
+    error_log("Google user info failed. HTTP Code: $httpCode, Response: $response");
+    return false;
+}
+
+/**
  * Send verification email using hardcoded email functionality
  */
 function sendVerificationEmail($email, $username, $verificationCode) {
@@ -456,8 +752,9 @@ function sendVerificationEmail($email, $username, $verificationCode) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NUTRISAUR Login</title>
-
-   
+    
+    <!-- Google OAuth Configuration -->
+    <script src="google-oauth-config.js"></script>
 </head>
 <style>
         /* Dark Theme - Aligned with dash.php */
@@ -1177,7 +1474,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     </button>
                 </div>
                 <button type="submit" class="auth-btn" id="auth-btn" name="login">Login</button>
-                <button type="button" class="google-btn">
+                <button type="button" class="google-btn" data-mode="login">
                     <svg width="18" height="18" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -1212,7 +1509,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     </button>
                 </div>
                 <button type="submit" class="auth-btn" name="register">Create Account</button>
-                <button type="button" class="google-btn">
+                <button type="button" class="google-btn" data-mode="register">
                     <svg width="18" height="18" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
