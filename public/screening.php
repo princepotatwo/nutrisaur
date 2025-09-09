@@ -1765,6 +1765,130 @@ header {
             font-weight: 500;
             letter-spacing: 0.5px;
         }
+        
+        /* Filters Container */
+        .filters-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        /* Search Section */
+        .search-section {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 50px 12px 16px;
+            border: 2px solid var(--color-border);
+            border-radius: 25px;
+            font-size: 14px;
+            background: var(--color-card);
+            color: var(--color-text);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--color-highlight);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background: var(--color-primary);
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        /* Filters Grid */
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--color-card);
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
+        }
+        
+        .filter-select:hover {
+            border-color: var(--color-highlight);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .search-container {
+                max-width: 100%;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .filters-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            .filters-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
 
         .header-actions {
             display: flex;
@@ -2854,99 +2978,113 @@ header {
             <div class="user-management-container">
                 <div class="table-header">
                     <div class="header-controls">
-                        <div class="search-row" style="justify-content: center; gap: 15px; flex-wrap: wrap;">
-                            <div class="search-container" style="width: 250px;">
-                                <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
-                                <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
+                        <!-- Search and Filters Row -->
+                        <div class="filters-container">
+                            <!-- Search Bar -->
+                            <div class="search-section">
+                                <div class="search-container">
+                                    <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
+                                    <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
+                                </div>
                             </div>
                             
-                            <!-- Municipality Filter -->
-                            <div class="location-filter-container" style="width: 180px;">
-                                <select id="municipalityFilter" onchange="filterByMunicipality()" class="location-select">
-                                    <option value="">All Municipalities</option>
-                                    <option value="ABUCAY">ABUCAY</option>
-                                    <option value="BAGAC">BAGAC</option>
-                                    <option value="BALANGA">CITY OF BALANGA</option>
-                                    <option value="DINALUPIHAN">DINALUPIHAN</option>
-                                    <option value="HERMOSA">HERMOSA</option>
-                                    <option value="LIMAY">LIMAY</option>
-                                    <option value="MARIVELES">MARIVELES</option>
-                                    <option value="MORONG">MORONG</option>
-                                    <option value="ORANI">ORANI</option>
-                                    <option value="ORION">ORION</option>
-                                    <option value="PILAR">PILAR</option>
-                                    <option value="SAMAL">SAMAL</option>
-                                </select>
-                            </div>
-                            
-                            <!-- Barangay Filter -->
-                            <div class="location-filter-container" style="width: 180px;">
-                                <select id="barangayFilter" onchange="filterByBarangay()" class="location-select">
-                                    <option value="">All Barangays</option>
-                                    <!-- Will be populated dynamically based on municipality -->
-                                </select>
-                            </div>
-                            
-                            <!-- Age Range Filter -->
-                            <div class="location-filter-container" style="width: 120px;">
-                                <select id="ageFromFilter" onchange="filterByAgeRange()" class="location-select">
-                                    <option value="">From Age</option>
-                                    <option value="0">0 months</option>
-                                    <option value="1">1 month</option>
-                                    <option value="6">6 months</option>
-                                    <option value="12">1 year</option>
-                                    <option value="24">2 years</option>
-                                    <option value="36">3 years</option>
-                                    <option value="48">4 years</option>
-                                    <option value="60">5 years</option>
-                                    <option value="72">6 years</option>
-                                    <option value="84">7 years</option>
-                                    <option value="96">8 years</option>
-                                    <option value="108">9 years</option>
-                                    <option value="120">10 years</option>
-                                    <option value="132">11 years</option>
-                                    <option value="144">12 years</option>
-                                    <option value="156">13 years</option>
-                                    <option value="168">14 years</option>
-                                    <option value="180">15 years</option>
-                                </select>
-                            </div>
-                            
-                            <div class="location-filter-container" style="width: 120px;">
-                                <select id="ageToFilter" onchange="filterByAgeRange()" class="location-select">
-                                    <option value="">To Age</option>
-                                    <option value="71">71 months (5y 11m)</option>
-                                    <option value="72">6 years</option>
-                                    <option value="84">7 years</option>
-                                    <option value="96">8 years</option>
-                                    <option value="108">9 years</option>
-                                    <option value="120">10 years</option>
-                                    <option value="132">11 years</option>
-                                    <option value="144">12 years</option>
-                                    <option value="156">13 years</option>
-                                    <option value="168">14 years</option>
-                                    <option value="180">15 years</option>
-                                </select>
-                            </div>
-                            
-                            <!-- Gender Filter -->
-                            <div class="location-filter-container" style="width: 120px;">
-                                <select id="sexFilter" onchange="filterBySex()" class="location-select">
-                                    <option value="">All Genders</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-                            
-                            <!-- Standard Filter -->
-                            <div class="location-filter-container" style="width: 200px;">
-                                <select id="standardFilter" onchange="filterByStandard()" class="location-select">
-                                    <option value="weight-for-age">Weight-for-Age (0-71 months)</option>
-                                    <option value="height-for-age">Height-for-Age (0-71 months)</option>
-                                    <option value="weight-for-height">Weight-for-Height (65-120 cm)</option>
-                                    <option value="weight-for-length">Weight-for-Length (45-110 cm)</option>
-                                    <option value="bmi-for-age">BMI-for-Age (0-71 months) + Adult BMI (>71 months)</option>
-                                </select>
+                            <!-- Filters Grid -->
+                            <div class="filters-grid">
+                                <!-- Municipality Filter -->
+                                <div class="filter-group">
+                                    <label class="filter-label">Municipality</label>
+                                    <select id="municipalityFilter" onchange="filterByMunicipality()" class="filter-select">
+                                        <option value="">All Municipalities</option>
+                                        <option value="ABUCAY">ABUCAY</option>
+                                        <option value="BAGAC">BAGAC</option>
+                                        <option value="BALANGA">CITY OF BALANGA</option>
+                                        <option value="DINALUPIHAN">DINALUPIHAN</option>
+                                        <option value="HERMOSA">HERMOSA</option>
+                                        <option value="LIMAY">LIMAY</option>
+                                        <option value="MARIVELES">MARIVELES</option>
+                                        <option value="MORONG">MORONG</option>
+                                        <option value="ORANI">ORANI</option>
+                                        <option value="ORION">ORION</option>
+                                        <option value="PILAR">PILAR</option>
+                                        <option value="SAMAL">SAMAL</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Barangay Filter -->
+                                <div class="filter-group">
+                                    <label class="filter-label">Barangay</label>
+                                    <select id="barangayFilter" onchange="filterByBarangay()" class="filter-select">
+                                        <option value="">All Barangays</option>
+                                        <!-- Will be populated dynamically based on municipality -->
+                                    </select>
+                                </div>
+                                
+                                <!-- Age From Filter -->
+                                <div class="filter-group">
+                                    <label class="filter-label">Age From</label>
+                                    <select id="ageFromFilter" onchange="filterByAgeRange()" class="filter-select">
+                                        <option value="">From Age</option>
+                                        <option value="0">0 months</option>
+                                        <option value="1">1 month</option>
+                                        <option value="6">6 months</option>
+                                        <option value="12">1 year</option>
+                                        <option value="24">2 years</option>
+                                        <option value="36">3 years</option>
+                                        <option value="48">4 years</option>
+                                        <option value="60">5 years</option>
+                                        <option value="72">6 years</option>
+                                        <option value="84">7 years</option>
+                                        <option value="96">8 years</option>
+                                        <option value="108">9 years</option>
+                                        <option value="120">10 years</option>
+                                        <option value="132">11 years</option>
+                                        <option value="144">12 years</option>
+                                        <option value="156">13 years</option>
+                                        <option value="168">14 years</option>
+                                        <option value="180">15 years</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Age To Filter -->
+                                <div class="filter-group">
+                                    <label class="filter-label">Age To</label>
+                                    <select id="ageToFilter" onchange="filterByAgeRange()" class="filter-select">
+                                        <option value="">To Age</option>
+                                        <option value="71">71 months (5y 11m)</option>
+                                        <option value="72">6 years</option>
+                                        <option value="84">7 years</option>
+                                        <option value="96">8 years</option>
+                                        <option value="108">9 years</option>
+                                        <option value="120">10 years</option>
+                                        <option value="132">11 years</option>
+                                        <option value="144">12 years</option>
+                                        <option value="156">13 years</option>
+                                        <option value="168">14 years</option>
+                                        <option value="180">15 years</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Gender Filter -->
+                                <div class="filter-group">
+                                    <label class="filter-label">Gender</label>
+                                    <select id="sexFilter" onchange="filterBySex()" class="filter-select">
+                                        <option value="">All Genders</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Standard Filter -->
+                                <div class="filter-group">
+                                    <label class="filter-label">WHO Standard</label>
+                                    <select id="standardFilter" onchange="filterByStandard()" class="filter-select">
+                                        <option value="weight-for-age">Weight-for-Age (0-71 months)</option>
+                                        <option value="height-for-age">Height-for-Age (0-71 months)</option>
+                                        <option value="weight-for-height">Weight-for-Height (65-120 cm)</option>
+                                        <option value="weight-for-length">Weight-for-Length (45-110 cm)</option>
+                                        <option value="bmi-for-age">BMI-for-Age (0-71 months) + Adult BMI (>71 months)</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -3333,6 +3471,7 @@ header {
         // Initialize screening page
         document.addEventListener('DOMContentLoaded', function() {
             initializeTableFunctionality();
+            updateTableHeaders(); // Initialize table headers on page load
         });
 
 
@@ -3672,7 +3811,40 @@ header {
         }
 
         function filterByStandard() {
+            updateTableHeaders();
             applyAllFilters();
+        }
+        
+        function updateTableHeaders() {
+            const standardFilter = document.getElementById('standardFilter');
+            const standardHeader = document.getElementById('standardHeader');
+            
+            if (standardFilter && standardHeader) {
+                const selectedStandard = standardFilter.value;
+                let headerText = '';
+                
+                switch(selectedStandard) {
+                    case 'weight-for-age':
+                        headerText = 'WEIGHT-FOR-AGE';
+                        break;
+                    case 'height-for-age':
+                        headerText = 'HEIGHT-FOR-AGE';
+                        break;
+                    case 'weight-for-height':
+                        headerText = 'WEIGHT-FOR-HEIGHT';
+                        break;
+                    case 'weight-for-length':
+                        headerText = 'WEIGHT-FOR-LENGTH';
+                        break;
+                    case 'bmi-for-age':
+                        headerText = 'BMI-FOR-AGE';
+                        break;
+                    default:
+                        headerText = 'WEIGHT-FOR-AGE';
+                }
+                
+                standardHeader.textContent = headerText;
+            }
         }
 
         function updateNoDataMessage(visibleCount) {
