@@ -7693,7 +7693,7 @@ body {
                 if (endpoint === 'dashboard_assessment_stats') {
                     return data;
                 } else {
-                    return data.data || data; // Return data field if exists, otherwise return full response
+                return data.data || data; // Return data field if exists, otherwise return full response
                 }
             } catch (error) {
                 console.error('DatabaseAPI error for', endpoint, ':', error);
@@ -7783,6 +7783,8 @@ body {
                 console.log('🔍 Total Users:', totalUsers);
                 console.log('🔍 Risk Levels Array:', riskLevels);
                 console.log('🔍 Sum of Risk Levels:', riskLevels.reduce((a, b) => a + b, 0));
+                console.log('🔍 Actual Risk Scores:', actualRiskScores);
+                console.log('🔍 Risk Scores Length:', actualRiskScores.length);
                 
                 // Fallback: If we have total users but no risk level data, create dummy data for testing
                 if (totalUsers > 0 && riskLevels.reduce((a, b) => a + b, 0) === 0) {
@@ -8021,33 +8023,39 @@ body {
                 const segmentPercentages = [];
                 
                 if (actualRiskScores.length > 0) {
-                    // Use actual risk scores to calculate proper distribution - MATCHING ANDROID APP LOGIC
+                    // Use actual risk scores to calculate proper distribution - 5-LEVEL SYSTEM
                     const lowRiskCount = actualRiskScores.filter(score => score < 20).length;
-                    const moderateRiskCount = actualRiskScores.filter(score => score >= 20 && score < 50).length;
-                    const highRiskCount = actualRiskScores.filter(score => score >= 50 && score < 80).length;
-                    const severeRiskCount = actualRiskScores.filter(score => score >= 80).length;
+                    const lowMediumRiskCount = actualRiskScores.filter(score => score >= 20 && score < 40).length;
+                    const mediumRiskCount = actualRiskScores.filter(score => score >= 40 && score < 60).length;
+                    const highRiskCount = actualRiskScores.filter(score => score >= 60 && score < 80).length;
+                    const veryHighRiskCount = actualRiskScores.filter(score => score >= 80).length;
                     
                     const lowRiskPercentage = (lowRiskCount / actualRiskScores.length) * 100;
-                    const moderateRiskPercentage = (moderateRiskCount / actualRiskScores.length) * 100;
+                    const lowMediumRiskPercentage = (lowMediumRiskCount / actualRiskScores.length) * 100;
+                    const mediumRiskPercentage = (mediumRiskCount / actualRiskScores.length) * 100;
                     const highRiskPercentage = (highRiskCount / actualRiskScores.length) * 100;
-                    const severeRiskPercentage = (severeRiskCount / actualRiskScores.length) * 100;
+                    const veryHighRiskPercentage = (veryHighRiskCount / actualRiskScores.length) * 100;
                     
-                    // Create segments based on actual risk score distribution
+                    // Create segments based on actual risk score distribution - 5-LEVEL SYSTEM
                     if (lowRiskCount > 0) {
                         segmentPercentages.push({ index: 0, percentage: lowRiskPercentage, count: lowRiskCount });
                         totalCalculatedPercentage += lowRiskPercentage;
                     }
-                    if (moderateRiskCount > 0) {
-                        segmentPercentages.push({ index: 1, percentage: moderateRiskPercentage, count: moderateRiskCount });
-                        totalCalculatedPercentage += moderateRiskPercentage;
+                    if (lowMediumRiskCount > 0) {
+                        segmentPercentages.push({ index: 1, percentage: lowMediumRiskPercentage, count: lowMediumRiskCount });
+                        totalCalculatedPercentage += lowMediumRiskPercentage;
+                    }
+                    if (mediumRiskCount > 0) {
+                        segmentPercentages.push({ index: 2, percentage: mediumRiskPercentage, count: mediumRiskCount });
+                        totalCalculatedPercentage += mediumRiskPercentage;
                     }
                     if (highRiskCount > 0) {
-                        segmentPercentages.push({ index: 2, percentage: highRiskPercentage, count: highRiskCount });
+                        segmentPercentages.push({ index: 3, percentage: highRiskPercentage, count: highRiskCount });
                         totalCalculatedPercentage += highRiskPercentage;
                     }
-                    if (severeRiskCount > 0) {
-                        segmentPercentages.push({ index: 3, percentage: severeRiskPercentage, count: severeRiskCount });
-                        totalCalculatedPercentage += severeRiskPercentage;
+                    if (veryHighRiskCount > 0) {
+                        segmentPercentages.push({ index: 4, percentage: veryHighRiskPercentage, count: veryHighRiskCount });
+                        totalCalculatedPercentage += veryHighRiskPercentage;
                     }
                 } else {
                     // Fallback to count-based calculation if no risk scores available
