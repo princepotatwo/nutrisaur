@@ -1941,10 +1941,11 @@ header {
 
         .table-responsive {
             overflow-x: auto;
-    border-radius: 12px;
+            border-radius: 12px;
             border: 1px solid var(--color-border);
-    width: 100%;
+            width: 100%;
             max-width: 100%;
+            min-width: 1200px; /* Ensure minimum width to show all columns */
         }
 
         .user-table {
@@ -2056,19 +2057,19 @@ header {
             text-align: center;
         }
 
-        /* Set specific widths for columns - Optimized to fit without horizontal scroll */
-        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 12%; } /* NAME */
-        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 14%; } /* EMAIL */
-        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 10%; } /* MUNICIPALITY */
-        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 10%; } /* BARANGAY */
-        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 5%; } /* SEX */
-        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 8%; } /* BIRTHDAY */
-        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 5%; } /* PREGNANT */
-        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 4%; } /* WEIGHT */
-        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 4%; } /* HEIGHT */
-        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 4%; } /* MUAC */
-        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 8%; } /* FCM TOKEN */
-        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 10%; } /* SCREENING DATE */
+        /* Set specific widths for columns - Optimized to fit with horizontal scroll */
+        .user-table th:nth-child(1), .user-table td:nth-child(1) { width: 10%; min-width: 100px; } /* NAME */
+        .user-table th:nth-child(2), .user-table td:nth-child(2) { width: 12%; min-width: 120px; } /* EMAIL */
+        .user-table th:nth-child(3), .user-table td:nth-child(3) { width: 8%; min-width: 80px; } /* MUNICIPALITY */
+        .user-table th:nth-child(4), .user-table td:nth-child(4) { width: 8%; min-width: 80px; } /* BARANGAY */
+        .user-table th:nth-child(5), .user-table td:nth-child(5) { width: 4%; min-width: 40px; } /* SEX */
+        .user-table th:nth-child(6), .user-table td:nth-child(6) { width: 6%; min-width: 60px; } /* BIRTHDAY */
+        .user-table th:nth-child(7), .user-table td:nth-child(7) { width: 4%; min-width: 40px; } /* PREGNANT */
+        .user-table th:nth-child(8), .user-table td:nth-child(8) { width: 3%; min-width: 30px; } /* WEIGHT */
+        .user-table th:nth-child(9), .user-table td:nth-child(9) { width: 3%; min-width: 30px; } /* HEIGHT */
+        .user-table th:nth-child(10), .user-table td:nth-child(10) { width: 3%; min-width: 30px; } /* MUAC */
+        .user-table th:nth-child(11), .user-table td:nth-child(11) { width: 6%; min-width: 60px; } /* FCM TOKEN */
+        .user-table th:nth-child(12), .user-table td:nth-child(12) { width: 8%; min-width: 80px; } /* SCREENING DATE */
 
         .user-table th {
     color: var(--color-highlight);
@@ -2616,7 +2617,10 @@ header {
                 No users found in the database. Add your first user!
             </div>
             
-            <div class="table-responsive">
+            <div class="table-responsive" style="position: relative;">
+                <div style="position: absolute; top: 5px; right: 10px; background: rgba(161, 180, 84, 0.8); color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px; z-index: 10;">
+                    ← Scroll to see FCM TOKEN →
+                </div>
                 <table class="user-table">
                 <thead>
                     <tr>
