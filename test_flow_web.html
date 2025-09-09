@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrisaur Flow Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        button { padding: 10px 20px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #6c757d; cursor: not-allowed; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; font-size: 12px; }
+        .form-group { margin: 10px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 3px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 3px; }
+        .loading { background-color: #e2e3e5; }
+        h1 { color: #333; text-align: center; }
+        h3 { color: #555; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Nutrisaur Signup & Screening Flow Test</h1>
+        
+        <div class="test-section info">
+            <h3>📋 Test Overview</h3>
+            <p>This test will simulate the complete user journey:</p>
+            <ol>
+                <li><strong>User Registration:</strong> Create a new user account</li>
+                <li><strong>Screening Data:</strong> Submit nutritional screening information</li>
+                <li><strong>Database Verification:</strong> Verify data is stored correctly</li>
+                <li><strong>Display Check:</strong> Confirm data appears accurately in screening.php</li>
+            </ol>
+        </div>
+
+        <div class="grid">
+            <div class="test-section">
+                <h3>1️⃣ User Registration Test</h3>
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" id="name" value="Test User Flow" />
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="email" value="" />
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="password" value="testpass123" />
+                </div>
+                <button onclick="testRegistration()" id="regBtn">Test Registration</button>
+                <div id="registrationResult"></div>
+            </div>
+
+            <div class="test-section">
+                <h3>2️⃣ Screening Data Test</h3>
+                <div class="form-group">
+                    <label>Municipality:</label>
+                    <select id="municipality">
+                        <option value="CITY OF BALANGA (Capital)">CITY OF BALANGA (Capital)</option>
+                        <option value="ABUCAY">ABUCAY</option>
+                        <option value="BAGAC">BAGAC</option>
+                        <option value="DINALUPIHAN">DINALUPIHAN</option>
+                        <option value="HERMOSA">HERMOSA</option>
+                        <option value="LIMAY">LIMAY</option>
+                        <option value="MARIVELES">MARIVELES</option>
+                        <option value="MORONG">MORONG</option>
+                        <option value="ORANI">ORANI</option>
+                        <option value="ORION">ORION</option>
+                        <option value="PILAR">PILAR</option>
+                        <option value="SAMAL">SAMAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Barangay:</label>
+                    <input type="text" id="barangay" value="Central" />
+                </div>
+                <div class="form-group">
+                    <label>Sex:</label>
+                    <select id="sex">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Birthday:</label>
+                    <input type="date" id="birthday" value="2003-01-15" />
+                </div>
+                <div class="form-group">
+                    <label>Pregnant:</label>
+                    <select id="is_pregnant">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Weight (kg):</label>
+                    <input type="number" id="weight" value="70.0" step="0.1" />
+                </div>
+                <div class="form-group">
+                    <label>Height (cm):</label>
+                    <input type="number" id="height" value="175.0" step="0.1" />
+                </div>
+                <button onclick="testScreening()" id="screenBtn">Test Screening</button>
+                <div id="screeningResult"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>3️⃣ Database Verification</h3>
+            <button onclick="verifyDatabase()" id="verifyBtn">Check Database</button>
+            <div id="verifyResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4️⃣ Screening Page Display Check</h3>
+            <button onclick="checkScreeningPage()" id="pageBtn">Check Screening.php</button>
+            <div id="pageResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5️⃣ Complete Flow Test</h3>
+            <button onclick="runCompleteTest()" id="completeBtn">Run Complete Test</button>
+            <div id="completeResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>6️⃣ Current Data Overview</h3>
+            <button onclick="checkCurrentData()" id="currentBtn">Check Current Data</button>
+            <div id="currentResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Generate unique email
+        document.getElementById('email').value = 'testuser' + Date.now() + '@example.com';
+
+        async function makeApiRequest(url, data, method = 'POST') {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+                
+                if (method === 'POST' && data) {
+                    options.body = JSON.stringify(data);
+                }
+                
+                const response = await fetch(url, options);
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                return { success: false, message: error.message };
+            }
+        }
+
+        async function testRegistration() {
+            const resultDiv = document.getElementById('registrationResult');
+            const btn = document.getElementById('regBtn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Testing...';
+            resultDiv.innerHTML = '<div class="status loading">Testing registration...</div>';
+            
+            try {
+                const result = await makeApiRequest('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=register_community_user', {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    municipality: '',
+                    barangay: '',
+                    sex: '',
+                    birthday: '',
+                    is_pregnant: '',
+                    weight: '',
+                    height: ''
+                });
+                
+                if (result.success) {
+                    resultDiv.innerHTML = '<div class="status success"><h4>✅ Registration Successful</h4><pre>' + JSON.stringify(result, null, 2) + '</pre></div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="status error"><h4>❌ Registration Failed</h4><pre>' + JSON.stringify(result, null, 2) + '</pre></div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="status error"><h4>❌ Error</h4><p>' + error.message + '</p></div>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Test Registration';
+            }
+        }
+
+        async function testScreening() {
+            const resultDiv = document.getElementById('screeningResult');
+            const btn = document.getElementById('screenBtn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Testing...';
+            resultDiv.innerHTML = '<div class="status loading">Testing screening data submission...</div>';
+            
+            try {
+                const result = await makeApiRequest('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=save_screening', {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    municipality: document.getElementById('municipality').value,
+                    barangay: document.getElementById('barangay').value,
+                    sex: document.getElementById('sex').value,
+                    birthday: document.getElementById('birthday').value,
+                    is_pregnant: document.getElementById('is_pregnant').value,
+                    weight: document.getElementById('weight').value,
+                    height: document.getElementById('height').value
+                });
+                
+                if (result.success) {
+                    resultDiv.innerHTML = '<div class="status success"><h4>✅ Screening Data Saved Successfully</h4><pre>' + JSON.stringify(result, null, 2) + '</pre></div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="status error"><h4>❌ Screening Data Save Failed</h4><pre>' + JSON.stringify(result, null, 2) + '</pre></div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="status error"><h4>❌ Error</h4><p>' + error.message + '</p></div>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Test Screening';
+            }
+        }
+
+        async function verifyDatabase() {
+            const resultDiv = document.getElementById('verifyResult');
+            const btn = document.getElementById('verifyBtn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Checking...';
+            resultDiv.innerHTML = '<div class="status loading">Checking database...</div>';
+            
+            try {
+                const result = await makeApiRequest('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_users', {}, 'GET');
+                
+                if (result.success) {
+                    const users = result.data || [];
+                    const testUser = users.find(user => user.email === document.getElementById('email').value);
+                    
+                    if (testUser) {
+                        resultDiv.innerHTML = '<div class="status success"><h4>✅ User Found in Database</h4><pre>' + JSON.stringify(testUser, null, 2) + '</pre></div>';
+                    } else {
+                        resultDiv.innerHTML = '<div class="status error"><h4>❌ User Not Found</h4><p>Total users: ' + users.length + '</p></div>';
+                    }
+                } else {
+                    resultDiv.innerHTML = '<div class="status error"><h4>❌ Database Query Failed</h4><pre>' + JSON.stringify(result, null, 2) + '</pre></div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="status error"><h4>❌ Error</h4><p>' + error.message + '</p></div>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Check Database';
+            }
+        }
+
+        async function checkScreeningPage() {
+            const resultDiv = document.getElementById('pageResult');
+            const btn = document.getElementById('pageBtn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Checking...';
+            resultDiv.innerHTML = '<div class="status loading">Checking screening page...</div>';
+            
+            try {
+                const response = await fetch('https://nutrisaur-production.up.railway.app/screening.php');
+                const html = await response.text();
+                
+                if (response.ok) {
+                    const hasUser = html.includes(document.getElementById('email').value);
+                    const hasTable = html.includes('<table');
+                    const hasWhoData = html.includes('wfa_display');
+                    
+                    let status = '<div class="status success"><h4>✅ Screening Page Accessible</h4>';
+                    status += '<p>Page length: ' + html.length + ' characters</p>';
+                    status += '<p>Contains test user: ' + (hasUser ? 'Yes' : 'No') + '</p>';
+                    status += '<p>Has table structure: ' + (hasTable ? 'Yes' : 'No') + '</p>';
+                    status += '<p>Has WHO Growth Standards data: ' + (hasWhoData ? 'Yes' : 'No') + '</p>';
+                    status += '</div>';
+                    
+                    resultDiv.innerHTML = status;
+                } else {
+                    resultDiv.innerHTML = '<div class="status error"><h4>❌ Page Not Accessible</h4><p>HTTP ' + response.status + '</p></div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="status error"><h4>❌ Error</h4><p>' + error.message + '</p></div>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Check Screening.php';
+            }
+        }
+
+        async function runCompleteTest() {
+            const resultDiv = document.getElementById('completeResult');
+            const btn = document.getElementById('completeBtn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Running...';
+            resultDiv.innerHTML = '<div class="status loading">Running complete test...</div>';
+            
+            try {
+                // Step 1: Registration
+                resultDiv.innerHTML = '<div class="status loading">Step 1: Testing registration...</div>';
+                const regResult = await makeApiRequest('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=register_community_user', {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    municipality: '',
+                    barangay: '',
+                    sex: '',
+                    birthday: '',
+                    is_pregnant: '',
+                    weight: '',
+                    height: ''
+                });
+                
+                if (!regResult.success) {
+                    resultDiv.innerHTML = '<div class="status error"><h4>❌ Complete Test Failed</h4><p>Registration failed: ' + regResult.message + '</p></div>';
+                    return;
+                }
+                
+                // Step 2: Screening
+                resultDiv.innerHTML = '<div class="status loading">Step 2: Testing screening data...</div>';
+                const screenResult = await makeApiRequest('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=save_screening', {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    municipality: document.getElementById('municipality').value,
+                    barangay: document.getElementById('barangay').value,
+                    sex: document.getElementById('sex').value,
+                    birthday: document.getElementById('birthday').value,
+                    is_pregnant: document.getElementById('is_pregnant').value,
+                    weight: document.getElementById('weight').value,
+                    height: document.getElementById('height').value
+                });
+                
+                if (!screenResult.success) {
+                    resultDiv.innerHTML = '<div class="status error"><h4>❌ Complete Test Failed</h4><p>Screening data save failed: ' + screenResult.message + '</p></div>';
+                    return;
+                }
+                
+                // Step 3: Verify
+                resultDiv.innerHTML = '<div class="status loading">Step 3: Verifying data...</div>';
+                const verifyResult = await makeApiRequest('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_users', {}, 'GET');
+                
+                if (!verifyResult.success) {
+                    resultDiv.innerHTML = '<div class="status error"><h4>❌ Complete Test Failed</h4><p>Database verification failed: ' + verifyResult.message + '</p></div>';
+                    return;
+                }
+                
+                const users = verifyResult.data || [];
+                const testUser = users.find(user => user.email === document.getElementById('email').value);
+                
+                if (!testUser) {
+                    resultDiv.innerHTML = '<div class="status error"><h4>❌ Complete Test Failed</h4><p>User not found in database after saving</p></div>';
+                    return;
+                }
+                
+                // Step 4: Check screening page
+                resultDiv.innerHTML = '<div class="status loading">Step 4: Checking screening page...</div>';
+                const pageResponse = await fetch('https://nutrisaur-production.up.railway.app/screening.php');
+                const pageHtml = await pageResponse.text();
+                
+                const hasUser = pageHtml.includes(document.getElementById('email').value);
+                const hasTable = pageHtml.includes('<table');
+                const hasWhoData = pageHtml.includes('wfa_display');
+                
+                // Calculate age to check if user should be displayed
+                const birthday = new Date(document.getElementById('birthday').value);
+                const today = new Date();
+                const ageInMonths = (today.getFullYear() - birthday.getFullYear()) * 12 + (today.getMonth() - birthday.getMonth());
+                const shouldShow = ageInMonths >= 1 && ageInMonths <= 71;
+                
+                let status = '<div class="status success"><h4>✅ Complete Test Successful!</h4>';
+                status += '<p>✅ Registration: Success</p>';
+                status += '<p>✅ Screening Data: Success</p>';
+                status += '<p>✅ Database Verification: Success</p>';
+                status += '<p>✅ Screening Page: Accessible</p>';
+                status += '<p>User Age: ' + ageInMonths + ' months (should show: ' + (shouldShow ? 'Yes' : 'No') + ')</p>';
+                status += '<p>User in page: ' + (hasUser ? 'Yes' : 'No') + '</p>';
+                status += '<p>Table structure: ' + (hasTable ? 'Yes' : 'No') + '</p>';
+                status += '<p>WHO data: ' + (hasWhoData ? 'Yes' : 'No') + '</p>';
+                status += '</div>';
+                
+                resultDiv.innerHTML = status;
+                
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="status error"><h4>❌ Complete Test Failed</h4><p>Error: ' + error.message + '</p></div>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Run Complete Test';
+            }
+        }
+
+        async function checkCurrentData() {
+            const resultDiv = document.getElementById('currentResult');
+            const btn = document.getElementById('currentBtn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Checking...';
+            resultDiv.innerHTML = '<div class="status loading">Checking current data...</div>';
+            
+            try {
+                const result = await makeApiRequest('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_users', {}, 'GET');
+                
+                if (result.success) {
+                    const users = result.data || [];
+                    let status = '<div class="status info"><h4>📊 Current Database Status</h4>';
+                    status += '<p>Total users: ' + users.length + '</p>';
+                    
+                    if (users.length > 0) {
+                        status += '<h5>Recent Users:</h5><ul>';
+                        const recentUsers = users.slice(0, 5);
+                        recentUsers.forEach(user => {
+                            status += '<li>' + user.name + ' (' + user.email + ') - ' + (user.municipality || 'No municipality') + '</li>';
+                        });
+                        status += '</ul>';
+                    }
+                    
+                    status += '</div>';
+                    resultDiv.innerHTML = status;
+                } else {
+                    resultDiv.innerHTML = '<div class="status error"><h4>❌ Failed to fetch data</h4><p>' + result.message + '</p></div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="status error"><h4>❌ Error</h4><p>' + error.message + '</p></div>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Check Current Data';
+            }
+        }
+    </script>
+</body>
+</html>

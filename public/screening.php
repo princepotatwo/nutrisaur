@@ -3037,47 +3037,16 @@ header {
                                 
                                 <!-- Age From Filter -->
                                 <div class="filter-group">
-                                    <label class="filter-label">Age From</label>
-                                    <select id="ageFromFilter" onchange="filterByAgeRange()" class="filter-select">
-                                        <option value="">From Age</option>
-                                        <option value="0">0 months</option>
-                                        <option value="1">1 month</option>
-                                        <option value="6">6 months</option>
-                                        <option value="12">1 year</option>
-                                        <option value="24">2 years</option>
-                                        <option value="36">3 years</option>
-                                        <option value="48">4 years</option>
-                                        <option value="60">5 years</option>
-                                        <option value="72">6 years</option>
-                                        <option value="84">7 years</option>
-                                        <option value="96">8 years</option>
-                                        <option value="108">9 years</option>
-                                        <option value="120">10 years</option>
-                                        <option value="132">11 years</option>
-                                        <option value="144">12 years</option>
-                                        <option value="156">13 years</option>
-                                        <option value="168">14 years</option>
-                                        <option value="180">15 years</option>
-                                    </select>
+                                    <label class="filter-label">Age From (Months)</label>
+                                    <input type="number" id="ageFromFilter" onchange="filterByAgeRange()" class="filter-select" 
+                                           placeholder="0" min="0" max="1000" step="1">
                                 </div>
                                 
                                 <!-- Age To Filter -->
                                 <div class="filter-group">
-                                    <label class="filter-label">Age To</label>
-                                    <select id="ageToFilter" onchange="filterByAgeRange()" class="filter-select">
-                                        <option value="">To Age</option>
-                                        <option value="71">71 months (5y 11m)</option>
-                                        <option value="72">6 years</option>
-                                        <option value="84">7 years</option>
-                                        <option value="96">8 years</option>
-                                        <option value="108">9 years</option>
-                                        <option value="120">10 years</option>
-                                        <option value="132">11 years</option>
-                                        <option value="144">12 years</option>
-                                        <option value="156">13 years</option>
-                                        <option value="168">14 years</option>
-                                        <option value="180">15 years</option>
-                                    </select>
+                                    <label class="filter-label">Age To (Months)</label>
+                                    <input type="number" id="ageToFilter" onchange="filterByAgeRange()" class="filter-select" 
+                                           placeholder="1000" min="0" max="1000" step="1">
                                 </div>
                                 
                                 <!-- Gender Filter -->
@@ -3099,6 +3068,7 @@ header {
                                         <option value="weight-for-height">Weight-for-Height (65-120 cm)</option>
                                         <option value="weight-for-length">Weight-for-Length (45-110 cm)</option>
                                         <option value="bmi-for-age">BMI-for-Age (0-71 months) + Adult BMI (>71 months)</option>
+                                        <option value="all-ages">All Ages (Show All Standards)</option>
                                     </select>
                                 </div>
                             </div>
@@ -3218,58 +3188,77 @@ header {
                                             'bmi-for-age' => ['display' => $bmi_display, 'classification' => $bmi_classification]
                                         ];
                                         
-                                        // Default: Show only Weight-for-Age for users 1-71 months
-                                        // Other standards will be shown when user selects them from dropdown
-                                        $showWeightForAge = $ageInMonths >= 1 && $ageInMonths <= 71;
+                                        // Determine which standard to show based on age and height
+                                        // Use WHO decision tree logic
+                                        $showStandard = null;
+                                        $showData = null;
                                         
-                                        if ($showWeightForAge) {
-                                            $data = $whoData['weight-for-age'];
-                                            echo '<tr data-standard="weight-for-age" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
-                                        echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                        if ($ageInMonths >= 0 && $ageInMonths <= 71) {
+                                            // For children 0-71 months, show Weight-for-Age by default
+                                            $showStandard = 'weight-for-age';
+                                            $showData = $whoData['weight-for-age'];
+                                        } elseif ($ageInMonths > 71) {
+                                            // For older children/adults, show BMI with adult classification
+                                            $showStandard = 'bmi-for-age';
+                                            $adultBmiClassification = getAdultBMIClassification($bmi);
+                                            $showData = [
+                                                'display' => $bmi,
+                                                'classification' => $adultBmiClassification
+                                            ];
+                                        }
+                                        
+                                        if ($showStandard && $showData) {
+                                            echo '<tr data-standard="' . $showStandard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
+                                            echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                             echo '<td>' . $ageDisplay . '</td>';
                                             echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                             echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             echo '<td>' . $bmi . '</td>';
-                                            echo '<td class="standard-value">' . htmlspecialchars($data['display']) . '</td>';
-                                            echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
+                                            echo '<td class="standard-value">' . htmlspecialchars($showData['display']) . '</td>';
+                                            echo '<td class="classification">' . htmlspecialchars($showData['classification']) . '</td>';
                                             echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
-                                        echo '</tr>';
+                                            echo '</tr>';
                                         }
                                         
                                         // Generate hidden rows for all other standards (for filtering)
+                                        // Use WHO decision tree logic for age and height restrictions
                                         foreach ($whoData as $standard => $data) {
-                                            if ($standard === 'weight-for-age') continue; // Already shown above
+                                            if ($standard === $showStandard) continue; // Skip already shown standard
                                             
-                                            $ageLimit = in_array($standard, ['weight-for-age', 'height-for-age', 'bmi-for-age']) ? $ageInMonths <= 71 : true;
-                                            $heightLimit = true;
+                                            $shouldShow = false;
+                                            $displayData = $data;
                                             
-                                            if ($standard === 'weight-for-height') {
-                                                $heightLimit = $user['height'] >= 65 && $user['height'] <= 120;
+                                            // Apply WHO age and height restrictions
+                                            if ($standard === 'weight-for-age' || $standard === 'height-for-age' || $standard === 'bmi-for-age') {
+                                                // These standards are for children 0-71 months only
+                                                $shouldShow = ($ageInMonths >= 0 && $ageInMonths <= 71);
+                                            } elseif ($standard === 'weight-for-height') {
+                                                // Weight-for-Height: 65-120 cm height range
+                                                $shouldShow = ($user['height'] >= 65 && $user['height'] <= 120);
                                             } elseif ($standard === 'weight-for-length') {
-                                                $heightLimit = $user['height'] >= 45 && $user['height'] <= 110;
+                                                // Weight-for-Length: 45-110 cm height range
+                                                $shouldShow = ($user['height'] >= 45 && $user['height'] <= 110);
                                             }
                                             
-                                            if ($ageLimit && $heightLimit) {
-                                                // For children over 71 months, show BMI only
-                                                if ($ageInMonths > 71 && $standard !== 'bmi-for-age') {
-                                                    continue; // Skip WHO standards for older children
-                                                }
-                                                
-                                                // For older children, show BMI with adult classification
-                                                if ($ageInMonths > 71 && $standard === 'bmi-for-age') {
-                                                    $adultBmiClassification = getAdultBMIClassification($bmi);
-                                                    $data['classification'] = $adultBmiClassification;
-                                                    $data['display'] = $bmi;
-                                                }
-                                                
+                                            // For adults (>71 months), only show BMI with adult classification
+                                            if ($ageInMonths > 71 && $standard === 'bmi-for-age') {
+                                                $shouldShow = true;
+                                                $adultBmiClassification = getAdultBMIClassification($bmi);
+                                                $displayData = [
+                                                    'display' => $bmi,
+                                                    'classification' => $adultBmiClassification
+                                                ];
+                                            }
+                                            
+                                            if ($shouldShow) {
                                                 echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
                                                 echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $ageDisplay . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $bmi . '</td>';
-                                                echo '<td class="standard-value">' . $data['display'] . '</td>';
-                                                echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
+                                                echo '<td class="standard-value">' . htmlspecialchars($displayData['display']) . '</td>';
+                                                echo '<td class="classification">' . htmlspecialchars($displayData['classification']) . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                                 echo '</tr>';
                                             }
@@ -3431,7 +3420,7 @@ header {
                     }
                 }
                 
-                // Age range filter
+                // Age range filter (now supports all ages)
                 if ((ageFrom || ageTo) && showRow) {
                     const ageMonths = parseInt(row.dataset.ageMonths);
                     if (ageFrom && ageMonths < parseInt(ageFrom)) {
@@ -3450,16 +3439,43 @@ header {
                     }
                 }
                 
-                // Standard filter
+                // Standard filter - updated to handle all ages
                 if (standard && showRow) {
                     const rowStandard = row.dataset.standard;
-                    if (standard === 'bmi-for-age') {
+                    const ageMonths = parseInt(row.dataset.ageMonths);
+                    
+                    if (standard === 'all-ages') {
+                        // Show all standards for all ages
+                        showRow = true;
+                    } else if (standard === 'bmi-for-age') {
+                        // Show BMI for all ages (WHO standards for 0-71 months, adult BMI for >71 months)
                         if (rowStandard !== 'bmi-for-age') {
                             showRow = false;
                         }
                     } else {
-                        if (rowStandard !== standard) {
-                            showRow = false;
+                        // For specific WHO standards, check age and height restrictions
+                        if (standard === 'weight-for-age' || standard === 'height-for-age') {
+                            // These are only for children 0-71 months
+                            if (ageMonths > 71 || rowStandard !== standard) {
+                                showRow = false;
+                            }
+                        } else if (standard === 'weight-for-height') {
+                            // Weight-for-Height: 65-120 cm height range
+                            const height = parseInt(row.dataset.height);
+                            if (height < 65 || height > 120 || rowStandard !== standard) {
+                                showRow = false;
+                            }
+                        } else if (standard === 'weight-for-length') {
+                            // Weight-for-Length: 45-110 cm height range
+                            const height = parseInt(row.dataset.height);
+                            if (height < 45 || height > 110 || rowStandard !== standard) {
+                                showRow = false;
+                            }
+                        } else {
+                            // Default: exact match
+                            if (rowStandard !== standard) {
+                                showRow = false;
+                            }
                         }
                     }
                 }
@@ -3832,22 +3848,25 @@ header {
                 
                 switch(selectedStandard) {
                     case 'weight-for-age':
-                        headerText = 'WEIGHT-FOR-AGE';
+                        headerText = 'WEIGHT-FOR-AGE (0-71 months)';
                         break;
                     case 'height-for-age':
-                        headerText = 'HEIGHT-FOR-AGE';
+                        headerText = 'HEIGHT-FOR-AGE (0-71 months)';
                         break;
                     case 'weight-for-height':
-                        headerText = 'WEIGHT-FOR-HEIGHT';
+                        headerText = 'WEIGHT-FOR-HEIGHT (65-120 cm)';
                         break;
                     case 'weight-for-length':
-                        headerText = 'WEIGHT-FOR-LENGTH';
+                        headerText = 'WEIGHT-FOR-LENGTH (45-110 cm)';
                         break;
                     case 'bmi-for-age':
-                        headerText = 'BMI-FOR-AGE';
+                        headerText = 'BMI-FOR-AGE (All Ages)';
+                        break;
+                    case 'all-ages':
+                        headerText = 'GROWTH STANDARD';
                         break;
                     default:
-                        headerText = 'WEIGHT-FOR-AGE';
+                        headerText = 'GROWTH STANDARD';
                 }
                 
                 standardHeader.textContent = headerText;
