@@ -106,8 +106,16 @@ public class FoodActivityIntegrationMethods {
     }
     
     public static Map<String, List<FoodRecommendation>> callGeminiForMainFoods(String prompt) {
-        // Try Gemini API first with extended timeout
-        Map<String, List<FoodRecommendation>> result = callGeminiAPIWithTimeout(prompt);
+        // Try optimized Gemini API first
+        Map<String, List<FoodRecommendation>> result = OptimizedGeminiService.callGeminiWithRetry(prompt);
+        if (result != null && !result.isEmpty()) {
+            Log.d(TAG, "Optimized Gemini API successful");
+            return result;
+        }
+        
+        // If optimized Gemini fails, try original Gemini API as fallback
+        Log.w(TAG, "Optimized Gemini failed, trying original Gemini API");
+        result = callGeminiAPIWithTimeout(prompt);
         if (result != null) {
             return result;
         }
@@ -119,8 +127,8 @@ public class FoodActivityIntegrationMethods {
             return result;
         }
         
-        // If both APIs fail, return null to trigger fallback foods
-        Log.e(TAG, "Both Gemini and Grok APIs failed, will use fallback foods");
+        // If all APIs fail, return null to trigger fallback foods
+        Log.e(TAG, "All APIs failed, will use fallback foods");
         return null;
     }
     

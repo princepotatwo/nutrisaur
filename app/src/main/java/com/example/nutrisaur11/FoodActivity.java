@@ -830,6 +830,25 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             generationCount++;
             String masterPrompt = buildMasterPrompt();
             
+            // Try optimized Gemini service first
+            Map<String, List<FoodRecommendation>> optimizedResult = OptimizedGeminiService.callGeminiWithRetry(masterPrompt);
+            if (optimizedResult != null && !optimizedResult.isEmpty()) {
+                // Combine all categories into a single list
+                List<FoodRecommendation> allFoods = new ArrayList<>();
+                allFoods.addAll(optimizedResult.getOrDefault("traditional", new ArrayList<>()));
+                allFoods.addAll(optimizedResult.getOrDefault("healthy", new ArrayList<>()));
+                allFoods.addAll(optimizedResult.getOrDefault("international", new ArrayList<>()));
+                allFoods.addAll(optimizedResult.getOrDefault("budget", new ArrayList<>()));
+                
+                if (!allFoods.isEmpty()) {
+                    Log.d(TAG, "Optimized Gemini service successful, got " + allFoods.size() + " foods");
+                    return allFoods;
+                }
+            }
+            
+            // Fallback to original implementation
+            Log.w(TAG, "Optimized Gemini failed, trying original implementation");
+            
             // Create JSON request
             JSONObject requestBody = new JSONObject();
             JSONArray contents = new JSONArray();

@@ -24,12 +24,17 @@ public class ApiConfig {
     
     // Timeout settings (in seconds)
     public static final int CONNECT_TIMEOUT = 30;
-    public static final int READ_TIMEOUT = 90;
+    public static final int READ_TIMEOUT = 120; // Increased to 2 minutes
     public static final int WRITE_TIMEOUT = 30;
     
-    // Retry settings
+    // Retry settings with exponential backoff
     public static final int MAX_RETRY_ATTEMPTS = 3;
-    public static final long RETRY_DELAY_MS = 1000; // 1 second
+    public static final long INITIAL_RETRY_DELAY_MS = 2000; // 2 seconds
+    public static final long MAX_RETRY_DELAY_MS = 10000; // 10 seconds
+    
+    // Request optimization
+    public static final int MAX_PROMPT_LENGTH = 8000; // Limit prompt length
+    public static final int MAX_TOKENS = 4000; // Limit response tokens
     
     // API Status
     public static boolean GEMINI_ENABLED = true;

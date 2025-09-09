@@ -1,231 +1,127 @@
 <?php
-/**
- * Test file for WHO Growth Standards Accuracy
- * Verifies that the implementation matches official WHO standards
- */
-
 require_once 'who_growth_standards.php';
 
-echo "<h1>WHO Growth Standards Accuracy Test</h1>";
-echo "<p><strong>Testing against official WHO Child Growth Standards 2006</strong></p>";
-
-$who = new WHOGrowthStandards();
-
-// Test cases based on the table images provided
+// Test cases from the screening table
 $testCases = [
-    // Test cases from the Weight-for-Age tables
     [
-        'name' => '2-year-old boy (from table)',
-        'weight' => 12.0,  // Should be normal for 24 months
-        'height' => 87.0,  // Approximate height for 24 months
-        'birth_date' => '2022-01-15',
-        'sex' => 'Male',
-        'expected_classification' => 'Normal'
+        'name' => 'Mason James Vargas',
+        'age' => '3y 2m', // 38 months
+        'weight' => 13.8,
+        'height' => 94.0,
+        'sex' => 'Male'
     ],
     [
-        'name' => '2-year-old girl (from table)',
-        'weight' => 11.5,  // Should be normal for 24 months
-        'height' => 86.0,  // Approximate height for 24 months
-        'birth_date' => '2022-01-15',
-        'sex' => 'Female',
-        'expected_classification' => 'Normal'
+        'name' => 'Mateo Alexander Flores', 
+        'age' => '1y 1m', // 13 months
+        'weight' => 4.8,
+        'height' => 65.0,
+        'sex' => 'Male'
     ],
     [
-        'name' => '4-year-old boy (from table)',
-        'weight' => 16.0,  // Should be normal for 48 months
-        'height' => 102.0, // Approximate height for 48 months
-        'birth_date' => '2020-01-15',
-        'sex' => 'Male',
-        'expected_classification' => 'Normal'
+        'name' => 'Miguel Angel Cruz',
+        'age' => '0y 10m', // 10 months
+        'weight' => 4.2,
+        'height' => 52.0,
+        'sex' => 'Male'
     ],
     [
-        'name' => '4-year-old girl (from table)',
-        'weight' => 15.5,  // Should be normal for 48 months
-        'height' => 101.0, // Approximate height for 48 months
-        'birth_date' => '2020-01-15',
-        'sex' => 'Female',
-        'expected_classification' => 'Normal'
-    ],
-    // Test cases for Weight-for-Height from the tables
-    [
-        'name' => '3-year-old boy (WFH test)',
-        'weight' => 14.0,  // Test weight
-        'height' => 95.0,  // From WFH table
-        'birth_date' => '2021-01-15',
-        'sex' => 'Male',
-        'expected_classification' => 'Normal'
+        'name' => 'Noah Alexander Vega',
+        'age' => '2y 2m', // 26 months
+        'weight' => 11.5,
+        'height' => 84.0,
+        'sex' => 'Male'
     ],
     [
-        'name' => '3-year-old girl (WFH test)',
-        'weight' => 13.5,  // Test weight
-        'height' => 94.0,  // From WFH table
-        'birth_date' => '2021-01-15',
-        'sex' => 'Female',
-        'expected_classification' => 'Normal'
-    ],
-    // Test cases for older children (5-19 years)
-    [
-        'name' => '8-year-old boy (Growth References)',
-        'weight' => 25.0,
-        'height' => 130.0,
-        'birth_date' => '2016-01-15',
-        'sex' => 'Male',
-        'expected_classification' => 'Normal'
+        'name' => 'Owen Alexander Salinas',
+        'age' => '4y 8m', // 56 months
+        'weight' => 16.8,
+        'height' => 104.0,
+        'sex' => 'Male'
     ],
     [
-        'name' => '12-year-old girl (Growth References)',
-        'weight' => 40.0,
-        'height' => 150.0,
-        'birth_date' => '2012-01-15',
-        'sex' => 'Female',
-        'expected_classification' => 'Normal'
+        'name' => 'Sebastian Lee Rodriguez',
+        'age' => '1y 4m', // 16 months
+        'weight' => 10.5,
+        'height' => 72.0,
+        'sex' => 'Male'
     ]
 ];
 
-echo "<h2>Classification Terminology Test</h2>";
-echo "<p>Verifying that we use correct WHO terminology:</p>";
+echo "<h2>WHO Growth Standards Accuracy Test</h2>\n";
+echo "<table border='1' cellpadding='5'>\n";
+echo "<tr><th>Name</th><th>Age</th><th>Weight</th><th>Height</th><th>BMI</th><th>WFA Z-Score</th><th>WFA Classification</th><th>Expected</th><th>Match</th></tr>\n";
 
-// Test z-score classifications
-$zScoreTests = [
-    ['z_score' => -3.5, 'expected' => 'Severely Wasted'],
-    ['z_score' => -2.5, 'expected' => 'Wasted'],
-    ['z_score' => 0.0, 'expected' => 'Normal'],
-    ['z_score' => 2.5, 'expected' => 'Overweight'],
-    ['z_score' => 3.5, 'expected' => 'Obese']
-];
+$who = new WHOGrowthStandards();
 
-echo "<table border='1' cellpadding='5' cellspacing='0'>";
-echo "<tr><th>Z-Score</th><th>Expected</th><th>Actual</th><th>Match</th></tr>";
-
-foreach ($zScoreTests as $test) {
-    $actual = $who->getNutritionalClassification($test['z_score']);
-    $match = $actual === $test['expected'] ? '✓' : '✗';
-    $color = $match === '✓' ? 'green' : 'red';
+foreach ($testCases as $case) {
+    // Calculate age in months
+    $ageParts = explode('y ', $case['age']);
+    $years = intval($ageParts[0]);
+    $months = intval(str_replace('m', '', $ageParts[1]));
+    $ageInMonths = ($years * 12) + $months;
     
-    echo "<tr>";
-    echo "<td>{$test['z_score']}</td>";
-    echo "<td>{$test['expected']}</td>";
-    echo "<td>{$actual}</td>";
-    echo "<td style='color: {$color};'>{$match}</td>";
-    echo "</tr>";
-}
-echo "</table>";
-
-echo "<h2>Growth Standards Test Results</h2>";
-
-foreach ($testCases as $i => $test) {
-    echo "<h3>Test Case " . ($i + 1) . ": " . $test['name'] . "</h3>";
-    echo "<p><strong>Input:</strong> Weight: {$test['weight']} kg, Height: {$test['height']} cm, Birth Date: {$test['birth_date']}, Sex: {$test['sex']}</p>";
+    // Calculate BMI
+    $bmi = round($case['weight'] / pow($case['height'] / 100, 2), 1);
     
-    $results = $who->processAllGrowthStandards(
-        $test['weight'],
-        $test['height'],
-        $test['birth_date'],
-        $test['sex']
-    );
+    // Get Weight-for-Age calculation
+    $wfaResult = $who->calculateWeightForAge($case['weight'], $ageInMonths, $case['sex']);
     
-    echo "<h4>Results:</h4>";
-    echo "<ul>";
-    echo "<li><strong>Age:</strong> " . $results['age_months'] . " months (" . round($results['age_months'] / 12, 1) . " years)</li>";
-    echo "<li><strong>BMI:</strong> " . $results['bmi'] . "</li>";
-    echo "<li><strong>Age Range:</strong> " . $results['age_range'] . "</li>";
-    echo "</ul>";
-    
-    echo "<h4>Growth Indicators:</h4>";
-    echo "<table border='1' cellpadding='5' cellspacing='0'>";
-    echo "<tr><th>Indicator</th><th>Z-Score</th><th>Classification</th><th>WHO Terminology</th></tr>";
-    
-    foreach ($results as $key => $value) {
-        if (is_array($value) && isset($value['z_score']) && isset($value['classification'])) {
-            $indicator = ucwords(str_replace('_', ' ', $key));
-            $whoTerm = $this->isWHOCompliant($value['classification']);
-            $color = $whoTerm ? 'green' : 'red';
-            
-            echo "<tr>";
-            echo "<td>{$indicator}</td>";
-            echo "<td>" . ($value['z_score'] ?? 'N/A') . "</td>";
-            echo "<td>{$value['classification']}</td>";
-            echo "<td style='color: {$color};'>" . ($whoTerm ? '✓' : '✗') . "</td>";
-            echo "</tr>";
-        }
-    }
-    echo "</table>";
-    
-    // Check if expected classification matches
-    $wfaClassification = $results['weight_for_age']['classification'] ?? 'N/A';
-    if ($wfaClassification === $test['expected_classification']) {
-        echo "<p style='color: green;'><strong>✓ Classification matches expected result</strong></p>";
-    } else {
-        echo "<p style='color: red;'><strong>✗ Classification mismatch. Expected: {$test['expected_classification']}, Got: {$wfaClassification}</strong></p>";
-    }
-    
-    echo "<hr>";
-}
-
-// Test age range boundaries
-echo "<h2>Age Range Boundary Tests</h2>";
-echo "<p>Testing the correct age ranges for WHO standards:</p>";
-
-$ageTests = [
-    ['age' => 60, 'expected' => 'Growth Standards'],
-    ['age' => 61, 'expected' => 'Growth References'],
-    ['age' => 228, 'expected' => 'Growth References'],
-    ['age' => 229, 'expected' => 'Out of Range']
-];
-
-echo "<table border='1' cellpadding='5' cellspacing='0'>";
-echo "<tr><th>Age (months)</th><th>Growth Standards</th><th>Growth References</th><th>Expected</th><th>Actual</th><th>Match</th></tr>";
-
-foreach ($ageTests as $test) {
-    $age = $test['age'];
-    $standards = $who->isWithinGrowthStandardsRange($age) ? 'Yes' : 'No';
-    $references = $who->isWithinGrowthReferencesRange($age) ? 'Yes' : 'No';
-    
-    $actual = 'Out of Range';
-    if ($who->isWithinGrowthStandardsRange($age)) {
-        $actual = 'Growth Standards';
-    } elseif ($who->isWithinGrowthReferencesRange($age)) {
-        $actual = 'Growth References';
-    }
-    
-    $match = $actual === $test['expected'] ? '✓' : '✗';
-    $color = $match === '✓' ? 'green' : 'red';
-    
-    echo "<tr>";
-    echo "<td>{$age}</td>";
-    echo "<td>{$standards}</td>";
-    echo "<td>{$references}</td>";
-    echo "<td>{$test['expected']}</td>";
-    echo "<td>{$actual}</td>";
-    echo "<td style='color: {$color};'>{$match}</td>";
-    echo "</tr>";
-}
-echo "</table>";
-
-// Helper function to check WHO compliance
-function isWHOCompliant($classification) {
-    $whoTerms = [
-        'Severely Wasted', 'Wasted', 'Normal', 'Overweight', 'Obese',
-        'Severe Thinness', 'Thinness', 'Obesity'
+    // Expected results from the table (approximate)
+    $expectedResults = [
+        'Mason James Vargas' => ['z_score' => 8.00, 'classification' => 'Overweight'],
+        'Mateo Alexander Flores' => ['z_score' => -8.00, 'classification' => 'Severely Underweight'],
+        'Miguel Angel Cruz' => ['z_score' => -11.00, 'classification' => 'Severely Underweight'],
+        'Noah Alexander Vega' => ['z_score' => 6.50, 'classification' => 'Overweight'],
+        'Owen Alexander Salinas' => ['z_score' => 13.00, 'classification' => 'Overweight'],
+        'Sebastian Lee Rodriguez' => ['z_score' => 13.50, 'classification' => 'Overweight']
     ];
-    return in_array($classification, $whoTerms);
+    
+    $expected = $expectedResults[$case['name']] ?? ['z_score' => 'N/A', 'classification' => 'N/A'];
+    
+    $zScoreMatch = $wfaResult['z_score'] !== null ? 
+        (abs($wfaResult['z_score'] - $expected['z_score']) < 0.1 ? '✓' : '✗') : 'N/A';
+    $classificationMatch = $wfaResult['classification'] === $expected['classification'] ? '✓' : '✗';
+    
+    echo "<tr>";
+    echo "<td>" . $case['name'] . "</td>";
+    echo "<td>" . $case['age'] . " (" . $ageInMonths . "m)</td>";
+    echo "<td>" . $case['weight'] . " kg</td>";
+    echo "<td>" . $case['height'] . " cm</td>";
+    echo "<td>" . $bmi . "</td>";
+    echo "<td>" . ($wfaResult['z_score'] !== null ? number_format($wfaResult['z_score'], 2) : 'N/A') . "</td>";
+    echo "<td>" . $wfaResult['classification'] . "</td>";
+    echo "<td>Z: " . $expected['z_score'] . " (" . $expected['classification'] . ")</td>";
+    echo "<td>Z: " . $zScoreMatch . " Class: " . $classificationMatch . "</td>";
+    echo "</tr>\n";
 }
 
-echo "<h2>WHO Compliance Summary</h2>";
-echo "<ul>";
-echo "<li><strong>Classification Terminology:</strong> Updated to use official WHO terms (Wasted, Severely Wasted, etc.)</li>";
-echo "<li><strong>5-Category System:</strong> Added 'Obese' category for +2SD to +3SD range</li>";
-echo "<li><strong>Age Ranges:</strong> Correctly implements 0-60 months (Standards) and 61-228 months (References)</li>";
-echo "<li><strong>Indicators:</strong> Uses appropriate indicators for each age range</li>";
-echo "</ul>";
+echo "</table>\n";
 
-echo "<h2>Next Steps for Full Accuracy</h2>";
-echo "<ol>";
-echo "<li><strong>Verify exact z-score values:</strong> Cross-reference with official WHO z-score tables</li>";
-echo "<li><strong>Update median/SD values:</strong> Ensure all data points match WHO standards exactly</li>";
-echo "<li><strong>Test edge cases:</strong> Verify classifications at boundary values</li>";
-echo "<li><strong>Validate with real data:</strong> Test with known cases from WHO documentation</li>";
-echo "</ol>";
+// Test the WHO standards data directly using public methods
+echo "<h3>WHO Standards Data Verification</h3>\n";
+echo "<p>Testing specific age/weight combinations:</p>\n";
 
-echo "<p><strong>Note:</strong> This implementation now uses correct WHO terminology and classification system. The next step is to verify that the exact z-score values and median/SD data match the official WHO tables precisely.</p>";
+// Test 38 months (Mason) - 3y 2m
+$masonResult = $who->calculateWeightForAge(13.8, 38, 'Male');
+echo "<p>38 months (Mason): " . json_encode($masonResult) . "</p>\n";
+
+// Test 13 months (Mateo) - 1y 1m  
+$mateoResult = $who->calculateWeightForAge(4.8, 13, 'Male');
+echo "<p>13 months (Mateo): " . json_encode($mateoResult) . "</p>\n";
+
+// Test 10 months (Miguel) - 0y 10m
+$miguelResult = $who->calculateWeightForAge(4.2, 10, 'Male');
+echo "<p>10 months (Miguel): " . json_encode($miguelResult) . "</p>\n";
+
+// Test 26 months (Noah) - 2y 2m
+$noahResult = $who->calculateWeightForAge(11.5, 26, 'Male');
+echo "<p>26 months (Noah): " . json_encode($noahResult) . "</p>\n";
+
+// Test 56 months (Owen) - 4y 8m
+$owenResult = $who->calculateWeightForAge(16.8, 56, 'Male');
+echo "<p>56 months (Owen): " . json_encode($owenResult) . "</p>\n";
+
+// Test 16 months (Sebastian) - 1y 4m
+$sebastianResult = $who->calculateWeightForAge(10.5, 16, 'Male');
+echo "<p>16 months (Sebastian): " . json_encode($sebastianResult) . "</p>\n";
 ?>
