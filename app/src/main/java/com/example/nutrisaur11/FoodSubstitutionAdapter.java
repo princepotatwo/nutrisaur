@@ -106,9 +106,9 @@ public class FoodSubstitutionAdapter extends RecyclerView.Adapter<FoodSubstituti
         // Clean up extra spaces
         cleaned = cleaned.replaceAll("\\s+", " ").trim();
         
-        // Limit to 12 characters for substitution layout
-        if (cleaned.length() > 12) {
-            cleaned = cleaned.substring(0, 10) + "...";
+        // Limit to 25 characters for substitution layout (allows 2-3 word food names)
+        if (cleaned.length() > 25) {
+            cleaned = cleaned.substring(0, 22) + "...";
         }
         
         // If name becomes too short, use a fallback

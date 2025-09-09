@@ -135,9 +135,9 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
         // Clean up extra spaces
         cleaned = cleaned.replaceAll("\\s+", " ").trim();
         
-        // Limit to 15 characters for horizontal layout
-        if (cleaned.length() > 15) {
-            cleaned = cleaned.substring(0, 12) + "...";
+        // Limit to 20 characters for horizontal layout (allows 2-3 word food names)
+        if (cleaned.length() > 20) {
+            cleaned = cleaned.substring(0, 17) + "...";
         }
         
         // If name becomes too short, use a fallback
