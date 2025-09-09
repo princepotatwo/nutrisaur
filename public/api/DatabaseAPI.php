@@ -2005,8 +2005,8 @@ class DatabaseAPI {
             $params = [];
             
             foreach ($data as $key => $value) {
-                $setParts[] = "$key = :set_$key";
-                $params[':set_' . $key] = $value;
+                $setParts[] = "$key = ?";
+                $params[] = $value;
             }
             
             // Merge WHERE parameters

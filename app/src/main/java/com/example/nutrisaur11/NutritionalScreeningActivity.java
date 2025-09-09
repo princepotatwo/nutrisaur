@@ -779,6 +779,10 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
                     if (responseJson.getBoolean("success")) {
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Screening data saved successfully!", Toast.LENGTH_LONG).show();
+                            
+                            // Register FCM token after successful screening
+                            registerFCMTokenAfterScreening();
+                            
                             // Navigate to MainActivity after successful screening
                             Intent intent = new Intent(NutritionalScreeningActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -809,5 +813,32 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         // This is a placeholder - you might need to implement a method to get user_id from email
         // For now, return 0 to indicate no linked user
         return 0;
+    }
+    
+    /**
+     * Register FCM token after successful screening completion
+     */
+    private void registerFCMTokenAfterScreening() {
+        try {
+            // Get user email from CommunityUserManager
+            CommunityUserManager userManager = new CommunityUserManager(this);
+            String userEmail = userManager.getCurrentUserEmail();
+            String userBarangay = answers.get("question_1"); // Get barangay from screening answers
+            
+            if (userEmail != null && !userEmail.isEmpty() && userBarangay != null && !userBarangay.isEmpty()) {
+                Log.d("NutritionalScreening", "Registering FCM token after screening for user: " + userEmail + " in " + userBarangay);
+                
+                // Initialize FCM token manager and register token
+                FCMTokenManager fcmManager = new FCMTokenManager(this);
+                fcmManager.registerTokenAfterScreening(userEmail, userBarangay);
+                
+                Log.d("NutritionalScreening", "FCM token registration initiated after screening");
+            } else {
+                Log.w("NutritionalScreening", "Cannot register FCM token: missing user email or barangay");
+                Log.w("NutritionalScreening", "User email: " + userEmail + ", Barangay: " + userBarangay);
+            }
+        } catch (Exception e) {
+            Log.e("NutritionalScreening", "Error registering FCM token after screening: " + e.getMessage());
+        }
     }
 }
