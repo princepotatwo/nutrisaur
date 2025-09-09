@@ -2030,19 +2030,19 @@ header {
 
         .user-table th,
         .user-table td {
-            padding: 6px 4px;
+            padding: 12px 8px;
             text-align: left;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             white-space: nowrap;
             word-wrap: break-word;
             word-break: break-word;
             overflow-wrap: break-word;
-            font-size: 10px;
+            font-size: 14px;
             font-weight: 500;
-            vertical-align: top;
+            vertical-align: middle;
             position: relative;
-            line-height: 1.2;
-            max-width: 120px;
+            line-height: 1.4;
+            max-width: 150px;
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -2075,14 +2075,14 @@ header {
         .user-table th {
             color: var(--color-highlight);
             font-weight: 700;
-            font-size: 9px;
+            font-size: 14px;
             position: sticky;
             top: 0;
             background-color: var(--color-card);
             z-index: 10;
             border-bottom: 2px solid rgba(161, 180, 84, 0.4);
-            padding-bottom: 6px;
-            padding-top: 6px;
+            padding-bottom: 12px;
+            padding-top: 12px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
             letter-spacing: 0.3px;
@@ -2623,17 +2623,12 @@ header {
                 <thead>
                     <tr>
                         <th>NAME</th>
-                            <th>EMAIL</th>
+                        <th>EMAIL</th>
                         <th>MUNICIPALITY</th>
-                            <th>BARANGAY</th>
-                            <th>SEX</th>
-                            <th>BIRTHDAY</th>
-                            <th>PREGNANT</th>
-                            <th>WEIGHT (KG)</th>
-                            <th>HEIGHT (CM)</th>
-                            <th>MUAC (CM)</th>
-                            <th>FCM TOKEN</th>
-                            <th>SCREENING DATE</th>
+                        <th>BARANGAY</th>
+                        <th>SEX</th>
+                        <th>BIRTHDAY</th>
+                        <th>SCREENING DATE</th>
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
@@ -2656,17 +2651,12 @@ header {
                                 foreach ($users as $user) {
                                     echo '<tr>';
                                     echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['is_pregnant'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['muac'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['fcm_token'] ?? 'N/A') . '</td>';
-                                        echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                     echo '</tr>';
                                 }
                             } else {
@@ -2674,10 +2664,10 @@ header {
                                     echo '<!-- No users in database - JavaScript will show sample data -->';
                             }
                         } catch (Exception $e) {
-                                echo '<tr><td colspan="12" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
+                                echo '<tr><td colspan="7" class="no-data-message">Error loading users: ' . htmlspecialchars($e->getMessage()) . '</td></tr>';
                         }
                     } else {
-                            echo '<tr><td colspan="12" class="no-data-message">Database connection failed.</td></tr>';
+                            echo '<tr><td colspan="7" class="no-data-message">Database connection failed.</td></tr>';
                     }
                     ?>
                 </tbody>
@@ -3072,7 +3062,7 @@ header {
                 if (!noDataMessage) {
                     const message = document.createElement('tr');
                     message.className = 'no-data-message';
-                    message.innerHTML = '<td colspan="12"><div>No assessments found matching your criteria.</div></td>';
+                    message.innerHTML = '<td colspan="7"><div>No assessments found matching your criteria.</div></td>';
                     tbody.appendChild(message);
                 }
             } else if (noDataMessage) {
