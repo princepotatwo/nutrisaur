@@ -105,22 +105,26 @@ public class FoodActivityIntegration {
                     internationalFoods.addAll(mainFoods.getOrDefault("international", new ArrayList<>()));
                     budgetFoods.addAll(mainFoods.getOrDefault("budget", new ArrayList<>()));
                     
-                    // Update adapters
-                    if (traditionalAdapter != null) {
-                        traditionalAdapter.setLoading(false);
-                        traditionalAdapter.notifyDataSetChanged();
-                    }
-                    if (healthyAdapter != null) {
-                        healthyAdapter.setLoading(false);
-                        healthyAdapter.notifyDataSetChanged();
-                    }
-                    if (internationalAdapter != null) {
-                        internationalAdapter.setLoading(false);
-                        internationalAdapter.notifyDataSetChanged();
-                    }
-                    if (budgetAdapter != null) {
-                        budgetAdapter.setLoading(false);
-                        budgetAdapter.notifyDataSetChanged();
+                    // Update adapters on main thread
+                    if (context instanceof android.app.Activity) {
+                        ((android.app.Activity) context).runOnUiThread(() -> {
+                            if (traditionalAdapter != null) {
+                                traditionalAdapter.setLoading(false);
+                                traditionalAdapter.notifyDataSetChanged();
+                            }
+                            if (healthyAdapter != null) {
+                                healthyAdapter.setLoading(false);
+                                healthyAdapter.notifyDataSetChanged();
+                            }
+                            if (internationalAdapter != null) {
+                                internationalAdapter.setLoading(false);
+                                internationalAdapter.notifyDataSetChanged();
+                            }
+                            if (budgetAdapter != null) {
+                                budgetAdapter.setLoading(false);
+                                budgetAdapter.notifyDataSetChanged();
+                            }
+                        });
                     }
                     
                     Log.d(TAG, "Main foods loaded successfully");
@@ -199,18 +203,22 @@ public class FoodActivityIntegration {
             budgetFoods.add(new FoodRecommendation("Bread", 80, 3.0, 1.0, 15.0, "1 slice", "Budget", "Affordable option", "https://example.com/bread.jpg"));
         }
         
-        // Update adapters
-        if (traditionalAdapter != null) {
-            traditionalAdapter.notifyDataSetChanged();
-        }
-        if (healthyAdapter != null) {
-            healthyAdapter.notifyDataSetChanged();
-        }
-        if (internationalAdapter != null) {
-            internationalAdapter.notifyDataSetChanged();
-        }
-        if (budgetAdapter != null) {
-            budgetAdapter.notifyDataSetChanged();
+        // Update adapters on main thread
+        if (context instanceof android.app.Activity) {
+            ((android.app.Activity) context).runOnUiThread(() -> {
+                if (traditionalAdapter != null) {
+                    traditionalAdapter.notifyDataSetChanged();
+                }
+                if (healthyAdapter != null) {
+                    healthyAdapter.notifyDataSetChanged();
+                }
+                if (internationalAdapter != null) {
+                    internationalAdapter.notifyDataSetChanged();
+                }
+                if (budgetAdapter != null) {
+                    budgetAdapter.notifyDataSetChanged();
+                }
+            });
         }
     }
     
