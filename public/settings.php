@@ -2009,8 +2009,8 @@ header {
         .user-table th,
         .user-table td {
             width: auto !important;
-            min-width: 60px;
-            max-width: none;
+            min-width: 40px;
+            max-width: 120px;
         }
 
         .user-table thead { 
@@ -2075,14 +2075,14 @@ header {
 
         .user-table th,
         .user-table td {
-            padding: 12px 8px;
+            padding: 8px 6px;
             text-align: left;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
+            font-size: 12px;
             white-space: nowrap;
             word-wrap: break-word;
             word-break: break-word;
             overflow-wrap: break-word;
-            font-size: 14px;
             font-weight: 500;
             vertical-align: middle;
             position: relative;
@@ -2782,12 +2782,10 @@ header {
                                     echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
                                     echo '<td class="action-buttons">';
-                                    echo '<button class="btn btn-edit" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User">';
-                                    echo '<span class="btn-icon">✏️</span>';
+                                    echo '<button class="btn btn-add" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User" style="background-color: var(--color-highlight); margin-right: 4px;">';
                                     echo '<span class="btn-text">Edit</span>';
                                     echo '</button>';
-                                    echo '<button class="btn btn-delete" onclick="deleteUser(\'' . $userIdentifier . '\')" title="Delete User">';
-                                    echo '<span class="btn-icon">🗑️</span>';
+                                    echo '<button class="btn btn-add" onclick="deleteUser(\'' . $userIdentifier . '\')" title="Delete User" style="background-color: #e74c3c;">';
                                     echo '<span class="btn-text">Delete</span>';
                                     echo '</button>';
                                     echo '</td>';

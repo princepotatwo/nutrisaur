@@ -3232,7 +3232,7 @@ header {
                                             echo '<td>' . $bmi . '</td>';
                                             echo '<td class="standard-value">' . htmlspecialchars($data['display']) . '</td>';
                                             echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
-                                            echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
+                                            echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                         }
                                         
@@ -3270,7 +3270,7 @@ header {
                                                 echo '<td>' . $bmi . '</td>';
                                                 echo '<td class="standard-value">' . $data['display'] . '</td>';
                                                 echo '<td class="classification">' . htmlspecialchars($data['classification']) . '</td>';
-                                                echo '<td>' . htmlspecialchars($user['created_at'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                                 echo '</tr>';
                                             }
                                         }
