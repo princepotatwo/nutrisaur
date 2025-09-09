@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/food_card"
-    android:layout_width="140dp"
-    android:layout_height="180dp"
+    android:id="@+id/substitution_card"
+    android:layout_width="160dp"
+    android:layout_height="200dp"
     android:layout_margin="4dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
-    app:cardBackgroundColor="@android:color/transparent">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -15,45 +15,45 @@
         android:background="@drawable/food_image_container">
 
         <ImageView
-            android:id="@+id/food_image"
+            android:id="@+id/substitution_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:background="@color/light_gray" />
 
-        <!-- Substitution Indicator -->
+        <!-- Substitution Badge -->
         <TextView
-            android:id="@+id/substitution_indicator"
+            android:id="@+id/substitution_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/substitution_badge_background"
-            android:padding="4dp"
+            android:padding="6dp"
             android:text="ALT"
-            android:textSize="8sp"
+            android:textSize="10sp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:fontFamily="sans-serif-medium"
-            android:alpha="0.8"
-            android:visibility="gone" />
+            android:fontFamily="sans-serif-medium" />
 
+        <!-- Gradient Overlay -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="70dp"
             android:layout_gravity="bottom"
             android:background="@drawable/food_title_gradient_overlay" />
 
+        <!-- Food Name -->
         <TextView
-            android:id="@+id/food_name"
+            android:id="@+id/substitution_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="MENU 001"
-            android:textSize="16sp"
+            android:text="Substitution"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:fontFamily="sans-serif-black"
             android:gravity="center"
-            android:maxLines="1"
+            android:maxLines="2"
             android:ellipsize="end"
             android:layout_gravity="bottom"
             android:padding="12dp"
@@ -62,6 +62,25 @@
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="2" />
+
+        <!-- Substitution Reason -->
+        <TextView
+            android:id="@+id/substitution_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="30dp"
+            android:padding="8dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="Healthier option"
+            android:textSize="10sp"
+            android:textColor="@color/white"
+            android:alpha="0.9"
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="center" />
 
     </FrameLayout>
 

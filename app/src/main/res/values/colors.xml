@@ -72,4 +72,7 @@
     
     <!-- Progress Bar Colors -->
     <color name="progress_background">#E0E0E0</color>
+    
+    <!-- Substitution Colors -->
+    <color name="light_blue">#E3F2FD</color>
 </resources>

@@ -25,6 +25,7 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
 
     public interface OnFoodClickListener {
         void onFoodClick(FoodRecommendation food);
+        void onFoodLongClick(FoodRecommendation food);
     }
 
     public HorizontalFoodAdapter(List<FoodRecommendation> foods, Context context, OnFoodClickListener listener) {
@@ -78,6 +79,11 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
         String shortName = shortenFoodName(food.getFoodName());
         holder.foodName.setText(shortName);
         
+        // Show substitution indicator
+        if (holder.substitutionIndicator != null) {
+            holder.substitutionIndicator.setVisibility(View.VISIBLE);
+        }
+        
         // Load image
         foodImageService.loadFoodImage(food.getFoodName(), holder.foodImage, null);
         
@@ -86,6 +92,14 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
             if (listener != null) {
                 listener.onFoodClick(food);
             }
+        });
+        
+        // Set long click listener for substitution options
+        holder.foodCard.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onFoodLongClick(food);
+            }
+            return true; // Consume the long click event
         });
     }
 
@@ -138,6 +152,7 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
         CardView foodCard;
         ImageView foodImage;
         TextView foodName;
+        TextView substitutionIndicator;
         int viewType;
 
         public ViewHolder(@NonNull View itemView, int viewType) {
@@ -148,6 +163,7 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
                 foodCard = itemView.findViewById(R.id.food_card);
                 foodImage = itemView.findViewById(R.id.food_image);
                 foodName = itemView.findViewById(R.id.food_name);
+                substitutionIndicator = itemView.findViewById(R.id.substitution_indicator);
             }
             // For loading view, no specific views needed
         }

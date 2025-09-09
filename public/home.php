@@ -17,9 +17,8 @@ if ($isLoggedIn) {
     exit;
 }
 
-// Use the centralized Database API with Railway configuration
+// Direct database connection
 require_once __DIR__ . "/api/DatabaseHelper.php";
-require_once __DIR__ . "/api/DatabaseAPI.php";
 
 $db = DatabaseHelper::getInstance();
 
@@ -74,16 +73,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
     } elseif (strlen($username) < 3) {
         $registrationError = "Username must be at least 3 characters long";
     } else {
-        // Use the centralized registration method
-        $result = $db->registerUser($username, $email, $password);
-        
-        if ($result['success']) {
-            // Session is now handled automatically by DatabaseAPI
-            // Redirect to dashboard
-            header("Location: /dash");
-            exit;
-        } else {
-            $registrationError = $result['message'];
+        // Direct registration with database
+        try {
+            $pdo = $db->getPDO();
+            
+            // Check if user already exists
+            $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
+            $stmt->execute([$email, $username]);
+            $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($existingUser) {
+                $registrationError = "User with this email or username already exists";
+            } else {
+                // Generate verification code
+                $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+                
+                // Hash password
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                
+                // Insert user
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, 0, NOW())");
+                $result = $stmt->execute([$username, $email, $hashedPassword, $verificationCode, $expiresAt]);
+                
+                if ($result) {
+                    $userId = $pdo->lastInsertId();
+                    
+                    // Send verification email
+                    $emailSent = sendVerificationEmail($email, $username, $verificationCode);
+                    
+                    if ($emailSent) {
+                        $registrationSuccess = "Registration successful! Please check your email for verification code.";
+                    } else {
+                        $registrationSuccess = "Registration successful! However, email delivery failed. Your verification code is: " . $verificationCode;
+                    }
+                } else {
+                    $registrationError = "Failed to create user account";
+                }
+            }
+        } catch (Exception $e) {
+            $registrationError = "Registration failed: " . $e->getMessage();
+            error_log("Registration error: " . $e->getMessage());
         }
     }
 }
@@ -137,10 +167,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 exit;
             }
             
-            $result = $db->registerUser($username, $email, $password);
-            
-            // Session is now handled automatically by DatabaseAPI
-            echo json_encode($result);
+            // Direct registration with database
+            try {
+                $pdo = $db->getPDO();
+                
+                // Check if user already exists
+                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
+                $stmt->execute([$email, $username]);
+                $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($existingUser) {
+                    echo json_encode(['success' => false, 'message' => 'User with this email or username already exists']);
+                    exit;
+                }
+                
+                // Generate verification code
+                $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+                
+                // Hash password
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                
+                // Insert user
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, 0, NOW())");
+                $result = $stmt->execute([$username, $email, $hashedPassword, $verificationCode, $expiresAt]);
+                
+                if ($result) {
+                    $userId = $pdo->lastInsertId();
+                    
+                    // Send verification email
+                    $emailSent = sendVerificationEmail($email, $username, $verificationCode);
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'message' => $emailSent ? 
+                            'Registration successful! Please check your email for verification code.' : 
+                            'Registration successful! However, email delivery failed. Your verification code is: ' . $verificationCode,
+                        'requires_verification' => true,
+                        'data' => [
+                            'user_id' => $userId,
+                            'username' => $username,
+                            'email' => $email,
+                            'email_sent' => $emailSent,
+                            'verification_code' => $verificationCode
+                        ]
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to create user account']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
+            }
             exit;
             
         case 'check_session':
@@ -154,6 +231,131 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 'is_admin' => $sessionData['is_admin']
             ]);
             exit;
+    }
+}
+
+/**
+ * Send verification email using Resend API with fallback
+ */
+function sendVerificationEmail($email, $username, $verificationCode) {
+    try {
+        // Resend API configuration
+        $resendApiKey = 're_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB';
+        $fromEmail = 'onboarding@resend.dev';
+        
+        // Create email data
+        $emailData = [
+            'from' => $fromEmail,
+            'to' => [$email],
+            'subject' => "Nutrisaur Verification Code: $verificationCode",
+            'html' => "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
+                <div style='background: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;'>
+                    <h1 style='margin: 0;'>🧪 Nutrisaur</h1>
+                </div>
+                <div style='background: white; padding: 30px; border: 1px solid #ddd; border-radius: 0 0 10px 10px;'>
+                    <h2 style='color: #333;'>Hello $username!</h2>
+                    <p style='color: #666; font-size: 16px;'>Your verification code is:</p>
+                    <div style='background: #f8f9fa; border: 2px solid #4CAF50; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
+                        <span style='font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;'>$verificationCode</span>
+                    </div>
+                    <p style='color: #666; font-size: 14px;'>This code will expire in 5 minutes.</p>
+                    <p style='color: #666; font-size: 14px;'>If you didn't request this verification, please ignore this email.</p>
+                    <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;'>
+                    <p style='color: #999; font-size: 12px; text-align: center;'>Best regards,<br>Nutrisaur Team</p>
+                </div>
+            </div>
+            "
+        ];
+        
+        // Send email using Resend API
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.resend.com/emails');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $resendApiKey
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+        
+        // Log the response for debugging
+        error_log("Resend API Response: HTTP $httpCode, Response: $response, Error: $curlError");
+        
+        if ($httpCode == 200 && !$curlError) {
+            $responseData = json_decode($response, true);
+            if ($responseData && isset($responseData['id'])) {
+                error_log("Email sent successfully via Resend. Email ID: " . $responseData['id']);
+                return true;
+            } else {
+                error_log("Resend API returned 200 but no email ID in response: " . $response);
+                return sendFallbackEmail($email, $username, $verificationCode);
+            }
+        } else {
+            error_log("Resend API failed: HTTP $httpCode, Response: $response, Error: $curlError");
+            return sendFallbackEmail($email, $username, $verificationCode);
+        }
+        
+    } catch (Exception $e) {
+        error_log("Email sending exception: " . $e->getMessage());
+        return sendFallbackEmail($email, $username, $verificationCode);
+    }
+}
+
+/**
+ * Fallback email function using PHP mail()
+ */
+function sendFallbackEmail($email, $username, $verificationCode) {
+    try {
+        $subject = "Nutrisaur Verification Code: $verificationCode";
+        $message = "
+        <html>
+        <head>
+            <title>Nutrisaur Verification</title>
+        </head>
+        <body style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
+            <div style='background: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;'>
+                <h1 style='margin: 0;'>🧪 Nutrisaur</h1>
+            </div>
+            <div style='background: white; padding: 30px; border: 1px solid #ddd; border-radius: 0 0 10px 10px;'>
+                <h2 style='color: #333;'>Hello $username!</h2>
+                <p style='color: #666; font-size: 16px;'>Your verification code is:</p>
+                <div style='background: #f8f9fa; border: 2px solid #4CAF50; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
+                    <span style='font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;'>$verificationCode</span>
+                </div>
+                <p style='color: #666; font-size: 14px;'>This code will expire in 5 minutes.</p>
+                <p style='color: #666; font-size: 14px;'>If you didn't request this verification, please ignore this email.</p>
+                <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;'>
+                <p style='color: #999; font-size: 12px; text-align: center;'>Best regards,<br>Nutrisaur Team</p>
+            </div>
+        </body>
+        </html>
+        ";
+        
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-type: text/html; charset=UTF-8" . "\r\n";
+        $headers .= "From: Nutrisaur <noreply@nutrisaur.com>" . "\r\n";
+        $headers .= "Reply-To: noreply@nutrisaur.com" . "\r\n";
+        
+        $result = mail($email, $subject, $message, $headers);
+        
+        if ($result) {
+            error_log("Fallback email sent successfully to $email");
+            return true;
+        } else {
+            error_log("Fallback email failed to send to $email");
+            return false;
+        }
+        
+    } catch (Exception $e) {
+        error_log("Fallback email exception: " . $e->getMessage());
+        return false;
     }
 }
 
@@ -1118,32 +1320,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 // Show a loading message
                 showMessage('Processing registration...', 'info');
                 
-                // Use Resend registration system
-                console.log('Using Resend registration system...');
-                const formData = {
-                    username: username,
-                    email: email,
-                    password: password
-                };
+                // Use simplified registration system
+                console.log('Using simplified registration system...');
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('email', email);
+                formData.append('password', password);
+                formData.append('ajax_action', 'register');
                 
-                let response = await fetch('/api/DatabaseAPI.php?action=register_resend', {
+                let response = await fetch('/home.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
+                    body: formData
                 });
                 
-                console.log('Resend registration response status:', response.status);
+                console.log('Registration response status:', response.status);
                 
                 let responseText = await response.text();
-                console.log('Resend registration response text:', responseText);
+                console.log('Registration response text:', responseText);
                 
                 let data;
                 try {
                     data = JSON.parse(responseText);
                 } catch (parseError) {
-                    console.error('Resend registration failed');
+                    console.error('Registration response parsing failed');
                     showMessage('Registration service unavailable. Please try again later.', 'error');
                     return;
                 }
@@ -1153,7 +1352,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 console.log('data.data check:', data.data);
                 
                 if (data.success) {
-                    if (data.requires_verification || (data.data && data.data.requires_verification)) {
+                    if (data.requires_verification) {
                         // Show verification screen with code if available
                         const verificationCode = data.data?.verification_code || null;
                         const email = data.data?.email || '';

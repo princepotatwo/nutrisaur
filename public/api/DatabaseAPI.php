@@ -2209,6 +2209,12 @@ function sendResendEmail($email, $username, $verificationCode) {
         $resendApiKey = 're_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB';
         $fromEmail = 'onboarding@resend.dev';
         
+        // Validate API key format
+        if (!preg_match('/^re_[a-zA-Z0-9_]+$/', $resendApiKey)) {
+            error_log("Invalid Resend API key format: " . $resendApiKey);
+            return false;
+        }
+        
         // Create email data
         $emailData = [
             'from' => $fromEmail,
@@ -2251,15 +2257,82 @@ function sendResendEmail($email, $username, $verificationCode) {
         $curlError = curl_error($ch);
         curl_close($ch);
         
+        // Log the response for debugging
+        error_log("Resend API Response: HTTP $httpCode, Response: $response, Error: $curlError");
+        
         if ($httpCode == 200 && !$curlError) {
-            return true;
+            $responseData = json_decode($response, true);
+            if ($responseData && isset($responseData['id'])) {
+                error_log("Email sent successfully via Resend. Email ID: " . $responseData['id']);
+                return true;
+            } else {
+                error_log("Resend API returned 200 but no email ID in response: " . $response);
+                return false;
+            }
         } else {
-            error_log("Resend API failed: HTTP $httpCode, Error: $curlError");
-            return false;
+            error_log("Resend API failed: HTTP $httpCode, Response: $response, Error: $curlError");
+            
+            // Fallback to PHP mail function
+            error_log("Attempting fallback to PHP mail function");
+            return sendFallbackEmail($email, $username, $verificationCode);
         }
         
     } catch (Exception $e) {
         error_log("Email sending exception: " . $e->getMessage());
+        
+        // Fallback to PHP mail function
+        error_log("Attempting fallback to PHP mail function after exception");
+        return sendFallbackEmail($email, $username, $verificationCode);
+    }
+}
+
+/**
+ * Fallback email function using PHP mail()
+ */
+function sendFallbackEmail($email, $username, $verificationCode) {
+    try {
+        $subject = "Nutrisaur Verification Code: $verificationCode";
+        $message = "
+        <html>
+        <head>
+            <title>Nutrisaur Verification</title>
+        </head>
+        <body style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
+            <div style='background: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;'>
+                <h1 style='margin: 0;'>🧪 Nutrisaur</h1>
+            </div>
+            <div style='background: white; padding: 30px; border: 1px solid #ddd; border-radius: 0 0 10px 10px;'>
+                <h2 style='color: #333;'>Hello $username!</h2>
+                <p style='color: #666; font-size: 16px;'>Your verification code is:</p>
+                <div style='background: #f8f9fa; border: 2px solid #4CAF50; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
+                    <span style='font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;'>$verificationCode</span>
+                </div>
+                <p style='color: #666; font-size: 14px;'>This code will expire in 5 minutes.</p>
+                <p style='color: #666; font-size: 14px;'>If you didn't request this verification, please ignore this email.</p>
+                <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;'>
+                <p style='color: #999; font-size: 12px; text-align: center;'>Best regards,<br>Nutrisaur Team</p>
+            </div>
+        </body>
+        </html>
+        ";
+        
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-type: text/html; charset=UTF-8" . "\r\n";
+        $headers .= "From: Nutrisaur <noreply@nutrisaur.com>" . "\r\n";
+        $headers .= "Reply-To: noreply@nutrisaur.com" . "\r\n";
+        
+        $result = mail($email, $subject, $message, $headers);
+        
+        if ($result) {
+            error_log("Fallback email sent successfully to $email");
+            return true;
+        } else {
+            error_log("Fallback email failed to send to $email");
+            return false;
+        }
+        
+    } catch (Exception $e) {
+        error_log("Fallback email exception: " . $e->getMessage());
         return false;
     }
 }
@@ -2321,10 +2394,20 @@ function sendWelcomeEmail($email, $username) {
         $curlError = curl_error($ch);
         curl_close($ch);
         
+        // Log the response for debugging
+        error_log("Resend API Response: HTTP $httpCode, Response: $response, Error: $curlError");
+        
         if ($httpCode == 200 && !$curlError) {
-            return true;
+            $responseData = json_decode($response, true);
+            if ($responseData && isset($responseData['id'])) {
+                error_log("Email sent successfully via Resend. Email ID: " . $responseData['id']);
+                return true;
+            } else {
+                error_log("Resend API returned 200 but no email ID in response: " . $response);
+                return false;
+            }
         } else {
-            error_log("Resend API failed: HTTP $httpCode, Error: $curlError");
+            error_log("Resend API failed: HTTP $httpCode, Response: $response, Error: $curlError");
             return false;
         }
         
@@ -2782,9 +2865,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     // Send email using Resend API
                     $emailSent = sendResendEmail($email, $username, $verificationCode);
                     
+                    if (!$emailSent) {
+                        // If email sending failed, still return success but warn user
+                        error_log("Email sending failed for user $username ($email) but registration completed");
+                    }
+                    
                     echo json_encode([
                         'success' => true,
-                        'message' => 'Registration successful! Please check your email for verification code.',
+                        'message' => $emailSent ? 
+                            'Registration successful! Please check your email for verification code.' : 
+                            'Registration successful! However, email delivery failed. Your verification code is: ' . $verificationCode,
                         'requires_verification' => true,
                         'data' => [
                             'user_id' => $userId,

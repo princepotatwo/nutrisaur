@@ -47,6 +47,10 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     private boolean isPreloading = false; // Prevent multiple simultaneous preloads
     private int consecutiveFailures = 0; // Track consecutive failures to prevent infinite loops
     
+    // Food substitution components
+    private FoodSubstitutionManager substitutionManager;
+    private FoodSubstitutionDialog currentSubstitutionDialog;
+    
     // Nutrition insights views
     private TextView tvBmiStatus, tvCaloriesTarget, tvProteinTarget, tvFatTarget, tvCarbsTarget, tvHealthRecommendation;
     
@@ -95,6 +99,10 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         // Initialize executor service
         executorService = Executors.newFixedThreadPool(2);
         Log.d(TAG, "Executor service initialized");
+        
+        // Initialize substitution manager
+        substitutionManager = new FoodSubstitutionManager(this);
+        Log.d(TAG, "Food substitution manager initialized");
         
         // Initialize views
         initializeViews();
@@ -487,9 +495,16 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     
     @Override
     public void onFoodClick(FoodRecommendation food) {
-        // Handle food item click - show detailed view or add to favorites
+        // Handle food item click - show food details or add to favorites
         Log.d(TAG, "Food clicked: " + food.getFoodName());
-        // TODO: Implement detailed food view or add to favorites functionality
+        // TODO: Implement food details view or add to favorites functionality
+    }
+    
+    @Override
+    public void onFoodLongClick(FoodRecommendation food) {
+        // Handle food long click - show substitution options
+        Log.d(TAG, "Food long clicked: " + food.getFoodName());
+        showFoodSubstitutionOptions(food);
     }
     
     private void setupNavigation() {
@@ -1345,6 +1360,198 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         if (executorService != null) {
             executorService.shutdown();
         }
+        if (substitutionManager != null) {
+            substitutionManager.shutdown();
+        }
+        if (currentSubstitutionDialog != null && currentSubstitutionDialog.isShowing()) {
+            currentSubstitutionDialog.dismiss();
+        }
+    }
+    
+    /**
+     * Show food substitution options for a selected food
+     */
+    private void showFoodSubstitutionOptions(FoodRecommendation food) {
+        Log.d(TAG, "Showing substitution options for: " + food.getFoodName());
+        
+        // Determine substitution reason based on user profile
+        String substitutionReason = determineSubstitutionReason();
+        
+        // Get substitutions based on user profile
+        substitutionManager.getFoodSubstitutions(
+            food, userAge, userSex, userBMI, userHealthConditions, userBudgetLevel,
+            userAllergies, userDietPrefs, userPregnancyStatus, substitutionReason,
+            new FoodSubstitutionManager.SubstitutionCallback() {
+                @Override
+                public void onSubstitutionsFound(List<FoodRecommendation> substitutions, String reason) {
+                    runOnUiThread(() -> {
+                        showSubstitutionDialog(food, substitutions, reason);
+                    });
+                }
+                
+                @Override
+                public void onError(String error) {
+                    runOnUiThread(() -> {
+                        Log.e(TAG, "Error getting substitutions: " + error);
+                        // Show fallback substitutions
+                        List<FoodRecommendation> fallbackSubstitutions = getFallbackSubstitutions(food);
+                        showSubstitutionDialog(food, fallbackSubstitutions, "Alternative options");
+                    });
+                }
+            }
+        );
+    }
+    
+    /**
+     * Determine the most appropriate substitution reason based on user profile
+     */
+    private String determineSubstitutionReason() {
+        StringBuilder reason = new StringBuilder();
+        
+        // Check for health conditions
+        if (userHealthConditions != null && !userHealthConditions.equals("None")) {
+            if (userHealthConditions.contains("Diabetes")) {
+                reason.append("Diabetes-friendly alternatives needed. ");
+            }
+            if (userHealthConditions.contains("Hypertension")) {
+                reason.append("Low-sodium alternatives needed. ");
+            }
+            if (userHealthConditions.contains("Heart Disease")) {
+                reason.append("Heart-healthy alternatives needed. ");
+            }
+        }
+        
+        // Check for allergies
+        if (userAllergies != null && !userAllergies.isEmpty()) {
+            reason.append("Allergy-safe alternatives needed. ");
+        }
+        
+        // Check for dietary preferences
+        if (userDietPrefs != null && !userDietPrefs.isEmpty()) {
+            reason.append("Diet-appropriate alternatives needed. ");
+        }
+        
+        // Check for pregnancy
+        if ("Yes".equalsIgnoreCase(userPregnancyStatus)) {
+            reason.append("Pregnancy-safe alternatives needed. ");
+        }
+        
+        // Check for budget constraints
+        if ("Low".equalsIgnoreCase(userBudgetLevel)) {
+            reason.append("Budget-friendly alternatives needed. ");
+        }
+        
+        // Default reason if none apply
+        if (reason.length() == 0) {
+            reason.append("Here are some great alternative options for you");
+        }
+        
+        return reason.toString().trim();
+    }
+    
+    /**
+     * Show the substitution dialog
+     */
+    private void showSubstitutionDialog(FoodRecommendation originalFood, List<FoodRecommendation> substitutions, String reason) {
+        // Dismiss any existing dialog
+        if (currentSubstitutionDialog != null && currentSubstitutionDialog.isShowing()) {
+            currentSubstitutionDialog.dismiss();
+        }
+        
+        currentSubstitutionDialog = new FoodSubstitutionDialog(
+            this, originalFood, substitutions, reason,
+            userAge, userSex, userBMI, userHealthConditions, userBudgetLevel,
+            userAllergies, userDietPrefs, userPregnancyStatus,
+            new FoodSubstitutionDialog.OnSubstitutionSelectedListener() {
+                @Override
+                public void onSubstitutionSelected(FoodRecommendation substitution) {
+                    Log.d(TAG, "Substitution selected: " + substitution.getFoodName());
+                    // Handle substitution selection - could add to favorites, show details, etc.
+                    showSubstitutionSelectedMessage(substitution);
+                }
+                
+                @Override
+                public void onKeepOriginal() {
+                    Log.d(TAG, "Keep original selected");
+                    // Handle keeping original food
+                    showKeepOriginalMessage(originalFood);
+                }
+                
+                @Override
+                public void onRefreshSubstitutions() {
+                    Log.d(TAG, "Refresh substitutions requested");
+                    // Get new substitutions
+                    refreshSubstitutions(originalFood, reason);
+                }
+            }
+        );
+        
+        currentSubstitutionDialog.show();
+    }
+    
+    /**
+     * Refresh substitutions with new options
+     */
+    private void refreshSubstitutions(FoodRecommendation originalFood, String reason) {
+        substitutionManager.getFoodSubstitutions(
+            originalFood, userAge, userSex, userBMI, userHealthConditions, userBudgetLevel,
+            userAllergies, userDietPrefs, userPregnancyStatus, reason + " - More options",
+            new FoodSubstitutionManager.SubstitutionCallback() {
+                @Override
+                public void onSubstitutionsFound(List<FoodRecommendation> substitutions, String newReason) {
+                    runOnUiThread(() -> {
+                        if (currentSubstitutionDialog != null && currentSubstitutionDialog.isShowing()) {
+                            currentSubstitutionDialog.updateSubstitutions(substitutions, newReason);
+                        }
+                    });
+                }
+                
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "Error refreshing substitutions: " + error);
+                }
+            }
+        );
+    }
+    
+    /**
+     * Get fallback substitutions when API fails
+     */
+    private List<FoodRecommendation> getFallbackSubstitutions(FoodRecommendation originalFood) {
+        List<FoodRecommendation> fallbackSubstitutions = new ArrayList<>();
+        
+        // Create simple fallback substitutions
+        String originalName = originalFood.getFoodName().toLowerCase();
+        
+        if (originalName.contains("adobo")) {
+            fallbackSubstitutions.add(new FoodRecommendation("Tinola", 380, 25, 12, 20, "1 bowl", "Substitution", "Light chicken soup - healthier alternative"));
+            fallbackSubstitutions.add(new FoodRecommendation("Nilagang Baboy", 400, 22, 16, 25, "1 bowl", "Substitution", "Boiled pork soup - lighter cooking method"));
+            fallbackSubstitutions.add(new FoodRecommendation("Paksiw na Bangus", 350, 25, 14, 20, "1 plate", "Substitution", "Fish cooked in vinegar - similar tangy flavor"));
+        } else {
+            fallbackSubstitutions.add(new FoodRecommendation("Tinola", 380, 25, 12, 20, "1 bowl", "Substitution", "Light chicken soup - healthy alternative"));
+            fallbackSubstitutions.add(new FoodRecommendation("Adobo", 450, 25, 18, 35, "1 plate", "Substitution", "Classic Filipino stew - versatile option"));
+            fallbackSubstitutions.add(new FoodRecommendation("Sinigang", 420, 30, 15, 25, "1 bowl", "Substitution", "Sour soup with vegetables - refreshing option"));
+        }
+        
+        return fallbackSubstitutions;
+    }
+    
+    /**
+     * Show message when substitution is selected
+     */
+    private void showSubstitutionSelectedMessage(FoodRecommendation substitution) {
+        // You can implement a toast, snackbar, or other UI feedback here
+        Log.d(TAG, "Substitution selected: " + substitution.getFoodName());
+        // For now, just log - you can add UI feedback as needed
+    }
+    
+    /**
+     * Show message when keeping original food
+     */
+    private void showKeepOriginalMessage(FoodRecommendation originalFood) {
+        // You can implement a toast, snackbar, or other UI feedback here
+        Log.d(TAG, "Keeping original: " + originalFood.getFoodName());
+        // For now, just log - you can add UI feedback as needed
     }
     
     /**
