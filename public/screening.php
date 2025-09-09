@@ -10,7 +10,66 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 
 // Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
 require_once __DIR__ . '/api/DatabaseHelper.php';
-require_once __DIR__ . '/api/nutritional_assessment_api.php';
+
+// Simplified nutritional assessment function
+function getNutritionalAssessment($user) {
+    try {
+        $age = calculateAge($user['birthday']);
+        $weight = floatval($user['weight']);
+        $height = floatval($user['height']);
+        $muac = floatval($user['muac']);
+        $isPregnant = $user['is_pregnant'] === 'Yes';
+        $sex = $user['sex'];
+        
+        // Simple BMI calculation
+        $bmi = $height > 0 ? round($weight / (($height / 100) * ($height / 100)), 1) : 0;
+        
+        // Basic assessment logic
+        if ($age < 18) {
+            // Child assessment
+            if ($bmi < 16) {
+                return ['nutritional_status' => 'Severe Acute Malnutrition (SAM)', 'risk_level' => 'High', 'category' => 'Undernutrition'];
+            } elseif ($bmi < 18.5) {
+                return ['nutritional_status' => 'Moderate Acute Malnutrition (MAM)', 'risk_level' => 'Medium', 'category' => 'Undernutrition'];
+            } else {
+                return ['nutritional_status' => 'Normal', 'risk_level' => 'Low', 'category' => 'Normal'];
+            }
+        } elseif ($isPregnant) {
+            // Pregnant woman assessment
+            if ($muac < 23) {
+                return ['nutritional_status' => 'Maternal Undernutrition (At-risk)', 'risk_level' => 'High', 'category' => 'Undernutrition'];
+            } else {
+                return ['nutritional_status' => 'Normal', 'risk_level' => 'Low', 'category' => 'Normal'];
+            }
+        } else {
+            // Adult assessment
+            if ($bmi < 16) {
+                return ['nutritional_status' => 'Severe Underweight', 'risk_level' => 'High', 'category' => 'Undernutrition'];
+            } elseif ($bmi < 18.5) {
+                return ['nutritional_status' => 'Mild Underweight', 'risk_level' => 'Medium', 'category' => 'Undernutrition'];
+            } elseif ($bmi < 25) {
+                return ['nutritional_status' => 'Normal', 'risk_level' => 'Low', 'category' => 'Normal'];
+            } elseif ($bmi < 30) {
+                return ['nutritional_status' => 'Overweight', 'risk_level' => 'Medium', 'category' => 'Overnutrition'];
+            } else {
+                return ['nutritional_status' => 'Obesity Class I', 'risk_level' => 'High', 'category' => 'Overnutrition'];
+            }
+        }
+    } catch (Exception $e) {
+        return [
+            'nutritional_status' => 'Assessment Error',
+            'risk_level' => 'Unknown',
+            'category' => 'Error'
+        ];
+    }
+}
+
+function calculateAge($birthday) {
+    $birthDate = new DateTime($birthday);
+    $today = new DateTime();
+    $age = $today->diff($birthDate);
+    return $age->y + ($age->m / 12);
+}
 
 // Get database helper instance
 $db = DatabaseHelper::getInstance();
@@ -2847,7 +2906,7 @@ header {
                                 if (!empty($users)) {
                                     foreach ($users as $user) {
                                         // Calculate nutritional assessment using the API
-                                        $assessment = performNutritionalAssessment($user);
+                                        $assessment = getNutritionalAssessment($user);
                                         
                                         echo '<tr>';
                                         echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
