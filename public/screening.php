@@ -2863,7 +2863,7 @@ header {
                                     <option value="height-for-age">Height-for-Age (0-71 months)</option>
                                     <option value="weight-for-height">Weight-for-Height (65-120 cm)</option>
                                     <option value="weight-for-length">Weight-for-Length (45-110 cm)</option>
-                                    <option value="bmi-for-age">BMI-for-Age (0-71 months)</option>
+                                    <option value="bmi-for-age">BMI-for-Age (0-71 months) + Adult BMI (>71 months)</option>
                                 </select>
                             </div>
                         </div>
@@ -2980,6 +2980,14 @@ header {
                                         
                                         // Calculate BMI
                                         $bmi = $user['weight'] && $user['height'] ? round($user['weight'] / pow($user['height'] / 100, 2), 1) : 'N/A';
+                                        
+                                        // Function to get adult BMI classification (for children over 71 months)
+                                        function getAdultBMIClassification($bmi) {
+                                            if ($bmi < 18.5) return 'Underweight';
+                                            if ($bmi < 25) return 'Normal weight';
+                                            if ($bmi < 30) return 'Overweight';
+                                            return 'Obese';
+                                        }
                                         
                                         // Generate all WHO Growth Standards data for this user
                                         $whoData = [
@@ -3452,11 +3460,11 @@ header {
             
             // Update header based on selected standard
             const standardNames = {
-                'weight-for-age': 'WEIGHT-FOR-AGE',
-                'height-for-age': 'HEIGHT-FOR-AGE', 
-                'weight-for-height': 'WEIGHT-FOR-HEIGHT',
-                'weight-for-length': 'WEIGHT-FOR-LENGTH',
-                'bmi-for-age': 'BMI-FOR-AGE'
+                'weight-for-age': 'WEIGHT-FOR-AGE (0-71 months)',
+                'height-for-age': 'HEIGHT-FOR-AGE (0-71 months)', 
+                'weight-for-height': 'WEIGHT-FOR-HEIGHT (65-120 cm)',
+                'weight-for-length': 'WEIGHT-FOR-LENGTH (45-110 cm)',
+                'bmi-for-age': 'BMI-FOR-AGE (0-71 months) + Adult BMI (>71 months)'
             };
             
             standardHeader.textContent = standardNames[standardFilter] || 'WEIGHT-FOR-AGE';
@@ -3466,12 +3474,22 @@ header {
             tableRows.forEach(row => {
                 const rowStandard = row.dataset.standard;
                 
-                // Show only rows that match the selected standard
-                if (rowStandard === standardFilter) {
-                    row.style.display = '';
-                    visibleCount++;
+                // For BMI-for-age, show both WHO standards (0-71 months) and adult BMI (>71 months)
+                if (standardFilter === 'bmi-for-age') {
+                    if (rowStandard === 'bmi-for-age') {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
                 } else {
-                    row.style.display = 'none';
+                    // For other standards, show only matching rows
+                    if (rowStandard === standardFilter) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
                 }
             });
             
