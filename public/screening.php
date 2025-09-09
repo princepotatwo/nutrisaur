@@ -3002,6 +3002,18 @@ header {
                                             }
                                             
                                             if ($ageLimit && $heightLimit) {
+                                                // For children over 71 months, show BMI only
+                                                if ($ageInMonths > 71 && $standard !== 'bmi-for-age') {
+                                                    continue; // Skip WHO standards for older children
+                                                }
+                                                
+                                                // For older children, show BMI with adult classification
+                                                if ($ageInMonths > 71 && $standard === 'bmi-for-age') {
+                                                    $adultBmiClassification = getAdultBMIClassification($bmi);
+                                                    $data['classification'] = $adultBmiClassification;
+                                                    $data['display'] = 'BMI: ' . $bmi . ' (' . $adultBmiClassification . ')';
+                                                }
+                                                
                                                 echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '">';
                                                 echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';

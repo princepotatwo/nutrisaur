@@ -96,7 +96,7 @@ public class CommunityUserManager {
                 
                 if (jsonResponse.getBoolean("success")) {
                     // Save user data to SharedPreferences
-                    JSONObject userData = jsonResponse.getJSONObject("data");
+                    JSONObject userData = jsonResponse.getJSONObject("user");
                     saveUserToPrefs(userData);
                     
                     // Set login status
