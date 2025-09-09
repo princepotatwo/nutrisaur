@@ -6672,6 +6672,8 @@ body {
                 // Update Risk Distribution Chart - Use new assessment API
                 const riskData = await fetchDataFromAPI('dashboard_assessment_stats', params);
                 console.log('📈 Risk Distribution Data:', riskData);
+                console.log('📈 Risk Data Success:', riskData?.success);
+                console.log('📈 Risk Data Data:', riskData?.data);
                 
                 if (riskData && riskData.success && riskData.data) {
                     updateRiskChart(riskData.data);
@@ -7739,12 +7741,18 @@ body {
                 let actualRiskScores = []; // Store actual risk scores from API
                 
                 if (data && typeof data === 'object') {
+                    // Debug: Log the actual data structure
+                    console.log('🔍 Risk Chart Data Structure:', data);
+                    console.log('🔍 Risk Levels:', data.risk_levels);
+                    
                     // API now returns data in format: {risk_levels: {low: 5, low_medium: 3, medium: 2, high: 1, very_high: 1}}
                     riskLevels[0] = data.risk_levels?.low || 0;
                     riskLevels[1] = data.risk_levels?.low_medium || 0;
                     riskLevels[2] = data.risk_levels?.medium || 0;
                     riskLevels[3] = data.risk_levels?.high || 0;
                     riskLevels[4] = data.risk_levels?.very_high || 0;
+                    
+                    console.log('🔍 Processed Risk Levels:', riskLevels);
                     
                     totalUsers = data.total_screened || (riskLevels[0] + riskLevels[1] + riskLevels[2] + riskLevels[3] + riskLevels[4]);
                     
