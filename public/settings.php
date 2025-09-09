@@ -1997,7 +1997,7 @@ header {
             border-collapse: separate;
             border-spacing: 0;
             margin-top: 10px;
-            table-layout: auto;
+            table-layout: fixed;
             border-radius: 15px;
             overflow: hidden;
             border: 1px solid var(--color-border);
@@ -2005,12 +2005,40 @@ header {
             min-width: 100%;
         }
 
-        /* Auto-fit columns - automatically distributes space equally */
-        .user-table th,
-        .user-table td {
-            width: auto !important;
-            min-width: 40px;
-            max-width: 120px;
+        /* Professional column distribution */
+        .user-table th:nth-child(1),
+        .user-table td:nth-child(1) {
+            width: 15%; /* NAME */
+        }
+        
+        .user-table th:nth-child(2),
+        .user-table td:nth-child(2) {
+            width: 20%; /* EMAIL */
+        }
+        
+        .user-table th:nth-child(3),
+        .user-table td:nth-child(3) {
+            width: 18%; /* MUNICIPALITY */
+        }
+        
+        .user-table th:nth-child(4),
+        .user-table td:nth-child(4) {
+            width: 15%; /* BARANGAY */
+        }
+        
+        .user-table th:nth-child(5),
+        .user-table td:nth-child(5) {
+            width: 8%; /* SEX */
+        }
+        
+        .user-table th:nth-child(6),
+        .user-table td:nth-child(6) {
+            width: 12%; /* BIRTHDAY */
+        }
+        
+        .user-table th:nth-child(7),
+        .user-table td:nth-child(7) {
+            width: 12%; /* ACTIONS */
         }
 
         .user-table thead { 
@@ -2073,23 +2101,63 @@ header {
             box-shadow: 0 4px 12px rgba(161, 180, 84, 0.15);
         }
 
+        /* Professional row styling */
+        .user-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .user-table tbody tr:hover td {
+            color: var(--color-text);
+        }
+
+        /* Enhanced cell hover effects */
+        .user-table td:hover {
+            background-color: rgba(161, 180, 84, 0.05);
+        }
+
+        /* Professional table borders */
+        .user-table th:not(:last-child),
+        .user-table td:not(:last-child) {
+            border-right: 1px solid rgba(161, 180, 84, 0.1);
+        }
+
         .user-table th,
         .user-table td {
-            padding: 8px 6px;
+            padding: 12px 8px;
             text-align: left;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
-            font-size: 12px;
-            white-space: nowrap;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
+            font-size: 13px;
             font-weight: 500;
             vertical-align: middle;
             position: relative;
             line-height: 1.4;
-            max-width: 150px;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        /* Specific text handling for different columns */
+        .user-table td:nth-child(1),
+        .user-table td:nth-child(2) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-table td:nth-child(3),
+        .user-table td:nth-child(4) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-table td:nth-child(5) {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .user-table td:nth-child(6) {
+            white-space: nowrap;
+            text-align: center;
         }
 
         /* Ensure actions column is always visible */
@@ -2098,7 +2166,8 @@ header {
             white-space: nowrap;
             overflow: visible;
             text-overflow: clip;
-            min-width: 120px;
+            text-align: center;
+            padding: 8px 4px;
         }
 
 
@@ -2107,6 +2176,46 @@ header {
         .table-responsive {
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 1200px) {
+            .user-table th,
+            .user-table td {
+                padding: 10px 6px;
+                font-size: 12px;
+            }
+            
+            .action-buttons .btn-edit,
+            .action-buttons .btn-delete {
+                padding: 5px 8px;
+                font-size: 11px;
+                min-width: 45px;
+                height: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .user-table th,
+            .user-table td {
+                padding: 8px 4px;
+                font-size: 11px;
+            }
+            
+            .action-buttons {
+                gap: 4px;
+                flex-direction: column;
+            }
+            
+            .action-buttons .btn-edit,
+            .action-buttons .btn-delete {
+                padding: 4px 6px;
+                font-size: 10px;
+                min-width: 40px;
+                height: 24px;
+            }
         }
 
         .user-table td:last-child {
@@ -2116,27 +2225,29 @@ header {
         /* Action buttons styling */
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             justify-content: center;
             align-items: center;
-            padding: 8px;
+            padding: 4px;
+            flex-wrap: nowrap;
         }
 
         .action-buttons .btn-edit,
         .action-buttons .btn-delete {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
-            min-width: 40px;
-            height: 36px;
+            min-width: 50px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
         }
 
         .action-buttons .btn-edit {
@@ -2198,18 +2309,32 @@ header {
         .user-table th {
             color: var(--color-highlight);
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             position: sticky;
             top: 0;
             background-color: var(--color-card);
             z-index: 10;
             border-bottom: 2px solid rgba(161, 180, 84, 0.4);
-            padding-bottom: 12px;
-            padding-top: 12px;
+            padding: 14px 8px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
             backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        /* Header alignment for specific columns */
+        .user-table th:nth-child(1),
+        .user-table th:nth-child(2),
+        .user-table th:nth-child(3),
+        .user-table th:nth-child(4) {
+            text-align: left;
+        }
+
+        .user-table th:nth-child(5),
+        .user-table th:nth-child(6),
+        .user-table th:nth-child(7) {
+            text-align: center;
         }
 
         .tooltip {
