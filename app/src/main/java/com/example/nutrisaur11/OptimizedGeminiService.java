@@ -74,10 +74,10 @@ public class OptimizedGeminiService {
         }
         
         optimized.append("\nCATEGORIES:\n");
-        optimized.append("1. TRADITIONAL FILIPINO (8 dishes)\n");
-        optimized.append("2. HEALTHY OPTIONS (8 dishes)\n");
-        optimized.append("3. INTERNATIONAL CUISINE (8 dishes)\n");
-        optimized.append("4. BUDGET-FRIENDLY (8 dishes)\n\n");
+        optimized.append("1. BREAKFAST (8 dishes)\n");
+        optimized.append("2. LUNCH (8 dishes)\n");
+        optimized.append("3. DINNER (8 dishes)\n");
+        optimized.append("4. SNACKS (8 dishes)\n\n");
         
         optimized.append("REQUIREMENTS:\n");
         optimized.append("- Each dish: food_name, calories (150-800), protein_g (5-40), fat_g (2-30), carbs_g (10-100)\n");
@@ -85,7 +85,7 @@ public class OptimizedGeminiService {
         optimized.append("- description: 1-2 sentences\n\n");
         
         optimized.append("Return ONLY valid JSON:\n");
-        optimized.append("{\"traditional\":[{\"food_name\":\"Name\",\"calories\":300,\"protein_g\":20,\"fat_g\":10,\"carbs_g\":25,\"serving_size\":\"1 serving\",\"diet_type\":\"Traditional Filipino\",\"description\":\"Description\"},...],\"healthy\":[...],\"international\":[...],\"budget\":[...]}");
+        optimized.append("{\"breakfast\":[{\"food_name\":\"Name\",\"calories\":300,\"protein_g\":20,\"fat_g\":10,\"carbs_g\":25,\"serving_size\":\"1 serving\",\"diet_type\":\"Breakfast\",\"description\":\"Description\"},...],\"lunch\":[...],\"dinner\":[...],\"snacks\":[...]}");
         
         return optimized.toString();
     }
@@ -235,10 +235,10 @@ public class OptimizedGeminiService {
                         JSONObject mainFoodsJson = new JSONObject(jsonObjectString);
                         
                         // Parse each category
-                        result.put("traditional", parseFoodArray(mainFoodsJson.optJSONArray("traditional")));
-                        result.put("healthy", parseFoodArray(mainFoodsJson.optJSONArray("healthy")));
-                        result.put("international", parseFoodArray(mainFoodsJson.optJSONArray("international")));
-                        result.put("budget", parseFoodArray(mainFoodsJson.optJSONArray("budget")));
+                        result.put("breakfast", parseFoodArray(mainFoodsJson.optJSONArray("breakfast")));
+                        result.put("lunch", parseFoodArray(mainFoodsJson.optJSONArray("lunch")));
+                        result.put("dinner", parseFoodArray(mainFoodsJson.optJSONArray("dinner")));
+                        result.put("snacks", parseFoodArray(mainFoodsJson.optJSONArray("snacks")));
                         
                         Log.d(TAG, "Successfully parsed Gemini response: " + result.size() + " categories");
                         return result;

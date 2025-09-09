@@ -42,6 +42,13 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
         Log.d(TAG, "setLoading called with: " + loading);
     }
     
+    public void updateFoods(List<FoodRecommendation> newFoods) {
+        this.foods = newFoods;
+        this.isLoading = false;
+        notifyDataSetChanged();
+        Log.d(TAG, "updateFoods called with " + (newFoods != null ? newFoods.size() : 0) + " foods");
+    }
+    
     public boolean isLoading() {
         return isLoading;
     }
@@ -68,6 +75,11 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
         if (holder.viewType == VIEW_TYPE_LOADING) {
             // Loading state - no binding needed
             Log.d(TAG, "Binding loading card at position " + position);
+            return;
+        }
+        
+        if (foods == null || foods.isEmpty()) {
+            Log.w(TAG, "Foods list is null or empty, cannot bind at position " + position);
             return;
         }
         
@@ -106,8 +118,10 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
     @Override
     public int getItemCount() {
         if (isLoading) {
+            Log.d(TAG, "getItemCount: Loading state, returning 4");
             return 4; // Show 4 loading cards
         }
+        Log.d(TAG, "getItemCount: Not loading, foods size: " + foods.size());
         return foods.size();
     }
 

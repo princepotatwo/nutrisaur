@@ -138,13 +138,20 @@ public class FoodSubstitutionManager {
         prompt.append("Calories: ").append(originalFood.getCalories()).append(" kcal\n");
         prompt.append("Protein: ").append(originalFood.getProtein()).append("g | Fat: ").append(originalFood.getFat()).append("g | Carbs: ").append(originalFood.getCarbs()).append("g\n\n");
         
-        prompt.append("NUTRITIONIST REQUIREMENTS - Find alternatives that are:\n");
-        prompt.append("1. LOWER in calories, sodium, and saturated fat\n");
-        prompt.append("2. HIGHER in protein, fiber, vitamins, and minerals\n");
-        prompt.append("3. Use leaner proteins (fish, chicken breast, tofu, legumes)\n");
-        prompt.append("4. Add more vegetables and whole grains\n");
-        prompt.append("5. Reduce processed ingredients and oil\n");
-        prompt.append("6. Maintain similar cooking method but healthier preparation\n\n");
+        prompt.append("NUTRITIONIST REQUIREMENTS - For each substitution, provide 3 alternatives using this approach:\n");
+        prompt.append("1. HEALTHIER VERSION: Find a healthier alternative with similar ingredients but better nutritional profile\n");
+        prompt.append("   - Use leaner proteins (fish, chicken breast, tofu, legumes)\n");
+        prompt.append("   - Add more vegetables and whole grains\n");
+        prompt.append("   - Reduce processed ingredients, sodium, and unhealthy fats\n");
+        prompt.append("   - Maintain similar cooking method but with healthier preparation\n\n");
+        prompt.append("2. NUTRITIONAL EQUIVALENT: Find a different dish with similar nutritional content\n");
+        prompt.append("   - Match calories, protein, fat, and carbohydrate content\n");
+        prompt.append("   - Use different ingredients but maintain nutritional balance\n");
+        prompt.append("   - Ensure similar energy density and satiety\n\n");
+        prompt.append("3. TASTE SIMILAR: Find a dish with similar taste profile and flavor characteristics\n");
+        prompt.append("   - Match the dominant flavors (sweet, savory, sour, spicy)\n");
+        prompt.append("   - Use similar cooking techniques and seasonings\n");
+        prompt.append("   - Provide familiar taste experience with better nutrition\n\n");
         
         prompt.append("HEALTH-FOCUSED SUBSTITUTIONS:\n");
         prompt.append("- If original is 'Adobo Manok' → 'Adobong Tofu with Vegetables', 'Adobong Sitaw', 'Adobong Kangkong'\n");

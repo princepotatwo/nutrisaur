@@ -1,41 +1,29 @@
 <?php
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+/**
+ * Auto Register FCM Token
+ * Simplified version that uses community_users table
+ */
 
-// Set content type to JSON
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
-
-// Handle preflight OPTIONS request
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
-// Include database configuration
+// Include the config file for database connection functions
 require_once __DIR__ . '/../config.php';
 
 // Function to automatically register/update FCM token
 function autoRegisterFCMToken($conn, $fcmToken, $deviceInfo) {
     try {
-        // Check if token already exists
-        $checkStmt = $conn->prepare("SELECT id FROM fcm_tokens WHERE fcm_token = ?");
+        // Check if token already exists in community_users
+        $checkStmt = $conn->prepare("SELECT community_user_id FROM community_users WHERE fcm_token = ?");
         $checkStmt->execute([$fcmToken]);
         $existingToken = $checkStmt->fetch();
         
         if ($existingToken) {
             // Update existing token with new device info
             $stmt = $conn->prepare("
-                UPDATE fcm_tokens 
-                SET device_name = ?, user_email = ?, updated_at = NOW() 
+                UPDATE community_users 
+                SET fcm_token = ?, updated_at = NOW() 
                 WHERE fcm_token = ?
             ");
             $stmt->execute([
-                $deviceInfo['device_name'] ?? 'Unknown Device',
-                $deviceInfo['user_email'] ?? 'unknown@example.com',
+                $fcmToken,
                 $fcmToken
             ]);
             
@@ -43,44 +31,45 @@ function autoRegisterFCMToken($conn, $fcmToken, $deviceInfo) {
                 'success' => true,
                 'action' => 'updated',
                 'message' => 'FCM token updated successfully',
-                'token_id' => $existingToken['id']
+                'token_id' => $existingToken['community_user_id']
             ];
         } else {
-            // Check if this device already has a token for this user email
+            // Check if user exists by email
             if (!empty($deviceInfo['user_email']) && $deviceInfo['user_email'] !== 'unknown@example.com') {
-                $deviceCheckStmt = $conn->prepare("SELECT id, fcm_token FROM fcm_tokens WHERE user_email = ? AND device_name = ?");
-                $deviceCheckStmt->execute([$deviceInfo['user_email'], $deviceInfo['device_name'] ?? 'Unknown Device']);
-                $existingDeviceToken = $deviceCheckStmt->fetch();
+                $userCheckStmt = $conn->prepare("SELECT community_user_id FROM community_users WHERE email = ?");
+                $userCheckStmt->execute([$deviceInfo['user_email']]);
+                $existingUser = $userCheckStmt->fetch();
                 
-                if ($existingDeviceToken) {
-                    // This device already has a token for this user, update it
+                if ($existingUser) {
+                    // Update existing user with FCM token
                     $stmt = $conn->prepare("
-                        UPDATE fcm_tokens 
+                        UPDATE community_users 
                         SET fcm_token = ?, updated_at = NOW() 
-                        WHERE id = ?
+                        WHERE email = ?
                     ");
                     $stmt->execute([
                         $fcmToken,
-                        $existingDeviceToken['id']
+                        $deviceInfo['user_email']
                     ]);
                     
                     return [
                         'success' => true,
-                        'action' => 'updated_device',
-                        'message' => 'FCM token updated for existing device user',
-                        'token_id' => $existingDeviceToken['id']
+                        'action' => 'updated_user',
+                        'message' => 'FCM token added to existing user',
+                        'token_id' => $existingUser['community_user_id']
                     ];
                 }
             }
-            // Insert new token
+            
+            // Insert new user with FCM token (minimal data)
             $stmt = $conn->prepare("
-                INSERT INTO fcm_tokens (fcm_token, device_name, user_email, created_at, updated_at) 
-                VALUES (?, ?, ?, NOW(), NOW())
+                INSERT INTO community_users (email, fcm_token, barangay, screening_date) 
+                VALUES (?, ?, ?, NOW())
             ");
             $stmt->execute([
+                $deviceInfo['user_email'] ?? 'unknown@example.com',
                 $fcmToken,
-                $deviceInfo['device_name'] ?? 'Unknown Device',
-                $deviceInfo['user_email'] ?? 'unknown@example.com'
+                $deviceInfo['user_barangay'] ?? 'Unknown'
             ]);
             
             $tokenId = $conn->lastInsertId();
@@ -93,115 +82,110 @@ function autoRegisterFCMToken($conn, $fcmToken, $deviceInfo) {
             ];
         }
     } catch(PDOException $e) {
-        error_log("Database error in autoRegisterFCMToken: " . $e->getMessage());
+        error_log("Auto register FCM token error: " . $e->getMessage());
         return [
             'success' => false,
-            'error' => 'Database error: ' . $e->getMessage()
+            'message' => 'Database error: ' . $e->getMessage()
         ];
     }
 }
 
-// Handle POST request for token registration
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        // Get JSON input
-        $input = json_decode(file_get_contents('php://input'), true);
+// Main execution
+try {
+    $conn = getDatabaseConnection();
+    
+    if (!$conn) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Database connection failed'
+        ]);
+        exit;
+    }
+    
+    // Handle POST request for token registration
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
         
-        if (!$input) {
-            // Try to get from POST data if JSON fails
-            $input = $_POST;
-        }
-        
-        // Validate required fields
-        if (empty($input['fcm_token'])) {
-            http_response_code(400);
+        if (!$data) {
             echo json_encode([
                 'success' => false,
-                'error' => 'FCM token is required'
+                'message' => 'Invalid JSON data'
             ]);
             exit;
         }
         
-        $fcmToken = trim($input['fcm_token']);
+        $fcmToken = $data['fcm_token'] ?? '';
         $deviceInfo = [
-            'device_name' => $input['device_name'] ?? 'Android Device',
-            'user_email' => $input['user_email'] ?? 'user@nutrisaur.com',
-            'app_version' => $input['app_version'] ?? '1.0.0',
-            'android_version' => $input['android_version'] ?? 'Unknown',
-            'device_model' => $input['device_model'] ?? 'Unknown'
+            'device_name' => $data['device_name'] ?? 'Unknown Device',
+            'user_email' => $data['user_email'] ?? 'unknown@example.com',
+            'user_barangay' => $data['user_barangay'] ?? 'Unknown'
         ];
         
-        // Register/update the token
-        $result = autoRegisterFCMToken($conn, $fcmToken, $deviceInfo);
-        
-        if ($result['success']) {
-            // Log successful registration
-            error_log("FCM token auto-registered: " . $result['action'] . " for device: " . $deviceInfo['device_name']);
-            
-            echo json_encode($result);
-        } else {
-            http_response_code(500);
-            echo json_encode($result);
+        if (empty($fcmToken)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'FCM token is required'
+            ]);
+            exit;
         }
         
-    } catch (Exception $e) {
-        error_log("Error in auto FCM registration: " . $e->getMessage());
-        http_response_code(500);
-        echo json_encode([
-            'success' => false,
-            'error' => 'Server error: ' . $e->getMessage()
-        ]);
-    }
-    
-} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Handle GET request for token status check
-    try {
-        if (isset($_GET['fcm_token'])) {
-            $fcmToken = trim($_GET['fcm_token']);
-            
-            $stmt = $conn->prepare("SELECT * FROM fcm_tokens WHERE fcm_token = ?");
-            $stmt->execute([$fcmToken]);
-            $token = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($token) {
-                echo json_encode([
-                    'success' => true,
-                    'token_exists' => true,
-                    'token_info' => $token
-                ]);
+        $result = autoRegisterFCMToken($conn, $fcmToken, $deviceInfo);
+        echo json_encode($result);
+        
+    } else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        // Handle GET request for token status check
+        try {
+            if (isset($_GET['fcm_token'])) {
+                $fcmToken = trim($_GET['fcm_token']);
+                
+                $stmt = $conn->prepare("SELECT * FROM community_users WHERE fcm_token = ?");
+                $stmt->execute([$fcmToken]);
+                $token = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($token) {
+                    echo json_encode([
+                        'success' => true,
+                        'token_exists' => true,
+                        'user_email' => $token['email'],
+                        'barangay' => $token['barangay'],
+                        'created_at' => $token['screening_date']
+                    ]);
+                } else {
+                    echo json_encode([
+                        'success' => true,
+                        'token_exists' => false,
+                        'message' => 'Token not found'
+                    ]);
+                }
             } else {
+                // Return token count
+                $stmt = $conn->query("SELECT COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
                 echo json_encode([
                     'success' => true,
-                    'token_exists' => false,
-                    'message' => 'Token not found'
+                    'total_tokens' => $result['count'],
+                    'message' => 'FCM token statistics'
                 ]);
             }
-        } else {
-            // Return token count
-            $stmt = $conn->query("SELECT COUNT(*) as count FROM fcm_tokens");
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+        } catch(PDOException $e) {
             echo json_encode([
-                'success' => true,
-                'total_tokens' => $result['count'],
-                'message' => 'FCM token status check'
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage()
             ]);
         }
-        
-    } catch (Exception $e) {
-        error_log("Error checking FCM token status: " . $e->getMessage());
-        http_response_code(500);
+    } else {
         echo json_encode([
             'success' => false,
-            'error' => 'Server error: ' . $e->getMessage()
+            'message' => 'Method not allowed'
         ]);
     }
     
-} else {
-    http_response_code(405);
+} catch(Exception $e) {
     echo json_encode([
         'success' => false,
-        'error' => 'Method not allowed. Use POST to register tokens or GET to check status.'
+        'message' => 'Server error: ' . $e->getMessage()
     ]);
 }
 ?>

@@ -59,7 +59,8 @@
             
         <activity
             android:name=".FoodActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Nutrisaur11">
         </activity>
 
         <activity
@@ -68,10 +69,12 @@
 
         <activity
             android:name=".AccountActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.Nutrisaur11" />
         <activity
             android:name=".FavoritesActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.Nutrisaur11" />
             
         <activity
             android:name=".EventsActivity"

@@ -110,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
                 pageSubtitle.setText("Your nutrition health overview");
             }
             
+            // Update welcome greeting with user name
+            updateWelcomeGreeting();
+            
             // Setup UI components
             setupNavigation();
             // Initialize RecyclerView for events
@@ -126,10 +129,6 @@ public class MainActivity extends AppCompatActivity {
             }
             
             dashboardEventAdapter = new EventAdapter(dashboardEvents, new EventAdapter.OnEventClickListener() {
-                @Override
-                public void onJoinEvent(Event event, int position) {
-                    joinEvent(event, position);
-                }
                 @Override
                 public void onEventClick(Event event) {
                     // Optionally show event details from dashboard
@@ -368,6 +367,9 @@ public class MainActivity extends AppCompatActivity {
         
         // Setup events functionality
         setupEvents();
+        
+        // Setup new action buttons
+        setupActionButtons();
         
         // FCM token registration is now handled by FCMTokenManager with optimization
         // No need to call registerFCMTokenOnStartup() here
@@ -783,105 +785,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     
-    // Update joinEvent to support unjoin
-    private void joinEvent(Event event, int position) {
-        String userEmail = getCurrentUserEmail();
-        if (userEmail == null) {
-            android.widget.Toast.makeText(this, "User not logged in", android.widget.Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
-        android.util.Log.d("MainActivity", "Joining/unjoining event: " + event.getTitle() + " (ID: " + event.getProgramId() + ")");
-        
-        new Thread(() -> {
-            try {
-                org.json.JSONObject requestData = new org.json.JSONObject();
-                if (event.isJoined()) {
-                    // Unjoin
-                    requestData.put("action", "leave_event");
-                    android.util.Log.d("MainActivity", "Leaving event");
-                } else {
-                    // Join
-                    requestData.put("action", "join_event");
-                    android.util.Log.d("MainActivity", "Joining event");
-                }
-                requestData.put("program_id", event.getProgramId());
-                requestData.put("user_email", userEmail);
-                
-                android.util.Log.d("MainActivity", "Sending request to: " + Constants.UNIFIED_API_URL);
-                android.util.Log.d("MainActivity", "Request data: " + requestData.toString());
-                
-                java.net.URL url = new java.net.URL(Constants.UNIFIED_API_URL);
-                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setDoOutput(true);
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(10000);
-                
-                java.io.OutputStream os = conn.getOutputStream();
-                os.write(requestData.toString().getBytes("UTF-8"));
-                os.close();
-                
-                int responseCode = conn.getResponseCode();
-                android.util.Log.d("MainActivity", "Event API response code: " + responseCode);
-                
-                if (responseCode == 200) {
-                    java.io.BufferedReader reader = new java.io.BufferedReader(
-                        new java.io.InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-                    
-                    android.util.Log.d("MainActivity", "Event API response: " + response.toString());
-                    
-                    org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
-                    if (jsonResponse.getBoolean("success")) {
-                        runOnUiThread(() -> {
-                            event.setJoined(!event.isJoined());
-                            dashboardEventAdapter.notifyItemChanged(position);
-                            
-                            String message = event.isJoined() ? "Joined event: " + event.getTitle() : "Left event: " + event.getTitle();
-                            android.widget.Toast.makeText(MainActivity.this, message, android.widget.Toast.LENGTH_SHORT).show();
-                            
-                            // Schedule reminder when joining an event
-                            if (event.isJoined()) {
-                        
-                            }
-                            
-                            // Refresh dashboard events after successful join/unjoin
-                            refreshDashboardEvents();
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            try {
-                                String errorMessage = jsonResponse.getString("message");
-                                android.widget.Toast.makeText(MainActivity.this, errorMessage, android.widget.Toast.LENGTH_SHORT).show();
-                                android.util.Log.e("MainActivity", "Event API error: " + errorMessage);
-                            } catch (org.json.JSONException e) {
-                                android.widget.Toast.makeText(MainActivity.this, "Error joining/unjoining event", android.widget.Toast.LENGTH_SHORT).show();
-                                android.util.Log.e("MainActivity", "Error parsing API response: " + e.getMessage());
-                            }
-                        });
-                    }
-                } else {
-                    runOnUiThread(() -> {
-                        android.widget.Toast.makeText(MainActivity.this, "Network error: " + responseCode, android.widget.Toast.LENGTH_SHORT).show();
-                        android.util.Log.e("MainActivity", "Event API failed with response code: " + responseCode);
-                    });
-                }
-            } catch (Exception e) {
-                android.util.Log.e("MainActivity", "Error in joinEvent: " + e.getMessage());
-                e.printStackTrace();
-                runOnUiThread(() -> {
-                    android.widget.Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), android.widget.Toast.LENGTH_SHORT).show();
-                });
-            }
-        }).start();
-    }
+    // joinEvent method removed - join buttons are no longer displayed
     
     // Method to refresh dashboard events immediately
     private void refreshDashboardEvents() {
@@ -1520,17 +1424,16 @@ public class MainActivity extends AppCompatActivity {
                 
                 okhttp3.OkHttpClient client = new okhttp3.OkHttpClient();
                 
-                // Use JSON format for community_users API
+                // Use database update format for community_users table
+                org.json.JSONObject data = new org.json.JSONObject();
+                data.put("fcm_token", token);
+                data.put("barangay", userBarangay);
+                
                 org.json.JSONObject requestData = new org.json.JSONObject();
-                requestData.put("action", "register_fcm_token");
-                requestData.put("fcm_token", token);
-                requestData.put("user_email", userEmail);
-                requestData.put("user_barangay", userBarangay);
-                requestData.put("device_name", android.os.Build.MODEL);
-                requestData.put("app_version", "1.0.0");
-                requestData.put("android_version", android.os.Build.VERSION.RELEASE);
-                requestData.put("device_model", android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL);
-                requestData.put("platform", "android");
+                requestData.put("table", "community_users");
+                requestData.put("data", data);
+                requestData.put("where", "email = ?");
+                requestData.put("params", new org.json.JSONArray().put(userEmail));
                 
                 okhttp3.RequestBody body = okhttp3.RequestBody.create(
                     requestData.toString(), 
@@ -1538,7 +1441,7 @@ public class MainActivity extends AppCompatActivity {
                 );
                 
                 okhttp3.Request request = new okhttp3.Request.Builder()
-                    .url(Constants.API_BASE_URL + "api/register_fcm_token.php")
+                    .url(Constants.API_BASE_URL + "api/DatabaseAPI.php?action=update")
                     .post(body)
                     .addHeader("Content-Type", "application/json")
                     .build();
@@ -1623,6 +1526,57 @@ public class MainActivity extends AppCompatActivity {
     // Method to handle navigation to events activity
     private void navigateToEvents() {
         navigateToActivity(EventsActivity.class);
+    }
+    
+    /**
+     * Update welcome greeting with user's name
+     */
+    private void updateWelcomeGreeting() {
+        TextView welcomeGreeting = findViewById(R.id.welcome_greeting);
+        if (welcomeGreeting != null) {
+            String userEmail = getCurrentUserEmail();
+            if (userEmail != null && !userEmail.isEmpty()) {
+                // Extract name from email (part before @)
+                String userName = userEmail.split("@")[0];
+                // Capitalize first letter
+                userName = userName.substring(0, 1).toUpperCase() + userName.substring(1);
+                welcomeGreeting.setText("Hi " + userName + "!");
+            } else {
+                welcomeGreeting.setText("Hi there!");
+            }
+        }
+    }
+    
+    /**
+     * Setup the new action buttons
+     */
+    private void setupActionButtons() {
+        // Find personalized food button
+        androidx.cardview.widget.CardView findFoodButton = findViewById(R.id.find_food_button);
+        if (findFoodButton != null) {
+            findFoodButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Navigate to FoodActivity
+                    Intent intent = new Intent(MainActivity.this, FoodActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    finish();
+                }
+            });
+        }
+        
+        // Take picture button
+        androidx.cardview.widget.CardView takePictureButton = findViewById(R.id.take_picture_button);
+        if (takePictureButton != null) {
+            takePictureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Show image source dialog for health analysis
+                    showImageSourceDialog();
+                }
+            });
+        }
     }
 
 

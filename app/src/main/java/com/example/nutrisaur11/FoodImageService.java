@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.content.res.Resources;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,7 +23,7 @@ public class FoodImageService {
     }
 
     /**
-     * Load food image using local drawable resources
+     * Load food image using local drawable resources with proper scaling
      */
     public void loadFoodImage(String foodName, ImageView imageView, ProgressBar progressBar) {
         if (foodName == null || foodName.trim().isEmpty()) {
@@ -30,10 +31,40 @@ public class FoodImageService {
             return;
         }
         
-        // Load local image based on food name
+        // Load local image based on food name with proper scaling
         int drawableResource = getDrawableResourceForFood(foodName);
-        imageView.setImageResource(drawableResource);
-        Log.d(TAG, "Loaded local image for: " + foodName + " (resource: " + drawableResource + ")");
+        
+        // Load and scale the bitmap properly to prevent OOM
+        executor.execute(() -> {
+            try {
+                Bitmap scaledBitmap = loadScaledBitmap(imageView.getContext().getResources(), drawableResource, imageView);
+                if (scaledBitmap != null) {
+                    imageView.post(() -> {
+                        imageView.setImageBitmap(scaledBitmap);
+                        if (progressBar != null) {
+                            progressBar.setVisibility(android.view.View.GONE);
+                        }
+                    });
+                } else {
+                    // Fallback to setImageResource if scaling fails
+                    imageView.post(() -> {
+                        imageView.setImageResource(drawableResource);
+                        if (progressBar != null) {
+                            progressBar.setVisibility(android.view.View.GONE);
+                        }
+                    });
+                }
+                Log.d(TAG, "Loaded local image for: " + foodName + " (resource: " + drawableResource + ")");
+            } catch (Exception e) {
+                Log.e(TAG, "Error loading image for " + foodName + ": " + e.getMessage());
+                imageView.post(() -> {
+                    imageView.setImageResource(drawableResource);
+                    if (progressBar != null) {
+                        progressBar.setVisibility(android.view.View.GONE);
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -93,6 +124,78 @@ public class FoodImageService {
             // Default image for unmatched foods
             return R.drawable.default_img;
         }
+    }
+    
+    /**
+     * Load and scale bitmap to prevent OOM crashes
+     */
+    private Bitmap loadScaledBitmap(Resources resources, int drawableResource, ImageView imageView) {
+        try {
+            // Get the target size from the ImageView
+            int targetWidth = imageView.getWidth();
+            int targetHeight = imageView.getHeight();
+            
+            // If ImageView doesn't have dimensions yet, use reasonable defaults
+            if (targetWidth <= 0 || targetHeight <= 0) {
+                targetWidth = 300; // Default width
+                targetHeight = 200; // Default height
+            }
+            
+            // First, get the image dimensions without loading the full bitmap
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeResource(resources, drawableResource, options);
+            
+            int imageWidth = options.outWidth;
+            int imageHeight = options.outHeight;
+            
+            // Calculate the sample size to scale down the image
+            int sampleSize = calculateInSampleSize(imageWidth, imageHeight, targetWidth, targetHeight);
+            
+            // Now load the bitmap with the calculated sample size
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = sampleSize;
+            options.inPreferredConfig = Bitmap.Config.RGB_565; // Use less memory
+            options.inDither = false;
+            options.inPurgeable = true;
+            options.inInputShareable = true;
+            
+            Bitmap bitmap = BitmapFactory.decodeResource(resources, drawableResource, options);
+            
+            if (bitmap != null) {
+                Log.d(TAG, "Scaled bitmap: " + bitmap.getWidth() + "x" + bitmap.getHeight() + 
+                      " (sample size: " + sampleSize + ")");
+            }
+            
+            return bitmap;
+        } catch (OutOfMemoryError e) {
+            Log.e(TAG, "OutOfMemoryError loading bitmap: " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading scaled bitmap: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Calculate the sample size for bitmap scaling
+     */
+    private int calculateInSampleSize(int imageWidth, int imageHeight, int targetWidth, int targetHeight) {
+        int sampleSize = 1;
+        
+        if (imageHeight > targetHeight || imageWidth > targetWidth) {
+            final int halfHeight = imageHeight / 2;
+            final int halfWidth = imageWidth / 2;
+            
+            // Calculate the largest sample size that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / sampleSize) >= targetHeight && (halfWidth / sampleSize) >= targetWidth) {
+                sampleSize *= 2;
+            }
+        }
+        
+        // Ensure sample size is at least 1 and not too large
+        return Math.max(1, Math.min(sampleSize, 8));
     }
 
     /**

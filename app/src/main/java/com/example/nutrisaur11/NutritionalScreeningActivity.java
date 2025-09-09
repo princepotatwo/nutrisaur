@@ -20,8 +20,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class NutritionalScreeningActivity extends AppCompatActivity {
@@ -377,7 +379,7 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         optionsContainer.removeAllViews();
         
         // Create buttons for sex options
-        String[] sexOptions = {"Male", "Female", "Other"};
+        String[] sexOptions = {"Male", "Female"};
         
         for (int i = 0; i < sexOptions.length; i++) {
             Button sexButton = createOptionButton(sexOptions[i]);
@@ -747,6 +749,37 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         builder.show();
     }
     
+    /**
+     * Save screening data to SharedPreferences for immediate use
+     */
+    private void saveScreeningDataToPrefs(JSONObject screeningData) {
+        try {
+            android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+            android.content.SharedPreferences.Editor editor = prefs.edit();
+            
+            // Save user login status
+            editor.putString("current_user_email", screeningData.optString("email", ""));
+            editor.putBoolean("is_logged_in", true);
+            
+            // Save screening data
+            editor.putString("user_name", screeningData.optString("name", ""));
+            editor.putString("user_municipality", screeningData.optString("municipality", ""));
+            editor.putString("user_barangay", screeningData.optString("barangay", ""));
+            editor.putString("user_sex", screeningData.optString("sex", ""));
+            editor.putString("user_birthday", screeningData.optString("birthday", ""));
+            editor.putString("user_is_pregnant", screeningData.optString("is_pregnant", ""));
+            editor.putString("user_weight", screeningData.optString("weight", ""));
+            editor.putString("user_height", screeningData.optString("height", ""));
+            editor.putString("user_screening_date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new java.util.Date()));
+            
+            editor.apply();
+            
+            Log.d("NutritionalScreening", "Screening data saved to SharedPreferences successfully");
+        } catch (Exception e) {
+            Log.e("NutritionalScreening", "Error saving screening data to prefs: " + e.getMessage());
+        }
+    }
+    
     private void sendScreeningDataToAPI(JSONObject data) {
         new Thread(() -> {
             try {
@@ -779,6 +812,9 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
                     if (responseJson.getBoolean("success")) {
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Screening data saved successfully!", Toast.LENGTH_LONG).show();
+                            
+                            // Save screening data to SharedPreferences for immediate use
+                            saveScreeningDataToPrefs(data);
                             
                             // Register FCM token after successful screening
                             registerFCMTokenAfterScreening();

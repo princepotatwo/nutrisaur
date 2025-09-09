@@ -704,7 +704,7 @@
 
                         <!-- Horizontal Scrollable Content -->
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/traditional_recycler"
+                            android:id="@+id/breakfast_recycler"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -744,7 +744,7 @@
 
                         <!-- Horizontal Scrollable Content -->
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/healthy_recycler"
+                            android:id="@+id/lunch_recycler"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -784,7 +784,7 @@
 
                         <!-- Horizontal Scrollable Content -->
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/international_recycler"
+                            android:id="@+id/dinner_recycler"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
@@ -824,7 +824,7 @@
 
                         <!-- Horizontal Scrollable Content -->
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/budget_recycler"
+                            android:id="@+id/snack_recycler"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"

@@ -48,7 +48,7 @@
                 android:orientation="vertical"
                 android:padding="24dp">
 
-            <!-- Subtitle Card at the top -->
+            <!-- Welcome Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -65,10 +65,11 @@
                     android:gravity="center">
 
                     <TextView
+                        android:id="@+id/welcome_greeting"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Your Nutrition Health Score"
-                        android:textSize="18sp"
+                        android:text="Hi there!"
+                        android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@color/colorPrimary"
                         android:fontFamily="sans-serif-medium"
@@ -78,8 +79,8 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Real-time assessment of your nutritional status and health risk factors"
-                        android:textSize="14sp"
+                        android:text="Welcome to Nutrisaur - your personalized nutrition companion"
+                        android:textSize="16sp"
                         android:textColor="@color/text_secondary"
                         android:fontFamily="sans-serif"
                         android:gravity="center"
@@ -89,102 +90,77 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Main Dashboard Card -->
+            <!-- Upcoming Events Section -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
                 app:cardBackgroundColor="@color/card_background"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="32dp">
+                android:layout_marginBottom="24dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="32dp">
+                    android:padding="20dp">
 
-                    <!-- Malnutrition Risk Ring -->
-                    <com.example.nutrisaur11.AnimatedRingView
-                        android:id="@+id/animated_ring_view"
-                        android:layout_width="240dp"
-                        android:layout_height="240dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="24dp" />
-
-                    <!-- Legend -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_horizontal"
-                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_vertical"
                         android:layout_marginBottom="16dp">
-                        
-                        <LinearLayout
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Upcoming Events"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="#1A1A1A"
+                            android:fontFamily="sans-serif-medium" />
+
+                        <Button
+                            android:id="@+id/see_more_events"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:paddingEnd="20dp">
-                            <View 
-                                android:layout_width="12dp" 
-                                android:layout_height="12dp" 
-                                android:background="#10B981" 
-                                android:layout_marginEnd="8dp" 
-                                android:backgroundTint="#10B981" />
-                            <TextView 
-                                android:layout_width="wrap_content" 
-                                android:layout_height="wrap_content" 
-                                android:text="Low Risk" 
-                                android:textSize="13sp" 
-                                android:textColor="#374151" 
-                                android:fontFamily="sans-serif-medium" />
-                        </LinearLayout>
-                        
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:paddingEnd="20dp">
-                            <View 
-                                android:layout_width="12dp" 
-                                android:layout_height="12dp" 
-                                android:background="#F59E0B" 
-                                android:layout_marginEnd="8dp" 
-                                android:backgroundTint="#F59E0B" />
-                            <TextView 
-                                android:layout_width="wrap_content" 
-                                android:layout_height="wrap_content" 
-                                android:text="Moderate" 
-                                android:textSize="13sp" 
-                                android:textColor="#374151" 
-                                android:fontFamily="sans-serif-medium" />
-                        </LinearLayout>
-                        
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-                            <View 
-                                android:layout_width="12dp" 
-                                android:layout_height="12dp" 
-                                android:background="#EF4444" 
-                                android:layout_marginEnd="8dp" 
-                                android:backgroundTint="#EF4444" />
-                            <TextView 
-                                android:layout_width="wrap_content" 
-                                android:layout_height="wrap_content" 
-                                android:text="High Risk" 
-                                android:textSize="13sp" 
-                                android:textColor="#374151" 
-                                android:fontFamily="sans-serif-medium" />
-                        </LinearLayout>
+                            android:text="See More"
+                            android:textSize="14sp"
+                            android:textColor="#10B981"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true" />
+
                     </LinearLayout>
+
+                    <!-- Events RecyclerView -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/events_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false" />
+
+                    <!-- Loading indicator -->
+                    <ProgressBar
+                        android:id="@+id/events_loading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone" />
+
+                    <!-- No events message -->
+                    <TextView
+                        android:id="@+id/no_events_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No upcoming events found"
+                        android:textSize="16sp"
+                        android:textColor="#6B7280"
+                        android:gravity="center"
+                        android:padding="20dp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -287,138 +263,139 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Upcoming Events Section -->
-            <androidx.cardview.widget.CardView
+            <!-- Action Buttons Section -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background"
-                android:layout_marginBottom="32dp">
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
 
-                <LinearLayout
+                <!-- Find Personalized Food Button -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/find_food_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@color/green_band">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
 
-                        <TextView
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_plate_simple"
+                            android:tint="@color/white"
+                            android:layout_marginEnd="16dp" />
+
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Upcoming Events"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="#1A1A1A"
-                            android:fontFamily="sans-serif-medium" />
+                            android:orientation="vertical">
 
-                        <Button
-                            android:id="@+id/see_more_events"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="See More"
-                            android:textSize="14sp"
-                            android:textColor="#10B981"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:clickable="true"
-                            android:focusable="true" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Find the food we personalize for you"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:fontFamily="sans-serif-medium" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Get AI-powered food recommendations tailored to your health"
+                                android:textSize="14sp"
+                                android:textColor="@color/white"
+                                android:alpha="0.9"
+                                android:layout_marginTop="4dp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="→"
+                            android:textSize="20sp"
+                            android:textColor="@color/white"
+                            android:gravity="center"
+                            android:alpha="0.8" />
 
                     </LinearLayout>
 
-                    <!-- Events RecyclerView -->
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/events_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false" />
+                </androidx.cardview.widget.CardView>
 
-                    <!-- Loading indicator -->
-                    <ProgressBar
-                        android:id="@+id/events_loading"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:visibility="gone" />
-
-                    <!-- No events message -->
-                    <TextView
-                        android:id="@+id/no_events_message"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="No upcoming events found"
-                        android:textSize="16sp"
-                        android:textColor="#6B7280"
-                        android:gravity="center"
-                        android:padding="20dp"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Malnutrition Detection Section -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/card_background">
-
-                <LinearLayout
+                <!-- Take Picture Button -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/take_picture_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="24dp"
-                    android:gravity="center">
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@color/primary_color">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="AI Nutrition Assistant"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="#1A1A1A"
-                        android:fontFamily="sans-serif-medium"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Enhance your food recommendations with AI body analysis or customize preferences. System learns from your choices."
-                        android:textSize="14sp"
-                        android:textColor="#6B7280"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center"
-                        android:lineSpacingExtra="2dp"
-                        android:layout_marginBottom="20dp" />
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
 
-                    <TextView
-                        android:id="@+id/camera_button"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:text="📸"
-                        android:textSize="48sp"
-                        android:gravity="center"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_marginBottom="16dp"
-                        android:contentDescription="Take Photo for Malnutrition Detection" />
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_camera"
+                            android:tint="@color/white"
+                            android:layout_marginEnd="16dp" />
 
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Take picture and check if you have malnutrition signs"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:fontFamily="sans-serif-medium" />
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="AI-powered health analysis from your photos"
+                                android:textSize="14sp"
+                                android:textColor="@color/white"
+                                android:alpha="0.9"
+                                android:layout_marginTop="4dp" />
 
+                        </LinearLayout>
 
-                </LinearLayout>
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="→"
+                            android:textSize="20sp"
+                            android:textColor="@color/white"
+                            android:gravity="center"
+                            android:alpha="0.8" />
 
-            </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
 
             </LinearLayout> <!-- Close main content -->
 
@@ -497,4 +474,4 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout> 
+</androidx.constraintlayout.widget.ConstraintLayout>

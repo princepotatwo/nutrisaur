@@ -178,11 +178,7 @@ public class EventsActivity extends AppCompatActivity implements EventAdapter.On
         }
     }
     
-    @Override
-    public void onJoinEvent(Event event, int position) {
-        // Join event via API
-        joinEvent(event, position);
-    }
+    // onJoinEvent method removed - join buttons are no longer displayed
     
     @Override
     public void onEventClick(Event event) {
@@ -269,12 +265,7 @@ public class EventsActivity extends AppCompatActivity implements EventAdapter.On
         builder.setMessage(details);
         builder.setPositiveButton("Close", null);
         
-        if (!event.isJoined()) {
-            builder.setNegativeButton("Join Event", (dialog, which) -> {
-                onJoinEvent(event, events.indexOf(event));
-            });
-        }
-        
+        // Join functionality removed - events are display-only
         builder.show();
     }
 } 

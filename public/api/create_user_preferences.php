@@ -87,7 +87,7 @@ try {
     }
     
     // Check FCM tokens and user preferences
-    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM fcm_tokens WHERE is_active = TRUE");
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
     $stmt->execute();
     $fcmCount = $stmt->fetchColumn();
     

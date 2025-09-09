@@ -122,10 +122,13 @@ public class CommunityUserManager {
     }
     
     /**
-     * Get current user data
+     * Get current user data from SharedPreferences (legacy method)
      */
     public Map<String, String> getCurrentUserData() {
         Map<String, String> userData = new HashMap<>();
+        
+        Log.d(TAG, "=== GETTING CURRENT USER DATA FROM PREFS ===");
+        Log.d(TAG, "isLoggedIn(): " + isLoggedIn());
         
         if (isLoggedIn()) {
             userData.put("name", prefs.getString("user_name", ""));
@@ -138,8 +141,79 @@ public class CommunityUserManager {
             userData.put("weight", prefs.getString("user_weight", ""));
             userData.put("height", prefs.getString("user_height", ""));
             userData.put("screening_date", prefs.getString("user_screening_date", ""));
+            
+            // DEBUG: Log what data was retrieved
+            Log.d(TAG, "Retrieved user data from prefs:");
+            for (Map.Entry<String, String> entry : userData.entrySet()) {
+                Log.d(TAG, "  " + entry.getKey() + ": " + entry.getValue());
+            }
+        } else {
+            Log.d(TAG, "User not logged in, returning empty data");
         }
         
+        Log.d(TAG, "=== END GETTING USER DATA FROM PREFS ===");
+        return userData;
+    }
+    
+    /**
+     * Get current user data directly from database
+     */
+    public Map<String, String> getCurrentUserDataFromDatabase() {
+        Map<String, String> userData = new HashMap<>();
+        
+        Log.d(TAG, "=== GETTING CURRENT USER DATA FROM DATABASE ===");
+        
+        if (!isLoggedIn()) {
+            Log.d(TAG, "User not logged in, returning empty data");
+            return userData;
+        }
+        
+        String email = getCurrentUserEmail();
+        if (email == null || email.isEmpty()) {
+            Log.d(TAG, "No email found, returning empty data");
+            return userData;
+        }
+        
+        try {
+            // Make API request to get user data from database
+            JSONObject requestData = new JSONObject();
+            requestData.put("email", email);
+            
+            String response = makeApiRequest("get_community_user_data", requestData);
+            JSONObject jsonResponse = new JSONObject(response);
+            
+            if (jsonResponse.getBoolean("success")) {
+                JSONObject user = jsonResponse.getJSONObject("user");
+                
+                // Map database fields to our expected format
+                userData.put("name", user.optString("name", ""));
+                userData.put("email", user.optString("email", email));
+                userData.put("municipality", user.optString("municipality", ""));
+                userData.put("barangay", user.optString("barangay", ""));
+                userData.put("sex", user.optString("sex", ""));
+                userData.put("birthday", user.optString("birthday", ""));
+                userData.put("is_pregnant", user.optString("is_pregnant", ""));
+                userData.put("weight", user.optString("weight_kg", ""));
+                userData.put("height", user.optString("height_cm", ""));
+                userData.put("screening_date", user.optString("screening_date", ""));
+                userData.put("age", user.optString("age", ""));
+                userData.put("bmi", user.optString("bmi", ""));
+                userData.put("muac", user.optString("muac_cm", ""));
+                
+                // DEBUG: Log what data was retrieved from database
+                Log.d(TAG, "Retrieved user data from database:");
+                for (Map.Entry<String, String> entry : userData.entrySet()) {
+                    Log.d(TAG, "  " + entry.getKey() + ": " + entry.getValue());
+                }
+            } else {
+                Log.e(TAG, "Failed to get user data from database: " + jsonResponse.optString("message", "Unknown error"));
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting user data from database: " + e.getMessage());
+        }
+        
+        Log.d(TAG, "=== END GETTING USER DATA FROM DATABASE ===");
         return userData;
     }
     

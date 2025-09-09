@@ -23,24 +23,22 @@ try {
     $tokenStats = [];
     
     // Total tokens
-    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM fcm_tokens");
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
     $stmt->execute();
     $tokenStats['total_tokens'] = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
     
     // Active tokens
-    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM fcm_tokens WHERE is_active = TRUE");
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' AND status = 'active'");
     $stmt->execute();
     $tokenStats['active_tokens'] = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
     
     // Tokens with location info
-    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM fcm_tokens WHERE user_barangay IS NOT NULL AND user_barangay != ''");
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' AND barangay IS NOT NULL AND barangay != ''");
     $stmt->execute();
     $tokenStats['tokens_with_location'] = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
     
-    // Tokens by platform
-    $stmt = $conn->prepare("SELECT platform, COUNT(*) as count FROM fcm_tokens GROUP BY platform");
-    $stmt->execute();
-    $tokenStats['tokens_by_platform'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Tokens by platform (not available in community_users, set to empty)
+    $tokenStats['tokens_by_platform'] = [];
     
     // Get notification statistics
     $notificationStats = [];

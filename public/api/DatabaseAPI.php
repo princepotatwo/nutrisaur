@@ -10,6 +10,215 @@
  * 4. Railway-optimized connection handling
  */
 
+// FCM Notification Sending Function
+function sendFCMNotification($fcmToken, $title, $body) {
+    try {
+        // Firebase Server Key (you should use Firebase Admin SDK in production)
+        $serverKey = 'AAAAm8qJh5E:APA91bHGxsIiGsI7MF9C5-tHr2Q7a07TKvj2DaAVl6G9jpTH4hrFMRHswYAaIuPLpcU7vGxYQF9aMpap6-_J0I43oK07fpk4D13jU5Uj1WUza8rzuoRbx6U';
+        
+        $url = 'https://fcm.googleapis.com/fcm/send';
+        
+        $notification = [
+            'title' => $title,
+            'body' => $body,
+            'sound' => 'default',
+            'badge' => 1
+        ];
+        
+        $data = [
+            'title' => $title,
+            'body' => $body,
+            'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
+        ];
+        
+        $fields = [
+            'to' => $fcmToken,
+            'notification' => $notification,
+            'data' => $data,
+            'priority' => 'high'
+        ];
+        
+        $headers = [
+            'Authorization: key=' . $serverKey,
+            'Content-Type: application/json'
+        ];
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode == 200) {
+            $response = json_decode($result, true);
+            if (isset($response['success']) && $response['success'] == 1) {
+                return ['success' => true, 'response' => $result];
+            } else {
+                return ['success' => false, 'error' => $result];
+            }
+        } else {
+            return ['success' => false, 'error' => "HTTP $httpCode: $result"];
+        }
+        
+    } catch (Exception $e) {
+        return ['success' => false, 'error' => $e->getMessage()];
+    }
+}
+
+// FCM Notification Sending Function using Firebase Admin SDK
+function sendFCMNotificationToToken($fcmToken, $title, $body) {
+    try {
+        // Firebase Admin SDK Service Account Key
+        $serviceAccountKey = [
+            "type" => "service_account",
+            "project_id" => "nutrisaur-ebf29",
+            "private_key_id" => "1c2fa5d5bbf9ac2a6c0284101b5d1d256be9eafe",
+            "private_key" => "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCbGuEbYIOTu6k8\naAkyfD1wS5wqsMoz/HoCP2yTA2cWVOzTTlWminXfzA4PxSKbU4NNATOzDm4C1Grt\nwIrYndO23PQnsSyMTk26eZoBU3Hu4yerDZBgPlNq5YmjzZO/VPkzWZRuf258TcNO\neS/bD81tc9KFshaVPEfBDDwlgvQMfPL5Gf93UurAAyOSwDT5a0QgpFdu95d4p/cV\nnPHD4QZUmUn8QaemTO8mez1m820nTxB17SXcdAG0++0n/dm6Ob1YBAt5Ey1mpHP5\nItKb7Ysh78OVcbO9pdMahwdrp7wJ9sEmFgojgp8uaR9ewjicxF5MmJVpfOzx7Qfb\nnQTtenDpAgMBAAECggEAAyKYdHHpE7/iOSV0zIkkjsc6EvmiCxbD4PuNaZO5VJy6\nPfOVf9L8Dffob6fEis8Co1HuZksMEzeRXIvpr1ye7msDh/5Cg1vqO0yaipzre4oq\nf5nvFkFV21FkP/Dd8MSgouNhJv8Hz/02AOyQxV585wT4nbMBvNnlxpoSNZBMXlvS\nIUoKKifJywnLR0w7uxAFdMH6PN9oPY4FzjEH/xddc4/vzvFfKrgcHji9E/e5+BEU\nVV56Z8KqmVdc+Njngzljfe7SSJmNMTs8FtoAu3b+9HHljS6DI3+l6xzz461UX7LW\nseQtBOFAWFxXh4svZ3Hf0bVnJyqlj9nxbcOE0MLX+QKBgQDVO+JtBiqiwWPl3II2\nU/l+ynH29eVpriNLaj2DJeSrnmUp1/s9M5HOrg07P5AQIiAJS/yAS21OjbnOYT22\n7lCENPlHYEXMz7Fs6/9+lxRGh/X3tLcyJQkvVtEi7v1Tixw3IEqGzS/x7LUIci//\nxiRwX/Xq3acxGmULoWVaQy/H5QKBgQC6NngCzJzrF/Wyze63r2f4KnUgcGeX6ah8\n3HiJqv+/UCZfKjYzPO8ueZ3vT4aMHe4Jm9cQspR/Az5ZaCOmFgDazofauPZPODtM\nrrKWqIH96+x2dwbu5aAEsAEk5FJuK/JKfsGxoSLhgm0DfF3ca3iXI3TfgML7nX8y\nOHMdYg/stQKBgAUvsbApKDxRK9bZaCleHYFh9yekj3HklGMvMFPSRh+OeLNt12SD\nrpYyUYwRXbWmvtS7Dmcobn4soEpOvyuF3Ft61l1QECKNIqmdi9dOYWXdxLPDp3kG\nwZRvLiMFYQ/5IDSPCoEA2JuvwC92Z4h3D0fUbazKu1hMZgzEXiy12aGpAoGAIU2m\njxGbKuyhE7aC8DUdyiOFySRxUpkGejZQFIcRsFycUD7TbLyEJnK3zVoSvTKJJQzL\nHQBjUIf6+bCHV6ftxTRU1chovOhYqrE/3XQLs6cjJljJU6abxNrZiYiQOYYAklQz\nPhqMi3pxFsOCYe6Spa1AtMxpkuirHAc+h03HfVUCgYEAk1q6ay6UCpdnWYNd9tT3\ndX4KWNaOC02cTIUKBNYiwtsUf4x4e+OL4Ol1N+gwSN3tyU0tZD89lfBVdmrq50EU\nKl4pUrzlIaLS3Z5EumgFA/4ptyzAXOFLtyrpjVFHjk+Rxt51TpMi4VuMHFZ4m3WW\nAhYxFogqCIeG0/J/9Q4sWpg=\n-----END PRIVATE KEY-----\n",
+            "client_email" => "firebase-adminsdk-fbsvc@nutrisaur-ebf29.iam.gserviceaccount.com",
+            "client_id" => "107962791067736498847",
+            "auth_uri" => "https://accounts.google.com/o/oauth2/auth",
+            "token_uri" => "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url" => "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url" => "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40nutrisaur-ebf29.iam.gserviceaccount.com",
+            "universe_domain" => "googleapis.com"
+        ];
+        
+        // Get access token using service account
+        $accessToken = getFirebaseAccessToken($serviceAccountKey);
+        if (!$accessToken) {
+            return ['success' => false, 'error' => 'Failed to get access token'];
+        }
+        
+        $url = 'https://fcm.googleapis.com/v1/projects/nutrisaur-ebf29/messages:send';
+        
+        $message = [
+            'message' => [
+                'token' => $fcmToken,
+                'notification' => [
+                    'title' => $title,
+                    'body' => $body
+                ],
+                'data' => [
+                    'title' => $title,
+                    'body' => $body,
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
+                ],
+                'android' => [
+                    'notification' => [
+                        'sound' => 'default',
+                        'notification_priority' => 'PRIORITY_HIGH'
+                    ]
+                ],
+                'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'sound' => 'default',
+                            'badge' => 1
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        
+        $headers = [
+            'Authorization: Bearer ' . $accessToken,
+            'Content-Type: application/json'
+        ];
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($message));
+        
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode == 200) {
+            return ['success' => true, 'response' => $result];
+        } else {
+            return ['success' => false, 'error' => "HTTP $httpCode: $result"];
+        }
+        
+    } catch (Exception $e) {
+        return ['success' => false, 'error' => $e->getMessage()];
+    }
+}
+
+// Helper function to get Firebase access token
+function getFirebaseAccessToken($serviceAccountKey) {
+    try {
+        // Create JWT token
+        $jwt = createJWT($serviceAccountKey);
+        
+        // Exchange JWT for access token
+        $tokenUrl = $serviceAccountKey['token_uri'];
+        $tokenData = [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $jwt
+        ];
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $tokenUrl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($tokenData));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode == 200) {
+            $response = json_decode($result, true);
+            return $response['access_token'] ?? null;
+        }
+        
+        return null;
+    } catch (Exception $e) {
+        error_log("Error getting Firebase access token: " . $e->getMessage());
+        return null;
+    }
+}
+
+// Helper function to create JWT token
+function createJWT($serviceAccountKey) {
+    try {
+        $header = json_encode(['typ' => 'JWT', 'alg' => 'RS256']);
+        $now = time();
+        $payload = json_encode([
+            'iss' => $serviceAccountKey['client_email'],
+            'sub' => $serviceAccountKey['client_email'],
+            'aud' => $serviceAccountKey['token_uri'],
+            'iat' => $now,
+            'exp' => $now + 3600,
+            'scope' => 'https://www.googleapis.com/auth/firebase.messaging'
+        ]);
+        
+        $base64Header = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+        $base64Payload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+        
+        $signature = '';
+        $privateKey = $serviceAccountKey['private_key'];
+        openssl_sign($base64Header . '.' . $base64Payload, $signature, $privateKey, 'SHA256');
+        $base64Signature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+        
+        return $base64Header . '.' . $base64Payload . '.' . $base64Signature;
+    } catch (Exception $e) {
+        error_log("Error creating JWT: " . $e->getMessage());
+        return null;
+    }
+}
+
 // Include the config file for database connection functions
 require_once __DIR__ . "/../../config.php";
 
@@ -529,40 +738,51 @@ class DatabaseAPI {
      */
     public function registerFCMToken($fcmToken, $deviceName, $userEmail, $userBarangay, $appVersion, $platform) {
         try {
-            // Check if token already exists
-            $stmt = $this->pdo->prepare("SELECT id FROM fcm_tokens WHERE fcm_token = :fcm_token");
-            $stmt->bindParam(':fcm_token', $fcmToken);
-            $stmt->execute();
+            // Debug logging
+            error_log("FCM_DEBUG: Starting FCM token registration");
+            error_log("FCM_DEBUG: FCM Token: " . $fcmToken);
+            error_log("FCM_DEBUG: User Email: " . $userEmail);
+            error_log("FCM_DEBUG: User Barangay: " . $userBarangay);
+            error_log("FCM_DEBUG: Device Name: " . $deviceName);
+            error_log("FCM_DEBUG: App Version: " . $appVersion);
+            error_log("FCM_DEBUG: Platform: " . $platform);
             
-            if ($stmt->rowCount() > 0) {
-                // Update existing token
-                $stmt = $this->pdo->prepare("UPDATE fcm_tokens SET 
-                    device_name = :device_name,
-                    user_email = :user_email,
-                    user_barangay = :user_barangay,
-                    app_version = :app_version,
-                    platform = :platform,
-                    is_active = 1,
+            // Check if user exists in community_users table
+            $stmt = $this->pdo->prepare("SELECT community_user_id FROM community_users WHERE email = :email");
+            $stmt->bindParam(':email', $userEmail);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            error_log("FCM_DEBUG: User exists check - Found: " . ($user ? 'YES' : 'NO'));
+            if ($user) {
+                error_log("FCM_DEBUG: User ID found: " . $user['community_user_id']);
+            }
+            
+            if ($user) {
+                // Update existing user with FCM token
+                error_log("FCM_DEBUG: Updating existing user with FCM token");
+                $stmt = $this->pdo->prepare("UPDATE community_users SET 
+                    fcm_token = :fcm_token,
                     updated_at = CURRENT_TIMESTAMP
-                    WHERE fcm_token = :fcm_token");
+                    WHERE email = :email");
             } else {
-                // Insert new token
-                $stmt = $this->pdo->prepare("INSERT INTO fcm_tokens 
-                    (fcm_token, device_name, user_email, user_barangay, app_version, platform) 
-                    VALUES (:fcm_token, :device_name, :user_email, :user_barangay, :app_version, :platform)");
+                // Insert new user with FCM token (minimal data)
+                error_log("FCM_DEBUG: Creating new user with FCM token");
+                $stmt = $this->pdo->prepare("INSERT INTO community_users 
+                    (email, fcm_token, barangay, screening_date) 
+                    VALUES (:email, :fcm_token, :user_barangay, CURRENT_TIMESTAMP)");
             }
             
             $stmt->bindParam(':fcm_token', $fcmToken);
-            $stmt->bindParam(':device_name', $deviceName);
-            $stmt->bindParam(':user_email', $userEmail);
             $stmt->bindParam(':user_barangay', $userBarangay);
-            $stmt->bindParam(':app_version', $appVersion);
-            $stmt->bindParam(':platform', $platform);
+            $stmt->bindParam(':email', $userEmail);
             $stmt->execute();
             
+            error_log("FCM_DEBUG: FCM token registration completed successfully");
             return ['success' => true, 'message' => 'FCM token registered successfully'];
             
         } catch (PDOException $e) {
+            error_log("FCM_DEBUG: FCM token registration failed: " . $e->getMessage());
             return ['success' => false, 'message' => 'Failed to register FCM token: ' . $e->getMessage()];
         }
     }
@@ -572,7 +792,7 @@ class DatabaseAPI {
      */
     public function getActiveFCMTokens() {
         try {
-            $stmt = $this->pdo->prepare("SELECT * FROM fcm_tokens WHERE is_active = 1");
+            $stmt = $this->pdo->prepare("SELECT email as user_email, barangay as user_barangay, fcm_token FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -585,7 +805,7 @@ class DatabaseAPI {
      */
     public function getFCMTokensByBarangay($barangay) {
         try {
-            $stmt = $this->pdo->prepare("SELECT * FROM fcm_tokens WHERE user_barangay = :barangay AND is_active = 1");
+            $stmt = $this->pdo->prepare("SELECT email as user_email, barangay as user_barangay, fcm_token FROM community_users WHERE barangay = :barangay AND fcm_token IS NOT NULL AND fcm_token != ''");
             $stmt->bindParam(':barangay', $barangay);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -599,7 +819,7 @@ class DatabaseAPI {
      */
     public function deactivateFCMToken($fcmToken) {
         try {
-            $stmt = $this->pdo->prepare("UPDATE fcm_tokens SET is_active = 0 WHERE fcm_token = :fcm_token");
+            $stmt = $this->pdo->prepare("UPDATE community_users SET fcm_token = NULL WHERE fcm_token = :fcm_token");
             $stmt->bindParam(':fcm_token', $fcmToken);
             $stmt->execute();
             return true;
@@ -618,19 +838,28 @@ class DatabaseAPI {
     public function logNotification($eventId, $fcmToken, $title, $body, $status, $response = null) {
         try {
             $stmt = $this->pdo->prepare("INSERT INTO notification_logs 
-                (event_id, fcm_token, title, body, status, response, sent_at) 
-                VALUES (:event_id, :fcm_token, :title, :body, :status, :response, CURRENT_TIMESTAMP)");
+                (event_id, notification_type, target_type, target_value, tokens_sent, success, error_message) 
+                VALUES (:event_id, :notification_type, :target_type, :target_value, :tokens_sent, :success, :error_message)");
+            
+            $notificationType = $title; // Use title as notification type
+            $targetType = 'specific';
+            $targetValue = $fcmToken; // Use FCM token as target value
+            $tokensSent = 1;
+            $success = ($status === 'success') ? 1 : 0;
+            $errorMessage = ($status === 'success') ? null : $response;
             
             $stmt->bindParam(':event_id', $eventId);
-            $stmt->bindParam(':fcm_token', $fcmToken);
-            $stmt->bindParam(':title', $title);
-            $stmt->bindParam(':body', $body);
-            $stmt->bindParam(':status', $status);
-            $stmt->bindParam(':response', $response);
+            $stmt->bindParam(':notification_type', $notificationType);
+            $stmt->bindParam(':target_type', $targetType);
+            $stmt->bindParam(':target_value', $targetValue);
+            $stmt->bindParam(':tokens_sent', $tokensSent);
+            $stmt->bindParam(':success', $success);
+            $stmt->bindParam(':error_message', $errorMessage);
             $stmt->execute();
             
             return true;
         } catch (PDOException $e) {
+            error_log("Failed to log notification: " . $e->getMessage());
             return false;
         }
     }
@@ -1046,7 +1275,7 @@ class DatabaseAPI {
             
             // Active FCM tokens
             try {
-                $stmt = $this->pdo->prepare("SELECT COUNT(*) as active FROM fcm_tokens WHERE is_active = 1");
+                $stmt = $this->pdo->prepare("SELECT COUNT(*) as active FROM community_users WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
                 $stmt->execute();
                 $metrics['active_devices'] = $stmt->fetch(PDO::FETCH_ASSOC)['active'];
             } catch (PDOException $e) {
@@ -2435,6 +2664,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         exit(0);
     }
     
+
     // Initialize the database API using singleton pattern
     $db = DatabaseAPI::getInstance();
     
@@ -3392,11 +3622,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // ========================================
         // SEND NOTIFICATION API
         // ========================================
+        case 'test_notification':
+            echo json_encode(['success' => true, 'message' => 'Test notification action works']);
+            break;
+            
         case 'send_notification':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $notificationData = $_POST['notification_data'] ?? '';
                 
+                // Debug logging
+                error_log("NOTIFICATION_DEBUG: Raw notification data: " . $notificationData);
+                
                 if (empty($notificationData)) {
+                    error_log("NOTIFICATION_DEBUG: No notification data received");
                     echo json_encode(['success' => false, 'message' => 'Notification data is required']);
                     break;
                 }
@@ -3404,6 +3642,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $data = json_decode($notificationData, true);
                 
                 if (!$data) {
+                    error_log("NOTIFICATION_DEBUG: Invalid JSON format");
                     echo json_encode(['success' => false, 'message' => 'Invalid notification data format']);
                     break;
                 }
@@ -3414,26 +3653,35 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $alertType = $data['alert_type'] ?? '';
                 $userName = $data['user_name'] ?? '';
                 
+                // Debug logging
+                error_log("NOTIFICATION_DEBUG: Parsed data - Title: $title, Body: $body, Target User: $targetUser");
+                
                 if (empty($title) || empty($body)) {
+                    error_log("NOTIFICATION_DEBUG: Missing title or body");
                     echo json_encode(['success' => false, 'message' => 'Title and body are required']);
                     break;
                 }
                 
-                // Get FCM tokens for the target user
+                // Get FCM tokens for the target user from community_users table
                 $fcmTokens = [];
                 if (!empty($targetUser)) {
-                    $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM fcm_tokens WHERE user_email = :email AND is_active = 1");
+                    error_log("NOTIFICATION_DEBUG: Looking for FCM tokens for specific user: $targetUser");
+                    $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE email = :email AND fcm_token IS NOT NULL AND fcm_token != ''");
                     $stmt->bindParam(':email', $targetUser);
                     $stmt->execute();
                     $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                    error_log("NOTIFICATION_DEBUG: Found " . count($fcmTokens) . " FCM tokens for user $targetUser");
                 } else {
-                    // Send to all active tokens if no specific user
-                    $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM fcm_tokens WHERE is_active = 1");
+                    error_log("NOTIFICATION_DEBUG: Looking for all FCM tokens");
+                    // Send to all tokens if no specific user
+                    $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
                     $stmt->execute();
                     $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                    error_log("NOTIFICATION_DEBUG: Found " . count($fcmTokens) . " total active FCM tokens");
                 }
                 
                 if (empty($fcmTokens)) {
+                    error_log("NOTIFICATION_DEBUG: No FCM tokens found");
                     echo json_encode(['success' => false, 'message' => 'No active FCM tokens found']);
                     break;
                 }
@@ -3442,22 +3690,47 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $successCount = 0;
                 $failCount = 0;
                 
+                error_log("NOTIFICATION_DEBUG: Starting to send notifications to " . count($fcmTokens) . " tokens");
+                
                 foreach ($fcmTokens as $fcmToken) {
                     try {
-                        // Log the notification
-                        $db->logNotification(
-                            null, // event_id
-                            $fcmToken,
-                            $title,
-                            $body,
-                            'success'
-                        );
-                        $successCount++;
+                        error_log("NOTIFICATION_DEBUG: Sending notification to token: " . substr($fcmToken, 0, 20) . "...");
+                        
+                        // Send actual FCM notification using Firebase Admin SDK
+                        $fcmResult = sendFCMNotificationToToken($fcmToken, $title, $body);
+                        
+                        if ($fcmResult['success']) {
+                            // Log successful notification
+                            $db->logNotification(
+                                null, // event_id
+                                $fcmToken,
+                                $title,
+                                $body,
+                                'success',
+                                $fcmResult['response']
+                            );
+                            $successCount++;
+                            error_log("NOTIFICATION_DEBUG: Successfully sent FCM notification");
+                        } else {
+                            // Log failed notification
+                            $db->logNotification(
+                                null, // event_id
+                                $fcmToken,
+                                $title,
+                                $body,
+                                'failed',
+                                $fcmResult['error']
+                            );
+                            $failCount++;
+                            error_log("NOTIFICATION_DEBUG: FCM notification failed: " . $fcmResult['error']);
+                        }
                     } catch (Exception $e) {
-                        error_log("Failed to send notification to token: " . $e->getMessage());
+                        error_log("NOTIFICATION_DEBUG: Exception sending notification to token: " . $e->getMessage());
                         $failCount++;
                     }
                 }
+                
+                error_log("NOTIFICATION_DEBUG: Notification sending completed - Success: $successCount, Failed: $failCount");
                 
                 echo json_encode([
                     'success' => true,
@@ -3601,6 +3874,84 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             // List all tables
             $result = $db->listTables();
             echo json_encode($result);
+            break;
+            
+        // ========================================
+        // GET COMMUNITY USER DATA API
+        // ========================================
+        case 'get_community_user_data':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    // Get JSON data
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    
+                    if (!$data) {
+                        echo json_encode(['success' => false, 'message' => 'No data provided']);
+                        break;
+                    }
+                    
+                    $email = $data['email'] ?? '';
+                    
+                    if (empty($email)) {
+                        echo json_encode(['success' => false, 'message' => 'Email is required']);
+                        break;
+                    }
+                    
+                    // Get user data from community_users table
+                    $result = $db->universalSelect(
+                        'community_users', 
+                        '*', 
+                        'email = ?', 
+                        '', 
+                        '', 
+                        [$email]
+                    );
+                    
+                    if ($result['success'] && !empty($result['data'])) {
+                        $user = $result['data'][0]; // Get first (and should be only) result
+                        
+                        // Format the response
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'User data retrieved successfully',
+                            'user' => [
+                                'name' => $user['name'] ?? '',
+                                'email' => $user['email'] ?? '',
+                                'municipality' => $user['municipality'] ?? '',
+                                'barangay' => $user['barangay'] ?? '',
+                                'sex' => $user['sex'] ?? '',
+                                'birthday' => $user['birthday'] ?? '',
+                                'age' => $user['age'] ?? '',
+                                'is_pregnant' => $user['is_pregnant'] ?? '',
+                                'weight_kg' => $user['weight_kg'] ?? '',
+                                'height_cm' => $user['height_cm'] ?? '',
+                                'muac_cm' => $user['muac_cm'] ?? '',
+                                'bmi' => $user['bmi'] ?? '',
+                                'bmi_category' => $user['bmi_category'] ?? '',
+                                'muac_category' => $user['muac_category'] ?? '',
+                                'nutritional_risk' => $user['nutritional_risk'] ?? '',
+                                'screening_date' => $user['screening_date'] ?? '',
+                                'screened_by' => $user['screened_by'] ?? '',
+                                'notes' => $user['notes'] ?? '',
+                                'status' => $user['status'] ?? '',
+                                'created_at' => $user['created_at'] ?? '',
+                                'updated_at' => $user['updated_at'] ?? ''
+                            ]
+                        ]);
+                    } else {
+                        echo json_encode([
+                            'success' => false, 
+                            'message' => 'User not found in community_users table'
+                        ]);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'POST method required']);
+                }
+            } catch (Exception $e) {
+                error_log("Get community user data error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Error retrieving user data: ' . $e->getMessage()]);
+            }
             break;
             
         // ========================================

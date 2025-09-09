@@ -24,17 +24,17 @@ import java.io.IOException;
 public class FoodActivity extends AppCompatActivity implements HorizontalFoodAdapter.OnFoodClickListener {
     private static final String TAG = "FoodActivity";
     
-    // RecyclerViews for different categories
-    private RecyclerView traditionalRecycler, healthyRecycler, internationalRecycler, budgetRecycler;
+    // RecyclerViews for different meal categories
+    private RecyclerView breakfastRecycler, lunchRecycler, dinnerRecycler, snackRecycler;
     
-    // Adapters for different categories
-    private HorizontalFoodAdapter traditionalAdapter, healthyAdapter, internationalAdapter, budgetAdapter;
+    // Adapters for different meal categories
+    private HorizontalFoodAdapter breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter;
     
-    // Food lists for different categories
-    private List<FoodRecommendation> traditionalFoods = new ArrayList<>();
-    private List<FoodRecommendation> healthyFoods = new ArrayList<>();
-    private List<FoodRecommendation> internationalFoods = new ArrayList<>();
-    private List<FoodRecommendation> budgetFoods = new ArrayList<>();
+    // Food lists for different meal categories
+    private List<FoodRecommendation> breakfastFoods = new ArrayList<>();
+    private List<FoodRecommendation> lunchFoods = new ArrayList<>();
+    private List<FoodRecommendation> dinnerFoods = new ArrayList<>();
+    private List<FoodRecommendation> snackFoods = new ArrayList<>();
 
     // Featured banner views
     private ImageView featuredBackgroundImage;
@@ -135,10 +135,10 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     
     private void initializeViews() {
         // Initialize RecyclerViews
-        traditionalRecycler = findViewById(R.id.traditional_recycler);
-        healthyRecycler = findViewById(R.id.healthy_recycler);
-        internationalRecycler = findViewById(R.id.international_recycler);
-        budgetRecycler = findViewById(R.id.budget_recycler);
+        breakfastRecycler = findViewById(R.id.breakfast_recycler);
+        lunchRecycler = findViewById(R.id.lunch_recycler);
+        dinnerRecycler = findViewById(R.id.dinner_recycler);
+        snackRecycler = findViewById(R.id.snack_recycler);
         
         // Initialize featured banner views
         featuredBackgroundImage = findViewById(R.id.featured_background_image);
@@ -358,29 +358,29 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     }
     
     private void setupRecyclerViews() {
-        // Setup Traditional RecyclerView
-        traditionalRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        traditionalAdapter = new HorizontalFoodAdapter(traditionalFoods, this, this);
-        traditionalRecycler.setAdapter(traditionalAdapter);
-        traditionalAdapter.setLoading(true);
+        // Setup Breakfast RecyclerView
+        breakfastRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        breakfastAdapter = new HorizontalFoodAdapter(breakfastFoods, this, this);
+        breakfastRecycler.setAdapter(breakfastAdapter);
+        breakfastAdapter.setLoading(true);
         
-        // Setup Healthy RecyclerView
-        healthyRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        healthyAdapter = new HorizontalFoodAdapter(healthyFoods, this, this);
-        healthyRecycler.setAdapter(healthyAdapter);
-        healthyAdapter.setLoading(true);
+        // Setup Lunch RecyclerView
+        lunchRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        lunchAdapter = new HorizontalFoodAdapter(lunchFoods, this, this);
+        lunchRecycler.setAdapter(lunchAdapter);
+        lunchAdapter.setLoading(true);
         
-        // Setup International RecyclerView
-        internationalRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        internationalAdapter = new HorizontalFoodAdapter(internationalFoods, this, this);
-        internationalRecycler.setAdapter(internationalAdapter);
-        internationalAdapter.setLoading(true);
+        // Setup Dinner RecyclerView
+        dinnerRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        dinnerAdapter = new HorizontalFoodAdapter(dinnerFoods, this, this);
+        dinnerRecycler.setAdapter(dinnerAdapter);
+        dinnerAdapter.setLoading(true);
         
-        // Setup Budget RecyclerView
-        budgetRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        budgetAdapter = new HorizontalFoodAdapter(budgetFoods, this, this);
-        budgetRecycler.setAdapter(budgetAdapter);
-        budgetAdapter.setLoading(true);
+        // Setup Snack RecyclerView
+        snackRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        snackAdapter = new HorizontalFoodAdapter(snackFoods, this, this);
+        snackRecycler.setAdapter(snackAdapter);
+        snackAdapter.setLoading(true);
         
         Log.d(TAG, "All RecyclerViews setup completed with loading state");
     }
@@ -402,13 +402,38 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     private void loadFoodDataForAllCategories() {
         Log.d(TAG, "Loading food data for all categories");
         
-        // Use API integration for malnutrition recovery foods
-        FoodActivityIntegration.loadMalnutritionRecoveryFoods(
+        // DEBUG: Log what data is being passed to food loading
+        Log.d(TAG, "=== PASSING DATA TO FOOD LOADING ===");
+        Log.d(TAG, "userAge: " + userAge);
+        Log.d(TAG, "userSex: " + userSex);
+        Log.d(TAG, "userBMI: " + userBMI);
+        Log.d(TAG, "userHeight: " + userHeight);
+        Log.d(TAG, "userWeight: " + userWeight);
+        Log.d(TAG, "userHealthConditions: " + userHealthConditions);
+        Log.d(TAG, "userActivityLevel: " + userActivityLevel);
+        Log.d(TAG, "userBudgetLevel: " + userBudgetLevel);
+        Log.d(TAG, "userDietaryRestrictions: " + userDietaryRestrictions);
+        Log.d(TAG, "userAllergies: " + userAllergies);
+        Log.d(TAG, "userDietPrefs: " + userDietPrefs);
+        Log.d(TAG, "userAvoidFoods: " + userAvoidFoods);
+        Log.d(TAG, "userRiskScore: " + userRiskScore);
+        Log.d(TAG, "userBarangay: " + userBarangay);
+        Log.d(TAG, "userIncome: " + userIncome);
+        Log.d(TAG, "userPregnancyStatus: " + userPregnancyStatus);
+        Log.d(TAG, "=== END DATA PASSING ===");
+        
+        // Get comprehensive screening data for the prompt
+        String screeningAnswers = getScreeningAnswersForPrompt();
+        
+        // Use API integration for malnutrition recovery foods with comprehensive data
+        FoodActivityIntegration.loadMalnutritionRecoveryFoodsWithScreening(
             this,
-            userAge, userSex, userBMI, userHealthConditions, userBudgetLevel,
-            userAllergies, userDietPrefs, userPregnancyStatus,
-            traditionalFoods, healthyFoods, internationalFoods, budgetFoods,
-            traditionalAdapter, healthyAdapter, internationalAdapter, budgetAdapter
+            userAge, userSex, userBMI, userHeight, userWeight, userHealthConditions, 
+            userActivityLevel, userBudgetLevel, userDietaryRestrictions, userAllergies, 
+            userDietPrefs, userAvoidFoods, userRiskScore, userBarangay, userIncome, 
+            userPregnancyStatus, screeningAnswers,
+            breakfastFoods, lunchFoods, dinnerFoods, snackFoods,
+            breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter
         );
     }
     
@@ -424,9 +449,9 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         };
         
         List<FoodRecommendation> foods = createFoodListFromNames(breakfastDishes, "Breakfast");
-        traditionalFoods.clear();
-        traditionalFoods.addAll(foods);
-        traditionalAdapter.notifyDataSetChanged();
+        breakfastFoods.clear();
+        breakfastFoods.addAll(foods);
+        breakfastAdapter.notifyDataSetChanged();
         Log.d(TAG, "Loaded " + foods.size() + " breakfast foods");
     }
     
@@ -439,9 +464,9 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         };
         
         List<FoodRecommendation> foods = createFoodListFromNames(lunchDishes, "Lunch");
-        healthyFoods.clear();
-        healthyFoods.addAll(foods);
-        healthyAdapter.notifyDataSetChanged();
+        lunchFoods.clear();
+        lunchFoods.addAll(foods);
+        lunchAdapter.notifyDataSetChanged();
         Log.d(TAG, "Loaded " + foods.size() + " lunch foods");
     }
     
@@ -455,9 +480,9 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         };
         
         List<FoodRecommendation> foods = createFoodListFromNames(dinnerDishes, "Dinner");
-        internationalFoods.clear();
-        internationalFoods.addAll(foods);
-        internationalAdapter.notifyDataSetChanged();
+        dinnerFoods.clear();
+        dinnerFoods.addAll(foods);
+        dinnerAdapter.notifyDataSetChanged();
         Log.d(TAG, "Loaded " + foods.size() + " dinner foods");
     }
     
@@ -470,9 +495,9 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         };
         
         List<FoodRecommendation> foods = createFoodListFromNames(snackDishes, "Snacks");
-        budgetFoods.clear();
-        budgetFoods.addAll(foods);
-        budgetAdapter.notifyDataSetChanged();
+        snackFoods.clear();
+        snackFoods.addAll(foods);
+        snackAdapter.notifyDataSetChanged();
         Log.d(TAG, "Loaded " + foods.size() + " snack foods");
     }
     
@@ -576,38 +601,50 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
             if (userEmail != null) {
                 // Load basic user profile data from CommunityUserManager (community_users table)
                 CommunityUserManager userManager = new CommunityUserManager(this);
-                Map<String, String> userData = userManager.getCurrentUserData();
+                Map<String, String> userData = userManager.getCurrentUserDataFromDatabase();
                 
                 if (!userData.isEmpty()) {
                     // Load basic user data from community_users
                     userSex = userData.get("sex");
-                    userHeight = userData.get("height");
-                    userWeight = userData.get("weight");
+                    userHeight = userData.get("height_cm"); // Database field name
+                    userWeight = userData.get("weight_kg"); // Database field name
                     userBarangay = userData.get("barangay");
                     
-                    // Calculate age from birthday
-                    String birthday = userData.get("birthday");
-                    if (birthday != null && !birthday.isEmpty()) {
-                        userAge = calculateAgeFromBirthday(birthday);
+                    // Use age directly from database (already calculated)
+                    String age = userData.get("age");
+                    if (age != null && !age.isEmpty()) {
+                        userAge = age;
+                    } else {
+                        // Fallback: Calculate age from birthday
+                        String birthday = userData.get("birthday");
+                        if (birthday != null && !birthday.isEmpty()) {
+                            userAge = calculateAgeFromBirthday(birthday);
+                        }
                     }
                     
-                    // Calculate BMI from height and weight
-                    if (userHeight != null && userWeight != null && !userHeight.isEmpty() && !userWeight.isEmpty()) {
-                        try {
-                            double height = Double.parseDouble(userHeight);
-                            double weight = Double.parseDouble(userWeight);
-                            if (height > 0 && weight > 0) {
-                                double bmi = weight / ((height / 100) * (height / 100));
-                                userBMI = String.format("%.1f", bmi);
+                    // Use BMI directly from database (already calculated)
+                    String bmi = userData.get("bmi");
+                    if (bmi != null && !bmi.isEmpty()) {
+                        userBMI = bmi;
+                    } else {
+                        // Fallback: Calculate BMI from height and weight
+                        if (userHeight != null && userWeight != null && !userHeight.isEmpty() && !userWeight.isEmpty()) {
+                            try {
+                                double height = Double.parseDouble(userHeight);
+                                double weight = Double.parseDouble(userWeight);
+                                if (height > 0 && weight > 0) {
+                                    double calculatedBmi = weight / ((height / 100) * (height / 100));
+                                    userBMI = String.format("%.1f", calculatedBmi);
+                                }
+                            } catch (NumberFormatException e) {
+                                userBMI = "0";
                             }
-                        } catch (NumberFormatException e) {
-                            userBMI = "0";
                         }
                     }
                     
                     // Load pregnancy status from community_users data
                     String isPregnant = userData.get("is_pregnant");
-                    if (isPregnant != null && isPregnant.equals("Yes")) {
+                    if (isPregnant != null && (isPregnant.equals("Yes") || isPregnant.equals("1"))) {
                         userPregnancyStatus = "Yes";
                     } else {
                         userPregnancyStatus = "No";
@@ -616,13 +653,13 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
                 
                 // Load user preferences and additional data from local database
                 UserPreferencesDbHelper dbHelper = new UserPreferencesDbHelper(this);
-                android.database.Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
+        android.database.Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
                     "SELECT * FROM " + UserPreferencesDbHelper.TABLE_NAME + 
                     " WHERE " + UserPreferencesDbHelper.COL_USER_EMAIL + "=?",
                     new String[]{userEmail}
-                );
-                
-                if (cursor.moveToFirst()) {
+        );
+        
+        if (cursor.moveToFirst()) {
                     userAllergies = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_ALLERGIES);
                     userDietPrefs = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_DIET_PREFS);
                     userAvoidFoods = getStringFromCursor(cursor, UserPreferencesDbHelper.COL_AVOID_FOODS);
@@ -638,15 +675,24 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
                     // Determine budget level based on income
                     userBudgetLevel = determineBudgetLevel(userIncome);
                     
-                    Log.d(TAG, "Loaded complete user profile: Age=" + userAge + ", Sex=" + userSex + 
-                          ", BMI=" + userBMI + ", Health=" + userHealthConditions + 
-                          ", Pregnancy=" + userPregnancyStatus + ", Allergies=" + userAllergies + 
-                          ", Diet=" + userDietPrefs);
+                    Log.d(TAG, "=== LOADED USER PROFILE DATA ===");
+                    Log.d(TAG, "Age: " + userAge);
+                    Log.d(TAG, "Sex: " + userSex);
+                    Log.d(TAG, "BMI: " + userBMI);
+                    Log.d(TAG, "Height: " + userHeight);
+                    Log.d(TAG, "Weight: " + userWeight);
+                    Log.d(TAG, "Health Conditions: " + userHealthConditions);
+                    Log.d(TAG, "Pregnancy Status: " + userPregnancyStatus);
+                    Log.d(TAG, "Allergies: " + userAllergies);
+                    Log.d(TAG, "Diet Preferences: " + userDietPrefs);
+                    Log.d(TAG, "Budget Level: " + userBudgetLevel);
+                    Log.d(TAG, "Barangay: " + userBarangay);
+                    Log.d(TAG, "=== END USER PROFILE DATA ===");
                 } else {
                     Log.w(TAG, "No user preferences found in local database, using defaults");
                     setDefaultUserProfile();
                 }
-                cursor.close();
+        cursor.close();
                 dbHelper.close();
             } else {
                 Log.w(TAG, "No user email found, using defaults");

@@ -51,7 +51,7 @@ public class ApiConfig {
     public static boolean isGroqConfigured() {
         return GROQ_ENABLED && GROQ_API_KEY != null && 
                !GROQ_API_KEY.isEmpty() && 
-               !GROQ_API_KEY.equals("YOUR_GROQ_API_KEY_HERE");
+               !GROQ_API_KEY.equals("gsk_1234567890abcdef");
     }
     
     /**

@@ -6,8 +6,9 @@
     android:layout_height="200dp"
     android:layout_margin="4dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
-    app:cardBackgroundColor="@android:color/transparent">
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/white"
+    android:outlineProvider="none">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -18,8 +19,7 @@
             android:id="@+id/substitution_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:background="@color/light_gray" />
+            android:scaleType="centerCrop" />
 
         <!-- Substitution Badge -->
         <TextView

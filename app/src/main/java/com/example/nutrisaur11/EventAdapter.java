@@ -16,7 +16,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     private OnEventClickListener listener;
     
     public interface OnEventClickListener {
-        void onJoinEvent(Event event, int position);
         void onEventClick(Event event);
     }
     
@@ -74,95 +73,42 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             // Set event color
             eventIcon.setBackgroundTintList(android.content.res.ColorStateList.valueOf(event.getEventColor()));
             
-            // Check event status and set appropriate button state
+            // Set event card styling (join button removed)
             long currentTime = System.currentTimeMillis();
             long eventTime = 0;
-            long eventEndTime = 0;
             
             try {
                 java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 java.util.Date eventDate = format.parse(event.getDateTime());
                 eventTime = eventDate.getTime();
-                // Events finish immediately when current time passes event time
-                eventEndTime = eventTime;
             } catch (Exception e) {
                 e.printStackTrace();
             }
             
-            // Determine event status with more lenient logic
-            boolean isPastEvent = event.isPastEvent();
-            boolean isEventStarted = currentTime >= eventTime && currentTime < eventEndTime;
-            boolean isEventFinished = currentTime >= eventTime; // Events finish immediately when current time passes event time
-            
-            // Calculate days difference for more lenient display
+            // Calculate days difference for display
             long diffInMillis = eventTime - currentTime;
             long diffInDays = diffInMillis / (24 * 60 * 60 * 1000);
             
             if (diffInDays < -7) {
-                // Very old event (more than 7 days ago) - GRAY and disabled
-                joinButton.setText("Finished");
-                joinButton.setEnabled(false);
-                joinButton.setSelected(false);
+                // Very old event (more than 7 days ago) - GRAY
                 itemView.setAlpha(0.3f);
-                joinButton.setBackgroundResource(R.drawable.outline_gray_button);
                 itemView.setBackgroundResource(R.drawable.event_card_gray);
-            } else if (isEventFinished && diffInDays >= -7) {
-                // Recent past event (within 7 days) - Show but disabled
-                joinButton.setText("Finished");
-                joinButton.setEnabled(false);
-                joinButton.setSelected(event.isJoined());
+            } else if (diffInDays < 0) {
+                // Recent past event (within 7 days) - Show but dimmed
                 itemView.setAlpha(0.7f);
-                joinButton.setBackgroundResource(R.drawable.outline_gray_button);
-                itemView.setBackgroundResource(R.drawable.event_card_white);
-            } else if (isEventStarted) {
-                // Event is currently happening - WHITE
-                joinButton.setText("Join Now");
-                joinButton.setEnabled(true);
-                joinButton.setSelected(false);
-                itemView.setAlpha(1.0f);
-                joinButton.setBackgroundResource(R.drawable.filled_green_button);
                 itemView.setBackgroundResource(R.drawable.event_card_white);
             } else {
-                // Upcoming event - WHITE
+                // Upcoming event - Normal
                 itemView.setAlpha(1.0f);
-                joinButton.setText(event.isJoined() ? "Unjoin" : "Join");
-                joinButton.setEnabled(true);
-                joinButton.setSelected(event.isJoined());
-                joinButton.setBackgroundResource(event.isJoined() ? R.drawable.filled_green_button : R.drawable.outline_green_button);
                 itemView.setBackgroundResource(R.drawable.event_card_white);
             }
             
-            // Ensure button is always visible and properly styled
-            joinButton.setVisibility(View.VISIBLE);
-            joinButton.setClickable(true);
-            joinButton.setFocusable(true);
+            // Hide join button as requested
+            joinButton.setVisibility(View.GONE);
+            joinButton.setClickable(false);
+            joinButton.setFocusable(false);
             
-            // Force text to be visible and set properly
-            if (isEventFinished || isPastEvent) {
-                joinButton.setTextColor(android.graphics.Color.parseColor("#9CA3AF")); // Gray for finished/past
-            } else if (isEventStarted) {
-                joinButton.setTextColor(android.graphics.Color.WHITE); // White for active events
-            } else {
-                joinButton.setTextColor(event.isJoined() ? android.graphics.Color.WHITE : android.graphics.Color.parseColor("#10B981")); // White for joined, green for unjoined
-            }
-            joinButton.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
-            
-            // Debug: Log the button text and status
-            android.util.Log.d("EventAdapter", "Event: " + event.getTitle() + 
-                " | Button: " + joinButton.getText() + 
-                " | Status: " + (isEventFinished ? "Finished" : isEventStarted ? "Started" : isPastEvent ? "Past" : "Upcoming") +
-                " | EventTime: " + eventTime + 
-                " | CurrentTime: " + currentTime + 
-                " | EventEndTime: " + eventEndTime +
-                " | IsStarted: " + isEventStarted +
-                " | IsFinished: " + isEventFinished);
-            
-            // Set click listeners
-            joinButton.setOnClickListener(v -> {
-                if (listener != null && !isEventFinished && !isPastEvent) {
-                    listener.onJoinEvent(event, getAdapterPosition());
-                }
-            });
+            // Join button removed - no click listener needed
             
             itemView.setOnClickListener(v -> {
                 if (listener != null) {

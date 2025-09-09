@@ -4,6 +4,150 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// FCM Notification Sending Function using Firebase Admin SDK
+function sendFCMNotificationToToken($fcmToken, $title, $body) {
+    try {
+        // Firebase Admin SDK Service Account Key
+        $serviceAccountKey = [
+            "type" => "service_account",
+            "project_id" => "nutrisaur-ebf29",
+            "private_key_id" => "1c2fa5d5bbf9ac2a6c0284101b5d1d256be9eafe",
+            "private_key" => "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCbGuEbYIOTu6k8\naAkyfD1wS5wqsMoz/HoCP2yTA2cWVOzTTlWminXfzA4PxSKbU4NNATOzDm4C1Grt\nwIrYndO23PQnsSyMTk26eZoBU3Hu4yerDZBgPlNq5YmjzZO/VPkzWZRuf258TcNO\neS/bD81tc9KFshaVPEfBDDwlgvQMfPL5Gf93UurAAyOSwDT5a0QgpFdu95d4p/cV\nnPHD4QZUmUn8QaemTO8mez1m820nTxB17SXcdAG0++0n/dm6Ob1YBAt5Ey1mpHP5\nItKb7Ysh78OVcbO9pdMahwdrp7wJ9sEmFgojgp8uaR9ewjicxF5MmJVpfOzx7Qfb\nnQTtenDpAgMBAAECggEAAyKYdHHpE7/iOSV0zIkkjsc6EvmiCxbD4PuNaZO5VJy6\nPfOVf9L8Dffob6fEis8Co1HuZksMEzeRXIvpr1ye7msDh/5Cg1vqO0yaipzre4oq\nf5nvFkFV21FkP/Dd8MSgouNhJv8Hz/02AOyQxV585wT4nbMBvNnlxpoSNZBMXlvS\nIUoKKifJywnLR0w7uxAFdMH6PN9oPY4FzjEH/xddc4/vzvFfKrgcHji9E/e5+BEU\nVV56Z8KqmVdc+Njngzljfe7SSJmNMTs8FtoAu3b+9HHljS6DI3+l6xzz461UX7LW\nseQtBOFAWFxXh4svZ3Hf0bVnJyqlj9nxbcOE0MLX+QKBgQDVO+JtBiqiwWPl3II2\nU/l+ynH29eVpriNLaj2DJeSrnmUp1/s9M5HOrg07P5AQIiAJS/yAS21OjbnOYT22\n7lCENPlHYEXMz7Fs6/9+lxRGh/X3tLcyJQkvVtEi7v1Tixw3IEqGzS/x7LUIci//\nxiRwX/Xq3acxGmULoWVaQy/H5QKBgQC6NngCzJzrF/Wyze63r2f4KnUgcGeX6ah8\n3HiJqv+/UCZfKjYzPO8ueZ3vT4aMHe4Jm9cQspR/Az5ZaCOmFgDazofauPZPODtM\nrrKWqIH96+x2dwbu5aAEsAEk5FJuK/JKfsGxoSLhgm0DfF3ca3iXI3TfgML7nX8y\nOHMdYg/stQKBgAUvsbApKDxRK9bZaCleHYFh9yekj3HklGMvMFPSRh+OeLNt12SD\nrpYyUYwRXbWmvtS7Dmcobn4soEpOvyuF3Ft61l1QECKNIqmdi9dOYWXdxLPDp3kG\nwZRvLiMFYQ/5IDSPCoEA2JuvwC92Z4h3D0fUbazKu1hMZgzEXiy12aGpAoGAIU2m\njxGbKuyhE7aC8DUdyiOFySRxUpkGejZQFIcRsFycUD7TbLyEJnK3zVoSvTKJJQzL\nHQBjUIf6+bCHV6ftxTRU1chovOhYqrE/3XQLs6cjJljJU6abxNrZiYiQOYYAklQz\nPhqMi3pxFsOCYe6Spa1AtMxpkuirHAc+h03HfVUCgYEAk1q6ay6UCpdnWYNd9tT3\ndX4KWNaOC02cTIUKBNYiwtsUf4x4e+OL4Ol1N+gwSN3tyU0tZD89lfBVdmrq50EU\nKl4pUrzlIaLS3Z5EumgFA/4ptyzAXOFLtyrpjVFHjk+Rxt51TpMi4VuMHFZ4m3WW\nAhYxFogqCIeG0/J/9Q4sWpg=\n-----END PRIVATE KEY-----\n",
+            "client_email" => "firebase-adminsdk-fbsvc@nutrisaur-ebf29.iam.gserviceaccount.com",
+            "client_id" => "107962791067736498847",
+            "auth_uri" => "https://accounts.google.com/o/oauth2/auth",
+            "token_uri" => "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url" => "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url" => "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40nutrisaur-ebf29.iam.gserviceaccount.com",
+            "universe_domain" => "googleapis.com"
+        ];
+        
+        // Get access token using service account
+        $accessToken = getFirebaseAccessToken($serviceAccountKey);
+        if (!$accessToken) {
+            return ['success' => false, 'error' => 'Failed to get access token'];
+        }
+        
+        $url = 'https://fcm.googleapis.com/v1/projects/nutrisaur-ebf29/messages:send';
+        
+        $message = [
+            'message' => [
+                'token' => $fcmToken,
+                'notification' => [
+                    'title' => $title,
+                    'body' => $body
+                ],
+                'data' => [
+                    'title' => $title,
+                    'body' => $body,
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
+                ],
+                'android' => [
+                    'notification' => [
+                        'sound' => 'default',
+                        'notification_priority' => 'PRIORITY_HIGH'
+                    ]
+                ],
+                'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'sound' => 'default',
+                            'badge' => 1
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        
+        $headers = [
+            'Authorization: Bearer ' . $accessToken,
+            'Content-Type: application/json'
+        ];
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($message));
+        
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode == 200) {
+            $response = json_decode($result, true);
+            if (isset($response['name'])) {
+                return ['success' => true, 'response' => $result];
+            } else {
+                return ['success' => false, 'error' => $result];
+            }
+        } else {
+            return ['success' => false, 'error' => "HTTP $httpCode: $result"];
+        }
+        
+    } catch (Exception $e) {
+        return ['success' => false, 'error' => $e->getMessage()];
+    }
+}
+
+// Function to get Firebase access token using service account
+function getFirebaseAccessToken($serviceAccountKey) {
+    try {
+        $jwt = createJWT($serviceAccountKey);
+        
+        $url = 'https://oauth2.googleapis.com/token';
+        $data = [
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion' => $jwt
+        ];
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode == 200) {
+            $response = json_decode($result, true);
+            return $response['access_token'] ?? null;
+        }
+        
+        return null;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+// Function to create JWT for Firebase authentication
+function createJWT($serviceAccountKey) {
+    $header = json_encode(['typ' => 'JWT', 'alg' => 'RS256']);
+    $now = time();
+    $payload = json_encode([
+        'iss' => $serviceAccountKey['client_email'],
+        'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
+        'aud' => $serviceAccountKey['token_uri'],
+        'exp' => $now + 3600,
+        'iat' => $now
+    ]);
+    
+    $base64Header = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+    $base64Payload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+    
+    $signature = '';
+    $privateKey = $serviceAccountKey['private_key'];
+    openssl_sign($base64Header . '.' . $base64Payload, $signature, $privateKey, 'SHA256');
+    $base64Signature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+    
+    return $base64Header . '.' . $base64Payload . '.' . $base64Signature;
+}
+
 // 🚨 TEST AJAX ENDPOINT - Add this first to debug the issue
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'test_ajax') {
     error_log("=== TEST AJAX ENDPOINT CALLED ===");
@@ -235,35 +379,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             $debugInfo = [];
             
             // Check if notification_logs table exists
-            $stmt = safeDbQuery($conn, "SHOW TABLES LIKE 'notification_logs'");
+            $stmt = $db->getPDO()->query("SHOW TABLES LIKE 'notification_logs'");
             $debugInfo['notification_logs_table_exists'] = $stmt ? $stmt->rowCount() > 0 : false;
-            if (!$stmt) {
-                $debugInfo['notification_logs_error'] = 'Database connection failed';
-            }
             
-            // Check if fcm_tokens table exists
-            $stmt = safeDbQuery($conn, "SHOW TABLES LIKE 'fcm_tokens'");
-            $debugInfo['fcm_tokens_table_exists'] = $stmt ? $stmt->rowCount() > 0 : false;
-            if (!$stmt) {
-                $debugInfo['fcm_tokens_error'] = 'Database connection failed';
-            }
+            // Check if community_users table has fcm_token column
+            $stmt = $db->getPDO()->query("SHOW COLUMNS FROM community_users LIKE 'fcm_token'");
+            $debugInfo['community_users_fcm_column_exists'] = $stmt ? $stmt->rowCount() > 0 : false;
             
             // Check if user_preferences table exists
-            $stmt = safeDbQuery($conn, "SHOW TABLES LIKE 'user_preferences'");
+            $stmt = $db->getPDO()->query("SHOW TABLES LIKE 'user_preferences'");
             $debugInfo['user_preferences_table_exists'] = $stmt ? $stmt->rowCount() > 0 : false;
-            if (!$stmt) {
-                $debugInfo['user_preferences_error'] = 'Database connection failed';
-            }
             
-            // Get FCM token count
-            if ($debugInfo['fcm_tokens_table_exists']) {
-                $stmt = safeDbQuery($conn, "SELECT COUNT(*) as count FROM fcm_tokens WHERE is_active = TRUE");
+            // Get FCM token count from community_users table
+            if ($debugInfo['community_users_fcm_column_exists']) {
+                $stmt = $db->getPDO()->query("SELECT COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
                 $debugInfo['active_fcm_tokens'] = $stmt ? $stmt->fetchColumn() : 'Database error';
             }
             
             // Get user preferences count
             if ($debugInfo['user_preferences_table_exists']) {
-                $stmt = safeDbQuery($conn, "SELECT COUNT(*) as count FROM user_preferences WHERE barangay IS NOT NULL AND barangay != ''");
+                $stmt = $db->getPDO()->query("SELECT COUNT(*) as count FROM user_preferences WHERE barangay IS NOT NULL AND barangay != ''");
                 $debugInfo['users_with_barangay'] = $stmt ? $stmt->fetchColumn() : 'Database error';
             }
             
@@ -313,12 +448,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 throw new Exception('Missing required notification data');
             }
             
-            // Get FCM token for the specific user
-            $stmt = $conn->prepare("
-                SELECT ft.fcm_token 
-                FROM fcm_tokens ft
-                WHERE ft.user_email = ? AND ft.is_active = TRUE 
-                AND ft.fcm_token IS NOT NULL AND ft.fcm_token != ''
+            // Get FCM token for the specific user from community_users table
+            $stmt = $db->getPDO()->prepare("
+                SELECT cu.fcm_token 
+                FROM community_users cu
+                WHERE cu.email = ? 
+                AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
             ");
             $stmt->execute([$targetUser]);
             $fcmToken = $stmt->fetchColumn();
@@ -633,16 +768,16 @@ function sendNotificationViaAPI($notificationData) {
             return ['success' => false, 'error' => 'Title and body are required'];
         }
         
-        // Get FCM tokens for the target user
+        // Get FCM tokens for the target user from community_users table
         $fcmTokens = [];
         if (!empty($targetUser)) {
-            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM fcm_tokens WHERE user_email = :email AND is_active = 1");
+            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE email = :email AND status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $stmt->bindParam(':email', $targetUser);
             $stmt->execute();
             $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
         } else {
             // Send to all active tokens if no specific user
-            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM fcm_tokens WHERE is_active = 1");
+            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $stmt->execute();
             $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
         }
@@ -657,15 +792,32 @@ function sendNotificationViaAPI($notificationData) {
         
         foreach ($fcmTokens as $fcmToken) {
             try {
-                // Log the notification using DatabaseAPI
-                $db->logNotification(
-                    null, // event_id
-                    $fcmToken,
-                    $title,
-                    $body,
-                    'success'
-                );
-                $successCount++;
+                // Send actual FCM notification using Firebase Admin SDK
+                $fcmResult = sendFCMNotificationToToken($fcmToken, $title, $body);
+                
+                if ($fcmResult['success']) {
+                    // Log successful notification
+                    $db->logNotification(
+                        null, // event_id
+                        $fcmToken,
+                        $title,
+                        $body,
+                        'success',
+                        $fcmResult['response']
+                    );
+                    $successCount++;
+                } else {
+                    // Log failed notification
+                    $db->logNotification(
+                        null, // event_id
+                        $fcmToken,
+                        $title,
+                        $body,
+                        'failed',
+                        $fcmResult['error']
+                    );
+                    $failCount++;
+                }
             } catch (Exception $e) {
                 error_log("Failed to send notification to token: " . $e->getMessage());
                 $failCount++;
@@ -712,17 +864,36 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
             }
             
             try {
-                // Log the notification using DatabaseAPI
-                $db->logNotification(
-                    null, // event_id
-                    $fcmToken,
-                    $notificationData['title'],
-                    $notificationData['body'],
-                    'success'
-                );
+                // Send actual FCM notification
+                $fcmResult = sendFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
                 
-                error_log("FCM notification sent successfully to $userEmail ($userBarangay): {$notificationData['title']}");
-                $successCount++;
+                if ($fcmResult['success']) {
+                    // Log successful notification
+                    $db->logNotification(
+                        null, // event_id
+                        $fcmToken,
+                        $notificationData['title'],
+                        $notificationData['body'],
+                        'success',
+                        $fcmResult['response']
+                    );
+                    
+                    error_log("FCM notification sent successfully to $userEmail ($userBarangay): {$notificationData['title']}");
+                    $successCount++;
+                } else {
+                    // Log failed notification
+                    $db->logNotification(
+                        null, // event_id
+                        $fcmToken,
+                        $notificationData['title'],
+                        $notificationData['body'],
+                        'failed',
+                        $fcmResult['error']
+                    );
+                    
+                    error_log("FCM notification failed for $userEmail ($userBarangay): {$fcmResult['error']}");
+                    $failureCount++;
+                }
                 
             } catch (Exception $e) {
                 error_log("Failed to send notification to user $userEmail: " . $e->getMessage());
@@ -752,31 +923,29 @@ function getFCMTokensByLocation($targetLocation = null) {
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '') {
             error_log("Processing 'all locations' case - getting all FCM tokens");
-            // Get all active FCM tokens using DatabaseAPI
+            // Get all FCM tokens from community_users table
             $stmt = $db->getPDO()->prepare("
-                SELECT fcm_token, user_email, user_barangay
-                FROM fcm_tokens
-                WHERE is_active = TRUE 
-                AND fcm_token IS NOT NULL 
+                SELECT fcm_token, email as user_email, barangay as user_barangay
+                FROM community_users
+                WHERE fcm_token IS NOT NULL 
                 AND fcm_token != ''
-                AND user_barangay IS NOT NULL 
-                AND user_barangay != ''
+                AND barangay IS NOT NULL 
+                AND barangay != ''
             ");
             $stmt->execute();
         } else {
             // Check if it's a municipality (starts with MUNICIPALITY_)
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 error_log("Processing municipality case: $targetLocation");
-                // Get tokens for all barangays in the municipality using DatabaseAPI
+                // Get tokens for all barangays in the municipality from community_users table
                 $stmt = $db->getPDO()->prepare("
-                    SELECT fcm_token, user_email, user_barangay
-                    FROM fcm_tokens
-                    WHERE is_active = TRUE 
-                    AND fcm_token IS NOT NULL 
+                    SELECT fcm_token, email as user_email, barangay as user_barangay
+                    FROM community_users
+                    WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
-                    AND user_barangay IS NOT NULL 
-                    AND user_barangay != ''
-                    AND (user_barangay = :targetLocation OR user_barangay LIKE :municipalityPattern)
+                    AND barangay IS NOT NULL 
+                    AND barangay != ''
+                    AND (barangay = :targetLocation OR barangay LIKE :municipalityPattern)
                 ");
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $stmt->bindParam(':targetLocation', $targetLocation);
@@ -784,16 +953,15 @@ function getFCMTokensByLocation($targetLocation = null) {
                 $stmt->execute();
             } else {
                 error_log("Processing barangay case: $targetLocation");
-                // Get tokens for specific barangay using DatabaseAPI
+                // Get tokens for specific barangay from community_users table
                 $stmt = $db->getPDO()->prepare("
-                    SELECT fcm_token, user_email, user_barangay
-                    FROM fcm_tokens
-                    WHERE is_active = TRUE 
-                    AND fcm_token IS NOT NULL 
+                    SELECT fcm_token, email as user_email, barangay as user_barangay
+                    FROM community_users
+                    WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
-                    AND user_barangay IS NOT NULL 
-                    AND user_barangay != ''
-                    AND user_barangay = :barangay
+                    AND barangay IS NOT NULL 
+                    AND barangay != ''
+                    AND barangay = :barangay
                 ");
                 $stmt->bindParam(':barangay', $targetLocation);
                 $stmt->execute();
@@ -810,13 +978,13 @@ function getFCMTokensByLocation($targetLocation = null) {
         if (count($tokens) === 0) {
             error_log("No FCM tokens found. Checking if there are any FCM tokens with barangay data...");
             
-            // Check if there are any FCM tokens with barangay data using DatabaseAPI
-            $checkStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM fcm_tokens WHERE user_barangay IS NOT NULL AND user_barangay != '' AND is_active = TRUE");
+            // Check if there are any FCM tokens with barangay data from community_users table
+            $checkStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE barangay IS NOT NULL AND barangay != '' AND status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $checkStmt->execute();
             $tokenWithBarangayCount = $checkStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
-            // Check if there are any active FCM tokens using DatabaseAPI
-            $tokenStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM fcm_tokens WHERE is_active = TRUE AND fcm_token IS NOT NULL AND fcm_token != ''");
+            // Check if there are any active FCM tokens from community_users table
+            $tokenStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $tokenStmt->execute();
             $tokenCount = $tokenStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
@@ -866,46 +1034,46 @@ function getUserLocationStats() {
         
         $stats = [];
         
-        // Count total users with barangay in fcm_tokens table using DatabaseAPI
+        // Count total users with barangay in community_users table using DatabaseAPI
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as total_users_with_barangay
-            FROM fcm_tokens
-            WHERE user_barangay IS NOT NULL AND user_barangay != ''
-            AND is_active = TRUE
+            FROM community_users
+            WHERE barangay IS NOT NULL AND barangay != ''
+            AND status = 'active'
         ");
         $stmt->execute();
         $stats['total_users_with_barangay'] = $stmt->fetchColumn();
         
-        // Count total active FCM tokens using DatabaseAPI
+        // Count total active FCM tokens from community_users table
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as total_fcm_tokens
-            FROM fcm_tokens 
-            WHERE is_active = TRUE AND fcm_token IS NOT NULL AND fcm_token != ''
+            FROM community_users 
+            WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''
         ");
         $stmt->execute();
         $stats['total_fcm_tokens'] = $stmt->fetchColumn();
         
-        // Count FCM tokens with barangay using DatabaseAPI
+        // Count FCM tokens with barangay from community_users table
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as fcm_tokens_with_barangay
-            FROM fcm_tokens
-            WHERE is_active = TRUE 
+            FROM community_users
+            WHERE status = 'active' 
             AND fcm_token IS NOT NULL 
             AND fcm_token != ''
-            AND user_barangay IS NOT NULL 
-            AND user_barangay != ''
+            AND barangay IS NOT NULL 
+            AND barangay != ''
         ");
         $stmt->execute();
         $stats['fcm_tokens_with_barangay'] = $stmt->fetchColumn();
         
-        // Count FCM tokens without barangay using DatabaseAPI
+        // Count FCM tokens without barangay from community_users table
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as fcm_tokens_without_barangay
-            FROM fcm_tokens 
-            WHERE is_active = TRUE 
+            FROM community_users 
+            WHERE status = 'active' 
             AND fcm_token IS NOT NULL 
             AND fcm_token != ''
-            AND (user_barangay IS NULL OR user_barangay = '')
+            AND (barangay IS NULL OR barangay = '')
         ");
         $stmt->execute();
         $stats['fcm_tokens_without_barangay'] = $stmt->fetchColumn();
@@ -927,33 +1095,33 @@ function getUsersForLocation($targetLocation) {
     try {
         if (empty($targetLocation) || $targetLocation === 'all') {
             $stmt = $conn->prepare("
-                SELECT ft.user_email, ft.user_barangay as barangay, ft.fcm_token, ft.is_active
-                FROM fcm_tokens ft
-                WHERE ft.user_barangay IS NOT NULL AND ft.user_barangay != ''
-                AND ft.is_active = TRUE
-                ORDER BY ft.user_barangay, ft.user_email
+                SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
+                FROM community_users cu
+                WHERE cu.barangay IS NOT NULL AND cu.barangay != ''
+                AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
+                ORDER BY cu.barangay, cu.email
             ");
             $stmt->execute();
         } else {
             // Check if it's a municipality
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 $stmt = $conn->prepare("
-                    SELECT ft.user_email, ft.user_barangay as barangay, ft.fcm_token, ft.is_active
-                    FROM fcm_tokens ft
-                    WHERE ft.user_barangay IS NOT NULL AND ft.user_barangay != ''
-                    AND ft.is_active = TRUE
-                    AND (ft.user_barangay = ? OR ft.user_barangay LIKE ?)
-                    ORDER BY ft.user_barangay, ft.user_email
+                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
+                    FROM community_users cu
+                    WHERE cu.barangay IS NOT NULL AND cu.barangay != ''
+                    AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
+                    AND (cu.barangay = ? OR cu.barangay LIKE ?)
+                    ORDER BY cu.barangay, cu.email
                 ");
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $stmt->execute([$targetLocation, $municipalityName . '%']);
             } else {
                 $stmt = $conn->prepare("
-                    SELECT ft.user_email, ft.user_barangay as barangay, ft.fcm_token, ft.is_active
-                    FROM fcm_tokens ft
-                    WHERE ft.user_barangay = ?
-                    AND ft.is_active = TRUE
-                    ORDER BY ft.user_email
+                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
+                    FROM community_users cu
+                    WHERE cu.barangay = ?
+                    AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
+                    ORDER BY cu.email
                 ");
                 $stmt->execute([$targetLocation]);
             }

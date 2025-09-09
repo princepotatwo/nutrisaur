@@ -13,6 +13,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -32,8 +33,8 @@ public class FCMTokenManager {
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_USER_BARANGAY = "user_barangay";
     
-    // Server endpoint for FCM token registration - using correct API
-    private static final String SERVER_URL = Constants.API_BASE_URL + "api/register_fcm_token.php";
+    // Server endpoint for FCM token registration - using working database update API
+    private static final String SERVER_URL = Constants.API_BASE_URL + "api/DatabaseAPI.php?action=update";
     
     // Registration intervals
     private static final long REGISTRATION_INTERVAL = TimeUnit.HOURS.toMillis(24); // 24 hours (daily sync)
@@ -61,10 +62,11 @@ public class FCMTokenManager {
      */
     private boolean tokenExistsOnServer(String token) {
         try {
-            // Use unified API to check if token exists
+            // Use database select API to check if token exists
             JSONObject requestData = new JSONObject();
-            requestData.put("action", "check_fcm_token");
-            requestData.put("fcm_token", token);
+            requestData.put("table", "community_users");
+            requestData.put("where", "fcm_token = :fcm_token");
+            requestData.put("params", new JSONObject().put("fcm_token", token));
             
             RequestBody body = RequestBody.create(
                 requestData.toString(), 
@@ -72,7 +74,7 @@ public class FCMTokenManager {
             );
             
             Request request = new Request.Builder()
-                .url(SERVER_URL)
+                .url(Constants.API_BASE_URL + "api/DatabaseAPI.php?action=select")
                 .post(body)
                 .addHeader("Content-Type", "application/json")
                 .build();
@@ -83,7 +85,11 @@ public class FCMTokenManager {
                 }
                 String responseBody = response.body() != null ? response.body().string() : "";
                 JSONObject json = new JSONObject(responseBody);
-                return json.optBoolean("success", false) && json.optBoolean("token_exists", false);
+                if (json.optBoolean("success", false)) {
+                    JSONArray data = json.optJSONArray("data");
+                    return data != null && data.length() > 0;
+                }
+                return false;
             }
         } catch (Exception e) {
             Log.w(TAG, "Failed to check token existence on server: " + e.getMessage());
@@ -308,15 +314,16 @@ public class FCMTokenManager {
         isRegistrationInProgress = true;
         
         try {
-            // Prepare request data for unified API
+            // Update existing user with FCM token
+            JSONObject data = new JSONObject();
+            data.put("fcm_token", token);
+            data.put("barangay", userBarangay);
+            
             JSONObject requestData = new JSONObject();
-            requestData.put("action", "register_fcm_token");
-            requestData.put("fcm_token", token);
-            requestData.put("device_name", android.os.Build.MODEL);
-            requestData.put("user_email", userEmail);
-            requestData.put("user_barangay", userBarangay);
-            requestData.put("app_version", "1.0");
-            requestData.put("platform", "android");
+            requestData.put("table", "community_users");
+            requestData.put("data", data);
+            requestData.put("where", "email = ?");
+            requestData.put("params", new JSONArray().put(userEmail));
             
             RequestBody body = RequestBody.create(
                 requestData.toString(), 
