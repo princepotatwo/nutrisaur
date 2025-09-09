@@ -153,7 +153,66 @@ public class FoodActivityIntegration {
         });
     }
     
-    // Additional methods will be added in the next part...
+    /**
+     * Load substitutions for all foods
+     */
+    private void loadSubstitutionsForAllFoods(List<FoodRecommendation> traditionalFoods, 
+                                            List<FoodRecommendation> healthyFoods,
+                                            List<FoodRecommendation> internationalFoods,
+                                            List<FoodRecommendation> budgetFoods,
+                                            String userAge, String userSex, String userBMI,
+                                            String userHealthConditions, String userBudgetLevel,
+                                            String userAllergies, String userDietPrefs, String userPregnancyStatus) {
+        // This method would load substitutions for all foods
+        // For now, we'll just log that substitutions are being loaded
+        Log.d(TAG, "Loading substitutions for all foods...");
+        
+        // TODO: Implement substitution loading logic
+        // This would typically make API calls to get substitution data
+        // and update the food lists with substitution information
+    }
+    
+    /**
+     * Load fallback foods when main foods fail to load
+     */
+    private void loadFallbackFoods(List<FoodRecommendation> traditionalFoods,
+                                 List<FoodRecommendation> healthyFoods,
+                                 List<FoodRecommendation> internationalFoods,
+                                 List<FoodRecommendation> budgetFoods,
+                                 HorizontalFoodAdapter traditionalAdapter,
+                                 HorizontalFoodAdapter healthyAdapter,
+                                 HorizontalFoodAdapter internationalAdapter,
+                                 HorizontalFoodAdapter budgetAdapter) {
+        Log.d(TAG, "Loading fallback foods...");
+        
+        // Create some basic fallback foods
+        if (traditionalFoods.isEmpty()) {
+            traditionalFoods.add(new FoodRecommendation("Rice", 200, 4.0, 0.5, 45.0, "1 cup", "Traditional", "Basic staple food", "https://example.com/rice.jpg"));
+        }
+        if (healthyFoods.isEmpty()) {
+            healthyFoods.add(new FoodRecommendation("Vegetables", 50, 2.0, 0.3, 10.0, "1 cup", "Healthy", "Fresh vegetables", "https://example.com/vegetables.jpg"));
+        }
+        if (internationalFoods.isEmpty()) {
+            internationalFoods.add(new FoodRecommendation("Pasta", 220, 8.0, 1.2, 44.0, "1 cup", "International", "International cuisine", "https://example.com/pasta.jpg"));
+        }
+        if (budgetFoods.isEmpty()) {
+            budgetFoods.add(new FoodRecommendation("Bread", 80, 3.0, 1.0, 15.0, "1 slice", "Budget", "Affordable option", "https://example.com/bread.jpg"));
+        }
+        
+        // Update adapters
+        if (traditionalAdapter != null) {
+            traditionalAdapter.notifyDataSetChanged();
+        }
+        if (healthyAdapter != null) {
+            healthyAdapter.notifyDataSetChanged();
+        }
+        if (internationalAdapter != null) {
+            internationalAdapter.notifyDataSetChanged();
+        }
+        if (budgetAdapter != null) {
+            budgetAdapter.notifyDataSetChanged();
+        }
+    }
     
     public void shutdown() {
         if (executorService != null) {
