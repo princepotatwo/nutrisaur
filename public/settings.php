@@ -2727,16 +2727,18 @@ header {
                             
                             if (!empty($users)) {
                                 foreach ($users as $user) {
-                                    echo '<tr data-user-id="' . htmlspecialchars($user['id'] ?? '') . '">';
+                                    // Use email as the identifier since it's the primary key
+                                    $userIdentifier = htmlspecialchars($user['email'] ?? '');
+                                    echo '<tr data-user-email="' . $userIdentifier . '">';
                                     echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . $userIdentifier . '</td>';
                                     echo '<td>' . htmlspecialchars($user['municipality'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
                                     echo '<td class="action-buttons">';
-                                    echo '<button class="btn-edit" onclick="editUser(' . htmlspecialchars($user['id'] ?? '0') . ')" title="Edit User">✏️</button>';
-                                    echo '<button class="btn-delete" onclick="deleteUser(' . htmlspecialchars($user['id'] ?? '0') . ')" title="Delete User">🗑️</button>';
+                                    echo '<button class="btn-edit" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User">✏️</button>';
+                                    echo '<button class="btn-delete" onclick="deleteUser(\'' . $userIdentifier . '\')" title="Delete User">🗑️</button>';
                                     echo '</td>';
                                     echo '</tr>';
                                 }
@@ -3488,19 +3490,19 @@ header {
         }
 
         // User management functions
-        function editUser(userId) {
-            if (!userId || userId === '0') {
-                alert('Invalid user ID');
+        function editUser(userEmail) {
+            if (!userEmail || userEmail === '') {
+                alert('Invalid user email');
                 return;
             }
             
             // For now, show an alert. In a real implementation, this would open an edit modal or redirect to edit page
-            alert(`Edit user with ID: ${userId}\n\nThis would open an edit form in a real implementation.`);
+            alert(`Edit user with email: ${userEmail}\n\nThis would open an edit form in a real implementation.`);
         }
 
-        function deleteUser(userId) {
-            if (!userId || userId === '0') {
-                alert('Invalid user ID');
+        function deleteUser(userEmail) {
+            if (!userEmail || userEmail === '') {
+                alert('Invalid user email');
                 return;
             }
 
@@ -3522,14 +3524,14 @@ header {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    user_id: userId
+                    user_email: userEmail
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     // Remove the row from the table
-                    const row = document.querySelector(`tr[data-user-id="${userId}"]`);
+                    const row = document.querySelector(`tr[data-user-email="${userEmail}"]`);
                     if (row) {
                         row.remove();
                         showNotification('User deleted successfully!', 'success');

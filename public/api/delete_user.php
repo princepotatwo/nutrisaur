@@ -36,15 +36,15 @@ try {
     // Get JSON input
     $input = json_decode(file_get_contents('php://input'), true);
     
-    if (!$input || !isset($input['user_id'])) {
-        echo json_encode(['success' => false, 'message' => 'User ID is required']);
+    if (!$input || !isset($input['user_email'])) {
+        echo json_encode(['success' => false, 'message' => 'User email is required']);
         exit();
     }
     
-    $user_id = intval($input['user_id']);
+    $user_email = trim($input['user_email']);
     
-    if ($user_id <= 0) {
-        echo json_encode(['success' => false, 'message' => 'Invalid user ID']);
+    if (empty($user_email)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid user email']);
         exit();
     }
     
@@ -57,15 +57,15 @@ try {
     }
     
     // Check if user exists
-    $result = $db->select('community_users', 'id', 'id = ?', [$user_id]);
+    $result = $db->select('community_users', 'email', 'email = ?', [$user_email]);
     
     if (!$result['success'] || empty($result['data'])) {
         echo json_encode(['success' => false, 'message' => 'User not found']);
         exit();
     }
     
-    // Delete the user
-    $deleteResult = $db->delete('community_users', 'id = ?', [$user_id]);
+    // Delete the user using email as the primary key
+    $deleteResult = $db->delete('community_users', 'email = ?', [$user_email]);
     
     if ($deleteResult['success']) {
         echo json_encode(['success' => true, 'message' => 'User deleted successfully']);
