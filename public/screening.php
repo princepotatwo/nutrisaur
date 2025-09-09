@@ -1453,28 +1453,6 @@ header {
             font-size: 1.1em;
         }
 
-        .risk-level {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .risk-level.low {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .risk-level.medium {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .risk-level.high {
-            background: #f8d7da;
-            color: #721c24;
-        }
 
         .btn-view {
             background: var(--accent-color);
