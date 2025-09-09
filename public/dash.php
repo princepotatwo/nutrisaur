@@ -7657,8 +7657,14 @@ body {
         // Function to fetch data from centralized DatabaseAPI
         async function fetchDataFromAPI(endpoint, params = {}) {
             try {
-                // Use centralized DatabaseAPI
-                let url = `${API_BASE_URL}DatabaseAPI.php?action=${endpoint}`;
+                // Use our new assessment API for dashboard stats
+                let url;
+                if (endpoint === 'dashboard_assessment_stats') {
+                    url = `${API_BASE_URL}dashboard_assessment_stats.php`;
+                } else {
+                    // Use centralized DatabaseAPI for other endpoints
+                    url = `${API_BASE_URL}DatabaseAPI.php?action=${endpoint}`;
+                }
                 
                 // Add query parameters if any
                 if (Object.keys(params).length > 0) {
