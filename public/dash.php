@@ -6097,9 +6097,16 @@ body {
                                 <?php if (!empty($screeningResponsesData['age_groups'])): ?>
                                     <?php foreach ($screeningResponsesData['age_groups'] as $ageGroup): ?>
                                         <div class="response-answer-item">
-                                            <span class="answer-label"><?php echo htmlspecialchars($ageGroup['age_group']); ?></span>
-                                            <span class="answer-count"><?php echo $ageGroup['count']; ?></span>
-                                            <span class="answer-percentage"><?php echo round(($ageGroup['count'] / $timeFrameData['total_screened']) * 100, 1); ?>%</span>
+                                            <span class="answer-label"><?php echo htmlspecialchars($ageGroup['age_group'] ?? ''); ?></span>
+                                            <span class="answer-count"><?php echo $ageGroup['count'] ?? 0; ?></span>
+                                            <span class="answer-percentage"><?php 
+                                                $totalScreened = $timeFrameData['total_screened'] ?? 0;
+                                                if ($totalScreened > 0) {
+                                                    echo round(($ageGroup['count'] / $totalScreened) * 100, 1);
+                                                } else {
+                                                    echo '0';
+                                                }
+                                            ?>%</span>
                                         </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -6123,7 +6130,14 @@ body {
                                         <div class="response-answer-item">
                                             <span class="answer-label"><?php echo htmlspecialchars($gender['gender']); ?></span>
                                             <span class="answer-count"><?php echo $gender['count']; ?></span>
-                                            <span class="answer-percentage"><?php echo round(($gender['count'] / $timeFrameData['total_screened']) * 100, 1); ?>%</span>
+                                            <span class="answer-percentage"><?php 
+                                                $totalScreened = $timeFrameData['total_screened'] ?? 0;
+                                                if ($totalScreened > 0) {
+                                                    echo round(($gender['count'] / $totalScreened) * 100, 1);
+                                                } else {
+                                                    echo '0';
+                                                }
+                                            ?>%</span>
                                         </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -6147,7 +6161,14 @@ body {
                                     <div class="response-answer-item">
                                         <span class="answer-label"><?php echo htmlspecialchars($income['income']); ?></span>
                                         <span class="answer-count"><?php echo $income['count']; ?></span>
-                                        <span class="answer-percentage"><?php echo round(($income['count'] / $timeFrameData['total_screened']) * 100, 1); ?>%</span>
+                                        <span class="answer-percentage"><?php 
+                                            $totalScreened = $timeFrameData['total_screened'] ?? 0;
+                                            if ($totalScreened > 0) {
+                                                echo round(($income['count'] / $totalScreened) * 100, 1);
+                                            } else {
+                                                echo '0';
+                                            }
+                                        ?>%</span>
                                     </div>
                                 <?php endforeach; ?>
                             <?php else: ?>
@@ -6171,7 +6192,14 @@ body {
                                     <div class="response-answer-item">
                                         <span class="answer-label"><?php echo htmlspecialchars($height['height_range']); ?></span>
                                         <span class="answer-count"><?php echo $height['count']; ?></span>
-                                        <span class="answer-percentage"><?php echo round(($height['count'] / $timeFrameData['total_screened']) * 100, 1); ?>%</span>
+                                        <span class="answer-percentage"><?php 
+                                            $totalScreened = $timeFrameData['total_screened'] ?? 0;
+                                            if ($totalScreened > 0) {
+                                                echo round(($height['count'] / $totalScreened) * 100, 1);
+                                            } else {
+                                                echo '0';
+                                            }
+                                        ?>%</span>
                                     </div>
                                 <?php endforeach; ?>
                             <?php else: ?>
