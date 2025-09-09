@@ -1,49 +1,32 @@
 <?php
 // Test script for verification code functionality
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Test database connection
 echo "<h2>Testing NUTRISAUR Verification System</h2>";
 
-// Database connection with environment variables
-$dbError = null;
-$pdo = null;
+// Use the same database connection as the working nutritional assessment system
+require_once __DIR__ . "/../config.php";
 
-try {
-    // Try to get database config from environment variables first, then fallback to defaults
-    $host = $_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? 'localhost';
-    $dbname = $_ENV['DB_NAME'] ?? $_ENV['MYSQL_DATABASE'] ?? 'nutrisaur_db';
-    $username = $_ENV['DB_USER'] ?? $_ENV['MYSQL_USER'] ?? 'root';
-    $password = $_ENV['DB_PASS'] ?? $_ENV['MYSQL_PASSWORD'] ?? '';
-    $port = $_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? '3306';
-    
-    // Try different connection methods
-    $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
-    
-    // First try with port
-    try {
-        $pdo = new PDO($dsn, $username, $password);
-    } catch (PDOException $e) {
-        // If that fails, try without port (for socket connections)
-        $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
-        $pdo = new PDO($dsn, $username, $password);
-    }
-    
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $dbError = "Database connection failed: " . $e->getMessage();
-    error_log("Test page: Database connection failed - " . $e->getMessage());
-    $pdo = null;
+$dbError = null;
+$pdo = getDatabaseConnection(); // Use the working database connection function
+
+if ($pdo === null) {
+    $dbError = "Database connection failed: Unable to connect to database";
+    error_log("Test page: Database connection failed - using getDatabaseConnection()");
 }
 
 // Test 1: Database Connection
 echo "<h3>1. Database Connection Test</h3>";
 if ($pdo !== null) {
     echo "✅ Database connection successful<br>";
-    echo "Host: $host<br>";
-    echo "Database: $dbname<br>";
-    echo "User: $username<br>";
+    $config = getDatabaseConfig();
+    echo "Host: " . $config['host'] . "<br>";
+    echo "Database: " . $config['database'] . "<br>";
+    echo "User: " . $config['username'] . "<br>";
+    echo "Port: " . $config['port'] . "<br>";
 } else {
     echo "❌ Database connection failed: " . ($dbError ?? 'Unknown error') . "<br>";
     echo "<p>This means the verification system won't work until database connection is fixed.</p>";
@@ -213,11 +196,17 @@ if ($pdo !== null) {
 
 // Test 5: Environment Variables
 echo "<h3>5. Environment Variables Test</h3>";
-echo "DB_HOST: " . ($_ENV['DB_HOST'] ?? 'Not set (using: localhost)') . "<br>";
-echo "DB_NAME: " . ($_ENV['DB_NAME'] ?? 'Not set (using: nutrisaur_db)') . "<br>";
-echo "DB_USER: " . ($_ENV['DB_USER'] ?? 'Not set (using: root)') . "<br>";
-echo "DB_PASS: " . (empty($_ENV['DB_PASS']) ? 'Not set (using: empty)' : 'Set') . "<br>";
-echo "DB_PORT: " . ($_ENV['DB_PORT'] ?? 'Not set (using: 3306)') . "<br>";
+$config = getDatabaseConfig();
+echo "MYSQL_HOST: " . $config['env_vars']['MYSQL_HOST'] . "<br>";
+echo "MYSQL_DATABASE: " . $config['env_vars']['MYSQL_DATABASE'] . "<br>";
+echo "MYSQL_USER: " . $config['env_vars']['MYSQL_USER'] . "<br>";
+echo "MYSQL_PASSWORD: " . $config['env_vars']['MYSQL_PASSWORD'] . "<br>";
+echo "MYSQL_PORT: " . $config['env_vars']['MYSQL_PORT'] . "<br>";
+echo "<br>Actual Database Config:<br>";
+echo "Host: " . $config['host'] . "<br>";
+echo "Database: " . $config['database'] . "<br>";
+echo "User: " . $config['username'] . "<br>";
+echo "Port: " . $config['port'] . "<br>";
 
 // Test 6: PHP Configuration
 echo "<h3>6. PHP Configuration Test</h3>";

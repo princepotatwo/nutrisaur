@@ -17,36 +17,15 @@ if ($isLoggedIn) {
     exit;
 }
 
-// Database connection with environment variables
-$dbError = null;
-$pdo = null;
+// Use the same database connection as the working nutritional assessment system
+require_once __DIR__ . "/../config.php";
 
-try {
-    // Try to get database config from environment variables first, then fallback to defaults
-    $host = $_ENV['DB_HOST'] ?? $_ENV['MYSQL_HOST'] ?? 'localhost';
-    $dbname = $_ENV['DB_NAME'] ?? $_ENV['MYSQL_DATABASE'] ?? 'nutrisaur_db';
-    $username = $_ENV['DB_USER'] ?? $_ENV['MYSQL_USER'] ?? 'root';
-    $password = $_ENV['DB_PASS'] ?? $_ENV['MYSQL_PASSWORD'] ?? '';
-    $port = $_ENV['DB_PORT'] ?? $_ENV['MYSQL_PORT'] ?? '3306';
-    
-    // Try different connection methods
-    $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
-    
-    // First try with port
-    try {
-        $pdo = new PDO($dsn, $username, $password);
-    } catch (PDOException $e) {
-        // If that fails, try without port (for socket connections)
-        $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
-        $pdo = new PDO($dsn, $username, $password);
-    }
-    
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $dbError = "Database connection failed: " . $e->getMessage();
-    error_log("Home page: Database connection failed - " . $e->getMessage());
-    $pdo = null; // Ensure $pdo is null on failure
+$dbError = null;
+$pdo = getDatabaseConnection(); // Use the working database connection function
+
+if ($pdo === null) {
+    $dbError = "Database connection unavailable. Please try again later.";
+    error_log("Home page: Database connection failed - using getDatabaseConnection()");
 }
 
 $loginError = "";
