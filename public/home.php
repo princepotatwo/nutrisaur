@@ -68,28 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
                         exit;
                     }
                 } else {
-                    // Check admin table
-                    $adminStmt = $pdo->prepare("SELECT admin_id, username, email, password FROM admins WHERE email = ? OR username = ?");
-                    $adminStmt->execute([$usernameOrEmail, $usernameOrEmail]);
-                    $admin = $adminStmt->fetch();
-                    
-                    if ($admin && password_verify($password, $admin['password'])) {
-                        // Set admin session variables
-                        $_SESSION['admin_id'] = $admin['admin_id'];
-                        $_SESSION['username'] = $admin['username'];
-                        $_SESSION['email'] = $admin['email'];
-                        $_SESSION['is_admin'] = true;
-                        
-                        // Update last login
-                        $updateStmt = $pdo->prepare("UPDATE admins SET last_login = NOW() WHERE admin_id = ?");
-                        $updateStmt->execute([$admin['admin_id']]);
-                        
-                        // Redirect to dashboard
-                        header("Location: /dash");
-                        exit;
-                    } else {
-                        $loginError = "Invalid username/email or password";
-                    }
+                    $loginError = "Invalid username/email or password";
                 }
             } catch (Exception $e) {
                 $loginError = "Login failed: " . $e->getMessage();
@@ -204,28 +183,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                     echo json_encode(['success' => true, 'message' => 'Login successful', 'user_type' => 'user', 'data' => $user]);
                     exit;
                 } else {
-                    // Check admin table
-                    $adminStmt = $pdo->prepare("SELECT admin_id, username, email, password FROM admins WHERE email = ? OR username = ?");
-                    $adminStmt->execute([$usernameOrEmail, $usernameOrEmail]);
-                    $admin = $adminStmt->fetch();
-                    
-                    if ($admin && password_verify($password, $admin['password'])) {
-                        // Set admin session variables
-                        $_SESSION['admin_id'] = $admin['admin_id'];
-                        $_SESSION['username'] = $admin['username'];
-                        $_SESSION['email'] = $admin['email'];
-                        $_SESSION['is_admin'] = true;
-                        
-                        // Update last login
-                        $updateStmt = $pdo->prepare("UPDATE admins SET last_login = NOW() WHERE admin_id = ?");
-                        $updateStmt->execute([$admin['admin_id']]);
-                        
-                        echo json_encode(['success' => true, 'message' => 'Login successful', 'user_type' => 'admin', 'data' => $admin]);
-                        exit;
-                    } else {
-                        echo json_encode(['success' => false, 'message' => 'Invalid username/email or password']);
-                        exit;
-                    }
+                    echo json_encode(['success' => false, 'message' => 'Invalid username/email or password']);
+                    exit;
                 }
             } catch (Exception $e) {
                 echo json_encode(['success' => false, 'message' => 'Login failed: ' . $e->getMessage()]);
@@ -313,14 +272,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             exit;
             
         case 'check_session':
-            $loggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
+            $loggedIn = isset($_SESSION['user_id']);
             echo json_encode([
                 'success' => true,
                 'logged_in' => $loggedIn,
                 'user_id' => $_SESSION['user_id'] ?? null,
-                'admin_id' => $_SESSION['admin_id'] ?? null,
                 'username' => $_SESSION['username'] ?? null,
-                'is_admin' => $_SESSION['is_admin'] ?? false
+                'email' => $_SESSION['email'] ?? null,
+                'is_admin' => false
             ]);
             exit;
             
