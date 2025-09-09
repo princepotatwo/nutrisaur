@@ -2913,29 +2913,71 @@ header {
                                 
                                 if (!empty($users)) {
                                     foreach ($users as $user) {
-                                        // Get WHO growth standards data from database columns
-                                        // Handle column names with hyphens by using array access
-                                        $wfa_classification = $user['weight-for-age'] ?? $user['`weight-for-age`'] ?? 'N/A';
-                                        $hfa_classification = $user['height-for-age'] ?? $user['`height-for-age`'] ?? 'N/A';
-                                        $wfh_classification = $user['weight-for-height'] ?? $user['`weight-for-height`'] ?? 'N/A';
-                                        $wfl_classification = $user['weight-for-length'] ?? $user['`weight-for-length`'] ?? 'N/A';
-                                        $bmi_classification = $user['bmi_category'] ?? 'N/A';
+                                        // Use WHO Growth Standards decision tree for each user
+                                        try {
+                                            $who = new WHOGrowthStandards();
+                                            $assessment = $who->getComprehensiveAssessment(
+                                                floatval($user['weight']),
+                                                floatval($user['height']),
+                                                $user['birthday'],
+                                                $user['sex']
+                                            );
+                                        } catch (Exception $e) {
+                                            // If WHO calculation fails, use fallback
+                                            $assessment = ['success' => false, 'error' => $e->getMessage()];
+                                        }
                                         
-                                        // Format z-scores for display
-                                        $wfa_display = is_numeric($wfa_classification) ? 'Z: ' . number_format($wfa_classification, 2) : $wfa_classification;
-                                        $hfa_display = is_numeric($hfa_classification) ? 'Z: ' . number_format($hfa_classification, 2) : $hfa_classification;
-                                        $wfh_display = is_numeric($wfh_classification) ? 'Z: ' . number_format($wfh_classification, 2) : $wfh_classification;
-                                        $wfl_display = is_numeric($wfl_classification) ? 'Z: ' . number_format($wfl_classification, 2) : $wfl_classification;
-                                        $bmi_display = is_numeric($bmi_classification) ? 'Z: ' . number_format($bmi_classification, 2) : $bmi_classification;
+                                        if ($assessment['success']) {
+                                            // Get WHO Growth Standards results from decision tree
+                                            $wfa_zscore = $assessment['weight_for_age']['z_score'] ?? null;
+                                            $hfa_zscore = $assessment['height_for_age']['z_score'] ?? null;
+                                            $wfh_zscore = $assessment['weight_for_height']['z_score'] ?? null;
+                                            $wfl_zscore = $assessment['weight_for_length']['z_score'] ?? null;
+                                            $bmi_zscore = $assessment['bmi_for_age']['z_score'] ?? null;
+                                            
+                                            $wfa_classification = $assessment['weight_for_age']['classification'] ?? 'N/A';
+                                            $hfa_classification = $assessment['height_for_age']['classification'] ?? 'N/A';
+                                            $wfh_classification = $assessment['weight_for_height']['classification'] ?? 'N/A';
+                                            $wfl_classification = $assessment['weight_for_length']['classification'] ?? 'N/A';
+                                            $bmi_classification = $assessment['bmi_for_age']['classification'] ?? 'N/A';
+                                            
+                                            // Format z-scores for display
+                                            $wfa_display = $wfa_zscore !== null ? 'Z: ' . number_format($wfa_zscore, 2) . ' (' . $wfa_classification . ')' : 'N/A';
+                                            $hfa_display = $hfa_zscore !== null ? 'Z: ' . number_format($hfa_zscore, 2) . ' (' . $hfa_classification . ')' : 'N/A';
+                                            $wfh_display = $wfh_zscore !== null ? 'Z: ' . number_format($wfh_zscore, 2) . ' (' . $wfh_classification . ')' : 'N/A';
+                                            $wfl_display = $wfl_zscore !== null ? 'Z: ' . number_format($wfl_zscore, 2) . ' (' . $wfl_classification . ')' : 'N/A';
+                                            $bmi_display = $bmi_zscore !== null ? 'Z: ' . number_format($bmi_zscore, 2) . ' (' . $bmi_classification . ')' : 'N/A';
+                                        } else {
+                                            // Fallback to database values if WHO calculation fails
+                                            $wfa_classification = $user['weight-for-age'] ?? $user['`weight-for-age`'] ?? 'N/A';
+                                            $hfa_classification = $user['height-for-age'] ?? $user['`height-for-age`'] ?? 'N/A';
+                                            $wfh_classification = $user['weight-for-height'] ?? $user['`weight-for-height`'] ?? 'N/A';
+                                            $wfl_classification = $user['weight-for-length'] ?? $user['`weight-for-length`'] ?? 'N/A';
+                                            $bmi_classification = $user['bmi_category'] ?? 'N/A';
+                                            
+                                            // Format z-scores for display
+                                            $wfa_display = is_numeric($wfa_classification) ? 'Z: ' . number_format($wfa_classification, 2) : $wfa_classification;
+                                            $hfa_display = is_numeric($hfa_classification) ? 'Z: ' . number_format($hfa_classification, 2) : $hfa_classification;
+                                            $wfh_display = is_numeric($wfh_classification) ? 'Z: ' . number_format($wfh_classification, 2) : $wfh_classification;
+                                            $wfl_display = is_numeric($wfl_classification) ? 'Z: ' . number_format($wfl_classification, 2) : $wfl_classification;
+                                            $bmi_display = is_numeric($bmi_classification) ? 'Z: ' . number_format($bmi_classification, 2) : $bmi_classification;
+                                        }
                                         
                                         echo '<tr>';
                                         echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                         echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfa_classification)) . '">' . htmlspecialchars($wfa_display) . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $hfa_classification)) . '">' . htmlspecialchars($hfa_display) . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfh_classification)) . '">' . htmlspecialchars($wfh_display) . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $wfl_classification)) . '">' . htmlspecialchars($wfl_display) . '</td>';
-                                        echo '<td class="who-classification ' . strtolower(str_replace([' ', '(', ')'], ['-', '', ''], $bmi_classification)) . '">' . htmlspecialchars($bmi_display) . '</td>';
+                                        // Get CSS class names for styling
+                                        $wfa_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $wfa_classification));
+                                        $hfa_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $hfa_classification));
+                                        $wfh_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $wfh_classification));
+                                        $wfl_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $wfl_classification));
+                                        $bmi_class = strtolower(str_replace([' ', '(', ')', 'out of range'], ['-', '', '', 'out-of-range'], $bmi_classification));
+                                        
+                                        echo '<td class="who-classification ' . $wfa_class . '">' . htmlspecialchars($wfa_display) . '</td>';
+                                        echo '<td class="who-classification ' . $hfa_class . '">' . htmlspecialchars($hfa_display) . '</td>';
+                                        echo '<td class="who-classification ' . $wfh_class . '">' . htmlspecialchars($wfh_display) . '</td>';
+                                        echo '<td class="who-classification ' . $wfl_class . '">' . htmlspecialchars($wfl_display) . '</td>';
+                                        echo '<td class="who-classification ' . $bmi_class . '">' . htmlspecialchars($bmi_display) . '</td>';
                                         echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                         echo '</tr>';
                                     }
