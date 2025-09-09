@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 // Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
 require_once __DIR__ . '/api/DatabaseHelper.php';
 
-// Simplified nutritional assessment function
+// Comprehensive nutritional assessment function based on WHO standards
 function getNutritionalAssessment($user) {
     try {
         $age = calculateAge($user['birthday']);
@@ -21,39 +21,28 @@ function getNutritionalAssessment($user) {
         $isPregnant = $user['is_pregnant'] === 'Yes';
         $sex = $user['sex'];
         
-        // Simple BMI calculation
+        // Validate input data
+        if ($age < 0 || $age > 120 || $weight <= 0 || $weight > 500 || $height <= 0 || $height > 250 || $muac <= 0 || $muac > 50) {
+            return [
+                'nutritional_status' => 'Invalid Data',
+                'risk_level' => 'Unknown',
+                'category' => 'Error'
+            ];
+        }
+        
+        // Calculate BMI
         $bmi = $height > 0 ? round($weight / (($height / 100) * ($height / 100)), 1) : 0;
         
-        // Basic assessment logic
+        // Decision Tree Implementation
         if ($age < 18) {
-            // Child assessment
-            if ($bmi < 16) {
-                return ['nutritional_status' => 'Severe Acute Malnutrition (SAM)', 'risk_level' => 'High', 'category' => 'Undernutrition'];
-            } elseif ($bmi < 18.5) {
-                return ['nutritional_status' => 'Moderate Acute Malnutrition (MAM)', 'risk_level' => 'Medium', 'category' => 'Undernutrition'];
-            } else {
-                return ['nutritional_status' => 'Normal', 'risk_level' => 'Low', 'category' => 'Normal'];
-            }
+            // CHILD/ADOLESCENT ASSESSMENT
+            return assessChildAdolescent($age, $weight, $height, $muac, $sex);
         } elseif ($isPregnant) {
-            // Pregnant woman assessment
-            if ($muac < 23) {
-                return ['nutritional_status' => 'Maternal Undernutrition (At-risk)', 'risk_level' => 'High', 'category' => 'Undernutrition'];
-            } else {
-                return ['nutritional_status' => 'Normal', 'risk_level' => 'Low', 'category' => 'Normal'];
-            }
+            // PREGNANT WOMAN ASSESSMENT
+            return assessPregnantWoman($muac, $weight);
         } else {
-            // Adult assessment
-            if ($bmi < 16) {
-                return ['nutritional_status' => 'Severe Underweight', 'risk_level' => 'High', 'category' => 'Undernutrition'];
-            } elseif ($bmi < 18.5) {
-                return ['nutritional_status' => 'Mild Underweight', 'risk_level' => 'Medium', 'category' => 'Undernutrition'];
-            } elseif ($bmi < 25) {
-                return ['nutritional_status' => 'Normal', 'risk_level' => 'Low', 'category' => 'Normal'];
-            } elseif ($bmi < 30) {
-                return ['nutritional_status' => 'Overweight', 'risk_level' => 'Medium', 'category' => 'Overnutrition'];
-            } else {
-                return ['nutritional_status' => 'Obesity Class I', 'risk_level' => 'High', 'category' => 'Overnutrition'];
-            }
+            // ADULT/ELDERLY ASSESSMENT
+            return assessAdultElderly($weight, $height, $muac);
         }
     } catch (Exception $e) {
         return [
@@ -69,6 +58,140 @@ function calculateAge($birthday) {
     $today = new DateTime();
     $age = $today->diff($birthDate);
     return $age->y + ($age->m / 12);
+}
+
+function calculateBMI($weight, $height) {
+    if ($height <= 0) return 0;
+    $heightInMeters = $height / 100;
+    return round($weight / ($heightInMeters * $heightInMeters), 1);
+}
+
+/**
+ * Child/Adolescent Assessment (Age < 18) - Following WHO Growth Standards
+ */
+function assessChildAdolescent($age, $weight, $height, $muac, $sex) {
+    $bmi = calculateBMI($weight, $height);
+    
+    // Simplified WHO-based assessment for children
+    if ($age >= 0.5 && $age < 5 && $muac < 11.5) {
+        return [
+            'nutritional_status' => 'Severe Acute Malnutrition (SAM)',
+            'risk_level' => 'High',
+            'category' => 'Undernutrition'
+        ];
+    } elseif ($age >= 0.5 && $age < 5 && $muac >= 11.5 && $muac < 12.5) {
+        return [
+            'nutritional_status' => 'Moderate Acute Malnutrition (MAM)',
+            'risk_level' => 'Medium',
+            'category' => 'Undernutrition'
+        ];
+    } elseif ($age >= 0.5 && $age < 5 && $muac >= 12.5 && $muac < 13.5) {
+        return [
+            'nutritional_status' => 'Mild Acute Malnutrition (Wasting)',
+            'risk_level' => 'Low-Medium',
+            'category' => 'Undernutrition'
+        ];
+    } elseif ($bmi < 16) {
+        return [
+            'nutritional_status' => 'Severe Acute Malnutrition (SAM)',
+            'risk_level' => 'High',
+            'category' => 'Undernutrition'
+        ];
+    } elseif ($bmi < 18.5) {
+        return [
+            'nutritional_status' => 'Moderate Acute Malnutrition (MAM)',
+            'risk_level' => 'Medium',
+            'category' => 'Undernutrition'
+        ];
+    } else {
+        return [
+            'nutritional_status' => 'Normal',
+            'risk_level' => 'Low',
+            'category' => 'Normal'
+        ];
+    }
+}
+
+/**
+ * Pregnant Woman Assessment
+ */
+function assessPregnantWoman($muac, $weight) {
+    if ($muac < 23.0) {
+        return [
+            'nutritional_status' => 'Maternal Undernutrition (At-risk)',
+            'risk_level' => 'High',
+            'category' => 'Undernutrition'
+        ];
+    } elseif ($muac >= 23.0 && $muac < 25.0) {
+        return [
+            'nutritional_status' => 'Maternal At-risk',
+            'risk_level' => 'Medium',
+            'category' => 'Undernutrition'
+        ];
+    } else {
+        return [
+            'nutritional_status' => 'Normal',
+            'risk_level' => 'Low',
+            'category' => 'Normal'
+        ];
+    }
+}
+
+/**
+ * Adult/Elderly Assessment (Age ≥ 18, Not Pregnant)
+ */
+function assessAdultElderly($weight, $height, $muac) {
+    $bmi = calculateBMI($weight, $height);
+    
+    if ($bmi < 16.0) {
+        return [
+            'nutritional_status' => 'Severe Underweight',
+            'risk_level' => 'High',
+            'category' => 'Undernutrition'
+        ];
+    } elseif ($bmi >= 16.0 && $bmi < 17.0) {
+        return [
+            'nutritional_status' => 'Moderate Underweight',
+            'risk_level' => 'High',
+            'category' => 'Undernutrition'
+        ];
+    } elseif ($bmi >= 17.0 && $bmi < 18.5) {
+        return [
+            'nutritional_status' => 'Mild Underweight',
+            'risk_level' => 'Medium',
+            'category' => 'Undernutrition'
+        ];
+    } elseif ($bmi >= 18.5 && $bmi < 25.0) {
+        return [
+            'nutritional_status' => 'Normal',
+            'risk_level' => 'Low',
+            'category' => 'Normal'
+        ];
+    } elseif ($bmi >= 25.0 && $bmi < 30.0) {
+        return [
+            'nutritional_status' => 'Overweight',
+            'risk_level' => 'Medium',
+            'category' => 'Overnutrition'
+        ];
+    } elseif ($bmi >= 30.0 && $bmi < 35.0) {
+        return [
+            'nutritional_status' => 'Obesity Class I',
+            'risk_level' => 'High',
+            'category' => 'Overnutrition'
+        ];
+    } elseif ($bmi >= 35.0 && $bmi < 40.0) {
+        return [
+            'nutritional_status' => 'Obesity Class II',
+            'risk_level' => 'High',
+            'category' => 'Overnutrition'
+        ];
+    } else {
+        return [
+            'nutritional_status' => 'Obesity Class III (Severe)',
+            'risk_level' => 'Very High',
+            'category' => 'Overnutrition'
+        ];
+    }
 }
 
 // Get database helper instance
@@ -2699,6 +2822,12 @@ header {
         }
 
         .nutritional-status.invalid-data {
+            background-color: rgba(158, 158, 158, 0.15);
+            color: #9E9E9E;
+            border: 1px solid rgba(158, 158, 158, 0.3);
+        }
+
+        .nutritional-status.assessment-error {
             background-color: rgba(158, 158, 158, 0.15);
             color: #9E9E9E;
             border: 1px solid rgba(158, 158, 158, 0.3);
