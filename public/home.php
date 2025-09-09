@@ -19,6 +19,7 @@ if ($isLoggedIn) {
 
 // Direct database connection
 require_once __DIR__ . "/api/DatabaseHelper.php";
+require_once __DIR__ . "/api/DatabaseAPI.php";
 
 $db = DatabaseHelper::getInstance();
 
@@ -235,129 +236,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
 }
 
 /**
- * Send verification email using Resend API with fallback
+ * Send verification email using centralized Resend API function
  */
 function sendVerificationEmail($email, $username, $verificationCode) {
-    try {
-        // Resend API configuration
-        $resendApiKey = 're_Vk6LhArD_KSi2P8EiHxz2CSwh9N2cAUZB';
-        $fromEmail = 'onboarding@resend.dev';
-        
-        // Create email data
-        $emailData = [
-            'from' => $fromEmail,
-            'to' => [$email],
-            'subject' => "Nutrisaur Verification Code: $verificationCode",
-            'html' => "
-            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
-                <div style='background: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;'>
-                    <h1 style='margin: 0;'>🧪 Nutrisaur</h1>
-                </div>
-                <div style='background: white; padding: 30px; border: 1px solid #ddd; border-radius: 0 0 10px 10px;'>
-                    <h2 style='color: #333;'>Hello $username!</h2>
-                    <p style='color: #666; font-size: 16px;'>Your verification code is:</p>
-                    <div style='background: #f8f9fa; border: 2px solid #4CAF50; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
-                        <span style='font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;'>$verificationCode</span>
-                    </div>
-                    <p style='color: #666; font-size: 14px;'>This code will expire in 5 minutes.</p>
-                    <p style='color: #666; font-size: 14px;'>If you didn't request this verification, please ignore this email.</p>
-                    <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;'>
-                    <p style='color: #999; font-size: 12px; text-align: center;'>Best regards,<br>Nutrisaur Team</p>
-                </div>
-            </div>
-            "
-        ];
-        
-        // Send email using Resend API
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://api.resend.com/emails');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/json',
-            'Authorization: Bearer ' . $resendApiKey
-        ]);
-        
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
-        curl_close($ch);
-        
-        // Log the response for debugging
-        error_log("Resend API Response: HTTP $httpCode, Response: $response, Error: $curlError");
-        
-        if ($httpCode == 200 && !$curlError) {
-            $responseData = json_decode($response, true);
-            if ($responseData && isset($responseData['id'])) {
-                error_log("Email sent successfully via Resend. Email ID: " . $responseData['id']);
-                return true;
-            } else {
-                error_log("Resend API returned 200 but no email ID in response: " . $response);
-                return sendFallbackEmail($email, $username, $verificationCode);
-            }
-        } else {
-            error_log("Resend API failed: HTTP $httpCode, Response: $response, Error: $curlError");
-            return sendFallbackEmail($email, $username, $verificationCode);
-        }
-        
-    } catch (Exception $e) {
-        error_log("Email sending exception: " . $e->getMessage());
-        return sendFallbackEmail($email, $username, $verificationCode);
-    }
+    return sendResendEmail($email, $username, $verificationCode);
 }
 
-/**
- * Fallback email function using PHP mail()
- */
-function sendFallbackEmail($email, $username, $verificationCode) {
-    try {
-        $subject = "Nutrisaur Verification Code: $verificationCode";
-        $message = "
-        <html>
-        <head>
-            <title>Nutrisaur Verification</title>
-        </head>
-        <body style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
-            <div style='background: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0;'>
-                <h1 style='margin: 0;'>🧪 Nutrisaur</h1>
-            </div>
-            <div style='background: white; padding: 30px; border: 1px solid #ddd; border-radius: 0 0 10px 10px;'>
-                <h2 style='color: #333;'>Hello $username!</h2>
-                <p style='color: #666; font-size: 16px;'>Your verification code is:</p>
-                <div style='background: #f8f9fa; border: 2px solid #4CAF50; padding: 20px; text-align: center; border-radius: 10px; margin: 20px 0;'>
-                    <span style='font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;'>$verificationCode</span>
-                </div>
-                <p style='color: #666; font-size: 14px;'>This code will expire in 5 minutes.</p>
-                <p style='color: #666; font-size: 14px;'>If you didn't request this verification, please ignore this email.</p>
-                <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;'>
-                <p style='color: #999; font-size: 12px; text-align: center;'>Best regards,<br>Nutrisaur Team</p>
-            </div>
-        </body>
-        </html>
-        ";
-        
-        $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type: text/html; charset=UTF-8" . "\r\n";
-        $headers .= "From: Nutrisaur <noreply@nutrisaur.com>" . "\r\n";
-        $headers .= "Reply-To: noreply@nutrisaur.com" . "\r\n";
-        
-        $result = mail($email, $subject, $message, $headers);
-        
-        if ($result) {
-            error_log("Fallback email sent successfully to $email");
-            return true;
-        } else {
-            error_log("Fallback email failed to send to $email");
-            return false;
-        }
-        
-    } catch (Exception $e) {
-        error_log("Fallback email exception: " . $e->getMessage());
-        return false;
-    }
-}
 
 // Database connection is managed automatically by DatabaseAPI singleton
 ?>
