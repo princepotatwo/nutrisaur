@@ -4057,14 +4057,53 @@ header {
 
         // Search and filter functionality
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing filters...');
+            
             // Add real-time search functionality
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
+                console.log('Search input found, adding event listener');
                 searchInput.addEventListener('input', searchAssessments);
+            } else {
+                console.error('Search input not found!');
             }
             
+            // Test if filter elements exist
+            const municipalityFilter = document.getElementById('municipalityFilter');
+            const barangayFilter = document.getElementById('barangayFilter');
+            const ageFromFilter = document.getElementById('ageFromFilter');
+            const ageToFilter = document.getElementById('ageToFilter');
+            const sexFilter = document.getElementById('sexFilter');
+            const standardFilter = document.getElementById('standardFilter');
+            
+            console.log('Filter elements found:', {
+                municipality: !!municipalityFilter,
+                barangay: !!barangayFilter,
+                ageFrom: !!ageFromFilter,
+                ageTo: !!ageToFilter,
+                sex: !!sexFilter,
+                standard: !!standardFilter
+            });
+            
             // Initialize all filters
+            console.log('Applying initial filters...');
             applyAllFilters();
+            
+            // Add test button for debugging
+            const testButton = document.createElement('button');
+            testButton.textContent = 'Test Filters';
+            testButton.style.position = 'fixed';
+            testButton.style.top = '10px';
+            testButton.style.right = '10px';
+            testButton.style.zIndex = '9999';
+            testButton.style.background = 'red';
+            testButton.style.color = 'white';
+            testButton.style.padding = '10px';
+            testButton.onclick = function() {
+                console.log('Manual filter test triggered');
+                applyAllFilters();
+            };
+            document.body.appendChild(testButton);
         });
 
         function filterAssessments() {
