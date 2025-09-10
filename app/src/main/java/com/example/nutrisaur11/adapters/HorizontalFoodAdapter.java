@@ -88,6 +88,14 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
                 onFoodClickListener.onFoodClick(food);
             }
         });
+        
+        holder.itemView.setOnLongClickListener(v -> {
+            if (onFoodClickListener != null) {
+                onFoodClickListener.onFoodLongClick(food);
+                return true; // Consume the long click event
+            }
+            return false;
+        });
     }
 
     @Override
