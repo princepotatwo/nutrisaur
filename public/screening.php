@@ -1776,22 +1776,33 @@ header {
         }
 
         .header-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             width: 100%;
         }
 
-        /* Left Column - Search */
+        /* First Row - Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Second Row - Search */
         .search-section {
             display: flex;
             align-items: center;
+            justify-content: center;
             width: 100%;
         }
         
         .search-container {
             position: relative;
             width: 100%;
+            max-width: 400px;
             background: var(--color-card);
             border-radius: 6px;
             overflow: hidden;
@@ -1843,15 +1854,6 @@ header {
         .search-btn:hover {
             background: var(--color-primary);
             transform: translateY(-50%) scale(1.05);
-        }
-
-        /* Right Column - Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-            align-items: center;
-            height: 100%;
         }
 
         /* Filters Container - Full Width Below */
@@ -1940,8 +1942,7 @@ header {
         /* Responsive Design */
         @media (max-width: 768px) {
             .header-controls {
-                grid-template-columns: 1fr;
-                gap: 8px;
+                gap: 6px;
             }
 
             .filters-grid {
@@ -1952,11 +1953,16 @@ header {
             .action-buttons {
                 justify-content: center;
                 flex-wrap: wrap;
+                gap: 6px;
             }
 
             .btn-add, .btn-secondary {
                 flex: 1;
                 min-width: 120px;
+            }
+
+            .search-container {
+                max-width: 100%;
             }
         }
         
@@ -3079,17 +3085,28 @@ header {
             <div class="user-management-container">
                 <div class="table-header">
                     <div class="header-controls">
-                        <!-- Search and Filters Row -->
-                        <div class="filters-container">
-                            <!-- Search Bar -->
-                            <div class="search-section">
-                                <div class="search-container">
-                                    <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
+                        <!-- First Row - Action Buttons -->
+                        <div class="action-buttons">
+                            <button class="btn-add" onclick="downloadCSVTemplate()">
+                                <span class="btn-icon">📥</span>
+                                <span class="btn-text">Download Template</span>
+                            </button>
+                            <button class="btn-secondary" onclick="showCSVImportModal()">
+                                <span class="btn-icon">📁</span>
+                                <span class="btn-text">Import CSV</span>
+                            </button>
+                        </div>
+
+                        <!-- Second Row - Search Bar -->
+                        <div class="search-section">
+                            <div class="search-container">
+                                <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
                                 <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                             </div>
-                            </div>
-                            
-                            <!-- Filters Grid -->
+                        </div>
+
+                        <!-- Third Row - Filters -->
+                        <div class="filters-container">
                             <div class="filters-grid">
                                 <!-- Municipality Filter -->
                                 <div class="filter-group">
@@ -3122,23 +3139,23 @@ header {
                                 
                                 <!-- Age From Filter -->
                                 <div class="filter-group">
-                                    <label class="filter-label">Age From (Months)</label>
-                                    <input type="number" id="ageFromFilter" onchange="filterByAgeRange()" class="filter-select" 
-                                           placeholder="0" min="0" max="1000" step="1">
+                                    <label class="filter-label">Age From</label>
+                                    <input type="text" id="ageFromFilter" onchange="filterByAgeRange()" class="filter-select" 
+                                           placeholder="Y:00 M:00" pattern="Y:\d{2} M:\d{2}">
                                 </div>
                                 
                                 <!-- Age To Filter -->
                                 <div class="filter-group">
-                                    <label class="filter-label">Age To (Months)</label>
-                                    <input type="number" id="ageToFilter" onchange="filterByAgeRange()" class="filter-select" 
-                                           placeholder="1000" min="0" max="1000" step="1">
+                                    <label class="filter-label">Age To</label>
+                                    <input type="text" id="ageToFilter" onchange="filterByAgeRange()" class="filter-select" 
+                                           placeholder="Y:00 M:00" pattern="Y:\d{2} M:\d{2}">
                                 </div>
                                 
-                                <!-- Gender Filter -->
+                                <!-- Sex Filter -->
                                 <div class="filter-group">
-                                    <label class="filter-label">Gender</label>
+                                    <label class="filter-label">Sex</label>
                                     <select id="sexFilter" onchange="filterBySex()" class="filter-select">
-                                        <option value="">All Genders</option>
+                                        <option value="">All Sex</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                     </select>
@@ -3157,18 +3174,6 @@ header {
                                     </select>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- CSV Action Buttons -->
-                        <div class="action-buttons">
-                            <button class="btn-add" onclick="downloadCSVTemplate()">
-                                <span class="btn-icon">📥</span>
-                                <span class="btn-text">Download Template</span>
-                            </button>
-                            <button class="btn-secondary" onclick="showCSVImportModal()">
-                                <span class="btn-icon">📁</span>
-                                <span class="btn-text">Import CSV</span>
-                            </button>
                         </div>
 
                     </div>
