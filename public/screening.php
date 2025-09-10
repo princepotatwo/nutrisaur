@@ -1772,7 +1772,7 @@ header {
             letter-spacing: 0.5px;
         }
         
-        /* Table Header - Organized 2-Row Layout with Green Container */
+        /* Table Header - Organized Grid Layout with Green Container */
         .table-header {
             background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.1) 100%);
             border-radius: 12px;
@@ -1782,6 +1782,9 @@ header {
             border: 2px solid rgba(161, 180, 84, 0.3);
             position: relative;
             overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
         }
 
         /* Add subtle pattern overlay */
@@ -1797,8 +1800,8 @@ header {
         }
 
         .header-controls {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 15px;
             width: 100%;
             position: relative;
@@ -1893,7 +1896,7 @@ header {
             box-shadow: 0 4px 12px rgba(161, 180, 84, 0.4);
         }
 
-        /* Second Row - Filters Container with Green Background */
+        /* Second Row - Filters Container with Green Background and Grid Layout */
         .filters-container {
             width: 100%;
             background: linear-gradient(135deg, rgba(161, 180, 84, 0.15) 0%, rgba(161, 180, 84, 0.05) 100%);
@@ -1902,6 +1905,9 @@ header {
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(161, 180, 84, 0.2);
             position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
         }
 
         /* Light theme filters container */
@@ -1917,6 +1923,7 @@ header {
             gap: 12px;
             align-items: end;
             width: 100%;
+            min-height: 60px;
         }
 
         /* Individual filter groups with equal sizing */
@@ -1926,6 +1933,7 @@ header {
             gap: 6px;
             min-width: 0;
             flex: 1;
+            justify-content: flex-end;
         }
 
         /* Age input formatting */
@@ -2013,12 +2021,20 @@ header {
         }
 
         @media (max-width: 768px) {
+            .table-header {
+                gap: 12px;
+            }
+
             .header-controls {
                 gap: 12px;
             }
 
             .top-row {
                 grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .filters-container {
                 gap: 12px;
             }
 
@@ -2044,6 +2060,16 @@ header {
         }
 
         @media (max-width: 480px) {
+            .table-header {
+                gap: 10px;
+                padding: 15px;
+            }
+
+            .filters-container {
+                gap: 10px;
+                padding: 12px;
+            }
+
             .filters-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 6px;
