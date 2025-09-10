@@ -161,8 +161,54 @@ public class CommunityUserManager {
     public void registerUser(String fullName, String email, String password, String barangay, 
                            String municipality, String sex, String birthDate, String pregnancyStatus,
                            String weight, String height, String muac, RegisterCallback callback) {
-        // TODO: Implement registration logic
-        callback.onError("Registration method not implemented yet");
+        
+        Log.d(TAG, "=== REGISTERING USER ===");
+        Log.d(TAG, "Name: " + fullName);
+        Log.d(TAG, "Email: " + email);
+        Log.d(TAG, "Barangay: " + barangay);
+        Log.d(TAG, "Municipality: " + municipality);
+        
+        try {
+            // Create registration request
+            JSONObject requestData = new JSONObject();
+            requestData.put("action", "register_user");
+            requestData.put("name", fullName);
+            requestData.put("email", email);
+            requestData.put("password", password);
+            requestData.put("barangay", barangay);
+            requestData.put("municipality", municipality);
+            requestData.put("sex", sex);
+            requestData.put("birth_date", birthDate);
+            requestData.put("pregnancy_status", pregnancyStatus);
+            requestData.put("weight", weight);
+            requestData.put("height", height);
+            requestData.put("muac", muac);
+            
+            // Make API request
+            String response = makeApiRequest("register_community_user", requestData);
+            JSONObject jsonResponse = new JSONObject(response);
+            
+            if (jsonResponse.getBoolean("success")) {
+                // Save user login state
+                SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+                prefs.edit()
+                    .putString("current_user_email", email)
+                    .putString("current_user_name", fullName)
+                    .putBoolean("is_logged_in", true)
+                    .apply();
+                
+                Log.d(TAG, "Registration successful: " + jsonResponse.optString("message", "User registered successfully"));
+                callback.onSuccess(jsonResponse.optString("message", "Registration successful! Please complete your nutritional screening."));
+            } else {
+                String errorMessage = jsonResponse.optString("message", "Registration failed");
+                Log.e(TAG, "Registration failed: " + errorMessage);
+                callback.onError(errorMessage);
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error during registration: " + e.getMessage());
+            callback.onError("Registration failed: " + e.getMessage());
+        }
     }
     
     // Get current user data (alias for getCurrentUserDataFromDatabase)

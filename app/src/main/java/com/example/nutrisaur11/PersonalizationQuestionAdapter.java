@@ -136,11 +136,11 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
         }
 
         private View createMultipleChoiceView(Choice choice, int questionIndex) {
-            // Create a simple card with basic layout - EXACTLY SAME AS BEFORE
+            // Create a button-style card for multiple choice
             LinearLayout cardView = new LinearLayout(context);
             cardView.setLayoutParams(new LinearLayout.LayoutParams(
                 (int) (context.getResources().getDisplayMetrics().widthPixels * 0.9),
-                300 // Bigger card size - SAME AS BEFORE
+                300
             ));
             
             cardView.setOrientation(LinearLayout.HORIZONTAL);
@@ -151,12 +151,12 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             cardView.setFocusable(true);
             cardView.setForeground(context.getResources().getDrawable(R.drawable.button_ripple));
             
-            // Add margin - SAME AS BEFORE
+            // Add margin
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cardView.getLayoutParams();
             params.setMargins(0, 10, 0, 10);
             cardView.setLayoutParams(params);
             
-            // Left side - Text content - SAME AS BEFORE
+            // Left side - Text content
             LinearLayout leftSide = new LinearLayout(context);
             leftSide.setLayoutParams(new LinearLayout.LayoutParams(
                 0,
@@ -166,7 +166,7 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             leftSide.setOrientation(LinearLayout.VERTICAL);
             leftSide.setGravity(android.view.Gravity.CENTER_VERTICAL);
             
-            // Title - SAME AS BEFORE
+            // Title
             TextView title = new TextView(context);
             title.setText(choice.getText().toUpperCase());
             title.setTextColor(context.getResources().getColor(android.R.color.white));
@@ -174,10 +174,9 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             title.setTypeface(null, android.graphics.Typeface.BOLD);
             title.setGravity(android.view.Gravity.CENTER);
             
-            // Add only title to left side - SAME AS BEFORE
             leftSide.addView(title);
             
-            // Right side - Checkbox - SAME AS BEFORE
+            // Right side - Selection indicator button
             LinearLayout rightSide = new LinearLayout(context);
             rightSide.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -185,18 +184,21 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             ));
             rightSide.setGravity(android.view.Gravity.CENTER);
             
-            TextView indicator = new TextView(context);
-            indicator.setText("☐");
-            indicator.setTextColor(context.getResources().getColor(android.R.color.white));
-            indicator.setTextSize(52);
-            indicator.setId(View.generateViewId());
-            rightSide.addView(indicator);
+            // Create a proper button for selection
+            TextView selectionButton = new TextView(context);
+            selectionButton.setText("SELECT");
+            selectionButton.setTextColor(context.getResources().getColor(android.R.color.white));
+            selectionButton.setTextSize(18);
+            selectionButton.setTypeface(null, android.graphics.Typeface.BOLD);
+            selectionButton.setPadding(20, 10, 20, 10);
+            selectionButton.setBackgroundResource(R.drawable.button_primary_background);
+            selectionButton.setId(View.generateViewId());
+            rightSide.addView(selectionButton);
             
-            // Add both sides to card - SAME AS BEFORE
             cardView.addView(leftSide);
             cardView.addView(rightSide);
             
-            // Click listener with animation - SAME AS BEFORE
+            // Click listener with animation
             cardView.setOnClickListener(v -> {
                 animateSelection(v);
                 if (listener != null) {

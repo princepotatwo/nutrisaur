@@ -1766,45 +1766,44 @@ header {
             letter-spacing: 0.5px;
         }
         
-        /* Filters Container */
-        .filters-container {
-            width: 100%;
-            margin-bottom: 15px;
+        /* Table Header - Compact 2 Column Layout */
+        .table-header {
             background: var(--color-card);
             border-radius: 8px;
-            padding: 15px;
+            padding: 10px;
+            margin-bottom: 10px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        
-        /* Search Section */
+
+        .header-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+        }
+
+        /* Left Column - Search */
         .search-section {
-            margin-bottom: 15px;
             display: flex;
-            justify-content: center;
+            align-items: center;
             width: 100%;
         }
         
         .search-container {
             position: relative;
             width: 100%;
-            max-width: 400px;
             background: var(--color-card);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
             overflow: hidden;
             transition: all 0.3s ease;
         }
         
-        .search-container:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
         .search-input {
             width: 100%;
-            padding: 10px 45px 10px 15px;
+            padding: 8px 35px 8px 12px;
             border: 1px solid var(--color-border);
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 12px;
             background: var(--color-card);
             color: var(--color-text);
             transition: all 0.3s ease;
@@ -1822,8 +1821,97 @@ header {
             box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
         }
 
+        .search-btn {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--color-highlight);
+            border: none;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .search-btn:hover {
+            background: var(--color-primary);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        /* Right Column - Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            align-items: center;
+            height: 100%;
+        }
+
+        /* Filters Container - Full Width Below */
+        .filters-container {
+            width: 100%;
+            margin-top: 10px;
+            background: var(--color-card);
+            border-radius: 6px;
+            padding: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Filters Grid - Maximize Space */
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            align-items: end;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .filter-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 1px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 11px;
+            background: var(--color-card);
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 1px rgba(161, 180, 84, 0.2);
+        }
+        
+        .filter-select:hover {
+            border-color: var(--color-highlight);
+        }
+
         /* Light theme specific styles */
-        .light-theme .search-input {
+        .light-theme .search-input,
+        .light-theme .filter-select {
             background: var(--color-card);
             color: var(--color-text);
             border-color: var(--color-border);
@@ -1834,90 +1922,10 @@ header {
             opacity: 0.6;
         }
 
-        .light-theme .search-input:focus {
-            border-color: var(--color-highlight);
-            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
-        }
-        
-        .search-btn {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--color-highlight);
-            border: none;
-            border-radius: 4px;
-            width: 32px;
-            height: 32px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-        
-        .search-btn:hover {
-            background: var(--color-primary);
-            transform: translateY(-50%) scale(1.05);
-        }
-        
-        /* Filters Grid */
-        .filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 10px;
-            align-items: end;
-        }
-        
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-        
-        .filter-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--color-text);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
-        }
-        
-        .filter-select {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid var(--color-border);
-            border-radius: 6px;
-            font-size: 12px;
-            background: var(--color-card);
-            color: var(--color-text);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--color-highlight);
-            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
-        }
-        
-        .filter-select:hover {
-            border-color: var(--color-highlight);
-        }
-
-        /* Light theme specific styles for filters */
-        .light-theme .filter-select {
-            background: var(--color-card);
-            color: var(--color-text);
-            border-color: var(--color-border);
-        }
-
+        .light-theme .search-input:focus,
         .light-theme .filter-select:focus {
             border-color: var(--color-highlight);
-            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+            box-shadow: 0 0 0 1px rgba(161, 180, 84, 0.2);
         }
 
         .light-theme .filter-select:hover {
@@ -1931,34 +1939,38 @@ header {
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .filters-grid {
+            .header-controls {
                 grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .search-container {
-                max-width: 100%;
-            }
-
-            .action-buttons {
-                flex-direction: column;
                 gap: 8px;
             }
 
+            .filters-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4px;
+            }
+
+            .action-buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
             .btn-add, .btn-secondary {
-                width: 100%;
+                flex: 1;
+                min-width: 120px;
             }
         }
         
         @media (min-width: 769px) and (max-width: 1024px) {
             .filters-grid {
                 grid-template-columns: repeat(3, 1fr);
+                gap: 4px;
             }
         }
         
         @media (min-width: 1025px) {
             .filters-grid {
                 grid-template-columns: repeat(6, 1fr);
+                gap: 6px;
             }
         }
 
@@ -1995,8 +2007,8 @@ header {
         .btn-add {
             background: var(--color-highlight);
             color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
@@ -2004,8 +2016,9 @@ header {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 4px;
+            font-size: 11px;
+            white-space: nowrap;
         }
 
         .btn-add:hover {
@@ -2014,20 +2027,20 @@ header {
         }
 
         .btn-icon {
-            font-size: 14px;
+            font-size: 12px;
             line-height: 1;
         }
 
         .btn-text {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
 
         .btn-secondary {
             background: var(--color-accent3);
             color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
@@ -2035,22 +2048,14 @@ header {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 4px;
+            font-size: 11px;
+            white-space: nowrap;
         }
 
         .btn-secondary:hover {
             background: var(--color-accent2);
             transform: translateY(-1px);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-top: 15px;
         }
 
         .btn {

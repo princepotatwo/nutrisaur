@@ -7,6 +7,9 @@ import com.example.nutrisaur11.adapters.HorizontalFoodAdapter;
 import com.example.nutrisaur11.FoodRecommendation;
 
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FoodActivityIntegration {
     private static final String TAG = "FoodActivityIntegration";
@@ -34,6 +37,9 @@ public class FoodActivityIntegration {
         
         Log.d(TAG, "=== LOADING FOODS WITH AI NUTRITIONIST ===");
         
+        // Load questionnaire answers from SharedPreferences
+        Map<String, String> questionnaireAnswers = loadQuestionnaireAnswers(context);
+        
         // Create simple, intelligent prompt that lets AI analyze everything
         String prompt = FoodActivityIntegrationMethods.buildConditionSpecificPrompt(
             userAge, userSex, userBMI, userHeight, userWeight,
@@ -42,96 +48,181 @@ public class FoodActivityIntegration {
             userDietaryRestrictions, userAllergies, userDietPrefs, 
             userAvoidFoods, userRiskScore, userBarangay, userIncome, 
             userPregnancyStatus, userMunicipality, userScreeningDate, userNotes,
-            "AI_ANALYSIS" // Let AI determine the condition
+            "AI_ANALYSIS", // Let AI determine the condition
+            questionnaireAnswers
         );
         
-        // Use OptimizedGeminiService to get personalized recommendations
-        OptimizedGeminiService geminiService = new OptimizedGeminiService();
-        geminiService.generateFoodRecommendations(
-            prompt,
-            new OptimizedGeminiService.FoodRecommendationCallback() {
-                @Override
-                public void onSuccess(List<FoodRecommendation> recommendations) {
-                    Log.d(TAG, "Successfully received " + recommendations.size() + " AI-generated recommendations");
+        // Use ChatGPTService to get personalized recommendations
+        new Thread(() -> {
+            try {
+                Map<String, List<FoodRecommendation>> result = ChatGPTService.callChatGPTWithRetry(prompt);
+                
+                // Process the result on main thread
+                new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                    Log.d(TAG, "=== SUCCESS: Received AI-generated recommendations ===");
+                    
+                    // Extract foods from each category
+                    List<FoodRecommendation> allRecommendations = new ArrayList<>();
+                    if (result.containsKey("breakfast")) allRecommendations.addAll(result.get("breakfast"));
+                    if (result.containsKey("lunch")) allRecommendations.addAll(result.get("lunch"));
+                    if (result.containsKey("dinner")) allRecommendations.addAll(result.get("dinner"));
+                    if (result.containsKey("snacks")) allRecommendations.addAll(result.get("snacks"));
+                    
+                    Log.d(TAG, "=== SUCCESS: Received " + allRecommendations.size() + " AI-generated recommendations ===");
+                    
+                    // Log each recommendation
+                    for (int i = 0; i < allRecommendations.size(); i++) {
+                        FoodRecommendation food = allRecommendations.get(i);
+                        Log.d(TAG, "Recommendation " + i + ": " + food.getFoodName() + " (" + food.getDietType() + ")");
+                    }
                     
                     // Categorize recommendations
-                    categorizeRecommendations(recommendations, breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                    categorizeRecommendations(allRecommendations, breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
                     
-                    // Update adapters
-                    breakfastAdapter.notifyDataSetChanged();
-                    lunchAdapter.notifyDataSetChanged();
-                    dinnerAdapter.notifyDataSetChanged();
-                    snackAdapter.notifyDataSetChanged();
+                    // Update adapters with new food lists
+                    breakfastAdapter.updateFoodList(breakfastFoods);
+                    lunchAdapter.updateFoodList(lunchFoods);
+                    dinnerAdapter.updateFoodList(dinnerFoods);
+                    snackAdapter.updateFoodList(snackFoods);
                     
-                    Log.d(TAG, "Food lists updated with AI nutritionist recommendations");
-                }
+                    // Set loading to false
+                    breakfastAdapter.setLoading(false);
+                    lunchAdapter.setLoading(false);
+                    dinnerAdapter.setLoading(false);
+                    snackAdapter.setLoading(false);
+                    
+                    Log.d(TAG, "=== FINAL COUNTS ===");
+                    Log.d(TAG, "Breakfast foods: " + breakfastFoods.size());
+                    Log.d(TAG, "Lunch foods: " + lunchFoods.size());
+                    Log.d(TAG, "Dinner foods: " + dinnerFoods.size());
+                    Log.d(TAG, "Snack foods: " + snackFoods.size());
+                    Log.d(TAG, "Food lists updated with AI nutritionist recommendations - loading state disabled");
+                });
                 
-                @Override
-                public void onError(String error) {
-                    Log.e(TAG, "Error getting AI recommendations: " + error);
-                    // Simple fallback - let user know AI is unavailable
-                    loadSimpleFallbackFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting AI recommendations: " + e.getMessage());
+                // Retry with a simpler prompt
+                Log.d(TAG, "Retrying API call due to error: " + e.getMessage());
+                
+                try {
+                    String retryPrompt = "Generate 8 Filipino breakfast foods, 8 lunch foods, 8 dinner foods, and 8 snack foods. Return JSON: {\"breakfast\":[{\"food_name\":\"Name\",\"calories\":300,\"protein_g\":20,\"fat_g\":10,\"carbs_g\":25,\"serving_size\":\"1 serving\",\"diet_type\":\"Breakfast\",\"description\":\"Description\"},...],\"lunch\":[...],\"dinner\":[...],\"snacks\":[...]}";
                     
-                    // Update adapters
-                    breakfastAdapter.notifyDataSetChanged();
-                    lunchAdapter.notifyDataSetChanged();
-                    dinnerAdapter.notifyDataSetChanged();
-                    snackAdapter.notifyDataSetChanged();
+                    Map<String, List<FoodRecommendation>> retryResult = ChatGPTService.callChatGPTWithRetry(retryPrompt);
+                    
+                    // Process retry result on main thread
+                    new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                        Log.d(TAG, "Retry SUCCESS: Received recommendations");
+                        
+                        // Extract foods from each category
+                        List<FoodRecommendation> allRetryRecommendations = new ArrayList<>();
+                        if (retryResult.containsKey("breakfast")) allRetryRecommendations.addAll(retryResult.get("breakfast"));
+                        if (retryResult.containsKey("lunch")) allRetryRecommendations.addAll(retryResult.get("lunch"));
+                        if (retryResult.containsKey("dinner")) allRetryRecommendations.addAll(retryResult.get("dinner"));
+                        if (retryResult.containsKey("snacks")) allRetryRecommendations.addAll(retryResult.get("snacks"));
+                        
+                        // Categorize recommendations
+                        categorizeRecommendations(allRetryRecommendations, breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                        
+                        // Update adapters with new food lists
+                        breakfastAdapter.updateFoodList(breakfastFoods);
+                        lunchAdapter.updateFoodList(lunchFoods);
+                        dinnerAdapter.updateFoodList(dinnerFoods);
+                        snackAdapter.updateFoodList(snackFoods);
+                        
+                        // Set loading to false
+                        breakfastAdapter.setLoading(false);
+                        lunchAdapter.setLoading(false);
+                        dinnerAdapter.setLoading(false);
+                        snackAdapter.setLoading(false);
+                        
+                        Log.d(TAG, "Retry successful - food lists updated");
+                    });
+                    
+                } catch (Exception retryException) {
+                    Log.e(TAG, "Retry also failed: " + retryException.getMessage());
+                    // Set loading to false even on failure
+                    new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                        breakfastAdapter.setLoading(false);
+                        lunchAdapter.setLoading(false);
+                        dinnerAdapter.setLoading(false);
+                        snackAdapter.setLoading(false);
+                    });
                 }
             }
-        );
+        }).start();
     }
     
+    /**
+     * Load questionnaire answers from SharedPreferences
+     */
+    private static Map<String, String> loadQuestionnaireAnswers(Context context) {
+        android.content.SharedPreferences prefs = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+        Map<String, String> answers = new java.util.HashMap<>();
+        
+        // Load all questionnaire answers
+        for (int i = 0; i < 6; i++) {
+            String key = "question_" + i;
+            String value = prefs.getString(key, "");
+            if (!value.isEmpty()) {
+                answers.put(key, value);
+            }
+        }
+        
+        Log.d(TAG, "Loaded questionnaire answers: " + answers.size() + " answers");
+        return answers;
+    }
     
+    /**
+     * Categorize recommendations into breakfast, lunch, dinner, and snacks
+     */
     private static void categorizeRecommendations(List<FoodRecommendation> recommendations,
                                                 List<FoodRecommendation> breakfastFoods,
                                  List<FoodRecommendation> lunchFoods,
                                  List<FoodRecommendation> dinnerFoods,
                                                 List<FoodRecommendation> snackFoods) {
         
+        Log.d(TAG, "=== CATEGORIZING " + recommendations.size() + " RECOMMENDATIONS ===");
+        
+        // Clear existing lists
+        breakfastFoods.clear();
+        lunchFoods.clear();
+        dinnerFoods.clear();
+        snackFoods.clear();
+        
+        // Categorize each recommendation
         for (FoodRecommendation food : recommendations) {
             String dietType = food.getDietType();
+            Log.d(TAG, "Categorizing: " + food.getFoodName() + " -> dietType: '" + dietType + "'");
+            
             if (dietType != null) {
-                switch (dietType.toLowerCase()) {
-                    case "breakfast":
-                        breakfastFoods.add(food);
-                        break;
-                    case "lunch":
-                        lunchFoods.add(food);
-                        break;
-                    case "dinner":
-                        dinnerFoods.add(food);
-                        break;
-                    case "snack":
-                        snackFoods.add(food);
-                        break;
-                    default:
-                        lunchFoods.add(food);
-                        break;
+                if (dietType.equalsIgnoreCase("Breakfast")) {
+                    breakfastFoods.add(food);
+                    Log.d(TAG, "Added to breakfast: " + food.getFoodName());
+                } else if (dietType.equalsIgnoreCase("Lunch")) {
+                    lunchFoods.add(food);
+                    Log.d(TAG, "Added to lunch: " + food.getFoodName());
+                } else if (dietType.equalsIgnoreCase("Dinner")) {
+                    dinnerFoods.add(food);
+                    Log.d(TAG, "Added to dinner: " + food.getFoodName());
+                } else if (dietType.equalsIgnoreCase("Snacks")) {
+                    snackFoods.add(food);
+                    Log.d(TAG, "Added to snacks: " + food.getFoodName());
+                } else {
+                    // Default to snacks if unknown
+                    snackFoods.add(food);
+                    Log.d(TAG, "Added to snacks (default): " + food.getFoodName());
                 }
             } else {
-                lunchFoods.add(food);
+                // Default to snacks if no diet type
+                snackFoods.add(food);
+                Log.d(TAG, "Added to snacks (no type): " + food.getFoodName());
             }
         }
         
-        Log.d(TAG, "Categorized recommendations: " + 
-              breakfastFoods.size() + " breakfast, " + 
-              lunchFoods.size() + " lunch, " + 
-              dinnerFoods.size() + " dinner, " + 
-              snackFoods.size() + " snacks");
-    }
-    
-    private static void loadSimpleFallbackFoods(List<FoodRecommendation> breakfastFoods,
-                                               List<FoodRecommendation> lunchFoods,
-                                               List<FoodRecommendation> dinnerFoods,
-                                               List<FoodRecommendation> snackFoods) {
-        
-        Log.d(TAG, "Loading simple fallback foods - AI nutritionist unavailable");
-        
-        // Simple fallback foods when AI is not available
-        breakfastFoods.add(new FoodRecommendation("Chicken Arroz Caldo", 350, 25, 10, 40, "1 bowl", "Breakfast", "Warm and nutritious rice porridge"));
-        lunchFoods.add(new FoodRecommendation("Grilled Fish with Rice", 450, 30, 15, 50, "1 serving", "Lunch", "Lean protein with complex carbs"));
-        dinnerFoods.add(new FoodRecommendation("Vegetable Stir-fry", 300, 15, 8, 35, "1 plate", "Dinner", "Colorful vegetables with minimal oil"));
-        snackFoods.add(new FoodRecommendation("Banana", 100, 1, 0, 25, "1 piece", "Snack", "Natural energy boost"));
+        Log.d(TAG, "=== CATEGORIZATION COMPLETE ===");
+        Log.d(TAG, "Breakfast: " + breakfastFoods.size() + " foods");
+        Log.d(TAG, "Lunch: " + lunchFoods.size() + " foods");
+        Log.d(TAG, "Dinner: " + dinnerFoods.size() + " foods");
+        Log.d(TAG, "Snacks: " + snackFoods.size() + " foods");
     }
 }

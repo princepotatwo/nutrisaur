@@ -618,7 +618,7 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
             // Save answers and complete screening
             saveAnswers();
             Toast.makeText(this, "Screening completed!", Toast.LENGTH_SHORT).show();
-            finish();
+            // Don't call finish() here - let saveAnswers() handle navigation
         }
     }
     
@@ -636,6 +636,14 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         
         // Save to community_users database
         saveToCommunityUsers();
+        
+        // Add fallback navigation to MainActivity after a short delay
+        new android.os.Handler().postDelayed(() -> {
+            Intent intent = new Intent(NutritionalScreeningActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }, 2000); // 2 second delay to allow API call to complete
     }
     
     private void saveToCommunityUsers() {

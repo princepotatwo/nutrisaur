@@ -3,7 +3,7 @@ package com.example.nutrisaur11;
 public class ApiConfig {
     // Gemini API Configuration
     public static final String GEMINI_API_KEY = "AIzaSyAR0YOJALZphmQaSbc5Ydzs5kZS6eCefJM";
-    public static final String GEMINI_TEXT_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
+    public static final String GEMINI_TEXT_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
     
     // Groq API Configuration (disabled for now)
     public static final String GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE";
@@ -29,7 +29,7 @@ public class ApiConfig {
     // Gemini API specific settings
     public static final int MAX_RETRY_ATTEMPTS = 3;
     public static final int MAX_PROMPT_LENGTH = 10000;
-    public static final int MAX_TOKENS = 2048;
+    public static final int MAX_TOKENS = 4096;
     public static final int INITIAL_RETRY_DELAY_MS = 1000;
     public static final int MAX_RETRY_DELAY_MS = 10000;
     public static final int CONNECT_TIMEOUT = 30;

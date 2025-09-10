@@ -1,6 +1,7 @@
 package com.example.nutrisaur11.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,24 +50,37 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
         if (isLoading) {
             holder.foodName.setText("Loading...");
-            holder.calories.setText("");
-            holder.description.setText("Please wait...");
-            holder.foodImage.setImageResource(R.drawable.ic_food_placeholder);
+            holder.foodImage.setImageResource(R.drawable.steamed_riced);
             return;
         }
         
         FoodRecommendation food = foodList.get(position);
         
         holder.foodName.setText(food.getFoodName());
-        holder.calories.setText(food.getCalories() + " cal");
-        holder.description.setText(food.getDescription());
         
-        // Set default image or load from URL if available
+        // Set image using local drawable resources
         if (food.getImageUrl() != null && !food.getImageUrl().isEmpty()) {
-            // TODO: Load image from URL using Glide or similar
-            holder.foodImage.setImageResource(R.drawable.ic_food_placeholder);
+            Log.d("FoodAdapter", "Food: " + food.getFoodName() + " using image: " + food.getImageUrl());
+            
+            // Get drawable resource ID from string name
+            int imageResourceId = context.getResources().getIdentifier(
+                food.getImageUrl(), 
+                "drawable", 
+                context.getPackageName()
+            );
+            
+            if (imageResourceId != 0) {
+                // Image found, use it
+                holder.foodImage.setImageResource(imageResourceId);
+                Log.d("FoodAdapter", "Successfully loaded image: " + food.getImageUrl());
+            } else {
+                // Image not found, use default food image
+                holder.foodImage.setImageResource(R.drawable.steamed_riced);
+                Log.w("FoodAdapter", "Image not found: " + food.getImageUrl() + ", using default food image");
+            }
         } else {
-            holder.foodImage.setImageResource(R.drawable.ic_food_placeholder);
+            // No image specified, use default food image
+            holder.foodImage.setImageResource(R.drawable.steamed_riced);
         }
         
         holder.itemView.setOnClickListener(v -> {
@@ -78,6 +92,9 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
 
     @Override
     public int getItemCount() {
+        if (isLoading) {
+            return 8; // Show 8 loading cards
+        }
         return foodList.size();
     }
 
@@ -89,15 +106,11 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         ImageView foodImage;
         TextView foodName;
-        TextView calories;
-        TextView description;
 
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
             foodImage = itemView.findViewById(R.id.food_image);
             foodName = itemView.findViewById(R.id.food_name);
-            calories = itemView.findViewById(R.id.food_calories);
-            description = itemView.findViewById(R.id.food_description);
         }
     }
 }

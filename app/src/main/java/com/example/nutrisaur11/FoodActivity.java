@@ -433,6 +433,15 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
         // Get comprehensive screening data for the prompt
         String screeningAnswers = getScreeningAnswersForPrompt();
         
+        // Debug: Log all user data being sent to AI
+        Log.d(TAG, "=== CALLING AI WITH USER DATA ===");
+        Log.d(TAG, "userWeight: " + userWeight);
+        Log.d(TAG, "userHeight: " + userHeight);
+        Log.d(TAG, "userBMI: " + userBMI);
+        Log.d(TAG, "userBMICategory: " + userBMICategory);
+        Log.d(TAG, "userHealthConditions: " + userHealthConditions);
+        Log.d(TAG, "userNutritionalRisk: " + userNutritionalRisk);
+        
         // Use API integration for malnutrition recovery foods with comprehensive data
         FoodActivityIntegration.loadMalnutritionRecoveryFoodsWithScreening(
             this,
@@ -607,11 +616,22 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
             // Get current user email from SharedPreferences
             android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
             String userEmail = prefs.getString("current_user_email", null);
+            boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
+            
+            Log.d(TAG, "=== LOADING USER PROFILE ===");
+            Log.d(TAG, "User Email: " + userEmail);
+            Log.d(TAG, "Is Logged In: " + isLoggedIn);
             
             if (userEmail != null) {
                 // Load basic user profile data from CommunityUserManager (community_users table)
                 CommunityUserManager userManager = new CommunityUserManager(this);
                 Map<String, String> userData = userManager.getCurrentUserDataFromDatabase();
+                
+                Log.d(TAG, "=== USER DATA FROM DATABASE ===");
+                Log.d(TAG, "User Data Size: " + userData.size());
+                for (Map.Entry<String, String> entry : userData.entrySet()) {
+                    Log.d(TAG, entry.getKey() + ": " + entry.getValue());
+                }
                 
                 if (!userData.isEmpty()) {
                     // Load basic user data from community_users
@@ -706,15 +726,15 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
                     Log.d(TAG, "Barangay: " + userBarangay);
                     Log.d(TAG, "=== END USER PROFILE DATA ===");
                 } else {
-                    Log.w(TAG, "No user preferences found in local database, using defaults");
-                    setDefaultUserProfile();
+                    Log.w(TAG, "No user preferences found in local database, but we have data from community_users");
+                    // Don't call setDefaultUserProfile() here because we already have data from community_users
                 }
         cursor.close();
                 dbHelper.close();
             } else {
                 Log.w(TAG, "No user email found, using defaults");
                 setDefaultUserProfile();
-                    }
+            }
                 } catch (Exception e) {
             Log.e(TAG, "Error loading user profile: " + e.getMessage());
             setDefaultUserProfile();
@@ -906,24 +926,24 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
             generationCount++;
             String masterPrompt = buildMasterPrompt();
             
-            // Try optimized Gemini service first
-            Map<String, List<FoodRecommendation>> optimizedResult = OptimizedGeminiService.callGeminiWithRetry(masterPrompt);
-            if (optimizedResult != null && !optimizedResult.isEmpty()) {
+            // Try ChatGPT service first (OpenRouter)
+            Map<String, List<FoodRecommendation>> chatGPTResult = ChatGPTService.callChatGPTWithRetry(masterPrompt);
+            if (chatGPTResult != null && !chatGPTResult.isEmpty()) {
                 // Combine all categories into a single list
                 List<FoodRecommendation> allFoods = new ArrayList<>();
-                allFoods.addAll(optimizedResult.getOrDefault("traditional", new ArrayList<>()));
-                allFoods.addAll(optimizedResult.getOrDefault("healthy", new ArrayList<>()));
-                allFoods.addAll(optimizedResult.getOrDefault("international", new ArrayList<>()));
-                allFoods.addAll(optimizedResult.getOrDefault("budget", new ArrayList<>()));
+                allFoods.addAll(chatGPTResult.getOrDefault("breakfast", new ArrayList<>()));
+                allFoods.addAll(chatGPTResult.getOrDefault("lunch", new ArrayList<>()));
+                allFoods.addAll(chatGPTResult.getOrDefault("dinner", new ArrayList<>()));
+                allFoods.addAll(chatGPTResult.getOrDefault("snacks", new ArrayList<>()));
                 
                 if (!allFoods.isEmpty()) {
-                    Log.d(TAG, "Optimized Gemini service successful, got " + allFoods.size() + " foods");
+                    Log.d(TAG, "ChatGPT service successful, got " + allFoods.size() + " foods");
                     return allFoods;
                 }
             }
             
             // Fallback to original implementation
-            Log.w(TAG, "Optimized Gemini failed, trying original implementation");
+            Log.w(TAG, "ChatGPT service failed, trying original implementation");
             
             // Create JSON request
             JSONObject requestBody = new JSONObject();
