@@ -3401,14 +3401,26 @@ header {
                             
                             <div class="filter-item">
                                 <label>AGE FROM</label>
-                                <input type="text" id="ageFromFilter" onchange="filterByAgeRange()" oninput="formatAgeInput(this)" onkeypress="handleAgeKeyPress(event)" 
-                                       placeholder="Y:00 M:00" maxlength="8">
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <input type="number" id="ageFromYears" min="0" max="18" placeholder="0" 
+                                           style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
+                                    <span style="font-size: 10px; color: var(--color-text);">Y</span>
+                                    <input type="number" id="ageFromMonths" min="0" max="11" placeholder="0" 
+                                           style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
+                                    <span style="font-size: 10px; color: var(--color-text);">M</span>
+                                </div>
                             </div>
                             
                             <div class="filter-item">
                                 <label>AGE TO</label>
-                                <input type="text" id="ageToFilter" onchange="filterByAgeRange()" oninput="formatAgeInput(this)" onkeypress="handleAgeKeyPress(event)" 
-                                       placeholder="Y:00 M:00" maxlength="8">
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <input type="number" id="ageToYears" min="0" max="18" placeholder="0" 
+                                           style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
+                                    <span style="font-size: 10px; color: var(--color-text);">Y</span>
+                                    <input type="number" id="ageToMonths" min="0" max="11" placeholder="0" 
+                                           style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
+                                    <span style="font-size: 10px; color: var(--color-text);">M</span>
+                                </div>
                             </div>
                             
                             <div class="filter-item">
@@ -3428,7 +3440,6 @@ header {
                                     <option value="weight-for-height">Weight-for-Height</option>
                                     <option value="weight-for-length">Weight-for-Length</option>
                                     <option value="bmi-for-age">BMI-for-Age</option>
-                                    <option value="all-ages">All Ages</option>
                                 </select>
                             </div>
                         </div>
@@ -3714,35 +3725,6 @@ header {
             applyAllFilters();
         }
         
-        function formatAgeInput(input) {
-            // Only allow digits
-            let value = input.value.replace(/\D/g, '');
-            let formatted = '';
-            
-            if (value.length === 0) {
-                input.value = '';
-                return;
-            }
-            
-            // Format as Y:MM
-            if (value.length <= 2) {
-                formatted = 'Y:' + value.padStart(2, '0');
-            } else if (value.length <= 4) {
-                formatted = 'Y:' + value.substring(0, 2).padStart(2, '0') + ' M:' + value.substring(2).padStart(2, '0');
-            } else {
-                formatted = 'Y:' + value.substring(0, 2).padStart(2, '0') + ' M:' + value.substring(2, 4).padStart(2, '0');
-            }
-            
-            input.value = formatted;
-        }
-
-        // Prevent non-numeric input
-        function handleAgeKeyPress(event) {
-            const char = String.fromCharCode(event.which);
-            if (!/[0-9]/.test(char)) {
-                event.preventDefault();
-            }
-        }
 
         function filterByAgeRange() {
             applyAllFilters();
@@ -3774,12 +3756,14 @@ header {
         function applyAllFilters() {
             const municipality = document.getElementById('municipalityFilter').value;
             const barangay = document.getElementById('barangayFilter').value;
-            const ageFrom = document.getElementById('ageFromFilter').value;
-            const ageTo = document.getElementById('ageToFilter').value;
+            const ageFromYears = document.getElementById('ageFromYears').value;
+            const ageFromMonths = document.getElementById('ageFromMonths').value;
+            const ageToYears = document.getElementById('ageToYears').value;
+            const ageToMonths = document.getElementById('ageToMonths').value;
             const sex = document.getElementById('sexFilter').value;
             const standard = document.getElementById('standardFilter').value;
             
-            console.log('Applying filters:', { municipality, barangay, ageFrom, ageTo, sex, standard });
+            console.log('Applying filters:', { municipality, barangay, ageFromYears, ageFromMonths, ageToYears, ageToMonths, sex, standard });
             
             const tableRows = document.querySelectorAll('.user-table tbody tr');
             let visibleCount = 0;
@@ -3815,25 +3799,23 @@ header {
                 }
                 
                 // Age range filter (now supports all ages)
-                if ((ageFrom || ageTo) && showRow) {
+                if ((ageFromYears || ageFromMonths || ageToYears || ageToMonths) && showRow) {
                     const ageMonths = parseInt(row.dataset.ageMonths);
                     
-                    // Parse age from input (format: Y:MM M:MM)
+                    // Parse age from separate year and month inputs
                     let fromMonths = null;
                     let toMonths = null;
                     
-                    if (ageFrom) {
-                        const fromMatch = ageFrom.match(/Y:(\d{2})\s*M:(\d{2})/);
-                        if (fromMatch) {
-                            fromMonths = parseInt(fromMatch[1]) * 12 + parseInt(fromMatch[2]);
-                        }
+                    if (ageFromYears || ageFromMonths) {
+                        const years = parseInt(ageFromYears) || 0;
+                        const months = parseInt(ageFromMonths) || 0;
+                        fromMonths = years * 12 + months;
                     }
                     
-                    if (ageTo) {
-                        const toMatch = ageTo.match(/Y:(\d{2})\s*M:(\d{2})/);
-                        if (toMatch) {
-                            toMonths = parseInt(toMatch[1]) * 12 + parseInt(toMatch[2]);
-                        }
+                    if (ageToYears || ageToMonths) {
+                        const years = parseInt(ageToYears) || 0;
+                        const months = parseInt(ageToMonths) || 0;
+                        toMonths = years * 12 + months;
                     }
                     
                     if (fromMonths !== null && ageMonths < fromMonths) {
@@ -4074,16 +4056,20 @@ header {
             // Test if filter elements exist
             const municipalityFilter = document.getElementById('municipalityFilter');
             const barangayFilter = document.getElementById('barangayFilter');
-            const ageFromFilter = document.getElementById('ageFromFilter');
-            const ageToFilter = document.getElementById('ageToFilter');
+            const ageFromYearsFilter = document.getElementById('ageFromYears');
+            const ageFromMonthsFilter = document.getElementById('ageFromMonths');
+            const ageToYearsFilter = document.getElementById('ageToYears');
+            const ageToMonthsFilter = document.getElementById('ageToMonths');
             const sexFilter = document.getElementById('sexFilter');
             const standardFilter = document.getElementById('standardFilter');
             
             console.log('Filter elements found:', {
                 municipality: !!municipalityFilter,
                 barangay: !!barangayFilter,
-                ageFrom: !!ageFromFilter,
-                ageTo: !!ageToFilter,
+                ageFromYears: !!ageFromYearsFilter,
+                ageFromMonths: !!ageFromMonthsFilter,
+                ageToYears: !!ageToYearsFilter,
+                ageToMonths: !!ageToMonthsFilter,
                 sex: !!sexFilter,
                 standard: !!standardFilter
             });
@@ -4372,9 +4358,6 @@ header {
                         break;
                     case 'bmi-for-age':
                         headerText = 'BMI-FOR-AGE (All Ages)';
-                        break;
-                    case 'all-ages':
-                        headerText = 'GROWTH STANDARD';
                         break;
                     default:
                         headerText = 'GROWTH STANDARD';
