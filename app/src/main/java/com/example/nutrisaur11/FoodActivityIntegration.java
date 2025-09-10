@@ -2,366 +2,267 @@ package com.example.nutrisaur11;
 
 import android.content.Context;
 import android.util.Log;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import okhttp3.*;
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
-import java.io.IOException;
 
-/**
- * Optimized Food Activity Integration
- * Handles food recommendations with substitutions and details in just 2 API calls
- */
+import com.example.nutrisaur11.adapters.HorizontalFoodAdapter;
+import com.example.nutrisaur11.models.FoodRecommendation;
+
+import java.util.List;
+
 public class FoodActivityIntegration {
     private static final String TAG = "FoodActivityIntegration";
     
-    // Gemini API configuration
-    private static final String GEMINI_API_KEY = "AIzaSyAR0YOJALZphmQaSbc5Ydzs5kZS6eCefJM";
-    private static final String GEMINI_TEXT_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
-    
-    private Context context;
-    private ExecutorService executorService;
-    
-    public interface FoodLoadingCallback {
-        void onFoodsLoaded(List<FoodRecommendation> traditionalFoods, 
-                          List<FoodRecommendation> healthyFoods,
-                          List<FoodRecommendation> internationalFoods,
-                          List<FoodRecommendation> budgetFoods);
-        void onError(String error);
-    }
-    
-    public interface FoodDetailsCallback {
-        void onFoodDetailsLoaded(FoodDetails foodDetails);
-        void onError(String error);
-    }
-    
-    public FoodActivityIntegration(Context context) {
-        this.context = context;
-        this.executorService = Executors.newFixedThreadPool(4);
-    }
-    
-    /**
-     * Load malnutrition recovery foods with substitutions for all categories
-     * This is the main method that loads everything in 2 API calls
-     */
-    public static void loadMalnutritionRecoveryFoods(Context context,
-                                                    String userAge, String userSex, String userBMI, 
-                                                    String userHealthConditions, String userBudgetLevel, 
-                                                    String userAllergies, String userDietPrefs, 
-                                                    String userPregnancyStatus,
-                                                   List<FoodRecommendation> breakfastFoods,
-                                                   List<FoodRecommendation> lunchFoods,
-                                                   List<FoodRecommendation> dinnerFoods,
-                                                   List<FoodRecommendation> snackFoods,
-                                                   HorizontalFoodAdapter breakfastAdapter,
-                                                   HorizontalFoodAdapter lunchAdapter,
-                                                   HorizontalFoodAdapter dinnerAdapter,
-                                                   HorizontalFoodAdapter snackAdapter) {
-        
-        FoodActivityIntegration integration = new FoodActivityIntegration(context);
-        integration.loadFoodsWithSubstitutions(userAge, userSex, userBMI, userHealthConditions, 
-                                             userBudgetLevel, userAllergies, userDietPrefs, 
-                                             userPregnancyStatus, breakfastFoods, lunchFoods, 
-                                             dinnerFoods, snackFoods, breakfastAdapter, 
-                                             lunchAdapter, dinnerAdapter, snackAdapter);
-    }
-    
-    /**
-     * Load malnutrition recovery foods with comprehensive screening data
-     * This method uses all available user data for highly personalized recommendations
-     */
     public static void loadMalnutritionRecoveryFoodsWithScreening(Context context,
                                                                 String userAge, String userSex, String userBMI, 
-                                                                String userHeight, String userWeight, String userHealthConditions, 
-                                                                String userActivityLevel, String userBudgetLevel, String userDietaryRestrictions, 
-                                                                String userAllergies, String userDietPrefs, String userAvoidFoods, 
-                                                                String userRiskScore, String userBarangay, String userIncome, 
-                                                                String userPregnancyStatus, String screeningAnswers,
-                                                               List<FoodRecommendation> breakfastFoods,
-                                                               List<FoodRecommendation> lunchFoods,
-                                                               List<FoodRecommendation> dinnerFoods,
-                                                               List<FoodRecommendation> snackFoods,
-                                                               HorizontalFoodAdapter breakfastAdapter,
-                                                               HorizontalFoodAdapter lunchAdapter,
-                                                               HorizontalFoodAdapter dinnerAdapter,
-                                                               HorizontalFoodAdapter snackAdapter) {
+                                                                String userHeight, String userWeight,
+                                                                String userBMICategory, String userMUAC, 
+                                                                String userMUACCategory, String userNutritionalRisk,
+                                                                String userHealthConditions, String userActivityLevel, 
+                                                                String userBudgetLevel, String userDietaryRestrictions, 
+                                                                String userAllergies, String userDietPrefs, 
+                                                                String userAvoidFoods, String userRiskScore, 
+                                                                String userBarangay, String userIncome, 
+                                                                String userPregnancyStatus, String userMunicipality, 
+                                                                String userScreeningDate, String userNotes,
+                                                                List<FoodRecommendation> breakfastFoods,
+                                                                List<FoodRecommendation> lunchFoods,
+                                                                List<FoodRecommendation> dinnerFoods,
+                                                                List<FoodRecommendation> snackFoods,
+                                                                HorizontalFoodAdapter breakfastAdapter,
+                                                                HorizontalFoodAdapter lunchAdapter,
+                                                                HorizontalFoodAdapter dinnerAdapter,
+                                                                HorizontalFoodAdapter snackAdapter) {
         
-        FoodActivityIntegration integration = new FoodActivityIntegration(context);
-        integration.loadFoodsWithComprehensiveScreening(userAge, userSex, userBMI, userHeight, userWeight, 
-                                                       userHealthConditions, userActivityLevel, userBudgetLevel, 
-                                                       userDietaryRestrictions, userAllergies, userDietPrefs, 
-                                                       userAvoidFoods, userRiskScore, userBarangay, userIncome, 
-                                                       userPregnancyStatus, screeningAnswers, breakfastFoods, 
-                                                       lunchFoods, dinnerFoods, snackFoods, breakfastAdapter, 
-                                                       lunchAdapter, dinnerAdapter, snackAdapter);
-    }
-    
-    private void loadFoodsWithComprehensiveScreening(String userAge, String userSex, String userBMI, 
-                                                    String userHeight, String userWeight, String userHealthConditions, 
-                                                    String userActivityLevel, String userBudgetLevel, String userDietaryRestrictions, 
-                                                    String userAllergies, String userDietPrefs, String userAvoidFoods, 
-                                                    String userRiskScore, String userBarangay, String userIncome, 
-                                                    String userPregnancyStatus, String screeningAnswers,
-                                                    List<FoodRecommendation> breakfastFoods,
-                                                    List<FoodRecommendation> lunchFoods,
-                                                    List<FoodRecommendation> dinnerFoods,
-                                                    List<FoodRecommendation> snackFoods,
-                                                    HorizontalFoodAdapter breakfastAdapter,
-                                                    HorizontalFoodAdapter lunchAdapter,
-                                                    HorizontalFoodAdapter dinnerAdapter,
-                                                    HorizontalFoodAdapter snackAdapter) {
+        Log.d(TAG, "=== LOADING FOODS WITH AI NUTRITIONIST ===");
         
-        executorService.execute(() -> {
-            try {
-                Log.d(TAG, "Starting comprehensive food loading with screening data");
-                
-                // First API call: Get main food recommendations for all categories with comprehensive data
-                String mainPrompt = FoodActivityIntegrationMethods.buildComprehensiveFoodPrompt(
-                    userAge, userSex, userBMI, userHeight, userWeight, userHealthConditions, 
-                    userActivityLevel, userBudgetLevel, userDietaryRestrictions, userAllergies, 
-                    userDietPrefs, userAvoidFoods, userRiskScore, userBarangay, userIncome, 
-                    userPregnancyStatus, screeningAnswers
-                );
-                
-                Map<String, List<FoodRecommendation>> mainFoods = FoodActivityIntegrationMethods.callGeminiForMainFoods(mainPrompt);
-                
-                if (mainFoods != null && !mainFoods.isEmpty()) {
-                    // Update food lists
-                    breakfastFoods.clear();
-                    lunchFoods.clear();
-                    dinnerFoods.clear();
-                    snackFoods.clear();
-                    
-                    breakfastFoods.addAll(mainFoods.getOrDefault("breakfast", new ArrayList<>()));
-                    lunchFoods.addAll(mainFoods.getOrDefault("lunch", new ArrayList<>()));
-                    dinnerFoods.addAll(mainFoods.getOrDefault("dinner", new ArrayList<>()));
-                    snackFoods.addAll(mainFoods.getOrDefault("snacks", new ArrayList<>()));
-                    
-                    Log.d(TAG, "Food lists updated with comprehensive data - Breakfast: " + breakfastFoods.size() + 
-                          ", Lunch: " + lunchFoods.size() + ", Dinner: " + dinnerFoods.size() + 
-                          ", Snacks: " + snackFoods.size());
-                    
-                    // Update adapters on main thread
-                    if (context instanceof android.app.Activity) {
-                        ((android.app.Activity) context).runOnUiThread(() -> {
-                            Log.d(TAG, "Updating adapters on UI thread with comprehensive data");
-                            if (breakfastAdapter != null) {
-                                Log.d(TAG, "Updating breakfast adapter with " + breakfastFoods.size() + " items");
-                                breakfastAdapter.updateFoods(breakfastFoods);
-                            }
-                            if (lunchAdapter != null) {
-                                Log.d(TAG, "Updating lunch adapter with " + lunchFoods.size() + " items");
-                                lunchAdapter.updateFoods(lunchFoods);
-                            }
-                            if (dinnerAdapter != null) {
-                                Log.d(TAG, "Updating dinner adapter with " + dinnerFoods.size() + " items");
-                                dinnerAdapter.updateFoods(dinnerFoods);
-                            }
-                            if (snackAdapter != null) {
-                                Log.d(TAG, "Updating snack adapter with " + snackFoods.size() + " items");
-                                snackAdapter.updateFoods(snackFoods);
-                            }
-                        });
-                    }
-                    
-                    Log.d(TAG, "Comprehensive foods loaded successfully");
-                    
-                    // Second API call: Get substitutions for all foods
-                    loadSubstitutionsForAllFoods(breakfastFoods, lunchFoods, dinnerFoods, 
-                                               snackFoods, userAge, userSex, userBMI, userHealthConditions, 
-                                               userBudgetLevel, userAllergies, userDietPrefs, userPregnancyStatus);
-                } else {
-                    Log.w(TAG, "No comprehensive foods loaded, using fallback");
-                    // Run on main thread to avoid UI threading issues
-                    if (context instanceof android.app.Activity) {
-                        ((android.app.Activity) context).runOnUiThread(() -> {
-                            loadFallbackFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods,
-                                            breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter);
-                        });
-                    }
-                }
-                
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading comprehensive foods: " + e.getMessage());
-                // Run on main thread to avoid UI threading issues
-                if (context instanceof android.app.Activity) {
-                    ((android.app.Activity) context).runOnUiThread(() -> {
-                        loadFallbackFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods,
-                                        breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter);
-                    });
-                }
-            }
-        });
-    }
-    
-    private void loadFoodsWithSubstitutions(String userAge, String userSex, String userBMI, 
-                                          String userHealthConditions, String userBudgetLevel,
-                                          String userAllergies, String userDietPrefs, 
-                                          String userPregnancyStatus,
-                                          List<FoodRecommendation> breakfastFoods,
-                                          List<FoodRecommendation> lunchFoods,
-                                          List<FoodRecommendation> dinnerFoods,
-                                          List<FoodRecommendation> snackFoods,
-                                          HorizontalFoodAdapter breakfastAdapter,
-                                          HorizontalFoodAdapter lunchAdapter,
-                                          HorizontalFoodAdapter dinnerAdapter,
-                                          HorizontalFoodAdapter snackAdapter) {
+        // Create simple, intelligent prompt that lets AI analyze everything
+        String prompt = FoodActivityIntegrationMethods.buildConditionSpecificPrompt(
+            userAge, userSex, userBMI, userHeight, userWeight,
+            userBMICategory, userMUAC, userMUACCategory, userNutritionalRisk,
+            userHealthConditions, userActivityLevel, userBudgetLevel, 
+            userDietaryRestrictions, userAllergies, userDietPrefs, 
+            userAvoidFoods, userRiskScore, userBarangay, userIncome, 
+            userPregnancyStatus, userMunicipality, userScreeningDate, userNotes,
+            "AI_ANALYSIS" // Let AI determine the condition
+        );
         
-        executorService.execute(() -> {
-            try {
-                Log.d(TAG, "Starting optimized food loading with substitutions");
-                
-                // First API call: Get main food recommendations for all categories
-                String mainPrompt = FoodActivityIntegrationMethods.buildMainFoodPrompt(userAge, userSex, userBMI, userHealthConditions, 
-                                                      userBudgetLevel, userAllergies, userDietPrefs, 
-                                                      userPregnancyStatus);
-                
-                Map<String, List<FoodRecommendation>> mainFoods = FoodActivityIntegrationMethods.callGeminiForMainFoods(mainPrompt);
-                
-                if (mainFoods != null && !mainFoods.isEmpty()) {
-                    // Update food lists
-                    breakfastFoods.clear();
-                    lunchFoods.clear();
-                    dinnerFoods.clear();
-                    snackFoods.clear();
+        // Use OptimizedGeminiService to get personalized recommendations
+        OptimizedGeminiService geminiService = new OptimizedGeminiService();
+        geminiService.generateFoodRecommendations(
+            prompt,
+            new OptimizedGeminiService.FoodRecommendationCallback() {
+                @Override
+                public void onSuccess(List<FoodRecommendation> recommendations) {
+                    Log.d(TAG, "Successfully received " + recommendations.size() + " AI-generated recommendations");
                     
-                    breakfastFoods.addAll(mainFoods.getOrDefault("breakfast", new ArrayList<>()));
-                    lunchFoods.addAll(mainFoods.getOrDefault("lunch", new ArrayList<>()));
-                    dinnerFoods.addAll(mainFoods.getOrDefault("dinner", new ArrayList<>()));
-                    snackFoods.addAll(mainFoods.getOrDefault("snacks", new ArrayList<>()));
+                    // Categorize recommendations
+                    categorizeRecommendations(recommendations, breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
                     
-                    Log.d(TAG, "Food lists updated - Breakfast: " + breakfastFoods.size() + 
-                          ", Lunch: " + lunchFoods.size() + ", Dinner: " + dinnerFoods.size() + 
-                          ", Snacks: " + snackFoods.size());
-                    
-                    // Update adapters on main thread
-                    if (context instanceof android.app.Activity) {
-                        ((android.app.Activity) context).runOnUiThread(() -> {
-                            Log.d(TAG, "Updating adapters on UI thread");
-                            if (breakfastAdapter != null) {
-                                Log.d(TAG, "Updating breakfast adapter with " + breakfastFoods.size() + " items");
-                                breakfastAdapter.updateFoods(breakfastFoods);
-                            }
-                            if (lunchAdapter != null) {
-                                Log.d(TAG, "Updating lunch adapter with " + lunchFoods.size() + " items");
-                                lunchAdapter.updateFoods(lunchFoods);
-                            }
-                            if (dinnerAdapter != null) {
-                                Log.d(TAG, "Updating dinner adapter with " + dinnerFoods.size() + " items");
-                                dinnerAdapter.updateFoods(dinnerFoods);
-                            }
-                            if (snackAdapter != null) {
-                                Log.d(TAG, "Updating snack adapter with " + snackFoods.size() + " items");
-                                snackAdapter.updateFoods(snackFoods);
-                            }
-                        });
-                    }
-                    
-                    Log.d(TAG, "Main foods loaded successfully");
-                    
-                    // Second API call: Get substitutions for all foods
-                    loadSubstitutionsForAllFoods(breakfastFoods, lunchFoods, dinnerFoods, 
-                                               snackFoods, userAge, userSex, userBMI, userHealthConditions, 
-                                               userBudgetLevel, userAllergies, userDietPrefs, userPregnancyStatus);
-                } else {
-                    Log.w(TAG, "No main foods loaded, using fallback");
-                    // Run on main thread to avoid UI threading issues
-                    if (context instanceof android.app.Activity) {
-                        ((android.app.Activity) context).runOnUiThread(() -> {
-                            loadFallbackFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods,
-                                            breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter);
-                        });
-                    }
-                }
-                
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading foods with substitutions: " + e.getMessage());
-                // Run on main thread to avoid UI threading issues
-                if (context instanceof android.app.Activity) {
-                    ((android.app.Activity) context).runOnUiThread(() -> {
-                        loadFallbackFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods,
-                                        breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter);
-                    });
-                }
-            }
-        });
-    }
-    
-    /**
-     * Load substitutions for all foods
-     */
-    private void loadSubstitutionsForAllFoods(List<FoodRecommendation> breakfastFoods, 
-                                            List<FoodRecommendation> lunchFoods,
-                                            List<FoodRecommendation> dinnerFoods,
-                                            List<FoodRecommendation> snackFoods,
-                                            String userAge, String userSex, String userBMI,
-                                            String userHealthConditions, String userBudgetLevel,
-                                            String userAllergies, String userDietPrefs, String userPregnancyStatus) {
-        // This method would load substitutions for all foods
-        // For now, we'll just log that substitutions are being loaded
-        Log.d(TAG, "Loading substitutions for all foods...");
-        
-        // TODO: Implement substitution loading logic
-        // This would typically make API calls to get substitution data
-        // and update the food lists with substitution information
-    }
-    
-    /**
-     * Load fallback foods when main foods fail to load
-     */
-    private void loadFallbackFoods(List<FoodRecommendation> breakfastFoods,
-                                 List<FoodRecommendation> lunchFoods,
-                                 List<FoodRecommendation> dinnerFoods,
-                                 List<FoodRecommendation> snackFoods,
-                                 HorizontalFoodAdapter breakfastAdapter,
-                                 HorizontalFoodAdapter lunchAdapter,
-                                 HorizontalFoodAdapter dinnerAdapter,
-                                 HorizontalFoodAdapter snackAdapter) {
-        Log.d(TAG, "Loading fallback foods...");
-        
-        // Create some basic fallback foods
-        if (breakfastFoods.isEmpty()) {
-            breakfastFoods.add(new FoodRecommendation("Tapsilog", 450, 25.0, 15.0, 35.0, "1 serving", "Breakfast", "Classic Filipino breakfast", "https://example.com/tapsilog.jpg"));
-        }
-        if (lunchFoods.isEmpty()) {
-            lunchFoods.add(new FoodRecommendation("Chicken Adobo", 400, 30.0, 20.0, 15.0, "1 serving", "Lunch", "Traditional Filipino lunch", "https://example.com/adobo.jpg"));
-        }
-        if (dinnerFoods.isEmpty()) {
-            dinnerFoods.add(new FoodRecommendation("Grilled Fish", 250, 35.0, 8.0, 5.0, "1 serving", "Dinner", "Healthy dinner option", "https://example.com/fish.jpg"));
-        }
-        if (snackFoods.isEmpty()) {
-            snackFoods.add(new FoodRecommendation("Fresh Fruits", 80, 1.0, 0.3, 20.0, "1 cup", "Snacks", "Nutritious snack", "https://example.com/fruits.jpg"));
-        }
-        
-        // Update adapters on main thread
-        if (context instanceof android.app.Activity) {
-            ((android.app.Activity) context).runOnUiThread(() -> {
-                if (breakfastAdapter != null) {
-                    breakfastAdapter.setLoading(false);
+                    // Update adapters
                     breakfastAdapter.notifyDataSetChanged();
-                }
-                if (lunchAdapter != null) {
-                    lunchAdapter.setLoading(false);
                     lunchAdapter.notifyDataSetChanged();
-                }
-                if (dinnerAdapter != null) {
-                    dinnerAdapter.setLoading(false);
                     dinnerAdapter.notifyDataSetChanged();
+                    snackAdapter.notifyDataSetChanged();
+                    
+                    Log.d(TAG, "Food lists updated with AI nutritionist recommendations");
                 }
-                if (snackAdapter != null) {
-                    snackAdapter.setLoading(false);
+                
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "Error getting AI recommendations: " + error);
+                    // Simple fallback - let user know AI is unavailable
+                    loadSimpleFallbackFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                    
+                    // Update adapters
+                    breakfastAdapter.notifyDataSetChanged();
+                    lunchAdapter.notifyDataSetChanged();
+                    dinnerAdapter.notifyDataSetChanged();
                     snackAdapter.notifyDataSetChanged();
                 }
-            });
+            }
+        );
+    }
+    
+    
+    private static void categorizeRecommendations(List<FoodRecommendation> recommendations,
+                                                List<FoodRecommendation> breakfastFoods,
+                                                List<FoodRecommendation> lunchFoods,
+                                                List<FoodRecommendation> dinnerFoods,
+                                                List<FoodRecommendation> snackFoods) {
+        
+        for (FoodRecommendation food : recommendations) {
+            String dietType = food.getDietType();
+            if (dietType != null) {
+                switch (dietType.toLowerCase()) {
+                    case "breakfast":
+                        breakfastFoods.add(food);
+                        break;
+                    case "lunch":
+                        lunchFoods.add(food);
+                        break;
+                    case "dinner":
+                        dinnerFoods.add(food);
+                        break;
+                    case "snack":
+                        snackFoods.add(food);
+                        break;
+                    default:
+                        lunchFoods.add(food);
+                        break;
+                }
+            } else {
+                lunchFoods.add(food);
+            }
+        }
+        
+        Log.d(TAG, "Categorized recommendations: " + 
+              breakfastFoods.size() + " breakfast, " + 
+              lunchFoods.size() + " lunch, " + 
+              dinnerFoods.size() + " dinner, " + 
+              snackFoods.size() + " snacks");
+    }
+    
+    private static void loadConditionSpecificFallbackFoods(String primaryCondition,
+                                                          List<FoodRecommendation> breakfastFoods,
+                                                          List<FoodRecommendation> lunchFoods,
+                                                          List<FoodRecommendation> dinnerFoods,
+                                                          List<FoodRecommendation> snackFoods) {
+        
+        Log.d(TAG, "Loading fallback foods for condition: " + primaryCondition);
+        
+        switch (primaryCondition) {
+            case "SEVERE_MALNUTRITION":
+                loadSevereMalnutritionFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "PREGNANT":
+                loadPregnantFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "INFANT":
+                loadInfantFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "TODDLER":
+                loadToddlerFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "CHILD":
+                loadChildFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "TEEN":
+                loadTeenFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "SENIOR":
+                loadSeniorFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "UNDERWEIGHT":
+                loadUnderweightFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "OVERWEIGHT":
+                loadOverweightFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "OBESE":
+                loadObeseFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            case "MALNUTRITION":
+                loadMalnutritionFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
+            default:
+                loadNormalAdultFoods(breakfastFoods, lunchFoods, dinnerFoods, snackFoods);
+                break;
         }
     }
     
-    public void shutdown() {
-        if (executorService != null) {
-            executorService.shutdown();
-        }
+    // Condition-specific food loading methods
+    private static void loadSevereMalnutritionFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                                   List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("High-Protein Porridge", 400, 20, 8, 45, "1 bowl", "Breakfast", "Nutrient-dense recovery meal"));
+        lunch.add(new FoodRecommendation("Fortified Rice with Fish", 500, 30, 12, 55, "1 plate", "Lunch", "Complete protein and vitamins"));
+        dinner.add(new FoodRecommendation("Chicken Soup with Vegetables", 450, 25, 10, 40, "1 bowl", "Dinner", "Easy to digest, high nutrition"));
+        snacks.add(new FoodRecommendation("Peanut Butter Banana", 200, 8, 12, 25, "1 serving", "Snack", "High-calorie, nutrient-dense"));
+    }
+    
+    private static void loadPregnantFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                         List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Fortified Cereal with Milk", 350, 15, 8, 45, "1 bowl", "Breakfast", "Folic acid and iron rich"));
+        lunch.add(new FoodRecommendation("Grilled Salmon with Spinach", 450, 35, 15, 20, "1 serving", "Lunch", "Omega-3 and folate"));
+        dinner.add(new FoodRecommendation("Lean Beef with Sweet Potato", 500, 40, 12, 50, "1 plate", "Dinner", "Iron and beta-carotene"));
+        snacks.add(new FoodRecommendation("Greek Yogurt with Berries", 150, 15, 2, 20, "1 cup", "Snack", "Calcium and antioxidants"));
+    }
+    
+    private static void loadInfantFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                       List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Soft Rice Porridge", 200, 5, 2, 35, "1/2 cup", "Breakfast", "Easy to digest"));
+        lunch.add(new FoodRecommendation("Mashed Sweet Potato", 150, 3, 1, 25, "1/4 cup", "Lunch", "Vitamin A rich"));
+        dinner.add(new FoodRecommendation("Pureed Chicken and Carrots", 180, 12, 4, 15, "1/4 cup", "Dinner", "Protein and vitamins"));
+        snacks.add(new FoodRecommendation("Soft Banana", 80, 1, 0, 20, "1/4 piece", "Snack", "Natural sweetness"));
+    }
+    
+    private static void loadToddlerFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                        List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Mini Pancakes with Fruit", 250, 8, 6, 35, "2 small", "Breakfast", "Fun and nutritious"));
+        lunch.add(new FoodRecommendation("Chicken Nuggets with Veggies", 300, 20, 12, 25, "4 pieces", "Lunch", "Kid-friendly protein"));
+        dinner.add(new FoodRecommendation("Fish Sticks with Rice", 350, 25, 8, 40, "3 pieces", "Dinner", "Omega-3 for brain development"));
+        snacks.add(new FoodRecommendation("Cheese Cubes", 100, 8, 6, 1, "4 cubes", "Snack", "Calcium for growing bones"));
+    }
+    
+    private static void loadChildFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                      List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Whole Grain Toast with Eggs", 300, 15, 10, 30, "2 slices", "Breakfast", "Energy for active kids"));
+        lunch.add(new FoodRecommendation("Turkey Sandwich with Veggies", 400, 25, 12, 45, "1 sandwich", "Lunch", "Balanced nutrition"));
+        dinner.add(new FoodRecommendation("Baked Chicken with Broccoli", 450, 35, 15, 25, "1 serving", "Dinner", "Lean protein and vitamins"));
+        snacks.add(new FoodRecommendation("Apple Slices with Peanut Butter", 200, 8, 12, 25, "1 apple", "Snack", "Fiber and healthy fats"));
+    }
+    
+    private static void loadTeenFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                     List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Protein Smoothie Bowl", 400, 25, 8, 45, "1 bowl", "Breakfast", "Fuel for growth spurt"));
+        lunch.add(new FoodRecommendation("Chicken Burrito Bowl", 550, 35, 15, 60, "1 bowl", "Lunch", "High-calorie for active teens"));
+        dinner.add(new FoodRecommendation("Grilled Steak with Quinoa", 600, 45, 20, 50, "1 serving", "Dinner", "Iron and protein for development"));
+        snacks.add(new FoodRecommendation("Trail Mix", 300, 10, 20, 25, "1/2 cup", "Snack", "Energy-dense for busy teens"));
+    }
+    
+    private static void loadSeniorFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                       List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Oatmeal with Nuts", 300, 12, 8, 45, "1 bowl", "Breakfast", "Fiber and heart-healthy"));
+        lunch.add(new FoodRecommendation("Salmon Salad", 350, 30, 15, 20, "1 plate", "Lunch", "Omega-3 for brain health"));
+        dinner.add(new FoodRecommendation("Baked Fish with Vegetables", 400, 35, 12, 30, "1 serving", "Dinner", "Easy to digest, nutrient-rich"));
+        snacks.add(new FoodRecommendation("Greek Yogurt", 120, 15, 2, 10, "1 cup", "Snack", "Protein and probiotics"));
+    }
+    
+    private static void loadUnderweightFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                            List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("High-Calorie Smoothie", 500, 20, 15, 60, "1 large", "Breakfast", "Nutrient-dense weight gain"));
+        lunch.add(new FoodRecommendation("Avocado Toast with Eggs", 450, 20, 25, 35, "2 slices", "Lunch", "Healthy fats and protein"));
+        dinner.add(new FoodRecommendation("Pasta with Meat Sauce", 600, 30, 20, 70, "1 large plate", "Dinner", "High-calorie, balanced meal"));
+        snacks.add(new FoodRecommendation("Nuts and Dried Fruits", 350, 10, 25, 30, "1/2 cup", "Snack", "Calorie-dense, nutritious"));
+    }
+    
+    private static void loadOverweightFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                           List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Greek Yogurt Parfait", 250, 20, 5, 30, "1 cup", "Breakfast", "High protein, low calorie"));
+        lunch.add(new FoodRecommendation("Grilled Chicken Salad", 350, 35, 12, 20, "1 large bowl", "Lunch", "Lean protein, lots of veggies"));
+        dinner.add(new FoodRecommendation("Baked Fish with Roasted Vegetables", 400, 30, 15, 25, "1 serving", "Dinner", "Low-calorie, nutrient-rich"));
+        snacks.add(new FoodRecommendation("Vegetable Sticks with Hummus", 150, 8, 6, 15, "1 serving", "Snack", "Low-calorie, filling"));
+    }
+    
+    private static void loadObeseFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                      List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Vegetable Omelet", 200, 20, 12, 8, "1 serving", "Breakfast", "High protein, low carb"));
+        lunch.add(new FoodRecommendation("Grilled Chicken with Steamed Broccoli", 300, 40, 8, 15, "1 serving", "Lunch", "Lean protein, low calorie"));
+        dinner.add(new FoodRecommendation("Baked Salmon with Asparagus", 350, 35, 15, 12, "1 serving", "Dinner", "Heart-healthy, portion-controlled"));
+        snacks.add(new FoodRecommendation("Apple with Cinnamon", 80, 0, 0, 20, "1 medium", "Snack", "Natural sweetness, low calorie"));
+    }
+    
+    private static void loadMalnutritionFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                             List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Fortified Rice Porridge", 350, 15, 8, 50, "1 bowl", "Breakfast", "Nutrient-dense recovery"));
+        lunch.add(new FoodRecommendation("Chicken and Vegetable Stew", 450, 30, 12, 40, "1 bowl", "Lunch", "Complete nutrition"));
+        dinner.add(new FoodRecommendation("Fish with Rice and Beans", 500, 35, 10, 60, "1 plate", "Dinner", "Protein and complex carbs"));
+        snacks.add(new FoodRecommendation("Peanut Butter on Crackers", 200, 8, 12, 20, "4 crackers", "Snack", "High-calorie, nutritious"));
+    }
+    
+    private static void loadNormalAdultFoods(List<FoodRecommendation> breakfast, List<FoodRecommendation> lunch, 
+                                            List<FoodRecommendation> dinner, List<FoodRecommendation> snacks) {
+        breakfast.add(new FoodRecommendation("Whole Grain Toast with Avocado", 300, 12, 15, 35, "2 slices", "Breakfast", "Balanced nutrition"));
+        lunch.add(new FoodRecommendation("Grilled Chicken Wrap", 400, 30, 12, 45, "1 wrap", "Lunch", "Complete meal"));
+        dinner.add(new FoodRecommendation("Baked Salmon with Quinoa", 500, 35, 18, 45, "1 serving", "Dinner", "Omega-3 and complete protein"));
+        snacks.add(new FoodRecommendation("Mixed Nuts", 200, 8, 16, 8, "1/4 cup", "Snack", "Healthy fats and protein"));
     }
 }

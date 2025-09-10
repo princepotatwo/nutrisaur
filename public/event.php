@@ -1,98 +1,23 @@
 <?php
 // Enable error reporting for debugging
-// 🚨 COMPLETELY REWRITTEN EVENT CREATION LOGIC - NO REDIRECTS, NO DASHBOARD GOING BACK
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// FCM Notification Sending Function using Firebase Admin SDK
+// Include DatabaseAPI for FCM functionality
+require_once __DIR__ . '/api/DatabaseAPI.php';
+
+// Use DatabaseAPI for FCM notifications instead of custom implementation
 function sendFCMNotificationToToken($fcmToken, $title, $body) {
     try {
-        // Firebase Admin SDK Service Account Key
-        $serviceAccountKey = [
-            "type" => "service_account",
-            "project_id" => "nutrisaur-ebf29",
-            "private_key_id" => "1c2fa5d5bbf9ac2a6c0284101b5d1d256be9eafe",
-            "private_key" => "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCbGuEbYIOTu6k8\naAkyfD1wS5wqsMoz/HoCP2yTA2cWVOzTTlWminXfzA4PxSKbU4NNATOzDm4C1Grt\nwIrYndO23PQnsSyMTk26eZoBU3Hu4yerDZBgPlNq5YmjzZO/VPkzWZRuf258TcNO\neS/bD81tc9KFshaVPEfBDDwlgvQMfPL5Gf93UurAAyOSwDT5a0QgpFdu95d4p/cV\nnPHD4QZUmUn8QaemTO8mez1m820nTxB17SXcdAG0++0n/dm6Ob1YBAt5Ey1mpHP5\nItKb7Ysh78OVcbO9pdMahwdrp7wJ9sEmFgojgp8uaR9ewjicxF5MmJVpfOzx7Qfb\nnQTtenDpAgMBAAECggEAAyKYdHHpE7/iOSV0zIkkjsc6EvmiCxbD4PuNaZO5VJy6\nPfOVf9L8Dffob6fEis8Co1HuZksMEzeRXIvpr1ye7msDh/5Cg1vqO0yaipzre4oq\nf5nvFkFV21FkP/Dd8MSgouNhJv8Hz/02AOyQxV585wT4nbMBvNnlxpoSNZBMXlvS\nIUoKKifJywnLR0w7uxAFdMH6PN9oPY4FzjEH/xddc4/vzvFfKrgcHji9E/e5+BEU\nVV56Z8KqmVdc+Njngzljfe7SSJmNMTs8FtoAu3b+9HHljS6DI3+l6xzz461UX7LW\nseQtBOFAWFxXh4svZ3Hf0bVnJyqlj9nxbcOE0MLX+QKBgQDVO+JtBiqiwWPl3II2\nU/l+ynH29eVpriNLaj2DJeSrnmUp1/s9M5HOrg07P5AQIiAJS/yAS21OjbnOYT22\n7lCENPlHYEXMz7Fs6/9+lxRGh/X3tLcyJQkvVtEi7v1Tixw3IEqGzS/x7LUIci//\nxiRwX/Xq3acxGmULoWVaQy/H5QKBgQC6NngCzJzrF/Wyze63r2f4KnUgcGeX6ah8\n3HiJqv+/UCZfKjYzPO8ueZ3vT4aMHe4Jm9cQspR/Az5ZaCOmFgDazofauPZPODtM\nrrKWqIH96+x2dwbu5aAEsAEk5FJuK/JKfsGxoSLhgm0DfF3ca3iXI3TfgML7nX8y\nOHMdYg/stQKBgAUvsbApKDxRK9bZaCleHYFh9yekj3HklGMvMFPSRh+OeLNt12SD\nrpYyUYwRXbWmvtS7Dmcobn4soEpOvyuF3Ft61l1QECKNIqmdi9dOYWXdxLPDp3kG\nwZRvLiMFYQ/5IDSPCoEA2JuvwC92Z4h3D0fUbazKu1hMZgzEXiy12aGpAoGAIU2m\njxGbKuyhE7aC8DUdyiOFySRxUpkGejZQFIcRsFycUD7TbLyEJnK3zVoSvTKJJQzL\nHQBjUIf6+bCHV6ftxTRU1chovOhYqrE/3XQLs6cjJljJU6abxNrZiYiQOYYAklQz\nPhqMi3pxFsOCYe6Spa1AtMxpkuirHAc+h03HfVUCgYEAk1q6ay6UCpdnWYNd9tT3\ndX4KWNaOC02cTIUKBNYiwtsUf4x4e+OL4Ol1N+gwSN3tyU0tZD89lfBVdmrq50EU\nKl4pUrzlIaLS3Z5EumgFA/4ptyzAXOFLtyrpjVFHjk+Rxt51TpMi4VuMHFZ4m3WW\nAhYxFogqCIeG0/J/9Q4sWpg=\n-----END PRIVATE KEY-----\n",
-            "client_email" => "firebase-adminsdk-fbsvc@nutrisaur-ebf29.iam.gserviceaccount.com",
-            "client_id" => "107962791067736498847",
-            "auth_uri" => "https://accounts.google.com/o/oauth2/auth",
-            "token_uri" => "https://oauth2.googleapis.com/token",
-            "auth_provider_x509_cert_url" => "https://www.googleapis.com/oauth2/v1/certs",
-            "client_x509_cert_url" => "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40nutrisaur-ebf29.iam.gserviceaccount.com",
-            "universe_domain" => "googleapis.com"
-        ];
-        
-        // Get access token using service account
-        $accessToken = getFirebaseAccessToken($serviceAccountKey);
-        if (!$accessToken) {
-            return ['success' => false, 'error' => 'Failed to get access token'];
-        }
-        
-        $url = 'https://fcm.googleapis.com/v1/projects/nutrisaur-ebf29/messages:send';
-        
-        $message = [
-            'message' => [
-                'token' => $fcmToken,
-                'notification' => [
-                    'title' => $title,
-                    'body' => $body
-                ],
-                'data' => [
-                    'title' => $title,
-                    'body' => $body,
-                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
-                ],
-                'android' => [
-                    'notification' => [
-                        'sound' => 'default',
-                        'notification_priority' => 'PRIORITY_HIGH'
-                    ]
-                ],
-                'apns' => [
-                    'payload' => [
-                        'aps' => [
-                            'sound' => 'default',
-                            'badge' => 1
-                        ]
-                    ]
-                ]
-            ]
-        ];
-        
-        $headers = [
-            'Authorization: Bearer ' . $accessToken,
-            'Content-Type: application/json'
-        ];
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($message));
-        
-        $result = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        
-        if ($httpCode == 200) {
-            $response = json_decode($result, true);
-            if (isset($response['name'])) {
-                return ['success' => true, 'response' => $result];
-            } else {
-                return ['success' => false, 'error' => $result];
-            }
-        } else {
-            return ['success' => false, 'error' => "HTTP $httpCode: $result"];
-        }
-        
+        // Use the working FCM implementation from DatabaseAPI
+        // Call the global function from DatabaseAPI.php
+        return \sendFCMNotificationToToken($fcmToken, $title, $body);
     } catch (Exception $e) {
         return ['success' => false, 'error' => $e->getMessage()];
     }
 }
 
-// Function to get Firebase access token using service account
+// Function to get Firebase access token using service account (kept for compatibility)
 function getFirebaseAccessToken($serviceAccountKey) {
     try {
         $jwt = createJWT($serviceAccountKey);
@@ -912,7 +837,7 @@ function sendFCMNotification($tokens, $notificationData, $targetLocation = null)
 
 // These functions are no longer needed - using the working API instead
 
-// Function to get FCM tokens based on location targeting using direct fcm_tokens lookup (like dash.php)
+// Function to get FCM tokens based on location targeting using DatabaseAPI methods
 function getFCMTokensByLocation($targetLocation = null) {
     try {
         // Use DatabaseAPI class directly
@@ -923,21 +848,14 @@ function getFCMTokensByLocation($targetLocation = null) {
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '') {
             error_log("Processing 'all locations' case - getting all FCM tokens");
-            // Get all FCM tokens from community_users table
-            $stmt = $db->getPDO()->prepare("
-                SELECT fcm_token, email as user_email, barangay as user_barangay
-                FROM community_users
-                WHERE fcm_token IS NOT NULL 
-                AND fcm_token != ''
-                AND barangay IS NOT NULL 
-                AND barangay != ''
-            ");
-            $stmt->execute();
+            // Use DatabaseAPI method to get all active FCM tokens
+            $tokens = $db->getActiveFCMTokens();
         } else {
             // Check if it's a municipality (starts with MUNICIPALITY_)
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 error_log("Processing municipality case: $targetLocation");
-                // Get tokens for all barangays in the municipality from community_users table
+                // Get tokens for all barangays in the municipality
+                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, email as user_email, barangay as user_barangay
                     FROM community_users
@@ -947,28 +865,16 @@ function getFCMTokensByLocation($targetLocation = null) {
                     AND barangay != ''
                     AND (barangay = :targetLocation OR barangay LIKE :municipalityPattern)
                 ");
-                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $stmt->bindParam(':targetLocation', $targetLocation);
                 $stmt->bindParam(':municipalityPattern', $municipalityName . '%');
                 $stmt->execute();
+                $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
             } else {
                 error_log("Processing barangay case: $targetLocation");
-                // Get tokens for specific barangay from community_users table
-                $stmt = $db->getPDO()->prepare("
-                    SELECT fcm_token, email as user_email, barangay as user_barangay
-                    FROM community_users
-                    WHERE fcm_token IS NOT NULL 
-                    AND fcm_token != ''
-                    AND barangay IS NOT NULL 
-                    AND barangay != ''
-                    AND barangay = :barangay
-                ");
-                $stmt->bindParam(':barangay', $targetLocation);
-                $stmt->execute();
+                // Use DatabaseAPI method to get FCM tokens by barangay
+                $tokens = $db->getFCMTokensByBarangay($targetLocation);
             }
         }
-        
-        $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Log the targeting results
         $targetType = empty($targetLocation) ? 'all' : (strpos($targetLocation, 'MUNICIPALITY_') === 0 ? 'municipality' : 'barangay');

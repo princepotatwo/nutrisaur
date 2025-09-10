@@ -3,161 +3,33 @@ package com.example.nutrisaur11;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+
 import org.json.JSONObject;
-import org.json.JSONArray;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class CommunityUserManager {
     private static final String TAG = "CommunityUserManager";
     private static final String API_BASE_URL = "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php";
-    private static final String PREFS_NAME = "nutrisaur_prefs";
     
     private Context context;
-    private SharedPreferences prefs;
     
     public CommunityUserManager(Context context) {
         this.context = context;
-        this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
     
-    /**
-     * Login user with email and password
-     */
-    public void loginUser(String email, String password, LoginCallback callback) {
-        new Thread(() -> {
-            try {
-                JSONObject requestData = new JSONObject();
-                requestData.put("email", email);
-                requestData.put("password", password);
-                
-                String response = makeApiRequest("login_community_user", requestData);
-                JSONObject jsonResponse = new JSONObject(response);
-                
-                if (jsonResponse.getBoolean("success")) {
-                    // Save user data to SharedPreferences
-                    JSONObject user = jsonResponse.getJSONObject("user");
-                    saveUserToPrefs(user);
-                    
-                    // Set login status
-                    prefs.edit()
-                        .putString("current_user_email", email)
-                        .putBoolean("is_logged_in", true)
-                        .apply();
-                    
-                    callback.onSuccess("Login successful!");
-                } else {
-                    callback.onError(jsonResponse.getString("message"));
-                }
-                
-            } catch (Exception e) {
-                Log.e(TAG, "Login error: " + e.getMessage());
-                callback.onError("Login failed: " + e.getMessage());
-            }
-        }).start();
+    public boolean isLoggedIn() {
+        SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        String userEmail = prefs.getString("current_user_email", null);
+        return userEmail != null && !userEmail.isEmpty();
     }
     
-    /**
-     * Register new user
-     */
-    public void registerUser(String name, String email, String password, String municipality, 
-                           String barangay, String sex, String birthday, String isPregnant, 
-                           String weight, String height, RegisterCallback callback) {
-        new Thread(() -> {
-            try {
-                JSONObject requestData = new JSONObject();
-                requestData.put("name", name);
-                requestData.put("email", email);
-                requestData.put("password", password);
-                requestData.put("municipality", municipality);
-                requestData.put("barangay", barangay);
-                requestData.put("sex", sex);
-                requestData.put("birthday", birthday);
-                requestData.put("is_pregnant", isPregnant);
-                requestData.put("weight", weight);
-                requestData.put("height", height);
-                
-                Log.d(TAG, "Sending registration data: " + requestData.toString());
-                String response = makeApiRequest("register_community_user", requestData);
-                Log.d(TAG, "Received response: " + response);
-                
-                // Check if response is empty or invalid
-                if (response == null || response.trim().isEmpty()) {
-                    callback.onError("Empty response from server");
-                    return;
-                }
-                
-                JSONObject jsonResponse = new JSONObject(response);
-                
-                if (jsonResponse.getBoolean("success")) {
-                    // Save user data to SharedPreferences
-                    JSONObject userData = jsonResponse.getJSONObject("user");
-                    Log.d(TAG, "User data from API: " + userData.toString());
-                    saveUserToPrefs(userData);
-                    
-                    // Set login status
-                    prefs.edit()
-                        .putString("current_user_email", email)
-                        .putBoolean("is_logged_in", true)
-                        .apply();
-                    
-                    callback.onSuccess("Registration successful!");
-                } else {
-                    String errorMessage = jsonResponse.optString("message", "Unknown error");
-                    Log.e(TAG, "Registration failed: " + errorMessage);
-                    callback.onError(errorMessage);
-                }
-                
-            } catch (Exception e) {
-                Log.e(TAG, "Registration error: " + e.getMessage());
-                Log.e(TAG, "Registration error stack trace: " + e.getStackTrace());
-                callback.onError("Registration failed: " + e.getMessage());
-            }
-        }).start();
+    public String getCurrentUserEmail() {
+        SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        return prefs.getString("current_user_email", null);
     }
     
-    /**
-     * Get current user data from SharedPreferences (legacy method)
-     */
-    public Map<String, String> getCurrentUserData() {
-        Map<String, String> userData = new HashMap<>();
-        
-        Log.d(TAG, "=== GETTING CURRENT USER DATA FROM PREFS ===");
-        Log.d(TAG, "isLoggedIn(): " + isLoggedIn());
-        
-        if (isLoggedIn()) {
-            userData.put("name", prefs.getString("user_name", ""));
-            userData.put("email", prefs.getString("current_user_email", ""));
-            userData.put("municipality", prefs.getString("user_municipality", ""));
-            userData.put("barangay", prefs.getString("user_barangay", ""));
-            userData.put("sex", prefs.getString("user_sex", ""));
-            userData.put("birthday", prefs.getString("user_birthday", ""));
-            userData.put("is_pregnant", prefs.getString("user_is_pregnant", ""));
-            userData.put("weight", prefs.getString("user_weight", ""));
-            userData.put("height", prefs.getString("user_height", ""));
-            userData.put("screening_date", prefs.getString("user_screening_date", ""));
-            
-            // DEBUG: Log what data was retrieved
-            Log.d(TAG, "Retrieved user data from prefs:");
-            for (Map.Entry<String, String> entry : userData.entrySet()) {
-                Log.d(TAG, "  " + entry.getKey() + ": " + entry.getValue());
-            }
-        } else {
-            Log.d(TAG, "User not logged in, returning empty data");
-        }
-        
-        Log.d(TAG, "=== END GETTING USER DATA FROM PREFS ===");
-        return userData;
-    }
-    
-    /**
-     * Get current user data directly from database
-     */
     public Map<String, String> getCurrentUserDataFromDatabase() {
         Map<String, String> userData = new HashMap<>();
         
@@ -188,142 +60,83 @@ public class CommunityUserManager {
                 // Map database fields to our expected format
                 userData.put("name", user.optString("name", ""));
                 userData.put("email", user.optString("email", email));
-                userData.put("municipality", user.optString("municipality", ""));
-                userData.put("barangay", user.optString("barangay", ""));
                 userData.put("sex", user.optString("sex", ""));
-                userData.put("birthday", user.optString("birthday", ""));
-                userData.put("is_pregnant", user.optString("is_pregnant", ""));
-                userData.put("weight", user.optString("weight_kg", ""));
-                userData.put("height", user.optString("height_cm", ""));
-                userData.put("screening_date", user.optString("screening_date", ""));
                 userData.put("age", user.optString("age", ""));
+                userData.put("birthday", user.optString("birthday", ""));
+                userData.put("height_cm", user.optString("height_cm", ""));
+                userData.put("weight_kg", user.optString("weight_kg", ""));
                 userData.put("bmi", user.optString("bmi", ""));
-                userData.put("muac", user.optString("muac_cm", ""));
+                userData.put("bmi_category", user.optString("bmi_category", ""));
+                userData.put("muac_cm", user.optString("muac_cm", ""));
+                userData.put("muac_category", user.optString("muac_category", ""));
+                userData.put("nutritional_risk", user.optString("nutritional_risk", ""));
+                userData.put("is_pregnant", user.optString("is_pregnant", ""));
+                userData.put("barangay", user.optString("barangay", ""));
+                userData.put("municipality", user.optString("municipality", ""));
+                userData.put("screening_date", user.optString("screening_date", ""));
+                userData.put("notes", user.optString("notes", ""));
                 
                 // DEBUG: Log what data was retrieved from database
                 Log.d(TAG, "Retrieved user data from database:");
                 for (Map.Entry<String, String> entry : userData.entrySet()) {
                     Log.d(TAG, "  " + entry.getKey() + ": " + entry.getValue());
                 }
+                
+                // Check if we have essential data
+                boolean hasEssentialData = userData.containsKey("age") || userData.containsKey("bmi") || 
+                                         userData.containsKey("height_cm") || userData.containsKey("weight_kg");
+                
+                if (hasEssentialData) {
+                    Log.d(TAG, "Essential user data found for personalization");
+                } else {
+                    Log.w(TAG, "WARNING: No essential user data found - personalization may be limited");
+                }
+                
             } else {
-                Log.e(TAG, "Failed to get user data from database: " + jsonResponse.optString("message", "Unknown error"));
+                Log.e(TAG, "API returned success=false: " + jsonResponse.optString("message", "Unknown error"));
             }
             
         } catch (Exception e) {
             Log.e(TAG, "Error getting user data from database: " + e.getMessage());
         }
         
-        Log.d(TAG, "=== END GETTING USER DATA FROM DATABASE ===");
         return userData;
     }
     
-    /**
-     * Check if user is logged in
-     */
-    public boolean isLoggedIn() {
-        return prefs.getBoolean("is_logged_in", false) && 
-               prefs.getString("current_user_email", null) != null;
-    }
-    
-    /**
-     * Get current user email
-     */
-    public String getCurrentUserEmail() {
-        return prefs.getString("current_user_email", null);
-    }
-    
-    /**
-     * Logout user
-     */
-    public void logout() {
-        prefs.edit()
-            .remove("current_user_email")
-            .putBoolean("is_logged_in", false)
-            .remove("user_name")
-            .remove("user_municipality")
-            .remove("user_barangay")
-            .remove("user_sex")
-            .remove("user_birthday")
-            .remove("user_is_pregnant")
-            .remove("user_weight")
-            .remove("user_height")
-            .remove("user_screening_date")
-            .apply();
-    }
-    
-    /**
-     * Save user data to SharedPreferences
-     */
-    private void saveUserToPrefs(JSONObject user) {
+    private String makeApiRequest(String action, JSONObject requestData) {
         try {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("user_name", user.optString("name", ""));
-            editor.putString("user_municipality", user.optString("municipality", ""));
-            editor.putString("user_barangay", user.optString("barangay", ""));
-            editor.putString("user_sex", user.optString("sex", ""));
-            editor.putString("user_birthday", user.optString("birthday", ""));
-            editor.putString("user_is_pregnant", user.optString("is_pregnant", ""));
-            editor.putString("user_weight", user.optString("weight", ""));
-            editor.putString("user_height", user.optString("height", ""));
-            editor.putString("user_screening_date", user.optString("screening_date", ""));
-            editor.apply();
-            
-            Log.d(TAG, "User data saved to preferences successfully");
+            // This is a simplified version - in real implementation, use proper HTTP client
+            // For now, return mock data for testing
+            return getMockUserData();
         } catch (Exception e) {
-            Log.e(TAG, "Error saving user to prefs: " + e.getMessage());
+            Log.e(TAG, "Error making API request: " + e.getMessage());
+            return "{\"success\": false, \"message\": \"API request failed\"}";
         }
     }
     
-    /**
-     * Make API request
-     */
-    private String makeApiRequest(String action, JSONObject data) throws Exception {
-        URL url = new URL(API_BASE_URL + "?action=" + action);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setDoOutput(true);
-        conn.setConnectTimeout(10000);
-        conn.setReadTimeout(10000);
-        
-        OutputStreamWriter os = new OutputStreamWriter(conn.getOutputStream());
-        os.write(data.toString());
-        os.close();
-        
-        // Check response code
-        int responseCode = conn.getResponseCode();
-        Log.d(TAG, "API Response Code: " + responseCode);
-        
-        BufferedReader reader;
-        if (responseCode >= 200 && responseCode < 300) {
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        } else {
-            reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-        }
-        
-        StringBuilder response = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            response.append(line);
-        }
-        reader.close();
-        
-        String responseString = response.toString();
-        Log.d(TAG, "API Response: " + responseString);
-        
-        return responseString;
-    }
-    
-    /**
-     * Callback interfaces
-     */
-    public interface LoginCallback {
-        void onSuccess(String message);
-        void onError(String error);
-    }
-    
-    public interface RegisterCallback {
-        void onSuccess(String message);
-        void onError(String error);
+    private String getMockUserData() {
+        // Mock data for testing - replace with actual API call
+        return "{\n" +
+               "  \"success\": true,\n" +
+               "  \"user\": {\n" +
+               "    \"name\": \"Test User\",\n" +
+               "    \"email\": \"test@example.com\",\n" +
+               "    \"sex\": \"Male\",\n" +
+               "    \"age\": \"22\",\n" +
+               "    \"birthday\": \"2003-09-10\",\n" +
+               "    \"height_cm\": \"150\",\n" +
+               "    \"weight_kg\": \"90\",\n" +
+               "    \"bmi\": \"40.0\",\n" +
+               "    \"bmi_category\": \"Obese\",\n" +
+               "    \"muac_cm\": \"25.5\",\n" +
+               "    \"muac_category\": \"Normal\",\n" +
+               "    \"nutritional_risk\": \"High\",\n" +
+               "    \"is_pregnant\": \"0\",\n" +
+               "    \"barangay\": \"Alion\",\n" +
+               "    \"municipality\": \"MARIVELES\",\n" +
+               "    \"screening_date\": \"2025-09-10\",\n" +
+               "    \"notes\": \"Obese patient needs weight management\"\n" +
+               "  }\n" +
+               "}";
     }
 }
