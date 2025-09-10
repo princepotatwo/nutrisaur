@@ -1786,7 +1786,7 @@ header {
         .top-row {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
+            gap: 12px;
             width: 100%;
         }
 
@@ -1810,18 +1810,20 @@ header {
             border-radius: 6px;
             overflow: hidden;
             transition: all 0.3s ease;
+            border: 1px solid var(--color-border);
         }
         
         .search-input {
             width: 100%;
             padding: 8px 35px 8px 12px;
-            border: 1px solid var(--color-border);
+            border: none;
             border-radius: 6px;
             font-size: 12px;
-            background: var(--color-card);
+            background: transparent;
             color: var(--color-text);
             transition: all 0.3s ease;
             outline: none;
+            min-height: 40px;
         }
         
         .search-input::placeholder {
@@ -1873,7 +1875,7 @@ header {
         .filters-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
+            gap: 12px;
             align-items: end;
         }
         
@@ -2034,18 +2036,20 @@ header {
         .btn-add {
             background: var(--color-highlight);
             color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
-            border: none;
+            border: 1px solid var(--color-border);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            font-size: 11px;
+            gap: 6px;
+            font-size: 12px;
             white-space: nowrap;
+            flex: 1;
+            min-height: 40px;
         }
 
         .btn-add:hover {
@@ -2054,30 +2058,32 @@ header {
         }
 
         .btn-icon {
-            font-size: 12px;
+            font-size: 14px;
             line-height: 1;
         }
 
         .btn-text {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
         }
 
         .btn-secondary {
             background: var(--color-accent3);
             color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
-            border: none;
+            border: 1px solid var(--color-border);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            font-size: 11px;
+            gap: 6px;
+            font-size: 12px;
             white-space: nowrap;
+            flex: 1;
+            min-height: 40px;
         }
 
         .btn-secondary:hover {
@@ -3165,14 +3171,14 @@ header {
                                 <!-- Age From Filter -->
                                 <div class="filter-group">
                                     <label class="filter-label">Age From</label>
-                                    <input type="text" id="ageFromFilter" onchange="filterByAgeRange()" oninput="formatAgeInput(this)" class="filter-select age-input" 
+                                    <input type="text" id="ageFromFilter" onchange="filterByAgeRange()" oninput="formatAgeInput(this)" onkeypress="handleAgeKeyPress(event)" class="filter-select age-input" 
                                            placeholder="Y:00 M:00" maxlength="8">
                                 </div>
                                 
                                 <!-- Age To Filter -->
                                 <div class="filter-group">
                                     <label class="filter-label">Age To</label>
-                                    <input type="text" id="ageToFilter" onchange="filterByAgeRange()" oninput="formatAgeInput(this)" class="filter-select age-input" 
+                                    <input type="text" id="ageToFilter" onchange="filterByAgeRange()" oninput="formatAgeInput(this)" onkeypress="handleAgeKeyPress(event)" class="filter-select age-input" 
                                            placeholder="Y:00 M:00" maxlength="8">
                                 </div>
                                 
@@ -3479,21 +3485,33 @@ header {
         }
         
         function formatAgeInput(input) {
-            let value = input.value.replace(/\D/g, ''); // Remove non-digits
+            // Only allow digits
+            let value = input.value.replace(/\D/g, '');
             let formatted = '';
             
-            if (value.length > 0) {
-                // Format as Y:MM
-                if (value.length <= 2) {
-                    formatted = 'Y:' + value.padStart(2, '0');
-                } else if (value.length <= 4) {
-                    formatted = 'Y:' + value.substring(0, 2).padStart(2, '0') + ' M:' + value.substring(2).padStart(2, '0');
-                } else {
-                    formatted = 'Y:' + value.substring(0, 2).padStart(2, '0') + ' M:' + value.substring(2, 4).padStart(2, '0');
-                }
+            if (value.length === 0) {
+                input.value = '';
+                return;
+            }
+            
+            // Format as Y:MM
+            if (value.length <= 2) {
+                formatted = 'Y:' + value.padStart(2, '0');
+            } else if (value.length <= 4) {
+                formatted = 'Y:' + value.substring(0, 2).padStart(2, '0') + ' M:' + value.substring(2).padStart(2, '0');
+            } else {
+                formatted = 'Y:' + value.substring(0, 2).padStart(2, '0') + ' M:' + value.substring(2, 4).padStart(2, '0');
             }
             
             input.value = formatted;
+        }
+
+        // Prevent non-numeric input
+        function handleAgeKeyPress(event) {
+            const char = String.fromCharCode(event.which);
+            if (!/[0-9]/.test(char)) {
+                event.preventDefault();
+            }
         }
 
         function filterByAgeRange() {
