@@ -100,9 +100,7 @@ public class OptimizedMalnutritionFoodAPI {
                                                     String userAllergies, String userDietPrefs, 
                                                     String userPregnancyStatus,
                                                     MalnutritionFoodCallback callback) {
-        Log.d(TAG, "Starting malnutrition recovery food API call");
-        Log.d(TAG, "API Key: " + GEMINI_API_KEY.substring(0, 10) + "...");
-        Log.d(TAG, "API URL: " + GEMINI_API_URL);
+        Log.d(TAG, "Using fallback malnutrition recovery foods - Gemini only used for nutrition service");
         
         new Thread(() -> {
             try {
