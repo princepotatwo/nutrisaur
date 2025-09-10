@@ -3776,11 +3776,24 @@ header {
             const sex = document.getElementById('sexFilter').value;
             const standard = document.getElementById('standardFilter').value;
             
+            console.log('Applying filters:', { municipality, barangay, ageFrom, ageTo, sex, standard });
+            
             const tableRows = document.querySelectorAll('.user-table tbody tr');
             let visibleCount = 0;
             
-            tableRows.forEach(row => {
+            tableRows.forEach((row, index) => {
                 let showRow = true;
+                
+                // Debug: Log first few rows' data attributes
+                if (index < 3) {
+                    console.log(`Row ${index}:`, {
+                        municipality: row.dataset.municipality,
+                        barangay: row.dataset.barangay,
+                        sex: row.dataset.sex,
+                        ageMonths: row.dataset.ageMonths,
+                        standard: row.dataset.standard
+                    });
+                }
                 
                 // Municipality filter
                 if (municipality && showRow) {
@@ -3801,10 +3814,29 @@ header {
                 // Age range filter (now supports all ages)
                 if ((ageFrom || ageTo) && showRow) {
                     const ageMonths = parseInt(row.dataset.ageMonths);
-                    if (ageFrom && ageMonths < parseInt(ageFrom)) {
+                    
+                    // Parse age from input (format: Y:MM M:MM)
+                    let fromMonths = null;
+                    let toMonths = null;
+                    
+                    if (ageFrom) {
+                        const fromMatch = ageFrom.match(/Y:(\d{2})\s*M:(\d{2})/);
+                        if (fromMatch) {
+                            fromMonths = parseInt(fromMatch[1]) * 12 + parseInt(fromMatch[2]);
+                        }
+                    }
+                    
+                    if (ageTo) {
+                        const toMatch = ageTo.match(/Y:(\d{2})\s*M:(\d{2})/);
+                        if (toMatch) {
+                            toMonths = parseInt(toMatch[1]) * 12 + parseInt(toMatch[2]);
+                        }
+                    }
+                    
+                    if (fromMonths !== null && ageMonths < fromMonths) {
                         showRow = false;
                     }
-                    if (ageTo && ageMonths > parseInt(ageTo)) {
+                    if (toMonths !== null && ageMonths > toMonths) {
                         showRow = false;
                     }
                 }
