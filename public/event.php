@@ -18,9 +18,9 @@ function sendEventFCMNotificationToToken($fcmToken, $title, $body) {
 }
 
 // Function to get Firebase access token using service account (kept for compatibility)
-function getFirebaseAccessToken($serviceAccountKey) {
+function getEventFirebaseAccessToken($serviceAccountKey) {
     try {
-        $jwt = createJWT($serviceAccountKey);
+        $jwt = createEventJWT($serviceAccountKey);
         
         $url = 'https://oauth2.googleapis.com/token';
         $data = [
@@ -51,7 +51,7 @@ function getFirebaseAccessToken($serviceAccountKey) {
 }
 
 // Function to create JWT for Firebase authentication
-function createJWT($serviceAccountKey) {
+function createEventJWT($serviceAccountKey) {
     $header = json_encode(['typ' => 'JWT', 'alg' => 'RS256']);
     $now = time();
     $payload = json_encode([
