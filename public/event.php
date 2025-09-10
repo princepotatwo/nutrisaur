@@ -140,10 +140,30 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
     header('Access-Control-Allow-Headers: Content-Type');
     
     try {
+        // Use DatabaseHelper for database operations
+        require_once __DIR__ . '/api/DatabaseHelper.php';
+        $db = DatabaseHelper::getInstance();
+        
+        if (!$db->isAvailable()) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Database not available'
+            ]);
+            exit;
+        }
+        
         // Get all events from programs table
-        $stmt = $conn->prepare("SELECT * FROM programs ORDER BY date_time ASC");
-        $stmt->execute();
-        $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $db->select('programs', '*', '', [], 'date_time ASC');
+        
+        if (!$result['success']) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Failed to fetch events: ' . ($result['message'] ?? 'Unknown error')
+            ]);
+            exit;
+        }
+        
+        $events = $result['data'];
         
         // Format events for mobile app
         $formattedEvents = [];
