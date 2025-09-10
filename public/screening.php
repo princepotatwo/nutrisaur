@@ -3523,8 +3523,11 @@ header {
                                         $ageInMonths = ($age->y * 12) + $age->m;
                                         $ageDisplay = $age->y . 'y ' . $age->m . 'm';
                                         
-                                        // Calculate BMI
-                                        $bmi = $user['weight'] && $user['height'] ? round($user['weight'] / pow($user['height'] / 100, 2), 1) : 'N/A';
+                                        // Calculate BMI (with division by zero protection)
+                                        $bmi = 'N/A';
+                                        if ($user['weight'] && $user['height'] && $user['height'] > 0) {
+                                            $bmi = round($user['weight'] / pow($user['height'] / 100, 2), 1);
+                                        }
                                         
                                         // Generate all WHO Growth Standards data for this user
                                         $whoData = [
