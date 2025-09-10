@@ -1782,27 +1782,30 @@ header {
             width: 100%;
         }
 
-        /* First Row - Action Buttons */
+        /* First Row - Action Buttons + Search (Same Row) */
+        .top-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+        }
+
         .action-buttons {
             display: flex;
             gap: 8px;
-            justify-content: center;
             align-items: center;
             width: 100%;
         }
 
-        /* Second Row - Search */
         .search-section {
             display: flex;
             align-items: center;
-            justify-content: center;
             width: 100%;
         }
         
         .search-container {
             position: relative;
             width: 100%;
-            max-width: 400px;
             background: var(--color-card);
             border-radius: 6px;
             overflow: hidden;
@@ -1870,7 +1873,7 @@ header {
         .filters-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 6px;
+            gap: 8px;
             align-items: end;
         }
         
@@ -1878,6 +1881,19 @@ header {
             display: flex;
             flex-direction: column;
             gap: 2px;
+        }
+
+        /* Age input formatting */
+        .age-input {
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .age-input::placeholder {
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            letter-spacing: 1px;
         }
         
         .filter-label {
@@ -1945,9 +1961,14 @@ header {
                 gap: 6px;
             }
 
+            .top-row {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
             .filters-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 4px;
+                gap: 6px;
             }
 
             .action-buttons {
@@ -3085,24 +3106,28 @@ header {
             <div class="user-management-container">
                 <div class="table-header">
                     <div class="header-controls">
-                        <!-- First Row - Action Buttons -->
-                        <div class="action-buttons">
-                            <button class="btn-add" onclick="downloadCSVTemplate()">
-                                <span class="btn-icon">📥</span>
-                                <span class="btn-text">Download Template</span>
-                            </button>
-                            <button class="btn-secondary" onclick="showCSVImportModal()">
-                                <span class="btn-icon">📁</span>
-                                <span class="btn-text">Import CSV</span>
-                            </button>
-                        </div>
-
-                        <!-- Second Row - Search Bar -->
-                        <div class="search-section">
-                            <div class="search-container">
-                                <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
-                                <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
+                        <!-- First Row - Action Buttons + Search (Same Row) -->
+                        <div class="top-row">
+                            <div class="action-buttons">
+                                <button class="btn-add" onclick="downloadCSVTemplate()">
+                                    <span class="btn-icon">📥</span>
+                                    <span class="btn-text">Download Template</span>
+                                </button>
+                                <button class="btn-secondary" onclick="showCSVImportModal()">
+                                    <span class="btn-icon">📁</span>
+                                    <span class="btn-text">Import CSV</span>
+                                </button>
                             </div>
+                            
+                            <div class="search-section">
+                                <div class="search-container">
+                                    <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
+                                    <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Empty space for balance -->
+                            <div></div>
                         </div>
 
                         <!-- Third Row - Filters -->
@@ -3140,15 +3165,15 @@ header {
                                 <!-- Age From Filter -->
                                 <div class="filter-group">
                                     <label class="filter-label">Age From</label>
-                                    <input type="text" id="ageFromFilter" onchange="filterByAgeRange()" class="filter-select" 
-                                           placeholder="Y:00 M:00" pattern="Y:\d{2} M:\d{2}">
+                                    <input type="text" id="ageFromFilter" onchange="filterByAgeRange()" oninput="formatAgeInput(this)" class="filter-select age-input" 
+                                           placeholder="Y:00 M:00" maxlength="8">
                                 </div>
                                 
                                 <!-- Age To Filter -->
                                 <div class="filter-group">
                                     <label class="filter-label">Age To</label>
-                                    <input type="text" id="ageToFilter" onchange="filterByAgeRange()" class="filter-select" 
-                                           placeholder="Y:00 M:00" pattern="Y:\d{2} M:\d{2}">
+                                    <input type="text" id="ageToFilter" onchange="filterByAgeRange()" oninput="formatAgeInput(this)" class="filter-select age-input" 
+                                           placeholder="Y:00 M:00" maxlength="8">
                                 </div>
                                 
                                 <!-- Sex Filter -->
@@ -3453,6 +3478,24 @@ header {
             applyAllFilters();
         }
         
+        function formatAgeInput(input) {
+            let value = input.value.replace(/\D/g, ''); // Remove non-digits
+            let formatted = '';
+            
+            if (value.length > 0) {
+                // Format as Y:MM
+                if (value.length <= 2) {
+                    formatted = 'Y:' + value.padStart(2, '0');
+                } else if (value.length <= 4) {
+                    formatted = 'Y:' + value.substring(0, 2).padStart(2, '0') + ' M:' + value.substring(2).padStart(2, '0');
+                } else {
+                    formatted = 'Y:' + value.substring(0, 2).padStart(2, '0') + ' M:' + value.substring(2, 4).padStart(2, '0');
+                }
+            }
+            
+            input.value = formatted;
+        }
+
         function filterByAgeRange() {
             applyAllFilters();
         }
