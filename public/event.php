@@ -7,7 +7,7 @@ ini_set('display_errors', 1);
 require_once __DIR__ . '/api/DatabaseAPI.php';
 
 // Use DatabaseAPI for FCM notifications instead of custom implementation
-function sendFCMNotificationToToken($fcmToken, $title, $body) {
+function sendEventFCMNotificationToToken($fcmToken, $title, $body) {
     try {
         // Use the working FCM implementation from DatabaseAPI
         // Call the global function from DatabaseAPI.php
@@ -718,7 +718,7 @@ function sendNotificationViaAPI($notificationData) {
         foreach ($fcmTokens as $fcmToken) {
             try {
                 // Send actual FCM notification using Firebase Admin SDK
-                $fcmResult = sendFCMNotificationToToken($fcmToken, $title, $body);
+                $fcmResult = sendEventFCMNotificationToToken($fcmToken, $title, $body);
                 
                 if ($fcmResult['success']) {
                     // Log successful notification
@@ -790,7 +790,7 @@ function sendEventFCMNotification($tokens, $notificationData, $targetLocation = 
             
             try {
                 // Send actual FCM notification
-                $fcmResult = sendFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
+                $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
                 
                 if ($fcmResult['success']) {
                     // Log successful notification
