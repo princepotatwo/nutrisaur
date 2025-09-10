@@ -42,11 +42,6 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
     private TextView featuredFoodName, featuredFoodDescription;
     
     private ExecutorService executorService;
-    private Set<String> generatedFoodNames = new HashSet<>();
-    private int generationCount = 0;
-    private int foodsPerBatch = 10; // Track foods per batch
-    private boolean isPreloading = false; // Prevent multiple simultaneous preloads
-    private int consecutiveFailures = 0; // Track consecutive failures to prevent infinite loops
     
     // Food substitution components
     private FoodSubstitutionManager substitutionManager;
@@ -442,113 +437,196 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
         Log.d(TAG, "userHealthConditions: " + userHealthConditions);
         Log.d(TAG, "userNutritionalRisk: " + userNutritionalRisk);
         
-        // Use API integration for malnutrition recovery foods with comprehensive data
-        FoodActivityIntegration.loadMalnutritionRecoveryFoodsWithScreening(
-            this,
-            userAge, userSex, userBMI, userHeight, userWeight,
-            userBMICategory, userMUAC, userMUACCategory, userNutritionalRisk,
-            userHealthConditions, userActivityLevel, userBudgetLevel, 
-            userDietaryRestrictions, userAllergies, userDietPrefs, 
-            userAvoidFoods, userRiskScore, userBarangay, userIncome, 
-            userPregnancyStatus, userMunicipality, userScreeningDate, userNotes,
-            breakfastFoods, lunchFoods, dinnerFoods, snackFoods,
-            breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter
-        );
+        // Load food data using only Gemini API
+        loadFoodDataWithGemini();
     }
     
-    
-    
-    
-    private void loadTraditionalFoods() {
-        // Breakfast dishes
-        String[] breakfastDishes = {
-            "Tapsilog", "Tocilog", "Longsilog", "Bangsilog", "Cornsilog", "Spamsilog", "Hotsilog",
-            "Pancit Canton", "Lugaw", "Arroz Caldo", "Goto", "Champorado", "Pandesal", "Taho",
-            "Kakanin", "Bibingka", "Puto", "Suman", "Puto Bumbong", "Sapin-sapin"
-        };
+    private void loadFoodDataWithGemini() {
+        Log.d(TAG, "Loading food data with Gemini API only");
         
-        List<FoodRecommendation> foods = createFoodListFromNames(breakfastDishes, "Breakfast");
+        // Load foods for each category using Gemini
+        executorService.execute(() -> {
+            try {
+                // Make one API call to get all categories
+                List<FoodRecommendation> allFoods = callGeminiAPIForCategory("all");
+                
+                // Separate foods by category
+                List<FoodRecommendation> breakfastFoodsList = new ArrayList<>();
+                List<FoodRecommendation> lunchFoodsList = new ArrayList<>();
+                List<FoodRecommendation> dinnerFoodsList = new ArrayList<>();
+                List<FoodRecommendation> snackFoodsList = new ArrayList<>();
+                
+                // Since the new format returns all categories in one response,
+                // we'll take the first 5 for each category from the combined list
+                int foodsPerCategory = 5;
+                for (int i = 0; i < allFoods.size(); i++) {
+                    FoodRecommendation food = allFoods.get(i);
+                    int categoryIndex = i / foodsPerCategory;
+                    
+                    switch (categoryIndex) {
+                        case 0:
+                            if (breakfastFoodsList.size() < foodsPerCategory) {
+                                breakfastFoodsList.add(food);
+                            }
+                            break;
+                        case 1:
+                            if (lunchFoodsList.size() < foodsPerCategory) {
+                                lunchFoodsList.add(food);
+                            }
+                            break;
+                        case 2:
+                            if (dinnerFoodsList.size() < foodsPerCategory) {
+                                dinnerFoodsList.add(food);
+                            }
+                            break;
+                        case 3:
+                            if (snackFoodsList.size() < foodsPerCategory) {
+                                snackFoodsList.add(food);
+                            }
+                            break;
+                    }
+                }
+                
+                // Update UI with all categories
+                runOnUiThread(() -> {
         breakfastFoods.clear();
-        breakfastFoods.addAll(foods);
+                    breakfastFoods.addAll(breakfastFoodsList);
+                    breakfastAdapter.setLoading(false);
         breakfastAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Loaded " + foods.size() + " breakfast foods");
-    }
-    
-    private void loadHealthyFoods() {
-        // Lunch dishes
-        String[] lunchDishes = {
-            "Adobo", "Sinigang", "Kare-kare", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
-            "Pancit", "Lumpia", "Sisig", "Bicol Express", "Chicken Inasal", "Lechon", "Crispy Pata",
-            "Dinuguan", "Laing", "Ginataang Gulay", "Pinakbet", "Ginisang Munggo"
-        };
-        
-        List<FoodRecommendation> foods = createFoodListFromNames(lunchDishes, "Lunch");
+                    Log.d(TAG, "Loaded " + breakfastFoodsList.size() + " breakfast foods");
+                    
         lunchFoods.clear();
-        lunchFoods.addAll(foods);
+                    lunchFoods.addAll(lunchFoodsList);
+                    lunchAdapter.setLoading(false);
         lunchAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Loaded " + foods.size() + " lunch foods");
-    }
-    
-    private void loadInternationalFoods() {
-        // Dinner dishes
-        String[] dinnerDishes = {
-            "Chicken Teriyaki", "Beef Bulgogi", "Pad Thai", "Spaghetti Carbonara", "Burger",
-            "Fried Chicken", "Pizza", "Sushi", "Ramen", "Curry", "Stir Fry", "Fish and Chips",
-            "Chicken Curry", "Beef Steak", "Pork Chop", "Chicken Wings", "Tacos", "Burrito",
-            "Pasta", "Grilled Fish", "Roast Chicken"
-        };
-        
-        List<FoodRecommendation> foods = createFoodListFromNames(dinnerDishes, "Dinner");
+                    Log.d(TAG, "Loaded " + lunchFoodsList.size() + " lunch foods");
+                    
         dinnerFoods.clear();
-        dinnerFoods.addAll(foods);
+                    dinnerFoods.addAll(dinnerFoodsList);
+                    dinnerAdapter.setLoading(false);
         dinnerAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Loaded " + foods.size() + " dinner foods");
-    }
-    
-    private void loadBudgetFoods() {
-        // Snack dishes
-        String[] snackDishes = {
-            "Taho", "Pandesal", "Kakanin", "Bibingka", "Puto", "Suman", "Puto Bumbong",
-            "Sapin-sapin", "Buko Pie", "Ensaymada", "Hopia", "Polvoron", "Chicharon",
-            "Banana Chips", "Crackers", "Nuts", "Fruits", "Yogurt", "Ice Cream", "Cake"
-        };
-        
-        List<FoodRecommendation> foods = createFoodListFromNames(snackDishes, "Snacks");
+                    Log.d(TAG, "Loaded " + dinnerFoodsList.size() + " dinner foods");
+                    
         snackFoods.clear();
-        snackFoods.addAll(foods);
+                    snackFoods.addAll(snackFoodsList);
+                    snackAdapter.setLoading(false);
         snackAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Loaded " + foods.size() + " snack foods");
+                    Log.d(TAG, "Loaded " + snackFoodsList.size() + " snack foods");
+                });
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error loading food data with Gemini: " + e.getMessage());
+                runOnUiThread(() -> {
+                    breakfastAdapter.setLoading(false);
+                    lunchAdapter.setLoading(false);
+                    dinnerAdapter.setLoading(false);
+                    snackAdapter.setLoading(false);
+                });
+            }
+        });
     }
     
-    private List<FoodRecommendation> createFoodListFromNames(String[] dishNames, String category) {
-        List<FoodRecommendation> foods = new ArrayList<>();
-        Random random = new Random();
-        
-        for (String dishName : dishNames) {
-            // Generate varied nutritional values
-            int calories = 150 + random.nextInt(300); // 150-450 calories
-            double protein = 8.0 + random.nextInt(20); // 8-28g protein
-            double fat = 3.0 + random.nextInt(15); // 3-18g fat
-            double carbs = 10.0 + random.nextInt(30); // 10-40g carbs
+    public List<FoodRecommendation> callGeminiAPIForCategory(String category) {
+        try {
+            String masterPrompt = buildMasterPromptForCategory(category);
             
-            FoodRecommendation food = new FoodRecommendation(
-                dishName, calories, protein, fat, carbs, "1 serving", category, 
-                "Delicious " + category.toLowerCase() + " dish"
+            // Create JSON request
+            JSONObject requestBody = new JSONObject();
+            JSONArray contents = new JSONArray();
+            JSONObject content = new JSONObject();
+            JSONArray parts = new JSONArray();
+            JSONObject part = new JSONObject();
+            part.put("text", masterPrompt);
+            parts.put(part);
+            content.put("parts", parts);
+            contents.put(content);
+            requestBody.put("contents", contents);
+            
+            // Make API call with extended timeout
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(ApiConfig.READ_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(ApiConfig.WRITE_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
+                .build();
+            
+            RequestBody body = RequestBody.create(
+                requestBody.toString(), 
+                okhttp3.MediaType.parse("application/json")
             );
-            foods.add(food);
+            
+            Request request = new Request.Builder()
+                .url("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("X-goog-api-key", ApiConfig.GEMINI_API_KEY)
+                .post(body)
+                .build();
+                
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseText = response.body().string();
+                    Log.d(TAG, "Gemini API response for " + category + ": " + responseText);
+                    
+                    List<FoodRecommendation> recommendations = parseFoodRecommendations(responseText);
+                    if (recommendations != null && !recommendations.isEmpty()) {
+                        Log.d(TAG, "Generated " + recommendations.size() + " " + category + " foods");
+                        return recommendations;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error calling Gemini API for " + category + ": " + e.getMessage());
         }
         
-        return foods;
+        // Return empty list if API fails (no fallbacks as requested)
+        return new ArrayList<>();
     }
     
-    private List<FoodRecommendation> createFallbackFoods() {
-        String[] fallbackDishes = {
-            "Adobo", "Sinigang", "Kare-kare", "Tinola", "Kaldereta", "Afritada", "Mechado", "Menudo",
-            "Pancit", "Lumpia", "Tapsilog", "Sisig", "Bicol Express", "Chicken Inasal", "Lechon"
-        };
+    private String buildMasterPromptForCategory(String category) {
+        String screeningAnswers = getScreeningAnswersForPrompt();
         
-        return createFoodListFromNames(fallbackDishes, "Traditional Filipino");
+        return "You are a professional Filipino nutritionist specializing in malnutrition recovery.\n" +
+               "Based on the user profile, generate food recommendations for **Breakfast, Lunch, Dinner, and Snack**.\n\n" +
+               
+               "USER PROFILE:\n" +
+               "Age: " + (userAge != null ? userAge : "25") + " years old\n" +
+               "Sex: " + (userSex != null ? userSex : "Not specified") + "\n" +
+               "BMI: " + (userBMI != null ? userBMI : "22.5") + "\n" +
+               "Height: " + (userHeight != null ? userHeight : "Not specified") + " cm\n" +
+               "Weight: " + (userWeight != null ? userWeight : "Not specified") + " kg\n" +
+               "Health Conditions: " + (userHealthConditions != null ? userHealthConditions : "None") + "\n" +
+               "Activity Level: " + (userActivityLevel != null ? userActivityLevel : "Moderate") + "\n" +
+               "Budget Level: " + (userBudgetLevel != null ? userBudgetLevel : "Low") + "\n" +
+               "Allergies: " + (userAllergies != null ? userAllergies : "None") + "\n" +
+               "Diet Preferences: " + (userDietPrefs != null ? userDietPrefs : "None") + "\n" +
+               "Pregnancy Status: " + (userPregnancyStatus != null ? userPregnancyStatus : "Not Applicable") + "\n\n" +
+               
+               "SCREENING DATA:\n" + screeningAnswers + "\n\n" +
+               
+               "RULES:\n" +
+               "- Provide **exactly 5 dishes per category** (Breakfast, Lunch, Dinner, Snack).\n" +
+               "- Use only complete dish names (no ingredients).\n" +
+               "- Adapt recommendations to BMI status:\n" +
+               "  *Underweight (BMI <18.5)*: Recommend calorie- and protein-rich meals, encourage energy-dense dishes.\n" +
+               "  *Normal weight (BMI 18.5–24.9)*: Recommend balanced meals with moderate calories, protein, and vegetables.\n" +
+               "  *Overweight (BMI 25–29.9)*: Recommend lighter meals, less fried or fatty foods, more vegetables and lean protein.\n" +
+               "  *Obese (BMI ≥30)*: Recommend low-calorie nutrient-dense meals, avoid sugary/fried dishes, focus on vegetables, soups, and lean protein.\n" +
+               "- Return ONLY valid JSON object, no explanations.\n\n" +
+               
+               "Return JSON in this format:\n" +
+               "{\n" +
+               "  \"Breakfast\": [\n" +
+               "    {\"food_name\": \"Arroz Caldo\", \"calories\": 350, \"protein_g\": 12, \"fat_g\": 8, \"carbs_g\": 55, \"serving_size\": \"1 bowl\", \"diet_type\": \"Filipino\", \"description\": \"Rice porridge with chicken and ginger, a comforting Filipino breakfast staple.\"},\n" +
+               "    ...\n" +
+               "  ],\n" +
+               "  \"Lunch\": [ ... ],\n" +
+               "  \"Dinner\": [ ... ],\n" +
+               "  \"Snack\": [ ... ]\n" +
+               "}";
     }
+    
+    
+    
+    
     
     @Override
     public void onFoodClick(FoodRecommendation food) {
@@ -904,464 +982,8 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
     
 
     
-    public List<FoodRecommendation> callGeminiAPIForMultiple() {
-        return callGeminiAPIForMultipleWithRetry(0);
-    }
     
-    private FoodRecommendation callGeminiAPI() {
-        List<FoodRecommendation> foods = callGeminiAPIForMultiple();
-        if (!foods.isEmpty()) {
-            return foods.get(0);
-        }
-        return null;
-    }
     
-        private List<FoodRecommendation> callGeminiAPIForMultipleWithRetry(int retryCount) {
-        if (retryCount > 3) {
-            Log.w(TAG, "Max retry count reached, returning fallback foods");
-            return createFallbackFoods();
-        }
-        
-        try {
-            generationCount++;
-            String masterPrompt = buildMasterPrompt();
-            
-            // Try ChatGPT service first (OpenRouter)
-            Map<String, List<FoodRecommendation>> chatGPTResult = ChatGPTService.callChatGPTWithRetry(masterPrompt);
-            if (chatGPTResult != null && !chatGPTResult.isEmpty()) {
-                // Combine all categories into a single list
-                List<FoodRecommendation> allFoods = new ArrayList<>();
-                allFoods.addAll(chatGPTResult.getOrDefault("breakfast", new ArrayList<>()));
-                allFoods.addAll(chatGPTResult.getOrDefault("lunch", new ArrayList<>()));
-                allFoods.addAll(chatGPTResult.getOrDefault("dinner", new ArrayList<>()));
-                allFoods.addAll(chatGPTResult.getOrDefault("snacks", new ArrayList<>()));
-                
-                if (!allFoods.isEmpty()) {
-                    Log.d(TAG, "ChatGPT service successful, got " + allFoods.size() + " foods");
-                    return allFoods;
-                }
-            }
-            
-            // Fallback to original implementation
-            Log.w(TAG, "ChatGPT service failed, trying original implementation");
-            
-            // Create JSON request
-            JSONObject requestBody = new JSONObject();
-            JSONArray contents = new JSONArray();
-            JSONObject content = new JSONObject();
-            JSONArray parts = new JSONArray();
-            JSONObject part = new JSONObject();
-            part.put("text", masterPrompt);
-            parts.put(part);
-            content.put("parts", parts);
-            contents.put(content);
-            requestBody.put("contents", contents);
-            
-            // Make API call with extended timeout
-            OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
-                .readTimeout(ApiConfig.READ_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
-                .writeTimeout(ApiConfig.WRITE_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
-                .build();
-            
-            RequestBody body = RequestBody.create(
-                requestBody.toString(), 
-                    okhttp3.MediaType.parse("application/json")
-                );
-            
-            Request request = new Request.Builder()
-                .url(GEMINI_TEXT_API_URL)
-                    .post(body)
-                    .build();
-                
-            try (Response response = client.newCall(request).execute()) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String responseText = response.body().string();
-                    Log.d(TAG, "Gemini API response: " + responseText);
-                    
-                    List<FoodRecommendation> recommendations = parseFoodRecommendations(responseText);
-                    if (recommendations != null && !recommendations.isEmpty()) {
-                        // Verify that these are actual food dishes, not just ingredients
-                        List<FoodRecommendation> verifiedRecommendations = verifyFoodRecommendations(recommendations);
-                        
-                        // Check if we have enough unique foods
-                        List<FoodRecommendation> uniqueRecommendations = new ArrayList<>();
-                        for (FoodRecommendation rec : verifiedRecommendations) {
-                            if (!generatedFoodNames.contains(rec.getFoodName().toLowerCase().trim())) {
-                                uniqueRecommendations.add(rec);
-                            }
-                        }
-                        
-                        // Return any unique foods we have (no minimum requirement)
-                        if (uniqueRecommendations.size() > 0) {
-                            Log.d(TAG, "Generated " + uniqueRecommendations.size() + " unique verified foods out of " + verifiedRecommendations.size() + " total");
-                            return uniqueRecommendations;
-        } else {
-                            Log.d(TAG, "No unique foods found, retrying... (attempt " + (retryCount + 1) + ")");
-                            // Sleep briefly before retry
-                            Thread.sleep(1000);
-                            return callGeminiAPIForMultipleWithRetry(retryCount + 1);
-                        }
-                    } else {
-                        Log.w(TAG, "No recommendations parsed from response, retrying... (attempt " + (retryCount + 1) + ")");
-                        // Sleep briefly before retry
-                        Thread.sleep(1000);
-                        return callGeminiAPIForMultipleWithRetry(retryCount + 1);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error calling Gemini API: " + e.getMessage());
-        }
-        
-        // If we get here, retry
-        Log.d(TAG, "Retrying API call (attempt " + (retryCount + 1) + ")");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        return callGeminiAPIForMultipleWithRetry(retryCount + 1);
-    }
-    
-    private FoodRecommendation callGeminiAPIWithRetry(int retryCount) {
-        List<FoodRecommendation> foods = callGeminiAPIForMultipleWithRetry(retryCount);
-        if (foods != null && !foods.isEmpty()) {
-            return foods.get(0);
-        }
-        return null;
-    }
-    
-    private String buildMasterPrompt() {
-        return "Generate 10 Filipino/Asian/International food dishes for nutritional needs.\n\n" +
-               "User: " + (userAge != null ? userAge : "25") + "yo, " + (userSex != null ? userSex : "M") + 
-               ", BMI " + (userBMI != null ? userBMI : "22.5") + 
-               ", Health: " + (userHealthConditions != null ? userHealthConditions : "None") + 
-               ", Budget: " + (userBudgetLevel != null ? userBudgetLevel : "Low") + "\n\n" +
-               
-               "Requirements:\n" +
-               "- Complete dish names only\n" +
-               "- Calories: 150-800, Protein: 5-40g, Fat: 2-30g, Carbs: 10-100g\n" +
-               "- Mix Filipino, Asian, international dishes\n" +
-               "- Each dish different\n\n" +
-               
-               "Return JSON array:\n" +
-               "[{\"food_name\": \"[DISH]\", \"calories\": <num>, \"protein_g\": <num>, \"fat_g\": <num>, \"carbs_g\": <num>, \"serving_size\": \"1 serving\", \"diet_type\": \"[TYPE]\", \"description\": \"[SHORT DESC]\"}, ...]";
-    }
-    
-    private List<FoodRecommendation> verifyFoodRecommendations(List<FoodRecommendation> recommendations) {
-        try {
-            // First verify food names are actual dishes
-            List<FoodRecommendation> verifiedDishes = verifyFoodNames(recommendations);
-            
-            // Then verify nutrition data accuracy
-            List<FoodRecommendation> verifiedNutrition = verifyNutritionData(verifiedDishes);
-            
-            return verifiedNutrition;
-        } catch (Exception e) {
-            Log.e(TAG, "Error during food verification: " + e.getMessage());
-            return recommendations;
-        }
-    }
-    
-    private List<FoodRecommendation> verifyFoodNames(List<FoodRecommendation> foods) {
-        try {
-            // Create verification prompt
-            StringBuilder foodNames = new StringBuilder();
-            for (int i = 0; i < foods.size(); i++) {
-                foodNames.append((i + 1)).append(". ").append(foods.get(i).getFoodName());
-                if (i < foods.size() - 1) {
-                    foodNames.append("\n");
-                }
-            }
-            
-            String verificationPrompt = "You are a food expert. Review these food names and identify which ones are ACTUAL FOOD DISHES (complete meals/recipes) vs SINGLE INGREDIENTS.\n\n" +
-                    "Food names to review:\n" + foodNames.toString() + "\n\n" +
-                    "RULES:\n" +
-                    "1. FOOD DISHES (GOOD): Complete meals, recipes, or prepared foods like 'Adobo', 'Chicken Teriyaki', 'Spaghetti', 'Beef Bulgogi', 'Pad Thai', 'Pizza', 'Burger', 'Sinigang', 'Kare-kare', 'Lechon', 'Congee', 'Broth', 'Mush'\n" +
-                    "2. INGREDIENTS (BAD): Single raw ingredients like 'Apple', 'Carrot', 'Pear', 'Banana', 'Rice', 'Chicken', 'Beef', 'Tomato', 'Fish', 'Pork', 'Vegetables'\n" +
-                    "3. NUMBERS ARE BAD: Any food name containing numbers (like 'Food 1', 'Dish 2', 'Recipe 3') should be REJECTED\n" +
-                    "4. GENERIC NAMES ARE BAD: Names like 'Food', 'Dish', 'Recipe', 'Meal' should be REJECTED\n" +
-                    "5. BE GENEROUS: If a food name could be a dish (even if it's simple), accept it\n" +
-                    "6. Only return the numbers of ACTUAL FOOD DISHES (not ingredients, not numbers, not generic names)\n" +
-                    "7. Return ONLY a comma-separated list of numbers (e.g., '1,3,5,7,9')\n" +
-                    "8. When in doubt, accept the food as a dish\n\n" +
-                    "Return ONLY the numbers of actual food dishes:";
-            
-            // Create JSON request for verification
-            JSONObject requestBody = new JSONObject();
-            JSONArray contents = new JSONArray();
-            JSONObject content = new JSONObject();
-            JSONArray parts = new JSONArray();
-            JSONObject part = new JSONObject();
-            part.put("text", verificationPrompt);
-            parts.put(part);
-            content.put("parts", parts);
-            contents.put(content);
-            requestBody.put("contents", contents);
-            
-            // Make API call with extended timeout
-            OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
-                .readTimeout(ApiConfig.READ_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
-                .writeTimeout(ApiConfig.WRITE_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
-                .build();
-            RequestBody body = RequestBody.create(
-                requestBody.toString(), 
-                okhttp3.MediaType.parse("application/json")
-            );
-            
-            Request request = new Request.Builder()
-                .url(GEMINI_TEXT_API_URL)
-                .post(body)
-                .build();
-                
-            try (Response response = client.newCall(request).execute()) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String responseText = response.body().string();
-                    Log.d(TAG, "Verification response: " + responseText);
-                    
-                    // Parse the verification response
-                    String verifiedNumbers = extractTextFromGeminiResponse(responseText);
-                    if (verifiedNumbers != null && !verifiedNumbers.trim().isEmpty()) {
-                        // Parse comma-separated numbers
-                        String[] numbers = verifiedNumbers.trim().split(",");
-                        List<FoodRecommendation> verifiedRecommendations = new ArrayList<>();
-                        
-                        for (String numberStr : numbers) {
-                            try {
-                                int index = Integer.parseInt(numberStr.trim()) - 1; // Convert to 0-based index
-                                if (index >= 0 && index < foods.size()) {
-                                    verifiedRecommendations.add(foods.get(index));
-                                    Log.d(TAG, "Verified food dish: " + foods.get(index).getFoodName());
-                                }
-                            } catch (NumberFormatException e) {
-                                Log.w(TAG, "Invalid number in verification response: " + numberStr);
-                            }
-                        }
-                        
-                        Log.d(TAG, "Verification complete: " + verifiedRecommendations.size() + " out of " + foods.size() + " are actual food dishes");
-                        return verifiedRecommendations;
-                    }
-                        }
-                    }
-                } catch (Exception e) {
-            Log.e(TAG, "Error during food verification: " + e.getMessage());
-        }
-        
-        // If verification fails, return original foods
-        Log.w(TAG, "Food name verification failed, returning original foods");
-        return foods;
-    }
-    
-    private List<FoodRecommendation> verifyNutritionData(List<FoodRecommendation> foods) {
-        try {
-            // Create nutrition verification prompt
-            StringBuilder nutritionData = new StringBuilder();
-            for (int i = 0; i < foods.size(); i++) {
-                FoodRecommendation rec = foods.get(i);
-                nutritionData.append((i + 1)).append(". ").append(rec.getFoodName())
-                           .append(" - Calories: ").append(rec.getCalories())
-                           .append(", Protein: ").append(rec.getProtein()).append("g")
-                           .append(", Fat: ").append(rec.getFat()).append("g")
-                           .append(", Carbs: ").append(rec.getCarbs()).append("g");
-                if (i < foods.size() - 1) {
-                    nutritionData.append("\n");
-                }
-            }
-            
-            String nutritionPrompt = "You are a nutrition expert. Verify the accuracy of these nutrition data for 1 serving of each dish.\n\n" +
-                    "Nutrition data to verify:\n" + nutritionData.toString() + "\n\n" +
-                    "VERIFICATION RULES:\n" +
-                    "1. Check if calories = (protein × 4) + (fat × 9) + (carbs × 4) ± 10%\n" +
-                    "2. Verify realistic ranges: Calories 150-800, Protein 5-40g, Fat 2-30g, Carbs 10-100g\n" +
-                    "3. Consider typical Filipino/Asian serving sizes\n" +
-                    "4. Return ONLY the numbers of dishes with ACCURATE nutrition data\n" +
-                    "5. Return ONLY a comma-separated list of numbers (e.g., '1,3,5,7,9')\n\n" +
-                    "Return ONLY the numbers of dishes with accurate nutrition:";
-            
-            // Create JSON request for verification
-            JSONObject requestBody = new JSONObject();
-            JSONArray contents = new JSONArray();
-            JSONObject content = new JSONObject();
-            JSONArray parts = new JSONArray();
-            JSONObject part = new JSONObject();
-            part.put("text", nutritionPrompt);
-            parts.put(part);
-            content.put("parts", parts);
-            contents.put(content);
-            requestBody.put("contents", contents);
-            
-            // Make API call with extended timeout
-            OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(ApiConfig.CONNECT_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
-                .readTimeout(ApiConfig.READ_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
-                .writeTimeout(ApiConfig.WRITE_TIMEOUT, java.util.concurrent.TimeUnit.SECONDS)
-                .build();
-            RequestBody body = RequestBody.create(
-                requestBody.toString(), 
-                okhttp3.MediaType.parse("application/json")
-            );
-            
-            Request request = new Request.Builder()
-                .url(GEMINI_TEXT_API_URL)
-                .post(body)
-                .build();
-                
-            try (Response response = client.newCall(request).execute()) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String responseText = response.body().string();
-                    Log.d(TAG, "Nutrition verification response: " + responseText);
-                    
-                    // Parse the verification response
-                    String verifiedNumbers = extractTextFromGeminiResponse(responseText);
-                    if (verifiedNumbers != null && !verifiedNumbers.trim().isEmpty()) {
-                        // Parse comma-separated numbers
-                        String[] numbers = verifiedNumbers.trim().split(",");
-                        List<FoodRecommendation> verifiedRecommendations = new ArrayList<>();
-                        
-                        for (String numberStr : numbers) {
-                            try {
-                                int index = Integer.parseInt(numberStr.trim()) - 1; // Convert to 0-based index
-                                if (index >= 0 && index < foods.size()) {
-                                    verifiedRecommendations.add(foods.get(index));
-                                    Log.d(TAG, "Verified nutrition for: " + foods.get(index).getFoodName());
-                                }
-                            } catch (NumberFormatException e) {
-                                Log.w(TAG, "Invalid number in nutrition verification response: " + numberStr);
-                            }
-                        }
-                        
-                        Log.d(TAG, "Nutrition verification complete: " + verifiedRecommendations.size() + " out of " + foods.size() + " have accurate nutrition");
-                        return verifiedRecommendations;
-                    }
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error during nutrition verification: " + e.getMessage());
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error during nutrition verification: " + e.getMessage());
-        }
-        
-        // If verification fails, return original foods
-        Log.w(TAG, "Nutrition verification failed, returning original foods");
-        return foods;
-    }
-    
-    private String extractTextFromGeminiResponse(String responseText) {
-        try {
-            JSONObject geminiResponse = new JSONObject(responseText);
-            JSONArray candidates = geminiResponse.getJSONArray("candidates");
-            
-            if (candidates.length() > 0) {
-                JSONObject candidate = candidates.getJSONObject(0);
-                JSONObject content = candidate.getJSONObject("content");
-                JSONArray parts = content.getJSONArray("parts");
-                
-                if (parts.length() > 0) {
-                    JSONObject part = parts.getJSONObject(0);
-                    String text = part.getString("text");
-                    Log.d(TAG, "Extracted verification text: " + text);
-                    return text;
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error extracting text from Gemini response: " + e.getMessage());
-        }
-        return null;
-    }
-    
-    private String determineLifeStage(int age) {
-        if (age < 1) return "Infant (0-12 months)";
-        else if (age < 3) return "Toddler (1-3 years)";
-        else if (age < 6) return "Preschool (3-6 years)";
-        else if (age < 12) return "School Age (6-12 years)";
-        else if (age < 18) return "Adolescent (12-18 years)";
-        else if (age < 50) return "Adult (18-50 years)";
-        else if (age < 65) return "Middle Age (50-65 years)";
-        else return "Senior (65+ years)";
-    }
-    
-    private String buildSpecialConsiderations(int age) {
-        StringBuilder considerations = new StringBuilder();
-        
-        // Age-specific considerations
-        if (age < 1) {
-            considerations.append("INFANT: Only recommend soft, pureed foods. NO hard foods, NO choking hazards. ");
-            considerations.append("Focus on: rice porridge (lugaw), mashed vegetables, soft fruits. ");
-            considerations.append("Avoid: nuts, seeds, hard vegetables, spicy foods, raw foods. ");
-        } else if (age < 3) {
-            considerations.append("TODDLER: Recommend soft, easy-to-chew foods. Small portions. ");
-            considerations.append("Focus on: rice, soft vegetables, lean proteins, fruits. ");
-            considerations.append("Avoid: hard foods, spicy foods, large chunks. ");
-        } else if (age < 6) {
-            considerations.append("PRESCHOOL: Recommend balanced meals with variety. Moderate portions. ");
-            considerations.append("Focus on: whole grains, vegetables, lean proteins, fruits. ");
-            considerations.append("Avoid: excessive salt, sugar, processed foods. ");
-        } else if (age < 12) {
-            considerations.append("SCHOOL AGE: Recommend nutrient-dense foods for growth and learning. ");
-            considerations.append("Focus on: protein, complex carbs, healthy fats, vitamins. ");
-            considerations.append("Avoid: excessive junk food, sugary drinks. ");
-        } else if (age < 18) {
-            considerations.append("ADOLESCENT: Recommend foods supporting growth and development. ");
-            considerations.append("Focus on: protein, calcium, iron, vitamins. ");
-            considerations.append("Avoid: excessive processed foods, sugary drinks. ");
-        } else if (age >= 50) {
-            considerations.append("OLDER ADULT: Recommend heart-healthy, bone-strengthening foods. ");
-            considerations.append("Focus on: lean proteins, fiber, calcium, antioxidants. ");
-            considerations.append("Avoid: excessive salt, saturated fats, processed foods. ");
-        }
-        
-        // Pregnancy considerations
-        if ("Female".equalsIgnoreCase(userSex) && age >= 12 && age <= 50) {
-            if ("Yes".equalsIgnoreCase(userPregnancyStatus)) {
-                considerations.append("PREGNANT: CRITICAL - Avoid: raw fish, unpasteurized dairy, undercooked meat, ");
-                considerations.append("excessive caffeine, alcohol, high-mercury fish, soft cheeses, deli meats. ");
-                considerations.append("Focus on: folate-rich foods (malunggay, spinach), iron (lean meat, beans), ");
-                considerations.append("calcium (milk, yogurt), protein (chicken, fish), omega-3 (safe fish). ");
-                considerations.append("Recommend: Lugaw with chicken, Ginisang Malunggay, Tinola, boiled eggs. ");
-            }
-        }
-        
-        // Health condition considerations
-        if (userHealthConditions != null && !userHealthConditions.equals("None")) {
-            if (userHealthConditions.contains("Diabetes")) {
-                considerations.append("DIABETES: Recommend low glycemic index foods, complex carbs, fiber. ");
-                considerations.append("Avoid: excessive simple sugars, refined carbs. ");
-            }
-            if (userHealthConditions.contains("Hypertension")) {
-                considerations.append("HYPERTENSION: Recommend low-sodium foods, potassium-rich foods. ");
-                considerations.append("Avoid: excessive salt, processed foods, canned foods. ");
-            }
-            if (userHealthConditions.contains("Heart Disease")) {
-                considerations.append("HEART DISEASE: Recommend heart-healthy foods, omega-3 rich foods. ");
-                considerations.append("Avoid: excessive saturated fats, trans fats, cholesterol. ");
-            }
-            if (userHealthConditions.contains("Kidney Disease")) {
-                considerations.append("KIDNEY DISEASE: Recommend low-protein, low-sodium foods. ");
-                considerations.append("Avoid: excessive protein, salt, potassium-rich foods. ");
-            }
-        }
-        
-        return considerations.toString();
-    }
-    
-    private boolean isDuplicate(FoodRecommendation recommendation) {
-        if (recommendation == null || recommendation.getFoodName() == null) {
-            return false;
-        }
-        
-        String foodName = recommendation.getFoodName().toLowerCase().trim();
-        
-        // Only check exact match
-        if (generatedFoodNames.contains(foodName)) {
-            Log.d(TAG, "Duplicate detected: " + foodName);
-            return true;
-        }
-        
-        Log.d(TAG, "No duplicate found for: " + foodName);
-        return false;
-    }
     
     private List<FoodRecommendation> parseFoodRecommendations(String responseText) {
         List<FoodRecommendation> foods = new ArrayList<>();
@@ -1382,19 +1004,25 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
                         String textContent = part.getString("text");
                         Log.d(TAG, "Extracted text content: " + textContent);
                         
-                        // Extract JSON array from the text content
-                        int arrayStart = textContent.indexOf("[");
-                        int arrayEnd = textContent.lastIndexOf("]") + 1;
+                        // Extract JSON object from the text content
+                        int objectStart = textContent.indexOf("{");
+                        int objectEnd = textContent.lastIndexOf("}") + 1;
                         
-                        if (arrayStart >= 0 && arrayEnd > arrayStart) {
-                            String jsonArrayString = textContent.substring(arrayStart, arrayEnd);
-                            Log.d(TAG, "Extracted JSON array: " + jsonArrayString);
+                        if (objectStart >= 0 && objectEnd > objectStart) {
+                            String jsonObjectString = textContent.substring(objectStart, objectEnd);
+                            Log.d(TAG, "Extracted JSON object: " + jsonObjectString);
                             
-                            JSONArray foodArray = new JSONArray(jsonArrayString);
+                            JSONObject foodData = new JSONObject(jsonObjectString);
                             
-                            for (int j = 0; j < foodArray.length(); j++) {
-                                try {
-                                    JSONObject foodJson = foodArray.getJSONObject(j);
+                            // Parse each category
+                            String[] categories = {"Breakfast", "Lunch", "Dinner", "Snack"};
+                            for (String category : categories) {
+                                if (foodData.has(category)) {
+                                    JSONArray categoryArray = foodData.getJSONArray(category);
+                                    
+                                    for (int j = 0; j < categoryArray.length(); j++) {
+                                        try {
+                                            JSONObject foodJson = categoryArray.getJSONObject(j);
                                     
                                     // Skip if the food object is null
                                     if (foodJson == null || foodJson == JSONObject.NULL) {
@@ -1416,18 +1044,24 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
                                         Log.w(TAG, "Skipping food with empty name at index " + j);
                                         continue;
                                     }
+                                            
+                                            // Map food name to drawable resource
+                                            String imageUrl = mapImageNameToDrawable("", foodName);
                                     
                                     Log.d(TAG, "Parsed food: " + foodName + " - Calories: " + calories + 
-                                              ", Protein: " + protein + ", Fat: " + fat + ", Carbs: " + carbs);
+                                                      ", Protein: " + protein + ", Fat: " + fat + ", Carbs: " + carbs + 
+                                                      ", Image: " + imageUrl);
                                     
                                     FoodRecommendation recommendation = new FoodRecommendation(
-                                        foodName, calories, protein, fat, carbs, servingSize, dietType, description
+                                                foodName, calories, protein, fat, carbs, servingSize, dietType, description, imageUrl
                                     );
                                     
                                     foods.add(recommendation);
                                 } catch (JSONException e) {
                                     Log.w(TAG, "Error parsing food at index " + j + ": " + e.getMessage() + ", skipping");
                                     continue;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1440,6 +1074,100 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
         }
         
         return foods;
+    }
+    
+    private String mapImageNameToDrawable(String imageName, String foodName) {
+        if (imageName == null || imageName.trim().isEmpty()) {
+            // Try to match food name to available images
+            String lowerFoodName = foodName.toLowerCase().replaceAll("[^a-z]", "");
+            
+            // Common Filipino food mappings
+            if (lowerFoodName.contains("adobo")) return "adobo.jpg";
+            if (lowerFoodName.contains("afritada")) return "afritada.jpg";
+            if (lowerFoodName.contains("arrozcaldo") || lowerFoodName.contains("arrozcaldo")) return "arroz_caldo.jpg";
+            if (lowerFoodName.contains("bangsilog")) return "bangsilog.jpg";
+            if (lowerFoodName.contains("bibingka")) return "bibingka.jpg";
+            if (lowerFoodName.contains("bicol")) return "bicol_express.jpg";
+            if (lowerFoodName.contains("biko")) return "biko.jpg";
+            if (lowerFoodName.contains("bilobilo")) return "bilo_bilo.jpg";
+            if (lowerFoodName.contains("binignit")) return "binignit.jpg";
+            if (lowerFoodName.contains("bulalo")) return "bulalo.jpg";
+            if (lowerFoodName.contains("champorado")) return "champorado.jpg";
+            if (lowerFoodName.contains("chicharon")) return "chicharon.jpg";
+            if (lowerFoodName.contains("chickeninasal") || lowerFoodName.contains("chickeninasal")) return "chicken_inasal.jpg";
+            if (lowerFoodName.contains("crispypata") || lowerFoodName.contains("crispypata")) return "crispy_pata.jpg";
+            if (lowerFoodName.contains("daing") && lowerFoodName.contains("bangus")) return "daing_na_bangus.jpg";
+            if (lowerFoodName.contains("dinengdeng")) return "dinengdeng.jpg";
+            if (lowerFoodName.contains("embutido")) return "embutido.jpg";
+            if (lowerFoodName.contains("escabeche")) return "escabeche.jpg";
+            if (lowerFoodName.contains("freshlumpia") || lowerFoodName.contains("freshlumpia")) return "fresh_lumpia.jpg";
+            if (lowerFoodName.contains("ginataangmais") || lowerFoodName.contains("ginataangmais")) return "ginataang_mais.jpg";
+            if (lowerFoodName.contains("ginataangmunggo") || lowerFoodName.contains("ginataangmunggo")) return "ginataang_munggo.jpg";
+            if (lowerFoodName.contains("ginataangsaging") || lowerFoodName.contains("ginataangsaging")) return "ginataang_saging.jpg";
+            if (lowerFoodName.contains("ginisangampalaya") || lowerFoodName.contains("ginisangampalaya")) return "ginisang_ampalaya.jpg";
+            if (lowerFoodName.contains("ginisangsayote") || lowerFoodName.contains("ginisangsayote")) return "ginisang_sayote.jpg";
+            if (lowerFoodName.contains("goto")) return "goto_dish.jpg";
+            if (lowerFoodName.contains("halohalo") || lowerFoodName.contains("halohalo")) return "halo_halo.jpg";
+            if (lowerFoodName.contains("kaldereta")) return "kaldereta.jpg";
+            if (lowerFoodName.contains("karekare") || lowerFoodName.contains("karekare")) return "kare_kare.jpg";
+            if (lowerFoodName.contains("kinilaw")) return "kinilaw.jpg";
+            if (lowerFoodName.contains("laing")) return "laing.jpg";
+            if (lowerFoodName.contains("lechon")) return "lechon.jpg";
+            if (lowerFoodName.contains("longsilog")) return "longsilog.jpg";
+            if (lowerFoodName.contains("lugaw")) return "lugaw.jpg";
+            if (lowerFoodName.contains("lumpiangshanghai") || lowerFoodName.contains("lumpiangshanghai")) return "lumpiang_shanghai.jpg";
+            if (lowerFoodName.contains("macaronisalad") || lowerFoodName.contains("macaronisalad")) return "macaroni_salad.jpg";
+            if (lowerFoodName.contains("maisconyelo") || lowerFoodName.contains("maisconyelo")) return "mais_con_yelo.jpg";
+            if (lowerFoodName.contains("mami")) return "mami.jpg";
+            if (lowerFoodName.contains("mangoshake") || lowerFoodName.contains("mangoshake")) return "mango_shake.jpg";
+            if (lowerFoodName.contains("mechado")) return "mechado.jpg";
+            if (lowerFoodName.contains("menudo")) return "menudo.jpg";
+            if (lowerFoodName.contains("monggoguisado") || lowerFoodName.contains("monggoguisado")) return "monggo_guisado.jpg";
+            if (lowerFoodName.contains("nilagangbaboy") || lowerFoodName.contains("nilagangbaboy")) return "nilagang_baboy.jpg";
+            if (lowerFoodName.contains("nilagangbaka") || lowerFoodName.contains("nilagangbaka")) return "nilagang_baka.jpg";
+            if (lowerFoodName.contains("paksiw") && lowerFoodName.contains("bangus")) return "paksiw_na_bangus.jpg";
+            if (lowerFoodName.contains("pancitcanton") || lowerFoodName.contains("pancitcanton")) return "pancit_canton.jpg";
+            if (lowerFoodName.contains("pancitmolo") || lowerFoodName.contains("pancitmolo")) return "pancit_molo.jpg";
+            if (lowerFoodName.contains("pancitsotanghon") || lowerFoodName.contains("pancitsotanghon")) return "pancit_sotanghon.jpg";
+            if (lowerFoodName.contains("pansitbihon") || lowerFoodName.contains("pansitbihon")) return "pansit_bihon.jpg";
+            if (lowerFoodName.contains("pansitlomi") || lowerFoodName.contains("pansitlomi")) return "pansit_lomi.jpg";
+            if (lowerFoodName.contains("pansitmalabon") || lowerFoodName.contains("pansitmalabon")) return "pansit_malabon.jpg";
+            if (lowerFoodName.contains("papaitan")) return "papaitan.jpg";
+            if (lowerFoodName.contains("pares")) return "pares.jpg";
+            if (lowerFoodName.contains("pinakbet")) return "pinakbet.jpg";
+            if (lowerFoodName.contains("pritongbangus") || lowerFoodName.contains("pritongbangus")) return "pritong_bangus.jpg";
+            if (lowerFoodName.contains("pritonggalunggong") || lowerFoodName.contains("pritonggalunggong")) return "pritong_galunggong.jpg";
+            if (lowerFoodName.contains("pritongtilapia") || lowerFoodName.contains("pritongtilapia")) return "pritong_tilapia.jpg";
+            if (lowerFoodName.contains("puto")) return "puto.png";
+            if (lowerFoodName.contains("putobumbong") || lowerFoodName.contains("putobumbong")) return "puto_bumbong.jpg";
+            if (lowerFoodName.contains("sagoatgulaman") || lowerFoodName.contains("sagoatgulaman")) return "sago_at_gulaman.jpg";
+            if (lowerFoodName.contains("salabat")) return "salabat.jpg";
+            if (lowerFoodName.contains("sinangag")) return "sinangag.jpg";
+            if (lowerFoodName.contains("sinigang") && lowerFoodName.contains("baboy")) return "sinigang_na_baboy.jpg";
+            if (lowerFoodName.contains("sinigang") && lowerFoodName.contains("hipon")) return "sinigang_na_hipon.jpg";
+            if (lowerFoodName.contains("sisig")) return "sisig.jpg";
+            if (lowerFoodName.contains("sopas")) return "sopas.jpg";
+            if (lowerFoodName.contains("sorbetes")) return "sorbetes.jpg";
+            if (lowerFoodName.contains("soyamilk") || lowerFoodName.contains("soyamilk")) return "soya_milk.jpg";
+            if (lowerFoodName.contains("sweetandsourfish") || lowerFoodName.contains("sweetandsourfish")) return "sweet_and_sour_fish.jpg";
+            if (lowerFoodName.contains("sweetsourpork") || lowerFoodName.contains("sweetsourpork")) return "sweet_sour_pork.jpg";
+            if (lowerFoodName.contains("tinapa")) return "tinapa.jpg";
+            if (lowerFoodName.contains("tinola")) return "tinola.jpg";
+            if (lowerFoodName.contains("tinolangbangus") || lowerFoodName.contains("tinolangbangus")) return "tinolang_bangus.jpg";
+            if (lowerFoodName.contains("tocilog")) return "tocilog.jpg";
+            if (lowerFoodName.contains("tortangginiling") || lowerFoodName.contains("tortangginiling")) return "tortang_giniling.jpg";
+            if (lowerFoodName.contains("tortangtalong") || lowerFoodName.contains("tortangtalong")) return "tortang_talong.jpg";
+            if (lowerFoodName.contains("turon")) return "turon.jpg";
+            if (lowerFoodName.contains("ubehalaya") || lowerFoodName.contains("ubehalaya")) return "ube_halaya.jpg";
+            if (lowerFoodName.contains("ubebibingka") || lowerFoodName.contains("ubebibingka")) return "ube_bibingka.jpg";
+            if (lowerFoodName.contains("viganempanada") || lowerFoodName.contains("viganempanada")) return "vigan_empanada.jpg";
+            
+            // Default fallback
+            return "default_food_image.xml";
+        }
+        
+        // Use the provided image name directly
+        return imageName.toLowerCase().replaceAll("[^a-z0-9_.]", "_") + ".jpg";
     }
     
     private FoodRecommendation parseFoodRecommendation(String responseText) {
@@ -1479,8 +1207,8 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
             public void onError(String error) {
                 runOnUiThread(() -> {
                     Log.e(TAG, "Error loading food details: " + error);
-                    // Show error message or fallback details
-                    showFoodDetailsDialog(getFallbackFoodDetails(food));
+                    // Show error message
+                    Log.e(TAG, "Error loading food details: " + error);
                 });
             }
         });
@@ -1509,53 +1237,6 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
         // For now, just log the details
     }
     
-    /**
-     * Get fallback food details when API fails
-     */
-    private FoodDetails getFallbackFoodDetails(FoodRecommendation food) {
-        FoodDetails fallbackDetails = new FoodDetails();
-        
-        // Set basic information
-        fallbackDetails.setFoodName(food.getFoodName());
-        fallbackDetails.setDescription(food.getDescription());
-        fallbackDetails.setServingSize("1 serving");
-        fallbackDetails.setCookingMethod("Traditional Filipino");
-        fallbackDetails.setCuisine("Filipino");
-        fallbackDetails.setDifficulty("Medium");
-        fallbackDetails.setPrepTime(15);
-        fallbackDetails.setCookTime(30);
-        fallbackDetails.setTotalTime(45);
-        fallbackDetails.setServings(4);
-        
-        // Set basic nutrition
-        fallbackDetails.setCalories(food.getCalories());
-        fallbackDetails.setProtein(food.getProtein());
-        fallbackDetails.setFat(food.getFat());
-        fallbackDetails.setCarbs(food.getCarbs());
-        
-        // Set basic ingredients
-        List<FoodDetails.Ingredient> ingredients = new ArrayList<>();
-        ingredients.add(new FoodDetails.Ingredient("Main protein", "200g", "grams"));
-        ingredients.add(new FoodDetails.Ingredient("Vegetables", "1 cup", "chopped"));
-        ingredients.add(new FoodDetails.Ingredient("Seasonings", "To taste", ""));
-        fallbackDetails.setIngredients(ingredients);
-        
-        // Set basic dietary tags
-        List<String> dietaryTags = new ArrayList<>();
-        dietaryTags.add("Traditional Filipino");
-        fallbackDetails.setDietaryTags(dietaryTags);
-        
-        // Set basic health benefits
-        List<String> healthBenefits = new ArrayList<>();
-        healthBenefits.add("Good source of protein");
-        healthBenefits.add("Contains essential vitamins and minerals");
-        fallbackDetails.setHealthBenefits(healthBenefits);
-        
-        fallbackDetails.setStorageInstructions("Store in refrigerator for up to 3 days");
-        fallbackDetails.setReheatingInstructions("Reheat in microwave or on stovetop until hot");
-        
-        return fallbackDetails;
-    }
 
     @Override
     protected void onDestroy() {
@@ -1600,9 +1281,8 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
                 public void onError(String error) {
                     runOnUiThread(() -> {
                         Log.e(TAG, "Error getting substitutions: " + error);
-                        // Show fallback substitutions
-                        List<FoodRecommendation> fallbackSubstitutions = getFallbackSubstitutions(food);
-                        showSubstitutionDialog(food, fallbackSubstitutions, "Alternative options");
+                        // Show error message
+                        Log.e(TAG, "No substitutions available");
                     });
                 }
             }
@@ -1714,27 +1394,6 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
         );
     }
     
-    /**
-     * Get fallback substitutions when API fails
-     */
-    private List<FoodRecommendation> getFallbackSubstitutions(FoodRecommendation originalFood) {
-        List<FoodRecommendation> fallbackSubstitutions = new ArrayList<>();
-        
-        // Create simple fallback substitutions
-        String originalName = originalFood.getFoodName().toLowerCase();
-        
-        if (originalName.contains("adobo")) {
-            fallbackSubstitutions.add(new FoodRecommendation("Tinola", 380, 25, 12, 20, "1 bowl", "Substitution", "Light chicken soup - healthier alternative"));
-            fallbackSubstitutions.add(new FoodRecommendation("Nilagang Baboy", 400, 22, 16, 25, "1 bowl", "Substitution", "Boiled pork soup - lighter cooking method"));
-            fallbackSubstitutions.add(new FoodRecommendation("Paksiw na Bangus", 350, 25, 14, 20, "1 plate", "Substitution", "Fish cooked in vinegar - similar tangy flavor"));
-        } else {
-            fallbackSubstitutions.add(new FoodRecommendation("Tinola", 380, 25, 12, 20, "1 bowl", "Substitution", "Light chicken soup - healthy alternative"));
-            fallbackSubstitutions.add(new FoodRecommendation("Adobo", 450, 25, 18, 35, "1 plate", "Substitution", "Classic Filipino stew - versatile option"));
-            fallbackSubstitutions.add(new FoodRecommendation("Sinigang", 420, 30, 15, 25, "1 bowl", "Substitution", "Sour soup with vegetables - refreshing option"));
-        }
-        
-        return fallbackSubstitutions;
-    }
     
     /**
      * Show message when substitution is selected
@@ -1859,8 +1518,18 @@ public class FoodActivity extends AppCompatActivity implements com.example.nutri
             String sex = userData.get("sex");
             String birthday = userData.get("birthday");
             String isPregnant = userData.get("is_pregnant");
-            String weight = userData.get("weight");
-            String height = userData.get("height");
+            String weight = userData.get("weight_kg");
+            String height = userData.get("height_cm");
+            
+            // DEBUG: Log weight and height values
+            Log.d(TAG, "=== WEIGHT AND HEIGHT DEBUG ===");
+            Log.d(TAG, "Weight from database: '" + weight + "'");
+            Log.d(TAG, "Height from database: '" + height + "'");
+            Log.d(TAG, "Weight is null: " + (weight == null));
+            Log.d(TAG, "Height is null: " + (height == null));
+            Log.d(TAG, "Weight is empty: " + (weight != null && weight.isEmpty()));
+            Log.d(TAG, "Height is empty: " + (height != null && height.isEmpty()));
+            Log.d(TAG, "=== END WEIGHT AND HEIGHT DEBUG ===");
             
             screeningAnswers.append("1. Location: ").append(municipality != null ? municipality : "Not specified");
             if (barangay != null && !barangay.isEmpty()) {
