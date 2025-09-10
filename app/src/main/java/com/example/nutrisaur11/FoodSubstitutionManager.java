@@ -62,9 +62,8 @@ public class FoodSubstitutionManager {
                     Log.d(TAG, "Found " + substitutions.size() + " substitutions for " + originalFood.getFoodName());
                     callback.onSubstitutionsFound(substitutions, substitutionReason);
                 } else {
-                    Log.w(TAG, "No substitutions found, using fallback");
-                    List<FoodRecommendation> fallbackSubstitutions = getFallbackSubstitutions(originalFood, substitutionReason);
-                    callback.onSubstitutionsFound(fallbackSubstitutions, substitutionReason);
+                    Log.w(TAG, "No substitutions found");
+                    callback.onError("No substitutions available");
                 }
                 
             } catch (Exception e) {
@@ -130,67 +129,64 @@ public class FoodSubstitutionManager {
                                          String substitutionReason) {
         
         StringBuilder prompt = new StringBuilder();
-        prompt.append("You are a PROFESSIONAL NUTRITIONIST and EXPERT CHEF. ");
-        prompt.append("Provide EXACTLY 3 HEALTHIER, NUTRITIONALLY SUPERIOR alternatives to this dish:\n\n");
+        prompt.append("You are a professional Filipino nutritionist.\n");
+        prompt.append("Given an ORIGINAL DISH, provide 3 healthier substitutions.\n\n");
         
+        prompt.append("RULES:\n");
+        prompt.append("- Provide exactly 3 alternatives per dish.\n");
+        prompt.append("- Substitution logic:\n");
+        prompt.append("  1. Healthier version of the same dish (improved nutrition).\n");
+        prompt.append("  2. Different dish with similar nutrition profile.\n");
+        prompt.append("  3. Different dish with similar taste profile.\n");
+        prompt.append("- Adapt strictly to user BMI and health profile.\n");
+        prompt.append("- Calories must be within ±10% of original (preferably lower).\n");
+        prompt.append("- Protein: equal or higher than original.\n");
+        prompt.append("- Fat: lower than original, prioritize healthy fats.\n");
+        prompt.append("- Carbs: equal or lower, prefer complex carbs.\n");
+        prompt.append("- Serving size: always \"1 serving\".\n\n");
+        
+        prompt.append("INPUT:\n");
         prompt.append("ORIGINAL DISH:\n");
         prompt.append("Name: ").append(originalFood.getFoodName()).append("\n");
         prompt.append("Calories: ").append(originalFood.getCalories()).append(" kcal\n");
         prompt.append("Protein: ").append(originalFood.getProtein()).append("g | Fat: ").append(originalFood.getFat()).append("g | Carbs: ").append(originalFood.getCarbs()).append("g\n\n");
         
-        prompt.append("NUTRITIONIST REQUIREMENTS - For each substitution, provide 3 alternatives using this approach:\n");
-        prompt.append("1. HEALTHIER VERSION: Find a healthier alternative with similar ingredients but better nutritional profile\n");
-        prompt.append("   - Use leaner proteins (fish, chicken breast, tofu, legumes)\n");
-        prompt.append("   - Add more vegetables and whole grains\n");
-        prompt.append("   - Reduce processed ingredients, sodium, and unhealthy fats\n");
-        prompt.append("   - Maintain similar cooking method but with healthier preparation\n\n");
-        prompt.append("2. NUTRITIONAL EQUIVALENT: Find a different dish with similar nutritional content\n");
-        prompt.append("   - Match calories, protein, fat, and carbohydrate content\n");
-        prompt.append("   - Use different ingredients but maintain nutritional balance\n");
-        prompt.append("   - Ensure similar energy density and satiety\n\n");
-        prompt.append("3. TASTE SIMILAR: Find a dish with similar taste profile and flavor characteristics\n");
-        prompt.append("   - Match the dominant flavors (sweet, savory, sour, spicy)\n");
-        prompt.append("   - Use similar cooking techniques and seasonings\n");
-        prompt.append("   - Provide familiar taste experience with better nutrition\n\n");
-        
-        prompt.append("HEALTH-FOCUSED SUBSTITUTIONS:\n");
-        prompt.append("- If original is 'Adobo Manok' → 'Adobong Tofu with Vegetables', 'Adobong Sitaw', 'Adobong Kangkong'\n");
-        prompt.append("- If original is 'Sinigang na Baboy' → 'Sinigang na Bangus', 'Sinigang na Hipon', 'Sinigang na Gulay'\n");
-        prompt.append("- If original is 'Kare-kare' → 'Kare-kareng Gulay', 'Kare-kareng Tofu', 'Kare-kareng Bangus'\n");
-        prompt.append("- If original is 'Tapsilog' → 'Tocilog with Brown Rice', 'Fishsilog', 'Tofusilog'\n");
-        prompt.append("- If original is 'Pancit Canton' → 'Pancit Bihon with Vegetables', 'Pancit Gulay', 'Pancit Tofu'\n");
-        prompt.append("- If original is 'Chicken Teriyaki' → 'Salmon Teriyaki', 'Tofu Teriyaki', 'Chicken Breast Teriyaki'\n\n");
-        
-        prompt.append("USER HEALTH PROFILE:\n");
+        prompt.append("USER PROFILE:\n");
         if (userHealthConditions != null && !userHealthConditions.equals("None")) {
-            prompt.append("Health Conditions: ").append(userHealthConditions).append(" - prioritize heart-healthy, low-sodium options\n");
+            prompt.append("Health Conditions: ").append(userHealthConditions).append("\n");
         }
         if (userBMI != null && Double.parseDouble(userBMI.replaceAll("[^0-9.]", "")) < 18.5) {
-            prompt.append("Underweight: Include calorie-dense but nutrient-rich alternatives\n");
+            prompt.append("BMI: Underweight - Include calorie-dense but nutrient-rich alternatives\n");
         } else if (userBMI != null && Double.parseDouble(userBMI.replaceAll("[^0-9.]", "")) > 25) {
-            prompt.append("Overweight: Focus on low-calorie, high-fiber alternatives\n");
+            prompt.append("BMI: Overweight - Focus on low-calorie, high-fiber alternatives\n");
+        } else if (userBMI != null) {
+            prompt.append("BMI: ").append(userBMI).append("\n");
         }
         if (userAllergies != null && !userAllergies.isEmpty()) {
-            prompt.append("Allergies: ").append(userAllergies).append(" - ensure all alternatives are allergen-free\n");
+            prompt.append("Allergies: ").append(userAllergies).append("\n");
         }
         if (userDietPrefs != null && !userDietPrefs.isEmpty()) {
-            prompt.append("Diet: ").append(userDietPrefs).append(" - match dietary requirements\n");
+            prompt.append("Diet Preferences: ").append(userDietPrefs).append("\n");
         }
         if ("Yes".equalsIgnoreCase(userPregnancyStatus)) {
-            prompt.append("Pregnancy: Ensure all alternatives are safe for pregnant women\n");
+            prompt.append("Pregnancy: Yes - Ensure all alternatives are safe for pregnant women\n");
         }
         
-        prompt.append("\nNUTRITIONAL ACCURACY:\n");
-        prompt.append("- Calories: ±10% of original (preferably lower)\n");
-        prompt.append("- Protein: Higher than original when possible\n");
-        prompt.append("- Fat: Lower than original, focus on healthy fats\n");
-        prompt.append("- Carbs: Similar or lower, prefer complex carbs\n");
-        prompt.append("- Serving size: 1 serving (realistic portions)\n\n");
-        
-        prompt.append("Return ONLY valid JSON array with 3 items:\n");
-        prompt.append("[{\"food_name\": \"[HEALTHY ALTERNATIVE]\", \"calories\": <number>, \"protein_g\": <number>, ");
-        prompt.append("\"fat_g\": <number>, \"carbs_g\": <number>, \"serving_size\": \"1 serving\", ");
-        prompt.append("\"diet_type\": \"[TYPE]\", \"description\": \"[HEALTH BENEFITS AND NUTRITIONAL IMPROVEMENTS]\"}, ...]");
+        prompt.append("\nOUTPUT:\n");
+        prompt.append("Return ONLY a valid JSON array with 3 items:\n");
+        prompt.append("[\n");
+        prompt.append("  {\n");
+        prompt.append("    \"food_name\": \"[Alternative Dish Name]\",\n");
+        prompt.append("    \"calories\": <number>,\n");
+        prompt.append("    \"protein_g\": <number>,\n");
+        prompt.append("    \"fat_g\": <number>,\n");
+        prompt.append("    \"carbs_g\": <number>,\n");
+        prompt.append("    \"serving_size\": \"1 serving\",\n");
+        prompt.append("    \"diet_type\": \"[Type]\",\n");
+        prompt.append("    \"description\": \"[Nutritional improvements and benefits]\"\n");
+        prompt.append("  },\n");
+        prompt.append("  ...\n");
+        prompt.append("]");
         
         return prompt.toString();
     }
