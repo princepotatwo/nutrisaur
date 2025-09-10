@@ -25,4 +25,15 @@ public class ApiConfig {
     // Cache settings
     public static final int CACHE_DURATION_HOURS = 24;
     public static final int MAX_CACHE_SIZE_MB = 100;
+    
+    // Gemini API specific settings
+    public static final int MAX_RETRY_ATTEMPTS = 3;
+    public static final int MAX_PROMPT_LENGTH = 10000;
+    public static final int MAX_TOKENS = 2048;
+    public static final int INITIAL_RETRY_DELAY_MS = 1000;
+    public static final int MAX_RETRY_DELAY_MS = 10000;
+    public static final int CONNECT_TIMEOUT = 30;
+    public static final int READ_TIMEOUT = 60;
+    public static final int WRITE_TIMEOUT = 60;
+    public static final String GEMINI_IMAGE_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
 }

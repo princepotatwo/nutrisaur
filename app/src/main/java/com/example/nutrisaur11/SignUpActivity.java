@@ -148,7 +148,7 @@ public class SignUpActivity extends AppCompatActivity {
         
         // Register user with community_users database
         CommunityUserManager userManager = new CommunityUserManager(this);
-        userManager.registerUser(fullName, email, password, "", "", "", "", "", "", "", new CommunityUserManager.RegisterCallback() {
+        userManager.registerUser(fullName, email, password, "", "", "", "", "", "", "", "", new CommunityUserManager.RegisterCallback() {
             @Override
             public void onSuccess(String message) {
                 runOnUiThread(() -> {

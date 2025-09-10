@@ -11,7 +11,7 @@ public class FoodActivityIntegrationMethods {
                                                      String userMUACCategory, String userNutritionalRisk,
                                                      String userHealthConditions, String userActivityLevel, 
                                                      String userBudgetLevel, String userDietaryRestrictions, 
-                                                     String userAllergies, String userDietPrefs, 
+                                           String userAllergies, String userDietPrefs, 
                                                      String userAvoidFoods, String userRiskScore, 
                                                      String userBarangay, String userIncome, 
                                                      String userPregnancyStatus, String userMunicipality, 

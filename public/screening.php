@@ -1769,37 +1769,61 @@ header {
         /* Filters Container */
         .filters-container {
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.05) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
         }
         
         /* Search Section */
         .search-section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             justify-content: center;
+            width: 100%;
         }
         
         .search-container {
             position: relative;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
+            background: var(--color-card);
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .search-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
         }
         
         .search-input {
             width: 100%;
-            padding: 12px 50px 12px 16px;
-            border: 2px solid var(--color-border);
-            border-radius: 25px;
-            font-size: 14px;
-            background: var(--color-card);
+            padding: 16px 60px 16px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            background: transparent;
             color: var(--color-text);
             transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .search-input::placeholder {
+            color: var(--color-text);
+            opacity: 0.6;
+            font-weight: 400;
         }
         
         .search-input:focus {
             outline: none;
-            border-color: var(--color-highlight);
-            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.2);
         }
         
         .search-btn {
@@ -1807,74 +1831,146 @@ header {
             right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            background: var(--color-highlight);
+            background: linear-gradient(135deg, var(--color-highlight) 0%, var(--color-primary) 100%);
             border: none;
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
+            width: 44px;
+            height: 44px;
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(161, 180, 84, 0.3);
         }
         
         .search-btn:hover {
-            background: var(--color-primary);
-            transform: translateY(-50%) scale(1.05);
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-highlight) 100%);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(161, 180, 84, 0.4);
         }
         
         /* Filters Grid */
         .filters-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
             align-items: end;
+            margin-top: 20px;
         }
         
         .filter-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .filter-group:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
         }
         
         .filter-label {
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
             color: var(--color-text);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            margin-bottom: 5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
         
         .filter-select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 16px;
             border: 2px solid var(--color-border);
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
             background: var(--color-card);
             color: var(--color-text);
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
         .filter-select:focus {
             outline: none;
             border-color: var(--color-highlight);
-            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.2);
+            transform: translateY(-1px);
         }
         
         .filter-select:hover {
             border-color: var(--color-highlight);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
         }
         
+        /* Additional Visual Enhancements */
+        .filters-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-highlight), transparent);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .filter-group::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(161, 180, 84, 0.1) 0%, transparent 50%);
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .filter-group:hover::after {
+            opacity: 1;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .filters-grid {
                 grid-template-columns: 1fr;
-                gap: 10px;
+                gap: 15px;
             }
             
             .search-container {
                 max-width: 100%;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .btn-add, .btn-secondary {
+                min-width: 100%;
+                padding: 14px 20px;
+            }
+
+            .filters-container {
+                padding: 20px;
+            }
+
+            .header-controls {
+                padding: 15px;
             }
         }
         
@@ -1899,8 +1995,13 @@ header {
         .header-controls {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 30px;
             width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(161, 180, 84, 0.02) 100%);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .search-row {
@@ -1921,56 +2022,120 @@ header {
         }
 
         .btn-add {
-            background-color: var(--color-highlight);
+            background: linear-gradient(135deg, var(--color-highlight) 0%, var(--color-primary) 100%);
             color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
+            padding: 16px 24px;
+            border-radius: 15px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            font-weight: 700;
+            transition: all 0.3s ease;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 12px;
+            box-shadow: 0 6px 20px rgba(161, 180, 84, 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+        }
+
+        .btn-add::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-add:hover::before {
+            left: 100%;
+        }
+
+        .btn-add:hover {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-highlight) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(161, 180, 84, 0.4);
+        }
+
+        .btn-add:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(161, 180, 84, 0.3);
         }
 
         .btn-icon {
-            font-size: 16px;
+            font-size: 20px;
             line-height: 1;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
         }
 
         .btn-text {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .btn-secondary {
-            background-color: var(--color-accent3);
+            background: linear-gradient(135deg, var(--color-accent3) 0%, var(--color-accent2) 100%);
             color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
+            padding: 16px 24px;
+            border-radius: 15px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            font-weight: 700;
+            transition: all 0.3s ease;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 12px;
+            box-shadow: 0 6px 20px rgba(224, 201, 137, 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            min-width: 180px;
+        }
+
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-secondary:hover::before {
+            left: 100%;
         }
 
         .btn-secondary:hover {
-            background-color: var(--color-accent2);
+            background: linear-gradient(135deg, var(--color-accent2) 0%, var(--color-accent3) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(224, 201, 137, 0.4);
+        }
+
+        .btn-secondary:active {
             transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(224, 201, 137, 0.3);
         }
 
         .action-buttons {
             display: flex;
-            gap: 8px;
+            gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
             align-items: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
         }
 
         .btn {
@@ -3075,12 +3240,12 @@ header {
                         </div>
 
                         <!-- CSV Action Buttons -->
-                        <div class="action-buttons" style="margin-top: 15px; text-align: center;">
-                            <button class="btn btn-add" onclick="downloadCSVTemplate()">
+                        <div class="action-buttons">
+                            <button class="btn-add" onclick="downloadCSVTemplate()">
                                 <span class="btn-icon">📥</span>
                                 <span class="btn-text">Download Template</span>
                             </button>
-                            <button class="btn btn-add" onclick="showCSVImportModal()">
+                            <button class="btn-secondary" onclick="showCSVImportModal()">
                                 <span class="btn-icon">📁</span>
                                 <span class="btn-text">Import CSV</span>
                             </button>

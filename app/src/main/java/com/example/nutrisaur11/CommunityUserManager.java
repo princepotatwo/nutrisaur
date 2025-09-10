@@ -139,4 +139,34 @@ public class CommunityUserManager {
                "  }\n" +
                "}";
     }
+    
+    // Callback interfaces
+    public interface LoginCallback {
+        void onSuccess(String message);
+        void onError(String error);
+    }
+    
+    public interface RegisterCallback {
+        void onSuccess(String message);
+        void onError(String error);
+    }
+    
+    // Login method
+    public void loginUser(String email, String password, LoginCallback callback) {
+        // TODO: Implement login logic
+        callback.onError("Login method not implemented yet");
+    }
+    
+    // Register method
+    public void registerUser(String fullName, String email, String password, String barangay, 
+                           String municipality, String sex, String birthDate, String pregnancyStatus,
+                           String weight, String height, String muac, RegisterCallback callback) {
+        // TODO: Implement registration logic
+        callback.onError("Registration method not implemented yet");
+    }
+    
+    // Get current user data (alias for getCurrentUserDataFromDatabase)
+    public Map<String, String> getCurrentUserData() {
+        return getCurrentUserDataFromDatabase();
+    }
 }

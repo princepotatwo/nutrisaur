@@ -439,9 +439,9 @@ public class FoodRecommendationActivity extends AppCompatActivity {
                 return new FoodRecommendation(
                     foodName,
                     300 + (int)(Math.random() * 200), // Random calories
-                    20 + (int)(Math.random() * 30), // Random protein
-                    5 + (int)(Math.random() * 15), // Random fat
-                    10 + (int)(Math.random() * 40), // Random carbs
+                    20.0 + (Math.random() * 30), // Random protein
+                    5.0 + (Math.random() * 15), // Random fat
+                    10.0 + (Math.random() * 40), // Random carbs
                     "1 serving",
                     "Balanced",
                     "A delicious Filipino dish prepared with fresh ingredients and traditional cooking methods.",
@@ -454,9 +454,9 @@ public class FoodRecommendationActivity extends AppCompatActivity {
         return new FoodRecommendation(
             "Ginisang Munggo",
             350,
-            25,
-            12,
-            20,
+            25.0,
+            12.0,
+            20.0,
             "1 serving",
             "Balanced",
             "A healthy Filipino dish with balanced nutrition.",

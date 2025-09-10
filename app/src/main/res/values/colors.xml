@@ -75,4 +75,7 @@
     
     <!-- Substitution Colors -->
     <color name="light_blue">#E3F2FD</color>
+    
+    <!-- Additional colors for adapters -->
+    <color name="gray">#757575</color>
 </resources>

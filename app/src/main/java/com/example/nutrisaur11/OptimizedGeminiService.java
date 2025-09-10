@@ -292,4 +292,28 @@ public class OptimizedGeminiService {
         
         return foods;
     }
+    
+    // Callback interface for food recommendations
+    public interface FoodRecommendationCallback {
+        void onSuccess(List<FoodRecommendation> recommendations);
+        void onError(String error);
+    }
+    
+    // Generate food recommendations with callback
+    public void generateFoodRecommendations(String prompt, FoodRecommendationCallback callback) {
+        try {
+            Map<String, List<FoodRecommendation>> result = callGeminiWithRetry(prompt);
+            if (result != null && !result.isEmpty()) {
+                List<FoodRecommendation> allRecommendations = new ArrayList<>();
+                for (List<FoodRecommendation> categoryFoods : result.values()) {
+                    allRecommendations.addAll(categoryFoods);
+                }
+                callback.onSuccess(allRecommendations);
+            } else {
+                callback.onError("No food recommendations generated");
+            }
+        } catch (Exception e) {
+            callback.onError("Error generating food recommendations: " + e.getMessage());
+        }
+    }
 }

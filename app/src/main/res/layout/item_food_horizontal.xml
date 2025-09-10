@@ -1,69 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/food_card"
-    android:layout_width="140dp"
-    android:layout_height="180dp"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="0dp"
-    app:cardBackgroundColor="@android:color/transparent">
+    android:layout_width="160dp"
+    android:layout_height="200dp"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/food_image_container">
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <ImageView
             android:id="@+id/food_image"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
+            android:src="@drawable/ic_restaurant"
             android:background="@color/light_gray" />
-
-        <!-- Substitution Indicator -->
-        <TextView
-            android:id="@+id/substitution_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="@drawable/substitution_badge_background"
-            android:padding="4dp"
-            android:text="ALT"
-            android:textSize="8sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:fontFamily="sans-serif-medium"
-            android:alpha="0.8"
-            android:visibility="gone" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/food_title_gradient_overlay" />
 
         <TextView
             android:id="@+id/food_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="MENU 001"
+            android:layout_marginTop="8dp"
+            android:text="Food Name"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
-            android:fontFamily="sans-serif-black"
-            android:gravity="center"
             android:maxLines="2"
-            android:ellipsize="end"
-            android:lineSpacingExtra="2dp"
-            android:layout_gravity="bottom"
-            android:padding="12dp"
-            android:paddingBottom="8dp"
-            android:shadowColor="#80000000"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2" />
+            android:ellipsize="end" />
 
-    </FrameLayout>
+        <TextView
+            android:id="@+id/food_calories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="250 cal"
+            android:textSize="12sp"
+            android:textColor="@color/primary_color" />
+
+        <TextView
+            android:id="@+id/food_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Description"
+            android:textSize="10sp"
+            android:textColor="@color/gray"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/substitution_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="4dp"
+            android:text="🔄"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

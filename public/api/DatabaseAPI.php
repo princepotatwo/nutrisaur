@@ -773,6 +773,11 @@ class DatabaseAPI {
                     VALUES (:email, :fcm_token, :user_barangay, CURRENT_TIMESTAMP)");
             }
             
+            // First, clear any existing FCM tokens for this user to prevent duplicates
+            $clearStmt = $this->pdo->prepare("UPDATE community_users SET fcm_token = NULL WHERE email = :email");
+            $clearStmt->bindParam(':email', $userEmail);
+            $clearStmt->execute();
+            
             $stmt->bindParam(':fcm_token', $fcmToken);
             $stmt->bindParam(':user_barangay', $userBarangay);
             $stmt->bindParam(':email', $userEmail);
@@ -792,7 +797,18 @@ class DatabaseAPI {
      */
     public function getActiveFCMTokens() {
         try {
-            $stmt = $this->pdo->prepare("SELECT email as user_email, barangay as user_barangay, fcm_token FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
+            // Get only the latest FCM token per user to avoid duplicates
+            $stmt = $this->pdo->prepare("
+                SELECT email as user_email, barangay as user_barangay, fcm_token 
+                FROM community_users 
+                WHERE fcm_token IS NOT NULL AND fcm_token != ''
+                AND (email, updated_at) IN (
+                    SELECT email, MAX(updated_at) 
+                    FROM community_users 
+                    WHERE fcm_token IS NOT NULL AND fcm_token != ''
+                    GROUP BY email
+                )
+            ");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -805,7 +821,20 @@ class DatabaseAPI {
      */
     public function getFCMTokensByBarangay($barangay) {
         try {
-            $stmt = $this->pdo->prepare("SELECT email as user_email, barangay as user_barangay, fcm_token FROM community_users WHERE barangay = :barangay AND fcm_token IS NOT NULL AND fcm_token != ''");
+            // Get only the latest FCM token per user for the specific barangay
+            $stmt = $this->pdo->prepare("
+                SELECT email as user_email, barangay as user_barangay, fcm_token 
+                FROM community_users 
+                WHERE barangay = :barangay 
+                AND fcm_token IS NOT NULL AND fcm_token != ''
+                AND (email, updated_at) IN (
+                    SELECT email, MAX(updated_at) 
+                    FROM community_users 
+                    WHERE barangay = :barangay 
+                    AND fcm_token IS NOT NULL AND fcm_token != ''
+                    GROUP BY email
+                )
+            ");
             $stmt->bindParam(':barangay', $barangay);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);

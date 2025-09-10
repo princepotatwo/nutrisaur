@@ -28,7 +28,7 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     private RecyclerView breakfastRecycler, lunchRecycler, dinnerRecycler, snackRecycler;
     
     // Adapters for different meal categories
-    private HorizontalFoodAdapter breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter;
+    private com.example.nutrisaur11.adapters.HorizontalFoodAdapter breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter;
     
     // Food lists for different meal categories
     private List<FoodRecommendation> breakfastFoods = new ArrayList<>();
@@ -64,6 +64,13 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
     private String userBMI;
     private String userHeight;
     private String userWeight;
+    private String userBMICategory;
+    private String userMUAC;
+    private String userMUACCategory;
+    private String userNutritionalRisk;
+    private String userMunicipality;
+    private String userScreeningDate;
+    private String userNotes;
     private String userHealthConditions;
     private String userActivityLevel;
     private String userBudgetLevel;
@@ -428,10 +435,12 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         // Use API integration for malnutrition recovery foods with comprehensive data
         FoodActivityIntegration.loadMalnutritionRecoveryFoodsWithScreening(
             this,
-            userAge, userSex, userBMI, userHeight, userWeight, userHealthConditions, 
-            userActivityLevel, userBudgetLevel, userDietaryRestrictions, userAllergies, 
-            userDietPrefs, userAvoidFoods, userRiskScore, userBarangay, userIncome, 
-            userPregnancyStatus, screeningAnswers,
+            userAge, userSex, userBMI, userHeight, userWeight,
+            userBMICategory, userMUAC, userMUACCategory, userNutritionalRisk,
+            userHealthConditions, userActivityLevel, userBudgetLevel, 
+            userDietaryRestrictions, userAllergies, userDietPrefs, 
+            userAvoidFoods, userRiskScore, userBarangay, userIncome, 
+            userPregnancyStatus, userMunicipality, userScreeningDate, userNotes,
             breakfastFoods, lunchFoods, dinnerFoods, snackFoods,
             breakfastAdapter, lunchAdapter, dinnerAdapter, snackAdapter
         );
@@ -609,6 +618,13 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
                     userHeight = userData.get("height_cm"); // Database field name
                     userWeight = userData.get("weight_kg"); // Database field name
                     userBarangay = userData.get("barangay");
+                    userBMICategory = userData.get("bmi_category");
+                    userMUAC = userData.get("muac");
+                    userMUACCategory = userData.get("muac_category");
+                    userNutritionalRisk = userData.get("nutritional_risk");
+                    userMunicipality = userData.get("municipality");
+                    userScreeningDate = userData.get("screening_date");
+                    userNotes = userData.get("notes");
                     
                     // Use age directly from database (already calculated)
                     String age = userData.get("age");
@@ -837,6 +853,13 @@ public class FoodActivity extends AppCompatActivity implements HorizontalFoodAda
         userAge = "25";
         userSex = "Not specified";
         userBMI = "22.5";
+        userBMICategory = "Normal";
+        userMUAC = "Not specified";
+        userMUACCategory = "Normal";
+        userNutritionalRisk = "Low";
+        userMunicipality = "Not specified";
+        userScreeningDate = "Not specified";
+        userNotes = "No notes available";
         userHealthConditions = "None";
         userActivityLevel = "Moderate";
         userBudgetLevel = "Low";
