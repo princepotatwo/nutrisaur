@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.*;
 import java.util.Random;
 import android.util.Log;
+import com.example.nutrisaur11.adapters.HorizontalFoodAdapter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import okhttp3.*;
@@ -21,7 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import java.io.IOException;
 
-public class FoodActivity extends AppCompatActivity implements HorizontalFoodAdapter.OnFoodClickListener {
+public class FoodActivity extends AppCompatActivity implements com.example.nutrisaur11.adapters.HorizontalFoodAdapter.OnFoodClickListener {
     private static final String TAG = "FoodActivity";
     
     // RecyclerViews for different meal categories

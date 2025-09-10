@@ -16,18 +16,26 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
     private List<FoodRecommendation> foodList;
     private Context context;
     private OnFoodClickListener onFoodClickListener;
+    private boolean isLoading = false;
 
     public interface OnFoodClickListener {
         void onFoodClick(FoodRecommendation food);
+        void onFoodLongClick(FoodRecommendation food);
     }
 
-    public HorizontalFoodAdapter(Context context, List<FoodRecommendation> foodList) {
-        this.context = context;
+    public HorizontalFoodAdapter(List<FoodRecommendation> foodList, Context context, OnFoodClickListener listener) {
         this.foodList = foodList;
+        this.context = context;
+        this.onFoodClickListener = listener;
     }
 
     public void setOnFoodClickListener(OnFoodClickListener listener) {
         this.onFoodClickListener = listener;
+    }
+
+    public void setLoading(boolean loading) {
+        this.isLoading = loading;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -39,6 +47,14 @@ public class HorizontalFoodAdapter extends RecyclerView.Adapter<HorizontalFoodAd
 
     @Override
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
+        if (isLoading) {
+            holder.foodName.setText("Loading...");
+            holder.calories.setText("");
+            holder.description.setText("Please wait...");
+            holder.foodImage.setImageResource(R.drawable.ic_food_placeholder);
+            return;
+        }
+        
         FoodRecommendation food = foodList.get(position);
         
         holder.foodName.setText(food.getFoodName());
