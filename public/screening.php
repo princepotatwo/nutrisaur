@@ -1785,7 +1785,7 @@ header {
         /* First Row - Action Buttons + Search (Same Row) */
         .top-row {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 12px;
             width: 100%;
         }
@@ -1815,15 +1815,15 @@ header {
         
         .search-input {
             width: 100%;
-            padding: 8px 35px 8px 12px;
+            padding: 10px 35px 10px 12px;
             border: none;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 13px;
             background: transparent;
             color: var(--color-text);
             transition: all 0.3s ease;
             outline: none;
-            min-height: 40px;
+            height: 44px;
         }
         
         .search-input::placeholder {
@@ -1960,28 +1960,28 @@ header {
         /* Responsive Design */
         @media (max-width: 768px) {
             .header-controls {
-                gap: 6px;
+                gap: 8px;
             }
 
             .top-row {
                 grid-template-columns: 1fr;
-                gap: 6px;
+                gap: 8px;
             }
 
             .filters-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
+                gap: 8px;
             }
 
             .action-buttons {
                 justify-content: center;
                 flex-wrap: wrap;
-                gap: 6px;
+                gap: 8px;
             }
 
             .btn-add, .btn-secondary {
                 flex: 1;
-                min-width: 120px;
+                min-width: 140px;
             }
 
             .search-container {
@@ -2036,7 +2036,7 @@ header {
         .btn-add {
             background: var(--color-highlight);
             color: white;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
@@ -2045,11 +2045,11 @@ header {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 8px;
+            font-size: 13px;
             white-space: nowrap;
             flex: 1;
-            min-height: 40px;
+            height: 44px;
         }
 
         .btn-add:hover {
@@ -2058,19 +2058,19 @@ header {
         }
 
         .btn-icon {
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1;
         }
 
         .btn-text {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
         }
 
         .btn-secondary {
             background: var(--color-accent3);
             color: white;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
@@ -2079,11 +2079,11 @@ header {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 8px;
+            font-size: 13px;
             white-space: nowrap;
             flex: 1;
-            min-height: 40px;
+            height: 44px;
         }
 
         .btn-secondary:hover {
@@ -3131,9 +3131,6 @@ header {
                                     <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                                 </div>
                             </div>
-                            
-                            <!-- Empty space for balance -->
-                            <div></div>
                         </div>
 
                         <!-- Third Row - Filters -->
