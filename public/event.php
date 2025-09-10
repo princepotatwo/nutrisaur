@@ -388,7 +388,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             }
             
             // Send FCM notification to the specific user
-            $notificationSent = sendFCMNotification([$fcmToken], [
+            $notificationSent = sendEventFCMNotification([$fcmToken], [
                 'title' => $title,
                 'body' => $body,
                 'data' => [
@@ -763,7 +763,7 @@ function sendNotificationViaAPI($notificationData) {
 }
 
 // Use DatabaseAPI class directly for FCM notifications
-function sendFCMNotification($tokens, $notificationData, $targetLocation = null) {
+function sendEventFCMNotification($tokens, $notificationData, $targetLocation = null) {
     try {
         error_log("sendFCMNotification called with " . count($tokens) . " tokens for location: $targetLocation");
         
@@ -1201,7 +1201,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                         }
                                     }
                                     
-                                    $notificationSent = sendFCMNotification($fcmTokenData, [
+                                    $notificationSent = sendEventFCMNotification($fcmTokenData, [
                                         'title' => $event['title'],
                                         'body' => "New event imported: $event[title] at $event[location] on " . date('M j, Y g:i A', strtotime($event['date_time'])),
                                         'data' => [
@@ -1341,7 +1341,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
                     }
                 }
                 
-                $notificationSent = sendFCMNotification($fcmTokenData, [
+                $notificationSent = sendEventFCMNotification($fcmTokenData, [
                     'title' => "Event Updated: $title",
                     'body' => "Event details have been updated. Check the new information.",
                     'data' => [
