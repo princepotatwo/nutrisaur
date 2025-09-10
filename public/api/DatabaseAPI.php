@@ -3664,7 +3664,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 // Get FCM tokens for the target user from community_users table
                 $fcmTokens = [];
-                if (!empty($targetUser)) {
+                if (!empty($targetUser) && $targetUser !== 'all') {
                     error_log("NOTIFICATION_DEBUG: Looking for FCM tokens for specific user: $targetUser");
                     $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE email = :email AND fcm_token IS NOT NULL AND fcm_token != ''");
                     $stmt->bindParam(':email', $targetUser);
@@ -3673,11 +3673,27 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     error_log("NOTIFICATION_DEBUG: Found " . count($fcmTokens) . " FCM tokens for user $targetUser");
                 } else {
                     error_log("NOTIFICATION_DEBUG: Looking for all FCM tokens");
-                    // Send to all tokens if no specific user
+                    // Send to all tokens if no specific user or target is 'all'
                     $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
                     $stmt->execute();
                     $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
                     error_log("NOTIFICATION_DEBUG: Found " . count($fcmTokens) . " total active FCM tokens");
+                    
+                    // Debug: Check what's actually in the community_users table
+                    $debugStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users");
+                    $debugStmt->execute();
+                    $totalUsers = $debugStmt->fetch(PDO::FETCH_ASSOC)['total'];
+                    error_log("NOTIFICATION_DEBUG: Total users in community_users table: $totalUsers");
+                    
+                    $debugStmt2 = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE fcm_token IS NOT NULL");
+                    $debugStmt2->execute();
+                    $usersWithFCM = $debugStmt2->fetch(PDO::FETCH_ASSOC)['total'];
+                    error_log("NOTIFICATION_DEBUG: Users with FCM tokens: $usersWithFCM");
+                    
+                    $debugStmt3 = $db->getPDO()->prepare("SELECT email, fcm_token FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' LIMIT 5");
+                    $debugStmt3->execute();
+                    $sampleTokens = $debugStmt3->fetchAll(PDO::FETCH_ASSOC);
+                    error_log("NOTIFICATION_DEBUG: Sample FCM tokens: " . json_encode($sampleTokens));
                 }
                 
                 if (empty($fcmTokens)) {
