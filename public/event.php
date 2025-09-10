@@ -132,6 +132,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     }
 }
 
+// Handle get events request for mobile app FIRST (before authentication check)
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_events') {
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+    
+    try {
+        // Get all events from programs table
+        $stmt = $conn->prepare("SELECT * FROM programs ORDER BY date_time ASC");
+        $stmt->execute();
+        $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Format events for mobile app
+        $formattedEvents = [];
+        foreach ($events as $event) {
+            $formattedEvents[] = [
+                'id' => $event['program_id'],
+                'title' => $event['title'],
+                'type' => $event['type'],
+                'description' => $event['description'],
+                'date_time' => $event['date_time'],
+                'location' => $event['location'],
+                'organizer' => $event['organizer'],
+                'created_at' => strtotime($event['created_at'])
+            ];
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'events' => $formattedEvents
+        ]);
+        exit;
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Database error: ' . $e->getMessage()
+        ]);
+        exit;
+    }
+}
+
 // Start the session only if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
