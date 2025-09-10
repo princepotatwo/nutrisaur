@@ -216,6 +216,12 @@ if ($db->isAvailable()) {
     --color-active: rgba(161, 180, 84, 0.15);
 }
 
+/* Apply dark theme by default to prevent flash */
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
 /* Light Theme - Light Greenish Colors */
 .light-theme {
     --color-bg: #F0F7F0;
@@ -1904,18 +1910,22 @@ header {
             border-color: rgba(102, 187, 106, 0.2);
         }
         
-        /* Filters Grid - Organized Layout */
+        /* Filters Grid - Organized Layout with Equal Grid Sizes */
         .filters-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 15px;
+            gap: 12px;
             align-items: end;
+            width: 100%;
         }
-        
+
+        /* Individual filter groups with equal sizing */
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 6px;
+            min-width: 0;
+            flex: 1;
         }
 
         /* Age input formatting */
@@ -1998,7 +2008,7 @@ header {
         @media (max-width: 1200px) {
             .filters-grid {
                 grid-template-columns: repeat(4, 1fr);
-                gap: 12px;
+                gap: 10px;
             }
         }
 
@@ -2014,7 +2024,7 @@ header {
 
             .filters-grid {
                 grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
+                gap: 8px;
             }
 
             .action-buttons {
@@ -2036,7 +2046,7 @@ header {
         @media (max-width: 480px) {
             .filters-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
+                gap: 6px;
             }
 
             .action-buttons {
@@ -2053,8 +2063,8 @@ header {
             }
 
             .filter-select {
-                padding: 8px 10px;
-                font-size: 12px;
+                padding: 6px 8px;
+                font-size: 11px;
             }
         }
 
@@ -2383,14 +2393,14 @@ header {
 
         .user-table th,
         .user-table td {
-            padding: 8px 6px;
-            text-align: left;
+            padding: 6px 4px;
+            text-align: center;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             white-space: normal;
             word-wrap: break-word;
             word-break: break-word;
             overflow-wrap: break-word;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             vertical-align: middle;
             position: relative;
@@ -2408,6 +2418,11 @@ header {
             text-overflow: clip;
             min-width: 140px;
             text-align: center;
+        }
+
+        /* Center alignment utility class */
+        .text-center {
+            text-align: center !important;
         }
         
         
@@ -2442,18 +2457,19 @@ header {
         .user-table th {
             color: var(--color-highlight);
             font-weight: 700;
-            font-size: 14px;
+            font-size: 11px;
             position: sticky;
             top: 0;
             background-color: var(--color-card);
             z-index: 10;
             border-bottom: 2px solid rgba(161, 180, 84, 0.4);
-            padding-bottom: 12px;
-            padding-top: 12px;
+            padding: 8px 4px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
             letter-spacing: 0.3px;
             backdrop-filter: blur(10px);
+            text-align: center;
+            line-height: 1.2;
         }
 
         .tooltip {
@@ -3272,6 +3288,7 @@ header {
                         <tr>
                             <th>NAME</th>
                             <th>AGE</th>
+                            <th>SEX</th>
                             <th>WEIGHT (kg)</th>
                             <th>HEIGHT (cm)</th>
                             <th>BMI</th>
@@ -3382,14 +3399,15 @@ header {
                                         
                                         if ($showStandard && $showData) {
                                             echo '<tr data-standard="' . $showStandard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
-                                            echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
-                                            echo '<td>' . $ageDisplay . '</td>';
-                                            echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
-                                            echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
-                                            echo '<td>' . $bmi . '</td>';
-                                            echo '<td class="standard-value">' . htmlspecialchars($showData['display']) . '</td>';
-                                            echo '<td class="classification">' . htmlspecialchars($showData['classification']) . '</td>';
-                                            echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . $ageDisplay . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . $bmi . '</td>';
+                                            echo '<td class="text-center standard-value">' . htmlspecialchars($showData['display']) . '</td>';
+                                            echo '<td class="text-center classification">' . htmlspecialchars($showData['classification']) . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                             echo '</tr>';
                                         }
                                         
@@ -3891,43 +3909,102 @@ header {
 
         // Theme persistence and toggle
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing theme system...');
+            
             // Load saved theme from localStorage
-            const savedTheme = localStorage.getItem('theme');
+            const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to dark theme
+            const body = document.body;
+            const icon = document.querySelector('.new-theme-icon');
+            
+            console.log('Saved theme:', savedTheme);
+            
+            if (savedTheme === 'dark') {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                if (icon) icon.textContent = '🌙';
+                console.log('Applied dark theme');
+            } else {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                if (icon) icon.textContent = '☀️';
+                console.log('Applied light theme');
+            }
+            
+            // Theme toggle button event listener
+            const themeToggleBtn = document.getElementById('new-theme-toggle');
+            if (themeToggleBtn) {
+                console.log('Theme toggle button found, adding event listener');
+                themeToggleBtn.addEventListener('click', function() {
+                    console.log('Theme toggle clicked');
+                    const body = document.body;
+                    const icon = this.querySelector('.new-theme-icon');
+                    
+                    if (body.classList.contains('dark-theme')) {
+                        body.classList.remove('dark-theme');
+                        body.classList.add('light-theme');
+                        if (icon) icon.textContent = '☀️';
+                        localStorage.setItem('theme', 'light');
+                        console.log('Switched to light theme');
+                    } else {
+                        body.classList.remove('light-theme');
+                        body.classList.add('dark-theme');
+                        if (icon) icon.textContent = '🌙';
+                        localStorage.setItem('theme', 'dark');
+                        console.log('Switched to dark theme');
+                    }
+                });
+            } else {
+                console.error('Theme toggle button not found!');
+            }
+        });
+
+        // Fallback theme initialization (in case DOMContentLoaded already fired)
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
             const body = document.body;
             const icon = document.querySelector('.new-theme-icon');
             
             if (savedTheme === 'dark') {
                 body.classList.remove('light-theme');
                 body.classList.add('dark-theme');
-                icon.textContent = '🌙';
+                if (icon) icon.textContent = '🌙';
             } else {
                 body.classList.remove('dark-theme');
                 body.classList.add('light-theme');
-                icon.textContent = '☀️';
+                if (icon) icon.textContent = '☀️';
             }
-        });
-
-        // Theme toggle
-        document.getElementById('new-theme-toggle').addEventListener('click', function() {
-            const body = document.body;
-            const icon = this.querySelector('.new-theme-icon');
             
-            if (body.classList.contains('dark-theme')) {
-                body.classList.remove('dark-theme');
-                body.classList.add('light-theme');
-                icon.textContent = '☀️';
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.classList.remove('light-theme');
-                body.classList.add('dark-theme');
-                icon.textContent = '🌙';
-                localStorage.setItem('theme', 'dark');
+            // Theme toggle button event listener
+            const themeToggleBtn = document.getElementById('new-theme-toggle');
+            if (themeToggleBtn && !themeToggleBtn.hasAttribute('data-listener-added')) {
+                themeToggleBtn.setAttribute('data-listener-added', 'true');
+                themeToggleBtn.addEventListener('click', function() {
+                    const body = document.body;
+                    const icon = this.querySelector('.new-theme-icon');
+                    
+                    if (body.classList.contains('dark-theme')) {
+                        body.classList.remove('dark-theme');
+                        body.classList.add('light-theme');
+                        if (icon) icon.textContent = '☀️';
+                        localStorage.setItem('theme', 'light');
+                    } else {
+                        body.classList.remove('light-theme');
+                        body.classList.add('dark-theme');
+                        if (icon) icon.textContent = '🌙';
+                        localStorage.setItem('theme', 'dark');
+                    }
+                });
             }
-        });
+        }
+
+        // Initialize theme immediately
+        initializeTheme();
 
         // Enhanced MHO Assessment Table JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             initializeTableFunctionality();
+            // Re-initialize theme in case it wasn't applied
+            initializeTheme();
         });
 
         function initializeTableFunctionality() {
