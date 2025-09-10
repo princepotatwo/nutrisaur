@@ -4025,16 +4025,14 @@ header {
 
         // Search and filter functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('searchAssessments');
-            const filterSelect = document.getElementById('filterRisk');
-            
+            // Add real-time search functionality
+            const searchInput = document.getElementById('searchInput');
             if (searchInput) {
-                searchInput.addEventListener('input', filterAssessments);
+                searchInput.addEventListener('input', searchAssessments);
             }
             
-            if (filterSelect) {
-                filterSelect.addEventListener('change', filterAssessments);
-            }
+            // Initialize all filters
+            applyAllFilters();
         });
 
         function filterAssessments() {
@@ -4187,22 +4185,24 @@ header {
             
             tableRows.forEach(row => {
                 const name = row.cells[0].textContent.toLowerCase();
-                const email = row.cells[1].textContent.toLowerCase();
-                const age = row.cells[2].textContent.toLowerCase();
+                const age = row.cells[1].textContent.toLowerCase();
+                const sex = row.cells[2].textContent.toLowerCase();
                 const weight = row.cells[3].textContent.toLowerCase();
                 const height = row.cells[4].textContent.toLowerCase();
                 const bmi = row.cells[5].textContent.toLowerCase();
                 const standardValue = row.cells[6].textContent.toLowerCase();
                 const classification = row.cells[7].textContent.toLowerCase();
+                const screeningDate = row.cells[8].textContent.toLowerCase();
                 
                 const matchesSearch = name.includes(searchTerm) || 
-                                   email.includes(searchTerm) || 
                                    age.includes(searchTerm) || 
+                                   sex.includes(searchTerm) ||
                                    weight.includes(searchTerm) || 
                                    height.includes(searchTerm) ||
                                    bmi.includes(searchTerm) ||
                                    standardValue.includes(searchTerm) ||
-                                   classification.includes(searchTerm);
+                                   classification.includes(searchTerm) ||
+                                   screeningDate.includes(searchTerm);
                 
                 if (matchesSearch) {
                     row.style.display = '';
