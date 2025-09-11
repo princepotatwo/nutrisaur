@@ -2852,7 +2852,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $screeningId = 'REG_' . time() . '_' . substr(md5($email), 0, 8);
                 
                 // Calculate age from birthday
-                $birthday = $data['birthday'] ?? '1900-01-01';
+                $birthday = $data['birth_date'] ?? $data['birthday'] ?? '1900-01-01';
                 $age = 0;
                 if ($birthday !== '1900-01-01') {
                     $birthDate = new DateTime($birthday);
