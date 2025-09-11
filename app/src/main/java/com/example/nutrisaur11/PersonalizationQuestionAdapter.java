@@ -8,12 +8,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<PersonalizationQuestionAdapter.QuestionViewHolder> {
     private Context context;
     private List<PersonalizationQuestion> questions;
     private OnQuestionInteractionListener listener;
+    private Map<String, Object> userAnswers;
 
     public interface OnQuestionInteractionListener {
         void onChoiceSelected(int questionIndex, Choice choice);
@@ -24,6 +27,11 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
         this.context = context;
         this.questions = questions;
         this.listener = listener;
+        this.userAnswers = new HashMap<>();
+    }
+    
+    public void setUserAnswers(Map<String, Object> userAnswers) {
+        this.userAnswers = userAnswers;
     }
 
     @NonNull
@@ -68,6 +76,53 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             for (Choice choice : question.getChoices()) {
                 View choiceView = createChoiceView(choice, question.isMultipleChoice(), position);
                 choicesContainer.addView(choiceView);
+            }
+            
+            // Restore selected state if this question has been answered
+            restoreSelectedState(question, position);
+        }
+        
+        private void restoreSelectedState(PersonalizationQuestion question, int position) {
+            String key = "question_" + position;
+            Object answer = userAnswers.get(key);
+            
+            if (answer == null) return;
+            
+            // Find the choice views and update their visual state
+            for (int i = 0; i < choicesContainer.getChildCount(); i++) {
+                View choiceView = choicesContainer.getChildAt(i);
+                if (choiceView instanceof LinearLayout) {
+                    LinearLayout cardView = (LinearLayout) choiceView;
+                    
+                    // Get the choice text from the first TextView in the card
+                    if (cardView.getChildCount() > 0 && cardView.getChildAt(0) instanceof LinearLayout) {
+                        LinearLayout leftSide = (LinearLayout) cardView.getChildAt(0);
+                        if (leftSide.getChildCount() > 0 && leftSide.getChildAt(0) instanceof TextView) {
+                            TextView titleView = (TextView) leftSide.getChildAt(0);
+                            String choiceText = titleView.getText().toString();
+                            
+                            // Check if this choice was selected
+                            boolean isSelected = false;
+                            if (answer instanceof String) {
+                                isSelected = choiceText.equalsIgnoreCase(((String) answer).toUpperCase());
+                            } else if (answer instanceof List) {
+                                List<String> selectedChoices = (List<String>) answer;
+                                isSelected = selectedChoices.contains(choiceText);
+                            }
+                            
+                            // Update visual state
+                            if (isSelected) {
+                                cardView.setAlpha(0.8f);
+                                cardView.setScaleX(0.98f);
+                                cardView.setScaleY(0.98f);
+                            } else {
+                                cardView.setAlpha(1.0f);
+                                cardView.setScaleX(1.0f);
+                                cardView.setScaleY(1.0f);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -116,7 +171,7 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             title.setTextColor(context.getResources().getColor(android.R.color.white));
             title.setTextSize(32);
             title.setTypeface(null, android.graphics.Typeface.BOLD);
-            title.setGravity(android.view.Gravity.CENTER);
+            title.setGravity(android.view.Gravity.START);
             
             // Add only title to left side - SAME AS BEFORE
             leftSide.addView(title);
@@ -172,7 +227,7 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             title.setTextColor(context.getResources().getColor(android.R.color.white));
             title.setTextSize(32);
             title.setTypeface(null, android.graphics.Typeface.BOLD);
-            title.setGravity(android.view.Gravity.CENTER);
+            title.setGravity(android.view.Gravity.START);
             
             leftSide.addView(title);
             

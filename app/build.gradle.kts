@@ -52,6 +52,8 @@ dependencies {
     // Gemini API dependencies
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("org.json:json:20231013")
+    // Gson for JSON serialization
+    implementation("com.google.code.gson:gson:2.10.1")
     // SerpApi for Google Images
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")

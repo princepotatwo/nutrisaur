@@ -55,6 +55,7 @@
     <color name="border_color">#E0E0E0</color>
     <color name="darker_gray">#666666</color>
     <color name="light_gray">#F5F5F5</color>
+    <color name="gray_light">#E0E0E0</color>
     <color name="green">#4CAF50</color>
     <color name="notification_color">#4CAF50</color>
     
@@ -78,4 +79,16 @@
     
     <!-- Additional colors for adapters -->
     <color name="gray">#757575</color>
+    
+    <!-- Chip Colors -->
+    <color name="chip_background">#F5F5F5</color>
+    <color name="chip_text">#333333</color>
+    <color name="chip_stroke">#E0E0E0</color>
+    
+    <!-- New Design Colors -->
+    <color name="green_primary">#10B981</color>
+    <color name="red_primary">#EF4444</color>
+    <color name="orange_primary">#F59E0B</color>
+    <color name="divider_color">#E5E7EB</color>
+    <color name="light_green">#D1FAE5</color>
 </resources>

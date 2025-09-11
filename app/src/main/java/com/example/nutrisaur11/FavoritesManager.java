@@ -1,184 +1,97 @@
 package com.example.nutrisaur11;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.SharedPreferences;
 import android.util.Log;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FavoritesManager {
     private static final String TAG = "FavoritesManager";
-    private final UserPreferencesDbHelper dbHelper;
-    private final Context context;
-
+    private static final String PREFS_NAME = "favorites_prefs";
+    private static final String FAVORITES_KEY = "favorite_foods";
+    
+    private Context context;
+    private SharedPreferences prefs;
+    private Gson gson;
+    
     public FavoritesManager(Context context) {
         this.context = context;
-        this.dbHelper = new UserPreferencesDbHelper(context);
+        this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        this.gson = new Gson();
     }
-
-    /**
-     * Add a dish to favorites
-     */
-    public boolean addToFavorites(String userEmail, DishData.Dish dish) {
-        try {
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            
-            ContentValues values = new ContentValues();
-            values.put(UserPreferencesDbHelper.COL_FAVORITE_USER_EMAIL, userEmail);
-            values.put(UserPreferencesDbHelper.COL_FAVORITE_DISH_NAME, dish.name);
-            values.put(UserPreferencesDbHelper.COL_FAVORITE_DISH_EMOJI, dish.emoji);
-            values.put(UserPreferencesDbHelper.COL_FAVORITE_DISH_DESC, dish.desc);
-            values.put(UserPreferencesDbHelper.COL_FAVORITE_DISH_TAGS, dish.tags.toString());
-            
-            long result = db.insertWithOnConflict(
-                UserPreferencesDbHelper.TABLE_FAVORITES,
-                null,
-                values,
-                SQLiteDatabase.CONFLICT_REPLACE
-            );
-            
-            if (result != -1) {
-                Log.d(TAG, "Added " + dish.name + " to favorites for " + userEmail);
-                return true;
-            } else {
-                Log.e(TAG, "Failed to add " + dish.name + " to favorites");
-                return false;
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error adding to favorites: " + e.getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Remove a dish from favorites
-     */
-    public boolean removeFromFavorites(String userEmail, String dishName) {
-        try {
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
-            
-            int result = db.delete(
-                UserPreferencesDbHelper.TABLE_FAVORITES,
-                UserPreferencesDbHelper.COL_FAVORITE_USER_EMAIL + "=? AND " + 
-                UserPreferencesDbHelper.COL_FAVORITE_DISH_NAME + "=?",
-                new String[]{userEmail, dishName}
-            );
-            
-            if (result > 0) {
-                Log.d(TAG, "Removed " + dishName + " from favorites for " + userEmail);
-                return true;
-            } else {
-                Log.e(TAG, "Failed to remove " + dishName + " from favorites");
-                return false;
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error removing from favorites: " + e.getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Check if a dish is in favorites
-     */
-    public boolean isFavorite(String userEmail, String dishName) {
-        try {
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            
-            Cursor cursor = db.query(
-                UserPreferencesDbHelper.TABLE_FAVORITES,
-                new String[]{UserPreferencesDbHelper.COL_FAVORITE_ID},
-                UserPreferencesDbHelper.COL_FAVORITE_USER_EMAIL + "=? AND " + 
-                UserPreferencesDbHelper.COL_FAVORITE_DISH_NAME + "=?",
-                new String[]{userEmail, dishName},
-                null, null, null
-            );
-            
-            boolean isFavorite = cursor.getCount() > 0;
-            cursor.close();
-            
-            return isFavorite;
-        } catch (Exception e) {
-            Log.e(TAG, "Error checking favorite status: " + e.getMessage());
-            return false;
-        }
-    }
-
-    /**
-     * Get all favorites for a user
-     */
-    public List<DishData.Dish> getFavorites(String userEmail) {
-        List<DishData.Dish> favorites = new ArrayList<>();
+    
+    public void addToFavorites(FoodItem foodItem) {
+        List<FoodItem> favorites = getFavorites();
         
-        try {
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            
-            Cursor cursor = db.query(
-                UserPreferencesDbHelper.TABLE_FAVORITES,
-                null,
-                UserPreferencesDbHelper.COL_FAVORITE_USER_EMAIL + "=?",
-                new String[]{userEmail},
-                null, null,
-                UserPreferencesDbHelper.COL_FAVORITE_ADDED_AT + " DESC"
-            );
-            
-            while (cursor.moveToNext()) {
-                String dishName = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_FAVORITE_DISH_NAME));
-                String dishEmoji = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_FAVORITE_DISH_EMOJI));
-                String dishDesc = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_FAVORITE_DISH_DESC));
-                String dishTags = cursor.getString(cursor.getColumnIndex(UserPreferencesDbHelper.COL_FAVORITE_DISH_TAGS));
-                
-                // Create a Dish object from the database data
-                DishData.Dish dish = new DishData.Dish(dishName, dishEmoji, dishDesc, new ArrayList<>(), new ArrayList<>());
-                
-                // Parse tags if available
-                if (dishTags != null && !dishTags.isEmpty()) {
-                    try {
-                        // Remove brackets and split by comma
-                        String tagsStr = dishTags.replace("[", "").replace("]", "");
-                        String[] tags = tagsStr.split(", ");
-                        List<String> parsedTags = new ArrayList<>();
-                        for (String tag : tags) {
-                            if (!tag.trim().isEmpty()) {
-                                parsedTags.add(tag.trim());
-                            }
-                        }
-                        // Create a new Dish with parsed tags
-                        dish = new DishData.Dish(dishName, dishEmoji, dishDesc, parsedTags, new ArrayList<>());
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error parsing tags: " + e.getMessage());
-                        dish = new DishData.Dish(dishName, dishEmoji, dishDesc, new ArrayList<>(), new ArrayList<>());
-                    }
-                }
-                
-                favorites.add(dish);
+        // Check if already in favorites
+        for (FoodItem favorite : favorites) {
+            if (favorite.getId().equals(foodItem.getId())) {
+                Log.d(TAG, "Food already in favorites: " + foodItem.getName());
+                return;
             }
-            
-            cursor.close();
-            Log.d(TAG, "Retrieved " + favorites.size() + " favorites for " + userEmail);
-            
-        } catch (Exception e) {
-            Log.e(TAG, "Error getting favorites: " + e.getMessage());
         }
         
-        return favorites;
+        favorites.add(foodItem);
+        saveFavorites(favorites);
+        Log.d(TAG, "Added to favorites: " + foodItem.getName());
     }
-
-    /**
-     * Get current user email from SharedPreferences
-     */
-    private String getCurrentUserEmail() {
-        android.content.SharedPreferences prefs = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        return prefs.getString("user_email", "");
-    }
-
-    /**
-     * Close the database helper
-     */
-    public void close() {
-        if (dbHelper != null) {
-            dbHelper.close();
+    
+    public void removeFromFavorites(FoodItem foodItem) {
+        List<FoodItem> favorites = getFavorites();
+        
+        for (int i = 0; i < favorites.size(); i++) {
+            if (favorites.get(i).getId().equals(foodItem.getId())) {
+                favorites.remove(i);
+                saveFavorites(favorites);
+                Log.d(TAG, "Removed from favorites: " + foodItem.getName());
+                return;
+            }
         }
+        
+        Log.d(TAG, "Food not found in favorites: " + foodItem.getName());
+    }
+    
+    public boolean isFavorite(FoodItem foodItem) {
+        List<FoodItem> favorites = getFavorites();
+        
+        for (FoodItem favorite : favorites) {
+            if (favorite.getId().equals(foodItem.getId())) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public List<FoodItem> getFavorites() {
+        String favoritesJson = prefs.getString(FAVORITES_KEY, "[]");
+        
+        try {
+            Type listType = new TypeToken<List<FoodItem>>(){}.getType();
+            List<FoodItem> favorites = gson.fromJson(favoritesJson, listType);
+            
+            if (favorites == null) {
+                favorites = new ArrayList<>();
+            }
+            
+            return favorites;
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading favorites: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    
+    private void saveFavorites(List<FoodItem> favorites) {
+        String favoritesJson = gson.toJson(favorites);
+        prefs.edit().putString(FAVORITES_KEY, favoritesJson).apply();
+    }
+    
+    public void clearFavorites() {
+        prefs.edit().remove(FAVORITES_KEY).apply();
+        Log.d(TAG, "Cleared all favorites");
     }
 }

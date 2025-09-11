@@ -2,8 +2,8 @@ package com.example.nutrisaur11;
 
 public class ApiConfig {
     // Gemini API Configuration
-    public static final String GEMINI_API_KEY = "AIzaSyAR0YOJALZphmQaSbc5Ydzs5kZS6eCefJM";
-    public static final String GEMINI_TEXT_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
+    public static final String GEMINI_API_KEY = "AIzaSyAkX7Tpnsz-UnslwnmGytbnfc9XozoxtmU";
+    public static final String GEMINI_TEXT_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + GEMINI_API_KEY;
     
     // Groq API Configuration (disabled for now)
     public static final String GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE";

@@ -72,10 +72,22 @@ public class FavoritesActivity extends AppCompatActivity {
         }
         
         favoritesList.clear();
-        List<DishData.Dish> userFavorites = favoritesManager.getFavorites(userEmail);
-        favoritesList.addAll(userFavorites);
+        List<FoodItem> userFavorites = favoritesManager.getFavorites();
         
-        android.util.Log.d("FavoritesActivity", "Loaded " + userFavorites.size() + " favorites for user: " + userEmail);
+        // Convert FoodItem to DishData.Dish for compatibility
+        for (FoodItem foodItem : userFavorites) {
+            DishData.Dish dish = new DishData.Dish(
+                foodItem.getName(), // name
+                "🍽️", // emoji
+                "Favorite food", // desc
+                new ArrayList<>(), // tags
+                new ArrayList<>()  // allergens
+            );
+            dish.calories = foodItem.getCalories();
+            favoritesList.add(dish);
+        }
+        
+        android.util.Log.d("FavoritesActivity", "Loaded " + userFavorites.size() + " favorites");
         
         if (favoritesAdapter != null) {
             favoritesAdapter.notifyDataSetChanged();
@@ -154,8 +166,6 @@ public class FavoritesActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (favoritesManager != null) {
-            favoritesManager.close();
-        }
+        // FavoritesManager doesn't need to be closed
     }
 } 

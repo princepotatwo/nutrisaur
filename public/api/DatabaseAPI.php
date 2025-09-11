@@ -10,6 +10,9 @@
  * 4. Railway-optimized connection handling
  */
 
+// Set timezone for DateTime calculations
+date_default_timezone_set('Asia/Manila');
+
 // FCM Notification Sending Function
 function sendFCMNotification($fcmToken, $title, $body) {
     try {
@@ -2853,7 +2856,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Hash password
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                 
-                // Insert into community_users table
+                // Generate unique screening ID
+                $screeningId = 'REG_' . time() . '_' . substr(md5($email), 0, 8);
+                
+                // Calculate age from birthday
+                $birthday = $data['birthday'] ?? '1900-01-01';
+                $age = 0;
+                if ($birthday !== '1900-01-01') {
+                    $birthDate = new DateTime($birthday);
+                    $today = new DateTime();
+                    $age = $today->diff($birthDate)->y;
+                }
+                
+                // Insert basic user info only - screening data will be added later
                 $insertData = [
                     'name' => $name,
                     'email' => $email,
@@ -2861,14 +2876,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'municipality' => $data['municipality'] ?? 'Not specified',
                     'barangay' => $data['barangay'] ?? 'Not specified',
                     'sex' => $data['sex'] ?? 'Not specified',
-                    'birthday' => $data['birthday'] ?? '1900-01-01',
-                    'is_pregnant' => $data['is_pregnant'] ?? 'No',
-                    'weight' => $data['weight'] ?? '0',
-                    'height' => $data['height'] ?? '0',
+                    'birthday' => $birthday,
+                    'is_pregnant' => ($data['is_pregnant'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
                     'screening_date' => date('Y-m-d H:i:s')
                 ];
                 
-                $result = $db->universalInsert('community_users', $insertData);
+                // Use the same method as screening.php
+                $result = $db->insert('community_users', $insertData);
+                
+                // Log the result for debugging
+                error_log("Insert result: " . print_r($result, true));
+                error_log("Insert data: " . print_r($insertData, true));
+                error_log("Weight value: " . ($data['weight'] ?? 'NOT_SET'));
+                error_log("Height value: " . ($data['height'] ?? 'NOT_SET'));
                 
                 if ($result['success']) {
                     echo json_encode([
@@ -2888,6 +2908,286 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
             } else {
                 echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        // ========================================
+        // COMMUNITY USER LOGIN API
+        // ========================================
+        case 'login_community_user':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    // Get JSON data
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    
+                    if (!$data) {
+                        echo json_encode(['success' => false, 'message' => 'No data provided']);
+                        break;
+                    }
+                    
+                    $email = $data['email'] ?? $data['username'] ?? '';
+                    $password = $data['password'] ?? '';
+                    
+                    if (empty($email) || empty($password)) {
+                        echo json_encode(['success' => false, 'message' => 'Email and password are required']);
+                        break;
+                    }
+                    
+                    // Direct database query for community_users
+                    $pdo = $db->getPDO();
+                    $stmt = $pdo->prepare("SELECT * FROM community_users WHERE email = ?");
+                    $stmt->execute([$email]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($user && password_verify($password, $user['password'])) {
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'Login successful',
+                            'user' => [
+                                'name' => $user['name'],
+                                'email' => $user['email'],
+                                'municipality' => $user['municipality'],
+                                'barangay' => $user['barangay']
+                            ]
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+                }
+            } catch (Exception $e) {
+                error_log("Community login error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Login failed: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
+        // WORKING DATA RETRIEVAL
+        // ========================================
+        case 'get_user_data_working':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                $email = $data['email'] ?? '';
+                
+                $pdo = $db->getPDO();
+                $stmt = $pdo->prepare("SELECT name, email, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date FROM community_users WHERE email = ?");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($user) {
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'User data retrieved successfully',
+                        'user' => [
+                            'name' => $user['name'],
+                            'email' => $user['email'],
+                            'municipality' => $user['municipality'],
+                            'barangay' => $user['barangay'],
+                            'sex' => $user['sex'],
+                            'birthday' => $user['birthday'],
+                            'age' => '',
+                            'is_pregnant' => $user['is_pregnant'],
+                            'weight_kg' => $user['weight'],
+                            'height_cm' => $user['height'],
+                            'muac_cm' => '',
+                            'bmi' => '',
+                            'bmi_category' => '',
+                            'muac_category' => '',
+                            'nutritional_risk' => '',
+                            'screening_date' => $user['screening_date'],
+                            'screened_by' => '',
+                            'notes' => '',
+                            'status' => '',
+                            'created_at' => '',
+                            'updated_at' => ''
+                        ]
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'User not found']);
+                }
+            }
+            break;
+        
+        // ========================================
+        // SIMPLE WEIGHT HEIGHT TEST
+        // ========================================
+        case 'simple_test':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    $email = $data['email'] ?? '';
+                    
+                    $pdo = $db->getPDO();
+                    $stmt = $pdo->prepare("SELECT weight, height FROM community_users WHERE email = ?");
+                    $stmt->execute([$email]);
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'weight' => $result['weight'] ?? 'NULL',
+                        'height' => $result['height'] ?? 'NULL'
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
+        // TEST DATA RETRIEVAL API
+        // ========================================
+        case 'test_get_data':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    $email = $data['email'] ?? '';
+                    
+                    if (empty($email)) {
+                        echo json_encode(['success' => false, 'message' => 'Email is required']);
+                        break;
+                    }
+                    
+                    // Direct database query
+                    $pdo = $db->getPDO();
+                    $stmt = $pdo->prepare("SELECT name, email, weight, height, municipality, barangay FROM community_users WHERE email = ?");
+                    $stmt->execute([$email]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($user) {
+                        echo json_encode([
+                            'success' => true,
+                            'raw_data' => $user,
+                            'weight_kg' => $user['weight'],
+                            'height_cm' => $user['height']
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'User not found']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
+        // DEDICATED SCREENING SAVE API
+        // ========================================
+        case 'save_screening_direct':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    // Get JSON data
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    
+                    if (!$data) {
+                        echo json_encode(['success' => false, 'message' => 'No data provided']);
+                        break;
+                    }
+                    
+                    $email = $data['email'] ?? '';
+                    $name = $data['name'] ?? '';
+                    $municipality = $data['municipality'] ?? '';
+                    $barangay = $data['barangay'] ?? '';
+                    $sex = $data['sex'] ?? '';
+                    $birthday = $data['birthday'] ?? '';
+                    $is_pregnant = $data['is_pregnant'] ?? 'No';
+                    $weight = $data['weight'] ?? '';
+                    $height = $data['height'] ?? '';
+                    $muac = $data['muac'] ?? '';
+                    
+                    if (empty($email)) {
+                        echo json_encode(['success' => false, 'message' => 'Email is required']);
+                        break;
+                    }
+                    
+                    // Direct database connection
+                    $pdo = $db->getPDO();
+                    
+                    // Check if user exists
+                    $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ?");
+                    $checkStmt->execute([$email]);
+                    $userExists = $checkStmt->fetchColumn() > 0;
+                    
+                    if ($userExists) {
+                        // Update existing user with direct SQL
+                        $updateSql = "UPDATE community_users SET 
+                                        municipality = ?, 
+                                        barangay = ?, 
+                                        sex = ?, 
+                                        birthday = ?, 
+                                        is_pregnant = ?, 
+                                        weight = ?, 
+                                        height = ?, 
+                                        muac = ?, 
+                                        screening_date = NOW()
+                                      WHERE email = ?";
+                        
+                        $updateStmt = $pdo->prepare($updateSql);
+                        $result = $updateStmt->execute([
+                            $municipality, $barangay, $sex, $birthday, $is_pregnant, 
+                            $weight, $height, $muac, $email
+                        ]);
+                        
+                        if ($result) {
+                            // Verify the update worked
+                            $verifyStmt = $pdo->prepare("SELECT weight, height, muac FROM community_users WHERE email = ?");
+                            $verifyStmt->execute([$email]);
+                            $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
+                            
+                            echo json_encode([
+                                'success' => true, 
+                                'message' => 'Screening data updated successfully',
+                                'action' => 'updated',
+                                'saved_data' => $savedData,
+                                'email' => $email
+                            ]);
+                        } else {
+                            echo json_encode(['success' => false, 'message' => 'Failed to update screening data']);
+                        }
+                    } else {
+                        // Create new user with direct SQL
+                        $insertSql = "INSERT INTO community_users 
+                                     (name, email, municipality, barangay, sex, birthday, is_pregnant, weight, height, muac, screening_date) 
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                        
+                        $insertStmt = $pdo->prepare($insertSql);
+                        $result = $insertStmt->execute([
+                            $name, $email, $municipality, $barangay, $sex, $birthday, 
+                            $is_pregnant, $weight, $height, $muac
+                        ]);
+                        
+                        if ($result) {
+                            // Verify the insert worked
+                            $verifyStmt = $pdo->prepare("SELECT weight, height, muac FROM community_users WHERE email = ?");
+                            $verifyStmt->execute([$email]);
+                            $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
+                            
+                            echo json_encode([
+                                'success' => true, 
+                                'message' => 'User created and screening data saved successfully',
+                                'action' => 'created',
+                                'saved_data' => $savedData,
+                                'email' => $email
+                            ]);
+                        } else {
+                            echo json_encode(['success' => false, 'message' => 'Failed to create user']);
+                        }
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+                }
+            } catch (Exception $e) {
+                error_log("Screening direct error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
             }
             break;
             
@@ -2947,16 +3247,46 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'screening_date' => date('Y-m-d H:i:s')
                     ];
                     
-                    $result = $db->universalUpdate('community_users', $updateData, 'email = ?', [$email]);
+                    // Use direct SQL instead of universalUpdate
+                    try {
+                        $pdo = $db->getPDO();
+                        $updateSql = "UPDATE community_users SET 
+                                        municipality = ?, 
+                                        barangay = ?, 
+                                        sex = ?, 
+                                        birthday = ?, 
+                                        is_pregnant = ?, 
+                                        weight = ?, 
+                                        height = ?, 
+                                        screening_date = NOW()
+                                      WHERE email = ?";
+                        
+                        $updateStmt = $pdo->prepare($updateSql);
+                        $result = $updateStmt->execute([
+                            $municipality, $barangay, $sex, $birthday, $is_pregnant, 
+                            $weight, $height, $email
+                        ]);
+                        
+                        // Verify the update worked
+                        if ($result) {
+                            $verifyStmt = $pdo->prepare("SELECT weight, height FROM community_users WHERE email = ?");
+                            $verifyStmt->execute([$email]);
+                            $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
+                            error_log("Data saved verification: " . print_r($savedData, true));
+                        }
+                    } catch (Exception $directUpdateError) {
+                        error_log("Direct update error: " . $directUpdateError->getMessage());
+                        $result = ['success' => false, 'message' => $directUpdateError->getMessage()];
+                    }
                     
-                    if ($result['success']) {
+                    if ($result) {
                         echo json_encode([
                             'success' => true, 
                             'message' => 'Screening data updated successfully',
                             'data' => $updateData
                         ]);
                     } else {
-                        echo json_encode(['success' => false, 'message' => 'Failed to update screening data: ' . $result['message']]);
+                        echo json_encode(['success' => false, 'message' => 'Failed to update screening data']);
                     }
                 } else {
                     // User doesn't exist, create new user with screening data
@@ -3943,45 +4273,58 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         break;
                     }
                     
-                    // Get user data from community_users table
-                    $result = $db->universalSelect(
-                        'community_users', 
-                        '*', 
-                        'email = ?', 
-                        '', 
-                        '', 
-                        [$email]
-                    );
-                    
-                    if ($result['success'] && !empty($result['data'])) {
-                        $user = $result['data'][0]; // Get first (and should be only) result
+                    // Get user data directly - simplified approach
+                    try {
+                        $pdo = $db->getPDO();
+                        $stmt = $pdo->prepare("SELECT * FROM community_users WHERE email = ?");
+                        $stmt->execute([$email]);
+                        $user = $stmt->fetch(PDO::FETCH_ASSOC);
                         
-                        // Format the response
-                        echo json_encode([
-                            'success' => true,
-                            'message' => 'User data retrieved successfully',
-                            'user' => [
-                                'name' => $user['name'] ?? '',
-                                'email' => $user['email'] ?? '',
-                                'municipality' => $user['municipality'] ?? '',
-                                'barangay' => $user['barangay'] ?? '',
-                                'sex' => $user['sex'] ?? '',
-                                'birthday' => $user['birthday'] ?? '',
-                                'age' => $user['age'] ?? '',
-                                'is_pregnant' => $user['is_pregnant'] ?? '',
-                                'weight_kg' => $user['weight_kg'] ?? '',
-                                'height_cm' => $user['height_cm'] ?? '',
-                                'muac_cm' => $user['muac_cm'] ?? '',
-                                'bmi' => $user['bmi'] ?? '',
-                                'bmi_category' => $user['bmi_category'] ?? '',
-                                'muac_category' => $user['muac_category'] ?? '',
-                                'nutritional_risk' => $user['nutritional_risk'] ?? '',
-                                'screening_date' => $user['screening_date'] ?? '',
-                                'screened_by' => $user['screened_by'] ?? '',
-                                'notes' => $user['notes'] ?? '',
-                                'status' => $user['status'] ?? '',
-                                'created_at' => $user['created_at'] ?? '',
-                                'updated_at' => $user['updated_at'] ?? ''
+                        if (!$user) {
+                            echo json_encode(['success' => false, 'message' => 'User not found']);
+                            break;
+                        }
+                    } catch (Exception $e) {
+                        error_log("Direct query error: " . $e->getMessage());
+                        echo json_encode(['success' => false, 'message' => 'Database error']);
+                        break;
+                    }
+                    
+                    // Debug: Log the actual user data
+                    error_log("Retrieved user data: " . print_r($user, true));
+                    error_log("Weight value: " . ($user['weight'] ?? 'NOT_FOUND'));
+                    error_log("Height value: " . ($user['height'] ?? 'NOT_FOUND'));
+                    
+                    // Format the response - simplified for testing
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'User data retrieved successfully',
+                        'user' => [
+                            'name' => $user['name'] ?? '',
+                            'email' => $user['email'] ?? '',
+                            'municipality' => $user['municipality'] ?? '',
+                            'barangay' => $user['barangay'] ?? '',
+                            'sex' => $user['sex'] ?? '',
+                            'birthday' => $user['birthday'] ?? '',
+                            'age' => $user['age'] ?? '',
+                            'is_pregnant' => $user['is_pregnant'] ?? '',
+                            'weight_kg' => $user['weight'],
+                            'height_cm' => $user['height'],
+                            'debug_weight' => $user['weight'],
+                            'debug_height' => $user['height'],
+                            'debug_isset_weight' => isset($user['weight']) ? 'YES' : 'NO',
+                            'debug_isset_height' => isset($user['height']) ? 'YES' : 'NO',
+                            'muac_cm' => '', // muac column doesn't exist in database
+                            'bmi' => $user['bmi'] ?? '',
+                            'bmi_category' => $user['bmi_category'] ?? '',
+                            'muac_category' => $user['muac_category'] ?? '',
+                            'nutritional_risk' => $user['nutritional_risk'] ?? '',
+                            'screening_date' => $user['screening_date'] ?? '',
+                            'screened_by' => $user['screened_by'] ?? '',
+                            'notes' => $user['notes'] ?? '',
+                            'status' => $user['status'] ?? '',
+                            'created_at' => $user['created_at'] ?? '',
+                            'updated_at' => $user['updated_at'] ?? ''
                             ]
                         ]);
                     } else {

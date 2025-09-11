@@ -81,8 +81,9 @@ public class FoodCardAdapter extends RecyclerView.Adapter<FoodCardAdapter.FoodCa
             holder.substituteBtn.setVisibility(View.GONE); // Hide button if no listener
         }
         
-        // Check if this dish is already in favorites
-        holder.isFavorited = favoritesManager.isFavorite(userEmail, dish.name);
+        // Convert Dish to FoodItem for favorites check
+        FoodItem foodItem = new FoodItem(dish.name, dish.name, dish.calories, 100, "g");
+        holder.isFavorited = favoritesManager.isFavorite(foodItem);
         holder.favoriteIcon.setImageResource(holder.isFavorited ? R.drawable.ic_heart_filled : R.drawable.ic_heart_outline);
         
         // Set up favorite icon click listener with proper favorite functionality
@@ -141,11 +142,13 @@ public class FoodCardAdapter extends RecyclerView.Adapter<FoodCardAdapter.FoodCa
     }
     
     private void saveToFavorites(DishData.Dish dish) {
-        favoritesManager.addToFavorites(userEmail, dish);
+        FoodItem foodItem = new FoodItem(dish.name, dish.name, dish.calories, 100, "g");
+        favoritesManager.addToFavorites(foodItem);
     }
     
     private void removeFromFavorites(DishData.Dish dish) {
-        favoritesManager.removeFromFavorites(userEmail, dish.name);
+        FoodItem foodItem = new FoodItem(dish.name, dish.name, dish.calories, 100, "g");
+        favoritesManager.removeFromFavorites(foodItem);
     }
 
     static class FoodCardViewHolder extends RecyclerView.ViewHolder {

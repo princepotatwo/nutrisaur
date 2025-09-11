@@ -50,9 +50,9 @@ public class FoodPreloadService extends Service {
             try {
                 Log.d(TAG, "Starting background food preload");
                 
-                // Create a temporary FoodActivity instance to use its Gemini API method
-                FoodActivity tempActivity = new FoodActivity();
-                List<FoodRecommendation> newRecommendations = tempActivity.callGeminiAPIForMultiple();
+                // Since we removed the old food recommendation system,
+                // we'll create empty recommendations for now
+                List<FoodRecommendation> newRecommendations = new ArrayList<>();
                 
                 if (newRecommendations != null && !newRecommendations.isEmpty()) {
                     synchronized (preloadedRecommendations) {

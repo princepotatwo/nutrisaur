@@ -445,8 +445,8 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new android.content.DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(android.content.DialogInterface dialog, int which) {
-                                // Navigate back to login
-                                getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).edit().putBoolean("is_logged_in", false).apply();
+                                // Clear all user data
+                                clearAllUserData();
                                 // TODO: Fix LoginActivity reference
                                 // Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                                 // startActivity(intent);
@@ -458,6 +458,26 @@ public class MainActivity extends AppCompatActivity {
                         .show();
                 }
             });
+        }
+    }
+    
+    private void clearAllUserData() {
+        try {
+            android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+            android.content.SharedPreferences.Editor editor = prefs.edit();
+            
+            // Clear all user data
+            editor.clear();
+            
+            // Set basic logout state
+            editor.putBoolean("is_logged_in", false);
+            
+            editor.apply();
+            
+            android.util.Log.d("MainActivity", "All user data cleared from SharedPreferences");
+            
+        } catch (Exception e) {
+            android.util.Log.e("MainActivity", "Error clearing user data: " + e.getMessage());
         }
     }
 

@@ -105,13 +105,75 @@ public class CommunityUserManager {
     
     private String makeApiRequest(String action, JSONObject requestData) {
         try {
-            // This is a simplified version - in real implementation, use proper HTTP client
-            // For now, return mock data for testing
-            return getMockUserData();
+            Log.d(TAG, "Making API request to: " + API_BASE_URL + "?action=" + action);
+            Log.d(TAG, "Request data: " + requestData.toString());
+            
+            // Test network connectivity first
+            if (!isNetworkAvailable()) {
+                Log.e(TAG, "No network connectivity available");
+                return "{\"success\": false, \"message\": \"No network connectivity\"}";
+            }
+            
+            // Make actual HTTP request to the API
+            okhttp3.OkHttpClient client = new okhttp3.OkHttpClient.Builder()
+                .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                .build();
+            
+            okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                requestData.toString(), 
+                okhttp3.MediaType.parse("application/json; charset=utf-8")
+            );
+            
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(API_BASE_URL + "?action=" + action)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Accept", "application/json")
+                .build();
+            
+            try (okhttp3.Response response = client.newCall(request).execute()) {
+                Log.d(TAG, "API response code: " + response.code());
+                Log.d(TAG, "API response message: " + response.message());
+                
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseBody = response.body().string();
+                    Log.d(TAG, "API response for " + action + ": " + responseBody);
+                    return responseBody;
+                } else {
+                    String errorBody = response.body() != null ? response.body().string() : "No error body";
+                    Log.e(TAG, "API request failed: " + response.code() + " - " + response.message() + " - " + errorBody);
+                    return "{\"success\": false, \"message\": \"API request failed: " + response.code() + " - " + response.message() + "\"}";
+                }
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error making API request: " + e.getMessage());
-            return "{\"success\": false, \"message\": \"API request failed\"}";
+            e.printStackTrace();
+            String errorMessage = e.getMessage();
+            if (errorMessage == null || errorMessage.isEmpty()) {
+                errorMessage = e.getClass().getSimpleName();
+            }
+            return "{\"success\": false, \"message\": \"API request failed: " + errorMessage + "\"}";
         }
+    }
+    
+    /**
+     * Check if network is available
+     */
+    private boolean isNetworkAvailable() {
+        try {
+            android.net.ConnectivityManager connectivityManager = 
+                (android.net.ConnectivityManager) context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+            
+            if (connectivityManager != null) {
+                android.net.NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+                return activeNetwork != null && activeNetwork.isConnected();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking network availability: " + e.getMessage());
+        }
+        return false;
     }
     
     private String getMockUserData() {
@@ -168,47 +230,64 @@ public class CommunityUserManager {
         Log.d(TAG, "Barangay: " + barangay);
         Log.d(TAG, "Municipality: " + municipality);
         
-        try {
-            // Create registration request
-            JSONObject requestData = new JSONObject();
-            requestData.put("action", "register_user");
-            requestData.put("name", fullName);
-            requestData.put("email", email);
-            requestData.put("password", password);
-            requestData.put("barangay", barangay);
-            requestData.put("municipality", municipality);
-            requestData.put("sex", sex);
-            requestData.put("birth_date", birthDate);
-            requestData.put("pregnancy_status", pregnancyStatus);
-            requestData.put("weight", weight);
-            requestData.put("height", height);
-            requestData.put("muac", muac);
-            
-            // Make API request
-            String response = makeApiRequest("register_community_user", requestData);
-            JSONObject jsonResponse = new JSONObject(response);
-            
-            if (jsonResponse.getBoolean("success")) {
-                // Save user login state
-                SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
-                prefs.edit()
-                    .putString("current_user_email", email)
-                    .putString("current_user_name", fullName)
-                    .putBoolean("is_logged_in", true)
-                    .apply();
+        // Run API request in background thread to avoid NetworkOnMainThreadException
+        new Thread(() -> {
+            try {
+                // Create registration request
+                JSONObject requestData = new JSONObject();
+                requestData.put("action", "register_user");
+                requestData.put("name", fullName);
+                requestData.put("email", email);
+                requestData.put("password", password);
+                requestData.put("barangay", barangay);
+                requestData.put("municipality", municipality);
+                requestData.put("sex", sex);
+                requestData.put("birth_date", birthDate);
+                requestData.put("pregnancy_status", pregnancyStatus);
+                requestData.put("weight", weight);
+                requestData.put("height", height);
+                requestData.put("muac", muac);
                 
-                Log.d(TAG, "Registration successful: " + jsonResponse.optString("message", "User registered successfully"));
-                callback.onSuccess(jsonResponse.optString("message", "Registration successful! Please complete your nutritional screening."));
-            } else {
-                String errorMessage = jsonResponse.optString("message", "Registration failed");
-                Log.e(TAG, "Registration failed: " + errorMessage);
-                callback.onError(errorMessage);
+                // Make API request
+                String response = makeApiRequest("register_community_user", requestData);
+                
+                // Check if API request failed
+                if (response == null) {
+                    Log.e(TAG, "API request returned null response");
+                    callback.onError("Registration failed: Unable to connect to server");
+                    return;
+                }
+                
+                JSONObject jsonResponse = new JSONObject(response);
+                
+                if (jsonResponse.getBoolean("success")) {
+                    // Only save basic login state to SharedPreferences (no user profile data)
+                    SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    
+                    // Clear any existing user data first
+                    editor.clear();
+                    
+                    // Save only login state - no user profile data
+                    editor.putString("current_user_email", email)
+                          .putString("current_user_name", fullName)
+                          .putBoolean("is_logged_in", true);
+                    
+                    editor.apply();
+                    
+                    Log.d(TAG, "Registration successful: " + jsonResponse.optString("message", "User registered successfully"));
+                    callback.onSuccess(jsonResponse.optString("message", "Registration successful! Please complete your nutritional screening."));
+                } else {
+                    String errorMessage = jsonResponse.optString("message", "Registration failed");
+                    Log.e(TAG, "Registration failed: " + errorMessage);
+                    callback.onError(errorMessage);
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error during registration: " + e.getMessage());
+                callback.onError("Registration failed: " + e.getMessage());
             }
-            
-        } catch (Exception e) {
-            Log.e(TAG, "Error during registration: " + e.getMessage());
-            callback.onError("Registration failed: " + e.getMessage());
-        }
+        }).start();
     }
     
     // Get current user data (alias for getCurrentUserDataFromDatabase)

@@ -34,6 +34,7 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
     private TextView questionText;
     private TextView progressText;
     private Button nextButton;
+    private Button previousButton;
     private Button optionVeryOften;
     private Button optionFairlyOften;
     private Button optionSometimes;
@@ -166,6 +167,7 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         questionText = findViewById(R.id.question_text);
         progressText = findViewById(R.id.progress_text);
         nextButton = findViewById(R.id.next_button);
+        previousButton = findViewById(R.id.previous_button);
         optionVeryOften = findViewById(R.id.option_very_often);
         optionFairlyOften = findViewById(R.id.option_fairly_often);
         optionSometimes = findViewById(R.id.option_sometimes);
@@ -180,6 +182,9 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         
         // Set up next button
         nextButton.setOnClickListener(v -> nextQuestion());
+        
+        // Set up previous button
+        previousButton.setOnClickListener(v -> previousQuestion());
         
         // Set up option buttons
         setupOptionButtons();
@@ -208,6 +213,15 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         nextButton.setEnabled(false);
         nextButton.setBackgroundResource(R.drawable.button_next_inactive);
         
+        // Show/hide previous button based on question index
+        if (questionIndex == 0) {
+            previousButton.setVisibility(View.GONE);
+        } else {
+            previousButton.setVisibility(View.VISIBLE);
+            previousButton.setEnabled(true);
+            previousButton.setClickable(true);
+        }
+        
         // Show appropriate question UI based on question type
         switch (questionIndex) {
             case 0: showMunicipalityQuestion(); break;
@@ -218,6 +232,9 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
             case 5: showWeightQuestion(); break;
             case 6: showHeightQuestion(); break;
         }
+        
+        // Restore previous answer if available
+        restorePreviousAnswer(questionIndex);
     }
     
     private void resetAllOptions() {
@@ -622,6 +639,131 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         }
     }
     
+    private void previousQuestion() {
+        if (currentQuestionIndex > 0) {
+            showQuestion(currentQuestionIndex - 1);
+        }
+    }
+    
+    private void restorePreviousAnswer(int questionIndex) {
+        String answerKey = "question_" + questionIndex;
+        String previousAnswer = answers.get(answerKey);
+        
+        if (previousAnswer != null) {
+            // Enable next button since we have a previous answer
+            nextButton.setEnabled(true);
+            nextButton.setBackgroundResource(R.drawable.button_next_active);
+            
+            // Restore the answer based on question type
+            switch (questionIndex) {
+                case 0: // Municipality question
+                    restoreMunicipalityAnswer(previousAnswer);
+                    break;
+                case 1: // Barangay question
+                    restoreBarangayAnswer(previousAnswer);
+                    break;
+                case 2: // Sex question
+                    restoreSexAnswer(previousAnswer);
+                    break;
+                case 3: // Age question
+                    restoreAgeAnswer(previousAnswer);
+                    break;
+                case 4: // Pregnancy question
+                    restorePregnancyAnswer(previousAnswer);
+                    break;
+                case 5: // Weight question
+                    restoreWeightAnswer(previousAnswer);
+                    break;
+                case 6: // Height question
+                    restoreHeightAnswer(previousAnswer);
+                    break;
+            }
+        }
+    }
+    
+    private void restoreMunicipalityAnswer(String answer) {
+        // Find and select the municipality button that matches the answer
+        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+            View child = optionsContainer.getChildAt(i);
+            if (child instanceof Button) {
+                Button button = (Button) child;
+                if (answer.equals(button.getText().toString())) {
+                    selectOption(button, answer);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void restoreBarangayAnswer(String answer) {
+        // Find and select the barangay button that matches the answer
+        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+            View child = optionsContainer.getChildAt(i);
+            if (child instanceof Button) {
+                Button button = (Button) child;
+                if (answer.equals(button.getText().toString())) {
+                    selectOption(button, answer);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void restoreSexAnswer(String answer) {
+        // Find and select the sex button that matches the answer
+        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+            View child = optionsContainer.getChildAt(i);
+            if (child instanceof Button) {
+                Button button = (Button) child;
+                if (answer.equals(button.getText().toString())) {
+                    selectOption(button, answer);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void restoreAgeAnswer(String answer) {
+        // Find and select the age button that matches the answer
+        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+            View child = optionsContainer.getChildAt(i);
+            if (child instanceof Button) {
+                Button button = (Button) child;
+                if (answer.equals(button.getText().toString())) {
+                    selectOption(button, answer);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void restorePregnancyAnswer(String answer) {
+        // Find and select the pregnancy button that matches the answer
+        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+            View child = optionsContainer.getChildAt(i);
+            if (child instanceof Button) {
+                Button button = (Button) child;
+                if (answer.equals(button.getText().toString())) {
+                    selectOption(button, answer);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void restoreWeightAnswer(String answer) {
+        weightInput.setText(answer);
+        weightInput.setVisibility(View.VISIBLE);
+        nextButton.setEnabled(true);
+        nextButton.setBackgroundResource(R.drawable.button_next_active);
+    }
+    
+    private void restoreHeightAnswer(String answer) {
+        heightInput.setText(answer);
+        heightInput.setVisibility(View.VISIBLE);
+        nextButton.setEnabled(true);
+        nextButton.setBackgroundResource(R.drawable.button_next_active);
+    }
     
     private void saveAnswers() {
         // Save to SharedPreferences for local storage
@@ -668,6 +810,7 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
                 try {
                     JSONObject screeningData = new JSONObject();
                     screeningData.put("email", email);
+                    screeningData.put("name", userManager.getCurrentUserData().get("name")); // Get name from existing data
                     screeningData.put("municipality", answers.get("question_0"));
                     screeningData.put("barangay", answers.get("question_1"));
                     screeningData.put("sex", answers.get("question_2"));
@@ -757,36 +900,6 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         builder.show();
     }
     
-    /**
-     * Save screening data to SharedPreferences for immediate use
-     */
-    private void saveScreeningDataToPrefs(JSONObject screeningData) {
-        try {
-            android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
-            android.content.SharedPreferences.Editor editor = prefs.edit();
-            
-            // Save user login status
-            editor.putString("current_user_email", screeningData.optString("email", ""));
-            editor.putBoolean("is_logged_in", true);
-            
-            // Save screening data
-            editor.putString("user_name", screeningData.optString("name", ""));
-            editor.putString("user_municipality", screeningData.optString("municipality", ""));
-            editor.putString("user_barangay", screeningData.optString("barangay", ""));
-            editor.putString("user_sex", screeningData.optString("sex", ""));
-            editor.putString("user_birthday", screeningData.optString("birthday", ""));
-            editor.putString("user_is_pregnant", screeningData.optString("is_pregnant", ""));
-            editor.putString("user_weight", screeningData.optString("weight", ""));
-            editor.putString("user_height", screeningData.optString("height", ""));
-            editor.putString("user_screening_date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new java.util.Date()));
-            
-            editor.apply();
-            
-            Log.d("NutritionalScreening", "Screening data saved to SharedPreferences successfully");
-        } catch (Exception e) {
-            Log.e("NutritionalScreening", "Error saving screening data to prefs: " + e.getMessage());
-        }
-    }
     
     private void sendScreeningDataToAPI(JSONObject data) {
         new Thread(() -> {
@@ -821,8 +934,7 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Toast.makeText(this, "Screening data saved successfully!", Toast.LENGTH_LONG).show();
                             
-                            // Save screening data to SharedPreferences for immediate use
-                            saveScreeningDataToPrefs(data);
+                            // Screening data saved to database successfully
                             
                             // Register FCM token after successful screening
                             registerFCMTokenAfterScreening();

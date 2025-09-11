@@ -34,6 +34,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".TestFatSecretActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nutrisaur11">
+        </activity>
+
+        <activity
+            android:name=".FoodDetailsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nutrisaur11">
+        </activity>
+        
+        <activity
+            android:name=".TestNutritionActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Nutrisaur11">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         
         <activity
             android:name=".LoginActivity"
@@ -60,6 +82,12 @@
         <activity
             android:name=".FoodActivity"
             android:exported="true"
+            android:theme="@style/Theme.Nutrisaur11">
+        </activity>
+
+        <activity
+            android:name=".FoodLoggingActivity"
+            android:exported="false"
             android:theme="@style/Theme.Nutrisaur11">
         </activity>
 

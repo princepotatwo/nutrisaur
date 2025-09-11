@@ -192,7 +192,6 @@ public class FoodSubstitutionManager {
     }
     
     private List<FoodRecommendation> callGeminiForSubstitutions(String prompt) {
-<<<<<<< Updated upstream
         try {
             // Create JSON request
             JSONObject requestBody = new JSONObject();
@@ -231,11 +230,6 @@ public class FoodSubstitutionManager {
         }
         
         return null;
-=======
-        // Return fallback substitutions since Gemini is only used for nutrition now
-        Log.d(TAG, "Using fallback substitutions - Gemini only used for nutrition service");
-        return getFallbackSubstitutions();
->>>>>>> Stashed changes
     }
     
     private List<FoodRecommendation> parseSubstitutionResponse(String responseText) {

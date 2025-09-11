@@ -541,10 +541,7 @@ public class AccountActivity extends AppCompatActivity {
                     .setTitle("Logout")
                     .setMessage("Are you sure you want to logout?")
                     .setPositiveButton("Yes", (dialog, which) -> {
-                        getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).edit()
-                            .putBoolean("is_logged_in", false)
-                            .remove("current_user_email")
-                            .apply();
+                        clearAllUserData();
                         Intent intent = new Intent(AccountActivity.this, MainActivity.class);
                         startActivity(intent);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -553,6 +550,26 @@ public class AccountActivity extends AppCompatActivity {
                     .setNegativeButton("Cancel", null)
                     .show();
             });
+        }
+    }
+    
+    private void clearAllUserData() {
+        try {
+            android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+            android.content.SharedPreferences.Editor editor = prefs.edit();
+            
+            // Clear all user data
+            editor.clear();
+            
+            // Set basic logout state
+            editor.putBoolean("is_logged_in", false);
+            
+            editor.apply();
+            
+            android.util.Log.d("AccountActivity", "All user data cleared from SharedPreferences");
+            
+        } catch (Exception e) {
+            android.util.Log.e("AccountActivity", "Error clearing user data: " + e.getMessage());
         }
     }
     

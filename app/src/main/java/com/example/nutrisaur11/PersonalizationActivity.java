@@ -34,6 +34,9 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personalization);
         
+        // Check if this is for editing preferences
+        boolean isEditingPreferences = getIntent().getBooleanExtra("is_editing_preferences", false);
+        
         // Initialize views
         questionViewPager = findViewById(R.id.question_view_pager);
         questionTitle = findViewById(R.id.question_title);
@@ -46,11 +49,12 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
         setupViewPager();
         
         // Setup back button
-        setupBackButton();
+        setupBackButton(isEditingPreferences);
     }
     
     private void setupViewPager() {
         adapter = new PersonalizationQuestionAdapter(this, questions, this);
+        adapter.setUserAnswers(userAnswers); // Pass user answers to adapter
         questionViewPager.setAdapter(adapter);
         
         // Update header for first question
@@ -62,6 +66,9 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
             public void onPageSelected(int position) {
                 currentQuestionIndex = position;
                 updateHeader(position);
+                // Update adapter with current answers
+                adapter.setUserAnswers(userAnswers);
+                adapter.notifyItemChanged(position);
             }
         });
         
@@ -111,6 +118,13 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
     }
     
     private void saveCurrentAnswersAndNext() {
+        // Check if current question has been answered
+        if (!isCurrentQuestionAnswered()) {
+            // Show toast or some indication that question needs to be answered
+            android.widget.Toast.makeText(this, "Please select an answer before continuing", android.widget.Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         // For multiple choice questions, save current selections
         PersonalizationQuestion question = questions.get(currentQuestionIndex);
         if (question.isMultipleChoice()) {
@@ -121,6 +135,11 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
             // For single choice, just move to next
             moveToNextQuestion();
         }
+    }
+    
+    private boolean isCurrentQuestionAnswered() {
+        String key = "question_" + currentQuestionIndex;
+        return userAnswers.containsKey(key);
     }
     
     private void updateHeader(int position) {
@@ -137,12 +156,17 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
     
 
     
-    private void setupBackButton() {
+    private void setupBackButton(boolean isEditingPreferences) {
         btnBack.setOnClickListener(v -> {
-            // Navigate back to Food Activity
-            Intent intent = new Intent(PersonalizationActivity.this, FoodActivity.class);
-            startActivity(intent);
-            finish();
+            if (isEditingPreferences) {
+                // If editing preferences, just go back to FoodActivity
+                finish();
+            } else {
+                // If initial setup, navigate back to Food Activity
+                Intent intent = new Intent(PersonalizationActivity.this, FoodActivity.class);
+                startActivity(intent);
+                finish();
+            }
         });
     }
     
@@ -231,11 +255,21 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
     
     private void moveToPreviousQuestion() {
         if (currentQuestionIndex > 0) {
+            // Save current answer before moving back
+            saveCurrentAnswer();
             questionViewPager.setCurrentItem(currentQuestionIndex - 1, true);
         }
     }
     
+    private void saveCurrentAnswer() {
+        // This method can be used to save the current answer if needed
+        // For now, answers are saved when choices are selected
+    }
+    
     private void finishPersonalization() {
+        // Check if this is for editing preferences
+        boolean isEditingPreferences = getIntent().getBooleanExtra("is_editing_preferences", false);
+        
         // Mark personalization as completed and store answers
         android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
         android.content.SharedPreferences.Editor editor = prefs.edit();
@@ -253,9 +287,14 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
         }
         editor.apply();
         
-        // Start Food Activity
-        android.content.Intent intent = new android.content.Intent(this, FoodActivity.class);
-        startActivity(intent);
-        finish();
+        if (isEditingPreferences) {
+            // If editing preferences, just finish and go back to FoodActivity
+            finish();
+        } else {
+            // If initial setup, start Food Activity
+            android.content.Intent intent = new android.content.Intent(this, FoodActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }
