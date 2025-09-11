@@ -2901,7 +2901,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid request method']);
         }
-            break;
+        break;
             
         // ========================================
         // COMMUNITY USER LOGIN API
