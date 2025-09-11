@@ -2818,82 +2818,82 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         echo json_encode(['success' => false, 'message' => 'Invalid JSON data provided']);
                         break;
                     }
-                
-                $email = $data['email'] ?? '';
-                $password = $data['password'] ?? '';
-                $name = $data['name'] ?? $data['username'] ?? '';
-                
-                if (empty($email) || empty($password) || empty($name)) {
-                    echo json_encode(['success' => false, 'message' => 'Please fill in all required fields']);
-                    break;
-                }
-                
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
-                    break;
-                }
-                
-                if (strlen($password) < 6) {
-                    echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
-                    break;
-                }
-                
-                // Check if user already exists
-                $checkResult = $db->universalSelect('community_users', 'email', 'email = ?', '', '', [$email]);
-                if ($checkResult['success'] && !empty($checkResult['data'])) {
-                    echo json_encode(['success' => false, 'message' => 'User with this email already exists']);
-                    break;
-                }
-                
-                // Hash password
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                
-                // Generate unique screening ID
-                $screeningId = 'REG_' . time() . '_' . substr(md5($email), 0, 8);
-                
-                // Calculate age from birthday
-                $birthday = $data['birth_date'] ?? $data['birthday'] ?? '1900-01-01';
-                $age = 0;
-                if ($birthday !== '1900-01-01') {
-                    $birthDate = new DateTime($birthday);
-                    $today = new DateTime();
-                    $age = $today->diff($birthDate)->y;
-                }
-                
-                // Insert basic user info only - screening data will be added later
-                $insertData = [
-                    'name' => $name,
-                    'email' => $email,
-                    'password' => $hashedPassword,
-                    'municipality' => $data['municipality'] ?? 'Not specified',
-                    'barangay' => $data['barangay'] ?? 'Not specified',
-                    'sex' => $data['sex'] ?? 'Not specified',
-                    'birthday' => $birthday,
-                    'is_pregnant' => ($data['is_pregnant'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
-                    'screening_date' => date('Y-m-d H:i:s')
-                ];
-                
-                // Use the same method as screening.php
-                $result = $db->insert('community_users', $insertData);
-                
-                // Log the result for debugging
-                error_log("Insert result: " . print_r($result, true));
-                error_log("Insert data: " . print_r($insertData, true));
-                error_log("Weight value: " . ($data['weight'] ?? 'NOT_SET'));
-                error_log("Height value: " . ($data['height'] ?? 'NOT_SET'));
-                
-                if ($result['success']) {
-                    echo json_encode([
-                        'success' => true, 
-                        'message' => 'User registered successfully',
-                        'user' => [
-                            'email' => $email,
-                            'name' => $name
-                        ]
-                    ]);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Failed to register user: ' . $result['message']]);
-                }
+                    
+                    $email = $data['email'] ?? '';
+                    $password = $data['password'] ?? '';
+                    $name = $data['name'] ?? $data['username'] ?? '';
+                    
+                    if (empty($email) || empty($password) || empty($name)) {
+                        echo json_encode(['success' => false, 'message' => 'Please fill in all required fields']);
+                        break;
+                    }
+                    
+                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+                        break;
+                    }
+                    
+                    if (strlen($password) < 6) {
+                        echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+                        break;
+                    }
+                    
+                    // Check if user already exists
+                    $checkResult = $db->universalSelect('community_users', 'email', 'email = ?', '', '', [$email]);
+                    if ($checkResult['success'] && !empty($checkResult['data'])) {
+                        echo json_encode(['success' => false, 'message' => 'User with this email already exists']);
+                        break;
+                    }
+                    
+                    // Hash password
+                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                    
+                    // Generate unique screening ID
+                    $screeningId = 'REG_' . time() . '_' . substr(md5($email), 0, 8);
+                    
+                    // Calculate age from birthday
+                    $birthday = $data['birth_date'] ?? $data['birthday'] ?? '1900-01-01';
+                    $age = 0;
+                    if ($birthday !== '1900-01-01') {
+                        $birthDate = new DateTime($birthday);
+                        $today = new DateTime();
+                        $age = $today->diff($birthDate)->y;
+                    }
+                    
+                    // Insert basic user info only - screening data will be added later
+                    $insertData = [
+                        'name' => $name,
+                        'email' => $email,
+                        'password' => $hashedPassword,
+                        'municipality' => $data['municipality'] ?? 'Not specified',
+                        'barangay' => $data['barangay'] ?? 'Not specified',
+                        'sex' => $data['sex'] ?? 'Not specified',
+                        'birthday' => $birthday,
+                        'is_pregnant' => ($data['is_pregnant'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
+                        'screening_date' => date('Y-m-d H:i:s')
+                    ];
+                    
+                    // Use the same method as screening.php
+                    $result = $db->insert('community_users', $insertData);
+                    
+                    // Log the result for debugging
+                    error_log("Insert result: " . print_r($result, true));
+                    error_log("Insert data: " . print_r($insertData, true));
+                    error_log("Weight value: " . ($data['weight'] ?? 'NOT_SET'));
+                    error_log("Height value: " . ($data['height'] ?? 'NOT_SET'));
+                    
+                    if ($result['success']) {
+                        echo json_encode([
+                            'success' => true, 
+                            'message' => 'User registered successfully',
+                            'user' => [
+                                'email' => $email,
+                                'name' => $name
+                            ]
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to register user: ' . $result['message']]);
+                    }
             } catch (Exception $e) {
                 error_log("Registration error: " . $e->getMessage());
                 echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
