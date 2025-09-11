@@ -2899,13 +2899,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     } else {
                         echo json_encode(['success' => false, 'message' => 'Failed to register user: ' . $result['message']]);
                     }
-            } catch (Exception $e) {
-                error_log("Registration error: " . $e->getMessage());
-                echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
+                } catch (Exception $e) {
+                    error_log("Registration error: " . $e->getMessage());
+                    echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
             }
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid request method']);
-        }
         break;
             
         // ========================================
