@@ -4312,7 +4312,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
-        // DEFAULT: SHOW USAGE
+        // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:
             echo json_encode([
