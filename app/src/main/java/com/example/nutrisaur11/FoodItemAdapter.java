@@ -15,6 +15,8 @@ public class FoodItemAdapter extends BaseAdapter {
     private List<FoodItem> foodItems;
     private LayoutInflater inflater;
     private AddedFoodManager addedFoodManager;
+    private CalorieTracker calorieTracker;
+    private String currentMealCategory;
     private boolean hideAddButton = false; // Flag to hide add/remove buttons
     
     public FoodItemAdapter(Context context, List<FoodItem> foodItems) {
@@ -22,6 +24,11 @@ public class FoodItemAdapter extends BaseAdapter {
         this.foodItems = foodItems;
         this.inflater = LayoutInflater.from(context);
         this.addedFoodManager = new AddedFoodManager(context);
+        this.calorieTracker = new CalorieTracker(context);
+    }
+    
+    public void setMealCategory(String mealCategory) {
+        this.currentMealCategory = mealCategory;
     }
     
     public void setHideAddButton(boolean hide) {
@@ -187,13 +194,44 @@ public class FoodItemAdapter extends BaseAdapter {
     private void onMinusButtonClicked(FoodItem foodItem, ViewHolder holder) {
         // Remove from added foods
         addedFoodManager.removeFromAddedFoods(foodItem);
+        
+        // Remove from calorie tracking
+        if (currentMealCategory != null) {
+            calorieTracker.removeFoodFromMeal(currentMealCategory, foodItem);
+        }
+        
         updateButtonStates(holder, false);
+        
+        // Notify parent activity about calorie change
+        notifyCalorieChange();
     }
     
     private void onPlusButtonClicked(FoodItem foodItem, ViewHolder holder) {
         // Add to added foods
         addedFoodManager.addToAddedFoods(foodItem);
+        
+        // Add to calorie tracking
+        if (currentMealCategory != null) {
+            // Get max calories from the current meal (this should be passed from the activity)
+            int maxCalories = 500; // Default, should be passed from activity
+            calorieTracker.addFoodToMeal(currentMealCategory, foodItem, maxCalories);
+        }
+        
         updateButtonStates(holder, true);
+        
+        // Notify parent activity about calorie change
+        notifyCalorieChange();
+    }
+    
+    private void notifyCalorieChange() {
+        // This will be implemented to notify the parent activity
+        // For now, we'll just log the change
+        if (currentMealCategory != null) {
+            CalorieTracker.MealCalories mealCalories = calorieTracker.getMealCalories(currentMealCategory);
+            if (mealCalories != null) {
+                android.util.Log.d("FoodItemAdapter", "Calories updated for " + currentMealCategory + ": " + mealCalories.getCalorieText());
+            }
+        }
     }
 
     private void onFoodItemClicked(FoodItem foodItem) {

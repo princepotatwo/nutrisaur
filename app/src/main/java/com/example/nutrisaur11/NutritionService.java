@@ -187,23 +187,60 @@ public class NutritionService {
             String userId = userData.getOrDefault("email", "");
             String name = userData.getOrDefault("name", "");
             int age = 25; // Default age
+            String birthday = userData.getOrDefault("birthday", "");
+            
+            // First try to get age from age field
             try {
-                age = Integer.parseInt(userData.getOrDefault("age", "25"));
+                String ageStr = userData.getOrDefault("age", "");
+                if (!ageStr.isEmpty()) {
+                    age = Integer.parseInt(ageStr);
+                    Log.d(TAG, "Using age from database: " + age);
+                } else {
+                    throw new NumberFormatException("Age field is empty");
+                }
             } catch (NumberFormatException e) {
-                Log.w(TAG, "Could not parse age, using default: 25");
+                // Calculate age from birthday if age field is empty
+                if (!birthday.isEmpty()) {
+                    try {
+                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                        java.util.Date birthDate = sdf.parse(birthday);
+                        java.util.Calendar birth = java.util.Calendar.getInstance();
+                        birth.setTime(birthDate);
+                        java.util.Calendar today = java.util.Calendar.getInstance();
+                        age = today.get(java.util.Calendar.YEAR) - birth.get(java.util.Calendar.YEAR);
+                        if (today.get(java.util.Calendar.DAY_OF_YEAR) < birth.get(java.util.Calendar.DAY_OF_YEAR)) {
+                            age--;
+                        }
+                        Log.d(TAG, "Calculated age from birthday '" + birthday + "': " + age);
+                    } catch (Exception ex) {
+                        Log.w(TAG, "Could not calculate age from birthday '" + birthday + "', using default: 25. Error: " + ex.getMessage());
+                    }
+                } else {
+                    Log.w(TAG, "No birthday provided, using default age: 25");
+                }
             }
             
             String gender = userData.getOrDefault("sex", "Male");
             double weight = 70.0; // Default weight
             try {
-                weight = Double.parseDouble(userData.getOrDefault("weight_kg", "70"));
+                double weightVal = Double.parseDouble(userData.getOrDefault("weight_kg", "70"));
+                if (weightVal > 0) {
+                    weight = weightVal;
+                } else {
+                    Log.w(TAG, "Weight is 0 or invalid, using default: 70");
+                }
             } catch (NumberFormatException e) {
                 Log.w(TAG, "Could not parse weight, using default: 70");
             }
             
             double height = 170.0; // Default height
             try {
-                height = Double.parseDouble(userData.getOrDefault("height_cm", "170"));
+                double heightVal = Double.parseDouble(userData.getOrDefault("height_cm", "170"));
+                if (heightVal > 0) {
+                    height = heightVal;
+                } else {
+                    Log.w(TAG, "Height is 0 or invalid, using default: 170");
+                }
             } catch (NumberFormatException e) {
                 Log.w(TAG, "Could not parse height, using default: 170");
             }
@@ -256,33 +293,78 @@ public class NutritionService {
         prompt.append("- Occupation: ").append(userProfile.getOccupation()).append("\n");
         prompt.append("- Lifestyle: ").append(userProfile.getLifestyle()).append("\n");
         
+        // Add critical BMI warnings
+        if (userProfile.getBmi() < 16) {
+            prompt.append("\n🚨 CRITICAL: SEVERELY UNDERWEIGHT - BMI < 16 indicates severe malnutrition requiring immediate medical attention\n");
+        } else if (userProfile.getBmi() < 18.5) {
+            prompt.append("\n⚠️ WARNING: UNDERWEIGHT - BMI < 18.5 requires weight gain intervention\n");
+        }
+        
         if (userProfile.isPregnant()) {
             prompt.append("- Pregnancy: Week ").append(userProfile.getPregnancyWeek()).append("\n");
         }
         
         prompt.append("\nNUTRITIONIST ANALYSIS REQUIRED:\n");
-        prompt.append("1. Calculate optimal daily calorie intake based on user profile\n");
-        prompt.append("2. Determine macronutrient distribution (carbs, protein, fat)\n");
-        prompt.append("3. Distribute calories across meals (breakfast, lunch, dinner, snacks)\n");
-        prompt.append("4. Consider BMI category for weight management recommendations\n");
-        prompt.append("5. Account for activity level and lifestyle factors\n");
-        prompt.append("6. Provide specific meal recommendations\n\n");
+        prompt.append("1. Calculate BMR using Mifflin-St Jeor Equation:\n");
+        prompt.append("   - Men: BMR = 10 × weight(kg) + 6.25 × height(cm) - 5 × age(years) + 5\n");
+        prompt.append("   - Women: BMR = 10 × weight(kg) + 6.25 × height(cm) - 5 × age(years) - 161\n");
+        prompt.append("2. Apply activity factor (Moderately Active = 1.55)\n");
+        prompt.append("3. Adjust for BMI goals:\n");
+        prompt.append("   - Underweight: Add 500-1000 calories for weight gain\n");
+        prompt.append("   - Normal: Maintain current intake\n");
+        prompt.append("   - Overweight: Subtract 500 calories for weight loss\n");
+        prompt.append("   - Obese: Subtract 750-1000 calories for weight loss\n");
+        prompt.append("4. Calculate macronutrients:\n");
+        prompt.append("   - Protein: 1.6-2.2g per kg body weight (higher for underweight)\n");
+        prompt.append("   - Fat: 25-35% of total calories\n");
+        prompt.append("   - Carbs: Remaining calories\n");
+        prompt.append("5. Distribute calories: Breakfast 25%, Lunch 35%, Dinner 30%, Snacks 10%\n");
+        prompt.append("6. Provide specific, high-calorie meal recommendations for underweight users\n\n");
         
-        // Add specific guidance for obese users
-        if (userProfile.getBmi() >= 30) {
+        // Add specific guidance based on BMI category
+        if (userProfile.getBmi() < 16) {
+            prompt.append("🚨 CRITICAL: This user is SEVERELY UNDERWEIGHT (BMI ").append(String.format("%.1f", userProfile.getBmi())).append("). ");
+            prompt.append("This requires IMMEDIATE MEDICAL ATTENTION. ");
+            prompt.append("Calculate BMR: ").append(String.format("%.0f", userProfile.getWeight())).append("kg × 10 + ").append(String.format("%.0f", userProfile.getHeight())).append("cm × 6.25 - ").append(userProfile.getAge()).append(" × 5 + 5 = ");
+            double bmr = 10 * userProfile.getWeight() + 6.25 * userProfile.getHeight() - 5 * userProfile.getAge() + 5;
+            prompt.append(String.format("%.0f", bmr)).append(" calories/day. ");
+            prompt.append("Apply activity factor 1.55 = ").append(String.format("%.0f", bmr * 1.55)).append(" calories. ");
+            prompt.append("Add 1000 calories for weight gain = ").append(String.format("%.0f", bmr * 1.55 + 1000)).append(" calories/day. ");
+            prompt.append("Protein needs: ").append(String.format("%.0f", userProfile.getWeight() * 2.2)).append("g (2.2g/kg). ");
+            prompt.append("Focus on high-calorie, nutrient-dense foods. ");
+            prompt.append("Include medical referral in recommendations.\n\n");
+        } else if (userProfile.getBmi() < 18.5) {
+            prompt.append("⚠️ IMPORTANT: This user is UNDERWEIGHT (BMI ").append(String.format("%.1f", userProfile.getBmi())).append("). ");
+            prompt.append("Calculate BMR: ").append(String.format("%.0f", userProfile.getWeight())).append("kg × 10 + ").append(String.format("%.0f", userProfile.getHeight())).append("cm × 6.25 - ").append(userProfile.getAge()).append(" × 5 + 5 = ");
+            double bmr = 10 * userProfile.getWeight() + 6.25 * userProfile.getHeight() - 5 * userProfile.getAge() + 5;
+            prompt.append(String.format("%.0f", bmr)).append(" calories/day. ");
+            prompt.append("Apply activity factor 1.55 = ").append(String.format("%.0f", bmr * 1.55)).append(" calories. ");
+            prompt.append("Add 500 calories for weight gain = ").append(String.format("%.0f", bmr * 1.55 + 500)).append(" calories/day. ");
+            prompt.append("Protein needs: ").append(String.format("%.0f", userProfile.getWeight() * 2.0)).append("g (2.0g/kg). ");
+            prompt.append("Focus on nutrient-dense, high-calorie foods. ");
+            prompt.append("Include frequent meals and snacks.\n\n");
+        } else if (userProfile.getBmi() >= 30) {
             prompt.append("IMPORTANT: This user is OBESE (BMI ").append(String.format("%.1f", userProfile.getBmi())).append("). ");
-            prompt.append("Recommend a calorie DEFICIT for weight loss. ");
+            prompt.append("Calculate BMR: ").append(String.format("%.0f", userProfile.getWeight())).append("kg × 10 + ").append(String.format("%.0f", userProfile.getHeight())).append("cm × 6.25 - ").append(userProfile.getAge()).append(" × 5 + 5 = ");
+            double bmr = 10 * userProfile.getWeight() + 6.25 * userProfile.getHeight() - 5 * userProfile.getAge() + 5;
+            prompt.append(String.format("%.0f", bmr)).append(" calories/day. ");
+            prompt.append("Apply activity factor 1.55 = ").append(String.format("%.0f", bmr * 1.55)).append(" calories. ");
+            prompt.append("Subtract 750 calories for weight loss = ").append(String.format("%.0f", bmr * 1.55 - 750)).append(" calories/day. ");
             prompt.append("For obese individuals, suggest 1200-1500 calories per day maximum. ");
             prompt.append("Focus on nutrient-dense, low-calorie foods.\n\n");
         } else if (userProfile.getBmi() >= 25) {
             prompt.append("IMPORTANT: This user is OVERWEIGHT (BMI ").append(String.format("%.1f", userProfile.getBmi())).append("). ");
-            prompt.append("Recommend a moderate calorie deficit for healthy weight loss. ");
+            prompt.append("Calculate BMR: ").append(String.format("%.0f", userProfile.getWeight())).append("kg × 10 + ").append(String.format("%.0f", userProfile.getHeight())).append("cm × 6.25 - ").append(userProfile.getAge()).append(" × 5 + 5 = ");
+            double bmr = 10 * userProfile.getWeight() + 6.25 * userProfile.getHeight() - 5 * userProfile.getAge() + 5;
+            prompt.append(String.format("%.0f", bmr)).append(" calories/day. ");
+            prompt.append("Apply activity factor 1.55 = ").append(String.format("%.0f", bmr * 1.55)).append(" calories. ");
+            prompt.append("Subtract 500 calories for weight loss = ").append(String.format("%.0f", bmr * 1.55 - 500)).append(" calories/day. ");
             prompt.append("Suggest 1500-1800 calories per day.\n\n");
         }
         
         prompt.append("RESPOND IN THIS EXACT JSON FORMAT:\n");
         prompt.append("{\n");
-        prompt.append("  \"totalCalories\": [CALCULATE_BASED_ON_BMI_AND_GOALS],\n");
+        prompt.append("  \"totalCalories\": [EXACT_CALCULATED_VALUE_FROM_BMR_AND_GOALS],\n");
         prompt.append("  \"caloriesLeft\": [SAME_AS_TOTAL_CALORIES],\n");
         prompt.append("  \"caloriesEaten\": 0,\n");
         prompt.append("  \"caloriesBurned\": 0,\n");
@@ -290,9 +372,9 @@ public class NutritionService {
         prompt.append("    \"carbs\": 0,\n");
         prompt.append("    \"protein\": 0,\n");
         prompt.append("    \"fat\": 0,\n");
-        prompt.append("    \"carbsTarget\": [CALCULATE_BASED_ON_CALORIES],\n");
-        prompt.append("    \"proteinTarget\": [CALCULATE_BASED_ON_CALORIES],\n");
-        prompt.append("    \"fatTarget\": [CALCULATE_BASED_ON_CALORIES]\n");
+        prompt.append("    \"carbsTarget\": [CALCULATE: (totalCalories - proteinCalories - fatCalories) / 4],\n");
+        prompt.append("    \"proteinTarget\": [CALCULATE: weight_kg × 2.2g × 4 calories/g],\n");
+        prompt.append("    \"fatTarget\": [CALCULATE: totalCalories × 0.30 / 9 calories/g]\n");
         prompt.append("  },\n");
         prompt.append("  \"activity\": {\n");
         prompt.append("    \"walkingCalories\": 0,\n");
@@ -300,20 +382,20 @@ public class NutritionService {
         prompt.append("    \"totalBurned\": 0\n");
         prompt.append("  },\n");
         prompt.append("  \"mealDistribution\": {\n");
-        prompt.append("    \"breakfastCalories\": [25%_OF_TOTAL_CALORIES],\n");
-        prompt.append("    \"lunchCalories\": [35%_OF_TOTAL_CALORIES],\n");
-        prompt.append("    \"dinnerCalories\": [30%_OF_TOTAL_CALORIES],\n");
-        prompt.append("    \"snacksCalories\": [10%_OF_TOTAL_CALORIES],\n");
+        prompt.append("    \"breakfastCalories\": [CALCULATE: totalCalories × 0.25],\n");
+        prompt.append("    \"lunchCalories\": [CALCULATE: totalCalories × 0.35],\n");
+        prompt.append("    \"dinnerCalories\": [CALCULATE: totalCalories × 0.30],\n");
+        prompt.append("    \"snacksCalories\": [CALCULATE: totalCalories × 0.10],\n");
         prompt.append("    \"breakfastEaten\": 0,\n");
         prompt.append("    \"lunchEaten\": 0,\n");
         prompt.append("    \"dinnerEaten\": 0,\n");
         prompt.append("    \"snacksEaten\": 0,\n");
-        prompt.append("    \"breakfastRecommendation\": \"Oatmeal with fruits and nuts\",\n");
-        prompt.append("    \"lunchRecommendation\": \"Grilled chicken salad with quinoa\",\n");
-        prompt.append("    \"dinnerRecommendation\": \"Baked salmon with vegetables\",\n");
-        prompt.append("    \"snacksRecommendation\": \"Greek yogurt with berries\"\n");
+        prompt.append("    \"breakfastRecommendation\": \"[HIGH_CALORIE_MEAL_FOR_UNDERWEIGHT]\",\n");
+        prompt.append("    \"lunchRecommendation\": \"[HIGH_CALORIE_MEAL_FOR_UNDERWEIGHT]\",\n");
+        prompt.append("    \"dinnerRecommendation\": \"[HIGH_CALORIE_MEAL_FOR_UNDERWEIGHT]\",\n");
+        prompt.append("    \"snacksRecommendation\": \"[HIGH_CALORIE_SNACKS_FOR_UNDERWEIGHT]\"\n");
         prompt.append("  },\n");
-        prompt.append("  \"recommendation\": \"[PERSONALIZED_ADVICE_BASED_ON_BMI_AND_GOALS]\",\n");
+        prompt.append("  \"recommendation\": \"[SPECIFIC_MEDICAL_AND_NUTRITIONAL_ADVICE]\",\n");
         prompt.append("  \"healthStatus\": \"[BMI_STATUS_AND_WEIGHT_MANAGEMENT_RECOMMENDATIONS]\",\n");
         prompt.append("  \"bmi\": ").append(String.format("%.1f", userProfile.getBmi())).append(",\n");
         prompt.append("  \"bmiCategory\": \"").append(userProfile.getBmiCategory()).append("\"\n");

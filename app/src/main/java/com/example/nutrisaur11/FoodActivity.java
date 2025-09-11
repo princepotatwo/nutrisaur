@@ -36,6 +36,9 @@ public class FoodActivity extends AppCompatActivity {
     private NutritionService nutritionService;
     private CommunityUserManager userManager;
     private Handler mainHandler;
+    
+    // Store user data for passing to FoodLoggingActivity
+    private java.util.Map<String, String> currentUserData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +183,20 @@ public class FoodActivity extends AppCompatActivity {
         Intent intent = new Intent(this, FoodLoggingActivity.class);
         intent.putExtra("meal_category", category);
         intent.putExtra("max_calories", maxCalories);
+        
+        // Pass user data if available
+        if (currentUserData != null && !currentUserData.isEmpty()) {
+            // Convert Map to Bundle for passing to FoodLoggingActivity
+            android.os.Bundle userDataBundle = new android.os.Bundle();
+            for (java.util.Map.Entry<String, String> entry : currentUserData.entrySet()) {
+                userDataBundle.putString(entry.getKey(), entry.getValue());
+            }
+            intent.putExtra("user_data", userDataBundle);
+            Log.d(TAG, "Passing user data to FoodLoggingActivity: " + currentUserData.get("name") + " (BMI: " + currentUserData.get("bmi") + ")");
+        } else {
+            Log.w(TAG, "No user data available to pass to FoodLoggingActivity");
+        }
+        
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
@@ -244,6 +261,9 @@ public class FoodActivity extends AppCompatActivity {
                 
                 if (userData != null && !userData.isEmpty()) {
                     Log.d(TAG, "User screening data fetched from community_users table");
+                    
+                    // Store user data for passing to FoodLoggingActivity
+                    currentUserData = userData;
                     
                     // Load nutrition data with database user profile (no SharedPreferences)
                     mainHandler.post(() -> loadNutritionDataWithUserData(userData));

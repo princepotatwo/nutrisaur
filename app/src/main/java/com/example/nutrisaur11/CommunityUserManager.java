@@ -63,8 +63,8 @@ public class CommunityUserManager {
                 userData.put("sex", user.optString("sex", ""));
                 userData.put("age", user.optString("age", ""));
                 userData.put("birthday", user.optString("birthday", ""));
-                userData.put("height_cm", user.optString("height_cm", ""));
-                userData.put("weight_kg", user.optString("weight_kg", ""));
+                userData.put("height_cm", user.optString("height_cm", user.optString("height", "")));
+                userData.put("weight_kg", user.optString("weight_kg", user.optString("weight", "")));
                 userData.put("bmi", user.optString("bmi", ""));
                 userData.put("bmi_category", user.optString("bmi_category", ""));
                 userData.put("muac_cm", user.optString("muac_cm", ""));

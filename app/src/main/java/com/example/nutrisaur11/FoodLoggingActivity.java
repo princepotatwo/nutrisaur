@@ -42,7 +42,13 @@ public class FoodLoggingActivity extends AppCompatActivity {
     private FatSecretService fatSecretService;
     private FavoritesManager favoritesManager;
     private AddedFoodManager addedFoodManager;
+    private CalorieTracker calorieTracker;
+    private GeminiCacheManager cacheManager;
     private Handler mainHandler;
+    
+    // User data
+    private UserProfile userProfile;
+    private java.util.Map<String, String> databaseUserData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +59,28 @@ public class FoodLoggingActivity extends AppCompatActivity {
         currentMealCategory = getIntent().getStringExtra("meal_category");
         maxCalories = getIntent().getIntExtra("max_calories", 500);
         
+        // Get user data from intent if available
+        android.os.Bundle userDataBundle = getIntent().getBundleExtra("user_data");
+        if (userDataBundle != null) {
+            databaseUserData = new java.util.HashMap<>();
+            for (String key : userDataBundle.keySet()) {
+                databaseUserData.put(key, userDataBundle.getString(key));
+            }
+            Log.d(TAG, "Received user data from database: " + databaseUserData.get("name") + " (BMI: " + databaseUserData.get("bmi") + ")");
+        } else {
+            Log.w(TAG, "No user data received from FoodActivity, will use SharedPreferences fallback");
+        }
+        
         // Initialize services
         fatSecretService = new FatSecretService();
         favoritesManager = new FavoritesManager(this);
         addedFoodManager = new AddedFoodManager(this);
+        calorieTracker = new CalorieTracker(this);
+        cacheManager = new GeminiCacheManager(this);
         mainHandler = new Handler(Looper.getMainLooper());
+        
+        // Load user profile (prioritize database data over SharedPreferences)
+        userProfile = getUserProfile();
         
         // Initialize views
         initializeViews();
@@ -99,6 +122,7 @@ public class FoodLoggingActivity extends AppCompatActivity {
         
         // Initialize food adapter
         foodAdapter = new FoodItemAdapter(this, foodItems);
+        foodAdapter.setMealCategory(currentMealCategory);
         if (foodListView != null) {
             foodListView.setAdapter(foodAdapter);
         }
@@ -195,34 +219,87 @@ public class FoodLoggingActivity extends AppCompatActivity {
     }
     
     private void loadFoodData() {
-        // Load foods based on meal category and calorie limit
-        fatSecretService.searchFoods(currentMealCategory, maxCalories, new FatSecretService.FoodSearchCallback() {
-            @Override
-            public void onSuccess(List<FoodItem> foods) {
+        // Set max calories for this meal in calorie tracker
+        calorieTracker.setMealMaxCalories(currentMealCategory, maxCalories);
+        
+        // Load personalized foods based on meal category, calorie limit, and user profile
+        if (userProfile != null) {
+            Log.d(TAG, "Loading personalized foods for " + currentMealCategory + " (BMI: " + userProfile.getBmi() + ", Age: " + userProfile.getAge() + ")");
+            
+            // Check cache first
+            GeminiCacheManager.CachedRecommendation cached = cacheManager.getCachedRecommendations(currentMealCategory, userProfile);
+            if (cached != null) {
+                Log.d(TAG, "Using cached recommendations for " + currentMealCategory);
                 mainHandler.post(() -> {
-                    // Cache the recommended foods
                     recommendedFoods.clear();
-                    recommendedFoods.addAll(foods);
-                    
-                    // Update current display immediately since we start on recent tab
+                    recommendedFoods.addAll(cached.getFoods());
                     foodItems.clear();
-                    foodItems.addAll(foods);
+                    foodItems.addAll(cached.getFoods());
                     foodAdapter.setHideAddButton(false);
                     foodAdapter.notifyDataSetChanged();
-                    
-                    Log.d(TAG, "Loaded " + foods.size() + " foods for " + currentMealCategory);
+                    Log.d(TAG, "Loaded " + cached.getFoods().size() + " cached foods for " + currentMealCategory);
                 });
+                return;
             }
             
-            @Override
-            public void onError(String error) {
-                mainHandler.post(() -> {
-                    Log.e(TAG, "Error loading foods: " + error);
-                    // Show default foods or error message
-                    loadDefaultFoods();
-                });
-            }
-        });
+            fatSecretService.getPersonalizedFoods(currentMealCategory, maxCalories, userProfile, new FatSecretService.FoodSearchCallback() {
+                @Override
+                public void onSuccess(List<FoodItem> foods) {
+                    mainHandler.post(() -> {
+                        // Cache the recommended foods
+                        recommendedFoods.clear();
+                        recommendedFoods.addAll(foods);
+                        
+                        // Update current display immediately since we start on recent tab
+                        foodItems.clear();
+                        foodItems.addAll(foods);
+                        foodAdapter.setHideAddButton(false);
+                        foodAdapter.notifyDataSetChanged();
+                        
+                        Log.d(TAG, "Loaded " + foods.size() + " personalized foods for " + currentMealCategory);
+                    });
+                }
+                
+                @Override
+                public void onError(String error) {
+                    mainHandler.post(() -> {
+                        Log.e(TAG, "Error loading personalized foods: " + error);
+                        // Fallback to regular search
+                        loadDefaultFoods();
+                    });
+                }
+            });
+        } else {
+            Log.w(TAG, "User profile not available, using default food search");
+            // Fallback to regular search if user profile is not available
+            fatSecretService.searchFoods(currentMealCategory, maxCalories, new FatSecretService.FoodSearchCallback() {
+                @Override
+                public void onSuccess(List<FoodItem> foods) {
+                    mainHandler.post(() -> {
+                        // Cache the recommended foods
+                        recommendedFoods.clear();
+                        recommendedFoods.addAll(foods);
+                        
+                        // Update current display immediately since we start on recent tab
+                        foodItems.clear();
+                        foodItems.addAll(foods);
+                        foodAdapter.setHideAddButton(false);
+                        foodAdapter.notifyDataSetChanged();
+                        
+                        Log.d(TAG, "Loaded " + foods.size() + " default foods for " + currentMealCategory);
+                    });
+                }
+                
+                @Override
+                public void onError(String error) {
+                    mainHandler.post(() -> {
+                        Log.e(TAG, "Error loading foods: " + error);
+                        // Show default foods or error message
+                        loadDefaultFoods();
+                    });
+                }
+            });
+        }
     }
     
     private void searchFoods(String query) {
@@ -321,6 +398,118 @@ public class FoodLoggingActivity extends AppCompatActivity {
         // In the future, this will open a dialog to add the food to the meal
     }
     
+    /**
+     * Get user profile from database data (no SharedPreferences)
+     */
+    private UserProfile getUserProfile() {
+        try {
+            if (databaseUserData != null && !databaseUserData.isEmpty()) {
+                Log.d(TAG, "Creating user profile from database data...");
+                return createUserProfileFromDatabaseData(databaseUserData);
+            } else {
+                Log.w(TAG, "No database user data available, cannot create user profile");
+                return null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating user profile from database data: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Create user profile from community_users table data
+     */
+    private UserProfile createUserProfileFromDatabaseData(java.util.Map<String, String> userData) {
+        try {
+            Log.d(TAG, "Creating user profile from community_users table data...");
+            
+            // Extract data from database map
+            String userId = userData.getOrDefault("email", "");
+            String name = userData.getOrDefault("name", "");
+            int age = 25; // Default age
+            String birthday = userData.getOrDefault("birthday", "");
+            
+            // First try to get age from age field
+            try {
+                String ageStr = userData.getOrDefault("age", "");
+                if (!ageStr.isEmpty()) {
+                    age = Integer.parseInt(ageStr);
+                    Log.d(TAG, "Using age from database: " + age);
+                } else {
+                    throw new NumberFormatException("Age field is empty");
+                }
+            } catch (NumberFormatException e) {
+                // Calculate age from birthday if age field is empty
+                if (!birthday.isEmpty()) {
+                    try {
+                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                        java.util.Date birthDate = sdf.parse(birthday);
+                        java.util.Calendar birth = java.util.Calendar.getInstance();
+                        birth.setTime(birthDate);
+                        java.util.Calendar today = java.util.Calendar.getInstance();
+                        age = today.get(java.util.Calendar.YEAR) - birth.get(java.util.Calendar.YEAR);
+                        if (today.get(java.util.Calendar.DAY_OF_YEAR) < birth.get(java.util.Calendar.DAY_OF_YEAR)) {
+                            age--;
+                        }
+                        Log.d(TAG, "Calculated age from birthday '" + birthday + "': " + age);
+                    } catch (Exception ex) {
+                        Log.w(TAG, "Could not calculate age from birthday '" + birthday + "', using default: 25. Error: " + ex.getMessage());
+                    }
+                } else {
+                    Log.w(TAG, "No birthday provided, using default age: 25");
+                }
+            }
+            
+            String gender = userData.getOrDefault("sex", "Male");
+            double weight = 70.0; // Default weight
+            try {
+                double weightVal = Double.parseDouble(userData.getOrDefault("weight_kg", "70"));
+                if (weightVal > 0) {
+                    weight = weightVal;
+                } else {
+                    Log.w(TAG, "Weight is 0 or invalid, using default: 70");
+                }
+            } catch (NumberFormatException e) {
+                Log.w(TAG, "Could not parse weight, using default: 70");
+            }
+            
+            double height = 170.0; // Default height
+            try {
+                double heightVal = Double.parseDouble(userData.getOrDefault("height_cm", "170"));
+                if (heightVal > 0) {
+                    height = heightVal;
+                } else {
+                    Log.w(TAG, "Height is 0 or invalid, using default: 170");
+                }
+            } catch (NumberFormatException e) {
+                Log.w(TAG, "Could not parse height, using default: 170");
+            }
+            
+            // Set default values for missing fields
+            String activityLevel = "Moderately Active";
+            String healthGoals = "Maintain weight";
+            String dietaryPreferences = "None";
+            String allergies = "None";
+            String medicalConditions = "None";
+            boolean isPregnant = "1".equals(userData.getOrDefault("is_pregnant", "0")) || 
+                               "Yes".equals(userData.getOrDefault("is_pregnant", "No"));
+            int pregnancyWeek = 0;
+            String occupation = "Office worker";
+            String lifestyle = "Moderate";
+            
+            Log.d(TAG, "Database user data: name=" + name + ", age=" + age + ", weight=" + weight + ", height=" + height + ", gender=" + gender);
+            
+            return new UserProfile(userId, name, age, gender, weight, height, activityLevel,
+                    healthGoals, dietaryPreferences, allergies, medicalConditions, isPregnant,
+                    pregnancyWeek, occupation, lifestyle);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating user profile from database data: " + e.getMessage());
+            return null;
+        }
+    }
+
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

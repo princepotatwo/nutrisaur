@@ -4078,21 +4078,6 @@ header {
             console.log('Applying initial filters...');
             applyAllFilters();
             
-            // Add test button for debugging
-            const testButton = document.createElement('button');
-            testButton.textContent = 'Test Filters';
-            testButton.style.position = 'fixed';
-            testButton.style.top = '10px';
-            testButton.style.right = '10px';
-            testButton.style.zIndex = '9999';
-            testButton.style.background = 'red';
-            testButton.style.color = 'white';
-            testButton.style.padding = '10px';
-            testButton.onclick = function() {
-                console.log('Manual filter test triggered');
-                applyAllFilters();
-            };
-            document.body.appendChild(testButton);
         });
 
         function filterAssessments() {
