@@ -4257,15 +4257,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         case 'get_community_user_data':
             try {
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    // Get JSON data
                     $input = file_get_contents('php://input');
                     $data = json_decode($input, true);
-                    
-                    if (!$data) {
-                        echo json_encode(['success' => false, 'message' => 'No data provided']);
-                        break;
-                    }
-                    
                     $email = $data['email'] ?? '';
                     
                     if (empty($email)) {
@@ -4273,65 +4266,41 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         break;
                     }
                     
-                    // Get user data directly - simplified approach
-                    try {
-                        $pdo = $db->getPDO();
-                        $stmt = $pdo->prepare("SELECT * FROM community_users WHERE email = ?");
-                        $stmt->execute([$email]);
-                        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                        
-                        if (!$user) {
-                            echo json_encode(['success' => false, 'message' => 'User not found']);
-                            break;
-                        }
-                    } catch (Exception $e) {
-                        error_log("Direct query error: " . $e->getMessage());
-                        echo json_encode(['success' => false, 'message' => 'Database error']);
-                        break;
-                    }
+                    $pdo = $db->getPDO();
+                    $stmt = $pdo->prepare("SELECT * FROM community_users WHERE email = ?");
+                    $stmt->execute([$email]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
-                    // Debug: Log the actual user data
-                    error_log("Retrieved user data: " . print_r($user, true));
-                    error_log("Weight value: " . ($user['weight'] ?? 'NOT_FOUND'));
-                    error_log("Height value: " . ($user['height'] ?? 'NOT_FOUND'));
-                    
-                    // Format the response - simplified for testing
-                    echo json_encode([
-                        'success' => true,
-                        'message' => 'User data retrieved successfully',
-                        'user' => [
-                            'name' => $user['name'] ?? '',
-                            'email' => $user['email'] ?? '',
-                            'municipality' => $user['municipality'] ?? '',
-                            'barangay' => $user['barangay'] ?? '',
-                            'sex' => $user['sex'] ?? '',
-                            'birthday' => $user['birthday'] ?? '',
-                            'age' => $user['age'] ?? '',
-                            'is_pregnant' => $user['is_pregnant'] ?? '',
-                            'weight_kg' => $user['weight'],
-                            'height_cm' => $user['height'],
-                            'debug_weight' => $user['weight'],
-                            'debug_height' => $user['height'],
-                            'debug_isset_weight' => isset($user['weight']) ? 'YES' : 'NO',
-                            'debug_isset_height' => isset($user['height']) ? 'YES' : 'NO',
-                            'muac_cm' => '', // muac column doesn't exist in database
-                            'bmi' => $user['bmi'] ?? '',
-                            'bmi_category' => $user['bmi_category'] ?? '',
-                            'muac_category' => $user['muac_category'] ?? '',
-                            'nutritional_risk' => $user['nutritional_risk'] ?? '',
-                            'screening_date' => $user['screening_date'] ?? '',
-                            'screened_by' => $user['screened_by'] ?? '',
-                            'notes' => $user['notes'] ?? '',
-                            'status' => $user['status'] ?? '',
-                            'created_at' => $user['created_at'] ?? '',
-                            'updated_at' => $user['updated_at'] ?? ''
+                    if ($user) {
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'User data retrieved successfully',
+                            'user' => [
+                                'name' => $user['name'] ?? '',
+                                'email' => $user['email'] ?? '',
+                                'municipality' => $user['municipality'] ?? '',
+                                'barangay' => $user['barangay'] ?? '',
+                                'sex' => $user['sex'] ?? '',
+                                'birthday' => $user['birthday'] ?? '',
+                                'age' => $user['age'] ?? '',
+                                'is_pregnant' => $user['is_pregnant'] ?? '',
+                                'weight_kg' => $user['weight'] ?? '',
+                                'height_cm' => $user['height'] ?? '',
+                                'muac_cm' => '',
+                                'bmi' => $user['bmi'] ?? '',
+                                'bmi_category' => $user['bmi_category'] ?? '',
+                                'muac_category' => $user['muac_category'] ?? '',
+                                'nutritional_risk' => $user['nutritional_risk'] ?? '',
+                                'screening_date' => $user['screening_date'] ?? '',
+                                'screened_by' => $user['screened_by'] ?? '',
+                                'notes' => $user['notes'] ?? '',
+                                'status' => $user['status'] ?? '',
+                                'created_at' => $user['created_at'] ?? '',
+                                'updated_at' => $user['updated_at'] ?? ''
                             ]
                         ]);
                     } else {
-                        echo json_encode([
-                            'success' => false, 
-                            'message' => 'User not found in community_users table'
-                        ]);
+                        echo json_encode(['success' => false, 'message' => 'User not found']);
                     }
                 } else {
                     echo json_encode(['success' => false, 'message' => 'POST method required']);
