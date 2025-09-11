@@ -2861,7 +2861,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     ];
                     
                     // Insert into users table
-                    $result = $db->insert('users', $insertData);
+                    $result = $db->universalInsert('users', $insertData);
                     
                     // Log the result for debugging
                     error_log("User registration result: " . print_r($result, true));
