@@ -235,7 +235,6 @@ public class CommunityUserManager {
             try {
                 // Create registration request
                 JSONObject requestData = new JSONObject();
-                requestData.put("action", "register_user");
                 requestData.put("name", fullName);
                 requestData.put("email", email);
                 requestData.put("password", password);
