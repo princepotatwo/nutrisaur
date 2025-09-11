@@ -2844,7 +2844,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                     
                     // Check if user already exists
-                    $checkResult = $db->universalSelect('community_users', 'email', 'email = ?', '', '', [$email]);
+                    $checkResult = $db->universalSelect('users', 'email', 'email = ?', '', '', [$email]);
                     if ($checkResult['success'] && !empty($checkResult['data'])) {
                         echo json_encode(['success' => false, 'message' => 'User with this email already exists']);
                         break;
@@ -2853,39 +2853,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     // Hash password
                     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                     
-                    // Generate unique screening ID
-                    $screeningId = 'REG_' . time() . '_' . substr(md5($email), 0, 8);
-                    
-                    // Calculate age from birthday
-                    $birthday = $data['birth_date'] ?? $data['birthday'] ?? '1900-01-01';
-                    $age = 0;
-                    if ($birthday !== '1900-01-01') {
-                        $birthDate = new DateTime($birthday);
-                        $today = new DateTime();
-                        $age = $today->diff($birthDate)->y;
-                    }
-                    
-                    // Insert basic user info only - screening data will be added later
+                    // Insert user into users table
                     $insertData = [
-                        'name' => $name,
+                        'username' => $name,
                         'email' => $email,
-                        'password' => $hashedPassword,
-                        'municipality' => $municipality,
-                        'barangay' => $barangay,
-                        'sex' => $sex,
-                        'birthday' => $birthday,
-                        'is_pregnant' => ($data['is_pregnant'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
-                        'screening_date' => date('Y-m-d H:i:s')
+                        'password' => $hashedPassword
                     ];
                     
-                    // Use the same method as screening.php
-                    $result = $db->insert('community_users', $insertData);
+                    // Insert into users table
+                    $result = $db->insert('users', $insertData);
                     
                     // Log the result for debugging
-                    error_log("Insert result: " . print_r($result, true));
-                    error_log("Insert data: " . print_r($insertData, true));
-                    error_log("Weight value: " . ($data['weight'] ?? 'NOT_SET'));
-                    error_log("Height value: " . ($data['height'] ?? 'NOT_SET'));
+                    error_log("User registration result: " . print_r($result, true));
                     
                     if ($result['success']) {
                         echo json_encode([
@@ -2893,7 +2872,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             'message' => 'User registered successfully',
                             'user' => [
                                 'email' => $email,
-                                'name' => $name
+                                'username' => $name
                             ]
                         ]);
                     } else {
