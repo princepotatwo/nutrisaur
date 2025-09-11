@@ -2810,22 +2810,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         case 'register_community_user':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
-                    // Try to get JSON data first
+                    // Get JSON data
                     $input = file_get_contents('php://input');
-                    error_log("Raw input: " . $input);
                     $data = json_decode($input, true);
-                    error_log("Decoded data: " . print_r($data, true));
-                
-                // If JSON parsing fails, try form data
-                if (!$data) {
-                    $data = $_POST;
-                    error_log("Using POST data: " . print_r($data, true));
-                }
-                
-                if (!$data) {
-                    echo json_encode(['success' => false, 'message' => 'No data provided', 'debug' => 'Input: ' . $input]);
-                    break;
-                }
+                    
+                    if (!$data) {
+                        echo json_encode(['success' => false, 'message' => 'Invalid JSON data provided']);
+                        break;
+                    }
                 
                 $email = $data['email'] ?? '';
                 $password = $data['password'] ?? '';
@@ -2903,9 +2895,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     echo json_encode(['success' => false, 'message' => 'Failed to register user: ' . $result['message']]);
                 }
             } catch (Exception $e) {
-                    error_log("Registration error: " . $e->getMessage());
-                    echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
-                }
+                error_log("Registration error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
+            }
             } else {
                 echo json_encode(['success' => false, 'message' => 'Invalid request method']);
             }
