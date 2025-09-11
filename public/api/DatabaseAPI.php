@@ -2828,6 +2828,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         break;
                     }
                     
+                    // For basic signup, allow empty optional fields
+                    $municipality = !empty($data['municipality']) ? $data['municipality'] : 'Not specified';
+                    $barangay = !empty($data['barangay']) ? $data['barangay'] : 'Not specified';
+                    $sex = !empty($data['sex']) ? $data['sex'] : 'Not specified';
+                    
                     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
                         break;
@@ -2865,9 +2870,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'name' => $name,
                         'email' => $email,
                         'password' => $hashedPassword,
-                        'municipality' => $data['municipality'] ?? 'Not specified',
-                        'barangay' => $data['barangay'] ?? 'Not specified',
-                        'sex' => $data['sex'] ?? 'Not specified',
+                        'municipality' => $municipality,
+                        'barangay' => $barangay,
+                        'sex' => $sex,
                         'birthday' => $birthday,
                         'is_pregnant' => ($data['is_pregnant'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
                         'screening_date' => date('Y-m-d H:i:s')
