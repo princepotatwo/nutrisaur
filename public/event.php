@@ -176,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
                 'date_time' => $event['date_time'],
                 'location' => $event['location'],
                 'organizer' => $event['organizer'],
-                'created_at' => strtotime($event['created_at'])
+                'created_at' => (!empty($event['created_at']) && $event['created_at'] !== '0000-00-00 00:00:00') ? strtotime($event['created_at']) : time()
             ];
         }
         
@@ -338,7 +338,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
                 'date_time' => $event['date_time'],
                 'location' => $event['location'],
                 'organizer' => $event['organizer'],
-                'created_at' => strtotime($event['created_at'])
+                'created_at' => (!empty($event['created_at']) && $event['created_at'] !== '0000-00-00 00:00:00') ? strtotime($event['created_at']) : time()
             ];
         }
         
