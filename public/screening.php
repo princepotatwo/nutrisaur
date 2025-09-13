@@ -3616,6 +3616,7 @@ header {
                                                 echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
                                                 echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $ageDisplay . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $bmi . '</td>';
