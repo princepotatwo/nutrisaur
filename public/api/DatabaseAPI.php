@@ -827,12 +827,6 @@ class DatabaseAPI {
                 SELECT email as user_email, barangay as user_barangay, fcm_token 
                 FROM community_users 
                 WHERE fcm_token IS NOT NULL AND fcm_token != ''
-                AND (email, updated_at) IN (
-                    SELECT email, MAX(updated_at) 
-                    FROM community_users 
-                    WHERE fcm_token IS NOT NULL AND fcm_token != ''
-                    GROUP BY email
-                )
             ");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -852,13 +846,6 @@ class DatabaseAPI {
                 FROM community_users 
                 WHERE barangay = :barangay 
                 AND fcm_token IS NOT NULL AND fcm_token != ''
-                AND (email, updated_at) IN (
-                    SELECT email, MAX(updated_at) 
-                    FROM community_users 
-                    WHERE barangay = :barangay 
-                    AND fcm_token IS NOT NULL AND fcm_token != ''
-                    GROUP BY email
-                )
             ");
             $stmt->bindParam(':barangay', $barangay);
             $stmt->execute();
