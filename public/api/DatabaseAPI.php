@@ -3226,8 +3226,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'sex' => $sex,
                         'birthday' => $birthday,
                         'is_pregnant' => $is_pregnant,
-                        'weight' => $weight,
-                        'height' => $height,
+                        'weight_kg' => $weight,
+                        'height_cm' => $height,
                         'screening_date' => date('Y-m-d H:i:s')
                     ];
                     
@@ -3274,9 +3274,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 } else {
                     // User doesn't exist, create new user with screening data
-                    if (empty($name) || empty($password)) {
-                        echo json_encode(['success' => false, 'message' => 'Name and password are required for new users']);
+                    if (empty($name)) {
+                        echo json_encode(['success' => false, 'message' => 'Name is required for new users']);
                         break;
+                    }
+                    
+                    // Generate a default password if none provided (for screening-only users)
+                    if (empty($password)) {
+                        $password = 'screening_user_' . time() . '_' . rand(1000, 9999);
                     }
                     
                     // Hash password
@@ -3291,8 +3296,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'sex' => $sex,
                         'birthday' => $birthday,
                         'is_pregnant' => $is_pregnant,
-                        'weight' => $weight,
-                        'height' => $height,
+                        'weight_kg' => $weight,
+                        'height_cm' => $height,
                         'screening_date' => date('Y-m-d H:i:s')
                     ];
                     
