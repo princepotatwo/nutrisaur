@@ -3226,8 +3226,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'sex' => $sex,
                         'birthday' => $birthday,
                         'is_pregnant' => $is_pregnant,
-                        'weight_kg' => $weight,
-                        'height_cm' => $height,
+                        'weight' => $weight,
+                        'height' => $height,
                         'screening_date' => date('Y-m-d H:i:s')
                     ];
                     
@@ -3240,8 +3240,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                         sex = ?, 
                                         birthday = ?, 
                                         is_pregnant = ?, 
-                                        weight_kg = ?, 
-                                        height_cm = ?, 
+                                        weight = ?, 
+                                        height = ?, 
                                         screening_date = NOW()
                                       WHERE email = ?";
                         
@@ -3253,7 +3253,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         // Verify the update worked
                         if ($result) {
-                            $verifyStmt = $pdo->prepare("SELECT weight_kg, height_cm FROM community_users WHERE email = ?");
+                            $verifyStmt = $pdo->prepare("SELECT weight, height FROM community_users WHERE email = ?");
                             $verifyStmt->execute([$email]);
                             $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
                             error_log("Data saved verification: " . print_r($savedData, true));
@@ -3296,8 +3296,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'sex' => $sex,
                         'birthday' => $birthday,
                         'is_pregnant' => $is_pregnant,
-                        'weight_kg' => $weight,
-                        'height_cm' => $height,
+                        'weight' => $weight,
+                        'height' => $height,
                         'screening_date' => date('Y-m-d H:i:s')
                     ];
                     

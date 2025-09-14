@@ -36,8 +36,8 @@ function getNutritionalAssessment($user) {
         
         // Get comprehensive WHO Growth Standards assessment
         $assessment = $who->getComprehensiveAssessment(
-            floatval($user['weight_kg']), 
-            floatval($user['height_cm']), 
+            floatval($user['weight']), 
+            floatval($user['height']), 
             $user['birthday'], 
             $user['sex']
         );
@@ -3487,8 +3487,8 @@ header {
                                         try {
                                             $who = new WHOGrowthStandards();
                                             $assessment = $who->getComprehensiveAssessment(
-                                                floatval($user['weight_kg']),
-                                                floatval($user['height_cm']),
+                                                floatval($user['weight']),
+                                                floatval($user['height']),
                                                 $user['birthday'],
                                                 $user['sex']
                                             );
@@ -3543,8 +3543,8 @@ header {
                                         
                                         // Calculate BMI (with division by zero protection)
                                         $bmi = 'N/A';
-                                        if ($user['weight_kg'] && $user['height_cm'] && $user['height_cm'] > 0) {
-                                            $bmi = round($user['weight_kg'] / pow($user['height_cm'] / 100, 2), 1);
+                                        if ($user['weight'] && $user['height'] && $user['height'] > 0) {
+                                            $bmi = round($user['weight'] / pow($user['height'] / 100, 2), 1);
                                         }
                                         
                                         // Generate all WHO Growth Standards data for this user
@@ -3576,12 +3576,12 @@ header {
                                         }
                                         
                                         if ($showStandard && $showData) {
-                                            echo '<tr data-standard="' . $showStandard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height_cm'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
+                                            echo '<tr data-standard="' . $showStandard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             echo '<td class="text-center">' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . $ageDisplay . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
-                                            echo '<td class="text-center">' . htmlspecialchars($user['weight_kg'] ?? 'N/A') . '</td>';
-                                            echo '<td class="text-center">' . htmlspecialchars($user['height_cm'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . $bmi . '</td>';
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($showData['display']) . '</td>';
                                             echo '<td class="text-center classification">' . htmlspecialchars($showData['classification']) . '</td>';
@@ -3603,10 +3603,10 @@ header {
                                                 $shouldShow = ($ageInMonths >= 0 && $ageInMonths <= 71);
                                             } elseif ($standard === 'weight-for-height') {
                                                 // Weight-for-Height: 65-120 cm height range
-                                                $shouldShow = ($user['height_cm'] >= 65 && $user['height_cm'] <= 120);
+                                                $shouldShow = ($user['height'] >= 65 && $user['height'] <= 120);
                                             } elseif ($standard === 'weight-for-length') {
                                                 // Weight-for-Length: 45-110 cm height range
-                                                $shouldShow = ($user['height_cm'] >= 45 && $user['height_cm'] <= 110);
+                                                $shouldShow = ($user['height'] >= 45 && $user['height'] <= 110);
                                             }
                                             
                                             // For adults (>71 months), only show BMI with adult classification
@@ -3620,12 +3620,12 @@ header {
                                             }
                                             
                                             if ($shouldShow) {
-                                                echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height_cm'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
+                                                echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
                                                 echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $ageDisplay . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
-                                                echo '<td>' . htmlspecialchars($user['weight_kg'] ?? 'N/A') . '</td>';
-                                                echo '<td>' . htmlspecialchars($user['height_cm'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $bmi . '</td>';
                                                 echo '<td class="standard-value">' . htmlspecialchars($displayData['display']) . '</td>';
                                                 echo '<td class="classification">' . htmlspecialchars($displayData['classification']) . '</td>';
