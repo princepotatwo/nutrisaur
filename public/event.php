@@ -107,11 +107,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             exit;
         }
         
-        // Insert into programs table
-        $stmt = $conn->prepare("INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$title, $type, $description, $date_time, $location, $organizer]);
+        // Insert into programs table using DatabaseAPI
+        $db = DatabaseAPI::getInstance();
+        $result = $db->universalInsert('programs', [
+            'title' => $title,
+            'type' => $type,
+            'description' => $description,
+            'date_time' => $date_time,
+            'location' => $location,
+            'organizer' => $organizer,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
         
-        $eventId = $conn->lastInsertId();
+        if ($result['success']) {
+            $eventId = $result['insert_id'];
+        } else {
+            throw new Exception('Failed to insert event: ' . $result['message']);
+        }
         
         error_log("✅ Event saved successfully with ID: $eventId");
         
@@ -323,9 +335,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
     
     try {
         // Get all events from programs table
-        $stmt = $conn->prepare("SELECT * FROM programs ORDER BY date_time ASC");
-        $stmt->execute();
-        $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $db = DatabaseAPI::getInstance();
+        $result = $db->universalQuery("SELECT * FROM programs ORDER BY date_time ASC");
+        $events = $result['success'] ? $result['data'] : [];
         
         // Format events for mobile app
         $formattedEvents = [];
