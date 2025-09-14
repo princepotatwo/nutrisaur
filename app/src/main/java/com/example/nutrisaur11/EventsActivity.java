@@ -54,18 +54,19 @@ public class EventsActivity extends AppCompatActivity implements EventAdapter.On
         showLoading(true);
         new Thread(() -> {
             try {
-                // Fetch all events
-                String apiUrl = Constants.UNIFIED_API_URL + "?type=events";
+                // Use event.php directly to get events
+                String apiUrl = Constants.API_BASE_URL + "event.php?action=get_events";
                 java.net.URL url = new java.net.URL(apiUrl);
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) Nutrisaur-App/1.0");
-                conn.setRequestProperty("Accept", "application/json, text/plain, */*");
-                conn.setRequestProperty("Accept-Language", "en-US,en;q=0.9");
-                conn.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
-                conn.setRequestProperty("Connection", "keep-alive");
-                conn.setRequestProperty("Cache-Control", "no-cache");
+                conn.setRequestProperty("User-Agent", "NutrisaurApp/1.0 (Android)");
+                conn.setRequestProperty("Accept", "text/plain, application/json");
+                conn.setConnectTimeout(15000);
+                conn.setReadTimeout(15000);
+                
                 int responseCode = conn.getResponseCode();
+                android.util.Log.d("EventsActivity", "Events API response code: " + responseCode);
+                
                 if (responseCode == 200) {
                     java.io.BufferedReader reader = new java.io.BufferedReader(
                         new java.io.InputStreamReader(conn.getInputStream()));
@@ -75,84 +76,82 @@ public class EventsActivity extends AppCompatActivity implements EventAdapter.On
                         response.append(line);
                     }
                     reader.close();
+                    
+                    android.util.Log.d("EventsActivity", "Events API response: " + response.toString());
+                    
+                    // Parse the response - event.php returns events in a JSON object with events array
                     org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
-                    if (jsonResponse.has("events")) {
-                        org.json.JSONArray eventsArray = jsonResponse.getJSONArray("events");
-                        // Fetch joined events for this user
-                        org.json.JSONObject requestData = new org.json.JSONObject();
-                        requestData.put("action", "get_user_events");
-                        requestData.put("user_email", currentUserEmail);
-                        java.net.URL url2 = new java.net.URL(Constants.UNIFIED_API_URL);
-                        java.net.HttpURLConnection conn2 = (java.net.HttpURLConnection) url2.openConnection();
-                        conn2.setRequestMethod("POST");
-                        conn2.setRequestProperty("Content-Type", "application/json");
-                        conn2.setDoOutput(true);
-                        java.io.OutputStream os = conn2.getOutputStream();
-                        os.write(requestData.toString().getBytes("UTF-8"));
-                        os.close();
-                        int responseCode2 = conn2.getResponseCode();
-                        List<Integer> joinedIds = new ArrayList<>();
-                        if (responseCode2 == 200) {
-                            java.io.BufferedReader reader2 = new java.io.BufferedReader(
-                                new java.io.InputStreamReader(conn2.getInputStream()));
-                            StringBuilder response2 = new StringBuilder();
-                            String line2;
-                            while ((line2 = reader2.readLine()) != null) {
-                                response2.append(line2);
+                    org.json.JSONArray eventsArray = jsonResponse.getJSONArray("events");
+                    
+                    // Fetch joined events for this user using event.php
+                    List<Integer> joinedIds = getJoinedEventIds();
+                    
+                    // Process events
+                    List<Event> newEvents = new ArrayList<>();
+                    java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    java.util.Date now = new java.util.Date();
+                    
+                    for (int i = 0; i < eventsArray.length(); i++) {
+                        org.json.JSONObject eventObj = eventsArray.getJSONObject(i);
+                        
+                        // Handle created_at field that might be boolean false or timestamp
+                        long createdAt = 0;
+                        try {
+                            if (eventObj.get("created_at") instanceof Boolean) {
+                                createdAt = System.currentTimeMillis();
+                            } else {
+                                createdAt = eventObj.getLong("created_at");
                             }
-                            reader2.close();
-                            org.json.JSONObject jsonResponse2 = new org.json.JSONObject(response2.toString());
-                            if (jsonResponse2.has("success") && jsonResponse2.getBoolean("success")) {
-                                org.json.JSONArray userEvents = jsonResponse2.getJSONArray("user_events");
-                                for (int i = 0; i < userEvents.length(); i++) {
-                                    org.json.JSONObject userEvent = userEvents.getJSONObject(i);
-                                    joinedIds.add(userEvent.getInt("id"));
-                                }
-                            }
+                        } catch (Exception e) {
+                            createdAt = System.currentTimeMillis();
                         }
-                        // Now update events list with joinedIds and sort
-                        List<Event> newEvents = new ArrayList<>();
-                        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        java.util.Date now = new java.util.Date();
-                        for (int i = 0; i < eventsArray.length(); i++) {
-                            org.json.JSONObject eventObj = eventsArray.getJSONObject(i);
-                            Event event = new Event(
-                                eventObj.getInt("id"),
-                                eventObj.getString("title"),
-                                eventObj.getString("type"),
-                                eventObj.getString("description"),
-                                eventObj.getString("date_time"),
-                                eventObj.getString("location"),
-                                eventObj.getString("organizer"),
-                                eventObj.getLong("created_at")
-                            );
-                            if (joinedIds.contains(event.getProgramId())) {
-                                event.setJoined(true);
-                            }
-                            newEvents.add(event);
+                        
+                        Event event = new Event(
+                            eventObj.getInt("program_id"), // Use program_id from database
+                            eventObj.getString("title"),
+                            eventObj.getString("type"),
+                            eventObj.getString("description"),
+                            eventObj.getString("date_time"),
+                            eventObj.getString("location"),
+                            eventObj.getString("organizer"),
+                            createdAt
+                        );
+                        
+                        if (joinedIds.contains(event.getProgramId())) {
+                            event.setJoined(true);
                         }
-                        // Sort: upcoming first, past at bottom
-                        java.util.Collections.sort(newEvents, (e1, e2) -> {
-                            boolean past1 = e1.isPastEvent();
-                            boolean past2 = e2.isPastEvent();
-                            if (past1 != past2) return past1 ? 1 : -1;
-                            try {
-                                java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                java.util.Date d1 = f.parse(e1.getDateTime());
-                                java.util.Date d2 = f.parse(e2.getDateTime());
-                                return d1.compareTo(d2);
-                            } catch (Exception ex) { return 0; }
-                        });
-                        runOnUiThread(() -> {
-                            events.clear();
-                            events.addAll(newEvents);
-                            adapter.notifyDataSetChanged();
-                            showLoading(false);
-                            updateEmptyState();
-                        });
+                        
+                        newEvents.add(event);
+                        android.util.Log.d("EventsActivity", "Added event: " + event.getTitle());
                     }
+                    
+                    // Sort: upcoming first, past at bottom
+                    java.util.Collections.sort(newEvents, (e1, e2) -> {
+                        try {
+                            java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            java.util.Date d1 = f.parse(e1.getDateTime());
+                            java.util.Date d2 = f.parse(e2.getDateTime());
+                            return d1.compareTo(d2);
+                        } catch (Exception ex) { return 0; }
+                    });
+                    
+                    runOnUiThread(() -> {
+                        events.clear();
+                        events.addAll(newEvents);
+                        adapter.notifyDataSetChanged();
+                        showLoading(false);
+                        updateEmptyState();
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        showLoading(false);
+                        Toast.makeText(EventsActivity.this,
+                            "Error loading events. Response code: " + responseCode,
+                            Toast.LENGTH_SHORT).show();
+                    });
                 }
             } catch (Exception e) {
+                android.util.Log.e("EventsActivity", "Error loading events: " + e.getMessage());
                 runOnUiThread(() -> {
                     showLoading(false);
                     Toast.makeText(EventsActivity.this,
@@ -161,6 +160,53 @@ public class EventsActivity extends AppCompatActivity implements EventAdapter.On
                 });
             }
         }).start();
+    }
+    
+    private List<Integer> getJoinedEventIds() {
+        List<Integer> joinedIds = new ArrayList<>();
+        try {
+            // Use event.php to get user's joined events
+            String apiUrl = Constants.API_BASE_URL + "event.php";
+            org.json.JSONObject requestData = new org.json.JSONObject();
+            requestData.put("action", "get_user_events");
+            requestData.put("user_email", currentUserEmail);
+            
+            java.net.URL url = new java.net.URL(apiUrl);
+            java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(15000);
+            conn.setReadTimeout(15000);
+            
+            java.io.OutputStream os = conn.getOutputStream();
+            os.write(requestData.toString().getBytes("UTF-8"));
+            os.close();
+            
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                java.io.BufferedReader reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+                
+                org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
+                if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
+                    org.json.JSONArray userEvents = jsonResponse.getJSONArray("user_events");
+                    for (int i = 0; i < userEvents.length(); i++) {
+                        org.json.JSONObject userEvent = userEvents.getJSONObject(i);
+                        joinedIds.add(userEvent.getInt("program_id"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            android.util.Log.e("EventsActivity", "Error getting joined events: " + e.getMessage());
+        }
+        return joinedIds;
     }
     
     private void showLoading(boolean show) {
@@ -189,7 +235,8 @@ public class EventsActivity extends AppCompatActivity implements EventAdapter.On
     private void joinEvent(Event event, int position) {
         new Thread(() -> {
             try {
-                String apiUrl = Constants.UNIFIED_API_URL;
+                // Use event.php for join/leave operations
+                String apiUrl = Constants.API_BASE_URL + "event.php";
                 org.json.JSONObject requestData = new org.json.JSONObject();
                 if (event.isJoined()) {
                     requestData.put("action", "leave_event");
@@ -198,15 +245,22 @@ public class EventsActivity extends AppCompatActivity implements EventAdapter.On
                 }
                 requestData.put("program_id", event.getProgramId());
                 requestData.put("user_email", currentUserEmail);
+                
                 java.net.URL url = new java.net.URL(apiUrl);
                 java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setDoOutput(true);
+                conn.setConnectTimeout(15000);
+                conn.setReadTimeout(15000);
+                
                 java.io.OutputStream os = conn.getOutputStream();
                 os.write(requestData.toString().getBytes("UTF-8"));
                 os.close();
+                
                 int responseCode = conn.getResponseCode();
+                android.util.Log.d("EventsActivity", "Join/Leave API response code: " + responseCode);
+                
                 if (responseCode == 200) {
                     java.io.BufferedReader reader = new java.io.BufferedReader(
                         new java.io.InputStreamReader(conn.getInputStream()));
@@ -216,21 +270,28 @@ public class EventsActivity extends AppCompatActivity implements EventAdapter.On
                         response.append(line);
                     }
                     reader.close();
+                    
+                    android.util.Log.d("EventsActivity", "Join/Leave API response: " + response.toString());
+                    
                     org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
                     if (jsonResponse.has("success") && jsonResponse.getBoolean("success")) {
                         runOnUiThread(() -> {
                             event.setJoined(!event.isJoined());
                             adapter.notifyItemChanged(position);
+                            String action = event.isJoined() ? "joined" : "left";
+                            Toast.makeText(EventsActivity.this,
+                                "Successfully " + action + " event: " + event.getTitle(),
+                                Toast.LENGTH_SHORT).show();
                         });
                     } else {
                         runOnUiThread(() -> {
                             try {
-                                Toast.makeText(EventsActivity.this,
-                                    jsonResponse.getString("error"),
-                                    Toast.LENGTH_SHORT).show();
+                                String errorMsg = jsonResponse.has("error") ? 
+                                    jsonResponse.getString("error") : "Unknown error occurred";
+                                Toast.makeText(EventsActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
                             } catch (org.json.JSONException e) {
                                 Toast.makeText(EventsActivity.this,
-                                    "Error joining/unjoining event",
+                                    "Error joining/leaving event",
                                     Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -238,11 +299,12 @@ public class EventsActivity extends AppCompatActivity implements EventAdapter.On
                 } else {
                     runOnUiThread(() -> {
                         Toast.makeText(EventsActivity.this,
-                            "Error joining/unjoining event. Please try again.",
+                            "Error joining/leaving event. Response code: " + responseCode,
                             Toast.LENGTH_SHORT).show();
                     });
                 }
             } catch (Exception e) {
+                android.util.Log.e("EventsActivity", "Error in join/leave event: " + e.getMessage());
                 runOnUiThread(() -> {
                     Toast.makeText(EventsActivity.this,
                         "Error: " + e.getMessage(),

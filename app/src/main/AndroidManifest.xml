@@ -4,11 +4,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.BACKGROUND_CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 
     <application
@@ -48,14 +50,11 @@
         </activity>
         
         <activity
-            android:name=".TestNutritionActivity"
-            android:exported="true"
+            android:name=".FoodAlternativesActivity"
+            android:exported="false"
             android:theme="@style/Theme.Nutrisaur11">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+        
         
         <activity
             android:name=".LoginActivity"
@@ -92,6 +91,12 @@
         </activity>
 
         <activity
+            android:name=".FoodPreferencesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nutrisaur11">
+        </activity>
+
+        <activity
             android:name=".FoodRecommendationActivity"
             android:exported="false" />
 
@@ -104,6 +109,7 @@
             android:exported="true"
             android:theme="@style/Theme.Nutrisaur11" />
             
+            
         <activity
             android:name=".EventsActivity"
             android:exported="false" />
@@ -114,7 +120,8 @@
             
         <service
             android:name=".FoodPreloadService"
-            android:exported="false" />
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
             
         <service
             android:name=".MyFirebaseMessagingService"
@@ -123,6 +130,13 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        
+        <activity
+            android:name=".FullScreenCameraActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Nutrisaur11" />
+            
     </application>
 
 </manifest>

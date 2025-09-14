@@ -44,6 +44,7 @@ public class FoodDetailsActivity extends Activity {
     private TextView nutritionFactsText;
     private Button addToMealButton;
     private Button addToFavoritesButton;
+    private Button findAlternativesButton;
     private LinearLayout loadingLayout;
     private LinearLayout contentLayout;
 
@@ -77,6 +78,7 @@ public class FoodDetailsActivity extends Activity {
         nutritionFactsText = findViewById(R.id.nutrition_facts_text);
         addToMealButton = findViewById(R.id.add_to_meal_button);
         addToFavoritesButton = findViewById(R.id.add_to_favorites_button);
+        findAlternativesButton = findViewById(R.id.find_alternatives_button);
         loadingLayout = findViewById(R.id.loading_layout);
         contentLayout = findViewById(R.id.content_layout);
 
@@ -103,6 +105,9 @@ public class FoodDetailsActivity extends Activity {
         // Favorites button logic
         updateFavoriteButton();
         addToFavoritesButton.setOnClickListener(v -> toggleFavorite());
+        
+        // Find Alternatives button
+        findAlternativesButton.setOnClickListener(v -> openAlternativesActivity());
     }
 
     private void toggleFavorite() {
@@ -353,5 +358,16 @@ public class FoodDetailsActivity extends Activity {
         public String getDescription() { return description; }
         public String getIngredients() { return ingredients; }
         public String getNutritionFacts() { return nutritionFacts; }
+    }
+    
+    private void openAlternativesActivity() {
+        Intent intent = new Intent(this, FoodAlternativesActivity.class);
+        intent.putExtra("food_item", foodItem);
+        // Pass the current meal category if available
+        String currentMealCategory = getIntent().getStringExtra("meal_category");
+        if (currentMealCategory != null) {
+            intent.putExtra("meal_category", currentMealCategory);
+        }
+        startActivity(intent);
     }
 }

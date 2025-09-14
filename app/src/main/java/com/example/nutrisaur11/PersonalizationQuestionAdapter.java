@@ -37,7 +37,7 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
     @NonNull
     @Override
     public QuestionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.question_page_layout, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.question_page, parent, false);
         return new QuestionViewHolder(view);
     }
 
@@ -64,13 +64,25 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
 
     class QuestionViewHolder extends RecyclerView.ViewHolder {
         private LinearLayout choicesContainer;
+        private TextView questionTitle;
+        private TextView questionSubtitle;
 
         public QuestionViewHolder(@NonNull View itemView) {
             super(itemView);
             choicesContainer = itemView.findViewById(R.id.choices_container);
+            questionTitle = itemView.findViewById(R.id.question_title);
+            questionSubtitle = itemView.findViewById(R.id.question_subtitle);
         }
 
         public void bind(PersonalizationQuestion question, int position) {
+            // Set question title and subtitle
+            if (questionTitle != null) {
+                questionTitle.setText(question.getTitle().toUpperCase());
+            }
+            if (questionSubtitle != null) {
+                questionSubtitle.setText(question.isMultipleChoice() ? "PICK MULTIPLE" : "PICK ONE");
+            }
+            
             choicesContainer.removeAllViews();
             
             for (Choice choice : question.getChoices()) {
@@ -135,11 +147,11 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
         }
 
         private View createSingleChoiceView(Choice choice, int questionIndex) {
-            // Create a simple card with basic layout - EXACTLY SAME AS BEFORE
+            // Create a simple card with basic layout - ORIGINAL DESIGN
             LinearLayout cardView = new LinearLayout(context);
             cardView.setLayoutParams(new LinearLayout.LayoutParams(
                 (int) (context.getResources().getDisplayMetrics().widthPixels * 0.9),
-                300 // Bigger card size - SAME AS BEFORE
+                300 // Bigger card size - ORIGINAL DESIGN
             ));
             
             cardView.setOrientation(LinearLayout.HORIZONTAL);
@@ -150,12 +162,12 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             cardView.setFocusable(true);
             cardView.setForeground(context.getResources().getDrawable(R.drawable.button_ripple));
             
-            // Add margin - SAME AS BEFORE
+            // Add margin - ORIGINAL DESIGN
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) cardView.getLayoutParams();
             params.setMargins(0, 10, 0, 10);
             cardView.setLayoutParams(params);
             
-            // Left side - Text content - SAME AS BEFORE
+            // Left side - Text content - ORIGINAL DESIGN
             LinearLayout leftSide = new LinearLayout(context);
             leftSide.setLayoutParams(new LinearLayout.LayoutParams(
                 0,
@@ -165,7 +177,7 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             leftSide.setOrientation(LinearLayout.VERTICAL);
             leftSide.setGravity(android.view.Gravity.CENTER_VERTICAL);
             
-            // Title - SAME AS BEFORE
+            // Title - ORIGINAL DESIGN
             TextView title = new TextView(context);
             title.setText(choice.getText().toUpperCase());
             title.setTextColor(context.getResources().getColor(android.R.color.white));
@@ -173,13 +185,13 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
             title.setTypeface(null, android.graphics.Typeface.BOLD);
             title.setGravity(android.view.Gravity.START);
             
-            // Add only title to left side - SAME AS BEFORE
+            // Add only title to left side - ORIGINAL DESIGN
             leftSide.addView(title);
             
-            // Add only left side to card - SAME AS BEFORE
+            // Add only left side to card - ORIGINAL DESIGN
             cardView.addView(leftSide);
             
-            // Click listener with animation - SAME AS BEFORE
+            // Click listener with animation - ORIGINAL DESIGN
             cardView.setOnClickListener(v -> {
                 animateSelection(v);
                 if (listener != null) {
@@ -191,7 +203,7 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
         }
 
         private View createMultipleChoiceView(Choice choice, int questionIndex) {
-            // Create a button-style card for multiple choice
+            // Create a button-style card for multiple choice - ORIGINAL DESIGN
             LinearLayout cardView = new LinearLayout(context);
             cardView.setLayoutParams(new LinearLayout.LayoutParams(
                 (int) (context.getResources().getDisplayMetrics().widthPixels * 0.9),
@@ -265,7 +277,7 @@ public class PersonalizationQuestionAdapter extends RecyclerView.Adapter<Persona
         }
 
         private void animateSelection(View view) {
-            // SAME ANIMATION AS BEFORE
+            // ORIGINAL ANIMATION
             view.animate()
                 .scaleX(0.95f)
                 .scaleY(0.95f)

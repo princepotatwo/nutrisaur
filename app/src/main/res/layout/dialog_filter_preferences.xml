@@ -26,12 +26,12 @@
             android:fontFamily="sans-serif" />
         <ImageView
             android:id="@+id/btn_close"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/ic_close"
             app:tint="#888"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="4dp" />
+            android:padding="12dp" />
     </LinearLayout>
     <!-- Allergies Section -->
     <TextView

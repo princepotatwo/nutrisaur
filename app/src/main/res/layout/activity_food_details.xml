@@ -6,17 +6,13 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <!-- Status Bar Background -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:background="@color/white" />
-
     <!-- Simplified Header -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/background_light">
+        android:background="@color/background_light"
+        android:layout_marginTop="-24dp"
+        android:paddingTop="24dp">
 
         <!-- Food Image -->
         <ImageView
@@ -31,17 +27,17 @@
         <!-- Back Button -->
         <ImageView
             android:id="@+id/back_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_alignParentTop="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:src="@drawable/ic_close"
-            android:background="@drawable/circle_background_white"
-            android:padding="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="12dp"
             android:clickable="true"
             android:focusable="true"
-            android:elevation="4dp" />
+            android:tint="@color/white" />
 
         <!-- Food Info Overlay -->
         <LinearLayout
@@ -248,36 +244,57 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="16dp"
         android:background="@color/white">
 
-        <!-- Add to Meal Button -->
+        <!-- First Row: Add to Meal and Add to Favorites -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <!-- Add to Meal Button -->
+            <Button
+                android:id="@+id/add_to_meal_button"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="Add to Meal"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/button_green_selector"
+                android:gravity="center" />
+
+            <!-- Add to Favorites Button -->
+            <Button
+                android:id="@+id/add_to_favorites_button"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Add to Favorites"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/button_green_selector"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <!-- Second Row: Find Alternatives Button -->
         <Button
-            android:id="@+id/add_to_meal_button"
-            android:layout_width="0dp"
+            android:id="@+id/find_alternatives_button"
+            android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="Add to Meal"
+            android:text="Find Alternatives"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
             android:background="@drawable/button_green_selector"
-            android:gravity="center" />
-
-        <!-- Add to Favorites Button -->
-        <Button
-            android:id="@+id/add_to_favorites_button"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="Add to Favorites"
-            android:textColor="@color/green_primary"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/button_white_selector"
             android:gravity="center" />
 
     </LinearLayout>

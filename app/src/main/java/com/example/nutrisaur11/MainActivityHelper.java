@@ -2,6 +2,7 @@ package com.example.nutrisaur11;
 
 import android.content.Intent;
 import android.util.Log;
+import android.os.Build;
 
 /**
  * Helper class to add the startFoodPreloadService method to MainActivity
@@ -10,8 +11,19 @@ import android.util.Log;
 public class MainActivityHelper {
     
     public static void startFoodPreloadService(android.content.Context context) {
-        Intent intent = new Intent(context, FoodPreloadService.class);
-        context.startService(intent);
-        Log.d("MainActivity", "Started food preload service");
+        try {
+            Intent intent = new Intent(context, FoodPreloadService.class);
+            
+            // For Android 8.0+ (API 26+), use startForegroundService for background restrictions
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent);
+            } else {
+                context.startService(intent);
+            }
+            Log.d("MainActivity", "Started food preload service");
+        } catch (Exception e) {
+            Log.e("MainActivity", "Failed to start food preload service: " + e.getMessage());
+            // Don't crash the app if service start fails
+        }
     }
 }

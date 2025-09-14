@@ -69,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
         // ScreeningResultStore.init(this); // Removed
         dbHelper = new UserPreferencesDbHelper(this);
         
+        // Check for daily reset before initializing
+        DailyResetManager resetManager = new DailyResetManager(this);
+        resetManager.checkAndResetDaily();
+        
         // Initialize FCM Token Manager
         fcmTokenManager = new FCMTokenManager(this);
         
@@ -97,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
         // Check login status using CommunityUserManager
         CommunityUserManager userManager = new CommunityUserManager(this);
         isLoggedIn = userManager.isLoggedIn();
+        
+        // Debug: Log the login status and email
+        String currentEmail = userManager.getCurrentUserEmail();
+        Log.d("MainActivity", "Login check - isLoggedIn: " + isLoggedIn + ", email: " + currentEmail);
+        
         if (isLoggedIn) {
             setContentView(R.layout.activity_dashboard);
             
@@ -140,12 +149,17 @@ public class MainActivity extends AppCompatActivity {
             // Initialize FCM with user context if available
             initializeFirebaseMessaging();
             
+            // Clear old calorie data to ensure fresh start
+            clearOldCalorieData();
+            
             // Load events immediately
             fetchAndDisplayDashboardEvents();
         } else {
-            // User not logged in, show login page
-            setContentView(R.layout.activity_login);
-            setupLoginPage();
+            // User not logged in, launch LoginActivity
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish(); // Close MainActivity since we're going to LoginActivity
         }
         
         // Setup broadcast receiver for real-time event updates
@@ -204,122 +218,6 @@ public class MainActivity extends AppCompatActivity {
         stopService(eventServiceIntent);
     }
 
-    private void setupLoginPage() {
-        // Login button
-        Button loginButton = findViewById(R.id.login_button);
-        if (loginButton != null) {
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    handleLogin();
-                }
-            });
-        }
-
-        // Forgot password
-        TextView forgotPassword = findViewById(R.id.forgot_password);
-        if (forgotPassword != null) {
-            forgotPassword.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    android.widget.Toast.makeText(MainActivity.this, 
-                        "Forgot password feature coming soon!", android.widget.Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-        // Sign up link
-        TextView signUpLink = findViewById(R.id.sign_up_link);
-        if (signUpLink != null) {
-            signUpLink.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Navigate to sign up page
-                    android.content.Intent intent = new android.content.Intent(MainActivity.this, SignUpActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
-
-        // Google login
-        Button googleLogin = findViewById(R.id.google_login);
-        if (googleLogin != null) {
-            googleLogin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    android.widget.Toast.makeText(MainActivity.this, 
-                        "Google login coming soon!", android.widget.Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-        // Apple login
-        Button appleLogin = findViewById(R.id.apple_login);
-        if (appleLogin != null) {
-            appleLogin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    android.widget.Toast.makeText(MainActivity.this, 
-                        "Apple login coming soon!", android.widget.Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
-    private void handleLogin() {
-        EditText emailInput = findViewById(R.id.email_input);
-        EditText passwordInput = findViewById(R.id.password_input);
-        
-        String email = emailInput.getText().toString().trim();
-        String password = passwordInput.getText().toString().trim();
-        
-        // Simple validation
-        if (email.isEmpty()) {
-            emailInput.setError("Email is required");
-            return;
-        }
-        
-        if (password.isEmpty()) {
-            passwordInput.setError("Password is required");
-            return;
-        }
-        
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailInput.setError("Please enter a valid email");
-            return;
-        }
-        
-        if (password.length() < 6) {
-            passwordInput.setError("Password must be at least 6 characters");
-            return;
-        }
-        
-        // Show loading state
-        Button loginButton = findViewById(R.id.login_button);
-        if (loginButton != null) {
-            loginButton.setText("Signing In...");
-            loginButton.setEnabled(false);
-        }
-        
-        // Simulate login process
-        new android.os.Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Success - navigate to dashboard
-                getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).edit().putBoolean("is_logged_in", true).apply();
-                // Set a default risk score if none exists
-                // if (ScreeningResultStore.getRiskScore() == 0) {
-                //     ScreeningResultStore.setRiskScore(MainActivity.this, 25); // Default moderate risk
-                // }
-                setContentView(R.layout.activity_dashboard);
-                // Remove highlight nav_home setSelected calls (handled by icon tint in XML)
-                setupNavigation();
-                
-                android.widget.Toast.makeText(MainActivity.this, 
-                    "Welcome to Nutrisaur!", android.widget.Toast.LENGTH_SHORT).show();
-            }
-        }, 1500); // 1.5 second delay to simulate network request
-    }
 
     private void setupNavigation() {
         // Dashboard navigation
@@ -376,25 +274,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupAccountSettings() {
-        // Camera switch
-        android.widget.Switch cameraSwitch = findViewById(R.id.camera_switch);
-        if (cameraSwitch != null) {
-            cameraSwitch.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(android.widget.CompoundButton buttonView, boolean isChecked) {
-                    // Handle camera permission
-                    if (isChecked) {
-                        // Request camera permission
-                        // For now, just show a toast
-                        android.widget.Toast.makeText(MainActivity.this, 
-                            "Camera access enabled", android.widget.Toast.LENGTH_SHORT).show();
-                    } else {
-                        android.widget.Toast.makeText(MainActivity.this, 
-                            "Camera access disabled", android.widget.Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
+        // Account settings setup (camera settings removed)
 
 
 
@@ -461,12 +341,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     
+    private void clearOldCalorieData() {
+        try {
+            // Clear any old calorie data to ensure fresh start
+            CalorieTracker calorieTracker = new CalorieTracker(this);
+            calorieTracker.clearDay();
+            android.util.Log.d("MainActivity", "Cleared old calorie data for fresh start");
+        } catch (Exception e) {
+            android.util.Log.e("MainActivity", "Error clearing old calorie data: " + e.getMessage());
+        }
+    }
+    
     private void clearAllUserData() {
         try {
             android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
-            android.content.SharedPreferences.Editor editor = prefs.edit();
+            String currentUserEmail = prefs.getString("current_user_email", null);
             
-            // Clear all user data
+            // Clear user-specific data first
+            if (currentUserEmail != null) {
+                AddedFoodManager.clearUserData(this, currentUserEmail);
+                CalorieTracker.clearUserData(this, currentUserEmail);
+                GeminiCacheManager.clearUserData(this, currentUserEmail);
+                FavoritesManager.clearUserData(this, currentUserEmail);
+                android.util.Log.d("MainActivity", "Cleared user-specific data for: " + currentUserEmail);
+            }
+            
+            // Clear all user data from main preferences
+            android.content.SharedPreferences.Editor editor = prefs.edit();
             editor.clear();
             
             // Set basic logout state
@@ -653,6 +554,21 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < eventsArray.length(); i++) {
                 try {
                     org.json.JSONObject eventObj = eventsArray.getJSONObject(i);
+                    
+                    // Handle created_at field that might be boolean false or timestamp
+                    long createdAt = 0;
+                    try {
+                        if (eventObj.get("created_at") instanceof Boolean) {
+                            // If created_at is boolean false, use current timestamp
+                            createdAt = System.currentTimeMillis();
+                        } else {
+                            createdAt = eventObj.getLong("created_at");
+                        }
+                    } catch (Exception e) {
+                        // Fallback to current timestamp if parsing fails
+                        createdAt = System.currentTimeMillis();
+                    }
+                    
                     Event event = new Event(
                         eventObj.getInt("id"),
                         eventObj.getString("title"),
@@ -661,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
                         eventObj.getString("date_time"),
                         eventObj.getString("location"),
                         eventObj.getString("organizer"),
-                        eventObj.getLong("created_at")
+                        createdAt
                     );
                     
                     // Track event ID for new event detection
@@ -675,25 +591,18 @@ public class MainActivity extends AppCompatActivity {
                         android.util.Log.d("MainActivity", "Event " + event.getTitle() + " is joined");
                     }
                     
-                    // Add events with more lenient date filtering
+                    // Add all events for testing (remove date filtering temporarily)
                     try {
                         Date eventDate = format.parse(event.getDateTime());
                         
-                        // Show events that are within the last 7 days or in the future
-                        long diffInMillis = eventDate.getTime() - now.getTime();
-                        long diffInDays = diffInMillis / (24 * 60 * 60 * 1000);
+                        // Show all events regardless of date for testing
+                        allEvents.add(event);
+                        android.util.Log.d("MainActivity", "Added event: " + event.getTitle() + " at " + event.getDateTime());
                         
-                        if (diffInDays >= -7) { // Show events from last 7 days and future
-                            allEvents.add(event);
-                            android.util.Log.d("MainActivity", "Added event: " + event.getTitle() + " at " + event.getDateTime() + " (diff: " + diffInDays + " days)");
-                            
-                            // Check if this is a new event
-                            if (!existingEventIds.contains(event.getProgramId())) {
-                                newEvents.add(event);
-                                android.util.Log.d("MainActivity", "New event detected: " + event.getTitle());
-                            }
-                        } else {
-                            android.util.Log.d("MainActivity", "Skipped old event: " + event.getTitle() + " (diff: " + diffInDays + " days)");
+                        // Check if this is a new event
+                        if (!existingEventIds.contains(event.getProgramId())) {
+                            newEvents.add(event);
+                            android.util.Log.d("MainActivity", "New event detected: " + event.getTitle());
                         }
                     } catch (Exception e) {
                         android.util.Log.w("MainActivity", "Error parsing event date for " + event.getTitle() + ": " + e.getMessage());
@@ -813,123 +722,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showImageSourceDialog() {
-        String[] options = {"Take Photo for Health Analysis", "View Food Recommendations", "Cancel"};
+        String[] options = {"View Food Recommendations", "Cancel"};
         new AlertDialog.Builder(this)
             .setTitle("AI Nutrition Assistant")
             .setItems(options, new DialogInterface.OnClickListener() {
                     @Override
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which) {
-                        case 0: // Take Photo for Health Analysis
-                            performHealthAnalysisFromPhoto();
-                            break;
-                        case 1: // View Food Recommendations
+                        case 0: // View Food Recommendations
                             showFoodRecommendations();
                             break;
-                        case 2: // Cancel
+                        case 1: // Cancel
                             dialog.dismiss();
                             break;
                     }
-                    }
-                })
-            .show();
-        }
-
-    /**
-     * Perform health analysis from photo using CNN/AI
-     */
-    private void performHealthAnalysisFromPhoto() {
-        String userEmail = getCurrentUserEmail();
-        if (userEmail == null) {
-            android.widget.Toast.makeText(this, "Please log in to use AI analysis", android.widget.Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
-        // Show photo capture options
-        String[] photoOptions = {"Take Photo", "Choose from Gallery", "Cancel"};
-        new AlertDialog.Builder(this)
-            .setTitle("Capture Health Information")
-            .setItems(photoOptions, (dialog, which) -> {
-                switch (which) {
-                    case 0: // Take Photo
-                        // TODO: Implement camera capture for health analysis
-                        simulateHealthAnalysis();
-                        break;
-                    case 1: // Choose from Gallery
-                        // TODO: Implement gallery selection for health analysis
-                        simulateHealthAnalysis();
-                        break;
-                    case 2: // Cancel
-                        dialog.dismiss();
-                        break;
                 }
             })
             .show();
     }
+
     
-    /**
-     * Simulate health analysis from photo (placeholder for CNN implementation)
-     */
-    private void simulateHealthAnalysis() {
-        // Show loading dialog
-        android.app.ProgressDialog progressDialog = new android.app.ProgressDialog(this);
-        progressDialog.setMessage("AI analyzing health information from photo...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        
-        // Simulate CNN analysis
-        new Thread(() -> {
-            try {
-                // Simulate processing time
-                Thread.sleep(3000);
-                
-                runOnUiThread(() -> {
-                    progressDialog.dismiss();
-                    showHealthAnalysisResults();
-                });
-                
-            } catch (Exception e) {
-                runOnUiThread(() -> {
-                    progressDialog.dismiss();
-                    android.widget.Toast.makeText(this, "Health analysis failed. Please try again.", android.widget.Toast.LENGTH_SHORT).show();
-                });
-            }
-        }).start();
-    }
     
-    /**
-     * Show health analysis results from photo
-     */
-    private void showHealthAnalysisResults() {
-        // Simulate health analysis results
-        int riskScore = 25; // Default risk score
-        StringBuilder analysisText = new StringBuilder();
-        analysisText.append("🔍 Health Analysis from Photo Complete!\n\n");
-        
-        // Simulate CNN detection results
-        analysisText.append("Physical Signs Detected:\n");
-        if (riskScore >= 50) {
-            analysisText.append("⚠️ Possible signs of malnutrition\n");
-            analysisText.append("• Visible weight loss or thinness\n");
-            analysisText.append("• Reduced muscle mass\n");
-            analysisText.append("• AI suggests high-protein, energy-dense foods\n");
-        } else {
-            analysisText.append("✅ No obvious signs of severe malnutrition\n");
-            analysisText.append("• Normal body composition\n");
-            analysisText.append("• AI suggests balanced nutrition approach\n");
-        }
-        
-        analysisText.append("\n🤖 AI Learning: System will improve recommendations based on your health profile.\n");
-        analysisText.append("\nView personalized food recommendations based on your screening data?");
-        
-        new AlertDialog.Builder(this)
-            .setTitle("🔍 Health Analysis Results")
-            .setMessage(analysisText.toString())
-            .setPositiveButton("View Food Recommendations", (dialog, which) -> showFoodRecommendations())
-            .setNegativeButton("Close", null)
-            .setIcon(R.drawable.ic_health)
-            .show();
-    }
     
     /**
      * Show food recommendations using existing system
@@ -1586,17 +1399,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         
-        // Take picture button
-        androidx.cardview.widget.CardView takePictureButton = findViewById(R.id.take_picture_button);
-        if (takePictureButton != null) {
-            takePictureButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Show image source dialog for health analysis
-                    showImageSourceDialog();
-                }
-            });
-        }
+        // Take picture button removed - camera functionality disabled
     }
 
 

@@ -62,7 +62,11 @@ public class FoodDetailsDialog extends Dialog {
     }
     
     private void setupClickListeners() {
-        closeButton.setOnClickListener(v -> dismiss());
+        closeButton.setOnClickListener(v -> {
+            // Trigger calorie calculation when closing dialog
+            triggerCalorieCalculation();
+            dismiss();
+        });
         
         addToMealButton.setOnClickListener(v -> {
             addToMeal();
@@ -181,9 +185,21 @@ public class FoodDetailsDialog extends Dialog {
     }
     
     private void addToMeal() {
-        // TODO: Implement adding food to current meal
+        // Add to added foods
+        AddedFoodManager addedFoodManager = new AddedFoodManager(context);
+        addedFoodManager.addToAddedFoods(foodItem);
+        
         Toast.makeText(context, "Added " + foodItem.getName() + " to meal", Toast.LENGTH_SHORT).show();
         dismiss();
+    }
+    
+    private void triggerCalorieCalculation() {
+        // Notify parent activity to refresh calorie data
+        if (context instanceof FoodActivity) {
+            ((FoodActivity) context).refreshCalorieData();
+        } else if (context instanceof FoodLoggingActivity) {
+            ((FoodLoggingActivity) context).refreshCalorieData();
+        }
     }
     
     private void toggleFavorite() {

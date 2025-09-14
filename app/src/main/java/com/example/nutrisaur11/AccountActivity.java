@@ -556,9 +556,19 @@ public class AccountActivity extends AppCompatActivity {
     private void clearAllUserData() {
         try {
             android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
-            android.content.SharedPreferences.Editor editor = prefs.edit();
+            String currentUserEmail = prefs.getString("current_user_email", null);
             
-            // Clear all user data
+            // Clear user-specific data first
+            if (currentUserEmail != null) {
+                AddedFoodManager.clearUserData(this, currentUserEmail);
+                CalorieTracker.clearUserData(this, currentUserEmail);
+                GeminiCacheManager.clearUserData(this, currentUserEmail);
+                FavoritesManager.clearUserData(this, currentUserEmail);
+                android.util.Log.d("AccountActivity", "Cleared user-specific data for: " + currentUserEmail);
+            }
+            
+            // Clear all user data from main preferences
+            android.content.SharedPreferences.Editor editor = prefs.edit();
             editor.clear();
             
             // Set basic logout state

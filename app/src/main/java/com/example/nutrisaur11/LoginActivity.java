@@ -24,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button googleLogin;
     private Button appleLogin;
     private TextView signUpLink;
-    private Button testScreeningButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
         googleLogin = findViewById(R.id.google_login);
         appleLogin = findViewById(R.id.apple_login);
         signUpLink = findViewById(R.id.sign_up_link);
-        testScreeningButton = findViewById(R.id.test_screening_button);
     }
 
     private void setupClickListeners() {
@@ -90,13 +88,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Test Screening Button
-        testScreeningButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTestScreening();
-            }
-        });
     }
 
     private void handleLogin() {
@@ -168,6 +159,12 @@ public class LoginActivity extends AppCompatActivity {
             
             dbHelper.close();
             
+            // Clear user-specific added foods, calorie data, cache data, and favorites
+            AddedFoodManager.clearUserData(this, email);
+            CalorieTracker.clearUserData(this, email);
+            GeminiCacheManager.clearUserData(this, email);
+            FavoritesManager.clearUserData(this, email);
+            
             // Clear shared preferences
             getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE).edit()
                 .remove("current_user_email")
@@ -194,38 +191,4 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(this, "Apple Login coming soon!", Toast.LENGTH_SHORT).show();
     }
 
-    private void startTestScreening() {
-        Toast.makeText(this, "Starting test screening with demo data...", Toast.LENGTH_SHORT).show();
-        
-        // Create SharedPreferences editor to save test user data
-        android.content.SharedPreferences prefs = getSharedPreferences("NutrisaurPrefs", MODE_PRIVATE);
-        android.content.SharedPreferences.Editor editor = prefs.edit();
-        
-        // Save test user credentials
-        String testEmail = "test.user@nutrisaur.demo";
-        String testUsername = "Demo User";
-        editor.putString("user_email", testEmail);
-        editor.putString("username", testUsername);
-        editor.putBoolean("is_logged_in", true);
-        
-        // Pre-fill some basic user info for the test
-        editor.putString("user_barangay", "A. Rivera (Pob.)");
-        editor.putString("user_municipality", "Biñan");
-        editor.putInt("user_age", 25);
-        editor.putString("user_gender", "female");
-        editor.putFloat("user_weight", 65.0f);
-        editor.putFloat("user_height", 160.0f);
-        editor.putString("user_income", "15000-25000");
-        
-        editor.apply();
-        
-        // Navigate directly to screening activity with some pre-filled data
-        Intent intent = new Intent(LoginActivity.this, NutritionalScreeningActivity.class);
-        intent.putExtra("test_mode", true);
-        intent.putExtra("test_email", testEmail);
-        intent.putExtra("test_username", testUsername);
-        
-        startActivity(intent);
-        finish(); // Close login activity
-    }
 } 

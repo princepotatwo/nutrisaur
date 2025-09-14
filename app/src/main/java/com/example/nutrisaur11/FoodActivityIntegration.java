@@ -39,6 +39,7 @@ public class FoodActivityIntegration {
         
         // Load questionnaire answers from SharedPreferences
         Map<String, String> questionnaireAnswers = loadQuestionnaireAnswers(context);
+        Log.d("FoodActivityIntegration", "Loaded questionnaire answers: " + questionnaireAnswers.toString());
         
         // Create simple, intelligent prompt that lets AI analyze everything
         String prompt = FoodActivityIntegrationMethods.buildConditionSpecificPrompt(
@@ -155,20 +156,51 @@ public class FoodActivityIntegration {
     /**
      * Load questionnaire answers from SharedPreferences
      */
-    private static Map<String, String> loadQuestionnaireAnswers(Context context) {
-        android.content.SharedPreferences prefs = context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE);
+    public static Map<String, String> loadQuestionnaireAnswers(Context context) {
+        android.content.SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
         Map<String, String> answers = new java.util.HashMap<>();
         
-        // Load all questionnaire answers
-        for (int i = 0; i < 6; i++) {
-            String key = "question_" + i;
+        // Get user email for user-specific preferences
+        // Try nutrisaur_prefs first (community users), then UserPreferences (legacy)
+        String userEmail = prefs.getString("current_user_email", "");
+        if (userEmail.isEmpty()) {
+            // Fallback to legacy UserPreferences
+            userEmail = prefs.getString("user_email", "");
+        }
+        
+        if (userEmail.isEmpty()) {
+            Log.w(TAG, "No user email found, cannot load user-specific preferences");
+            return answers;
+        }
+        
+        // Load food preferences with user-specific keys
+        for (int i = 0; i < 5; i++) {
+            String key = userEmail + "_question_" + i;
             String value = prefs.getString(key, "");
             if (!value.isEmpty()) {
-                answers.put(key, value);
+                // Store with generic key for compatibility
+                answers.put("question_" + i, value);
             }
         }
         
-        Log.d(TAG, "Loaded questionnaire answers: " + answers.size() + " answers");
+        // Also load combined food preferences for AI prompting
+        String combinedPreferences = prefs.getString(userEmail + "_food_preferences_combined", "");
+        if (!combinedPreferences.isEmpty()) {
+            answers.put("food_preferences_combined", combinedPreferences);
+        }
+        
+        // Also load old format for backward compatibility
+        for (int i = 0; i < 5; i++) {
+            String key = "question_" + i;
+            if (!answers.containsKey(key)) {
+                String value = prefs.getString(key, "");
+                if (!value.isEmpty()) {
+                    answers.put(key, value);
+                }
+            }
+        }
+        
+        Log.d(TAG, "Loaded questionnaire answers: " + answers.size() + " answers for user: " + userEmail);
         return answers;
     }
     

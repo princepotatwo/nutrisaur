@@ -36,8 +36,8 @@ function getNutritionalAssessment($user) {
         
         // Get comprehensive WHO Growth Standards assessment
         $assessment = $who->getComprehensiveAssessment(
-            floatval($user['weight']), 
-            floatval($user['height']), 
+            floatval($user['weight_kg']), 
+            floatval($user['height_cm']), 
             $user['birthday'], 
             $user['sex']
         );
@@ -3402,7 +3402,7 @@ header {
                             <div class="filter-item">
                                 <label>AGE FROM</label>
                                 <div style="display: flex; gap: 4px; align-items: center;">
-                                    <input type="number" id="ageFromYears" min="0" max="18" placeholder="0" 
+                                    <input type="number" id="ageFromYears" min="0" max="120" placeholder="0" 
                                            style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
                                     <span style="font-size: 10px; color: var(--color-text);">Y</span>
                                     <input type="number" id="ageFromMonths" min="0" max="11" placeholder="0" 
@@ -3414,7 +3414,7 @@ header {
                             <div class="filter-item">
                                 <label>AGE TO</label>
                                 <div style="display: flex; gap: 4px; align-items: center;">
-                                    <input type="number" id="ageToYears" min="0" max="18" placeholder="0" 
+                                    <input type="number" id="ageToYears" min="0" max="120" placeholder="0" 
                                            style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
                                     <span style="font-size: 10px; color: var(--color-text);">Y</span>
                                     <input type="number" id="ageToMonths" min="0" max="11" placeholder="0" 
@@ -3487,8 +3487,8 @@ header {
                                         try {
                                             $who = new WHOGrowthStandards();
                                             $assessment = $who->getComprehensiveAssessment(
-                                                floatval($user['weight']),
-                                                floatval($user['height']),
+                                                floatval($user['weight_kg']),
+                                                floatval($user['height_cm']),
                                                 $user['birthday'],
                                                 $user['sex']
                                             );
@@ -3531,13 +3531,20 @@ header {
                                         $birthDate = new DateTime($user['birthday']);
                                         $today = new DateTime();
                                         $age = $today->diff($birthDate);
+                                        
+                                        // More accurate age calculation including days
                                         $ageInMonths = ($age->y * 12) + $age->m;
+                                        // Add partial month if more than half the month has passed
+                                        if ($age->d >= 15) {
+                                            $ageInMonths += 1;
+                                        }
+                                        
                                         $ageDisplay = $age->y . 'y ' . $age->m . 'm';
                                         
                                         // Calculate BMI (with division by zero protection)
                                         $bmi = 'N/A';
-                                        if ($user['weight'] && $user['height'] && $user['height'] > 0) {
-                                            $bmi = round($user['weight'] / pow($user['height'] / 100, 2), 1);
+                                        if ($user['weight_kg'] && $user['height_cm'] && $user['height_cm'] > 0) {
+                                            $bmi = round($user['weight_kg'] / pow($user['height_cm'] / 100, 2), 1);
                                         }
                                         
                                         // Generate all WHO Growth Standards data for this user
@@ -3569,12 +3576,12 @@ header {
                                         }
                                         
                                         if ($showStandard && $showData) {
-                                            echo '<tr data-standard="' . $showStandard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
+                                            echo '<tr data-standard="' . $showStandard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height_cm'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             echo '<td class="text-center">' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . $ageDisplay . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
-                                            echo '<td class="text-center">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
-                                            echo '<td class="text-center">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['weight_kg'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['height_cm'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . $bmi . '</td>';
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($showData['display']) . '</td>';
                                             echo '<td class="text-center classification">' . htmlspecialchars($showData['classification']) . '</td>';
@@ -3596,10 +3603,10 @@ header {
                                                 $shouldShow = ($ageInMonths >= 0 && $ageInMonths <= 71);
                                             } elseif ($standard === 'weight-for-height') {
                                                 // Weight-for-Height: 65-120 cm height range
-                                                $shouldShow = ($user['height'] >= 65 && $user['height'] <= 120);
+                                                $shouldShow = ($user['height_cm'] >= 65 && $user['height_cm'] <= 120);
                                             } elseif ($standard === 'weight-for-length') {
                                                 // Weight-for-Length: 45-110 cm height range
-                                                $shouldShow = ($user['height'] >= 45 && $user['height'] <= 110);
+                                                $shouldShow = ($user['height_cm'] >= 45 && $user['height_cm'] <= 110);
                                             }
                                             
                                             // For adults (>71 months), only show BMI with adult classification
@@ -3613,12 +3620,12 @@ header {
                                             }
                                             
                                             if ($shouldShow) {
-                                                echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
+                                                echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height_cm'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
                                                 echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $ageDisplay . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
-                                                echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
-                                                echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['weight_kg'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['height_cm'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $bmi . '</td>';
                                                 echo '<td class="standard-value">' . htmlspecialchars($displayData['display']) . '</td>';
                                                 echo '<td class="classification">' . htmlspecialchars($displayData['classification']) . '</td>';
@@ -3728,6 +3735,35 @@ header {
         
 
         function filterByAgeRange() {
+            // Validate age range inputs
+            const ageFromYears = document.getElementById('ageFromYears').value;
+            const ageFromMonths = document.getElementById('ageFromMonths').value;
+            const ageToYears = document.getElementById('ageToYears').value;
+            const ageToMonths = document.getElementById('ageToMonths').value;
+            
+            // Check if any age fields have values
+            if (ageFromYears || ageFromMonths || ageToYears || ageToMonths) {
+                const fromYears = parseInt(ageFromYears) || 0;
+                const fromMonths = parseInt(ageFromMonths) || 0;
+                const toYears = parseInt(ageToYears) || 0;
+                const toMonths = parseInt(ageToMonths) || 0;
+                
+                const fromTotalMonths = fromYears * 12 + fromMonths;
+                const toTotalMonths = toYears * 12 + toMonths;
+                
+                // Only validate if both from and to have values
+                if ((ageFromYears || ageFromMonths) && (ageToYears || ageToMonths)) {
+                    // Validate that "from" age is not greater than "to" age
+                    if (fromTotalMonths > toTotalMonths) {
+                        // Show warning and clear the "to" fields
+                        alert('Age "From" cannot be greater than Age "To". Please adjust your selection.');
+                        document.getElementById('ageToYears').value = '';
+                        document.getElementById('ageToMonths').value = '';
+                        return;
+                    }
+                }
+            }
+            
             applyAllFilters();
         }
         
@@ -3807,6 +3843,7 @@ header {
                     let fromMonths = null;
                     let toMonths = null;
                     
+                    // Only process if at least one field has a value (not empty string)
                     if (ageFromYears || ageFromMonths) {
                         const years = parseInt(ageFromYears) || 0;
                         const months = parseInt(ageFromMonths) || 0;
@@ -3819,11 +3856,18 @@ header {
                         toMonths = years * 12 + months;
                     }
                     
-                    if (fromMonths !== null && ageMonths < fromMonths) {
+                    // Validate age range (from should not be greater than to)
+                    if (fromMonths !== null && toMonths !== null && fromMonths > toMonths) {
+                        // Invalid range - hide all rows
                         showRow = false;
-                    }
-                    if (toMonths !== null && ageMonths > toMonths) {
-                        showRow = false;
+                    } else {
+                        // Apply age filters
+                        if (fromMonths !== null && ageMonths < fromMonths) {
+                            showRow = false;
+                        }
+                        if (toMonths !== null && ageMonths > toMonths) {
+                            showRow = false;
+                        }
                     }
                 }
                 

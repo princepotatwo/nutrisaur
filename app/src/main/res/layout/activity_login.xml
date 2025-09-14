@@ -276,25 +276,6 @@
                     android:padding="8dp" />
             </LinearLayout>
 
-            <!-- Test Screening Button -->
-            <Button
-                android:id="@+id/test_screening_button"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/filled_green_button"
-                android:text="🧪 Test Screening (Skip Login)"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif"
-                android:elevation="4dp"
-                android:shadowColor="#66000000"
-                android:shadowDx="0"
-                android:shadowDy="2"
-                android:shadowRadius="4" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout> 

@@ -58,12 +58,12 @@
 
             <ImageView
                 android:id="@+id/close_button"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/ic_close"
                 android:tint="@color/white"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:padding="4dp" />
+                android:padding="12dp" />
 
         </LinearLayout>
 

@@ -55,11 +55,11 @@
         <!-- Minus Button -->
         <ImageView
             android:id="@+id/minus_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
             android:src="@drawable/ic_minus"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:padding="6dp"
+            android:padding="15dp"
             android:clickable="true"
             android:focusable="true"
             android:tint="@color/red_primary"
@@ -68,11 +68,11 @@
         <!-- Plus Button -->
         <ImageView
             android:id="@+id/plus_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="66dp"
+            android:layout_height="66dp"
             android:src="@drawable/ic_plus"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:padding="6dp"
+            android:padding="15dp"
             android:clickable="true"
             android:focusable="true"
             android:tint="@color/green_primary" />

@@ -10,7 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -30,6 +32,10 @@ public class FoodLoggingActivity extends AppCompatActivity {
     private Button createFoodButton;
     private TextView recentTab, favoritesTab, addedFoodTab;
     private ListView foodListView;
+    private LinearLayout loadingLayout;
+    private ProgressBar loadingProgressBar;
+    private TextView loadingText;
+    private TextView loadingSubtitle;
     
     // Data
     private String currentMealCategory;
@@ -55,6 +61,10 @@ public class FoodLoggingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_logging);
         
+        // Check for daily reset before initializing
+        DailyResetManager resetManager = new DailyResetManager(this);
+        resetManager.checkAndResetDaily();
+        
         // Get meal category and max calories from intent
         currentMealCategory = getIntent().getStringExtra("meal_category");
         maxCalories = getIntent().getIntExtra("max_calories", 500);
@@ -72,12 +82,15 @@ public class FoodLoggingActivity extends AppCompatActivity {
         }
         
         // Initialize services
-        fatSecretService = new FatSecretService();
+        fatSecretService = new FatSecretService(this);
         favoritesManager = new FavoritesManager(this);
         addedFoodManager = new AddedFoodManager(this);
         calorieTracker = new CalorieTracker(this);
         cacheManager = new GeminiCacheManager(this);
         mainHandler = new Handler(Looper.getMainLooper());
+        
+        // Sync CalorieTracker with AddedFoodManager to ensure data consistency
+        calorieTracker.syncWithAddedFoods(this);
         
         // Load user profile (prioritize database data over SharedPreferences)
         userProfile = getUserProfile();
@@ -120,9 +133,23 @@ public class FoodLoggingActivity extends AppCompatActivity {
             mealCategoryText.setText(currentMealCategory);
         }
         
+        // Initialize loading views
+        loadingLayout = findViewById(R.id.loading_layout);
+        loadingProgressBar = findViewById(R.id.loading_progress_bar);
+        loadingText = findViewById(R.id.loading_text);
+        loadingSubtitle = findViewById(R.id.loading_subtitle);
+
         // Initialize food adapter
         foodAdapter = new FoodItemAdapter(this, foodItems);
         foodAdapter.setMealCategory(currentMealCategory);
+        foodAdapter.setMaxCalories(maxCalories);
+        foodAdapter.setCalorieChangeCallback(new FoodItemAdapter.CalorieChangeCallback() {
+            @Override
+            public void onCalorieChanged() {
+                // Notify FoodActivity about calorie changes
+                setResult(RESULT_OK);
+            }
+        });
         if (foodListView != null) {
             foodListView.setAdapter(foodAdapter);
         }
@@ -135,6 +162,8 @@ public class FoodLoggingActivity extends AppCompatActivity {
         // Back button
         if (backButton != null) {
             backButton.setOnClickListener(v -> {
+                // Set result to indicate that food logging was completed
+                setResult(RESULT_OK);
                 finish();
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             });
@@ -156,6 +185,21 @@ public class FoodLoggingActivity extends AppCompatActivity {
                     searchFoods(query);
                 }
                 return true;
+            });
+            
+            // Real-time search as user types
+            searchEditText.addTextChangedListener(new android.text.TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    // Filter foods in real-time
+                    filterFoods(s.toString());
+                }
+
+                @Override
+                public void afterTextChanged(android.text.Editable s) {}
             });
         }
         
@@ -205,10 +249,12 @@ public class FoodLoggingActivity extends AppCompatActivity {
         switch (tab) {
             case "recent":
                 if (recentTab != null) recentTab.setBackgroundResource(R.drawable.tab_background_active);
+                foodAdapter.setIsAddedFoodsTab(false);
                 loadRecentFoods();
                 break;
             case "favorites":
                 if (favoritesTab != null) favoritesTab.setBackgroundResource(R.drawable.tab_background_active);
+                foodAdapter.setIsAddedFoodsTab(false);
                 loadFavoriteFoods();
                 break;
             case "added_food":
@@ -233,28 +279,32 @@ public class FoodLoggingActivity extends AppCompatActivity {
                 mainHandler.post(() -> {
                     recommendedFoods.clear();
                     recommendedFoods.addAll(cached.getFoods());
-                    foodItems.clear();
-                    foodItems.addAll(cached.getFoods());
+                    foodAdapter.updateFoodList(cached.getFoods());
                     foodAdapter.setHideAddButton(false);
-                    foodAdapter.notifyDataSetChanged();
                     Log.d(TAG, "Loaded " + cached.getFoods().size() + " cached foods for " + currentMealCategory);
                 });
                 return;
             }
             
+            // Show loading animation
+            mainHandler.post(() -> {
+                showLoadingState();
+            });
+            
             fatSecretService.getPersonalizedFoods(currentMealCategory, maxCalories, userProfile, new FatSecretService.FoodSearchCallback() {
                 @Override
                 public void onSuccess(List<FoodItem> foods) {
                     mainHandler.post(() -> {
+                        // Hide loading animation
+                        hideLoadingState();
+                        
                         // Cache the recommended foods
                         recommendedFoods.clear();
                         recommendedFoods.addAll(foods);
                         
                         // Update current display immediately since we start on recent tab
-                        foodItems.clear();
-                        foodItems.addAll(foods);
+                        foodAdapter.updateFoodList(foods);
                         foodAdapter.setHideAddButton(false);
-                        foodAdapter.notifyDataSetChanged();
                         
                         Log.d(TAG, "Loaded " + foods.size() + " personalized foods for " + currentMealCategory);
                     });
@@ -307,9 +357,7 @@ public class FoodLoggingActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<FoodItem> foods) {
                 mainHandler.post(() -> {
-                    foodItems.clear();
-                    foodItems.addAll(foods);
-                    foodAdapter.notifyDataSetChanged();
+                    foodAdapter.updateFoodList(foods);
                     Log.d(TAG, "Search results: " + foods.size() + " foods");
                 });
             }
@@ -323,14 +371,36 @@ public class FoodLoggingActivity extends AppCompatActivity {
         });
     }
     
+    private void filterFoods(String query) {
+        if (foodAdapter != null) {
+            foodAdapter.filter(query);
+        }
+    }
+    
+    private void showLoadingState() {
+        if (loadingLayout != null) {
+            loadingLayout.setVisibility(View.VISIBLE);
+        }
+        if (foodListView != null) {
+            foodListView.setVisibility(View.GONE);
+        }
+    }
+    
+    private void hideLoadingState() {
+        if (loadingLayout != null) {
+            loadingLayout.setVisibility(View.GONE);
+        }
+        if (foodListView != null) {
+            foodListView.setVisibility(View.VISIBLE);
+        }
+    }
+    
     private void loadRecentFoods() {
         // Load recommended foods from cache
         mainHandler.post(() -> {
-            foodItems.clear();
-            foodItems.addAll(recommendedFoods);
+            foodAdapter.updateFoodList(recommendedFoods);
             // Show add/remove buttons in Recent tab
             foodAdapter.setHideAddButton(false);
-            foodAdapter.notifyDataSetChanged();
             Log.d(TAG, "Loaded " + recommendedFoods.size() + " recent/recommended foods");
         });
     }
@@ -347,11 +417,9 @@ public class FoodLoggingActivity extends AppCompatActivity {
         }
         
         mainHandler.post(() -> {
-            foodItems.clear();
-            foodItems.addAll(filteredFavorites);
+            foodAdapter.updateFoodList(filteredFavorites);
             // Show add/remove buttons in Favorites tab
             foodAdapter.setHideAddButton(false);
-            foodAdapter.notifyDataSetChanged();
             Log.d(TAG, "Loaded " + filteredFavorites.size() + " favorite foods");
         });
     }
@@ -359,35 +427,37 @@ public class FoodLoggingActivity extends AppCompatActivity {
     private void loadAddedFoods() {
         List<FoodItem> addedFoods = addedFoodManager.getAddedFoods();
         
-        // Filter added foods by calorie limit
+        // Filter added foods by meal category instead of calorie limit
         List<FoodItem> filteredAddedFoods = new ArrayList<>();
         for (FoodItem food : addedFoods) {
-            if (food.getCalories() <= maxCalories) {
+            // Check if food belongs to current meal category
+            if (currentMealCategory != null && food.getMealCategory() != null && 
+                food.getMealCategory().equalsIgnoreCase(currentMealCategory)) {
                 filteredAddedFoods.add(food);
             }
         }
         
         mainHandler.post(() -> {
-            foodItems.clear();
-            foodItems.addAll(filteredAddedFoods);
-            // Hide add/remove buttons in Added Food tab
-            foodAdapter.setHideAddButton(true);
-            foodAdapter.notifyDataSetChanged();
-            Log.d(TAG, "Loaded " + filteredAddedFoods.size() + " added foods");
+            foodAdapter.updateFoodList(filteredAddedFoods);
+            // Show buttons but only minus button should be visible for added foods
+            foodAdapter.setHideAddButton(false);
+            foodAdapter.setIsAddedFoodsTab(true);
+            Log.d(TAG, "Loaded " + filteredAddedFoods.size() + " added foods for " + currentMealCategory);
         });
     }
     
     
     private void loadDefaultFoods() {
         // Default foods for testing
-        foodItems.clear();
-        foodItems.add(new FoodItem("1", "Grilled Chicken Breast", 165, 100, "g"));
-        foodItems.add(new FoodItem("2", "Brown Rice", 111, 100, "g"));
-        foodItems.add(new FoodItem("3", "Steamed Broccoli", 34, 100, "g"));
-        foodItems.add(new FoodItem("4", "Salmon Fillet", 208, 100, "g"));
-        foodItems.add(new FoodItem("5", "Quinoa", 120, 100, "g"));
-        foodItems.add(new FoodItem("6", "Mixed Vegetables", 25, 100, "g"));
-        foodAdapter.notifyDataSetChanged();
+        List<FoodItem> defaultFoods = new ArrayList<>();
+        defaultFoods.add(new FoodItem("1", "Grilled Chicken Breast", 165, 100, "g"));
+        defaultFoods.add(new FoodItem("2", "Brown Rice", 111, 100, "g"));
+        defaultFoods.add(new FoodItem("3", "Steamed Broccoli", 34, 100, "g"));
+        defaultFoods.add(new FoodItem("4", "Salmon Fillet", 208, 100, "g"));
+        defaultFoods.add(new FoodItem("5", "Quinoa", 120, 100, "g"));
+        defaultFoods.add(new FoodItem("6", "Mixed Vegetables", 25, 100, "g"));
+        
+        foodAdapter.updateFoodList(defaultFoods);
     }
     
     private void onFoodItemSelected(FoodItem foodItem) {
@@ -514,5 +584,11 @@ public class FoodLoggingActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+    
+    public void refreshCalorieData() {
+        // This method can be called from dialogs to refresh calorie data
+        // The actual refresh happens when returning to FoodActivity
+        setResult(RESULT_OK);
     }
 }

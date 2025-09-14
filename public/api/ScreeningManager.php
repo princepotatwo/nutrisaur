@@ -210,18 +210,20 @@ class ScreeningManager {
         $processed['user_id'] = $data['user_id'] ?? null;
         $processed['municipality'] = $data['municipality'] ?? '';
         $processed['barangay'] = $data['barangay'] ?? '';
-        $processed['birthdate'] = $this->parseDate($data['birthdate'] ?? '');
+        // Handle both 'birthday' (from Android) and 'birthdate' (from web)
+        $processed['birthday'] = $this->parseDate($data['birthday'] ?? $data['birthdate'] ?? '');
         $processed['age'] = intval($data['age'] ?? 0);
         $processed['age_months'] = intval($data['age_months'] ?? 0);
         $processed['sex'] = $data['sex'] ?? '';
-        $processed['pregnant'] = $data['pregnant'] ?? 'Not Applicable';
+        // Handle both 'is_pregnant' (from Android) and 'pregnant' (from web)
+        $processed['is_pregnant'] = $this->parsePregnantStatus($data['is_pregnant'] ?? $data['pregnant'] ?? 'Not Applicable');
         
-        // Anthropometric data
-        $processed['weight'] = floatval($data['weight'] ?? 0);
-        $processed['height'] = floatval($data['height'] ?? 0);
+        // Anthropometric data - use correct database field names
+        $processed['weight_kg'] = floatval($data['weight'] ?? 0);
+        $processed['height_cm'] = floatval($data['height'] ?? 0);
         $processed['bmi'] = floatval($data['bmi'] ?? 0);
         $processed['bmi_category'] = $data['bmi_category'] ?? '';
-        $processed['muac'] = floatval($data['muac'] ?? 0);
+        $processed['muac_cm'] = floatval($data['muac'] ?? 0);
         
         // Food groups (handle both individual booleans and nested objects)
         if (isset($data['food_groups'])) {
@@ -461,6 +463,21 @@ class ScreeningManager {
         }
         
         return null;
+    }
+    
+    private function parsePregnantStatus($pregnantString) {
+        if (empty($pregnantString) || strtolower($pregnantString) === 'not applicable') {
+            return null; // NULL for not applicable
+        }
+        
+        $pregnant = strtolower(trim($pregnantString));
+        if (in_array($pregnant, ['yes', 'true', '1', 'pregnant'])) {
+            return 1; // 1 for yes
+        } elseif (in_array($pregnant, ['no', 'false', '0', 'not pregnant'])) {
+            return 0; // 0 for no
+        }
+        
+        return null; // Default to NULL if unclear
     }
     
     private function getExistingScreeningId($userEmail) {

@@ -8,20 +8,26 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FoodItemAdapter extends BaseAdapter {
     private Context context;
     private List<FoodItem> foodItems;
+    private List<FoodItem> originalFoodItems; // Keep original list for filtering
     private LayoutInflater inflater;
     private AddedFoodManager addedFoodManager;
     private CalorieTracker calorieTracker;
     private String currentMealCategory;
     private boolean hideAddButton = false; // Flag to hide add/remove buttons
+    private boolean isAddedFoodsTab = false; // Flag to indicate we're showing added foods tab
+    private int maxCalories = 500; // Max calories for the current meal
+    private CalorieChangeCallback calorieChangeCallback;
     
     public FoodItemAdapter(Context context, List<FoodItem> foodItems) {
         this.context = context;
         this.foodItems = foodItems;
+        this.originalFoodItems = new ArrayList<>(foodItems); // Keep copy of original list
         this.inflater = LayoutInflater.from(context);
         this.addedFoodManager = new AddedFoodManager(context);
         this.calorieTracker = new CalorieTracker(context);
@@ -33,6 +39,26 @@ public class FoodItemAdapter extends BaseAdapter {
     
     public void setHideAddButton(boolean hide) {
         this.hideAddButton = hide;
+    }
+    
+    public void setIsAddedFoodsTab(boolean isAddedFoodsTab) {
+        this.isAddedFoodsTab = isAddedFoodsTab;
+    }
+    
+    public void setMaxCalories(int maxCalories) {
+        this.maxCalories = maxCalories;
+    }
+    
+    public void setCalorieChangeCallback(CalorieChangeCallback callback) {
+        this.calorieChangeCallback = callback;
+    }
+    
+    public void updateFoodList(List<FoodItem> newFoodItems) {
+        this.foodItems.clear();
+        this.foodItems.addAll(newFoodItems);
+        this.originalFoodItems.clear();
+        this.originalFoodItems.addAll(newFoodItems);
+        notifyDataSetChanged();
     }
     
     @Override
@@ -87,7 +113,8 @@ public class FoodItemAdapter extends BaseAdapter {
             holder.plusButton.setVisibility(View.VISIBLE);
             
             // Update button states based on whether food is added
-            boolean isAdded = addedFoodManager.isAdded(foodItem);
+            // If we're in the added foods tab, all items are considered added
+            boolean isAdded = isAddedFoodsTab || addedFoodManager.isAdded(foodItem);
             updateButtonStates(holder, isAdded);
             
             // Set click listeners
@@ -98,6 +125,7 @@ public class FoodItemAdapter extends BaseAdapter {
             holder.plusButton.setOnClickListener(v -> {
                 onPlusButtonClicked(foodItem, holder);
             });
+            
         }
         
         // Set click listener for entire food item (except buttons)
@@ -200,32 +228,49 @@ public class FoodItemAdapter extends BaseAdapter {
             calorieTracker.removeFoodFromMeal(currentMealCategory, foodItem);
         }
         
-        updateButtonStates(holder, false);
+        // If we're in the added foods tab, remove the item from the current list
+        if (isAddedFoodsTab) {
+            foodItems.remove(foodItem);
+            notifyDataSetChanged();
+        } else {
+            // For other tabs, just update button states
+            updateButtonStates(holder, false);
+            notifyDataSetChanged();
+        }
         
         // Notify parent activity about calorie change
         notifyCalorieChange();
     }
     
     private void onPlusButtonClicked(FoodItem foodItem, ViewHolder holder) {
+        // Set meal category on food item
+        if (currentMealCategory != null) {
+            foodItem.setMealCategory(currentMealCategory);
+        }
+        
         // Add to added foods
         addedFoodManager.addToAddedFoods(foodItem);
         
         // Add to calorie tracking
         if (currentMealCategory != null) {
-            // Get max calories from the current meal (this should be passed from the activity)
-            int maxCalories = 500; // Default, should be passed from activity
             calorieTracker.addFoodToMeal(currentMealCategory, foodItem, maxCalories);
         }
         
         updateButtonStates(holder, true);
+        
+        // Notify adapter that data changed
+        notifyDataSetChanged();
         
         // Notify parent activity about calorie change
         notifyCalorieChange();
     }
     
     private void notifyCalorieChange() {
-        // This will be implemented to notify the parent activity
-        // For now, we'll just log the change
+        if (calorieChangeCallback != null) {
+            calorieChangeCallback.onCalorieChanged();
+        }
+        
+        // Log the change
         if (currentMealCategory != null) {
             CalorieTracker.MealCalories mealCalories = calorieTracker.getMealCalories(currentMealCategory);
             if (mealCalories != null) {
@@ -233,12 +278,35 @@ public class FoodItemAdapter extends BaseAdapter {
             }
         }
     }
+    
+    public interface CalorieChangeCallback {
+        void onCalorieChanged();
+    }
 
     private void onFoodItemClicked(FoodItem foodItem) {
         // Open full screen details activity
         Intent intent = new Intent(context, FoodDetailsActivity.class);
         intent.putExtra("food_item", foodItem);
+        // Pass the current meal category
+        if (currentMealCategory != null) {
+            intent.putExtra("meal_category", currentMealCategory);
+        }
         context.startActivity(intent);
+    }
+    
+    public void filter(String query) {
+        foodItems.clear();
+        if (query == null || query.trim().isEmpty()) {
+            foodItems.addAll(originalFoodItems);
+        } else {
+            String filterPattern = query.toLowerCase().trim();
+            for (FoodItem item : originalFoodItems) {
+                if (item.getName().toLowerCase().contains(filterPattern)) {
+                    foodItems.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
     
     private static class ViewHolder {

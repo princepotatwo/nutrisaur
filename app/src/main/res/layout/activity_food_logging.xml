@@ -25,13 +25,14 @@
         <!-- Back Button -->
         <ImageView
             android:id="@+id/back_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:src="@drawable/ic_close"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:padding="4dp"
+            android:padding="12dp"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:tint="@color/text_primary" />
 
         <!-- Meal Category (Center) -->
         <LinearLayout
@@ -208,6 +209,50 @@
                 android:focusable="true" />
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Loading Animation for Gemini Recommendations -->
+    <LinearLayout
+        android:id="@+id/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone"
+        android:background="@color/white">
+
+        <!-- Animated Loading Circle -->
+        <ProgressBar
+            android:id="@+id/loading_progress_bar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="24dp"
+            android:indeterminateTint="@color/green_primary" />
+
+        <!-- Loading Text -->
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI is generating food recommendations for you..."
+            android:textSize="16sp"
+            android:textColor="@color/text_secondary"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:id="@+id/loading_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="This may take a few moments"
+            android:textSize="14sp"
+            android:textColor="@color/text_hint"
+            android:gravity="center" />
 
     </LinearLayout>
 

@@ -1,7 +1,12 @@
 package com.example.nutrisaur11;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import java.util.concurrent.ExecutorService;
@@ -34,6 +39,11 @@ public class FoodPreloadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "FoodPreloadService started");
         
+        // Start as foreground service for Android 8.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService();
+        }
+        
         if (!isPreloaded && !isPreloading) {
             isPreloading = true;
             preloadFoodData();
@@ -43,6 +53,39 @@ public class FoodPreloadService extends Service {
         }
         
         return START_STICKY;
+    }
+    
+    private void startForegroundService() {
+        String channelId = "food_preload_channel";
+        String channelName = "Food Preload Service";
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                channelId, 
+                channelName, 
+                NotificationManager.IMPORTANCE_LOW
+            );
+            
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+        
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+            this, 0, notificationIntent, 
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0
+        );
+        
+        Notification notification = new Notification.Builder(this, channelId)
+            .setContentTitle("Nutrisaur")
+            .setContentText("Loading food recommendations...")
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentIntent(pendingIntent)
+            .build();
+        
+        startForeground(1, notification);
     }
 
     private void preloadFoodData() {
@@ -54,24 +97,20 @@ public class FoodPreloadService extends Service {
                 // we'll create empty recommendations for now
                 List<FoodRecommendation> newRecommendations = new ArrayList<>();
                 
-                if (newRecommendations != null && !newRecommendations.isEmpty()) {
-                    synchronized (preloadedRecommendations) {
-                        preloadedRecommendations.clear();
-                        preloadedFoodNames.clear();
-                        
-                        for (FoodRecommendation recommendation : newRecommendations) {
-                            preloadedRecommendations.add(recommendation);
-                            preloadedFoodNames.add(recommendation.getFoodName().toLowerCase());
-                        }
-                        
-                        isPreloaded = true;
-                        isPreloading = false;
-                        
-                        Log.d(TAG, "Successfully preloaded " + newRecommendations.size() + " food recommendations");
+                synchronized (preloadedRecommendations) {
+                    preloadedRecommendations.clear();
+                    preloadedFoodNames.clear();
+                    
+                    // Add empty recommendations (this is expected behavior)
+                    for (FoodRecommendation recommendation : newRecommendations) {
+                        preloadedRecommendations.add(recommendation);
+                        preloadedFoodNames.add(recommendation.getFoodName().toLowerCase());
                     }
-                } else {
-                    Log.e(TAG, "Failed to preload food data");
+                    
+                    isPreloaded = true;
                     isPreloading = false;
+                    
+                    Log.d(TAG, "Successfully preloaded " + newRecommendations.size() + " food recommendations");
                 }
                 
                 // Stop the service after preloading

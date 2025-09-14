@@ -5,6 +5,7 @@ import android.view.View;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import android.widget.LinearLayout;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.ProgressBar;
@@ -14,23 +15,25 @@ import android.os.Looper;
 
 public class FoodActivity extends AppCompatActivity {
     private static final String TAG = "FoodActivity";
+    private static final int REQUEST_CODE_FOOD_LOGGING = 1001;
     
     // Meal category cards
-    private CardView breakfastCard, lunchCard, dinnerCard, snacksCard;
+    private LinearLayout breakfastCard, lunchCard, dinnerCard, snacksCard;
     
     // Navigation views
     private View navHome, navFood, navFavorites, navAccount;
 
     // Nutrition UI elements
-    private LoadingCalorieView caloriesLeftLoading, eatenCaloriesLoading, burnedCaloriesLoading;
-    private LoadingCalorieView walkingCaloriesLoading, activityCaloriesLoading;
+    private CuteCircularProgressView caloriesLeftLoading;
     private TextView carbsText, proteinText, fatText;
-    private TextView carbsTargetText, proteinTargetText, fatTargetText;
     private ProgressBar carbsProgress, proteinProgress, fatProgress;
     private FrameLayout centerCircle;
     
     // Meal progress text views
     private TextView breakfastProgressText, lunchProgressText, dinnerProgressText, snacksProgressText;
+    
+    // Date display
+    private TextView dateText;
 
     // Services
     private NutritionService nutritionService;
@@ -39,6 +42,7 @@ public class FoodActivity extends AppCompatActivity {
     
     // Store user data for passing to FoodLoggingActivity
     private java.util.Map<String, String> currentUserData;
+    private int previousKcalGoal = -1; // Track previous kcal goal to detect changes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,10 @@ public class FoodActivity extends AppCompatActivity {
         setContentView(R.layout.activity_food);
         
         Log.d(TAG, "FoodActivity onCreate started");
+        
+        // Check for daily reset before initializing
+        DailyResetManager resetManager = new DailyResetManager(this);
+        resetManager.checkAndResetDaily();
         
         // Initialize services
         nutritionService = new NutritionService(this);
@@ -108,10 +116,16 @@ public class FoodActivity extends AppCompatActivity {
     private void initializeNutritionViews() {
         // Initialize nutrition UI elements
         caloriesLeftLoading = findViewById(R.id.calories_left_loading);
-        eatenCaloriesLoading = findViewById(R.id.eaten_calories_loading);
-        burnedCaloriesLoading = findViewById(R.id.burned_calories_loading);
-        walkingCaloriesLoading = findViewById(R.id.walking_calories_loading);
-        activityCaloriesLoading = findViewById(R.id.activity_calories_loading);
+        
+        // Initialize macronutrient text views
+        carbsText = findViewById(R.id.carbs_text);
+        proteinText = findViewById(R.id.protein_text);
+        fatText = findViewById(R.id.fat_text);
+        
+        // Initialize macronutrient progress bars
+        carbsProgress = findViewById(R.id.carbs_progress);
+        proteinProgress = findViewById(R.id.protein_progress);
+        fatProgress = findViewById(R.id.fat_progress);
         
         // Initialize meal progress text views
         breakfastProgressText = findViewById(R.id.breakfast_progress_text);
@@ -119,7 +133,25 @@ public class FoodActivity extends AppCompatActivity {
         dinnerProgressText = findViewById(R.id.dinner_progress_text);
         snacksProgressText = findViewById(R.id.snacks_progress_text);
         
+        // Initialize date text view
+        dateText = findViewById(R.id.date_text);
+        if (dateText != null) {
+            setCurrentDate();
+        }
+        
         Log.d(TAG, "Nutrition views initialized");
+    }
+    
+    private void setCurrentDate() {
+        try {
+            java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MMM dd", java.util.Locale.getDefault());
+            String currentDate = "Today, " + dateFormat.format(new java.util.Date());
+            dateText.setText(currentDate);
+            Log.d(TAG, "Date set to: " + currentDate);
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting current date: " + e.getMessage());
+            dateText.setText("Today");
+        }
     }
     
     private void setupEditPersonalizationButton() {
@@ -197,7 +229,7 @@ public class FoodActivity extends AppCompatActivity {
             Log.w(TAG, "No user data available to pass to FoodLoggingActivity");
         }
         
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_FOOD_LOGGING);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
     
@@ -226,17 +258,83 @@ public class FoodActivity extends AppCompatActivity {
         if (caloriesLeftLoading != null) {
             caloriesLeftLoading.showLoading();
         }
-        if (eatenCaloriesLoading != null) {
-            eatenCaloriesLoading.showLoading();
+    }
+    
+    /**
+     * Enable progress colors when user starts interacting
+     */
+    private void enableProgressColors() {
+        if (caloriesLeftLoading != null) {
+            // Get current calories left and calculate calories eaten for proper progress
+            String currentText = caloriesLeftLoading.getCenterText();
+            try {
+                int caloriesLeft = Integer.parseInt(currentText);
+                int totalDailyCalories = (int) caloriesLeftLoading.getMaxProgress();
+                int caloriesEaten = totalDailyCalories - caloriesLeft;
+                caloriesLeftLoading.showValueWithProgress(currentText, caloriesEaten);
+            } catch (NumberFormatException e) {
+                // Fallback to regular showValue if parsing fails
+                caloriesLeftLoading.showValue(currentText);
+            }
         }
-        if (burnedCaloriesLoading != null) {
-            burnedCaloriesLoading.showLoading();
+        
+        // Update progress bars with actual values
+        updateMacronutrientProgressBars();
+    }
+    
+    /**
+     * Update macronutrient progress bars with actual progress
+     */
+    private void updateMacronutrientProgressBars() {
+        if (proteinProgress != null) {
+            String proteinText = this.proteinText.getText().toString();
+            String[] parts = proteinText.split("/");
+            if (parts.length == 2) {
+                try {
+                    int current = Integer.parseInt(parts[0].trim());
+                    int target = Integer.parseInt(parts[1].trim().split(" ")[0]);
+                    if (target > 0) {
+                        int progressValue = (int) ((current / (double) target) * 100);
+                        proteinProgress.setProgress(Math.min(progressValue, 100));
+                    }
+                } catch (NumberFormatException e) {
+                    proteinProgress.setProgress(0);
+                }
+            }
         }
-        if (walkingCaloriesLoading != null) {
-            walkingCaloriesLoading.showLoading();
+        
+        if (carbsProgress != null) {
+            String carbsText = this.carbsText.getText().toString();
+            String[] parts = carbsText.split("/");
+            if (parts.length == 2) {
+                try {
+                    int current = Integer.parseInt(parts[0].trim());
+                    int target = Integer.parseInt(parts[1].trim().split(" ")[0]);
+                    if (target > 0) {
+                        int progressValue = (int) ((current / (double) target) * 100);
+                        carbsProgress.setProgress(Math.min(progressValue, 100));
+                    }
+                } catch (NumberFormatException e) {
+                    carbsProgress.setProgress(0);
+                }
+            }
         }
-        if (activityCaloriesLoading != null) {
-            activityCaloriesLoading.showLoading();
+        
+        if (fatProgress != null) {
+            String fatText = this.fatText.getText().toString();
+            String[] parts = fatText.split("/");
+            if (parts.length == 2) {
+                try {
+                    int current = Integer.parseInt(parts[0].trim());
+                    int target = Integer.parseInt(parts[1].trim().split(" ")[0]);
+                    if (target > 0) {
+                        int progressValue = (int) ((current / (double) target) * 100);
+                        fatProgress.setProgress(Math.min(progressValue, 100));
+                    }
+                } catch (NumberFormatException e) {
+                    fatProgress.setProgress(0);
+                }
+            }
         }
     }
 
@@ -363,31 +461,58 @@ public class FoodActivity extends AppCompatActivity {
     }
     
     /**
-     * Update calorie data with animations
+     * Update calorie data with animations - Now shows calories burned in the circle
      */
     private void updateCalorieData(NutritionData nutritionData) {
-        Log.d(TAG, "Calories Left: " + nutritionData.getCaloriesLeft());
-        Log.d(TAG, "Calories Eaten: " + nutritionData.getCaloriesEaten());
-        Log.d(TAG, "Calories Burned: " + nutritionData.getCaloriesBurned());
+        // Get actual eaten calories from CalorieTracker
+        CalorieTracker calorieTracker = new CalorieTracker(this);
         
-        // Update UI elements with loading views
+        // Sync CalorieTracker with AddedFoodManager to ensure data consistency
+        calorieTracker.syncWithAddedFoods(this);
+        
+        // Use the new method to get total eaten calories
+        int totalEatenCalories = calorieTracker.getTotalEatenCalories();
+        
+        // Calculate calories left based on actual eaten calories
+        int totalDailyCalories = nutritionData.getTotalCalories();
+        int caloriesLeft = totalDailyCalories - totalEatenCalories;
+        int caloriesBurned = nutritionData.getCaloriesBurned();
+        
+        // Check if this is a new kcal goal (user profile changed)
+        checkForKcalGoalChange(totalDailyCalories);
+        
+        // Ensure calories left doesn't go below 0
+        if (caloriesLeft < 0) {
+            caloriesLeft = 0;
+        }
+        
+        Log.d(TAG, "=== CALORIE UPDATE ===");
+        Log.d(TAG, "Total Daily Calories: " + totalDailyCalories);
+        Log.d(TAG, "Total Eaten Calories: " + totalEatenCalories);
+        Log.d(TAG, "Calories Left: " + caloriesLeft);
+        Log.d(TAG, "Calories Burned: " + caloriesBurned);
+        
+        // Update UI elements - Show calories left in the circle (decreases as you eat)
         if (caloriesLeftLoading != null) {
-            caloriesLeftLoading.showValue(String.valueOf(nutritionData.getCaloriesLeft()));
-        }
-        if (eatenCaloriesLoading != null) {
-            eatenCaloriesLoading.showValue(String.valueOf(nutritionData.getCaloriesEaten()));
-        }
-        if (burnedCaloriesLoading != null) {
-            burnedCaloriesLoading.showValue(String.valueOf(nutritionData.getCaloriesBurned()));
+            caloriesLeftLoading.setCenterText(String.valueOf(caloriesLeft));
+            // Set max progress based on total daily calories
+            caloriesLeftLoading.setMaxProgress(totalDailyCalories);
+            
+            // Calculate progress based on calories eaten (not calories left)
+            // Progress should increase as you eat more food
+            int caloriesEaten = totalDailyCalories - caloriesLeft;
+            caloriesLeftLoading.showValueWithProgress(String.valueOf(caloriesLeft), caloriesEaten);
         }
         
         // Store in SharedPreferences for future use
         android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
         android.content.SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("calories_left", nutritionData.getCaloriesLeft());
-        editor.putInt("calories_eaten", nutritionData.getCaloriesEaten());
-        editor.putInt("calories_burned", nutritionData.getCaloriesBurned());
+        editor.putInt("calories_left", caloriesLeft);
+        editor.putInt("calories_eaten", totalEatenCalories);
+        editor.putInt("calories_burned", caloriesBurned);
         editor.apply();
+        
+        Log.d(TAG, "Calorie data updated and saved to SharedPreferences");
     }
     
     /**
@@ -397,58 +522,134 @@ public class FoodActivity extends AppCompatActivity {
         NutritionData.MealDistribution mealDistribution = nutritionData.getMealDistribution();
         if (mealDistribution == null) return;
         
+        // Get actual eaten calories from CalorieTracker
+        CalorieTracker calorieTracker = new CalorieTracker(this);
+        
         // Update breakfast progress
         if (breakfastProgressText != null) {
-            String breakfastText = mealDistribution.getBreakfastEaten() + " / " + 
+            CalorieTracker.MealCalories breakfastCalories = calorieTracker.getMealCalories("Breakfast");
+            int breakfastEaten = breakfastCalories != null ? breakfastCalories.getEatenCalories() : 0;
+            String breakfastText = breakfastEaten + " / " + 
                                  mealDistribution.getBreakfastCalories() + " kcal";
             breakfastProgressText.setText(breakfastText);
         }
         
         // Update lunch progress
         if (lunchProgressText != null) {
-            String lunchText = mealDistribution.getLunchEaten() + " / " + 
+            CalorieTracker.MealCalories lunchCalories = calorieTracker.getMealCalories("Lunch");
+            int lunchEaten = lunchCalories != null ? lunchCalories.getEatenCalories() : 0;
+            String lunchText = lunchEaten + " / " + 
                              mealDistribution.getLunchCalories() + " kcal";
             lunchProgressText.setText(lunchText);
         }
         
         // Update dinner progress
         if (dinnerProgressText != null) {
-            String dinnerText = mealDistribution.getDinnerEaten() + " / " + 
+            CalorieTracker.MealCalories dinnerCalories = calorieTracker.getMealCalories("Dinner");
+            int dinnerEaten = dinnerCalories != null ? dinnerCalories.getEatenCalories() : 0;
+            String dinnerText = dinnerEaten + " / " + 
                               mealDistribution.getDinnerCalories() + " kcal";
             dinnerProgressText.setText(dinnerText);
         }
         
         // Update snacks progress
         if (snacksProgressText != null) {
-            String snacksText = mealDistribution.getSnacksEaten() + " / " + 
+            CalorieTracker.MealCalories snacksCalories = calorieTracker.getMealCalories("Snacks");
+            int snacksEaten = snacksCalories != null ? snacksCalories.getEatenCalories() : 0;
+            String snacksText = snacksEaten + " / " + 
                               mealDistribution.getSnacksCalories() + " kcal";
             snacksProgressText.setText(snacksText);
         }
         
-        Log.d(TAG, "Meal progress updated");
+        Log.d(TAG, "Meal progress updated with CalorieTracker data");
     }
     
     /**
-     * Update macronutrient data with animations
+     * Update macronutrient data with animations - Now shows remaining amounts like calories
      */
     private void updateMacronutrientData(NutritionData nutritionData) {
         NutritionData.Macronutrients macros = nutritionData.getMacronutrients();
         if (macros == null) return;
         
-        // For now, we'll store the data and log it
-        Log.d(TAG, "Carbs: " + macros.getCarbs() + "/" + macros.getCarbsTarget() + "g");
-        Log.d(TAG, "Protein: " + macros.getProtein() + "/" + macros.getProteinTarget() + "g");
-        Log.d(TAG, "Fat: " + macros.getFat() + "/" + macros.getFatTarget() + "g");
+        // Get actual eaten macronutrients from CalorieTracker
+        CalorieTracker calorieTracker = new CalorieTracker(this);
+        double totalProteinEaten = 0;
+        double totalCarbsEaten = 0;
+        double totalFatEaten = 0;
+        
+        String[] mealCategories = {"Breakfast", "Lunch", "Dinner", "Snacks"};
+        for (String category : mealCategories) {
+            CalorieTracker.MealCalories mealCalories = calorieTracker.getMealCalories(category);
+            if (mealCalories != null) {
+                for (FoodItem food : mealCalories.getEatenFoods()) {
+                    // Get macronutrients from food item if available, otherwise estimate
+                    int calories = food.getCalories();
+                    if (food.getProtein() > 0) {
+                        totalProteinEaten += food.getProtein();
+                    } else {
+                        totalProteinEaten += calories * 0.25 / 4; // 25% protein, 4 cal/g
+                    }
+                    if (food.getCarbs() > 0) {
+                        totalCarbsEaten += food.getCarbs();
+                    } else {
+                        totalCarbsEaten += calories * 0.50 / 4;   // 50% carbs, 4 cal/g
+                    }
+                    if (food.getFat() > 0) {
+                        totalFatEaten += food.getFat();
+                    } else {
+                        totalFatEaten += calories * 0.25 / 9;     // 25% fat, 9 cal/g
+                    }
+                }
+            }
+        }
+        
+        // Calculate remaining macronutrients
+        int proteinTarget = macros.getProteinTarget();
+        int carbsTarget = macros.getCarbsTarget();
+        int fatTarget = macros.getFatTarget();
+        
+        int proteinLeft = Math.max(0, proteinTarget - (int) totalProteinEaten);
+        int carbsLeft = Math.max(0, carbsTarget - (int) totalCarbsEaten);
+        int fatLeft = Math.max(0, fatTarget - (int) totalFatEaten);
+        
+        // Update text displays with consumed amounts (current/target)
+        if (proteinText != null) {
+            proteinText.setText(String.format("%d/%d g", (int) totalProteinEaten, proteinTarget));
+        }
+        if (carbsText != null) {
+            carbsText.setText(String.format("%d/%d g", (int) totalCarbsEaten, carbsTarget));
+        }
+        if (fatText != null) {
+            fatText.setText(String.format("%d/%d g", (int) totalFatEaten, fatTarget));
+        }
+        
+        // Update progress bars based on consumed amounts (should increase as food is added)
+        if (proteinProgress != null && proteinTarget > 0) {
+            int proteinProgressValue = (int) ((totalProteinEaten / (double) proteinTarget) * 100);
+            proteinProgress.setProgress(Math.min(proteinProgressValue, 100));
+        }
+        if (carbsProgress != null && carbsTarget > 0) {
+            int carbsProgressValue = (int) ((totalCarbsEaten / (double) carbsTarget) * 100);
+            carbsProgress.setProgress(Math.min(carbsProgressValue, 100));
+        }
+        if (fatProgress != null && fatTarget > 0) {
+            int fatProgressValue = (int) ((totalFatEaten / (double) fatTarget) * 100);
+            fatProgress.setProgress(Math.min(fatProgressValue, 100));
+        }
+        
+        Log.d(TAG, "Macronutrients remaining - Protein: " + proteinLeft + "/" + proteinTarget + 
+              ", Carbs: " + carbsLeft + "/" + carbsTarget + 
+              ", Fat: " + fatLeft + "/" + fatTarget);
         
         // Store in SharedPreferences for future use
         android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
         android.content.SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("carbs_current", macros.getCarbs());
-        editor.putInt("carbs_target", macros.getCarbsTarget());
-        editor.putInt("protein_current", macros.getProtein());
-        editor.putInt("protein_target", macros.getProteinTarget());
-        editor.putInt("fat_current", macros.getFat());
-        editor.putInt("fat_target", macros.getFatTarget());
+        editor.putInt("carbs_current", (int) totalCarbsEaten);
+        editor.putInt("carbs_target", carbsTarget);
+        editor.putInt("protein_current", (int) totalProteinEaten);
+        editor.putInt("protein_target", proteinTarget);
+        editor.putInt("fat_current", (int) totalFatEaten);
+        editor.putInt("fat_target", fatTarget);
         editor.apply();
     }
     
@@ -459,16 +660,9 @@ public class FoodActivity extends AppCompatActivity {
         NutritionData.ActivityData activity = nutritionData.getActivity();
         if (activity == null) return;
         
-        // Update UI elements with loading views
+        // Log activity data for debugging
         Log.d(TAG, "Walking Calories: " + activity.getWalkingCalories());
         Log.d(TAG, "Activity Calories: " + activity.getActivityCalories());
-        
-        if (walkingCaloriesLoading != null) {
-            walkingCaloriesLoading.showValue(String.valueOf(activity.getWalkingCalories()));
-        }
-        if (activityCaloriesLoading != null) {
-            activityCaloriesLoading.showValue(String.valueOf(activity.getActivityCalories()));
-        }
         
         // Store in SharedPreferences for future use
         android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
@@ -509,6 +703,35 @@ public class FoodActivity extends AppCompatActivity {
     private void showDefaultNutritionData() {
         Log.d(TAG, "Showing default nutrition data");
         
+        // Show default values in UI - initially no color
+        if (caloriesLeftLoading != null) {
+            caloriesLeftLoading.setCenterText("2000"); // Show default remaining calories
+            caloriesLeftLoading.setMaxProgress(2000); // Set max progress
+            // Don't call showValue() initially to keep no color state
+        }
+        
+        // Set default macronutrient values (showing consumed amounts - start at 0)
+        if (proteinText != null) {
+            proteinText.setText("0/29 g");
+        }
+        if (carbsText != null) {
+            carbsText.setText("0/120 g");
+        }
+        if (fatText != null) {
+            fatText.setText("0/42 g");
+        }
+        
+        // Set default progress bars (start at 0 for initial state)
+        if (proteinProgress != null) {
+            proteinProgress.setProgress(0);
+        }
+        if (carbsProgress != null) {
+            carbsProgress.setProgress(0);
+        }
+        if (fatProgress != null) {
+            fatProgress.setProgress(0);
+        }
+        
         // Store default values in SharedPreferences
         android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
         android.content.SharedPreferences.Editor editor = prefs.edit();
@@ -519,11 +742,11 @@ public class FoodActivity extends AppCompatActivity {
         editor.putInt("walking_calories", 0);
         editor.putInt("activity_calories", 0);
         editor.putInt("carbs_current", 0);
-        editor.putInt("carbs_target", 250);
+        editor.putInt("carbs_target", 120);
         editor.putInt("protein_current", 0);
-        editor.putInt("protein_target", 150);
+        editor.putInt("protein_target", 29);
         editor.putInt("fat_current", 0);
-        editor.putInt("fat_target", 67);
+        editor.putInt("fat_target", 42);
         
         editor.apply();
     }
@@ -578,6 +801,118 @@ public class FoodActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if (requestCode == REQUEST_CODE_FOOD_LOGGING) {
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "Food logging completed, refreshing calorie data");
+                // Refresh calorie data when returning from food logging
+                refreshCalorieData();
+            }
+        }
+    }
+    
+    public void refreshCalorieData() {
+        Log.d(TAG, "Refreshing calorie data...");
+        
+        // Sync CalorieTracker with AddedFoodManager first
+        CalorieTracker calorieTracker = new CalorieTracker(this);
+        calorieTracker.syncWithAddedFoods(this);
+        
+        // Log current state for debugging
+        int totalEatenCalories = calorieTracker.getTotalEatenCalories();
+        Log.d(TAG, "Total eaten calories after sync: " + totalEatenCalories);
+        
+        // Enable progress colors when user adds food
+        enableProgressColors();
+        
+        // Reload nutrition data to reflect changes from food logging
+        if (nutritionService != null) {
+            nutritionService.getNutritionRecommendationsWithUserData(currentUserData, new NutritionService.NutritionCallback() {
+                @Override
+                public void onSuccess(NutritionData nutritionData) {
+                    runOnUiThread(() -> {
+                        updateCalorieData(nutritionData);
+                        updateMacronutrientData(nutritionData);
+                        updateMealProgress(nutritionData);
+                        
+                        // Enable progress colors after data update
+                        enableProgressColors();
+                        
+                        Log.d(TAG, "Calorie data refreshed successfully");
+                    });
+                }
+                
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "Error refreshing calorie data: " + error);
+                }
+            });
+        }
+    }
+    
+    /**
+     * Reset all food data and calories to initial state
+     */
+    public void resetAllFoodData() {
+        Log.d(TAG, "Resetting all food data...");
+        
+        // Clear all added foods
+        AddedFoodManager addedFoodManager = new AddedFoodManager(this);
+        addedFoodManager.clearAllAddedFoods();
+        
+        // Clear all calorie tracking data
+        CalorieTracker calorieTracker = new CalorieTracker(this);
+        calorieTracker.clearAllCalorieData();
+        
+        // Clear kcal suggestion cache to force recalculation
+        if (nutritionService != null) {
+            nutritionService.clearKcalSuggestionCache();
+        }
+        
+        // Refresh the UI to show initial state
+        refreshCalorieData();
+        
+        Log.d(TAG, "All food data reset to initial state");
+    }
+    
+    /**
+     * Clear kcal suggestion cache (call this when user profile is updated)
+     */
+    public void clearKcalSuggestionCache() {
+        if (nutritionService != null) {
+            nutritionService.clearKcalSuggestionCache();
+            Log.d(TAG, "Cleared kcal suggestion cache - will recalculate on next visit");
+        }
+    }
+    
+    /**
+     * Check if kcal goal has changed and notify user if needed
+     */
+    private void checkForKcalGoalChange(int newKcalGoal) {
+        if (previousKcalGoal != -1 && previousKcalGoal != newKcalGoal) {
+            // Kcal goal has changed - notify user
+            int difference = newKcalGoal - previousKcalGoal;
+            String message;
+            
+            if (difference > 0) {
+                message = "Your daily calorie goal increased by " + difference + " calories due to profile changes.";
+            } else {
+                message = "Your daily calorie goal decreased by " + Math.abs(difference) + " calories due to profile changes.";
+            }
+            
+            // Show toast notification
+            android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_LONG).show();
+            
+            Log.d(TAG, "Kcal goal changed: " + previousKcalGoal + " → " + newKcalGoal + " (difference: " + difference + ")");
+        }
+        
+        // Update previous goal for next comparison
+        previousKcalGoal = newKcalGoal;
     }
 
     @Override

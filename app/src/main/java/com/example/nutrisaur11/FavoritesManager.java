@@ -17,10 +17,17 @@ public class FavoritesManager {
     private Context context;
     private SharedPreferences prefs;
     private Gson gson;
+    private String userEmail;
     
     public FavoritesManager(Context context) {
         this.context = context;
-        this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        // Get current user email for user-specific storage
+        SharedPreferences userPrefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        userEmail = userPrefs.getString("current_user_email", "default_user");
+        
+        // Create user-specific preferences file
+        String prefsFileName = PREFS_NAME + "_" + userEmail.replace("@", "_").replace(".", "_");
+        this.prefs = context.getSharedPreferences(prefsFileName, Context.MODE_PRIVATE);
         this.gson = new Gson();
     }
     
@@ -93,5 +100,19 @@ public class FavoritesManager {
     public void clearFavorites() {
         prefs.edit().remove(FAVORITES_KEY).apply();
         Log.d(TAG, "Cleared all favorites");
+    }
+    
+    /**
+     * Clear all favorites data for a specific user (used when logging out)
+     */
+    public static void clearUserData(Context context, String userEmail) {
+        try {
+            String prefsFileName = PREFS_NAME + "_" + userEmail.replace("@", "_").replace(".", "_");
+            SharedPreferences prefs = context.getSharedPreferences(prefsFileName, Context.MODE_PRIVATE);
+            prefs.edit().clear().apply();
+            Log.d(TAG, "Cleared all favorites data for user: " + userEmail);
+        } catch (Exception e) {
+            Log.e(TAG, "Error clearing user favorites data: " + e.getMessage());
+        }
     }
 }

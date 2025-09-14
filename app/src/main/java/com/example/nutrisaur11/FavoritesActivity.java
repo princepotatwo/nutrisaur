@@ -2,123 +2,48 @@ package com.example.nutrisaur11;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
-import java.util.ArrayList;
 
 public class FavoritesActivity extends AppCompatActivity {
-    private FavoritesManager favoritesManager;
-    private RecyclerView favoritesRecyclerView;
-    private FavoriteAdapter favoritesAdapter;
-    private List<DishData.Dish> favoritesList = new ArrayList<>();
+    // Malnutrition detection activity - favorites functionality removed
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
         
-        // Initialize favorites manager
-        favoritesManager = new FavoritesManager(this);
-        
         // Set header title
         TextView pageTitle = findViewById(R.id.page_title);
         TextView pageSubtitle = findViewById(R.id.page_subtitle);
         if (pageTitle != null) {
-            pageTitle.setText("FAVORITES");
+            pageTitle.setText("DETECT SIGNS OF MALNUTRITION");
         }
         if (pageSubtitle != null) {
-            pageSubtitle.setText("Your saved food preferences");
+            pageSubtitle.setText("Take photo to analyze nutritional health indicators");
         }
-        
-        // Setup RecyclerView for favorites
-        setupFavoritesRecyclerView();
-        
-        // Load favorites
-        loadFavorites();
         
         setupButtons();
     }
     
     private void setupFavoritesRecyclerView() {
-        favoritesRecyclerView = findViewById(R.id.favorites_recycler_view);
-        if (favoritesRecyclerView == null) {
-            android.util.Log.e("FavoritesActivity", "RecyclerView not found in layout!");
-            return;
-        }
-        
-        android.util.Log.d("FavoritesActivity", "Setting up RecyclerView");
-        favoritesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        favoritesAdapter = new FavoriteAdapter(favoritesList);
-        favoritesRecyclerView.setAdapter(favoritesAdapter);
-        
-        // Show RecyclerView and hide static cards
-        favoritesRecyclerView.setVisibility(View.VISIBLE);
-        hideStaticCards();
+        // RecyclerView functionality removed - now using malnutrition detection UI
+        android.util.Log.d("FavoritesActivity", "Malnutrition detection UI active");
     }
     
     private void loadFavorites() {
-        String userEmail = getCurrentUserEmail();
-        android.util.Log.d("FavoritesActivity", "Loading favorites for user: " + userEmail);
-        
-        if (userEmail.isEmpty()) {
-            android.widget.Toast.makeText(this, "Please log in to view favorites", android.widget.Toast.LENGTH_SHORT).show();
-            android.util.Log.d("FavoritesActivity", "User email is empty");
-            return;
-        }
-        
-        favoritesList.clear();
-        List<FoodItem> userFavorites = favoritesManager.getFavorites();
-        
-        // Convert FoodItem to DishData.Dish for compatibility
-        for (FoodItem foodItem : userFavorites) {
-            DishData.Dish dish = new DishData.Dish(
-                foodItem.getName(), // name
-                "🍽️", // emoji
-                "Favorite food", // desc
-                new ArrayList<>(), // tags
-                new ArrayList<>()  // allergens
-            );
-            dish.calories = foodItem.getCalories();
-            favoritesList.add(dish);
-        }
-        
-        android.util.Log.d("FavoritesActivity", "Loaded " + userFavorites.size() + " favorites");
-        
-        if (favoritesAdapter != null) {
-            favoritesAdapter.notifyDataSetChanged();
-        }
-        
-        // Update empty state
-        updateEmptyState();
-        
-        // Hide static cards if we have a working RecyclerView
-        hideStaticCards();
+        // Favorites functionality removed - now using malnutrition detection UI
+        android.util.Log.d("FavoritesActivity", "Malnutrition detection UI active - favorites loading disabled");
     }
     
     private void hideStaticCards() {
-        // Hide the static cards container
-        View staticCardsContainer = findViewById(R.id.static_favorites_container);
-        if (staticCardsContainer != null) {
-            staticCardsContainer.setVisibility(View.GONE);
-            android.util.Log.d("FavoritesActivity", "Hidden static cards container");
-        }
+        // Static cards functionality removed - now using malnutrition detection UI
+        android.util.Log.d("FavoritesActivity", "Malnutrition detection UI active - static cards disabled");
     }
     
     private void updateEmptyState() {
-        TextView emptyText = findViewById(R.id.empty_favorites_text);
-        if (emptyText != null) {
-            if (favoritesList.isEmpty()) {
-                emptyText.setVisibility(View.VISIBLE);
-                emptyText.setText("No favorites yet!\nTap the heart icon on any food to add it to favorites.");
-            } else {
-                emptyText.setVisibility(View.GONE);
-            }
-        }
+        // Empty state functionality removed - now using malnutrition detection UI
+        android.util.Log.d("FavoritesActivity", "Malnutrition detection UI active - empty state disabled");
     }
     
     private String getCurrentUserEmail() {
@@ -129,6 +54,14 @@ public class FavoritesActivity extends AppCompatActivity {
     }
     
     private void setupButtons() {
+        // Setup malnutrition detection button (camera functionality removed)
+        findViewById(R.id.start_detection_button).setOnClickListener(v -> {
+            // Launch full screen camera activity
+            Intent intent = new Intent(FavoritesActivity.this, FullScreenCameraActivity.class);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
+        
         // Setup bottom navigation bar
         findViewById(R.id.nav_home).setOnClickListener(v -> {
             Intent intent = new Intent(FavoritesActivity.this, MainActivity.class);
@@ -156,16 +89,4 @@ public class FavoritesActivity extends AppCompatActivity {
         });
     }
     
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Reload favorites when returning to the activity
-        loadFavorites();
-    }
-    
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // FavoritesManager doesn't need to be closed
-    }
 } 

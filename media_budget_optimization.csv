@@ -1,0 +1,23 @@
+Label,Value_Formula
+Decision Variables,
+Social media $ (S),1000
+Television $ (T),1000
+,
+Total Spend,=B2 + B3
+Total Reach (people),=50*B2 + 40*B3
+,
+Budget available ($),50000
+Max TV percent,0.7
+Max TV $ limit,=B8 * B9
+Required Reach (people),1500000
+,
+Model A Results (Maximize Reach),
+Optimal Social $,=B2
+Optimal TV $,=B3
+Max Reach,=B6
+,
+Model B Results (Minimize Spend),
+Min Social $,=B2
+Min TV $,=B3
+Min Total Spend,=B5
+Achieved Reach,=B6

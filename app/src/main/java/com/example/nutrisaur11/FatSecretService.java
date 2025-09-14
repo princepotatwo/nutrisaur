@@ -1,5 +1,6 @@
 package com.example.nutrisaur11;
 
+import android.content.Context;
 import android.util.Log;
 import okhttp3.*;
 import org.json.JSONArray;
@@ -16,6 +17,7 @@ public class FatSecretService {
     private static final String CLIENT_SECRET = "45a16d6866d14f949e6be311d1970d44";
     
     private OkHttpClient httpClient;
+    private Context context;
     
     public FatSecretService() {
         httpClient = new OkHttpClient.Builder()
@@ -23,6 +25,11 @@ public class FatSecretService {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
+    }
+    
+    public FatSecretService(Context context) {
+        this();
+        this.context = context;
     }
     
     public interface FoodSearchCallback {
@@ -81,12 +88,20 @@ public class FatSecretService {
         Log.d(TAG, "getPersonalizedFoods called for " + mealCategory + ", BMI: " + userProfile.getBmi() + " (" + userProfile.getBmiCategory() + "), Age: " + userProfile.getAge());
         
         // Use Gemini AI for personalized recommendations
-        GeminiService geminiService = new GeminiService();
+        GeminiService geminiService = new GeminiService(context);
         geminiService.getPersonalizedFoodRecommendations(mealCategory, maxCalories, userProfile, new GeminiService.GeminiCallback() {
             @Override
             public void onSuccess(List<FoodItem> foods, String summary) {
                 Log.d(TAG, "Gemini AI returned " + foods.size() + " personalized foods for " + mealCategory);
                 Log.d(TAG, "AI Summary: " + summary);
+                
+                // Cache the results using GeminiCacheManager
+                if (context != null) {
+                    GeminiCacheManager cacheManager = new GeminiCacheManager(context);
+                    cacheManager.cacheRecommendations(mealCategory, userProfile, foods, summary);
+                    Log.d(TAG, "Cached Gemini recommendations for " + mealCategory);
+                }
+                
                 callback.onSuccess(foods);
             }
             

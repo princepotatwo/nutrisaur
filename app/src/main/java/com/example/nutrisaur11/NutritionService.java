@@ -23,12 +23,14 @@ public class NutritionService {
     private ExecutorService executorService;
     private OkHttpClient httpClient;
     private SharedPreferences prefs;
+    private KcalSuggestionCacheManager cacheManager;
 
     public NutritionService(Context context) {
         this.context = context;
         this.executorService = Executors.newSingleThreadExecutor();
         this.httpClient = new OkHttpClient();
         this.prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        this.cacheManager = new KcalSuggestionCacheManager(context);
     }
 
     /**
@@ -43,102 +45,114 @@ public class NutritionService {
      * Get personalized nutrition recommendations
      */
     public void getNutritionRecommendations(NutritionCallback callback) {
-        executorService.execute(() -> {
-            try {
-                Log.d(TAG, "Starting nutrition recommendations...");
-                
-                // Get user profile data
-                UserProfile userProfile = getUserProfile();
-                if (userProfile == null) {
-                    Log.e(TAG, "User profile is null - personalization not completed");
-                    callback.onError("User profile not found. Please complete personalization first.");
-                    return;
-                }
-                
-                Log.d(TAG, "User profile loaded: " + userProfile.getName() + ", BMI: " + userProfile.getBmi());
-
-                // Create nutritionist-level prompt
-                String prompt = createNutritionPrompt(userProfile);
-                Log.d(TAG, "Generated prompt: " + prompt);
-                
-                // Call Gemini API
-                Log.d(TAG, "Calling Gemini API...");
-                String response = callGeminiAPI(prompt);
-                Log.d(TAG, "Gemini API response: " + (response != null ? "Success" : "Failed"));
-                NutritionData nutritionData;
-                
-                if (response == null) {
-                    Log.w(TAG, "Gemini API failed, using fallback nutrition data");
-                    // Use fallback nutrition data based on user profile
-                    nutritionData = generateFallbackNutritionData(userProfile);
-                } else {
-                    // Parse JSON response
-                    nutritionData = parseNutritionResponse(response, userProfile);
-                    if (nutritionData == null) {
-                        Log.w(TAG, "Failed to parse Gemini response, using fallback nutrition data");
-                        nutritionData = generateFallbackNutritionData(userProfile);
+        // Check if executor service is still available
+        if (executorService == null || executorService.isShutdown()) {
+            Log.e(TAG, "Executor service is not available, creating new one");
+            executorService = Executors.newSingleThreadExecutor();
+        }
+        
+        try {
+            executorService.execute(() -> {
+                try {
+                    Log.d(TAG, "Starting nutrition recommendations...");
+                    
+                    // Get user profile data
+                    UserProfile userProfile = getUserProfile();
+                    if (userProfile == null) {
+                        Log.e(TAG, "User profile is null - personalization not completed");
+                        callback.onError("User profile not found. Please complete personalization first.");
+                        return;
                     }
+                    
+                    Log.d(TAG, "User profile loaded: " + userProfile.getName() + ", BMI: " + userProfile.getBmi());
+
+                    // Check cache first - only calculate if user profile changed or cache expired
+                    if (cacheManager.isCacheValid(userProfile)) {
+                        Log.d(TAG, "Using cached kcal suggestion - user profile unchanged");
+                        NutritionData cachedData = cacheManager.getCachedKcalSuggestion();
+                        if (cachedData != null) {
+                            callback.onSuccess(cachedData);
+                            return;
+                        }
+                    }
+                    
+                    // User profile changed or cache expired - calculate new nutrition data
+                    Log.d(TAG, "User profile changed or cache expired - calculating new nutrition data...");
+                    NutritionData nutritionData = calculateNutritionData(userProfile);
+                    
+                    // Cache the new nutrition data
+                    cacheManager.cacheKcalSuggestion(userProfile, nutritionData);
+                    Log.d(TAG, "Cached new kcal suggestion for updated user profile");
+
+                    // Return success
+                    callback.onSuccess(nutritionData);
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Error getting nutrition recommendations: " + e.getMessage());
+                    callback.onError("Error: " + e.getMessage());
                 }
-
-                // Return success
-                callback.onSuccess(nutritionData);
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error getting nutrition recommendations: " + e.getMessage());
-                callback.onError("Error: " + e.getMessage());
-            }
-        });
+            });
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            Log.e(TAG, "Task rejected by executor service: " + e.getMessage());
+            callback.onError("Service temporarily unavailable. Please try again.");
+        }
     }
 
     /**
      * Get personalized nutrition recommendations with user data from community_users table
      */
     public void getNutritionRecommendationsWithUserData(java.util.Map<String, String> userData, NutritionCallback callback) {
-        executorService.execute(() -> {
-            try {
-                Log.d(TAG, "Starting nutrition recommendations with database user data...");
-                
-                // Create user profile from database data
-                UserProfile userProfile = createUserProfileFromDatabaseData(userData);
-                if (userProfile == null) {
-                    Log.e(TAG, "Invalid user data from database");
-                    callback.onError("Invalid user data from database");
-                    return;
-                }
-                
-                Log.d(TAG, "User profile created from database: " + userProfile.getName() + ", BMI: " + userProfile.getBmi());
-
-                // Create nutritionist-level prompt
-                String prompt = createNutritionPrompt(userProfile);
-                Log.d(TAG, "Generated prompt with database data: " + prompt);
-                
-                // Call Gemini API
-                Log.d(TAG, "Calling Gemini API with database data...");
-                String response = callGeminiAPI(prompt);
-                Log.d(TAG, "Gemini API response: " + (response != null ? "Success" : "Failed"));
-                NutritionData nutritionData;
-                
-                if (response == null) {
-                    Log.w(TAG, "Gemini API failed, using fallback nutrition data");
-                    // Use fallback nutrition data based on user profile
-                    nutritionData = generateFallbackNutritionData(userProfile);
-                } else {
-                    // Parse JSON response
-                    nutritionData = parseNutritionResponse(response, userProfile);
-                    if (nutritionData == null) {
-                        Log.w(TAG, "Failed to parse Gemini response, using fallback nutrition data");
-                        nutritionData = generateFallbackNutritionData(userProfile);
+        // Check if executor service is still available
+        if (executorService == null || executorService.isShutdown()) {
+            Log.e(TAG, "Executor service is not available, creating new one");
+            executorService = Executors.newSingleThreadExecutor();
+        }
+        
+        try {
+            executorService.execute(() -> {
+                try {
+                    Log.d(TAG, "Starting nutrition recommendations with database user data...");
+                    
+                    // Create user profile from database data
+                    UserProfile userProfile = createUserProfileFromDatabaseData(userData);
+                    if (userProfile == null) {
+                        Log.e(TAG, "Invalid user data from database");
+                        callback.onError("Invalid user data from database");
+                        return;
                     }
+                    
+                    Log.d(TAG, "User profile created from database: " + userProfile.getName() + ", BMI: " + userProfile.getBmi());
+
+                    // Check cache first - only calculate if user profile changed or cache expired
+                    if (cacheManager.isCacheValid(userProfile)) {
+                        Log.d(TAG, "Using cached kcal suggestion - user profile unchanged");
+                        NutritionData cachedData = cacheManager.getCachedKcalSuggestion();
+                        if (cachedData != null) {
+                            callback.onSuccess(cachedData);
+                            return;
+                        }
+                    }
+                    
+                    // User profile changed or cache expired - calculate new nutrition data
+                    Log.d(TAG, "User profile changed or cache expired - calculating new nutrition data...");
+                    NutritionData nutritionData = calculateNutritionData(userProfile);
+                    
+                    // Cache the new nutrition data
+                    cacheManager.cacheKcalSuggestion(userProfile, nutritionData);
+                    Log.d(TAG, "Cached new kcal suggestion for updated user profile");
+
+                    // Return success
+                    callback.onSuccess(nutritionData);
+
+                } catch (Exception e) {
+                    Log.e(TAG, "Error getting nutrition recommendations: " + e.getMessage());
+                    callback.onError("Error: " + e.getMessage());
                 }
-
-                // Return success
-                callback.onSuccess(nutritionData);
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error getting nutrition recommendations: " + e.getMessage());
-                callback.onError("Error: " + e.getMessage());
-            }
-        });
+            });
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            Log.e(TAG, "Task rejected by executor service: " + e.getMessage());
+            callback.onError("Service temporarily unavailable. Please try again.");
+        }
     }
 
     /**
@@ -544,8 +558,91 @@ public class NutritionService {
     }
 
     /**
-     * Generate fallback nutrition data based on user profile
+     * Calculate nutrition data using system-based calculations
      */
+    private NutritionData calculateNutritionData(UserProfile userProfile) {
+        Log.d(TAG, "Calculating nutrition data for user: " + userProfile.getName());
+        
+        // Calculate daily calorie target
+        int totalCalories = CalorieCalculationService.calculateDailyCalorieTarget(userProfile);
+        
+        // Calculate macronutrients
+        double proteinTarget = CalorieCalculationService.calculateProteinTarget(userProfile);
+        double fatTarget = CalorieCalculationService.calculateFatTarget(totalCalories);
+        double carbTarget = CalorieCalculationService.calculateCarbTarget(totalCalories, proteinTarget, fatTarget);
+        
+        // Calculate meal distribution
+        CalorieCalculationService.MealDistribution mealDist = CalorieCalculationService.calculateMealDistribution(totalCalories);
+        
+        // Generate health status and recommendations
+        String healthStatus = CalorieCalculationService.generateHealthStatus(userProfile);
+        String recommendation = CalorieCalculationService.generateNutritionRecommendation(userProfile);
+        
+        // Create NutritionData object
+        NutritionData nutritionData = new NutritionData();
+        nutritionData.setTotalCalories(totalCalories);
+        nutritionData.setCaloriesLeft(totalCalories);
+        nutritionData.setCaloriesEaten(0);
+        nutritionData.setCaloriesBurned(0);
+        nutritionData.setBmi(userProfile.getBmi());
+        nutritionData.setBmiCategory(userProfile.getBmiCategory());
+        nutritionData.setHealthStatus(healthStatus);
+        nutritionData.setRecommendation(recommendation);
+        
+        // Create macronutrients object
+        NutritionData.Macronutrients macronutrients = new NutritionData.Macronutrients();
+        macronutrients.setCarbs(0);
+        macronutrients.setProtein(0);
+        macronutrients.setFat(0);
+        macronutrients.setCarbsTarget((int) carbTarget);
+        macronutrients.setProteinTarget((int) proteinTarget);
+        macronutrients.setFatTarget((int) fatTarget);
+        nutritionData.setMacronutrients(macronutrients);
+        
+        // Create meal distribution object
+        NutritionData.MealDistribution mealDistribution = new NutritionData.MealDistribution();
+        mealDistribution.setBreakfastCalories(mealDist.breakfastCalories);
+        mealDistribution.setLunchCalories(mealDist.lunchCalories);
+        mealDistribution.setDinnerCalories(mealDist.dinnerCalories);
+        mealDistribution.setSnacksCalories(mealDist.snacksCalories);
+        mealDistribution.setBreakfastEaten(0);
+        mealDistribution.setLunchEaten(0);
+        mealDistribution.setDinnerEaten(0);
+        mealDistribution.setSnacksEaten(0);
+        
+        // Set meal recommendations based on BMI
+        if (userProfile.getBmi() < 18.5) {
+            mealDistribution.setBreakfastRecommendation("High-calorie breakfast: Oatmeal with nuts, banana, and honey");
+            mealDistribution.setLunchRecommendation("Nutrient-dense lunch: Grilled chicken with rice and vegetables");
+            mealDistribution.setDinnerRecommendation("Protein-rich dinner: Salmon with sweet potato and avocado");
+            mealDistribution.setSnacksRecommendation("Healthy snacks: Trail mix, Greek yogurt, or smoothies");
+        } else if (userProfile.getBmi() >= 25) {
+            mealDistribution.setBreakfastRecommendation("Balanced breakfast: Greek yogurt with berries and granola");
+            mealDistribution.setLunchRecommendation("Light lunch: Grilled fish with quinoa and mixed vegetables");
+            mealDistribution.setDinnerRecommendation("Lean dinner: Turkey breast with brown rice and steamed broccoli");
+            mealDistribution.setSnacksRecommendation("Low-calorie snacks: Apple slices, carrot sticks, or air-popped popcorn");
+        } else {
+            mealDistribution.setBreakfastRecommendation("Balanced breakfast: Whole grain toast with eggs and avocado");
+            mealDistribution.setLunchRecommendation("Nutritious lunch: Grilled chicken salad with mixed vegetables");
+            mealDistribution.setDinnerRecommendation("Healthy dinner: Baked fish with sweet potato and green beans");
+            mealDistribution.setSnacksRecommendation("Healthy snacks: Mixed nuts, fruit, or vegetable sticks");
+        }
+        
+        nutritionData.setMealDistribution(mealDistribution);
+        
+        // Create activity data object
+        NutritionData.ActivityData activityData = new NutritionData.ActivityData();
+        activityData.setWalkingCalories(0);
+        activityData.setActivityCalories(0);
+        activityData.setTotalBurned(0);
+        nutritionData.setActivity(activityData);
+        
+        Log.d(TAG, "Calculated nutrition data: " + totalCalories + " calories, " + 
+              proteinTarget + "g protein, " + carbTarget + "g carbs, " + fatTarget + "g fat");
+        
+        return nutritionData;
+    }
+    
     private NutritionData generateFallbackNutritionData(UserProfile userProfile) {
         Log.d(TAG, "Generating fallback nutrition data for user: " + userProfile.getName());
         
@@ -651,11 +748,50 @@ public class NutritionService {
     }
 
     /**
+     * Clear kcal suggestion cache (call when user profile is updated)
+     */
+    public void clearKcalSuggestionCache() {
+        if (cacheManager != null) {
+            cacheManager.clearCache();
+            Log.d(TAG, "Cleared kcal suggestion cache");
+        }
+    }
+    
+    /**
+     * Check if user profile has changed since last cache
+     */
+    public boolean hasUserProfileChanged(UserProfile userProfile) {
+        if (cacheManager != null) {
+            return cacheManager.hasUserProfileChanged(userProfile);
+        }
+        return true; // Assume changed if no cache manager
+    }
+
+    /**
      * Clean up resources
      */
     public void cleanup() {
         if (executorService != null && !executorService.isShutdown()) {
+            Log.d(TAG, "Shutting down executor service");
             executorService.shutdown();
+            try {
+                // Wait for existing tasks to complete
+                if (!executorService.awaitTermination(2, java.util.concurrent.TimeUnit.SECONDS)) {
+                    Log.w(TAG, "Executor did not terminate gracefully, forcing shutdown");
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                Log.w(TAG, "Interrupted while waiting for executor termination");
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
         }
+    }
+    
+    /**
+     * Check if the service is available for use
+     */
+    public boolean isAvailable() {
+        return executorService != null && !executorService.isShutdown();
     }
 }

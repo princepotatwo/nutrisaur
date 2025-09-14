@@ -11,6 +11,12 @@ public class FoodItem implements Serializable {
     private String brand;
     private String description;
     private String imageUrl;
+    private String alternativeReason;
+    private String mealCategory;
+    private double protein;
+    private double carbs;
+    private double fat;
+    private double fiber;
     
     public FoodItem() {}
     
@@ -46,6 +52,24 @@ public class FoodItem implements Serializable {
     
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    
+    public String getAlternativeReason() { return alternativeReason; }
+    public void setAlternativeReason(String alternativeReason) { this.alternativeReason = alternativeReason; }
+    
+    public String getMealCategory() { return mealCategory; }
+    public void setMealCategory(String mealCategory) { this.mealCategory = mealCategory; }
+    
+    public double getProtein() { return protein; }
+    public void setProtein(double protein) { this.protein = protein; }
+    
+    public double getCarbs() { return carbs; }
+    public void setCarbs(double carbs) { this.carbs = carbs; }
+    
+    public double getFat() { return fat; }
+    public void setFat(double fat) { this.fat = fat; }
+    
+    public double getFiber() { return fiber; }
+    public void setFiber(double fiber) { this.fiber = fiber; }
     
     public String getCaloriesText() {
         return calories + " kcal, " + weight + " " + unit;

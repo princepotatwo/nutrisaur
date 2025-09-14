@@ -14,16 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Database configuration
-$host = 'autorack.proxy.rlwy.net';
-$port = '47913';
-$dbname = 'railway';
-$username = 'root';
-$password = 'YOloxCacdHZJHdtFkGJKwKOJuATIZelm';
+// Include the main configuration file
+require_once __DIR__ . '/../config.php';
 
 try {
-    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getDatabaseConnection();
+    if (!$pdo) {
+        throw new Exception("Failed to establish database connection");
+    }
     
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Get JSON data
@@ -42,12 +40,105 @@ try {
         $sex = $data['sex'] ?? '';
         $birthday = $data['birthday'] ?? '';
         $is_pregnant = $data['is_pregnant'] ?? 'No';
-        $weight = $data['weight'] ?? '';
-        $height = $data['height'] ?? '';
-        $muac = $data['muac'] ?? '';
+        $weight = floatval($data['weight'] ?? 0);
+        $height = floatval($data['height'] ?? 0);
+        $muac = floatval($data['muac'] ?? 0);
+        
+        // Calculate age from birthday
+        $age = 0;
+        if (!empty($birthday)) {
+            $birthDate = new DateTime($birthday);
+            $today = new DateTime();
+            $age = $today->diff($birthDate)->y;
+        }
+        
+        // CRITICAL: Validate all input data
+        $validation_errors = [];
         
         if (empty($email)) {
-            echo json_encode(['success' => false, 'message' => 'Email is required']);
+            $validation_errors[] = 'Email is required';
+        }
+        
+        if (empty($name)) {
+            $validation_errors[] = 'Name is required';
+        }
+        
+        if (empty($municipality)) {
+            $validation_errors[] = 'Municipality is required';
+        }
+        
+        if (empty($barangay)) {
+            $validation_errors[] = 'Barangay is required';
+        }
+        
+        if (empty($sex) || !in_array($sex, ['Male', 'Female', 'Other'])) {
+            $validation_errors[] = 'Valid sex is required (Male, Female, or Other)';
+        }
+        
+        // Validate age
+        if ($age < 0 || $age > 150) {
+            $validation_errors[] = "Invalid age: {$age} years. Age must be between 0-150 years.";
+        }
+        
+        // Validate weight
+        if ($weight <= 0) {
+            $validation_errors[] = "Invalid weight: {$weight} kg. Weight must be greater than 0.";
+        } elseif ($weight < 0.5) {
+            $validation_errors[] = "Invalid weight: {$weight} kg. Weight is too low (minimum 0.5 kg).";
+        } elseif ($weight > 1000) {
+            $validation_errors[] = "Invalid weight: {$weight} kg. Weight is too high (maximum 1000 kg).";
+        }
+        
+        // Validate height
+        if ($height <= 0) {
+            $validation_errors[] = "Invalid height: {$height} cm. Height must be greater than 0.";
+        } elseif ($height < 20) {
+            $validation_errors[] = "Invalid height: {$height} cm. Height is too low (minimum 20 cm).";
+        } elseif ($height > 300) {
+            $validation_errors[] = "Invalid height: {$height} cm. Height is too high (maximum 300 cm).";
+        }
+        
+        // Validate MUAC
+        if ($muac < 0) {
+            $validation_errors[] = "Invalid MUAC: {$muac} cm. MUAC cannot be negative.";
+        } elseif ($muac > 50) {
+            $validation_errors[] = "Invalid MUAC: {$muac} cm. MUAC is too high (maximum 50 cm).";
+        }
+        
+        // Calculate and validate BMI
+        if ($weight > 0 && $height > 0) {
+            $height_m = $height / 100;
+            $bmi = $weight / ($height_m * $height_m);
+            
+            if ($bmi < 5 || $bmi > 100) {
+                $validation_errors[] = "Invalid BMI: " . round($bmi, 1) . ". BMI should be between 5-100.";
+            }
+            
+            // Check for impossible combinations
+            if ($age == 1 && $weight > 1000 && $height > 1000) {
+                $validation_errors[] = "Impossible measurements detected: Age {$age}, Weight {$weight} kg, Height {$height} cm. These values are not medically possible for a 1-year-old.";
+            }
+        }
+        
+        // Age-specific validation
+        if ($age >= 0 && $age < 18) {
+            // Child-specific validation
+            if ($age < 2 && $weight > 20) {
+                $validation_errors[] = "Weight {$weight} kg is too high for age {$age}. Expected range: 3-15 kg.";
+            }
+            if ($age < 2 && $height > 100) {
+                $validation_errors[] = "Height {$height} cm is too high for age {$age}. Expected range: 50-90 cm.";
+            }
+        }
+        
+        // Return validation errors if any
+        if (!empty($validation_errors)) {
+            echo json_encode([
+                'success' => false, 
+                'message' => 'Data validation failed',
+                'errors' => $validation_errors,
+                'recommendation' => 'Please check your measurements and enter realistic values.'
+            ]);
             exit;
         }
         

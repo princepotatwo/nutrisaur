@@ -116,6 +116,20 @@ public class EventBackgroundService extends Service {
                                 org.json.JSONObject eventObj = eventsArray.getJSONObject(i);
                                 String eventId = String.valueOf(eventObj.getInt("id"));
                                 
+                                // Handle created_at field that might be boolean false or timestamp
+                                long createdAt = 0;
+                                try {
+                                    if (eventObj.get("created_at") instanceof Boolean) {
+                                        // If created_at is boolean false, use current timestamp
+                                        createdAt = System.currentTimeMillis();
+                                    } else {
+                                        createdAt = eventObj.getLong("created_at");
+                                    }
+                                } catch (Exception e) {
+                                    // Fallback to current timestamp if parsing fails
+                                    createdAt = System.currentTimeMillis();
+                                }
+                                
                                 Event event = new Event(
                                     eventObj.getInt("id"),
                                     eventObj.getString("title"),
@@ -124,7 +138,7 @@ public class EventBackgroundService extends Service {
                                     eventObj.getString("date_time"),
                                     eventObj.getString("location"),
                                     eventObj.getString("organizer"),
-                                    eventObj.getLong("created_at")
+                                    createdAt
                                 );
                                 
                                 // Check if this is a truly new event (FIXED: Match MainActivity logic)

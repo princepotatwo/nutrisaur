@@ -128,6 +128,9 @@ public class FoodSubstitutionManager {
                                          String userAllergies, String userDietPrefs, String userPregnancyStatus, 
                                          String substitutionReason) {
         
+        // Load food preferences for AI prompting
+        Map<String, String> questionnaireAnswers = FoodActivityIntegration.loadQuestionnaireAnswers(context);
+        
         StringBuilder prompt = new StringBuilder();
         prompt.append("You are a professional Filipino nutritionist.\n");
         prompt.append("Given an ORIGINAL DISH, provide 3 healthier substitutions.\n\n");
@@ -172,11 +175,17 @@ public class FoodSubstitutionManager {
             prompt.append("Pregnancy: Yes - Ensure all alternatives are safe for pregnant women\n");
         }
         
+        // Add combined food preferences if available
+        String combinedPreferences = questionnaireAnswers.get("food_preferences_combined");
+        if (combinedPreferences != null && !combinedPreferences.isEmpty()) {
+            prompt.append("Food Preferences: ").append(combinedPreferences).append("\n");
+        }
+        
         prompt.append("\nOUTPUT:\n");
         prompt.append("Return ONLY a valid JSON array with 3 items:\n");
         prompt.append("[\n");
         prompt.append("  {\n");
-        prompt.append("    \"food_name\": \"[Alternative Dish Name]\",\n");
+        prompt.append("    \"food_name\": \"[Filipino Food Name Only]\",\n");
         prompt.append("    \"calories\": <number>,\n");
         prompt.append("    \"protein_g\": <number>,\n");
         prompt.append("    \"fat_g\": <number>,\n");
@@ -186,7 +195,13 @@ public class FoodSubstitutionManager {
         prompt.append("    \"description\": \"[Nutritional improvements and benefits]\"\n");
         prompt.append("  },\n");
         prompt.append("  ...\n");
-        prompt.append("]");
+        prompt.append("]\n\n");
+        prompt.append("FOOD NAMING RULES:");
+        prompt.append("\n- Use ONLY Filipino food names that most Filipinos commonly use");
+        prompt.append("\n- NO parentheses, descriptions, or additional text in the food name");
+        prompt.append("\n- NO English translations or explanations in the name");
+        prompt.append("\n- Examples: 'Adobo', 'Sinigang', 'Kare-kare', 'Pancit', 'Lumpia'");
+        prompt.append("\n- NOT: 'Adobo (Filipino stewed meat)', 'Sinigang - sour soup', 'Kare-kare (peanut stew)'");
         
         return prompt.toString();
     }

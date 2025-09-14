@@ -38,6 +38,10 @@ public class NutritionDashboardActivity extends AppCompatActivity {
         
         Log.d(TAG, "Creating Nutrition Dashboard Activity");
         
+        // Check for daily reset before initializing
+        DailyResetManager resetManager = new DailyResetManager(this);
+        resetManager.checkAndResetDaily();
+        
         // Initialize UI components
         initializeViews();
         

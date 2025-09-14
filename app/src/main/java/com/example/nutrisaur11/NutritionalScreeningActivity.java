@@ -6,530 +6,264 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import org.json.JSONObject;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 
 public class NutritionalScreeningActivity extends AppCompatActivity {
     
-    private int currentQuestion = 0;
-    private Map<String, String> answers = new HashMap<>();
+    // UI Components
     private LinearLayout optionsContainer;
     private TextView questionText;
     private TextView progressText;
     private Button nextButton;
-    private Button previousButton;
-    private Button optionVeryOften;
-    private Button optionFairlyOften;
-    private Button optionSometimes;
-    private Button optionAlmostNever;
-    private Button optionNever;
+    private Button btnPrevious;
     private EditText weightInput;
     private EditText heightInput;
-    private EditText muacInput;
+    private android.app.ProgressDialog progressDialog;
     
-    // Community Nutritional Assessment Questions based on flowchart
-    private String[] questions = {
-        "Select your municipality",
-        "Select your barangay", 
-        "What is your sex?",
-        "What is your age?",
-        "Are you pregnant?",
-        "What is your weight (kg)?",
-        "What is your height (cm)?"
-    };
-    
-    private int totalQuestions = 7;
+    // Question Management
     private int currentQuestionIndex = 0;
+    private Map<String, String> answers = new HashMap<>();
+    private List<Question> questions = new ArrayList<>();
     
-    // Complete municipality data from dash.php
+    // Question Types
+    private enum QuestionType {
+        MUNICIPALITY, BARANGAY, SEX, BIRTHDAY, PREGNANCY, WEIGHT, HEIGHT
+    }
+    
+    // Question Data Structure
+    private static class Question {
+        String text;
+        QuestionType type;
+        String[] options;
+        String answer;
+        boolean isRequired;
+        
+        Question(String text, QuestionType type, String[] options, boolean isRequired) {
+            this.text = text;
+            this.type = type;
+            this.options = options;
+            this.isRequired = isRequired;
+            this.answer = "";
+        }
+    }
+    
+    // Municipality and Barangay Data
     private String[] municipalities = {
         "ABUCAY", "BAGAC", "CITY OF BALANGA", "DINALUPIHAN", "HERMOSA", 
         "LIMAY", "MARIVELES", "MORONG", "ORANI", "ORION", "PILAR", "SAMAL"
     };
     
-    // Complete barangay data for each municipality (from dash.php)
-    private String[] abucayBarangays = {
-        "Bangkal", "Calaylayan (Pob.)", "Capitangan", "Gabon", "Laon (Pob.)", 
-        "Mabatang", "Omboy", "Salian", "Wawa (Pob.)"
-    };
-    
-    private String[] bagacBarangays = {
-        "Bagumbayan (Pob.)", "Banawang", "Binuangan", "Binukawan", "Ibaba", 
-        "Ibis", "Pag-asa (Wawa-Sibacan)", "Parang", "Paysawan", "Quinawan", 
-        "San Antonio", "Saysain", "Tabing-Ilog (Pob.)", "Atilano L. Ricardo"
-    };
-    
-    private String[] balangaBarangays = {
-        "Bagumbayan", "Cabog-Cabog", "Munting Batangas (Cadre)", "Cataning", 
-        "Central", "Cupang Proper", "Cupang West", "Dangcol (Bernabe)", "Ibayo", 
-        "Malabia", "Poblacion", "Pto. Rivas Ibaba", "Pto. Rivas Itaas", 
-        "San Jose", "Sibacan", "Camacho", "Talisay", "Tanato", "Tenejero", 
-        "Tortugas", "Tuyo", "Bagong Silang", "Cupang North", "Doña Francisca", "Lote"
-    };
-    
-    private String[] dinalupihanBarangays = {
-        "Bangal", "Bonifacio (Pob.)", "Burgos (Pob.)", "Colo", "Daang Bago", 
-        "Dalao", "Del Pilar (Pob.)", "Gen. Luna (Pob.)", "Gomez (Pob.)", 
-        "Happy Valley", "Kataasan", "Layac", "Luacan", "Mabini Proper (Pob.)", 
-        "Mabini Ext. (Pob.)", "Magsaysay", "Naparing", "New San Jose", 
-        "Old San Jose", "Padre Dandan (Pob.)", "Pag-asa", "Pagalanggang", 
-        "Pinulot", "Pita", "Rizal (Pob.)", "Roosevelt", "Roxas (Pob.)", 
-        "Saguing", "San Benito", "San Isidro (Pob.)", "San Pablo (Bulate)", 
-        "San Ramon", "San Simon", "Santo Niño", "Sapang Balas", 
-        "Santa Isabel (Tabacan)", "Torres Bugauen (Pob.)", "Tucop", 
-        "Zamora (Pob.)", "Aquino", "Bayan-bayanan", "Maligaya", "Payangan", 
-        "Pentor", "Tubo-tubo", "Jose C. Payumo, Jr."
-    };
-    
-    private String[] hermosaBarangays = {
-        "A. Rivera (Pob.)", "Almacen", "Bacong", "Balsic", "Bamban", 
-        "Burgos-Soliman (Pob.)", "Cataning (Pob.)", "Culis", "Daungan (Pob.)", 
-        "Mabiga", "Mabuco", "Maite", "Mambog - Mandama", "Palihan", 
-        "Pandatung", "Pulo", "Saba", "San Pedro (Pob.)", "Santo Cristo (Pob.)", 
-        "Sumalo", "Tipo", "Judge Roman Cruz Sr. (Mandama)", "Sacrifice Valley"
-    };
-    
-    private String[] limayBarangays = {
-        "Alangan", "Kitang I", "Kitang 2 & Luz", "Lamao", "Landing", 
-        "Poblacion", "Reformista", "Townsite", "Wawa", "Duale", 
-        "San Francisco de Asis", "St. Francis II"
-    };
-    
-    private String[] marivelesBarangays = {
-        "Alas-asin", "Alion", "Batangas II", "Cabcaben", "Lucanin", 
-        "Baseco Country (Nassco)", "Poblacion", "San Carlos", "San Isidro", 
-        "Sisiman", "Balon-Anito", "Biaan", "Camaya", "Ipag", "Malaya", 
-        "Maligaya", "Mt. View", "Townsite"
-    };
-    
-    private String[] morongBarangays = {
-        "Binaritan", "Mabayo", "Nagbalayong", "Poblacion", "Sabang"
-    };
-    
-    private String[] oraniBarangays = {
-        "Bagong Paraiso (Pob.)", "Balut (Pob.)", "Bayan (Pob.)", "Calero (Pob.)", 
-        "Paking-Carbonero (Pob.)", "Centro II (Pob.)", "Dona", "Kaparangan", 
-        "Masantol", "Mulawin", "Pag-asa", "Palihan (Pob.)", 
-        "Pantalan Bago (Pob.)", "Pantalan Luma (Pob.)", "Parang Parang (Pob.)", 
-        "Centro I (Pob.)", "Tala", "Tugatog", "Tagumpay", "Tenejero", 
-        "Wawa (Pob.)", "Apollo", "Bagong Silang", "Balut (Pob.)", "Bayan (Pob.)", 
-        "Calero (Pob.)", "Paking-Carbonero (Pob.)", "Centro II (Pob.)", "Dona", 
-        "Kaparangan", "Masantol", "Mulawin", "Pag-asa", "Palihan (Pob.)", 
-        "Pantalan Bago (Pob.)", "Pantalan Luma (Pob.)", "Parang Parang (Pob.)", 
-        "Centro I (Pob.)", "Tala", "Tugatog", "Tagumpay", "Tenejero", "Wawa (Pob.)"
-    };
-    
-    private String[] orionBarangays = {
-        "Bagumbayan", "Bantan", "Bilolo", "Calungusan", "Camachile", 
-        "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente", 
-        "Wawa", "Balagtas", "Balut", "Bataan", "Bilolo", "Calungusan", 
-        "Camachile", "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente"
-    };
-    
-    private String[] pilarBarangays = {
-        "Bagumbayan", "Bantan", "Bilolo", "Calungusan", "Camachile", 
-        "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente", 
-        "Wawa", "Balagtas", "Balut", "Bataan", "Bilolo", "Calungusan", 
-        "Camachile", "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente"
-    };
-    
-    private String[] samalBarangays = {
-        "Bagumbayan", "Bantan", "Bilolo", "Calungusan", "Camachile", 
-        "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente", 
-        "Wawa", "Balagtas", "Balut", "Bataan", "Bilolo", "Calungusan", 
-        "Camachile", "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente"
-    };
+    private Map<String, String[]> barangayMap = new HashMap<>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nutritional_screening);
         
-        // Initialize views
+        initializeViews();
+        setupBarangayData();
+        initializeQuestions();
+        setupListeners();
+        showCurrentQuestion();
+    }
+    
+    private void initializeViews() {
         optionsContainer = findViewById(R.id.options_container);
         questionText = findViewById(R.id.question_text);
         progressText = findViewById(R.id.progress_text);
         nextButton = findViewById(R.id.next_button);
-        previousButton = findViewById(R.id.previous_button);
-        optionVeryOften = findViewById(R.id.option_very_often);
-        optionFairlyOften = findViewById(R.id.option_fairly_often);
-        optionSometimes = findViewById(R.id.option_sometimes);
-        optionAlmostNever = findViewById(R.id.option_almost_never);
-        optionNever = findViewById(R.id.option_never);
-        weightInput = findViewById(R.id.weight_input);
+        btnPrevious = findViewById(R.id.btn_previous);
+        weightInput = findViewById(R.id.weight_input_new);
         heightInput = findViewById(R.id.height_input);
-        muacInput = findViewById(R.id.muac_input);
+    }
+    
+    private void setupBarangayData() {
+        barangayMap.put("ABUCAY", new String[]{
+        "Bangkal", "Calaylayan (Pob.)", "Capitangan", "Gabon", "Laon (Pob.)", 
+        "Mabatang", "Omboy", "Salian", "Wawa (Pob.)"
+        });
+        barangayMap.put("BAGAC", new String[]{
+        "Bagumbayan (Pob.)", "Banawang", "Binuangan", "Binukawan", "Ibaba", 
+        "Ibis", "Pag-asa (Wawa-Sibacan)", "Parang", "Paysawan", "Quinawan", 
+        "San Antonio", "Saysain", "Tabing-Ilog (Pob.)", "Atilano L. Ricardo"
+        });
+        barangayMap.put("CITY OF BALANGA", new String[]{
+            "Bagong Silang", "Bagumbayan", "Batanes", "Cataning", "Central", 
+            "Dangcol", "Doña Francisca", "Lote", "Malabia", "Munting Batangas", 
+            "Poblacion", "Puerto Rivas Ibaba", "Puerto Rivas Itaas", "San Jose", 
+            "Sibacan", "Talipapa", "Tanato", "Tenejero", "Tortugas", "Tuyo"
+        });
+        barangayMap.put("DINALUPIHAN", new String[]{
+            "Bayan-bayanan", "Bonifacio", "Burgos", "Daang Bago", "Del Pilar", 
+            "General Emilio Aguinaldo", "General Luna", "Kawayan", "Layac", 
+            "Lourdes", "Luakan", "Maligaya", "Naparing", "Paco", "Pag-asa", 
+            "Pagalanggang", "Panggalangan", "Pinulot", "Poblacion", "Rizal", 
+            "Saguing", "San Benito", "San Isidro", "San Ramon", "Santo Niño", 
+            "Sapang Kawayan", "Tipo", "Tubo-tubo", "Zamora"
+        });
+        barangayMap.put("HERMOSA", new String[]{
+            "A. Ricardo", "Almacen", "Bamban", "Burgos-Soliman", "Cataning", 
+            "Culis", "Daungan", "Judicial", "Mabiga", "Mabuco", "Maite", 
+            "Mambog - Mandama", "Palihan", "Pandatung", "Poblacion", "Saba", 
+            "Sacatihan", "Sumalo", "Tipo", "Tortugas"
+        });
+        barangayMap.put("LIMAY", new String[]{
+            "Alangan", "Kitang I", "Kitang II", "Kitang III", "Kitang IV", 
+            "Kitang V", "Lamao", "Luz", "Poblacion", "Reforma", "Sitio Baga", 
+            "Sitio Pulo", "Wawa"
+        });
+        barangayMap.put("MARIVELES", new String[]{
+            "Alion", "Balong Anito", "Baseco Country", "Batan", "Biaan", 
+            "Cabcaben", "Camaya", "Lucanin", "Mabayo", "Malaya", "Maligaya", 
+            "Mountain View", "Poblacion", "San Carlos", "San Isidro", "San Nicolas", 
+            "Saysain", "Sisiman", "Townsite", "Vista Alegre"
+        });
+        barangayMap.put("MORONG", new String[]{
+            "Binaritan", "Mabayo", "Nagbalayong", "Poblacion", "Sabang", 
+            "San Jose", "Sitio Pulo"
+        });
+        barangayMap.put("ORANI", new String[]{
+            "Apollo", "Bagong Paraiso", "Balut", "Bayani", "Cabral", "Calero", 
+            "Calutit", "Camachile", "Kaparangan", "Luna", "Mabolo", "Magtaong", 
+            "Maligaya", "Pag-asa", "Paglabanan", "Pagtakhan", "Palihan", 
+            "Poblacion", "Rizal", "Sagrada", "San Jose", "Sulong", "Tagumpay", 
+            "Tala", "Talimundoc", "Tapulao", "Tugatog", "Wawa"
+        });
+        barangayMap.put("ORION", new String[]{
+            "Balagtas", "Balut", "Bantan", "Bilolo", "Calungusan", "Camachile", 
+            "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente", 
+            "Wawa", "Poblacion"
+        });
+        barangayMap.put("PILAR", new String[]{
+            "Alas-asin", "Bantan Munti", "Bantan", "Del Rosario", "Diwa", 
+            "Landing", "Liwayway", "Nagbalayong", "Panilao", "Pantingan", 
+            "Poblacion", "Rizal", "Saguing", "Santo Cristo", "Wakas"
+        });
+        barangayMap.put("SAMAL", new String[]{
+            "Bagumbayan", "Bantan", "Bilolo", "Calungusan", "Camachile", 
+            "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente", 
+            "Wawa", "Balagtas", "Balut", "Bataan"
+        });
+    }
+    
+    private void initializeQuestions() {
+        questions.clear();
         
-        // Set up close button
-        findViewById(R.id.close_button).setOnClickListener(v -> finish());
+        // Question 0: Municipality
+        questions.add(new Question(
+            "Select your municipality",
+            QuestionType.MUNICIPALITY,
+            municipalities,
+            true
+        ));
         
-        // Set up next button
+        // Question 1: Barangay (will be populated based on municipality)
+        questions.add(new Question(
+            "Select your barangay",
+            QuestionType.BARANGAY,
+            new String[]{}, // Will be populated dynamically
+            true
+        ));
+        
+        // Question 2: Sex
+        questions.add(new Question(
+            "What is your sex?",
+            QuestionType.SEX,
+            new String[]{"Male", "Female"},
+            true
+        ));
+        
+        // Question 3: Birthday
+        questions.add(new Question(
+            "What is your birthday?",
+            QuestionType.BIRTHDAY,
+            new String[]{}, // No options for date picker
+            true
+        ));
+        
+        // Question 4: Pregnancy (conditional)
+        questions.add(new Question(
+            "Are you pregnant?",
+            QuestionType.PREGNANCY,
+            new String[]{"Yes", "No"},
+            true
+        ));
+        
+        // Question 5: Weight
+        questions.add(new Question(
+            "What is your weight (kg)?",
+            QuestionType.WEIGHT,
+            new String[]{}, // Input field
+            true
+        ));
+        
+        // Question 6: Height
+        questions.add(new Question(
+            "What is your height (cm)?",
+            QuestionType.HEIGHT,
+            new String[]{}, // Input field
+            true
+        ));
+    }
+    
+    private void setupListeners() {
         nextButton.setOnClickListener(v -> nextQuestion());
+        btnPrevious.setOnClickListener(v -> previousQuestion());
         
-        // Set up previous button
-        previousButton.setOnClickListener(v -> previousQuestion());
-        
-        // Set up option buttons
-        setupOptionButtons();
-        
-        // Show first question
-        showQuestion(0);
-    }
-    
-    private void setupOptionButtons() {
-        optionVeryOften.setOnClickListener(v -> selectOption(optionVeryOften, "Very often"));
-        optionFairlyOften.setOnClickListener(v -> selectOption(optionFairlyOften, "Fairly often"));
-        optionSometimes.setOnClickListener(v -> selectOption(optionSometimes, "Sometimes"));
-        optionAlmostNever.setOnClickListener(v -> selectOption(optionAlmostNever, "Almost never"));
-        optionNever.setOnClickListener(v -> selectOption(optionNever, "Never"));
-    }
-    
-    private void showQuestion(int questionIndex) {
-        currentQuestionIndex = questionIndex;
-        questionText.setText(questions[questionIndex]);
-        progressText.setText((questionIndex + 1) + "/" + totalQuestions);
-        
-        // Reset all options to unselected state
-        resetAllOptions();
-        
-        // Disable next button initially
-        nextButton.setEnabled(false);
-        nextButton.setBackgroundResource(R.drawable.button_next_inactive);
-        
-        // Show/hide previous button based on question index
-        if (questionIndex == 0) {
-            previousButton.setVisibility(View.GONE);
-        } else {
-            previousButton.setVisibility(View.VISIBLE);
-            previousButton.setEnabled(true);
-            previousButton.setClickable(true);
-        }
-        
-        // Show appropriate question UI based on question type
-        switch (questionIndex) {
-            case 0: showMunicipalityQuestion(); break;
-            case 1: showBarangayQuestion(); break;
-            case 2: showSexQuestion(); break;
-            case 3: showAgeQuestion(); break;
-            case 4: showPregnancyQuestion(); break;
-            case 5: showWeightQuestion(); break;
-            case 6: showHeightQuestion(); break;
-        }
-        
-        // Restore previous answer if available
-        restorePreviousAnswer(questionIndex);
-    }
-    
-    private void resetAllOptions() {
-        // Reset option buttons
-        optionVeryOften.setBackgroundResource(R.drawable.option_button_unselected);
-        optionVeryOften.setTextColor(getResources().getColor(android.R.color.black));
-        optionFairlyOften.setBackgroundResource(R.drawable.option_button_unselected);
-        optionFairlyOften.setTextColor(getResources().getColor(android.R.color.black));
-        optionSometimes.setBackgroundResource(R.drawable.option_button_unselected);
-        optionSometimes.setTextColor(getResources().getColor(android.R.color.black));
-        optionAlmostNever.setBackgroundResource(R.drawable.option_button_unselected);
-        optionAlmostNever.setTextColor(getResources().getColor(android.R.color.black));
-        optionNever.setBackgroundResource(R.drawable.option_button_unselected);
-        optionNever.setTextColor(getResources().getColor(android.R.color.black));
-        
-        // Hide input fields
-        weightInput.setVisibility(View.GONE);
-        heightInput.setVisibility(View.GONE);
-        muacInput.setVisibility(View.GONE);
-    }
-    
-    private void selectOption(Button selected, String value) {
-        // Reset all options first
-        resetAllOptions();
-        
-        // Set selected option
-        selected.setBackgroundResource(R.drawable.option_button_selected);
-        selected.setTextColor(getResources().getColor(android.R.color.white));
-        
-        // Enable next button
-                nextButton.setEnabled(true);
-                nextButton.setBackgroundResource(R.drawable.button_next_active);
-        
-        // Store answer
-        answers.put("question_" + currentQuestionIndex, value);
-    }
-    
-    private void showMunicipalityQuestion() {
-        // Clear existing options
-        optionsContainer.removeAllViews();
-        
-        // Create buttons for all municipalities
-        for (int i = 0; i < municipalities.length; i++) {
-            Button municipalityButton = createOptionButton(municipalities[i]);
-            final String municipality = municipalities[i];
-            
-            municipalityButton.setOnClickListener(v -> {
-                // Reset all buttons
-                resetAllMunicipalityButtons();
-                
-                // Set selected button
-                municipalityButton.setBackgroundResource(R.drawable.option_button_selected);
-                municipalityButton.setTextColor(getResources().getColor(android.R.color.white));
-                
-                // Store answer
-                answers.put("question_" + currentQuestionIndex, municipality);
-                
-                // Enable next button
-                nextButton.setEnabled(true);
-                nextButton.setBackgroundResource(R.drawable.button_next_active);
-            });
-            
-            optionsContainer.addView(municipalityButton);
-        }
-    }
-    
-    private Button createOptionButton(String text) {
-        Button button = new Button(this);
-        button.setText(text);
-        button.setBackgroundResource(R.drawable.option_button_unselected);
-        button.setTextColor(getResources().getColor(android.R.color.black));
-        button.setTextSize(16);
-        button.setPadding(0, 20, 0, 20);
-        button.setElevation(0);
-        
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, 
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(0, 12, 0, 12);
-        button.setLayoutParams(params);
-        return button;
-    }
-    
-    private void resetAllMunicipalityButtons() {
-        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
-            View child = optionsContainer.getChildAt(i);
-            if (child instanceof Button) {
-                Button button = (Button) child;
-                button.setBackgroundResource(R.drawable.option_button_unselected);
-                button.setTextColor(getResources().getColor(android.R.color.black));
+        // Add touch listeners for input fields to ensure they're interactive
+        weightInput.setOnTouchListener((v, event) -> {
+            if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                weightInput.requestFocus();
+                android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.showSoftInput(weightInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+                }
             }
-        }
-    }
-    
-    private void showBarangayQuestion() {
-        // Get selected municipality
-        String selectedMunicipality = answers.get("question_0");
-        String[] barangays = getBarangaysForMunicipality(selectedMunicipality);
+            return false; // Let the EditText handle the event
+        });
         
-        // Clear existing options
-        optionsContainer.removeAllViews();
+        heightInput.setOnTouchListener((v, event) -> {
+            if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                heightInput.requestFocus();
+                android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.showSoftInput(heightInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+                }
+            }
+            return false; // Let the EditText handle the event
+        });
         
-        if (barangays.length == 0) {
-            // No barangays available
-            Button noBarangayButton = createOptionButton("No barangays available");
-            noBarangayButton.setEnabled(false);
-            optionsContainer.addView(noBarangayButton);
-            return;
-        }
-        
-        // Create buttons for all barangays
-        for (int i = 0; i < barangays.length; i++) {
-            Button barangayButton = createOptionButton(barangays[i]);
-            final String barangay = barangays[i];
+        // Add text change listener for real-time height validation
+        heightInput.addTextChangedListener(new android.text.TextWatcher() {
+    @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             
-            barangayButton.setOnClickListener(v -> {
-                // Reset all buttons
-                resetAllMunicipalityButtons();
-                
-                // Set selected button
-                barangayButton.setBackgroundResource(R.drawable.option_button_selected);
-                barangayButton.setTextColor(getResources().getColor(android.R.color.white));
-                
-                // Store answer
-                answers.put("question_" + currentQuestionIndex, barangay);
-                
-                // Enable next button
-                nextButton.setEnabled(true);
-                nextButton.setBackgroundResource(R.drawable.button_next_active);
-            });
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
             
-            optionsContainer.addView(barangayButton);
-        }
-    }
-    
-    private String[] getBarangaysForMunicipality(String municipality) {
-        if (municipality == null) return new String[0];
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                // Only validate if we're on the height question
+                if (currentQuestionIndex < questions.size() && questions.get(currentQuestionIndex).type == QuestionType.HEIGHT) {
+                    validateHeight();
+                }
+            }
+        });
         
-        switch (municipality) {
-            case "CITY OF BALANGA": return balangaBarangays;
-            case "DINALUPIHAN": return dinalupihanBarangays;
-            case "HERMOSA": return hermosaBarangays;
-            case "LIMAY": return limayBarangays;
-            case "MARIVELES": return marivelesBarangays;
-            case "MORONG": return morongBarangays;
-            case "ORANI": return oraniBarangays;
-            case "ORION": return orionBarangays;
-            case "PILAR": return pilarBarangays;
-            case "SAMAL": return samalBarangays;
-            case "ABUCAY": return abucayBarangays;
-            case "BAGAC": return bagacBarangays;
-            default: return new String[0];
-        }
-    }
-    
-    private void showSexQuestion() {
-        // Clear existing options
-        optionsContainer.removeAllViews();
-        
-        // Create buttons for sex options
-        String[] sexOptions = {"Male", "Female"};
-        
-        for (int i = 0; i < sexOptions.length; i++) {
-            Button sexButton = createOptionButton(sexOptions[i]);
-            final String sex = sexOptions[i];
-            
-            sexButton.setOnClickListener(v -> {
-                // Reset all buttons
-                resetAllMunicipalityButtons();
-                
-                // Set selected button
-                sexButton.setBackgroundResource(R.drawable.option_button_selected);
-                sexButton.setTextColor(getResources().getColor(android.R.color.white));
-                
-                // Store answer
-                answers.put("question_" + currentQuestionIndex, sex);
-                
-                // Enable next button
-                nextButton.setEnabled(true);
-                nextButton.setBackgroundResource(R.drawable.button_next_active);
-            });
-            
-            optionsContainer.addView(sexButton);
-        }
-    }
-    
-    private void showAgeQuestion() {
-        // Clear existing options
-        optionsContainer.removeAllViews();
-        
-        // Create a button that opens date picker
-        Button datePickerButton = createOptionButton("Select your birthday");
-        datePickerButton.setOnClickListener(v -> showDatePicker());
-        
-        optionsContainer.addView(datePickerButton);
-    }
-    
-    private void showDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-            String date = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth);
-            answers.put("question_" + currentQuestionIndex, date);
-            
-            // Calculate age and update button text
-            int age = calculateAge(year, month, dayOfMonth);
-            Button dateButton = (Button) optionsContainer.getChildAt(0);
-            dateButton.setText("Birthday: " + date + " (Age: " + age + ")");
-            dateButton.setBackgroundResource(R.drawable.option_button_selected);
-            dateButton.setTextColor(getResources().getColor(android.R.color.white));
-            
-            // Enable next button
-            nextButton.setEnabled(true);
-            nextButton.setBackgroundResource(R.drawable.button_next_active);
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-    }
-    
-    private int calculateAge(int year, int month, int day) {
-        Calendar today = Calendar.getInstance();
-        Calendar birthDate = Calendar.getInstance();
-        birthDate.set(year, month, day);
-        
-        int age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
-        if (today.get(Calendar.DAY_OF_YEAR) < birthDate.get(Calendar.DAY_OF_YEAR)) {
-            age--;
-        }
-        return age;
-    }
-    
-    private void showPregnancyQuestion() {
-        // Check if user is female and of childbearing age
-        String sex = answers.get("question_2");
-        String ageRange = answers.get("question_3");
-        
-        if (!"Female".equals(sex) || "Under 18".equals(ageRange) || "Over 50".equals(ageRange)) {
-            // Skip pregnancy question - go to next question
-            nextQuestion();
-            return;
-        }
-        
-        // Clear existing options
-        optionsContainer.removeAllViews();
-        
-        // Create buttons for pregnancy options
-        String[] pregnancyOptions = {"Yes", "No"};
-        
-        for (int i = 0; i < pregnancyOptions.length; i++) {
-            Button pregnancyButton = createOptionButton(pregnancyOptions[i]);
-            final String pregnancy = pregnancyOptions[i];
-            
-            pregnancyButton.setOnClickListener(v -> {
-                // Reset all buttons
-                resetAllMunicipalityButtons();
-                
-                // Set selected button
-                pregnancyButton.setBackgroundResource(R.drawable.option_button_selected);
-                pregnancyButton.setTextColor(getResources().getColor(android.R.color.white));
-                
-                // Store answer
-                answers.put("question_" + currentQuestionIndex, pregnancy);
-                
-                // Enable next button
-                nextButton.setEnabled(true);
-                nextButton.setBackgroundResource(R.drawable.button_next_active);
-            });
-            
-            optionsContainer.addView(pregnancyButton);
-        }
-    }
-    
-    private void showWeightQuestion() {
-        // Clear all dynamically added views from options container
-        optionsContainer.removeAllViews();
-        
-        // Hide all option buttons
-        optionVeryOften.setVisibility(View.GONE);
-        optionFairlyOften.setVisibility(View.GONE);
-        optionSometimes.setVisibility(View.GONE);
-        optionAlmostNever.setVisibility(View.GONE);
-        optionNever.setVisibility(View.GONE);
-        
-        // Hide height input field
-        heightInput.setVisibility(View.GONE);
-        
-        // Show weight input field
-        weightInput.setVisibility(View.VISIBLE);
-        weightInput.setText("");
-        weightInput.setHint("Enter Weight (kg)");
-        weightInput.setBackgroundResource(R.drawable.option_button_unselected);
-        weightInput.setTextColor(getResources().getColor(android.R.color.black));
-        
-        // Clear any existing text watchers
-        weightInput.removeTextChangedListener(null);
-        
-        // Set up text change listener
+        // Add text change listener for real-time weight validation
         weightInput.addTextChangedListener(new android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -539,462 +273,907 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
             
             @Override
             public void afterTextChanged(android.text.Editable s) {
-                String weight = s.toString().trim();
-                if (!weight.isEmpty()) {
-                    // Change background to selected state
-                    weightInput.setBackgroundResource(R.drawable.option_button_selected);
-                    weightInput.setTextColor(getResources().getColor(android.R.color.white));
-                    
-                    // Store answer
-                    answers.put("question_" + currentQuestionIndex, weight);
-                    
-                    // Enable next button
-                    nextButton.setEnabled(true);
-                    nextButton.setBackgroundResource(R.drawable.button_next_active);
-                } else {
-                    // Reset to unselected state
-                    weightInput.setBackgroundResource(R.drawable.option_button_unselected);
-                    weightInput.setTextColor(getResources().getColor(android.R.color.black));
-                    
-                    // Disable next button
-                    nextButton.setEnabled(false);
-                    nextButton.setBackgroundResource(R.drawable.button_next_inactive);
+                // Only validate if we're on the weight question
+                if (currentQuestionIndex < questions.size() && questions.get(currentQuestionIndex).type == QuestionType.WEIGHT) {
+                    validateWeight();
                 }
             }
         });
     }
     
-    private void showHeightQuestion() {
-        // Clear all dynamically added views from options container
-        optionsContainer.removeAllViews();
+    private void showCurrentQuestion() {
+        if (currentQuestionIndex >= questions.size()) {
+            completeScreening();
+            return;
+        }
         
-        // Hide all option buttons
-        optionVeryOften.setVisibility(View.GONE);
-        optionFairlyOften.setVisibility(View.GONE);
-        optionSometimes.setVisibility(View.GONE);
-        optionAlmostNever.setVisibility(View.GONE);
-        optionNever.setVisibility(View.GONE);
+        Question currentQuestion = questions.get(currentQuestionIndex);
+        questionText.setText(currentQuestion.text);
         
-        // Hide weight input field
+        // Update progress
+        int totalQuestions = getTotalQuestions();
+        progressText.setText((currentQuestionIndex + 1) + "/" + totalQuestions);
+        
+        // Show/hide previous button
+        btnPrevious.setVisibility(currentQuestionIndex > 0 ? View.VISIBLE : View.GONE);
+        
+        // Clear previous UI
+        clearOptions();
+        hideInputFields();
+        
+        // Show appropriate UI based on question type
+        switch (currentQuestion.type) {
+            case MUNICIPALITY:
+                showMunicipalityOptions();
+                break;
+            case BARANGAY:
+                showBarangayOptions();
+                break;
+            case SEX:
+                showSexOptions();
+                break;
+            case BIRTHDAY:
+                showBirthdayPicker();
+                break;
+            case PREGNANCY:
+                showPregnancyOptions();
+                break;
+            case WEIGHT:
+                showWeightInput();
+                break;
+            case HEIGHT:
+                showHeightInput();
+                break;
+        }
+        
+        // Restore previous answer if available
+        restoreAnswer(currentQuestion);
+    }
+    
+    private int getTotalQuestions() {
+        int total = 4; // Municipality, Barangay, Sex, Birthday are always included
+        
+        // Add pregnancy question if applicable
+        if (shouldShowPregnancyQuestion()) {
+            total++;
+        }
+        
+        // Add weight and height
+        total += 2;
+        
+        return total;
+    }
+    
+    private boolean shouldShowPregnancyQuestion() {
+        String sex = answers.get("question_2");
+        String birthday = answers.get("question_3");
+        
+        if (!"Female".equals(sex) || birthday == null || birthday.isEmpty()) {
+            return false;
+        }
+        
+        try {
+            int age = calculateAgeFromBirthday(birthday);
+            return age >= 18 && age <= 50;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    private void clearOptions() {
+        // Remove only dynamically created buttons, not the input fields
+        for (int i = optionsContainer.getChildCount() - 1; i >= 0; i--) {
+            View child = optionsContainer.getChildAt(i);
+            // Only remove buttons, keep EditText fields
+            if (child instanceof Button) {
+                optionsContainer.removeViewAt(i);
+            }
+        }
+        
+        // Ensure input fields are hidden
         weightInput.setVisibility(View.GONE);
+        heightInput.setVisibility(View.GONE);
+    }
+    
+    private void hideInputFields() {
+        weightInput.setVisibility(View.GONE);
+        heightInput.setVisibility(View.GONE);
+        
+        // Also hide any dynamically created buttons that might be showing
+        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+            View child = optionsContainer.getChildAt(i);
+            if (child instanceof Button) {
+                child.setVisibility(View.GONE);
+            }
+        }
+    }
+    
+    private void showMunicipalityOptions() {
+        for (String municipality : municipalities) {
+            Button button = createOptionButton(municipality);
+            button.setOnClickListener(v -> selectOption(button, municipality));
+            optionsContainer.addView(button);
+        }
+    }
+    
+    private void showBarangayOptions() {
+        String selectedMunicipality = answers.get("question_0");
+        if (selectedMunicipality == null) {
+            Toast.makeText(this, "Please select municipality first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String[] barangays = barangayMap.get(selectedMunicipality);
+        if (barangays != null) {
+            for (String barangay : barangays) {
+                Button button = createOptionButton(barangay);
+                button.setOnClickListener(v -> selectOption(button, barangay));
+                optionsContainer.addView(button);
+            }
+        }
+    }
+    
+    private void showSexOptions() {
+        String[] sexOptions = {"Male", "Female"};
+        for (String sex : sexOptions) {
+            Button button = createOptionButton(sex);
+            button.setOnClickListener(v -> selectOption(button, sex));
+            optionsContainer.addView(button);
+        }
+    }
+    
+    private void showBirthdayPicker() {
+        Log.d("NutritionalScreening", "Showing birthday picker");
+        // Clear any existing content first
+        clearOptions();
+        
+        Button dateButton = createOptionButton("Select Birthday");
+        dateButton.setOnClickListener(v -> showDatePicker());
+        optionsContainer.addView(dateButton);
+        Log.d("NutritionalScreening", "Created birthday button, container now has " + optionsContainer.getChildCount() + " children");
+    }
+    
+    private void showPregnancyOptions() {
+        String[] pregnancyOptions = {"Yes", "No"};
+        for (String option : pregnancyOptions) {
+            Button button = createOptionButton(option);
+            button.setOnClickListener(v -> selectOption(button, option));
+            optionsContainer.addView(button);
+        }
+    }
+    
+    private void showWeightInput() {
+        // Clear all other options first
+        clearOptions();
+        
+        // Show weight input field
+        weightInput.setVisibility(View.VISIBLE);
+        weightInput.setHint("Enter weight in kg");
+        weightInput.setText("");
+        
+        // Ensure the input field is fully interactive
+        weightInput.setFocusable(true);
+        weightInput.setFocusableInTouchMode(true);
+        weightInput.setClickable(true);
+        weightInput.setEnabled(true);
+        
+        // Request focus and show keyboard
+        weightInput.requestFocus();
+        android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(weightInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+    
+    private void showHeightInput() {
+        // Clear all other options first
+        clearOptions();
         
         // Show height input field
         heightInput.setVisibility(View.VISIBLE);
+        heightInput.setHint("Enter height in cm");
         heightInput.setText("");
-        heightInput.setHint("Enter Height (cm)");
-        heightInput.setBackgroundResource(R.drawable.option_button_unselected);
-        heightInput.setTextColor(getResources().getColor(android.R.color.black));
         
-        // Clear any existing text watchers
-        heightInput.removeTextChangedListener(null);
+        // Ensure the input field is fully interactive
+        heightInput.setFocusable(true);
+        heightInput.setFocusableInTouchMode(true);
+        heightInput.setClickable(true);
+        heightInput.setEnabled(true);
         
-        // Set up text change listener
-        heightInput.addTextChangedListener(new android.text.TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            
-            @Override
-            public void afterTextChanged(android.text.Editable s) {
-                String height = s.toString().trim();
-                if (!height.isEmpty()) {
-                    // Change background to selected state
-                    heightInput.setBackgroundResource(R.drawable.option_button_selected);
-                    heightInput.setTextColor(getResources().getColor(android.R.color.white));
-                    
-                    // Store answer
-                    answers.put("question_" + currentQuestionIndex, height);
-                    
-                    // Enable next button
-                    nextButton.setEnabled(true);
-                    nextButton.setBackgroundResource(R.drawable.button_next_active);
-                } else {
-                    // Reset to unselected state
-                    heightInput.setBackgroundResource(R.drawable.option_button_unselected);
-                    heightInput.setTextColor(getResources().getColor(android.R.color.black));
-                    
-                    // Disable next button
-                    nextButton.setEnabled(false);
-                    nextButton.setBackgroundResource(R.drawable.button_next_inactive);
-                }
-            }
-        });
+        // Request focus and show keyboard
+        heightInput.requestFocus();
+        android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(heightInput, android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT);
+        }
     }
     
+    private Button createOptionButton(String text) {
+        Button button = new Button(this);
+        button.setText(text);
+        button.setLayoutParams(new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        button.setBackgroundResource(R.drawable.option_button_unselected);
+        button.setTextColor(getResources().getColor(android.R.color.black));
+        button.setTextSize(16);
+        
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) button.getLayoutParams();
+        params.setMargins(0, 0, 0, 24);
+        button.setLayoutParams(params);
+        
+        return button;
+    }
     
+    private void selectOption(Button button, String value) {
+        // Clear all other selections
+        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+            View child = optionsContainer.getChildAt(i);
+            if (child instanceof Button) {
+                Button otherButton = (Button) child;
+                otherButton.setBackgroundResource(R.drawable.option_button_unselected);
+                otherButton.setTextColor(getResources().getColor(android.R.color.black));
+            }
+        }
+        
+        // Select current button
+        button.setBackgroundResource(R.drawable.option_button_selected);
+        button.setTextColor(getResources().getColor(android.R.color.white));
+                
+                // Store answer
+        String answerKey = "question_" + currentQuestionIndex;
+        answers.put(answerKey, value);
+                
+                // Enable next button
+                nextButton.setEnabled(true);
+                nextButton.setBackgroundResource(R.drawable.button_next_active);
+    }
     
+    private void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR) - 20; // Default to 20 years ago
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+            this,
+            (view, selectedYear, selectedMonth, selectedDay) -> {
+                String birthday = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+                int age = calculateAgeFromBirthday(birthday);
+                
+                // Find the date button (skip any EditText children)
+                Button dateButton = null;
+                for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+                    View child = optionsContainer.getChildAt(i);
+                    if (child instanceof Button) {
+                        dateButton = (Button) child;
+                        break;
+                    }
+                }
+                
+                if (dateButton != null) {
+                    dateButton.setText("Birthday: " + birthday + " (Age: " + age + ")");
+                    dateButton.setBackgroundResource(R.drawable.option_button_selected);
+                    dateButton.setTextColor(getResources().getColor(android.R.color.white));
+                }
+                
+                // Store answer
+                String answerKey = "question_" + currentQuestionIndex;
+                answers.put(answerKey, birthday);
+                
+                // Enable next button
+                nextButton.setEnabled(true);
+                nextButton.setBackgroundResource(R.drawable.button_next_active);
+            },
+            year, month, day
+        );
+        
+        // Set max date to today
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
     
+    private void restoreAnswer(Question question) {
+        String answerKey = "question_" + currentQuestionIndex;
+        String answer = answers.get(answerKey);
+        
+        if (answer != null && !answer.isEmpty()) {
+            switch (question.type) {
+                case MUNICIPALITY:
+                case BARANGAY:
+                case SEX:
+                case PREGNANCY:
+                    restoreButtonAnswer(answer);
+                    break;
+                case BIRTHDAY:
+                    restoreBirthdayAnswer(answer);
+                    break;
+                case WEIGHT:
+                    weightInput.setText(answer);
+            nextButton.setEnabled(true);
+            nextButton.setBackgroundResource(R.drawable.button_next_active);
+                    break;
+                case HEIGHT:
+                    heightInput.setText(answer);
+                    nextButton.setEnabled(true);
+                    nextButton.setBackgroundResource(R.drawable.button_next_active);
+                    break;
+            }
+        }
+    }
     
+    private void restoreButtonAnswer(String answer) {
+        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+            View child = optionsContainer.getChildAt(i);
+            if (child instanceof Button) {
+                Button button = (Button) child;
+                if (button.getText().toString().contains(answer) || answer.contains(button.getText().toString())) {
+                    button.setBackgroundResource(R.drawable.option_button_selected);
+                    button.setTextColor(getResources().getColor(android.R.color.white));
+                nextButton.setEnabled(true);
+                nextButton.setBackgroundResource(R.drawable.button_next_active);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private void restoreBirthdayAnswer(String answer) {
+        Log.d("NutritionalScreening", "Restoring birthday answer: " + answer);
+        Log.d("NutritionalScreening", "Options container child count: " + optionsContainer.getChildCount());
+        
+        // Find existing birthday button first
+        Button dateButton = null;
+        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
+            View child = optionsContainer.getChildAt(i);
+            if (child instanceof Button) {
+                Button button = (Button) child;
+                if (button.getText().toString().contains("Birthday") || button.getText().toString().contains("Select Birthday")) {
+                    dateButton = button;
+                    break;
+                }
+            }
+        }
+        
+        if (dateButton != null) {
+            // Update existing button
+            int age = calculateAgeFromBirthday(answer);
+            dateButton.setText("Birthday: " + answer + " (Age: " + age + ")");
+            dateButton.setBackgroundResource(R.drawable.option_button_selected);
+            dateButton.setTextColor(getResources().getColor(android.R.color.white));
+                nextButton.setEnabled(true);
+                nextButton.setBackgroundResource(R.drawable.button_next_active);
+            Log.d("NutritionalScreening", "Updated existing button with birthday: " + answer);
+        } else {
+            // Create new button if none exists
+            Log.d("NutritionalScreening", "Creating new button with birthday: " + answer);
+            Button newDateButton = createOptionButton("Birthday: " + answer + " (Age: " + calculateAgeFromBirthday(answer) + ")");
+            newDateButton.setOnClickListener(v -> showDatePicker());
+            newDateButton.setBackgroundResource(R.drawable.option_button_selected);
+            newDateButton.setTextColor(getResources().getColor(android.R.color.white));
+            optionsContainer.addView(newDateButton);
+            nextButton.setEnabled(true);
+            nextButton.setBackgroundResource(R.drawable.button_next_active);
+            Log.d("NutritionalScreening", "Created new button with birthday: " + answer);
+        }
+    }
     
     private void nextQuestion() {
-        if (currentQuestionIndex < totalQuestions - 1) {
-            showQuestion(currentQuestionIndex + 1);
-        } else {
-            // Save answers and complete screening
-            saveAnswers();
-            Toast.makeText(this, "Screening completed!", Toast.LENGTH_SHORT).show();
-            // Don't call finish() here - let saveAnswers() handle navigation
+        if (!validateCurrentQuestion()) {
+            return;
         }
+        
+        // Store current answer
+        storeCurrentAnswer();
+        
+        // Move to next question
+        currentQuestionIndex++;
+        
+        // Skip pregnancy question if not applicable
+        if (currentQuestionIndex == 4 && !shouldShowPregnancyQuestion()) {
+            currentQuestionIndex++;
+        }
+        
+        showCurrentQuestion();
     }
     
     private void previousQuestion() {
         if (currentQuestionIndex > 0) {
-            showQuestion(currentQuestionIndex - 1);
-        }
-    }
-    
-    private void restorePreviousAnswer(int questionIndex) {
-        String answerKey = "question_" + questionIndex;
-        String previousAnswer = answers.get(answerKey);
-        
-        if (previousAnswer != null) {
-            // Enable next button since we have a previous answer
-            nextButton.setEnabled(true);
-            nextButton.setBackgroundResource(R.drawable.button_next_active);
+            // Store current answer before going back
+            storeCurrentAnswer();
             
-            // Restore the answer based on question type
-            switch (questionIndex) {
-                case 0: // Municipality question
-                    restoreMunicipalityAnswer(previousAnswer);
-                    break;
-                case 1: // Barangay question
-                    restoreBarangayAnswer(previousAnswer);
-                    break;
-                case 2: // Sex question
-                    restoreSexAnswer(previousAnswer);
-                    break;
-                case 3: // Age question
-                    restoreAgeAnswer(previousAnswer);
-                    break;
-                case 4: // Pregnancy question
-                    restorePregnancyAnswer(previousAnswer);
-                    break;
-                case 5: // Weight question
-                    restoreWeightAnswer(previousAnswer);
-                    break;
-                case 6: // Height question
-                    restoreHeightAnswer(previousAnswer);
-                    break;
+            // Move to previous question
+            currentQuestionIndex--;
+            
+            // Skip pregnancy question if not applicable when going back
+            if (currentQuestionIndex == 4 && !shouldShowPregnancyQuestion()) {
+                currentQuestionIndex--;
             }
+            
+            showCurrentQuestion();
         }
     }
     
-    private void restoreMunicipalityAnswer(String answer) {
-        // Find and select the municipality button that matches the answer
-        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
-            View child = optionsContainer.getChildAt(i);
-            if (child instanceof Button) {
-                Button button = (Button) child;
-                if (answer.equals(button.getText().toString())) {
-                    selectOption(button, answer);
-                    break;
+    private boolean validateCurrentQuestion() {
+        Question currentQuestion = questions.get(currentQuestionIndex);
+        
+        switch (currentQuestion.type) {
+            case WEIGHT:
+                return validateWeight();
+            case HEIGHT:
+                return validateHeight();
+            default:
+                String answerKey = "question_" + currentQuestionIndex;
+                String answer = answers.get(answerKey);
+                if (answer == null || answer.isEmpty()) {
+                    Toast.makeText(this, "Please select an option", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                return true;
+        }
+    }
+    
+    private boolean validateWeight() {
+        String weightText = weightInput.getText().toString().trim();
+            if (weightText.isEmpty()) {
+                showValidationError("Please enter your weight");
+            resetWeightInputAppearance();
+            return false;
+            }
+            
+            try {
+                double weight = Double.parseDouble(weightText);
+                if (weight <= 0 || weight > 1000) {
+                    showValidationError("Weight must be between 0.1 and 1000 kg");
+                setWeightInputError();
+                return false;
+            }
+            
+            // Additional age-based validation
+            String birthday = answers.get("question_3");
+            if (birthday != null) {
+                int age = calculateAgeFromBirthday(birthday);
+                boolean isWeightValidForAge = true;
+                
+                if (age < 2 && weight < 3) {
+                    isWeightValidForAge = false;
+                } else if (age >= 2 && age < 5 && weight < 8) {
+                    isWeightValidForAge = false;
+                } else if (age >= 5 && age < 10 && weight < 15) {
+                    isWeightValidForAge = false;
+                } else if (age >= 10 && age < 15 && weight < 25) {
+                    isWeightValidForAge = false;
+                } else if (age >= 15 && weight < 30) {
+                    isWeightValidForAge = false;
+                }
+                
+                if (!isWeightValidForAge) {
+                    showValidationError("Weight seems impossible for this age. Please check your input.");
+                    setWeightInputError();
+                    return false;
                 }
             }
+            
+            // If we reach here, weight is valid
+            resetWeightInputAppearance();
+            return true;
+            } catch (NumberFormatException e) {
+                showValidationError("Please enter a valid weight number");
+            setWeightInputError();
+            return false;
         }
     }
     
-    private void restoreBarangayAnswer(String answer) {
-        // Find and select the barangay button that matches the answer
-        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
-            View child = optionsContainer.getChildAt(i);
-            if (child instanceof Button) {
-                Button button = (Button) child;
-                if (answer.equals(button.getText().toString())) {
-                    selectOption(button, answer);
-                    break;
+    private void setWeightInputError() {
+        weightInput.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+        weightInput.setBackgroundResource(R.drawable.option_button_invalid);
+        nextButton.setEnabled(false);
+        nextButton.setBackgroundResource(R.drawable.button_next_inactive);
+    }
+    
+    private void resetWeightInputAppearance() {
+        weightInput.setTextColor(getResources().getColor(android.R.color.black));
+        weightInput.setBackgroundResource(R.drawable.option_button_unselected);
+        nextButton.setEnabled(true);
+        nextButton.setBackgroundResource(R.drawable.button_next_active);
+    }
+        
+    private boolean validateHeight() {
+            String heightText = heightInput.getText().toString().trim();
+            if (heightText.isEmpty()) {
+                showValidationError("Please enter your height");
+            resetHeightInputAppearance();
+            return false;
+            }
+            
+            try {
+                double height = Double.parseDouble(heightText);
+                if (height <= 0 || height > 300) {
+                showValidationError("Height must be between 1 and 300 cm");
+                setHeightInputError();
+                return false;
+            }
+            
+            // Additional age-based validation
+            String birthday = answers.get("question_3");
+            if (birthday != null) {
+                int age = calculateAgeFromBirthday(birthday);
+                boolean isHeightValidForAge = true;
+                
+                if (age < 2 && height < 30) {
+                    isHeightValidForAge = false;
+                } else if (age >= 2 && age < 5 && height < 50) {
+                    isHeightValidForAge = false;
+                } else if (age >= 5 && age < 10 && height < 80) {
+                    isHeightValidForAge = false;
+                } else if (age >= 10 && age < 15 && height < 120) {
+                    isHeightValidForAge = false;
+                } else if (age >= 15 && height < 140) {
+                    isHeightValidForAge = false;
+                }
+                
+                if (!isHeightValidForAge) {
+                    showValidationError("Height seems impossible for this age. Please check your input.");
+                    setHeightInputError();
+                    return false;
                 }
             }
+            
+            // If we reach here, height is valid
+            resetHeightInputAppearance();
+            return true;
+            } catch (NumberFormatException e) {
+                showValidationError("Please enter a valid height number");
+            setHeightInputError();
+            return false;
         }
     }
     
-    private void restoreSexAnswer(String answer) {
-        // Find and select the sex button that matches the answer
-        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
-            View child = optionsContainer.getChildAt(i);
-            if (child instanceof Button) {
-                Button button = (Button) child;
-                if (answer.equals(button.getText().toString())) {
-                    selectOption(button, answer);
-                    break;
-                }
-            }
-        }
+    private void setHeightInputError() {
+        heightInput.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+        heightInput.setBackgroundResource(R.drawable.option_button_invalid);
+        nextButton.setEnabled(false);
+        nextButton.setBackgroundResource(R.drawable.button_next_inactive);
     }
     
-    private void restoreAgeAnswer(String answer) {
-        // Find and select the age button that matches the answer
-        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
-            View child = optionsContainer.getChildAt(i);
-            if (child instanceof Button) {
-                Button button = (Button) child;
-                if (answer.equals(button.getText().toString())) {
-                    selectOption(button, answer);
-                    break;
-                }
-            }
-        }
-    }
-    
-    private void restorePregnancyAnswer(String answer) {
-        // Find and select the pregnancy button that matches the answer
-        for (int i = 0; i < optionsContainer.getChildCount(); i++) {
-            View child = optionsContainer.getChildAt(i);
-            if (child instanceof Button) {
-                Button button = (Button) child;
-                if (answer.equals(button.getText().toString())) {
-                    selectOption(button, answer);
-                    break;
-                }
-            }
-        }
-    }
-    
-    private void restoreWeightAnswer(String answer) {
-        weightInput.setText(answer);
-        weightInput.setVisibility(View.VISIBLE);
+    private void resetHeightInputAppearance() {
+        heightInput.setTextColor(getResources().getColor(android.R.color.black));
+        heightInput.setBackgroundResource(R.drawable.option_button_unselected);
         nextButton.setEnabled(true);
         nextButton.setBackgroundResource(R.drawable.button_next_active);
     }
     
-    private void restoreHeightAnswer(String answer) {
-        heightInput.setText(answer);
-        heightInput.setVisibility(View.VISIBLE);
-        nextButton.setEnabled(true);
-        nextButton.setBackgroundResource(R.drawable.button_next_active);
+    private void showValidationError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
+    
+    private void storeCurrentAnswer() {
+        Question currentQuestion = questions.get(currentQuestionIndex);
+        String answerKey = "question_" + currentQuestionIndex;
+        
+        switch (currentQuestion.type) {
+            case WEIGHT:
+                String weight = weightInput.getText().toString().trim();
+                if (!weight.isEmpty()) {
+                    answers.put(answerKey, weight);
+                }
+                    break;
+            case HEIGHT:
+                String height = heightInput.getText().toString().trim();
+                if (!height.isEmpty()) {
+                    answers.put(answerKey, height);
+                }
+                    break;
+            // Other answers are already stored when options are selected
+        }
+    }
+    
+    private int calculateAgeFromBirthday(String birthday) {
+        try {
+            String[] parts = birthday.split("-");
+                int year = Integer.parseInt(parts[0]);
+                int month = Integer.parseInt(parts[1]) - 1; // Calendar months are 0-based
+                int day = Integer.parseInt(parts[2]);
+                
+            Calendar birthDate = Calendar.getInstance();
+            birthDate.set(year, month, day);
+            
+            Calendar today = Calendar.getInstance();
+            int age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
+            
+            if (today.get(Calendar.DAY_OF_YEAR) < birthDate.get(Calendar.DAY_OF_YEAR)) {
+                age--;
+            }
+            
+            return age;
+            } catch (Exception e) {
+            return 0;
+        }
+    }
+    
+    private void completeScreening() {
+        Log.d("NutritionalScreening", "=== COMPLETING SCREENING ===");
+        Log.d("NutritionalScreening", "Current answers: " + answers.toString());
+        
+        // Save all answers first, then navigate only after successful save
+        saveAnswers();
+    }
+    
     
     private void saveAnswers() {
-        // Save to SharedPreferences for local storage
-        android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
-        android.content.SharedPreferences.Editor editor = prefs.edit();
-        
-        for (Map.Entry<String, String> entry : answers.entrySet()) {
-            editor.putString("screening_" + entry.getKey(), entry.getValue());
+        try {
+            // Save to SharedPreferences for local storage
+            android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+            android.content.SharedPreferences.Editor editor = prefs.edit();
+            
+            for (Map.Entry<String, String> entry : answers.entrySet()) {
+                editor.putString("screening_" + entry.getKey(), entry.getValue());
+            }
+            
+            editor.apply();
+            
+            // Save to community_users database
+            saveToCommunityUsers();
+            
+        } catch (Exception e) {
+            Log.e("NutritionalScreening", "Error saving answers: " + e.getMessage());
+            Toast.makeText(this, "Error saving data. Please try again.", Toast.LENGTH_LONG).show();
         }
-        
-        editor.apply();
-        
-        // Save to community_users database
-        saveToCommunityUsers();
-        
-        // Add fallback navigation to MainActivity after a short delay
-        new android.os.Handler().postDelayed(() -> {
-            Intent intent = new Intent(NutritionalScreeningActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }, 2000); // 2 second delay to allow API call to complete
     }
+    
     
     private void saveToCommunityUsers() {
         // Check if user is already logged in
         CommunityUserManager userManager = new CommunityUserManager(this);
-        if (userManager.isLoggedIn()) {
+        boolean isLoggedIn = userManager.isLoggedIn();
+        String userEmail = userManager.getCurrentUserEmail();
+        
+        Log.d("NutritionalScreening", "=== SAVING SCREENING DATA ===");
+        Log.d("NutritionalScreening", "User logged in: " + isLoggedIn);
+        Log.d("NutritionalScreening", "User email: " + userEmail);
+        
+        if (isLoggedIn) {
             // User is logged in, update their screening data
-            updateUserScreeningData();
+            Log.d("NutritionalScreening", "User is logged in, updating screening data");
+            updateUserScreeningData(userManager);
         } else {
-            // User not logged in, show dialog to collect name, email, and password
-            showUserInfoDialog();
+            // User not logged in, try to register them with screening data
+            Log.d("NutritionalScreening", "User not logged in, trying to register with screening data");
+            registerNewUserWithScreeningData(userManager);
         }
     }
     
-    private void updateUserScreeningData() {
-        CommunityUserManager userManager = new CommunityUserManager(this);
+    private void updateUserScreeningData(CommunityUserManager userManager) {
+        // Use the save_screening API endpoint for updating existing users
         String email = userManager.getCurrentUserEmail();
+        if (email == null || email.isEmpty()) {
+            Log.e("NutritionalScreening", "No user email found");
+            return;
+        }
         
-        if (email != null) {
-            // Update existing user with screening data
-            new Thread(() -> {
-                try {
-                    JSONObject screeningData = new JSONObject();
-                    screeningData.put("email", email);
-                    screeningData.put("name", userManager.getCurrentUserData().get("name")); // Get name from existing data
-                    screeningData.put("municipality", answers.get("question_0"));
-                    screeningData.put("barangay", answers.get("question_1"));
-                    screeningData.put("sex", answers.get("question_2"));
-                    screeningData.put("birthday", answers.get("question_3"));
-                    screeningData.put("is_pregnant", answers.get("question_4"));
-                    screeningData.put("weight", answers.get("question_5"));
-                    screeningData.put("height", answers.get("question_6"));
+        // Get user data from SharedPreferences
+        android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+        String userName = prefs.getString("current_user_name", "Unknown User");
+        
+        // Prepare screening data using the save_screening format
+        String municipality = answers.get("question_0");
+        String barangay = answers.get("question_1");
+        String sex = answers.get("question_2");
+        String birthDate = answers.get("question_3");
+        String pregnancyStatus = getPregnancyStatus();
+        String weight = answers.get("question_5");
+        String height = answers.get("question_6");
+        
+        Log.d("NutritionalScreening", "Saving screening data using save_screening API");
+        Log.d("NutritionalScreening", "Email: " + email);
+        Log.d("NutritionalScreening", "Name: " + userName);
+        Log.d("NutritionalScreening", "Municipality: " + municipality);
+        Log.d("NutritionalScreening", "Barangay: " + barangay);
+        Log.d("NutritionalScreening", "Sex: " + sex);
+        Log.d("NutritionalScreening", "Birth Date: " + birthDate);
+        Log.d("NutritionalScreening", "Pregnancy: " + pregnancyStatus);
+        Log.d("NutritionalScreening", "Weight: " + weight);
+        Log.d("NutritionalScreening", "Height: " + height);
+        
+        // Use the save_screening API endpoint
+        makeScreeningApiRequest(email, userName, municipality, barangay, sex, birthDate, pregnancyStatus, weight, height);
+    }
+    
+    private void makeScreeningApiRequest(String email, String name, String municipality, String barangay, 
+                                       String sex, String birthday, String isPregnant, String weight, String height) {
+        // Show loading dialog
+        runOnUiThread(() -> {
+            android.app.ProgressDialog progressDialog = new android.app.ProgressDialog(this);
+            progressDialog.setMessage("Saving screening data...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+            
+            // Store reference to dismiss later
+            this.progressDialog = progressDialog;
+        });
+        
+        new Thread(() -> {
+            try {
+                // Create JSON request data
+                org.json.JSONObject requestData = new org.json.JSONObject();
+                requestData.put("email", email);
+                requestData.put("name", name);
+                requestData.put("municipality", municipality);
+                requestData.put("barangay", barangay);
+                requestData.put("sex", sex);
+                requestData.put("birthday", birthday);
+                requestData.put("is_pregnant", isPregnant);
+                requestData.put("weight", weight);
+                requestData.put("height", height);
+                
+                // Make API request
+                okhttp3.OkHttpClient client = new okhttp3.OkHttpClient.Builder()
+                    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                    .build();
+                
+                okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                    requestData.toString(), 
+                    okhttp3.MediaType.parse("application/json; charset=utf-8")
+                );
+                
+                okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url("https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=save_screening")
+                    .post(body)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("Accept", "application/json")
+                    .build();
+                
+                try (okhttp3.Response response = client.newCall(request).execute()) {
+                    Log.d("NutritionalScreening", "Screening API response code: " + response.code());
                     
-                    // Send to API
-                    sendScreeningDataToAPI(screeningData);
-                    
+                    if (response.isSuccessful() && response.body() != null) {
+                        String responseBody = response.body().string();
+                        Log.d("NutritionalScreening", "Screening API response: " + responseBody);
+                        
+                        org.json.JSONObject jsonResponse = new org.json.JSONObject(responseBody);
+                        
+                        if (jsonResponse.getBoolean("success")) {
+                            Log.d("NutritionalScreening", "Screening data saved successfully: " + jsonResponse.optString("message", "Success"));
+                            runOnUiThread(() -> {
+                                // Dismiss progress dialog
+                                if (progressDialog != null && progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
+                                Toast.makeText(NutritionalScreeningActivity.this, "Screening data saved successfully!", Toast.LENGTH_LONG).show();
+                                // Add a small delay before navigation so user can see the success message
+                                new android.os.Handler().postDelayed(() -> {
+                                    navigateToMainActivity();
+                                }, 1500); // 1.5 second delay
+                            });
+                        } else {
+                            String errorMessage = jsonResponse.optString("message", "Unknown error");
+                            Log.e("NutritionalScreening", "Failed to save screening data: " + errorMessage);
+                            runOnUiThread(() -> {
+                                // Dismiss progress dialog
+                                if (progressDialog != null && progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
+                                Toast.makeText(NutritionalScreeningActivity.this, "Failed to save screening data: " + errorMessage, Toast.LENGTH_LONG).show();
+                            });
+                        }
+                    } else {
+                        String errorBody = response.body() != null ? response.body().string() : "No error body";
+                        Log.e("NutritionalScreening", "Screening API request failed: " + response.code() + " - " + response.message() + " - " + errorBody);
+                        runOnUiThread(() -> {
+                            // Dismiss progress dialog
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                            Toast.makeText(NutritionalScreeningActivity.this, "Failed to save screening data: " + response.code(), Toast.LENGTH_LONG).show();
+                        });
+                    }
+                }
                 } catch (Exception e) {
-                    Log.e("NutritionalScreening", "Error updating screening data: " + e.getMessage());
+                Log.e("NutritionalScreening", "Error making screening API request: " + e.getMessage());
+                e.printStackTrace();
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "Error updating data", Toast.LENGTH_SHORT).show();
+                        // Dismiss progress dialog
+                        if (progressDialog != null && progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(NutritionalScreeningActivity.this, "Error saving screening data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
                 }
             }).start();
+    }
+    
+    
+    private String getPregnancyStatus() {
+        String pregnancyAnswer = answers.get("question_4");
+        if (pregnancyAnswer == null) {
+            return "Not Applicable";
         }
+        return pregnancyAnswer.equals("Yes") ? "Yes" : "No";
     }
     
-    private void showUserInfoDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle("Complete Your Profile");
-        builder.setMessage("Please provide your information to save your screening results:");
+    private void registerNewUserWithScreeningData(CommunityUserManager userManager) {
+        // Get user data from SharedPreferences
+        android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+        String userName = prefs.getString("current_user_name", "Screening User");
+        String email = prefs.getString("current_user_email", "");
+        String password = "screening_user"; // Default password for screening users
         
-        // Create input fields
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(50, 20, 50, 20);
-        
-        EditText nameInput = new EditText(this);
-        nameInput.setHint("Full Name");
-        nameInput.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        layout.addView(nameInput);
-        
-        EditText emailInput = new EditText(this);
-        emailInput.setHint("Email Address");
-        emailInput.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        layout.addView(emailInput);
-        
-        EditText passwordInput = new EditText(this);
-        passwordInput.setHint("Password");
-        passwordInput.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        layout.addView(passwordInput);
-        
-        builder.setView(layout);
-        
-        builder.setPositiveButton("Save Screening", (dialog, which) -> {
-            String name = nameInput.getText().toString().trim();
-            String email = emailInput.getText().toString().trim();
-            String password = passwordInput.getText().toString().trim();
-            
-            if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                showUserInfoDialog(); // Show dialog again
-                return;
-            }
-            
-            // Prepare data for API
-            try {
-                JSONObject screeningData = new JSONObject();
-                screeningData.put("name", name);
-                screeningData.put("email", email);
-                screeningData.put("password", password);
-                screeningData.put("municipality", answers.get("question_0"));
-                screeningData.put("barangay", answers.get("question_1"));
-                screeningData.put("sex", answers.get("question_2"));
-                screeningData.put("birthday", answers.get("question_3"));
-                screeningData.put("is_pregnant", answers.get("question_4"));
-                screeningData.put("weight", answers.get("question_5"));
-                screeningData.put("height", answers.get("question_6"));
-                
-                // Send to API
-                sendScreeningDataToAPI(screeningData);
-                
-            } catch (Exception e) {
-                Log.e("NutritionalScreening", "Error preparing screening data: " + e.getMessage());
-                Toast.makeText(this, "Error preparing data", Toast.LENGTH_SHORT).show();
-            }
-        });
-        
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
-            Toast.makeText(this, "Screening data not saved", Toast.LENGTH_SHORT).show();
-        });
-        
-        builder.show();
-    }
-    
-    
-    private void sendScreeningDataToAPI(JSONObject data) {
-        new Thread(() -> {
-            try {
-                String url = "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=save_screening";
-                
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-                
-                // Send data
-                OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-                writer.write(data.toString());
-                writer.flush();
-                writer.close();
-                
-                // Get response
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
+        if (email == null || email.isEmpty()) {
+            Log.e("NutritionalScreening", "No email found for new user registration");
+                        runOnUiThread(() -> {
+                Toast.makeText(this, "Please log in to save screening data", Toast.LENGTH_LONG).show();
+                        });
+                        return;
                     }
-                    reader.close();
                     
-                    // Parse response
-                    JSONObject responseJson = new JSONObject(response.toString());
-                    if (responseJson.getBoolean("success")) {
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Screening data saved successfully!", Toast.LENGTH_LONG).show();
-                            
-                            // Screening data saved to database successfully
-                            
-                            // Register FCM token after successful screening
-                            registerFCMTokenAfterScreening();
-                            
-                            // Navigate to MainActivity after successful screening
-                            Intent intent = new Intent(NutritionalScreeningActivity.this, MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Failed to save screening data", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                } else {
+        // Prepare screening data
+        String municipality = answers.get("question_0");
+        String barangay = answers.get("question_1");
+        String sex = answers.get("question_2");
+        String birthDate = answers.get("question_3");
+        String pregnancyStatus = getPregnancyStatus();
+        String weight = answers.get("question_5");
+        String height = answers.get("question_6");
+        String muac = "0"; // Default MUAC value
+        
+        Log.d("NutritionalScreening", "Registering new user with screening data");
+        
+        // Use the original registerUser method
+        userManager.registerUser(
+            userName, email, password, barangay, municipality, 
+            sex, birthDate, pregnancyStatus, weight, height, muac,
+            new CommunityUserManager.RegisterCallback() {
+                @Override
+                public void onSuccess(String message) {
+                    Log.d("NutritionalScreening", "New user registered successfully: " + message);
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "Error saving data to server", Toast.LENGTH_SHORT).show();
+                        // Dismiss progress dialog
+                        if (progressDialog != null && progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        Toast.makeText(NutritionalScreeningActivity.this, "Screening data saved successfully!", Toast.LENGTH_LONG).show();
+                        // Add a small delay before navigation so user can see the success message
+                        new android.os.Handler().postDelayed(() -> {
+                            navigateToMainActivity();
+                        }, 1500); // 1.5 second delay
                     });
                 }
                 
-            } catch (Exception e) {
-                Log.e("NutritionalScreening", "Error sending data to API: " + e.getMessage());
+                @Override
+                public void onError(String error) {
+                    Log.e("NutritionalScreening", "Failed to register new user: " + error);
+                        runOnUiThread(() -> {
+                            // Dismiss progress dialog
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                            if (error.contains("already exists")) {
+                                Toast.makeText(NutritionalScreeningActivity.this, "User already exists. Please log in to update your screening data.", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(NutritionalScreeningActivity.this, "Failed to save screening data: " + error, Toast.LENGTH_LONG).show();
+                        }
+                        });
+                }
+            }
+        );
+                }
+                
+    private void showUserInfoDialog() {
+        // For now, just show a message that user needs to be logged in
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Error connecting to server", Toast.LENGTH_SHORT).show();
-                });
-            }
-        }).start();
+            Toast.makeText(this, "Please log in to save screening data", Toast.LENGTH_LONG).show();
+        });
     }
     
-    private int getUserIdFromEmail(String email) {
-        // This is a placeholder - you might need to implement a method to get user_id from email
-        // For now, return 0 to indicate no linked user
-        return 0;
-    }
     
-    /**
-     * Register FCM token after successful screening completion
-     */
-    private void registerFCMTokenAfterScreening() {
-        try {
-            // Get user email from CommunityUserManager
-            CommunityUserManager userManager = new CommunityUserManager(this);
-            String userEmail = userManager.getCurrentUserEmail();
-            String userBarangay = answers.get("question_1"); // Get barangay from screening answers
-            
-            if (userEmail != null && !userEmail.isEmpty() && userBarangay != null && !userBarangay.isEmpty()) {
-                Log.d("NutritionalScreening", "Registering FCM token after screening for user: " + userEmail + " in " + userBarangay);
-                
-                // Initialize FCM token manager and register token
-                FCMTokenManager fcmManager = new FCMTokenManager(this);
-                fcmManager.registerTokenAfterScreening(userEmail, userBarangay);
-                
-                Log.d("NutritionalScreening", "FCM token registration initiated after screening");
-            } else {
-                Log.w("NutritionalScreening", "Cannot register FCM token: missing user email or barangay");
-                Log.w("NutritionalScreening", "User email: " + userEmail + ", Barangay: " + userBarangay);
-            }
-        } catch (Exception e) {
-            Log.e("NutritionalScreening", "Error registering FCM token after screening: " + e.getMessage());
-        }
+    private void navigateToMainActivity() {
+        // Navigate to main activity
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

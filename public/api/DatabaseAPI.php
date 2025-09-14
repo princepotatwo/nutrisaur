@@ -2957,7 +2957,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $email = $data['email'] ?? '';
                 
                 $pdo = $db->getPDO();
-                $stmt = $pdo->prepare("SELECT name, email, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date FROM community_users WHERE email = ?");
+                $stmt = $pdo->prepare("SELECT name, email, municipality, barangay, sex, birthday, is_pregnant, weight_kg, height_cm, screening_date FROM community_users WHERE email = ?");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 
@@ -3006,7 +3006,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $email = $data['email'] ?? '';
                     
                     $pdo = $db->getPDO();
-                    $stmt = $pdo->prepare("SELECT weight, height FROM community_users WHERE email = ?");
+                    $stmt = $pdo->prepare("SELECT weight_kg, height_cm FROM community_users WHERE email = ?");
                     $stmt->execute([$email]);
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);
                     
@@ -3040,7 +3040,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     
                     // Direct database query
                     $pdo = $db->getPDO();
-                    $stmt = $pdo->prepare("SELECT name, email, weight, height, municipality, barangay FROM community_users WHERE email = ?");
+                    $stmt = $pdo->prepare("SELECT name, email, weight_kg, height_cm, municipality, barangay FROM community_users WHERE email = ?");
                     $stmt->execute([$email]);
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
@@ -3123,7 +3123,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         if ($result) {
                             // Verify the update worked
-                            $verifyStmt = $pdo->prepare("SELECT weight, height, muac FROM community_users WHERE email = ?");
+                            $verifyStmt = $pdo->prepare("SELECT weight_kg, height_cm, muac_cm FROM community_users WHERE email = ?");
                             $verifyStmt->execute([$email]);
                             $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
                             
@@ -3140,7 +3140,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     } else {
                         // Create new user with direct SQL
                         $insertSql = "INSERT INTO community_users 
-                                     (name, email, municipality, barangay, sex, birthday, is_pregnant, weight, height, muac, screening_date) 
+                                     (name, email, municipality, barangay, sex, birthday, is_pregnant, weight_kg, height_cm, muac_cm, screening_date) 
                                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                         
                         $insertStmt = $pdo->prepare($insertSql);
@@ -3151,7 +3151,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         if ($result) {
                             // Verify the insert worked
-                            $verifyStmt = $pdo->prepare("SELECT weight, height, muac FROM community_users WHERE email = ?");
+                            $verifyStmt = $pdo->prepare("SELECT weight_kg, height_cm, muac_cm FROM community_users WHERE email = ?");
                             $verifyStmt->execute([$email]);
                             $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
                             
@@ -3240,8 +3240,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                         sex = ?, 
                                         birthday = ?, 
                                         is_pregnant = ?, 
-                                        weight = ?, 
-                                        height = ?, 
+                                        weight_kg = ?, 
+                                        height_cm = ?, 
                                         screening_date = NOW()
                                       WHERE email = ?";
                         
@@ -3253,7 +3253,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         // Verify the update worked
                         if ($result) {
-                            $verifyStmt = $pdo->prepare("SELECT weight, height FROM community_users WHERE email = ?");
+                            $verifyStmt = $pdo->prepare("SELECT weight_kg, height_cm FROM community_users WHERE email = ?");
                             $verifyStmt->execute([$email]);
                             $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
                             error_log("Data saved verification: " . print_r($savedData, true));
