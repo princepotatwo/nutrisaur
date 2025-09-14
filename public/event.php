@@ -116,7 +116,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             'date_time' => $date_time,
             'location' => $location,
             'organizer' => $organizer,
-            'created_at' => time()
         ]);
         
         if ($result['success']) {
@@ -535,7 +534,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
                 'date_time' => $date_time,
                 'location' => $location,
                 'organizer' => $organizer,
-                'created_at' => time()
             ]);
             
             if ($result['success']) {
@@ -610,7 +608,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             'date_time' => $date_time,
             'location' => $location,
             'organizer' => $organizer,
-            'created_at' => time()
         ]);
         
         if ($result['success']) {
