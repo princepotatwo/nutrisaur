@@ -81,6 +81,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     exit;
 }
 
+// 🚨 DEBUG FCM TOKENS ENDPOINT
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'debug_fcm_tokens') {
+    error_log("=== DEBUG FCM TOKENS CALLED ===");
+    header('Content-Type: application/json');
+    
+    $location = $_POST['location'] ?? 'Bangkal';
+    $tokens = getFCMTokensByLocation($location);
+    
+    echo json_encode([
+        'success' => true,
+        'location' => $location,
+        'tokens_found' => count($tokens),
+        'tokens' => $tokens
+    ]);
+    exit;
+}
+
 // 🚨 NEW ACTION: SAVE EVENT ONLY (no notifications, no redirects)
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'save_event_only') {
     error_log("=== SAVE EVENT ONLY CALLED ===");
@@ -223,7 +240,7 @@ $username = $_SESSION['username'] ?? null;
 $email = $_SESSION['email'] ?? null;
 
 // Check if user is authenticated (skip for API calls)
-$isApiCall = isset($_GET['action']) || (isset($_POST['action']) && in_array($_POST['action'], ['create_new_event', 'save_event_only', 'test_ajax']));
+$isApiCall = isset($_GET['action']) || (isset($_POST['action']) && in_array($_POST['action'], ['create_new_event', 'save_event_only', 'test_ajax', 'debug_fcm_tokens']));
 if (!$isApiCall && (!$userId || !$username || !$email)) {
     // Redirect to login if not authenticated (only for web interface)
     header("Location: /login");
