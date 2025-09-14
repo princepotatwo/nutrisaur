@@ -98,6 +98,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     exit;
 }
 
+// 🚨 DEBUG NOTIFICATION ENDPOINT
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'debug_notification') {
+    error_log("=== DEBUG NOTIFICATION CALLED ===");
+    header('Content-Type: application/json');
+    
+    try {
+        $result = sendEventNotifications(999, 'Test Event', 'Workshop', 'Test Description', '2025-09-15 18:30:00', 'Bangkal', 'Test User');
+        echo json_encode([
+            'success' => true,
+            'notification_result' => $result
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+    exit;
+}
+
 // 🚨 NEW ACTION: SAVE EVENT ONLY (no notifications, no redirects)
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'save_event_only') {
     error_log("=== SAVE EVENT ONLY CALLED ===");
@@ -240,7 +260,7 @@ $username = $_SESSION['username'] ?? null;
 $email = $_SESSION['email'] ?? null;
 
 // Check if user is authenticated (skip for API calls)
-$isApiCall = isset($_GET['action']) || (isset($_POST['action']) && in_array($_POST['action'], ['create_new_event', 'save_event_only', 'test_ajax', 'debug_fcm_tokens']));
+$isApiCall = isset($_GET['action']) || (isset($_POST['action']) && in_array($_POST['action'], ['create_new_event', 'save_event_only', 'test_ajax', 'debug_fcm_tokens', 'debug_notification']));
 if (!$isApiCall && (!$userId || !$username || !$email)) {
     // Redirect to login if not authenticated (only for web interface)
     header("Location: /login");
