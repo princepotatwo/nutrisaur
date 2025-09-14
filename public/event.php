@@ -218,7 +218,7 @@ $username = $_SESSION['username'] ?? null;
 $email = $_SESSION['email'] ?? null;
 
 // Check if user is authenticated (skip for API calls)
-$isApiCall = isset($_GET['action']) || (isset($_POST['action']) && $_POST['action'] !== 'create_event');
+$isApiCall = isset($_GET['action']) || (isset($_POST['action']) && in_array($_POST['action'], ['create_new_event', 'save_event_only', 'test_ajax']));
 if (!$isApiCall && (!$userId || !$username || !$email)) {
     // Redirect to login if not authenticated (only for web interface)
     header("Location: /login");
