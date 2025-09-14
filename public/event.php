@@ -513,14 +513,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
         error_log("Validation failed: Missing required fields");
     } else {
         try {
-            // Insert event into database
-            $stmt = $conn->prepare("
-                INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
-                VALUES (?, ?, ?, ?, ?, ?, NOW())
-            ");
+            // Insert event into database using DatabaseAPI
+            $db = DatabaseAPI::getInstance();
+            $result = $db->universalInsert('programs', [
+                'title' => $title,
+                'type' => $type,
+                'description' => $description,
+                'date_time' => $date_time,
+                'location' => $location,
+                'organizer' => $organizer,
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
             
-            $stmt->execute([$title, $type, $description, $date_time, $location, $organizer]);
-            $eventId = $conn->lastInsertId();
+            if ($result['success']) {
+                $eventId = $result['insert_id'];
+            } else {
+                throw new Exception('Failed to insert event: ' . $result['message']);
+            }
             
             error_log("✅ Event created successfully with ID: $eventId");
             
@@ -579,14 +588,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     }
     
     try {
-        // Insert event into database
-        $stmt = $conn->prepare("
-            INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, NOW())
-        ");
+        // Insert event into database using DatabaseAPI
+        $db = DatabaseAPI::getInstance();
+        $result = $db->universalInsert('programs', [
+            'title' => $title,
+            'type' => $type,
+            'description' => $description,
+            'date_time' => $date_time,
+            'location' => $location,
+            'organizer' => $organizer,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
         
-        $stmt->execute([$title, $type, $description, $date_time, $location, $organizer]);
-        $eventId = $conn->lastInsertId();
+        if ($result['success']) {
+            $eventId = $result['insert_id'];
+        } else {
+            throw new Exception('Failed to insert event: ' . $result['message']);
+        }
         
         error_log("✅ AJAX Event created successfully with ID: $eventId");
         
@@ -624,7 +642,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 
 // 🚨 NEW SIMPLIFIED NOTIFICATION FUNCTION
 function sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer) {
-    global $conn;
+    $db = DatabaseAPI::getInstance();
     
     try {
         error_log("🚨 sendEventNotifications called for event: $title");
@@ -1059,44 +1077,44 @@ function getUserLocationStats() {
 
 // Function to get detailed user list for a specific location (for debugging) - using direct lookup like dash.php
 function getUsersForLocation($targetLocation) {
-    global $conn;
+    $db = DatabaseAPI::getInstance();
     
     try {
         if (empty($targetLocation) || $targetLocation === 'all') {
-            $stmt = $conn->prepare("
+            $result = $db->universalQuery("
                 SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
                 FROM community_users cu
                 WHERE cu.barangay IS NOT NULL AND cu.barangay != ''
                 AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
                 ORDER BY cu.barangay, cu.email
             ");
-            $stmt->execute();
+            $users = $result['success'] ? $result['data'] : [];
         } else {
             // Check if it's a municipality
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
-                $stmt = $conn->prepare("
+                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                $result = $db->universalQuery("
                     SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
                     FROM community_users cu
                     WHERE cu.barangay IS NOT NULL AND cu.barangay != ''
                     AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
                     AND (cu.barangay = ? OR cu.barangay LIKE ?)
                     ORDER BY cu.barangay, cu.email
-                ");
-                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
-                $stmt->execute([$targetLocation, $municipalityName . '%']);
+                ", [$targetLocation, $municipalityName . '%']);
+                $users = $result['success'] ? $result['data'] : [];
             } else {
-                $stmt = $conn->prepare("
+                $result = $db->universalQuery("
                     SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
                     FROM community_users cu
                     WHERE cu.barangay = ?
                     AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
                     ORDER BY cu.email
-                ");
-                $stmt->execute([$targetLocation]);
+                ", [$targetLocation]);
+                $users = $result['success'] ? $result['data'] : [];
             }
         }
         
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $users;
         
     } catch (Exception $e) {
         error_log("Error getting users for location: " . $e->getMessage());
