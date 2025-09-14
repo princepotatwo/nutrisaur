@@ -109,7 +109,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         
         // Insert into programs table using DatabaseAPI
         $db = DatabaseAPI::getInstance();
+        
+        // Get next available program_id
+        $maxIdResult = $db->universalQuery("SELECT MAX(program_id) as max_id FROM programs");
+        $nextId = ($maxIdResult['success'] && !empty($maxIdResult['data'])) ? $maxIdResult['data'][0]['max_id'] + 1 : 1;
+        
         $result = $db->universalInsert('programs', [
+            'program_id' => $nextId,
             'title' => $title,
             'type' => $type,
             'description' => $description,
@@ -601,7 +607,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     try {
         // Insert event into database using DatabaseAPI
         $db = DatabaseAPI::getInstance();
+        
+        // Get next available program_id
+        $maxIdResult = $db->universalQuery("SELECT MAX(program_id) as max_id FROM programs");
+        $nextId = ($maxIdResult['success'] && !empty($maxIdResult['data'])) ? $maxIdResult['data'][0]['max_id'] + 1 : 1;
+        
         $result = $db->universalInsert('programs', [
+            'program_id' => $nextId,
             'title' => $title,
             'type' => $type,
             'description' => $description,
