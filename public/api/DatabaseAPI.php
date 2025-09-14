@@ -226,6 +226,28 @@ function createJWT($serviceAccountKey) {
 require_once __DIR__ . "/../../config.php";
 
 // ========================================
+// HELPER FUNCTIONS
+// ========================================
+
+/**
+ * Parse pregnant status to fit database column size
+ */
+function parsePregnantStatus($pregnantString) {
+    if (empty($pregnantString) || strtolower($pregnantString) === 'not applicable') {
+        return 'N/A'; // Short form for not applicable
+    }
+    
+    $pregnant = strtolower(trim($pregnantString));
+    if (in_array($pregnant, ['yes', 'true', '1', 'pregnant'])) {
+        return 'Yes';
+    } elseif (in_array($pregnant, ['no', 'false', '0', 'not pregnant'])) {
+        return 'No';
+    }
+    
+    return 'N/A'; // Default to N/A if unclear
+}
+
+// ========================================
 // DATABASE API CLASS
 // ========================================
 
@@ -2448,23 +2470,6 @@ class DatabaseAPI {
         return $this->pdo->rollback();
     }
     
-    /**
-     * Parse pregnant status to fit database column size
-     */
-    private function parsePregnantStatus($pregnantString) {
-        if (empty($pregnantString) || strtolower($pregnantString) === 'not applicable') {
-            return 'N/A'; // Short form for not applicable
-        }
-        
-        $pregnant = strtolower(trim($pregnantString));
-        if (in_array($pregnant, ['yes', 'true', '1', 'pregnant'])) {
-            return 'Yes';
-        } elseif (in_array($pregnant, ['no', 'false', '0', 'not pregnant'])) {
-            return 'No';
-        }
-        
-        return 'N/A'; // Default to N/A if unclear
-    }
     
     /**
      * Close connections
@@ -3222,7 +3227,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $barangay = $data['barangay'] ?? '';
                 $sex = $data['sex'] ?? '';
                 $birthday = $data['birthday'] ?? '';
-                $is_pregnant = $this->parsePregnantStatus($data['is_pregnant'] ?? 'No');
+                $is_pregnant = parsePregnantStatus($data['is_pregnant'] ?? 'No');
                 $weight = $data['weight'] ?? '0';
                 $height = $data['height'] ?? '0';
                 
