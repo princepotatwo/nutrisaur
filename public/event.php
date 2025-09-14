@@ -104,10 +104,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     header('Content-Type: application/json');
     
     try {
-        $result = sendEventNotifications(999, 'Test Event', 'Workshop', 'Test Description', '2025-09-15 18:30:00', 'Bangkal', 'Test User');
+        // Test the notification API directly instead of the function
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+            'notification_data' => json_encode([
+                'title' => '🎯 Event: Test Event',
+                'body' => 'New event: Test Event at Bangkal on Sep 15, 2025 6:30 PM',
+                'target' => 'Bangkal'
+            ])
+        ]));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/x-www-form-urlencoded'
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+        
         echo json_encode([
             'success' => true,
-            'notification_result' => $result
+            'http_code' => $httpCode,
+            'response' => $response,
+            'error' => $error
         ]);
     } catch (Exception $e) {
         echo json_encode([
