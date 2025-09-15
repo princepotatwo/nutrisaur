@@ -132,10 +132,21 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 $shouldProcess = false;
                 
                 // Apply age and height restrictions like in screening.php
-                if ($whoStandard === 'weight-for-age' || $whoStandard === 'height-for-age' || $whoStandard === 'bmi-for-age') {
+                if ($whoStandard === 'weight-for-age' || $whoStandard === 'height-for-age') {
                     // These standards are for children 0-71 months only
                     $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
                     error_log("    - Age restriction check: $shouldProcess (age: $ageInMonths, standard: $whoStandard)");
+                } elseif ($whoStandard === 'bmi-for-age') {
+                    // BMI-for-age can be used for both children (0-71 months) and adults (>71 months)
+                    if ($ageInMonths <= 71) {
+                        // Child: use WHO Growth Standards
+                        $shouldProcess = true;
+                        error_log("    - Child BMI-for-age: $shouldProcess (age: $ageInMonths)");
+                    } else {
+                        // Adult: use adult BMI classification
+                        $shouldProcess = true;
+                        error_log("    - Adult BMI-for-age: $shouldProcess (age: $ageInMonths)");
+                    }
                 } elseif ($whoStandard === 'weight-for-height') {
                     // Weight-for-Height: 65-120 cm height range
                     $heightCm = floatval($user['height']);
@@ -146,12 +157,6 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                     $heightCm = floatval($user['height']);
                     $shouldProcess = ($heightCm >= 45 && $heightCm <= 110);
                     error_log("    - Length restriction check: $shouldProcess (height: $heightCm cm, standard: $whoStandard)");
-                }
-                
-                // For adults (>71 months), only BMI-for-age is applicable
-                if ($ageInMonths > 71 && $whoStandard !== 'bmi-for-age') {
-                    $shouldProcess = false;
-                    error_log("    - Adult user with non-BMI standard, skipping: $whoStandard");
                 }
                 
                 error_log("    - Should process: $shouldProcess");
