@@ -244,18 +244,22 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
             }
         }
         
+        // Calculate total processed users (sum of all classifications)
+        $totalProcessedUsers = $classifications['Underweight'] + $classifications['Normal'] + $classifications['Overweight'] + $classifications['Obese'] + $classifications['No Data'];
+        
         error_log("📊 Final WHO Classification Results:");
         error_log("  - Underweight: " . $classifications['Underweight']);
         error_log("  - Normal: " . $classifications['Normal']);
         error_log("  - Overweight: " . $classifications['Overweight']);
         error_log("  - Obese: " . $classifications['Obese']);
         error_log("  - No Data: " . $classifications['No Data']);
-        error_log("  - Total Users: " . count($users));
+        error_log("  - Total Processed Users: " . $totalProcessedUsers);
+        error_log("  - Total Database Users: " . count($users));
         
         return [
             'success' => true,
             'classifications' => $classifications,
-            'total_users' => count($users),
+            'total_users' => $totalProcessedUsers,
             'who_standard' => $whoStandard
         ];
         
