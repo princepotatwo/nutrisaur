@@ -208,8 +208,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                     $fcmTokens = $db->getActiveFCMTokens();
                     error_log("📱 Sending to ALL locations - " . count($fcmTokens) . " tokens");
                 } else {
-                    $fcmTokens = $db->getFCMTokensByBarangay($location);
-                    error_log("📱 Sending to $location - " . count($fcmTokens) . " tokens");
+                    // Check if it's a municipality (all caps, known municipalities)
+                    $municipalities = ['HERMOSA', 'LIMAY', 'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'];
+                    if (in_array($location, $municipalities)) {
+                        $fcmTokens = $db->getFCMTokensByMunicipality($location);
+                        error_log("📱 Sending to MUNICIPALITY $location (all barangays) - " . count($fcmTokens) . " tokens");
+                    } else {
+                        $fcmTokens = $db->getFCMTokensByBarangay($location);
+                        error_log("📱 Sending to BARANGAY $location - " . count($fcmTokens) . " tokens");
+                    }
                 }
                 
                 if (!empty($fcmTokens)) {

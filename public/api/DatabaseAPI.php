@@ -856,6 +856,75 @@ class DatabaseAPI {
     }
     
     /**
+     * Get FCM tokens by municipality (all barangays in that municipality)
+     */
+    public function getFCMTokensByMunicipality($municipality) {
+        try {
+            // Define municipality to barangay mapping
+            $municipalityBarangays = [
+                'HERMOSA' => [
+                    'A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)',
+                    'Cataning (Pob.)', 'Culis', 'Daungan (Pob.)', 'Mabiga', 'Mabuco', 'Maite',
+                    'Mambog - Mandama', 'Palihan', 'Pandatung', 'Pulo', 'Saba', 'San Pedro', 'Sumalo', 'Tipo'
+                ],
+                'LIMAY' => [
+                    'Alas-asin', 'Anonang', 'Bataan', 'Bayan-bayanan', 'Binuangan', 'Cacabasan',
+                    'Duale', 'Kitang 2', 'Kitang 2 & Luz', 'Lamao', 'Luz', 'Mabayo', 'Malaya',
+                    'Mountain View', 'Poblacion', 'Reformista', 'San Isidro', 'Santiago', 'Tuyan', 'Villa Angeles'
+                ],
+                'MARIVELES' => [
+                    'Alion', 'Balon-Anito', 'Baseco', 'Batan', 'Biaan', 'Cabcaben', 'Camaya',
+                    'Iba', 'Lamao', 'Lucanin', 'Mabayo', 'Malusak', 'Poblacion', 'San Carlos',
+                    'San Isidro', 'Sisiman', 'Townsite'
+                ],
+                'MORONG' => [
+                    'Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang', 'San Jose'
+                ],
+                'ORANI' => [
+                    'Bagong Paraiso', 'Balut', 'Bayorbor', 'Calungusan', 'Camacho', 'Daang Bago',
+                    'Dona', 'Kaparangan', 'Mabayo', 'Masagana', 'Mulawin', 'Paglalaban', 'Palawe',
+                    'Pantalan Bago', 'Poblacion', 'Saguing', 'Tagumpay', 'Tala', 'Tapulao', 'Tenejero', 'Wawa'
+                ],
+                'ORION' => [
+                    'Balut', 'Bantan', 'Burgos', 'Calungusan', 'Camacho', 'Capunitan', 'Daan Bilolo',
+                    'Daan Pare', 'General Lim', 'Kapunitan', 'Lati', 'Luyahan', 'Mabayo', 'Maligaya',
+                    'Poblacion', 'Sabatan', 'San Vicente', 'Santo Domingo', 'Villa Angeles', 'Wawa'
+                ],
+                'PILAR' => [
+                    'Bagumbayan', 'Balanoy', 'Bantan Munti', 'Bantan Grande', 'Burgos', 'Del Rosario',
+                    'Diwa', 'Fatima', 'Landing', 'Liwa-liwa', 'Nagwaling', 'Panilao', 'Poblacion',
+                    'Rizal', 'Santo Niño', 'Wawa'
+                ],
+                'SAMAL' => [
+                    'Bagong Silang', 'Bangkong', 'Burgos', 'Calaguiman', 'Calantas', 'Daan Bilolo',
+                    'Daang Pare', 'Del Pilar', 'General Lim', 'Imelda', 'Lourdes', 'Mabatang',
+                    'Maligaya', 'Poblacion', 'San Juan', 'San Roque', 'Santo Niño', 'Sulong'
+                ]
+            ];
+            
+            if (!isset($municipalityBarangays[$municipality])) {
+                error_log("⚠️ Unknown municipality: $municipality");
+                return [];
+            }
+            
+            $barangays = $municipalityBarangays[$municipality];
+            $placeholders = str_repeat('?,', count($barangays) - 1) . '?';
+            
+            $stmt = $this->pdo->prepare("
+                SELECT email as user_email, barangay as user_barangay, fcm_token 
+                FROM community_users 
+                WHERE barangay IN ($placeholders)
+                AND fcm_token IS NOT NULL AND fcm_token != ''
+            ");
+            $stmt->execute($barangays);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error getting FCM tokens by municipality: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
      * Deactivate FCM token
      */
     public function deactivateFCMToken($fcmToken) {
