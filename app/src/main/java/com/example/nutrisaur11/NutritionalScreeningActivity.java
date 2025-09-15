@@ -23,6 +23,9 @@ import java.util.Map;
 
 public class NutritionalScreeningActivity extends AppCompatActivity {
     
+    // FCM Token Manager
+    private FCMTokenManager fcmTokenManager;
+    
     // UI Components
     private LinearLayout optionsContainer;
     private TextView questionText;
@@ -72,6 +75,9 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nutritional_screening);
+        
+        // Initialize FCM Token Manager
+        fcmTokenManager = new FCMTokenManager(this);
         
         initializeViews();
         setupBarangayData();
@@ -491,17 +497,28 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
     private Button createOptionButton(String text) {
         Button button = new Button(this);
         button.setText(text);
-        button.setLayoutParams(new LinearLayout.LayoutParams(
+        
+        // Fixed height to prevent stretching
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
+            (int) (56 * getResources().getDisplayMetrics().density) // 56dp in pixels
+        );
+        params.setMargins(0, 0, 0, (int) (12 * getResources().getDisplayMetrics().density)); // 12dp margin
+        button.setLayoutParams(params);
+        
         button.setBackgroundResource(R.drawable.option_button_unselected);
         button.setTextColor(getResources().getColor(android.R.color.black));
         button.setTextSize(16);
         
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) button.getLayoutParams();
-        params.setMargins(0, 0, 0, 24);
-        button.setLayoutParams(params);
+        // Remove elevation and shadow effects
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            button.setElevation(0f);
+        }
+        button.setStateListAnimator(null);
+        
+        // Prevent text from being stretched
+        button.setSingleLine(true);
+        button.setEllipsize(android.text.TextUtils.TruncateAt.END);
         
         return button;
     }
@@ -1037,6 +1054,10 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
                         
                         if (jsonResponse.getBoolean("success")) {
                             Log.d("NutritionalScreening", "Screening data saved successfully: " + jsonResponse.optString("message", "Success"));
+                            
+                            // Register FCM token after successful screening completion
+                            registerFCMTokenAfterScreening(email, barangay);
+                            
                             runOnUiThread(() -> {
                                 // Dismiss progress dialog
                                 if (progressDialog != null && progressDialog.isShowing()) {
@@ -1129,6 +1150,10 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(String message) {
                     Log.d("NutritionalScreening", "New user registered successfully: " + message);
+                    
+                    // Register FCM token after successful new user registration with screening data
+                    registerFCMTokenAfterScreening(email, barangay);
+                    
                     runOnUiThread(() -> {
                         // Dismiss progress dialog
                         if (progressDialog != null && progressDialog.isShowing()) {
@@ -1168,6 +1193,18 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
         });
     }
     
+    /**
+     * Register FCM token after successful screening completion
+     */
+    private void registerFCMTokenAfterScreening(String userEmail, String userBarangay) {
+        Log.d("NutritionalScreening", "Registering FCM token after screening completion for user: " + userEmail + " in " + userBarangay);
+        
+        if (fcmTokenManager != null) {
+            fcmTokenManager.registerTokenAfterScreening(userEmail, userBarangay);
+        } else {
+            Log.e("NutritionalScreening", "FCMTokenManager is null, cannot register token");
+        }
+    }
     
     private void navigateToMainActivity() {
         // Navigate to main activity

@@ -200,7 +200,10 @@ public class FCMTokenManager {
             .addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
                     String token = task.getResult();
+                    Log.d(TAG, "FCM token obtained for screening registration: " + token.substring(0, Math.min(50, token.length())) + "...");
                     registerTokenWithServer(token, userEmail, userBarangay);
+                } else {
+                    Log.e(TAG, "Failed to get FCM token for screening registration", task.getException());
                 }
             });
     }
