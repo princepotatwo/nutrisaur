@@ -1,8 +1,12 @@
 <?php
 // Use centralized session management
 require_once __DIR__ . "/api/DatabaseAPI.php";
+require_once __DIR__ . "/api/DatabaseHelper.php";
 require_once __DIR__ . "/../who_growth_standards.php";
-$db = DatabaseAPI::getInstance();
+
+// Use DatabaseAPI for authentication and DatabaseHelper for data operations
+$dbAPI = DatabaseAPI::getInstance();
+$db = DatabaseHelper::getInstance();
 
 // Helper function to calculate age
 function calculateAge($birthday) {
@@ -151,16 +155,16 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
 }
 
 // Check if user is logged in using centralized method
-if (!$db->isUserLoggedIn()) {
+if (!$dbAPI->isUserLoggedIn()) {
     // Simple debug to see what's in the session
-    $sessionData = $db->getCurrentUserSession();
+    $sessionData = $dbAPI->getCurrentUserSession();
     error_log("Dash.php - Session data: " . json_encode($sessionData));
     error_log("Dash.php - Session ID: " . session_id());
     header('Location: /home');
     exit;
 }
 
-$currentUser = $db->getCurrentUserSession();
+$currentUser = $dbAPI->getCurrentUserSession();
 if (!$currentUser) {
     error_log("Dash.php - Failed to get current user session");
     header("Location: /home");

@@ -3658,7 +3658,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             // Include the WHO classification function from dash.php
             require_once __DIR__ . '/../dash.php';
             
-            $data = getWHOClassificationData($db, $timeFrame, $barangay, $whoStandard);
+            // Use DatabaseHelper for data operations
+            $dbHelper = DatabaseHelper::getInstance();
+            $data = getWHOClassificationData($dbHelper, $timeFrame, $barangay, $whoStandard);
             echo json_encode($data);
             break;
             
