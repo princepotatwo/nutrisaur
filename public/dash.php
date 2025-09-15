@@ -74,7 +74,7 @@ function getNutritionalAssessment($user) {
     }
 }
 
-// NEW: Function to get WHO classification data for donut chart
+// NEW: Function to get WHO classification data for donut chart using decision tree
 function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandard = 'weight-for-age') {
     try {
         // Get users data using the same method as other functions
@@ -90,42 +90,56 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
         ];
         
         foreach ($users as $user) {
-            if (isset($user['who_classifications']) && is_array($user['who_classifications'])) {
-                $whoData = $user['who_classifications'];
+            // Use WHO Growth Standards decision tree like in screening.php
+            try {
+                $who = new WHOGrowthStandards();
+                $assessment = $who->getComprehensiveAssessment(
+                    floatval($user['weight']), 
+                    floatval($user['height']), 
+                    $user['birthday'], 
+                    $user['sex']
+                );
                 
-                // Get classification for the selected standard
-                $classification = 'No Data';
-                switch ($whoStandard) {
-                    case 'weight-for-age':
-                        $classification = $whoData['weight_for_age']['classification'] ?? 'No Data';
-                        break;
-                    case 'height-for-age':
-                        $classification = $whoData['height_for_age']['classification'] ?? 'No Data';
-                        break;
-                    case 'weight-for-height':
-                        $classification = $whoData['weight_for_height']['classification'] ?? 'No Data';
-                        break;
-                    case 'weight-for-length':
-                        $classification = $whoData['weight_for_length']['classification'] ?? 'No Data';
-                        break;
-                    case 'bmi-for-age':
-                        $classification = $whoData['bmi_for_age']['classification'] ?? 'No Data';
-                        break;
-                }
-                
-                // Map WHO classifications to our categories
-                if (in_array($classification, ['Severely Underweight', 'Underweight'])) {
-                    $classifications['Underweight']++;
-                } elseif (in_array($classification, ['Normal', 'Normal weight'])) {
-                    $classifications['Normal']++;
-                } elseif (in_array($classification, ['Overweight'])) {
-                    $classifications['Overweight']++;
-                } elseif (in_array($classification, ['Obese', 'Severely Obese'])) {
-                    $classifications['Obese']++;
+                if ($assessment['success'] && isset($assessment['results'])) {
+                    $results = $assessment['results'];
+                    
+                    // Get classification for the selected standard
+                    $classification = 'No Data';
+                    switch ($whoStandard) {
+                        case 'weight-for-age':
+                            $classification = $results['weight_for_age']['classification'] ?? 'No Data';
+                            break;
+                        case 'height-for-age':
+                            $classification = $results['height_for_age']['classification'] ?? 'No Data';
+                            break;
+                        case 'weight-for-height':
+                            $classification = $results['weight_for_height']['classification'] ?? 'No Data';
+                            break;
+                        case 'weight-for-length':
+                            $classification = $results['weight_for_length']['classification'] ?? 'No Data';
+                            break;
+                        case 'bmi-for-age':
+                            $classification = $results['bmi_for_age']['classification'] ?? 'No Data';
+                            break;
+                    }
+                    
+                    // Map WHO classifications to our categories
+                    if (in_array($classification, ['Severely Underweight', 'Underweight'])) {
+                        $classifications['Underweight']++;
+                    } elseif (in_array($classification, ['Normal', 'Normal weight'])) {
+                        $classifications['Normal']++;
+                    } elseif (in_array($classification, ['Overweight'])) {
+                        $classifications['Overweight']++;
+                    } elseif (in_array($classification, ['Obese', 'Severely Obese'])) {
+                        $classifications['Obese']++;
+                    } else {
+                        $classifications['No Data']++;
+                    }
                 } else {
                     $classifications['No Data']++;
                 }
-            } else {
+            } catch (Exception $e) {
+                error_log("WHO assessment error for user {$user['email']}: " . $e->getMessage());
                 $classifications['No Data']++;
             }
         }
