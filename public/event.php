@@ -222,7 +222,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                             'target_user' => 'all'
                         ];
                         
-                        $notificationResult = $db->send_notification($notificationData);
+                        // Send notification using the API endpoint
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
+                        curl_setopt($ch, CURLOPT_POST, true);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                            'notification_data' => json_encode($notificationData)
+                        ]));
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        ]);
+                        
+                        $notificationResponse = curl_exec($ch);
+                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                        $error = curl_error($ch);
+                        curl_close($ch);
+                        
+                        $notificationResult = json_decode($notificationResponse, true);
                         
                         if ($notificationResult['success']) {
                             error_log("✅ Notifications sent successfully to " . count($fcmTokens) . " users");
