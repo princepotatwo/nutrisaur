@@ -1448,18 +1448,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
 // Handle program deletion
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     $programId = $_GET['delete'];
+    error_log("🗑️ DELETE REQUEST: Attempting to delete program ID: $programId");
     
     try {
         $db = DatabaseAPI::getInstance();
-        $result = $db->universalDelete('programs', 'program_id = ?', [$programId]);
+        error_log("🗑️ DATABASE: Got DatabaseAPI instance");
         
+        $result = $db->universalDelete('programs', 'program_id = ?', [$programId]);
+        error_log("🗑️ DELETE RESULT: " . json_encode($result));
+
         if ($result['success']) {
-            $successMessage = "Event deleted successfully!";
+        $successMessage = "Event deleted successfully!";
+            error_log("🗑️ SUCCESS: Event $programId deleted successfully");
         } else {
             $errorMessage = "Error deleting program: " . $result['message'];
+            error_log("🗑️ ERROR: " . $result['message']);
         }
     } catch(Exception $e) {
         $errorMessage = "Error deleting program: " . $e->getMessage();
+        error_log("🗑️ EXCEPTION: " . $e->getMessage());
     }
 }
 
@@ -1470,7 +1477,7 @@ if (isset($_GET['delete_all']) && $_GET['delete_all'] === '1') {
         $result = $db->universalDelete('programs', '1=1', []); // Delete all records
         
         if ($result['success']) {
-            $successMessage = "All events deleted successfully!";
+        $successMessage = "All events deleted successfully!";
         } else {
             $errorMessage = "Error deleting all programs: " . $result['message'];
         }
@@ -5118,13 +5125,13 @@ header:hover {
             
             try {
                 console.log('✅ Validation passed, starting event creation process');
-                
-                // Show loading state
-                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
-                submitBtn.disabled = true;
-                
+            
+            // Show loading state
+            const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
+            submitBtn.disabled = true;
+            
                 console.log('🔄 Calling save_event_only API...');
                 console.log('📤 Sending event data to programs table:', {
                     title: eventData.title,
@@ -5180,10 +5187,10 @@ header:hover {
                     console.error('❌ Error fetching programs table:', error);
                 }
                 
-                // Reset form
-                form.reset();
-                
-                // Show success message
+                    // Reset form
+                    form.reset();
+                    
+                    // Show success message
                 alert(`🎉 Event "${eventData.title}" created successfully!`);
                 
                 // Refresh the page to show the new event
@@ -5199,9 +5206,9 @@ header:hover {
                 const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
                 if (submitBtn) {
                     submitBtn.innerHTML = '<span class="btn-text">Create Event</span>';
-                    submitBtn.disabled = false;
-                }
+                submitBtn.disabled = false;
             }
+        }
         };
         
         // Function to check programs table (for debugging)
@@ -5209,10 +5216,10 @@ header:hover {
             console.log('🔍 Manually checking programs table...');
             try {
                 const response = await fetch('/api/DatabaseAPI.php', {
-                    method: 'POST',
-                    headers: {
+                        method: 'POST',
+                        headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest'
+                            'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 10'
                 });
@@ -7807,11 +7814,11 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 console.log('🔍 Fetching current programs table to verify...');
                 try {
                     const programsResponse = await fetch('/api/DatabaseAPI.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
                         body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
                     });
                     const programsResult = await programsResponse.json();
@@ -7820,10 +7827,10 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                     console.error('❌ Error fetching programs table:', error);
                 }
                 
-                // Reset form
-                form.reset();
-                
-                // Show success message
+                    // Reset form
+                    form.reset();
+                    
+                    // Show success message
                 showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully!`);
                 
                 // Refresh the page to show the new event
