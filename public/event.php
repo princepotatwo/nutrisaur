@@ -5073,7 +5073,155 @@ header:hover {
     </div>
 
     <script>
-        // OLD FUNCTION REMOVED - Using the updated version below
+        // 🚨 GLOBAL EVENT CREATION HANDLER - Available immediately
+        window.handleNewEventCreation = async function() {
+            console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
+            
+            // Get form data from the form element
+            const form = document.getElementById('newCreateEventForm');
+            if (!form) {
+                console.error('Form not found!');
+                return;
+            }
+            
+            const formData = new FormData(form);
+            const eventData = {
+                title: formData.get('eventTitle'),
+                type: formData.get('eventType'),
+                description: formData.get('eventDescription'),
+                date_time: formData.get('eventDate'),
+                location: formData.get('eventLocation'),
+                organizer: formData.get('eventOrganizer'),
+                notificationType: formData.get('notificationType'),
+                recipientGroup: formData.get('recipientGroup')
+            };
+            
+            console.log('Event data:', eventData);
+            console.log('Form element found:', !!form);
+            console.log('FormData entries:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ': ' + value);
+            }
+            
+            // Validate required fields
+            if (!eventData.title || !eventData.type || !eventData.description || !eventData.date_time || !eventData.organizer) {
+                console.error('Missing required fields:', {
+                    title: eventData.title,
+                    type: eventData.type,
+                    description: eventData.description,
+                    date_time: eventData.date_time,
+                    organizer: eventData.organizer
+                });
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            try {
+                console.log('✅ Validation passed, starting event creation process');
+                
+                // Show loading state
+                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
+                submitBtn.disabled = true;
+                
+                console.log('🔄 Calling save_event_only API...');
+                console.log('📤 Sending event data to programs table:', {
+                    title: eventData.title,
+                    type: eventData.type,
+                    description: eventData.description,
+                    date_time: eventData.date_time,
+                    location: eventData.location,
+                    organizer: eventData.organizer
+                });
+                
+                // 🚨 STEP 1: SAVE EVENT TO DATABASE FIRST (using the working PHP logic)
+                const saveResponse = await fetch('event.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        'action': 'save_event_only',
+                        'title': eventData.title,
+                        'type': eventData.type,
+                        'description': eventData.description,
+                        'date_time': eventData.date_time,
+                        'location': eventData.location,
+                        'organizer': eventData.organizer
+                    })
+                });
+                
+                const saveResult = await saveResponse.json();
+                console.log('📊 Save API response:', saveResult);
+                
+                if (!saveResult.success) {
+                    console.error('❌ Save API failed:', saveResult.message);
+                    throw new Error(`Failed to save event: ${saveResult.message}`);
+                }
+                
+                console.log('✅ Event saved successfully!');
+                
+                // Fetch and display current programs table
+                console.log('🔍 Fetching current programs table to verify...');
+                try {
+                    const programsResponse = await fetch('/api/DatabaseAPI.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
+                    });
+                    const programsResult = await programsResponse.json();
+                    console.log('📊 Current programs table (last 5 events):', programsResult);
+                } catch (error) {
+                    console.error('❌ Error fetching programs table:', error);
+                }
+                
+                // Reset form
+                form.reset();
+                
+                // Show success message
+                alert(`🎉 Event "${eventData.title}" created successfully!`);
+                
+                // Refresh the page to show the new event
+                setTimeout(() => {
+                    location.reload();
+                }, 2000); // Wait 2 seconds to show the success message
+                
+            } catch (error) {
+                console.error('Error creating event:', error);
+                alert('Error creating event. Please try again.');
+            } finally {
+                // Restore button state
+                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        };
+        
+        // Function to check programs table (for debugging)
+        window.checkProgramsTable = async function() {
+            console.log('🔍 Manually checking programs table...');
+            try {
+                const response = await fetch('/api/DatabaseAPI.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 10'
+                });
+                const result = await response.json();
+                console.log('📊 Programs table (last 10 events):', result);
+                return result;
+            } catch (error) {
+                console.error('❌ Error fetching programs table:', error);
+                return null;
+            }
+        };
     </script>
     
     <script>
@@ -7580,6 +7728,7 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         }
         
         // 🚨 COMPLETELY NEW EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
+        // Define this function globally so it's available immediately
         window.handleNewEventCreation = async function() {
             console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
             
