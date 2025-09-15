@@ -202,7 +202,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             if ($notificationType !== 'none') {
                 error_log("📱 Sending notifications for event ID: $eventId");
                 
-                // Simple notification data
+                // Get FCM tokens based on location
+                $fcmTokens = [];
+                if ($location === 'All Locations') {
+                    $fcmTokens = $db->getActiveFCMTokens();
+                    error_log("📱 Sending to ALL locations - " . count($fcmTokens) . " tokens");
+                } else {
+                    $fcmTokens = $db->getFCMTokensByBarangay($location);
+                    error_log("📱 Sending to $location - " . count($fcmTokens) . " tokens");
+                }
+                
+                if (!empty($fcmTokens)) {
+                    // Simple notification data
                 $notificationData = [
                     'title' => "🎯 Event: $title",
                     'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
@@ -226,7 +237,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 $notificationResponse = curl_exec($ch);
                 curl_close($ch);
                 
-                error_log("📱 Notification sent: " . $notificationResponse);
+                error_log("📱 Notification sent to " . count($fcmTokens) . " users: " . $notificationResponse);
+                } else {
+                    error_log("⚠️ No FCM tokens found for location: $location");
+                }
             }
         } else {
             throw new Exception('Failed to insert event: ' . $result['message']);
