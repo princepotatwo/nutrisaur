@@ -124,7 +124,7 @@ function handleCSVImport($pdo) {
         $header = fgetcsv($handle); // Read header row
         
         // Validate header - STRICT template format validation
-        $expectedHeaders = ['email', 'password', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight', 'height', 'screening_date'];
+        $expectedHeaders = ['name', 'email', 'password', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight_kg', 'height_cm', 'muac_cm', 'screening_id', 'screening_date'];
         
         // Check if headers match exactly (case-sensitive, order-sensitive)
         if ($header !== $expectedHeaders) {
@@ -179,6 +179,7 @@ function handleCSVImport($pdo) {
             $rowNumber = $rowIndex + 2; // +2 because we skip header and arrays are 0-indexed
             
             // Clean and validate data - match mobile app column names exactly
+            $name = trim($row['name'] ?? '');
             $email = trim($row['email'] ?? '');
             $password = trim($row['password'] ?? '');
             $municipality = trim($row['municipality'] ?? '');
@@ -186,11 +187,23 @@ function handleCSVImport($pdo) {
             $sex = trim($row['sex'] ?? '');
             $birthday = trim($row['birthday'] ?? '');
             $isPregnant = trim($row['is_pregnant'] ?? '');
-            $weight = floatval($row['weight'] ?? 0);
-            $height = floatval($row['height'] ?? 0);
+            $weight = floatval($row['weight_kg'] ?? 0);
+            $height = floatval($row['height_cm'] ?? 0);
+            $muac = floatval($row['muac_cm'] ?? 0);
+            $screeningId = trim($row['screening_id'] ?? '');
             $screeningDate = trim($row['screening_date'] ?? '');
             
             // Validate required fields - match mobile app validation exactly
+            
+            // Name validation
+            if (empty($name)) {
+                $errors[] = "Row $rowNumber: Name is required";
+                continue;
+            }
+            if (strlen($name) < 2) {
+                $errors[] = "Row $rowNumber: Name must be at least 2 characters long";
+                continue;
+            }
             
             // Email validation - match mobile app pattern
             if (empty($email)) {
@@ -264,25 +277,45 @@ function handleCSVImport($pdo) {
                 continue;
             }
             
+            // Screening ID validation
+            if (empty($screeningId)) {
+                $errors[] = "Row $rowNumber: Screening ID is required";
+                continue;
+            }
+            if (!preg_match('/^SCR-\d{4}-\d{3}$/', $screeningId)) {
+                $errors[] = "Row $rowNumber: Screening ID must be in format SCR-YYYY-XXX (e.g., SCR-2025-001)";
+                continue;
+            }
+            
             // Strict validation for measurements - match mobile app exactly
-            if (!is_numeric($row['weight']) || $weight <= 0 || $weight > 1000) {
+            if (!is_numeric($row['weight_kg']) || $weight <= 0 || $weight > 1000) {
                 $errors[] = "Row $rowNumber: Weight must be a number between 0.1 and 1000 kg";
                 continue;
             }
             
-            if (!is_numeric($row['height']) || $height <= 0 || $height > 300) {
+            if (!is_numeric($row['height_cm']) || $height <= 0 || $height > 300) {
                 $errors[] = "Row $rowNumber: Height must be a number between 1 and 300 cm";
                 continue;
             }
             
+            if (!is_numeric($row['muac_cm']) || $muac <= 0 || $muac > 50) {
+                $errors[] = "Row $rowNumber: MUAC must be a number between 5 and 50 cm";
+                continue;
+            }
+            
             // Additional strict validation for decimal places
-            if (strpos($row['weight'], '.') !== false && strlen(substr($row['weight'], strpos($row['weight'], '.') + 1)) > 2) {
+            if (strpos($row['weight_kg'], '.') !== false && strlen(substr($row['weight_kg'], strpos($row['weight_kg'], '.') + 1)) > 2) {
                 $errors[] = "Row $rowNumber: Weight can have maximum 2 decimal places";
                 continue;
             }
             
-            if (strpos($row['height'], '.') !== false && strlen(substr($row['height'], strpos($row['height'], '.') + 1)) > 2) {
+            if (strpos($row['height_cm'], '.') !== false && strlen(substr($row['height_cm'], strpos($row['height_cm'], '.') + 1)) > 2) {
                 $errors[] = "Row $rowNumber: Height can have maximum 2 decimal places";
+                continue;
+            }
+            
+            if (strpos($row['muac_cm'], '.') !== false && strlen(substr($row['muac_cm'], strpos($row['muac_cm'], '.') + 1)) > 2) {
+                $errors[] = "Row $rowNumber: MUAC can have maximum 2 decimal places";
                 continue;
             }
             
@@ -319,29 +352,43 @@ function handleCSVImport($pdo) {
             
             // Note: BMI calculation removed as column may not exist in actual table
             
-            // Check if user already exists
-            $checkStmt = $pdo->prepare("SELECT email FROM community_users WHERE email = ?");
-            $checkStmt->execute([$email]);
+            // Check if user already exists (by email or screening_id)
+            $checkStmt = $pdo->prepare("SELECT community_user_id FROM community_users WHERE email = ? OR screening_id = ?");
+            $checkStmt->execute([$email, $screeningId]);
             $existingUser = $checkStmt->fetch();
+            
+            // Calculate age
+            $age = $today->diff($birthDate)->y;
+            
+            // Calculate BMI
+            $bmi = null;
+            if ($height > 0) {
+                $bmi = round($weight / pow($height / 100, 2), 1);
+            }
             
             if ($existingUser) {
                 // Update existing user - use correct database column names based on actual schema
                 $updateSql = "UPDATE community_users SET 
+                                name = ?,
                                 password = ?,
                                 municipality = ?, 
                                 barangay = ?, 
                                 sex = ?, 
                                 birthday = ?, 
+                                age = ?,
                                 is_pregnant = ?, 
-                                weight = ?, 
-                                height = ?, 
+                                weight_kg = ?, 
+                                height_cm = ?,
+                                muac_cm = ?,
+                                bmi = ?,
                                 screening_date = ?
-                              WHERE email = ?";
+                              WHERE email = ? OR screening_id = ?";
                 
                 $updateStmt = $pdo->prepare($updateSql);
                 $result = $updateStmt->execute([
-                    $password, $municipality, $barangay, $sex, $birthday,
-                    $isPregnantValue, $weight, $height, $screeningDateTime->format('Y-m-d H:i:s'), $email
+                    $name, $password, $municipality, $barangay, $sex, $birthday, $age,
+                    $isPregnantValue, $weight, $height, $muac, $bmi, $screeningDateTime->format('Y-m-d H:i:s'), 
+                    $email, $screeningId
                 ]);
                 
                 if (!$result) {
@@ -351,13 +398,13 @@ function handleCSVImport($pdo) {
             } else {
                 // Insert new user - use correct database column names based on actual schema
                 $insertSql = "INSERT INTO community_users 
-                             (email, password, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date) 
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                             (name, email, password, municipality, barangay, sex, birthday, age, is_pregnant, weight_kg, height_cm, muac_cm, bmi, screening_id, screening_date) 
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 
                 $insertStmt = $pdo->prepare($insertSql);
                 $result = $insertStmt->execute([
-                    $email, $password, $municipality, $barangay, $sex, $birthday, 
-                    $isPregnantValue, $weight, $height, $screeningDateTime->format('Y-m-d H:i:s')
+                    $name, $email, $password, $municipality, $barangay, $sex, $birthday, $age, 
+                    $isPregnantValue, $weight, $height, $muac, $bmi, $screeningId, $screeningDateTime->format('Y-m-d H:i:s')
                 ]);
                 
                 if (!$result) {

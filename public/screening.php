@@ -3681,16 +3681,20 @@ header {
                 
                 <h4>📋 CSV Import Instructions</h4>
                 <p><strong>1.</strong> Download the template CSV file with exact column names and order</p>
-                <p><strong>2.</strong> Password must be at least 6 characters long (required field)</p>
-                <p><strong>3.</strong> Use exact municipality names: ABUCAY, BAGAC, CITY OF BALANGA, DINALUPIHAN, HERMOSA, LIMAY, MARIVELES, MORONG, ORANI, ORION, PILAR, SAMAL</p>
-                <p><strong>4.</strong> Use exact barangay names that match the selected municipality</p>
-                <p><strong>5.</strong> Sex must be exactly "Male" or "Female" (no "Other")</p>
-                <p><strong>6.</strong> Pregnancy status: "Yes", "No", or leave empty (for males or not applicable)</p>
-                <p><strong>7.</strong> Weight: 0.1-1000 kg (max 2 decimal places), Height: 1-300 cm (max 2 decimal places)</p>
-                <p><strong>8.</strong> Date format: YYYY-MM-DD for birthday, YYYY-MM-DD HH:MM:SS for screening_date</p>
-                <p><strong>9.</strong> Template format must match exactly - no extra columns, no missing columns</p>
-                <p><strong>10.</strong> Upload your completed CSV file and review the preview</p>
-                <p><strong>11.</strong> Click Import CSV to process the data</p>
+                <p><strong>2.</strong> Name: Full name of the person (required field)</p>
+                <p><strong>3.</strong> Email: Valid email address (required field)</p>
+                <p><strong>4.</strong> Password: At least 6 characters long (required field)</p>
+                <p><strong>5.</strong> Use exact municipality names: ABUCAY, BAGAC, CITY OF BALANGA, DINALUPIHAN, HERMOSA, LIMAY, MARIVELES, MORONG, ORANI, ORION, PILAR, SAMAL</p>
+                <p><strong>6.</strong> Use exact barangay names that match the selected municipality</p>
+                <p><strong>7.</strong> Sex must be exactly "Male" or "Female" (no "Other")</p>
+                <p><strong>8.</strong> Pregnancy status: "Yes", "No", or leave empty (for males or not applicable)</p>
+                <p><strong>9.</strong> Weight: 0.1-1000 kg (max 2 decimal places), Height: 1-300 cm (max 2 decimal places)</p>
+                <p><strong>10.</strong> MUAC: 5-50 cm (max 2 decimal places) - Mid-Upper Arm Circumference</p>
+                <p><strong>11.</strong> Screening ID: Unique identifier like SCR-2025-001 (required field)</p>
+                <p><strong>12.</strong> Date format: YYYY-MM-DD for birthday, YYYY-MM-DD HH:MM:SS for screening_date</p>
+                <p><strong>13.</strong> Template format must match exactly - no extra columns, no missing columns</p>
+                <p><strong>14.</strong> Upload your completed CSV file and review the preview</p>
+                <p><strong>15.</strong> Click Import CSV to process the data</p>
             </div>
             
             <form id="csvImportForm">
@@ -4590,9 +4594,9 @@ header {
         // CSV Functions
         function downloadCSVTemplate() {
             const csvContent = [
-                ['email', 'password', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight', 'height', 'screening_date'],
-                ['john@example.com', 'password123', 'CITY OF BALANGA', 'Bagumbayan', 'Male', '1999-01-15', 'No', '70.5', '175.0', '2024-01-15 10:30:00'],
-                ['jane@example.com', 'mypass456', 'MARIVELES', 'Alion', 'Female', '1995-03-20', 'Yes', '65.2', '160.0', '2024-01-15 14:30:00']
+                ['name', 'email', 'password', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight_kg', 'height_cm', 'muac_cm', 'screening_id', 'screening_date'],
+                ['John Doe', 'john@example.com', 'password123', 'CITY OF BALANGA', 'Bagumbayan', 'Male', '1999-01-15', 'No', '70.5', '175.0', '25.5', 'SCR-2025-001', '2024-01-15 10:30:00'],
+                ['Jane Smith', 'jane@example.com', 'mypass456', 'MARIVELES', 'Alion', 'Female', '1995-03-20', 'Yes', '65.2', '160.0', '24.0', 'SCR-2025-002', '2024-01-15 14:30:00']
             ];
             
             const csv = csvContent.map(row => row.map(field => `"${field}"`).join(',')).join('\n');
