@@ -15,26 +15,30 @@ function getAdultBMIClassification($bmi) {
 // Function to get screening responses by time frame
 function getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay = null) {
     try {
+        error_log("🔍 getScreeningResponsesByTimeFrame - Starting");
+        error_log("  - Time Frame: $timeFrame");
+        error_log("  - Barangay: " . ($barangay ?: 'null'));
+        
         // Build where clause based on time frame
         $whereClause = "1=1";
         $params = [];
         
-        // Add time frame filter
+        // Add time frame filter - check if screening_date column exists
         switch ($timeFrame) {
             case '1d':
-                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 1 DAY) OR screening_date IS NULL)";
                 break;
             case '7d':
-                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 7 DAY) OR screening_date IS NULL)";
                 break;
             case '30d':
-                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 30 DAY) OR screening_date IS NULL)";
                 break;
             case '90d':
-                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 90 DAY)";
+                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 90 DAY) OR screening_date IS NULL)";
                 break;
             case '1y':
-                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 1 YEAR)";
+                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 1 YEAR) OR screening_date IS NULL)";
                 break;
         }
         
@@ -44,8 +48,18 @@ function getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay = null) {
             $params[] = $barangay;
         }
         
+        error_log("  - Where clause: $whereClause");
+        error_log("  - Params: " . json_encode($params));
+        
+        // First, let's test getting all users without date filtering
+        $allUsersResult = $db->select('community_users', '*', '1=1', [], 'screening_date DESC');
+        error_log("  - All users count (no filtering): " . count($allUsersResult['data'] ?? []));
+        
         // Get users from community_users table
         $result = $db->select('community_users', '*', $whereClause, $params, 'screening_date DESC');
+        
+        error_log("  - Query result success: " . ($result['success'] ? 'true' : 'false'));
+        error_log("  - Query result data count: " . count($result['data'] ?? []));
         
         if ($result['success']) {
             return $result['data'];
