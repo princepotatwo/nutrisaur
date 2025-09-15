@@ -3525,6 +3525,13 @@ header {
                                             $wfh_display = 'N/A';
                                             $wfl_display = 'N/A';
                                             $bmi_display = 'N/A';
+                                            
+                                            // Also set classification variables to N/A
+                                            $wfa_classification = 'N/A';
+                                            $hfa_classification = 'N/A';
+                                            $wfh_classification = 'N/A';
+                                            $wfl_classification = 'N/A';
+                                            $bmi_classification = 'N/A';
                                         }
                                         
                                         // Calculate age in years and months
