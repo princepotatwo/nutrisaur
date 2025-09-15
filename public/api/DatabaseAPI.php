@@ -3650,6 +3650,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             echo json_encode(['success' => true, 'data' => $programs]);
             break;
             
+        case 'who_classification_data':
+            $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            // Include the WHO classification function from dash.php
+            require_once __DIR__ . '/../dash.php';
+            
+            $data = getWHOClassificationData($db, $timeFrame, $barangay, $whoStandard);
+            echo json_encode($data);
+            break;
+            
         case 'time_frame_data':
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';

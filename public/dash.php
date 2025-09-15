@@ -40,7 +40,8 @@ function getNutritionalAssessment($user) {
                 'bmi' => $assessment['bmi'] ?? 0,
                 'age' => $ageInMonths / 12, // Convert to years
                 'weight' => floatval($user['weight']),
-                'height' => floatval($user['height'])
+                'height' => floatval($user['height']),
+                'who_classifications' => $assessment['results'] ?? []
             ];
         } else {
             return [
@@ -50,7 +51,8 @@ function getNutritionalAssessment($user) {
                 'bmi' => 0,
                 'age' => $ageInMonths / 12,
                 'weight' => floatval($user['weight']),
-                'height' => floatval($user['height'])
+                'height' => floatval($user['height']),
+                'who_classifications' => []
             ];
         }
     } catch (Exception $e) {
@@ -62,7 +64,88 @@ function getNutritionalAssessment($user) {
             'bmi' => 0,
             'age' => 0,
             'weight' => floatval($user['weight']),
-            'height' => floatval($user['height'])
+            'height' => floatval($user['height']),
+            'who_classifications' => []
+        ];
+    }
+}
+
+// NEW: Function to get WHO classification data for donut chart
+function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandard = 'weight-for-age') {
+    try {
+        // Get users data using the same method as other functions
+        $users = getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay);
+        
+        // Count classifications for the selected WHO standard
+        $classifications = [
+            'Underweight' => 0,
+            'Normal' => 0,
+            'Overweight' => 0,
+            'Obese' => 0,
+            'No Data' => 0
+        ];
+        
+        foreach ($users as $user) {
+            if (isset($user['who_classifications']) && is_array($user['who_classifications'])) {
+                $whoData = $user['who_classifications'];
+                
+                // Get classification for the selected standard
+                $classification = 'No Data';
+                switch ($whoStandard) {
+                    case 'weight-for-age':
+                        $classification = $whoData['weight_for_age']['classification'] ?? 'No Data';
+                        break;
+                    case 'height-for-age':
+                        $classification = $whoData['height_for_age']['classification'] ?? 'No Data';
+                        break;
+                    case 'weight-for-height':
+                        $classification = $whoData['weight_for_height']['classification'] ?? 'No Data';
+                        break;
+                    case 'weight-for-length':
+                        $classification = $whoData['weight_for_length']['classification'] ?? 'No Data';
+                        break;
+                    case 'bmi-for-age':
+                        $classification = $whoData['bmi_for_age']['classification'] ?? 'No Data';
+                        break;
+                }
+                
+                // Map WHO classifications to our categories
+                if (in_array($classification, ['Severely Underweight', 'Underweight'])) {
+                    $classifications['Underweight']++;
+                } elseif (in_array($classification, ['Normal', 'Normal weight'])) {
+                    $classifications['Normal']++;
+                } elseif (in_array($classification, ['Overweight'])) {
+                    $classifications['Overweight']++;
+                } elseif (in_array($classification, ['Obese', 'Severely Obese'])) {
+                    $classifications['Obese']++;
+                } else {
+                    $classifications['No Data']++;
+                }
+            } else {
+                $classifications['No Data']++;
+            }
+        }
+        
+        return [
+            'success' => true,
+            'classifications' => $classifications,
+            'total_users' => count($users),
+            'who_standard' => $whoStandard
+        ];
+        
+    } catch (Exception $e) {
+        error_log("Error getting WHO classification data: " . $e->getMessage());
+        return [
+            'success' => false,
+            'classifications' => [
+                'Underweight' => 0,
+                'Normal' => 0,
+                'Overweight' => 0,
+                'Obese' => 0,
+                'No Data' => 0
+            ],
+            'total_users' => 0,
+            'who_standard' => $whoStandard
         ];
     }
 }
@@ -131,7 +214,7 @@ function formatDatePHP($dateString, $format = 'relative') {
 }
 
 // NEW: Function to get time frame data from community_users table with nutritional assessments
-function getTimeFrameData($pdo, $timeFrame, $barangay = null) {
+function getTimeFrameData($db, $timeFrame, $barangay = null) {
     $now = new DateTime();
     $startDate = new DateTime();
     
@@ -160,27 +243,33 @@ function getTimeFrameData($pdo, $timeFrame, $barangay = null) {
     $endDateStr = $now->format('Y-m-d H:i:s');
     
     try {
-        // Build the query based on barangay filter
-        $whereClause = "WHERE cu.screening_date BETWEEN :start_date AND :end_date";
-        $params = [':start_date' => $startDateStr, ':end_date' => $endDateStr];
+        // Build the WHERE clause for DatabaseHelper
+        $whereClause = "screening_date BETWEEN ? AND ?";
+        $params = [$startDateStr, $endDateStr];
         
         if ($barangay && $barangay !== '') {
-            $whereClause .= " AND cu.barangay = :barangay";
-            $params[':barangay'] = $barangay;
+            $whereClause .= " AND barangay = ?";
+            $params[] = $barangay;
         }
         
-        // Get all users in time frame for assessment
-        $query = "
-            SELECT 
-                cu.*
-            FROM community_users cu
-            $whereClause
-            ORDER BY cu.screening_date DESC
-        ";
+        // Use DatabaseHelper like screening.php
+        $result = $db->select('community_users', '*', $whereClause, $params, 'screening_date DESC');
         
-        $stmt = $pdo->prepare($query);
-        $stmt->execute($params);
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!$result['success']) {
+            error_log("Error fetching community_users: " . ($result['message'] ?? 'Unknown error'));
+            return [
+                'total_screened' => 0,
+                'high_risk_cases' => 0,
+                'sam_cases' => 0,
+                'critical_muac' => 0,
+                'barangays_covered' => 0,
+                'time_frame' => $timeFrame,
+                'start_date_formatted' => $startDate->format('M j, Y'),
+                'end_date_formatted' => $now->format('M j, Y')
+            ];
+        }
+        
+        $users = $result['data'] ?? [];
         
         // Calculate metrics using nutritional assessments
         $totalScreened = count($users);
@@ -250,7 +339,7 @@ function getTimeFrameData($pdo, $timeFrame, $barangay = null) {
 }
 
 // NEW: Function to get screening responses by time frame using community_users with assessments
-function getScreeningResponsesByTimeFrame($pdo, $timeFrame, $barangay = null) {
+function getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay = null) {
     $now = new DateTime();
     $startDate = new DateTime();
     
@@ -279,26 +368,24 @@ function getScreeningResponsesByTimeFrame($pdo, $timeFrame, $barangay = null) {
     $endDateStr = $now->format('Y-m-d H:i:s');
     
     try {
-        $whereClause = "WHERE cu.screening_date BETWEEN :start_date AND :end_date";
-        $params = [':start_date' => $startDateStr, ':end_date' => $endDateStr];
+        // Build the WHERE clause for DatabaseHelper
+        $whereClause = "screening_date BETWEEN ? AND ?";
+        $params = [$startDateStr, $endDateStr];
         
         if ($barangay && $barangay !== '') {
-            $whereClause .= " AND cu.barangay = :barangay";
-            $params[':barangay'] = $barangay;
+            $whereClause .= " AND barangay = ?";
+            $params[] = $barangay;
         }
         
-        // Get all users in time frame
-        $query = "
-            SELECT 
-                cu.*
-            FROM community_users cu
-            $whereClause
-            ORDER BY cu.screening_date DESC
-        ";
+        // Use DatabaseHelper like screening.php
+        $result = $db->select('community_users', '*', $whereClause, $params, 'screening_date DESC');
         
-        $stmt = $pdo->prepare($query);
-        $stmt->execute($params);
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!$result['success']) {
+            error_log("Error fetching community_users: " . ($result['message'] ?? 'Unknown error'));
+            return [];
+        }
+        
+        $users = $result['data'] ?? [];
         
         // Calculate distributions using nutritional assessments
         $ageGroups = [
@@ -431,20 +518,16 @@ try {
         
         $currentTimeFrame = '1d';
         $currentBarangay = '';
-        $timeFrameData = getTimeFrameData($db->getPDO(), $currentTimeFrame, $currentBarangay);
-        $screeningResponsesData = getScreeningResponsesByTimeFrame($db->getPDO(), $currentTimeFrame, $currentBarangay);
+        $timeFrameData = getTimeFrameData($db, $currentTimeFrame, $currentBarangay);
+        $screeningResponsesData = getScreeningResponsesByTimeFrame($db, $currentTimeFrame, $currentBarangay);
         
-        // Get barangay list for dropdown
-        $barangayQuery = "SELECT DISTINCT barangay FROM community_users WHERE barangay IS NOT NULL AND barangay != '' ORDER BY barangay";
-        $barangayStmt = $db->getPDO()->prepare($barangayQuery);
-        $barangayStmt->execute();
-        $barangays = $barangayStmt->fetchAll(PDO::FETCH_COLUMN);
+        // Get barangay list for dropdown using DatabaseHelper
+        $barangayResult = $db->select('community_users', 'DISTINCT barangay', "barangay IS NOT NULL AND barangay != ''", [], 'barangay');
+        $barangays = $barangayResult['success'] ? array_column($barangayResult['data'], 'barangay') : [];
         
-        // Get municipality list for dropdown
-        $municipalityQuery = "SELECT DISTINCT municipality FROM community_users WHERE municipality IS NOT NULL AND municipality != '' ORDER BY municipality";
-        $municipalityStmt = $db->getPDO()->prepare($municipalityQuery);
-        $municipalityStmt->execute();
-        $municipalities = $municipalityStmt->fetchAll(PDO::FETCH_COLUMN);
+        // Get municipality list for dropdown using DatabaseHelper
+        $municipalityResult = $db->select('community_users', 'DISTINCT municipality', "municipality IS NOT NULL AND municipality != ''", [], 'municipality');
+        $municipalities = $municipalityResult['success'] ? array_column($municipalityResult['data'], 'municipality') : [];
 
 if (isset($_GET['logout'])) {
     session_unset();
@@ -6056,8 +6139,17 @@ body {
 
         <div class="chart-row">
             <div class="chart-card">
-                <h3>Malnutrition Risk Levels</h3>
-                <p class="chart-description">Distribution of children by malnutrition risk severity based on screening assessments. Higher risk levels indicate greater nutritional intervention needs.</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3>WHO Growth Standards Classification</h3>
+                    <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
+                        <option value="weight-for-age">Weight for Age</option>
+                        <option value="height-for-age">Height for Age</option>
+                        <option value="weight-for-height">Weight for Height</option>
+                        <option value="weight-for-length">Weight for Length</option>
+                        <option value="bmi-for-age">BMI for Age</option>
+                    </select>
+                </div>
+                <p class="chart-description">Distribution of children by WHO Growth Standards classification. Shows nutritional status based on selected WHO standard.</p>
                 <div class="donut-chart-container">
                     <div class="donut-chart">
                         <div class="donut-chart-bg" id="risk-chart-bg"></div>
@@ -7796,8 +7888,8 @@ body {
             }
         }
 
-        // Function to update risk distribution chart
-        function updateRiskChart(data) {
+        // Function to update WHO classification chart
+        function updateWHOClassificationChart(data) {
             try {
                 // Get the donut chart elements
                 const chartBg = document.getElementById('risk-chart-bg');
@@ -7811,39 +7903,193 @@ body {
                 // Add loading state to prevent flickering
                 chartBg.style.opacity = '0.8';
 
+                // Clear existing segments
+                segments.innerHTML = '';
                 
-                // Preserve existing segments for smooth transitions
-                const existingSegments = segments.querySelectorAll('.segment');
-                existingSegments.forEach(segment => {
-                    segment.style.opacity = '0';
+                // Define colors and labels for WHO classifications
+                const colors = {
+                    'Underweight': '#FFD700',  // Yellow for underweight
+                    'Normal': '#4CAF50',       // Green for normal
+                    'Overweight': '#FF9800',   // Orange for overweight
+                    'Obese': '#F44336',        // Red for obese
+                    'No Data': '#9E9E9E'       // Gray for no data
+                };
+                
+                const labels = ['Underweight', 'Normal', 'Overweight', 'Obese', 'No Data'];
+                
+                // Get classification data
+                let classifications = {
+                    'Underweight': 0,
+                    'Normal': 0,
+                    'Overweight': 0,
+                    'Obese': 0,
+                    'No Data': 0
+                };
+                
+                let totalUsers = 0;
+                
+                if (data && data.success && data.classifications) {
+                    classifications = data.classifications;
+                    totalUsers = data.total_users || 0;
+                }
+                
+                // If no data, show no data message
+                if (totalUsers === 0) {
+                    centerText.textContent = 'No Data';
+                    centerText.style.color = '#999';
+                    chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
+                    chartBg.style.opacity = '0.3';
+                    segments.innerHTML = '<div style="text-align: center; color: #999; font-style: italic;">No data available</div>';
+                    return;
+                }
+                
+                // Calculate percentages and create segments
+                const validSegments = [];
+                let totalPercentage = 0;
+                
+                labels.forEach(label => {
+                    const count = classifications[label] || 0;
+                    if (count > 0) {
+                        const percentage = (count / totalUsers) * 100;
+                        totalPercentage += percentage;
+                        validSegments.push({
+                            label: label,
+                            count: count,
+                            percentage: percentage,
+                            color: colors[label]
+                        });
+                    }
                 });
                 
-                // Define colors and labels for risk levels - NEW 5-LEVEL SYSTEM
-                // Risk levels: Low, Low-Medium, Medium, High, Very High
-                const isDarkTheme = document.body.classList.contains('dark-theme');
-                const colors = isDarkTheme ? [
-                    '#4CAF50',      // Green for Low
-                    '#8BC34A',      // Light Green for Low-Medium
-                    '#FF9800',      // Orange for Medium
-                    '#F44336',      // Red for High
-                    '#D32F2F'       // Dark Red for Very High
-                ] : [
-                    '#4CAF50',      // Green for Low
-                    '#8BC34A',      // Light Green for Low-Medium
-                    '#FF9800',      // Orange for Medium
-                    '#F44336',      // Red for High
-                    '#D32F2F'       // Dark Red for Very High
-                ];
+                // Update center text with total users
+                centerText.textContent = totalUsers;
+                centerText.style.color = '#333';
                 
-                const labels = [
-                    'Low',
-                    'Low-Medium',
-                    'Medium',
-                    'High',
-                    'Very High'
-                ];
+                // Create conic gradient
+                let gradientString = '';
+                let currentPercent = 0;
                 
-                // Handle the API data structure correctly - NEW 5-LEVEL SYSTEM
+                validSegments.forEach((segment, index) => {
+                    const startPercent = currentPercent;
+                    const endPercent = index === validSegments.length - 1 ? 100 : currentPercent + segment.percentage;
+                    
+                    gradientString += `${segment.color} ${startPercent}% ${endPercent}%`;
+                    if (endPercent < 100) {
+                        gradientString += ', ';
+                    }
+                    currentPercent = endPercent;
+                });
+                
+                // Apply gradient
+                if (gradientString.trim()) {
+                    chartBg.style.background = `conic-gradient(${gradientString})`;
+                    chartBg.style.opacity = '1';
+                } else {
+                    chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
+                    chartBg.style.opacity = '0.3';
+                }
+                
+                // Create segment indicators
+                validSegments.forEach(segment => {
+                    const segmentDiv = document.createElement('div');
+                    segmentDiv.className = 'segment compact';
+                    segmentDiv.setAttribute('data-classification', segment.label.toLowerCase().replace(' ', '-'));
+                    
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'segment-label';
+                    labelSpan.innerHTML = `
+                        <span style="background-color: ${segment.color}; width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
+                        ${segment.label}: ${segment.count} (${segment.percentage.toFixed(1)}%)
+                    `;
+                    
+                    segmentDiv.appendChild(labelSpan);
+                    segments.appendChild(segmentDiv);
+                });
+                
+                // Create percentage labels around donut
+                const percentageLabelsContainer = document.getElementById('percentage-labels');
+                if (percentageLabelsContainer) {
+                    percentageLabelsContainer.innerHTML = '';
+                    
+                    let currentAngle = 0;
+                    validSegments.forEach(segment => {
+                        const angle = (segment.percentage / 100) * 360;
+                        const midAngle = currentAngle + (angle / 2);
+                        const radians = (midAngle - 90) * (Math.PI / 180);
+                        
+                        const label = document.createElement('div');
+                        label.className = 'percentage-label';
+                        label.textContent = `${segment.percentage.toFixed(1)}%`;
+                        label.style.position = 'absolute';
+                        label.style.left = '50%';
+                        label.style.top = '50%';
+                        label.style.transform = `translate(-50%, -50%) translate(${Math.cos(radians) * 80}px, ${Math.sin(radians) * 80}px)`;
+                        label.style.fontSize = '12px';
+                        label.style.fontWeight = 'bold';
+                        label.style.color = '#333';
+                        label.style.textShadow = '1px 1px 2px rgba(255,255,255,0.8)';
+                        
+                        percentageLabelsContainer.appendChild(label);
+                        currentAngle += angle;
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error updating WHO classification chart:', error);
+            }
+        }
+
+        // Function to handle WHO standard dropdown change
+        async function handleWHOStandardChange() {
+            const select = document.getElementById('whoStandardSelect');
+            const selectedStandard = select.value;
+            
+            try {
+                // Get current time frame and barangay
+                const timeFrame = '1d'; // You can make this dynamic
+                const barangay = ''; // You can make this dynamic
+                
+                // Fetch WHO classification data
+                const data = await fetchWHOClassificationData(selectedStandard, timeFrame, barangay);
+                
+                // Update the chart
+                updateWHOClassificationChart(data);
+                
+            } catch (error) {
+                console.error('Error updating WHO classification chart:', error);
+            }
+        }
+
+        // Function to fetch WHO classification data
+        async function fetchWHOClassificationData(whoStandard, timeFrame, barangay) {
+            try {
+                const params = new URLSearchParams({
+                    action: 'who_classification_data',
+                    who_standard: whoStandard,
+                    time_frame: timeFrame,
+                    barangay: barangay
+                });
+                
+                const response = await fetch(`/api/DatabaseAPI.php?${params}`);
+                const data = await response.json();
+                
+                return data;
+            } catch (error) {
+                console.error('Error fetching WHO classification data:', error);
+                return {
+                    success: false,
+                    classifications: {
+                        'Underweight': 0,
+                        'Normal': 0,
+                        'Overweight': 0,
+                        'Obese': 0,
+                        'No Data': 0
+                    },
+                    total_users: 0,
+                    who_standard: whoStandard
+                };
+            }
+        }
                 // Risk levels: Low, Low-Medium, Medium, High, Very High
                 let riskLevels = [0, 0, 0, 0, 0]; // [Low, Low-Medium, Medium, High, Very High]
                 let totalUsers = 0;
@@ -8392,6 +8638,14 @@ body {
 
         document.addEventListener('DOMContentLoaded', function() {
             window.globalAverageRiskScore = 0;
+            
+            // Add WHO standard dropdown listener
+            const whoStandardSelect = document.getElementById('whoStandardSelect');
+            if (whoStandardSelect) {
+                whoStandardSelect.addEventListener('change', handleWHOStandardChange);
+                // Load initial data
+                handleWHOStandardChange();
+            }
             
             const keyElements = {
                 'community-total-screened': document.getElementById('community-total-screened'),
