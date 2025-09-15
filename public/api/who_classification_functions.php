@@ -135,31 +135,31 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 if ($whoStandard === 'weight-for-age' || $whoStandard === 'height-for-age') {
                     // These standards are for children 0-71 months only
                     $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
-                    error_log("    - Age restriction check: $shouldProcess (age: $ageInMonths, standard: $whoStandard)");
+                    error_log("    - Age restriction check: " . ($shouldProcess ? 'true' : 'false') . " (age: $ageInMonths, standard: $whoStandard)");
                 } elseif ($whoStandard === 'bmi-for-age') {
                     // BMI-for-age can be used for both children (0-71 months) and adults (>71 months)
                     if ($ageInMonths <= 71) {
                         // Child: use WHO Growth Standards
                         $shouldProcess = true;
-                        error_log("    - Child BMI-for-age: $shouldProcess (age: $ageInMonths)");
+                        error_log("    - Child BMI-for-age: " . ($shouldProcess ? 'true' : 'false') . " (age: $ageInMonths)");
                     } else {
                         // Adult: use adult BMI classification
                         $shouldProcess = true;
-                        error_log("    - Adult BMI-for-age: $shouldProcess (age: $ageInMonths)");
+                        error_log("    - Adult BMI-for-age: " . ($shouldProcess ? 'true' : 'false') . " (age: $ageInMonths)");
                     }
                 } elseif ($whoStandard === 'weight-for-height') {
                     // Weight-for-Height: 65-120 cm height range
                     $heightCm = floatval($user['height']);
                     $shouldProcess = ($heightCm >= 65 && $heightCm <= 120);
-                    error_log("    - Height restriction check: $shouldProcess (height: $heightCm cm, standard: $whoStandard)");
+                    error_log("    - Height restriction check: " . ($shouldProcess ? 'true' : 'false') . " (height: $heightCm cm, standard: $whoStandard)");
                 } elseif ($whoStandard === 'weight-for-length') {
                     // Weight-for-Length: 45-110 cm height range
                     $heightCm = floatval($user['height']);
                     $shouldProcess = ($heightCm >= 45 && $heightCm <= 110);
-                    error_log("    - Length restriction check: $shouldProcess (height: $heightCm cm, standard: $whoStandard)");
+                    error_log("    - Length restriction check: " . ($shouldProcess ? 'true' : 'false') . " (height: $heightCm cm, standard: $whoStandard)");
                 }
                 
-                error_log("    - Should process: $shouldProcess");
+                error_log("    - Should process: " . ($shouldProcess ? 'true' : 'false'));
                 
                 if ($shouldProcess) {
                     if ($ageInMonths > 71 && $whoStandard === 'bmi-for-age') {
