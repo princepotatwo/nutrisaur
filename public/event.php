@@ -1445,13 +1445,15 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     $programId = $_GET['delete'];
     
     try {
-        $stmt = $conn->prepare("DELETE FROM programs WHERE program_id = :id");
-        $stmt->bindParam(':id', $programId);
-        $stmt->execute();
+        $db = DatabaseAPI::getInstance();
+        $result = $db->delete('programs', 'program_id = :id', ['id' => $programId]);
         
-
-        $successMessage = "Event deleted successfully!";
-    } catch(PDOException $e) {
+        if ($result['success']) {
+            $successMessage = "Event deleted successfully!";
+        } else {
+            $errorMessage = "Error deleting program: " . $result['message'];
+        }
+    } catch(Exception $e) {
         $errorMessage = "Error deleting program: " . $e->getMessage();
     }
 }
@@ -1459,12 +1461,15 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 // Handle delete all programs
 if (isset($_GET['delete_all']) && $_GET['delete_all'] === '1') {
     try {
-        $stmt = $conn->prepare("DELETE FROM programs");
-        $stmt->execute();
+        $db = DatabaseAPI::getInstance();
+        $result = $db->delete('programs', '1=1'); // Delete all records
         
-
-        $successMessage = "All events deleted successfully!";
-    } catch(PDOException $e) {
+        if ($result['success']) {
+            $successMessage = "All events deleted successfully!";
+        } else {
+            $errorMessage = "Error deleting all programs: " . $result['message'];
+        }
+    } catch(Exception $e) {
         $errorMessage = "Error deleting all programs: " . $e->getMessage();
     }
 }
