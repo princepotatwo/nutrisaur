@@ -466,10 +466,37 @@ function getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay = null) {
             }
         }
         
+        // Convert age groups to the expected format
+        $ageGroupsFormatted = [];
+        foreach ($ageGroups as $ageGroup => $count) {
+            $ageGroupsFormatted[] = [
+                'age_group' => $ageGroup,
+                'count' => $count
+            ];
+        }
+        
+        // Convert risk levels to the expected format
+        $riskLevelsFormatted = [];
+        foreach ($riskLevels as $riskLevel => $count) {
+            $riskLevelsFormatted[] = [
+                'risk_level' => $riskLevel,
+                'count' => $count
+            ];
+        }
+        
+        // Convert nutritional status to the expected format
+        $nutritionalStatusFormatted = [];
+        foreach ($nutritionalStatus as $status => $count) {
+            $nutritionalStatusFormatted[] = [
+                'status' => $status,
+                'count' => $count
+            ];
+        }
+        
         return [
-            'age_groups' => $ageGroups,
-            'risk_levels' => $riskLevels,
-            'nutritional_status' => $nutritionalStatus,
+            'age_groups' => $ageGroupsFormatted,
+            'risk_levels' => $riskLevelsFormatted,
+            'nutritional_status' => $nutritionalStatusFormatted,
             'time_frame' => $timeFrame,
             'start_date' => $startDateStr,
             'end_date' => $endDateStr
@@ -6888,7 +6915,8 @@ body {
                 console.log('📈 Risk Data Data:', riskData?.data);
                 
                 if (riskData && riskData.success && riskData.data) {
-                    updateRiskChart(riskData.data);
+                    // Load initial WHO classification data
+                    handleWHOStandardChange();
                     
                                     // Update individual cards with risk distribution data
                 const highRisk = document.getElementById('community-high-risk');
