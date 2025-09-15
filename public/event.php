@@ -5307,6 +5307,74 @@ header:hover {
                 }
             });
         }
+
+        // Function to confirm delete all events (AJAX version like settings.php)
+        function confirmDeleteAll() {
+            // Get total number of events
+            const eventRows = document.querySelectorAll('.event-row');
+            const eventCount = eventRows.length;
+            
+            if (eventCount === 0) {
+                showNotification('No events to delete!', 'info');
+                return;
+            }
+
+            // Double confirmation for delete all
+            const confirmMessage = `⚠️ WARNING: This will delete ALL ${eventCount} events from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            // Second confirmation
+            if (!confirm('FINAL CONFIRMATION: Delete ALL events? This will permanently remove all event data.')) {
+                return;
+            }
+
+            // Show loading state
+            const deleteAllBtn = event.target;
+            const originalText = deleteAllBtn.innerHTML;
+            deleteAllBtn.innerHTML = '⏳ Deleting...';
+            deleteAllBtn.disabled = true;
+
+            // Send delete all request to server
+            fetch('/api/delete_all_programs.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    confirm: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove all event rows from the page
+                    eventRows.forEach(row => row.remove());
+                    
+                    showNotification(`Successfully deleted all ${data.deleted_count || eventCount} events!`, 'success');
+                    
+                    // Reload page to refresh event list
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotification('Error deleting all events: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error deleting all events: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                if (deleteAllBtn) {
+                    deleteAllBtn.innerHTML = originalText;
+                    deleteAllBtn.disabled = false;
+                }
+            });
+        }
     </script>
     
     <script>
