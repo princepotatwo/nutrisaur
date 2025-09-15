@@ -5396,7 +5396,8 @@ header:hover {
                     .then(data => {
                         if (data.success) {
                             alert('Successfully deleted ' + data.deleted_count + ' events!');
-
+                            // Refresh the page to show updated events list
+                            location.reload();
                         } else {
                             alert('Error deleting events: ' + (data.error || 'Unknown error'));
                         }
@@ -8003,11 +8004,17 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                     // Show success message
                     showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully! Notification sent to all users!`);
                     
-                    // Optionally refresh events table if needed (without page reload)
-                    // You can implement a function to refresh just the events table here
+                    // Refresh the page to show the new event
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000); // Wait 2 seconds to show the success message
                     
                 } else {
                     showNotificationSuccess(`Event saved but notification failed: ${notificationResult.message}`);
+                    // Refresh the page to show the new event even if notification failed
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
                 }
                 
             } catch (error) {
