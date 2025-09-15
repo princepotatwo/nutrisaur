@@ -136,6 +136,10 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         try {
                             Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                            
+                            // Check and register FCM token after successful login
+                            checkAndRegisterFCMTokenAfterLogin(email);
+                            
                             // Navigate to main activity (dashboard)
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
@@ -221,6 +225,31 @@ public class LoginActivity extends AppCompatActivity {
     private void handleAppleLogin() {
         // TODO: Implement Apple Login
         Toast.makeText(this, "Apple Login coming soon!", Toast.LENGTH_SHORT).show();
+    }
+    
+    /**
+     * Check and register FCM token after successful login
+     */
+    private void checkAndRegisterFCMTokenAfterLogin(String userEmail) {
+        try {
+            android.util.Log.d("LoginActivity", "Checking FCM token for logged in user: " + userEmail);
+            
+            // Get user's barangay from SharedPreferences (saved during login)
+            String userBarangay = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE)
+                .getString("current_user_barangay", "");
+            
+            if (userBarangay.isEmpty()) {
+                android.util.Log.w("LoginActivity", "No barangay found for user, using default");
+                userBarangay = "Unknown";
+            }
+            
+            // Use CommunityUserManager to check and register FCM token
+            CommunityUserManager userManager = new CommunityUserManager(this);
+            userManager.checkAndRegisterFCMToken(userEmail, userBarangay);
+            
+        } catch (Exception e) {
+            android.util.Log.e("LoginActivity", "Error checking FCM token after login: " + e.getMessage());
+        }
     }
     
     // Button styling is handled by XML layout and themes

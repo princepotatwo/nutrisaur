@@ -787,8 +787,7 @@ class DatabaseAPI {
                 // Update existing user with FCM token
                 error_log("FCM_DEBUG: Updating existing user with FCM token");
                 $stmt = $this->pdo->prepare("UPDATE community_users SET 
-                    fcm_token = :fcm_token,
-                    updated_at = CURRENT_TIMESTAMP
+                    fcm_token = :fcm_token
                     WHERE email = :email");
             } else {
                 // Insert new user with FCM token (minimal data)

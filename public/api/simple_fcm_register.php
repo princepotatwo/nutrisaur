@@ -29,7 +29,7 @@ try {
     }
     
     // Try to update existing user first
-    $stmt = $conn->prepare("UPDATE community_users SET fcm_token = ?, updated_at = NOW() WHERE email = ?");
+    $stmt = $conn->prepare("UPDATE community_users SET fcm_token = ? WHERE email = ?");
     $stmt->execute([$fcmToken, $userEmail]);
     
     if ($stmt->rowCount() > 0) {

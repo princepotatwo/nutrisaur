@@ -13,7 +13,7 @@ import android.widget.FrameLayout;
 import android.os.Handler;
 import android.os.Looper;
 
-public class FoodActivity extends AppCompatActivity {
+public class FoodActivity extends BaseActivity {
     private static final String TAG = "FoodActivity";
     private static final int REQUEST_CODE_FOOD_LOGGING = 1001;
     
@@ -77,6 +77,15 @@ public class FoodActivity extends AppCompatActivity {
         
         // First fetch user screening data from API, then load nutrition data
         fetchUserScreeningData();
+        
+        // Call this after session validation
+        onSessionValidated();
+    }
+    
+    @Override
+    protected void initializeActivity() {
+        // Additional initialization after session validation
+        // This method is called automatically by BaseActivity
     }
     
     private void setupHeader() {

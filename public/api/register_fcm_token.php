@@ -80,7 +80,7 @@ try {
             logFCMOperation("User found, updating FCM token", ['user_id' => $existingUser['community_user_id']]);
             
             // Update existing user with FCM token
-            $stmt = $conn->prepare("UPDATE community_users SET fcm_token = ?, updated_at = NOW() WHERE email = ?");
+            $stmt = $conn->prepare("UPDATE community_users SET fcm_token = ? WHERE email = ?");
             $stmt->execute([$fcmToken, $userEmail]);
             
             logFCMOperation("FCM token updated successfully for existing user");
@@ -106,7 +106,7 @@ try {
         
         // Update the existing record with new user info if provided
         if (!empty($userEmail) && $userEmail !== $existingToken['email']) {
-            $stmt = $conn->prepare("UPDATE community_users SET email = ?, barangay = ?, updated_at = NOW() WHERE fcm_token = ?");
+            $stmt = $conn->prepare("UPDATE community_users SET email = ?, barangay = ? WHERE fcm_token = ?");
             $stmt->execute([$userEmail, $userBarangay, $fcmToken]);
             logFCMOperation("Updated existing FCM token record with new user info");
         }
@@ -122,7 +122,7 @@ try {
     // Create new user record with FCM token
     logFCMOperation("Creating new user with FCM token");
     
-    $stmt = $conn->prepare("INSERT INTO community_users (email, fcm_token, barangay, screening_date, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW(), NOW())");
+    $stmt = $conn->prepare("INSERT INTO community_users (email, fcm_token, barangay, screening_date) VALUES (?, ?, ?, NOW())");
     $stmt->execute([
         $userEmail ?: 'app_user_' . time() . '@nutrisaur.app',
         $fcmToken,

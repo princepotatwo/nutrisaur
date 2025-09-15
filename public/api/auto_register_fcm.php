@@ -19,7 +19,7 @@ function autoRegisterFCMToken($conn, $fcmToken, $deviceInfo) {
             // Update existing token with new device info
             $stmt = $conn->prepare("
                 UPDATE community_users 
-                SET fcm_token = ?, updated_at = NOW() 
+                SET fcm_token = ? 
                 WHERE fcm_token = ?
             ");
             $stmt->execute([
@@ -44,7 +44,7 @@ function autoRegisterFCMToken($conn, $fcmToken, $deviceInfo) {
                     // Update existing user with FCM token
                     $stmt = $conn->prepare("
                         UPDATE community_users 
-                        SET fcm_token = ?, updated_at = NOW() 
+                        SET fcm_token = ? 
                         WHERE email = ?
                     ");
                     $stmt->execute([

@@ -19,7 +19,7 @@ import androidx.cardview.widget.CardView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FoodLoggingActivity extends AppCompatActivity {
+public class FoodLoggingActivity extends BaseActivity {
     private static final String TAG = "FoodLoggingActivity";
     
     // UI Elements
@@ -106,6 +106,15 @@ public class FoodLoggingActivity extends AppCompatActivity {
         
         Log.d(TAG, "FoodLoggingActivity created for " + currentMealCategory + " (max " + maxCalories + " kcal)");
         Log.d(TAG, "Initial food items count: " + foodItems.size());
+        
+        // Call this after session validation
+        onSessionValidated();
+    }
+    
+    @Override
+    protected void initializeActivity() {
+        // Additional initialization after session validation
+        // This method is called automatically by BaseActivity
     }
     
     private void initializeViews() {

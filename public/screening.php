@@ -3667,16 +3667,23 @@ header {
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
                             <h4 style="color: var(--color-danger); margin: 0 0 10px 0;">⚠️ CRITICAL: EXACT FORMAT REQUIRED</h4>
-                            <p style="margin: 0; color: var(--color-danger); font-weight: 600;">CSV data MUST use EXACTLY the same answer options as the mobile app. Any deviation will cause validation errors and prevent import.</p>
+                            <p style="margin: 0; color: var(--color-danger); font-weight: 600;">CSV data MUST use exact municipality/barangay names and formats from the mobile app. Any deviation will cause validation errors.</p>
                         </div>
                     </div>
                 </div>
                 
                 <h4>📋 CSV Import Instructions</h4>
-                <p><strong>1.</strong> Download template with exact mobile app formats</p>
-                <p><strong>2.</strong> Fill data using ONLY specified answer options</p>
-                <p><strong>3.</strong> Upload your completed CSV file</p>
-                <p><strong>4.</strong> Review and confirm import</p>
+                <p><strong>1.</strong> Download the template CSV file with exact column names and order</p>
+                <p><strong>2.</strong> Password must be at least 6 characters long (required field)</p>
+                <p><strong>3.</strong> Use exact municipality names: ABUCAY, BAGAC, CITY OF BALANGA, DINALUPIHAN, HERMOSA, LIMAY, MARIVELES, MORONG, ORANI, ORION, PILAR, SAMAL</p>
+                <p><strong>4.</strong> Use exact barangay names that match the selected municipality</p>
+                <p><strong>5.</strong> Sex must be exactly "Male" or "Female" (no "Other")</p>
+                <p><strong>6.</strong> Pregnancy status: "Yes", "No", or leave empty (for males or not applicable)</p>
+                <p><strong>7.</strong> Weight: 0.1-1000 kg (max 2 decimal places), Height: 1-300 cm (max 2 decimal places)</p>
+                <p><strong>8.</strong> Date format: YYYY-MM-DD for birthday, YYYY-MM-DD HH:MM:SS for screening_date</p>
+                <p><strong>9.</strong> Template format must match exactly - no extra columns, no missing columns</p>
+                <p><strong>10.</strong> Upload your completed CSV file and review the preview</p>
+                <p><strong>11.</strong> Click Import CSV to process the data</p>
             </div>
             
             <form id="csvImportForm">
@@ -4586,8 +4593,9 @@ header {
         // CSV Functions
         function downloadCSVTemplate() {
             const csvContent = [
-                ['name', 'email', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight', 'height', 'muac', 'screening_date'],
-                ['John Doe', 'john@example.com', 'CITY OF BALANGA (Capital)', 'Bagumbayan', 'Male', '1999-01-15', 'No', '70', '175', '25', '2024-01-15 10:30:00']
+                ['email', 'password', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight', 'height', 'screening_date'],
+                ['john@example.com', 'password123', 'CITY OF BALANGA', 'Bagumbayan', 'Male', '1999-01-15', 'No', '70.5', '175.0', '2024-01-15 10:30:00'],
+                ['jane@example.com', 'mypass456', 'MARIVELES', 'Alion', 'Female', '1995-03-20', 'Yes', '65.2', '160.0', '2024-01-15 14:30:00']
             ];
             
             const csv = csvContent.map(row => row.map(field => `"${field}"`).join(',')).join('\n');
@@ -4595,7 +4603,7 @@ header {
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'assessment_template.csv';
+            link.download = 'community_users_template.csv';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -4709,7 +4717,49 @@ header {
         }
 
         function processCSVImport() {
-            showCSVStatus('info', 'CSV import functionality will be implemented in the backend.');
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showCSVStatus('error', 'Please select a CSV file first.');
+                return;
+            }
+            
+            showCSVStatus('info', 'Processing CSV import...');
+            document.getElementById('importCSVBtn').disabled = true;
+            document.getElementById('importCSVBtn').innerHTML = '🔄 Processing...';
+            
+            const formData = new FormData();
+            formData.append('csvFile', file);
+            formData.append('action', 'import_community_users');
+            
+            fetch('api/community_users_api.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showCSVStatus('success', `CSV imported successfully! ${data.imported_count} users imported.`);
+                    // Refresh the data table
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showCSVStatus('error', `Import failed: ${data.message}`);
+                    if (data.errors && data.errors.length > 0) {
+                        showCSVStatus('error', `Errors: ${data.errors.join(', ')}`);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showCSVStatus('error', 'Failed to import CSV. Please try again.');
+            })
+            .finally(() => {
+                document.getElementById('importCSVBtn').disabled = false;
+                document.getElementById('importCSVBtn').innerHTML = '📥 Import CSV';
+            });
         }
 
         function showCSVStatus(type, message) {

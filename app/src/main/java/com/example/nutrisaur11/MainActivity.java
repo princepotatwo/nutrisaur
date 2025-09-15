@@ -39,7 +39,7 @@ import android.content.Context;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private boolean isLoggedIn = false;
     private UserPreferencesDbHelper dbHelper;
@@ -164,6 +164,15 @@ public class MainActivity extends AppCompatActivity {
         
         // Setup broadcast receiver for real-time event updates
         setupEventRefreshReceiver();
+        
+        // Call this after session validation
+        onSessionValidated();
+    }
+    
+    @Override
+    protected void initializeActivity() {
+        // Additional initialization after session validation
+        // This method is called automatically by BaseActivity
     }
 
     @Override

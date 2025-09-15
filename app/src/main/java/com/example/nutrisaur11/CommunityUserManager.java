@@ -55,6 +55,12 @@ public class CommunityUserManager {
             JSONObject jsonResponse = new JSONObject(response);
             
             if (jsonResponse.getBoolean("success")) {
+                // Check if user object exists
+                if (!jsonResponse.has("user") || jsonResponse.isNull("user")) {
+                    Log.d(TAG, "User not found in database: " + email);
+                    return userData; // Return empty data
+                }
+                
                 JSONObject user = jsonResponse.getJSONObject("user");
                 
                 // Map database fields to our expected format
@@ -93,7 +99,16 @@ public class CommunityUserManager {
                 }
                 
             } else {
-                Log.e(TAG, "API returned success=false: " + jsonResponse.optString("message", "Unknown error"));
+                String errorMessage = jsonResponse.optString("message", "Unknown error");
+                Log.e(TAG, "API returned success=false: " + errorMessage);
+                
+                // Check if it's a user not found error
+                if (errorMessage.toLowerCase().contains("not found") || 
+                    errorMessage.toLowerCase().contains("does not exist") ||
+                    errorMessage.toLowerCase().contains("user not found")) {
+                    Log.d(TAG, "User not found in database: " + email);
+                    return userData; // Return empty data
+                }
             }
             
         } catch (Exception e) {
@@ -215,8 +230,61 @@ public class CommunityUserManager {
     
     // Login method
     public void loginUser(String email, String password, LoginCallback callback) {
-        // TODO: Implement login logic
-        callback.onError("Login method not implemented yet");
+        Log.d(TAG, "=== LOGGING IN USER ===");
+        Log.d(TAG, "Email: " + email);
+        
+        // Run API request in background thread to avoid NetworkOnMainThreadException
+        new Thread(() -> {
+            try {
+                // Create login request
+                JSONObject requestData = new JSONObject();
+                requestData.put("email", email);
+                requestData.put("password", password);
+                
+                // Make API request
+                String response = makeApiRequest("login_community_user", requestData);
+                
+                // Check if API request failed
+                if (response == null) {
+                    Log.e(TAG, "API request returned null response");
+                    callback.onError("Login failed: Unable to connect to server");
+                    return;
+                }
+                
+                JSONObject jsonResponse = new JSONObject(response);
+                
+                if (jsonResponse.getBoolean("success")) {
+                    // Save login state to SharedPreferences
+                    SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    
+                    // Save login state
+                    editor.putString("current_user_email", email)
+                          .putBoolean("is_logged_in", true);
+                    
+                    // Save user data if available
+                    if (jsonResponse.has("user")) {
+                        JSONObject user = jsonResponse.getJSONObject("user");
+                        editor.putString("current_user_name", user.optString("name", ""));
+                        editor.putString("current_user_barangay", user.optString("barangay", ""));
+                        editor.putString("current_user_municipality", user.optString("municipality", ""));
+                    }
+                    
+                    editor.apply();
+                    
+                    Log.d(TAG, "Login successful: " + jsonResponse.optString("message", "Login successful"));
+                    callback.onSuccess(jsonResponse.optString("message", "Login successful"));
+                } else {
+                    String errorMessage = jsonResponse.optString("message", "Login failed");
+                    Log.e(TAG, "Login failed: " + errorMessage);
+                    callback.onError(errorMessage);
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error during login: " + e.getMessage());
+                callback.onError("Login failed: " + e.getMessage());
+            }
+        }).start();
     }
     
     // Register method
@@ -289,8 +357,158 @@ public class CommunityUserManager {
         }).start();
     }
     
-    // Get current user data (alias for getCurrentUserDataFromDatabase)
+    // Get current user data with caching
     public Map<String, String> getCurrentUserData() {
+        String email = getCurrentUserEmail();
+        if (email == null) {
+            return new HashMap<>();
+        }
+        
+        // Check if we have cached data first
+        if (hasCachedUserData(email)) {
+            Log.d(TAG, "Using cached user data for: " + email);
+            return getCachedUserData(email);
+        }
+        
+        // Fetch fresh data from database
+        Map<String, String> userData = getCurrentUserDataFromDatabase();
+        
+        // Cache the data if we got valid data
+        if (!userData.isEmpty()) {
+            cacheUserData(email, userData);
+        }
+        
+        return userData;
+    }
+    
+    // Caching methods
+    private boolean hasCachedUserData(String email) {
+        SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        long lastUpdate = prefs.getLong("user_data_cache_time_" + email, 0);
+        long currentTime = System.currentTimeMillis();
+        long cacheValidity = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+        return (currentTime - lastUpdate) < cacheValidity && prefs.contains("user_data_name_" + email);
+    }
+    
+    private void cacheUserData(String email, Map<String, String> userData) {
+        SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        
+        for (Map.Entry<String, String> entry : userData.entrySet()) {
+            editor.putString("user_data_" + entry.getKey() + "_" + email, entry.getValue());
+        }
+        editor.putLong("user_data_cache_time_" + email, System.currentTimeMillis());
+        
+        editor.apply();
+        Log.d(TAG, "Cached user data for: " + email);
+    }
+    
+    private Map<String, String> getCachedUserData(String email) {
+        SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        Map<String, String> userData = new HashMap<>();
+        
+        // List of keys we cache
+        String[] keys = {"name", "email", "sex", "age", "birthday", "height_cm", "weight_kg", 
+                        "bmi", "bmi_category", "muac_cm", "muac_category", "nutritional_risk", 
+                        "is_pregnant", "barangay", "municipality", "screening_date", "notes"};
+        
+        for (String key : keys) {
+            String value = prefs.getString("user_data_" + key + "_" + email, "");
+            if (!value.isEmpty()) {
+                userData.put(key, value);
+            }
+        }
+        
+        Log.d(TAG, "Loaded cached user data for: " + email);
+        return userData;
+    }
+    
+    // Method to clear cache for a specific user
+    public void clearUserCache(String email) {
+        SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        
+        // Remove all cached data for this user
+        String[] keys = {"name", "email", "sex", "age", "birthday", "height_cm", "weight_kg", 
+                        "bmi", "bmi_category", "muac_cm", "muac_category", "nutritional_risk", 
+                        "is_pregnant", "barangay", "municipality", "screening_date", "notes"};
+        
+        for (String key : keys) {
+            editor.remove("user_data_" + key + "_" + email);
+        }
+        editor.remove("user_data_cache_time_" + email);
+        
+        editor.apply();
+        Log.d(TAG, "Cleared user cache for: " + email);
+    }
+    
+    // Method to refresh user data (clear cache and fetch fresh)
+    public Map<String, String> refreshUserData() {
+        String email = getCurrentUserEmail();
+        if (email != null) {
+            clearUserCache(email);
+        }
         return getCurrentUserDataFromDatabase();
+    }
+    
+    /**
+     * Check if user has FCM token and register it if needed
+     */
+    public void checkAndRegisterFCMToken(String userEmail, String userBarangay) {
+        Log.d(TAG, "Checking FCM token for user: " + userEmail);
+        
+        // Run in background thread
+        new Thread(() -> {
+            try {
+                // Check if user has FCM token in database
+                JSONObject requestData = new JSONObject();
+                requestData.put("email", userEmail);
+                
+                String response = makeApiRequest("get_community_user_data", requestData);
+                
+                if (response != null) {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    
+                    if (jsonResponse.getBoolean("success") && jsonResponse.has("user")) {
+                        JSONObject user = jsonResponse.getJSONObject("user");
+                        String fcmToken = user.optString("fcm_token", "");
+                        
+                        if (fcmToken.isEmpty()) {
+                            Log.d(TAG, "User has no FCM token, will register one");
+                            // Register FCM token using FCMTokenManager
+                            registerFCMTokenForUser(userEmail, userBarangay);
+                        } else {
+                            Log.d(TAG, "User already has FCM token: " + fcmToken.substring(0, Math.min(20, fcmToken.length())) + "...");
+                        }
+                    } else {
+                        Log.w(TAG, "Could not retrieve user data to check FCM token");
+                        // Still try to register FCM token as fallback
+                        registerFCMTokenForUser(userEmail, userBarangay);
+                    }
+                } else {
+                    Log.w(TAG, "API request failed, will try to register FCM token anyway");
+                    registerFCMTokenForUser(userEmail, userBarangay);
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error checking FCM token: " + e.getMessage());
+                // Still try to register FCM token as fallback
+                registerFCMTokenForUser(userEmail, userBarangay);
+            }
+        }).start();
+    }
+    
+    /**
+     * Register FCM token for user using FCMTokenManager
+     */
+    private void registerFCMTokenForUser(String userEmail, String userBarangay) {
+        try {
+            FCMTokenManager fcmManager = new FCMTokenManager(context);
+            fcmManager.registerTokenAfterScreening(userEmail, userBarangay);
+            Log.d(TAG, "FCM token registration initiated for user: " + userEmail);
+        } catch (Exception e) {
+            Log.e(TAG, "Error initiating FCM token registration: " + e.getMessage());
+        }
     }
 }

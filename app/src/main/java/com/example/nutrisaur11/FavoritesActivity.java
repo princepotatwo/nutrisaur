@@ -6,7 +6,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 
-public class FavoritesActivity extends AppCompatActivity {
+public class FavoritesActivity extends BaseActivity {
     // Malnutrition detection activity - favorites functionality removed
 
     @Override
@@ -31,6 +31,15 @@ public class FavoritesActivity extends AppCompatActivity {
         }
         
         setupButtons();
+        
+        // Call this after session validation
+        onSessionValidated();
+    }
+    
+    @Override
+    protected void initializeActivity() {
+        // Additional initialization after session validation
+        // This method is called automatically by BaseActivity
     }
     
     

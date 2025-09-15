@@ -12,19 +12,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
 import com.example.nutrisaur11.UserPreferencesDbHelper;
 import com.example.nutrisaur11.MainActivity;
+import java.util.Map;
 
-public class AccountActivity extends AppCompatActivity {
+public class AccountActivity extends BaseActivity {
     
     private UserPreferencesDbHelper dbHelper;
     private TextView userNameText;
     private TextView userGoalText;
     private TextView bmiDisplayText;
     private TextView ageDisplayText;
-    private TextView goalProgressText;
     private TextView currentWeightText;
+    private TextView heightDisplayText;
     
     // Edit Profile button
     private Button editProfileButton;
+    private Button refreshProfileButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,23 @@ public class AccountActivity extends AppCompatActivity {
         
         // Setup logout
         setupLogout();
+        
+        // Call this after session validation
+        onSessionValidated();
+    }
+    
+    @Override
+    protected void initializeActivity() {
+        // Additional initialization after session validation
+        // This method is called automatically by BaseActivity
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh profile data when returning to the activity
+        // This ensures we have the latest data if the user made changes elsewhere
+        refreshProfileData();
     }
     
     private void initializeViews() {
@@ -61,13 +80,24 @@ public class AccountActivity extends AppCompatActivity {
         userGoalText = findViewById(R.id.user_goal);
         bmiDisplayText = findViewById(R.id.bmi_display);
         ageDisplayText = findViewById(R.id.age_display);
-        goalProgressText = findViewById(R.id.goal_progress);
         currentWeightText = findViewById(R.id.current_weight);
+        heightDisplayText = findViewById(R.id.height_display);
         
         // Edit Profile button
         editProfileButton = findViewById(R.id.edit_profile_button);
         if (editProfileButton != null) {
             editProfileButton.setOnClickListener(v -> showEditProfileDialog());
+        }
+        
+        // Refresh Profile button
+        refreshProfileButton = findViewById(R.id.refresh_profile_button);
+        if (refreshProfileButton != null) {
+            refreshProfileButton.setOnClickListener(v -> {
+                onUserInteraction(); // Track user interaction
+                Log.d("AccountActivity", "Refresh button clicked");
+                refreshProfileData();
+                Toast.makeText(AccountActivity.this, "Profile data refreshed", Toast.LENGTH_SHORT).show();
+            });
         }
     }
     
@@ -143,122 +173,59 @@ public class AccountActivity extends AppCompatActivity {
         
         Log.d("AccountActivity", "Loading user profile for email: " + email);
         
-        // Use real-time API data instead of local SQLite
+        // Check if we have cached data first
+        if (hasCachedProfileData(email)) {
+            Log.d("AccountActivity", "Using cached profile data");
+            loadCachedProfileData(email);
+            return;
+        }
+        
+        // Use CommunityUserManager to fetch data from community_users table
         new Thread(() -> {
             try {
-                okhttp3.OkHttpClient client = new okhttp3.OkHttpClient();
+                CommunityUserManager userManager = new CommunityUserManager(AccountActivity.this);
+                Map<String, String> userData = userManager.getCurrentUserData();
                 
-                okhttp3.Request request = new okhttp3.Request.Builder()
-                    .url(Constants.API_BASE_URL + "unified_api.php?type=usm")
-                    .get()
-                    .build();
-                
-                try (okhttp3.Response response = client.newCall(request).execute()) {
-                    if (response.isSuccessful()) {
-                        String responseBody = response.body().string();
-                        Log.d("AccountActivity", "Real-time API response: " + responseBody);
-                        
-                        org.json.JSONObject jsonResponse = new org.json.JSONObject(responseBody);
-                        if (jsonResponse.has("users")) {
-                            org.json.JSONArray users = jsonResponse.getJSONArray("users");
-                            // Find user by email in the array
-                            org.json.JSONObject userData = null;
-                            for (int i = 0; i < users.length(); i++) {
-                                org.json.JSONObject user = users.getJSONObject(i);
-                                if (user.getString("email").equals(email)) {
-                                    userData = user;
-                                    break;
-                                }
-                            }
-                            if (userData != null) {
-                                String screeningAnswersJson = userData.optString("screening_answers", "");
-                                
-                                Log.d("AccountActivity", "Found user data in real-time API: " + email);
-                                Log.d("AccountActivity", "Screening answers: " + screeningAnswersJson);
-                                
-                                // Parse screening data for profile information
-                                final String name = userData.optString("username", "User"); // Get actual username from API
-                                String gender = "Not specified";
-                                double weight = 0.0;
-                                double height = 0.0;
-                                int age = 0;
-                                String goal = "Healthy Nutrition";
-                                
-                                if (!screeningAnswersJson.isEmpty() && !screeningAnswersJson.equals("[]")) {
-                                    try {
-                                        org.json.JSONObject screeningAnswers = new org.json.JSONObject(screeningAnswersJson);
-                                        final String finalGender = screeningAnswers.optString("gender", "Not specified");
-                                        
-                                        // Extract weight and height from screening data
-                                        final double finalWeight = screeningAnswers.optDouble("weight", 0.0);
-                                        final double finalHeight = screeningAnswers.optDouble("height", 0.0);
-                                        final int finalAge = calculateAgeFromBirthday(screeningAnswers.optString("birthday", ""));
-                                        final String finalGoal = "Healthy Nutrition";
-                                        
-                                        // Extract new clinical risk factors for better profile insights
-                                        final boolean hasRecentIllness = screeningAnswers.optBoolean("has_recent_illness", false);
-                                        final boolean hasEatingDifficulty = screeningAnswers.optBoolean("has_eating_difficulty", false);
-                                        final boolean hasFoodInsecurity = screeningAnswers.optBoolean("has_food_insecurity", false);
-                                        final boolean hasMicronutrientDeficiency = screeningAnswers.optBoolean("has_micronutrient_deficiency", false);
-                                        final boolean hasFunctionalDecline = screeningAnswers.optBoolean("has_functional_decline", false);
-                                        
-                                        // Calculate BMI
-                                        final double bmi = (finalWeight > 0 && finalHeight > 0) ? 
-                                            finalWeight / ((finalHeight / 100) * (finalHeight / 100)) : 0;
-                                        
-                                        Log.d("AccountActivity", "Parsed screening data - gender: " + finalGender + ", weight: " + finalWeight + ", height: " + finalHeight + ", bmi: " + bmi + ", age: " + finalAge + " months");
-                                        Log.d("AccountActivity", "Clinical risk factors - illness: " + hasRecentIllness + ", eating: " + hasEatingDifficulty + ", food: " + hasFoodInsecurity + ", micronutrient: " + hasMicronutrientDeficiency + ", functional: " + hasFunctionalDecline);
-                                        
-                                        Log.d("AccountActivity", "Real-time profile data - name: " + name + ", age: " + finalAge + " months, weight: " + finalWeight + ", height: " + finalHeight + ", bmi: " + bmi + ", gender: " + finalGender + ", goal: " + finalGoal);
-                                        
-                                        // Update UI on main thread with real-time data
-                                        runOnUiThread(() -> {
-                                            displayUserProfile(name, finalAge, finalHeight, finalWeight, bmi, finalGender, finalGoal);
-                                            Log.d("AccountActivity", "Updated profile display with real-time API data");
-                                        });
-                                        
-                                    } catch (Exception e) {
-                                        Log.e("AccountActivity", "Error parsing screening answers: " + e.getMessage());
-                                        
-                                        // Update UI on main thread with default data
-                                        runOnUiThread(() -> {
-                                            displayUserProfile(name, age, height, weight, 0, gender, goal);
-                                            Log.d("AccountActivity", "Updated profile display with default data");
-                                        });
-                                    }
-                                } else {
-                                    // Update UI on main thread with default data
-                                    runOnUiThread(() -> {
-                                        displayUserProfile(name, age, height, weight, 0, gender, goal);
-                                        Log.d("AccountActivity", "Updated profile display with default data");
-                                    });
-                                }
-                                
-                            } else {
-                                Log.d("AccountActivity", "User not found in real-time API: " + email);
-                                // Fallback to local SQLite
-                                runOnUiThread(() -> {
-                                    loadUserProfileFromLocalDB();
-                                });
-                            }
-                        } else {
-                            Log.d("AccountActivity", "No users data in real-time API response");
-                            // Fallback to local SQLite
-                            runOnUiThread(() -> {
-                                loadUserProfileFromLocalDB();
-                            });
-                        }
-                    } else {
-                        Log.e("AccountActivity", "Failed to get real-time data: " + response.code());
-                        // Fallback to local SQLite
-                        runOnUiThread(() -> {
-                            loadUserProfileFromLocalDB();
-                        });
-                    }
+                if (!userData.isEmpty()) {
+                    Log.d("AccountActivity", "Retrieved user data from community_users: " + userData.toString());
+                    
+                    // Extract data from community_users table
+                    final String name = userData.getOrDefault("name", "User");
+                    final String sex = userData.getOrDefault("sex", "Not specified");
+                    final String ageStr = userData.getOrDefault("age", "0");
+                    final String weightStr = userData.getOrDefault("weight_kg", "0");
+                    final String heightStr = userData.getOrDefault("height_cm", "0");
+                    final String bmiStr = userData.getOrDefault("bmi", "0");
+                    
+                    // Parse values
+                    final int age = Integer.parseInt(ageStr);
+                    final double weight = Double.parseDouble(weightStr);
+                    final double height = Double.parseDouble(heightStr);
+                    final double bmi = Double.parseDouble(bmiStr);
+                    final String goal = "Healthy Nutrition";
+                    
+                    Log.d("AccountActivity", "Parsed community_users data - name: " + name + ", age: " + age + ", weight: " + weight + ", height: " + height + ", bmi: " + bmi + ", sex: " + sex);
+                    
+                    // Cache the data
+                    cacheProfileData(email, name, age, height, weight, bmi, sex, goal);
+                    
+                    // Update UI on main thread
+                    runOnUiThread(() -> {
+                        displayUserProfile(name, age, height, weight, bmi, sex, goal);
+                        Log.d("AccountActivity", "Updated profile display with community_users data");
+                    });
+                    
+                } else {
+                    Log.d("AccountActivity", "No data found in community_users - user may have been deleted");
+                    // User not found in database, trigger session validation
+                    runOnUiThread(() -> {
+                        SessionManager.getInstance(AccountActivity.this).forceLogout(AccountActivity.this, 
+                            "Your account is no longer available in the database. Please contact support or create a new account.");
+                    });
                 }
+                
             } catch (Exception e) {
-                Log.e("AccountActivity", "Error getting real-time profile data: " + e.getMessage());
-                // Fallback to local SQLite
+                Log.e("AccountActivity", "Error getting community_users data: " + e.getMessage());
                 runOnUiThread(() -> {
                     loadUserProfileFromLocalDB();
                 });
@@ -395,7 +362,7 @@ public class AccountActivity extends AppCompatActivity {
             userGoalText.setText("Goal: " + (goal != null ? goal : "Healthy Nutrition"));
         }
         
-        // Display BMI and Age with accurate values
+        // Display BMI with accurate values
         if (bmiDisplayText != null) {
             if (bmi > 0) {
             bmiDisplayText.setText(String.format("%.1f", bmi));
@@ -404,6 +371,7 @@ public class AccountActivity extends AppCompatActivity {
             }
         }
         
+        // Display Age
         if (ageDisplayText != null) {
             if (age > 0) {
             // Convert months to years for display
@@ -428,10 +396,13 @@ public class AccountActivity extends AppCompatActivity {
             }
         }
         
-        // Calculate and display goal progress based on BMI
-        if (goalProgressText != null) {
-            String progress = calculateGoalProgress(bmi);
-            goalProgressText.setText(progress);
+        // Display height
+        if (heightDisplayText != null) {
+            if (height > 0) {
+                heightDisplayText.setText(String.format("%.1f cm", height));
+            } else {
+                heightDisplayText.setText("-- cm");
+            }
         }
     }
     
@@ -471,16 +442,78 @@ public class AccountActivity extends AppCompatActivity {
         // Set default values when no user data is available
         if (userNameText != null) userNameText.setText("User");
         if (userGoalText != null) userGoalText.setText("Goal: Healthy Nutrition");
-        if (bmiDisplayText != null) bmiDisplayText.setText("0.0");
-        if (ageDisplayText != null) ageDisplayText.setText("25");
-        if (goalProgressText != null) goalProgressText.setText("0%");
-        if (currentWeightText != null) currentWeightText.setText("0.0 kg");
+        if (bmiDisplayText != null) bmiDisplayText.setText("--");
+        if (ageDisplayText != null) ageDisplayText.setText("--");
+        if (currentWeightText != null) currentWeightText.setText("-- kg");
+        if (heightDisplayText != null) heightDisplayText.setText("-- cm");
     }
     
     private double calculateBMI(double height, double weight) {
         // BMI = weight(kg) / height(m)²
         double heightInMeters = height / 100.0;
         return weight / (heightInMeters * heightInMeters);
+    }
+    
+    private String getBMICategory(double bmi) {
+        if (bmi < 18.5) return "Underweight";
+        else if (bmi < 25) return "Normal";
+        else if (bmi < 30) return "Overweight";
+        else return "Obese";
+    }
+    
+    // Caching methods
+    private boolean hasCachedProfileData(String email) {
+        android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+        long lastUpdate = prefs.getLong("profile_cache_time_" + email, 0);
+        long currentTime = System.currentTimeMillis();
+        long cacheValidity = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+        return (currentTime - lastUpdate) < cacheValidity && prefs.contains("profile_name_" + email);
+    }
+    
+    private void cacheProfileData(String email, String name, int age, double height, double weight, double bmi, String gender, String goal) {
+        android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+        android.content.SharedPreferences.Editor editor = prefs.edit();
+        
+        editor.putString("profile_name_" + email, name);
+        editor.putInt("profile_age_" + email, age);
+        editor.putFloat("profile_height_" + email, (float) height);
+        editor.putFloat("profile_weight_" + email, (float) weight);
+        editor.putFloat("profile_bmi_" + email, (float) bmi);
+        editor.putString("profile_gender_" + email, gender);
+        editor.putString("profile_goal_" + email, goal);
+        editor.putLong("profile_cache_time_" + email, System.currentTimeMillis());
+        
+        editor.apply();
+        Log.d("AccountActivity", "Cached profile data for: " + email);
+    }
+    
+    private void loadCachedProfileData(String email) {
+        android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+        
+        String name = prefs.getString("profile_name_" + email, "User");
+        int age = prefs.getInt("profile_age_" + email, 0);
+        double height = prefs.getFloat("profile_height_" + email, 0.0f);
+        double weight = prefs.getFloat("profile_weight_" + email, 0.0f);
+        double bmi = prefs.getFloat("profile_bmi_" + email, 0.0f);
+        String gender = prefs.getString("profile_gender_" + email, "Not specified");
+        String goal = prefs.getString("profile_goal_" + email, "Healthy Nutrition");
+        
+        Log.d("AccountActivity", "Loaded cached profile data for: " + email);
+        displayUserProfile(name, age, height, weight, bmi, gender, goal);
+    }
+    
+    public void refreshProfileData() {
+        String email = getCurrentUserEmail();
+        if (email != null) {
+            // Clear cache and reload
+            android.content.SharedPreferences prefs = getSharedPreferences("nutrisaur_prefs", MODE_PRIVATE);
+            android.content.SharedPreferences.Editor editor = prefs.edit();
+            editor.remove("profile_cache_time_" + email);
+            editor.apply();
+            
+            loadUserProfile();
+        }
     }
     
     private String calculateDietStreak() {
@@ -495,40 +528,31 @@ public class AccountActivity extends AppCompatActivity {
         return "+1.2";
     }
     
-    private String calculateGoalProgress(double bmi) {
-        // Calculate progress based on BMI and nutrition goals
-        if (bmi < 18.5) {
-            // Underweight - goal is to gain weight
-            return "65";
-        } else if (bmi >= 18.5 && bmi < 25) {
-            // Normal weight - goal is to maintain
-            return "85";
-        } else {
-            // Overweight - goal is to lose weight
-            return "45";
-        }
-    }
     
     private void setupNavigation() {
         findViewById(R.id.nav_home).setOnClickListener(v -> {
+            onUserInteraction(); // Track user interaction
             Intent intent = new Intent(AccountActivity.this, MainActivity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         });
         findViewById(R.id.nav_food).setOnClickListener(v -> {
+            onUserInteraction(); // Track user interaction
             Intent intent = new Intent(AccountActivity.this, FoodActivity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         });
         findViewById(R.id.nav_favorites).setOnClickListener(v -> {
+            onUserInteraction(); // Track user interaction
             Intent intent = new Intent(AccountActivity.this, FavoritesActivity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
         });
         findViewById(R.id.nav_account).setOnClickListener(v -> {
+            onUserInteraction(); // Track user interaction
             // Already in AccountActivity, do nothing
         });
     }
@@ -564,6 +588,11 @@ public class AccountActivity extends AppCompatActivity {
                 CalorieTracker.clearUserData(this, currentUserEmail);
                 GeminiCacheManager.clearUserData(this, currentUserEmail);
                 FavoritesManager.clearUserData(this, currentUserEmail);
+                
+                // Clear profile cache
+                CommunityUserManager userManager = new CommunityUserManager(this);
+                userManager.clearUserCache(currentUserEmail);
+                
                 android.util.Log.d("AccountActivity", "Cleared user-specific data for: " + currentUserEmail);
             }
             

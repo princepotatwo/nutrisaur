@@ -60,12 +60,19 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:paddingBottom="18dp">
-                        <TextView
+                        <View
                             android:layout_width="56dp"
                             android:layout_height="56dp"
-                            android:text="👤"
-                            android:textSize="32sp"
-                            android:gravity="center" />
+                            android:background="@drawable/circle_background"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="U"
+                                android:textSize="24sp"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold" />
+                        </View>
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -75,7 +82,7 @@
                                 android:id="@+id/user_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Jasmin"
+                                android:text="User"
                                 android:textSize="22sp"
                                 android:textStyle="bold"
                                 android:textColor="#222"
@@ -91,17 +98,34 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <!-- Edit Profile Button -->
-                    <Button
-                        android:id="@+id/edit_profile_button"
-                        style="@style/GreenOutlineButton"
+                    <!-- Action Buttons -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Edit Profile"
-                        android:textSize="16sp"
+                        android:orientation="horizontal"
                         android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:padding="12dp" />
+                        android:layout_marginBottom="16dp">
+                        <Button
+                            android:id="@+id/edit_profile_button"
+                            style="@style/GreenOutlineButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Edit Profile"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="8dp"
+                            android:padding="12dp" />
+                        <Button
+                            android:id="@+id/refresh_profile_button"
+                            style="@style/GreenOutlineButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Refresh"
+                            android:textSize="16sp"
+                            android:layout_marginStart="8dp"
+                            android:padding="12dp" />
+                    </LinearLayout>
 
                     <!-- Updated Stat Grid -->
                     <GridLayout
@@ -119,12 +143,20 @@
                             android:layout_columnWeight="1"
                             android:orientation="horizontal"
                             android:gravity="center_vertical">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="📊"
-                                android:textSize="22sp"
-                                android:paddingEnd="8dp" />
+                            <View
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@drawable/stat_icon_background"
+                                android:gravity="center"
+                                android:paddingEnd="8dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="BMI"
+                                    android:textSize="10sp"
+                                    android:textColor="#FFFFFF"
+                                    android:textStyle="bold" />
+                            </View>
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -133,7 +165,7 @@
                                     android:id="@+id/bmi_display"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="24.2"
+                                    android:text="--"
                                     android:textSize="20sp"
                                     android:textStyle="bold"
                                     android:textColor="#222"
@@ -154,12 +186,20 @@
                             android:layout_columnWeight="1"
                             android:orientation="horizontal"
                             android:gravity="center_vertical">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="🎂"
-                                android:textSize="22sp"
-                                android:paddingEnd="8dp" />
+                            <View
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@drawable/stat_icon_background"
+                                android:gravity="center"
+                                android:paddingEnd="8dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="AGE"
+                                    android:textSize="8sp"
+                                    android:textColor="#FFFFFF"
+                                    android:textStyle="bold" />
+                            </View>
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -168,7 +208,7 @@
                                     android:id="@+id/age_display"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="25 years"
+                                    android:text="--"
                                     android:textSize="20sp"
                                     android:textStyle="bold"
                                     android:textColor="#222"
@@ -182,54 +222,27 @@
                                     android:fontFamily="sans-serif" />
                             </LinearLayout>
                         </LinearLayout>
-                        <!-- Stat 3 - Goal Progress -->
+                        <!-- Stat 3 - Weight -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
                             android:orientation="horizontal"
                             android:gravity="center_vertical">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="📈"
-                                android:textSize="22sp"
-                                android:paddingEnd="8dp" />
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:id="@+id/goal_progress"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="85%"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold"
-                                    android:textColor="#222"
-                                    android:fontFamily="sans-serif" />
+                            <View
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@drawable/stat_icon_background"
+                                android:gravity="center"
+                                android:paddingEnd="8dp">
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Goal Progress"
-                                    android:textSize="13sp"
-                                    android:textColor="#888"
-                                    android:fontFamily="sans-serif" />
-                            </LinearLayout>
-                        </LinearLayout>
-                        <!-- Stat 4 - Current Weight -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="⚖️"
-                                android:textSize="22sp"
-                                android:paddingEnd="8dp" />
+                                    android:text="WT"
+                                    android:textSize="8sp"
+                                    android:textColor="#FFFFFF"
+                                    android:textStyle="bold" />
+                            </View>
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -238,7 +251,7 @@
                                     android:id="@+id/current_weight"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="70.0 kg"
+                                    android:text="-- kg"
                                     android:textSize="20sp"
                                     android:textStyle="bold"
                                     android:textColor="#222"
@@ -246,7 +259,50 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Current Weight"
+                                    android:text="Weight"
+                                    android:textSize="13sp"
+                                    android:textColor="#888"
+                                    android:fontFamily="sans-serif" />
+                            </LinearLayout>
+                        </LinearLayout>
+                        <!-- Stat 4 - Height -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <View
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@drawable/stat_icon_background"
+                                android:gravity="center"
+                                android:paddingEnd="8dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="HT"
+                                    android:textSize="8sp"
+                                    android:textColor="#FFFFFF"
+                                    android:textStyle="bold" />
+                            </View>
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/height_display"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="-- cm"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#222"
+                                    android:fontFamily="sans-serif" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Height"
                                     android:textSize="13sp"
                                     android:textColor="#888"
                                     android:fontFamily="sans-serif" />
@@ -293,12 +349,19 @@
                         android:padding="12dp"
                         android:background="?attr/selectableItemBackground"
                         android:layout_marginBottom="8dp">
-                        <TextView
+                        <View
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:text="🔔"
-                            android:textSize="24sp"
-                            android:gravity="center" />
+                            android:background="@drawable/settings_icon_background"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="N"
+                                android:textSize="20sp"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold" />
+                        </View>
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -337,12 +400,19 @@
                         android:padding="12dp"
                         android:background="?attr/selectableItemBackground"
                         android:layout_marginBottom="8dp">
-                        <TextView
+                        <View
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:text="☁️"
-                            android:textSize="24sp"
-                            android:gravity="center" />
+                            android:background="@drawable/settings_icon_background"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="S"
+                                android:textSize="20sp"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold" />
+                        </View>
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -381,12 +451,19 @@
                         android:padding="12dp"
                         android:background="?attr/selectableItemBackground"
                         android:layout_marginBottom="8dp">
-                        <TextView
+                        <View
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:text="🔒"
-                            android:textSize="24sp"
-                            android:gravity="center" />
+                            android:background="@drawable/settings_icon_background"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="P"
+                                android:textSize="20sp"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold" />
+                        </View>
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -425,12 +502,19 @@
                         android:padding="12dp"
                         android:background="?attr/selectableItemBackground"
                         android:layout_marginBottom="8dp">
-                        <TextView
+                        <View
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:text="ℹ️"
-                            android:textSize="24sp"
-                            android:gravity="center" />
+                            android:background="@drawable/settings_icon_background"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="i"
+                                android:textSize="20sp"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold" />
+                        </View>
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -470,12 +554,19 @@
                         android:gravity="center_vertical"
                         android:padding="12dp"
                         android:background="?attr/selectableItemBackground">
-                        <TextView
+                        <View
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:text="🚪"
-                            android:textSize="24sp"
-                            android:gravity="center" />
+                            android:background="@drawable/logout_icon_background"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="L"
+                                android:textSize="20sp"
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold" />
+                        </View>
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
