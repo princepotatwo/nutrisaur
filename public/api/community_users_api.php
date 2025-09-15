@@ -255,7 +255,7 @@ function handleCSVImport($pdo) {
                 continue;
             }
             
-            // Calculate age
+            // Calculate age for validation only
             $today = new DateTime();
             $age = $today->diff($birthDate)->y;
             
@@ -317,43 +317,31 @@ function handleCSVImport($pdo) {
                 $screeningDateTime = new DateTime();
             }
             
-            // Calculate BMI - match mobile app calculation
-            $bmi = null;
-            if ($weight > 0 && $height > 0) {
-                $heightM = $height / 100;
-                $bmi = round($weight / ($heightM * $heightM), 1);
-            }
-            
-            // Generate unique screening ID
-            $screeningId = 'SCR-' . date('Y') . '-' . str_pad($importedCount + 1, 3, '0', STR_PAD_LEFT);
+            // Note: BMI calculation removed as column may not exist in actual table
             
             // Check if user already exists
-            $checkStmt = $pdo->prepare("SELECT community_user_id FROM community_users WHERE email = ?");
+            $checkStmt = $pdo->prepare("SELECT email FROM community_users WHERE email = ?");
             $checkStmt->execute([$email]);
             $existingUser = $checkStmt->fetch();
             
             if ($existingUser) {
-                // Update existing user - use correct database column names
+                // Update existing user - use correct database column names based on actual schema
                 $updateSql = "UPDATE community_users SET 
                                 password = ?,
                                 municipality = ?, 
                                 barangay = ?, 
                                 sex = ?, 
                                 birthday = ?, 
-                                age = ?,
                                 is_pregnant = ?, 
-                                weight_kg = ?, 
-                                height_cm = ?, 
-                                bmi = ?,
-                                screening_date = ?,
-                                updated_at = NOW()
+                                weight = ?, 
+                                height = ?, 
+                                screening_date = ?
                               WHERE email = ?";
                 
                 $updateStmt = $pdo->prepare($updateSql);
                 $result = $updateStmt->execute([
-                    $password, $municipality, $barangay, $sex, $birthday, $age,
-                    $isPregnantValue, $weight, $height, $bmi,
-                    $screeningDateTime->format('Y-m-d H:i:s'), $email
+                    $password, $municipality, $barangay, $sex, $birthday,
+                    $isPregnantValue, $weight, $height, $screeningDateTime->format('Y-m-d H:i:s'), $email
                 ]);
                 
                 if (!$result) {
@@ -361,18 +349,15 @@ function handleCSVImport($pdo) {
                     continue;
                 }
             } else {
-                // Insert new user - use correct database column names
+                // Insert new user - use correct database column names based on actual schema
                 $insertSql = "INSERT INTO community_users 
-                             (screening_id, email, password, municipality, barangay, sex, birthday, age, 
-                              is_pregnant, weight_kg, height_cm, bmi, screening_date, 
-                              status, created_at, updated_at) 
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', NOW(), NOW())";
+                             (email, password, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date) 
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 
                 $insertStmt = $pdo->prepare($insertSql);
                 $result = $insertStmt->execute([
-                    $screeningId, $email, $password, $municipality, $barangay, $sex, $birthday, $age,
-                    $isPregnantValue, $weight, $height, $bmi,
-                    $screeningDateTime->format('Y-m-d H:i:s')
+                    $email, $password, $municipality, $barangay, $sex, $birthday, 
+                    $isPregnantValue, $weight, $height, $screeningDateTime->format('Y-m-d H:i:s')
                 ]);
                 
                 if (!$result) {
