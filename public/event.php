@@ -7994,53 +7994,18 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                     throw new Error(`Failed to save event: ${saveResult.message}`);
                 }
                 
-                console.log('✅ Event saved successfully, proceeding to notifications...');
+                console.log('✅ Event saved successfully!');
                 
-                // 🚨 STEP 2: SEND NOTIFICATION USING THE SAME EXTERNAL API AS DASH.PHP
-                // 🎯 RESPECT LOCATION SELECTION - Don't send to everyone!
-                const notificationResponse = await fetch('/api/DatabaseAPI.php?action=send_notification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: new URLSearchParams({
-                        notification_data: JSON.stringify({
-                            title: `🎉 New Event: ${eventData.title}`,
-                            body: `A new ${eventData.type} event has been created: ${eventData.description}`,
-                            target_user: eventData.location === 'all' ? 'all' : eventData.location, // Respect location selection!
-                            alert_type: 'new_event',
-                            event_title: eventData.title,
-                            event_type: eventData.type,
-                            event_description: eventData.description,
-                            event_date: eventData.date_time,
-                            event_location: eventData.location,
-                            event_organizer: eventData.organizer
-                        })
-                    })
-                });
+                // Reset form
+                form.reset();
                 
-                const notificationResult = await notificationResponse.json();
+                // Show success message
+                showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully!`);
                 
-                if (notificationResult.success) {
-                    // Reset form
-                    form.reset();
-                    
-                    // Show success message
-                    showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully! Notification sent to all users!`);
-                    
-                    // Refresh the page to show the new event
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2000); // Wait 2 seconds to show the success message
-                    
-                } else {
-                    showNotificationSuccess(`Event saved but notification failed: ${notificationResult.message}`);
-                    // Refresh the page to show the new event even if notification failed
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2000);
-                }
+                // Refresh the page to show the new event
+                setTimeout(() => {
+                    location.reload();
+                }, 2000); // Wait 2 seconds to show the success message
                 
             } catch (error) {
                 console.error('Error creating event:', error);
