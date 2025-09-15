@@ -689,12 +689,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         
         error_log("✅ AJAX Event created successfully with ID: $eventId");
         
-        // Send notifications based on notification type
+        // Send notifications using the SAME approach as dash.php
         $notificationMessage = '';
         if ($notificationType !== 'none') {
             try {
-                $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer);
-                $notificationMessage = $notificationResult['message'];
+                // Use the EXACT same notification approach as dash.php
+                $notificationData = [
+                    'title' => "🎯 Event: " . $title,
+                    'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
+                    'target' => $location
+                ];
+                
+                // Send via the working DatabaseAPI (same as dash.php)
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                    'notification_data' => json_encode($notificationData)
+                ]));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    'Content-Type: application/x-www-form-urlencoded'
+                ]);
+                
+                $response = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+                
+                if ($httpCode == 200) {
+                    $result = json_decode($response, true);
+                    if ($result && $result['success']) {
+                        $notificationMessage = "Event created and notification sent to " . $result['success_count'] . " devices";
+                    } else {
+                        $notificationMessage = "Event created but notification failed: " . ($result['message'] ?? 'Unknown error');
+                    }
+                } else {
+                    $notificationMessage = "Event created but notification failed (HTTP $httpCode)";
+                }
+                
+                error_log("✅ AJAX Notification sent via DatabaseAPI: $notificationMessage");
             } catch (Exception $e) {
                 error_log("❌ AJAX Notification error: " . $e->getMessage());
                 $notificationMessage = 'Event created but notification failed: ' . $e->getMessage();
