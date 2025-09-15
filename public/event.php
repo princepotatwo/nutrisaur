@@ -5397,6 +5397,27 @@ header:hover {
 
         // Toggle training groups (only if they exist)
         
+        // Function to check programs table (for debugging)
+        window.checkProgramsTable = async function() {
+            console.log('🔍 Manually checking programs table...');
+            try {
+                const response = await fetch('/api/DatabaseAPI.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 10'
+                });
+                const result = await response.json();
+                console.log('📊 Programs table (last 10 events):', result);
+                return result;
+            } catch (error) {
+                console.error('❌ Error fetching programs table:', error);
+                return null;
+            }
+        };
+        
         // NEW FUNCTION: Delete all events using AJAX
         function confirmDeleteAllEvents() {
             if (confirm('WARNING: This will delete ALL events permanently!\n\nAre you absolutely sure you want to continue?')) {
@@ -7967,6 +7988,14 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 submitBtn.disabled = true;
                 
                 console.log('🔄 Calling save_event_only API...');
+                console.log('📤 Sending event data to programs table:', {
+                    title: eventData.title,
+                    type: eventData.type,
+                    description: eventData.description,
+                    date_time: eventData.date_time,
+                    location: eventData.location,
+                    organizer: eventData.organizer
+                });
                 
                 // 🚨 STEP 1: SAVE EVENT TO DATABASE FIRST (using the working PHP logic)
                 const saveResponse = await fetch('event.php', {
@@ -7995,6 +8024,23 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 }
                 
                 console.log('✅ Event saved successfully!');
+                
+                // Fetch and display current programs table
+                console.log('🔍 Fetching current programs table to verify...');
+                try {
+                    const programsResponse = await fetch('/api/DatabaseAPI.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
+                    });
+                    const programsResult = await programsResponse.json();
+                    console.log('📊 Current programs table (last 5 events):', programsResult);
+                } catch (error) {
+                    console.error('❌ Error fetching programs table:', error);
+                }
                 
                 // Reset form
                 form.reset();
