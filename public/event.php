@@ -196,6 +196,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         
         if ($result['success']) {
             $eventId = $nextId; // Use the program_id we calculated, not insert_id
+            
+            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING
+            try {
+                // Get notification settings from POST data
+                $notificationType = $_POST['notification_type'] ?? 'push';
+                $recipientGroup = $_POST['recipient_group'] ?? 'All Users';
+                
+                if ($notificationType !== 'none') {
+                    error_log("📱 Sending notifications for event ID: $eventId");
+                    
+                    // Get FCM tokens based on location and recipient group
+                    $fcmTokens = [];
+                    if ($location === 'All Locations') {
+                        $fcmTokens = $db->getActiveFCMTokens();
+                    } else {
+                        $fcmTokens = $db->getFCMTokensByBarangay($location);
+                    }
+                    
+                    if (!empty($fcmTokens)) {
+                        // Send notification using the working FCM system
+                        $notificationData = [
+                            'title' => "🎯 Event: $title",
+                            'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
+                            'target_user' => 'all'
+                        ];
+                        
+                        $notificationResult = $db->send_notification($notificationData);
+                        
+                        if ($notificationResult['success']) {
+                            error_log("✅ Notifications sent successfully to " . count($fcmTokens) . " users");
+                        } else {
+                            error_log("⚠️ Notification sending failed: " . $notificationResult['message']);
+                        }
+                    } else {
+                        error_log("⚠️ No FCM tokens found for location: $location");
+                    }
+                } else {
+                    error_log("📱 Notifications disabled, skipping...");
+                }
+            } catch (Exception $e) {
+                error_log("❌ Error sending notifications: " . $e->getMessage());
+                // Don't fail the entire operation if notifications fail
+            }
         } else {
             throw new Exception('Failed to insert event: ' . $result['message']);
         }
@@ -206,7 +249,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
-            'message' => 'Event saved successfully',
+            'message' => 'Event saved and notifications sent successfully!',
             'event_id' => $eventId
         ]);
         exit;
@@ -5122,7 +5165,9 @@ header:hover {
                         'description': eventData.description,
                         'date_time': eventData.date_time,
                         'location': eventData.location,
-                        'organizer': eventData.organizer
+                        'organizer': eventData.organizer,
+                        'notification_type': eventData.notificationType,
+                        'recipient_group': eventData.recipientGroup
                     })
                 });
                 
@@ -5135,6 +5180,8 @@ header:hover {
                 }
                 
                 console.log('✅ Event saved successfully!');
+                
+                // Notifications are now handled automatically in PHP after saving
                 
                 // Fetch and display current programs table
                 console.log('🔍 Fetching current programs table to verify...');
@@ -7916,13 +7963,15 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: new URLSearchParams({
-                        'action': 'save_event_only', // New action for just saving, no notifications
+                        'action': 'save_event_only',
                         'title': eventData.title,
                         'type': eventData.type,
                         'description': eventData.description,
                         'date_time': eventData.date_time,
                         'location': eventData.location,
-                        'organizer': eventData.organizer
+                        'organizer': eventData.organizer,
+                        'notification_type': eventData.notificationType,
+                        'recipient_group': eventData.recipientGroup
                     })
                 });
                 
@@ -7935,6 +7984,8 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 }
                 
                 console.log('✅ Event saved successfully!');
+                
+                // Notifications are now handled automatically in PHP after saving
                 
                 // Fetch and display current programs table
                 console.log('🔍 Fetching current programs table to verify...');
