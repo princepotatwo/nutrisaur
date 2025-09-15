@@ -6259,14 +6259,13 @@ body {
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h3>WHO Growth Standards Classification</h3>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;" onclick="console.log('🖱️ Dropdown clicked!')" onchange="console.log('🔄 Dropdown changed to:', this.value)">
+                        <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;" onchange="handleWHOStandardChange()">
                             <option value="weight-for-age">Weight for Age</option>
                             <option value="height-for-age">Height for Age</option>
                             <option value="weight-for-height">Weight for Height</option>
                             <option value="weight-for-length">Weight for Length</option>
                             <option value="bmi-for-age">BMI for Age</option>
                         </select>
-                        <button onclick="console.log('🧪 Test button clicked!'); handleWHOStandardChange();" style="padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Test</button>
                     </div>
                 </div>
                 <p class="chart-description">Distribution of children by WHO Growth Standards classification. Shows nutritional status based on selected WHO standard.</p>

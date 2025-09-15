@@ -215,21 +215,27 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 // Map classifications to our categories
                 error_log("    - Final classification: $classification");
                 
-                if (in_array($classification, ['Severely Underweight', 'Underweight'])) {
-                    $classifications['Underweight']++;
-                    error_log("    - Mapped to Underweight");
-                } elseif (in_array($classification, ['Normal', 'Normal weight'])) {
-                    $classifications['Normal']++;
-                    error_log("    - Mapped to Normal");
-                } elseif (in_array($classification, ['Overweight'])) {
-                    $classifications['Overweight']++;
-                    error_log("    - Mapped to Overweight");
-                } elseif (in_array($classification, ['Obese', 'Severely Obese'])) {
-                    $classifications['Obese']++;
-                    error_log("    - Mapped to Obese");
+                // Only count users that were actually processed (shouldProcess = true)
+                if ($shouldProcess) {
+                    if (in_array($classification, ['Severely Underweight', 'Underweight'])) {
+                        $classifications['Underweight']++;
+                        error_log("    - Mapped to Underweight");
+                    } elseif (in_array($classification, ['Normal', 'Normal weight'])) {
+                        $classifications['Normal']++;
+                        error_log("    - Mapped to Normal");
+                    } elseif (in_array($classification, ['Overweight'])) {
+                        $classifications['Overweight']++;
+                        error_log("    - Mapped to Overweight");
+                    } elseif (in_array($classification, ['Obese', 'Severely Obese'])) {
+                        $classifications['Obese']++;
+                        error_log("    - Mapped to Obese");
+                    } else {
+                        $classifications['No Data']++;
+                        error_log("    - Mapped to No Data");
+                    }
                 } else {
-                    $classifications['No Data']++;
-                    error_log("    - Mapped to No Data");
+                    // Don't count users that don't meet age/height requirements
+                    error_log("    - User not counted due to age/height restrictions");
                 }
                 
             } catch (Exception $e) {
