@@ -496,28 +496,26 @@ $role = isset($currentUser['role']) ? $currentUser['role'] : 'user';
 
 $profile = null;
 try {
-    $stmt = $db->getPDO()->prepare("
+    // Use DatabaseHelper to get user profile
+    $result = $db->query("
         SELECT u.*, up.* 
         FROM users u 
         LEFT JOIN user_preferences up ON u.email = up.user_email 
-        WHERE u.user_id = :user_id
-    ");
-    $stmt->bindParam(':user_id', $userId);
-    $stmt->execute();
+        WHERE u.user_id = ?
+    ", [$userId]);
     
-    if ($stmt->rowCount() > 0) {
-        $profile = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($result['success'] && !empty($result['data'])) {
+        $profile = $result['data'][0];
     }
-} catch (PDOException $e) {
+} catch (Exception $e) {
     $profile = null;
 }
         
-        $stmt = $db->getPDO()->prepare("SELECT * FROM nutrition_goals WHERE user_id = :user_id");
-        $stmt->bindParam(':user_id', $userId);
-        $stmt->execute();
+        // Use DatabaseHelper to get nutrition goals
+        $goalsResult = $db->select('nutrition_goals', '*', 'user_id = ?', [$userId]);
         
-        if ($stmt->rowCount() > 0) {
-            $goals = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($goalsResult['success'] && !empty($goalsResult['data'])) {
+            $goals = $goalsResult['data'][0];
         }
         
         $currentTimeFrame = '1d';
