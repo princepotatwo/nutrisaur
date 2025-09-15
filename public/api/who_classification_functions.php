@@ -1,0 +1,225 @@
+<?php
+// WHO Classification Functions - extracted from dash.php to avoid HTML output
+
+require_once __DIR__ . '/DatabaseHelper.php';
+require_once __DIR__ . '/../who_growth_standards.php';
+
+// Function to get adult BMI classification (for children over 71 months)
+function getAdultBMIClassification($bmi) {
+    if ($bmi < 18.5) return 'Underweight';
+    if ($bmi < 25) return 'Normal weight';
+    if ($bmi < 30) return 'Overweight';
+    return 'Obese';
+}
+
+// Function to get screening responses by time frame
+function getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay = null) {
+    try {
+        // Build where clause based on time frame
+        $whereClause = "1=1";
+        $params = [];
+        
+        // Add time frame filter
+        switch ($timeFrame) {
+            case '1d':
+                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                break;
+            case '7d':
+                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+                break;
+            case '30d':
+                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+                break;
+            case '90d':
+                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 90 DAY)";
+                break;
+            case '1y':
+                $whereClause .= " AND screening_date >= DATE_SUB(NOW(), INTERVAL 1 YEAR)";
+                break;
+        }
+        
+        // Add barangay filter if specified
+        if ($barangay && $barangay !== '') {
+            $whereClause .= " AND barangay = ?";
+            $params[] = $barangay;
+        }
+        
+        // Get users from community_users table
+        $result = $db->select('community_users', '*', $whereClause, $params, 'screening_date DESC');
+        
+        if ($result['success']) {
+            return $result['data'];
+        } else {
+            error_log("Error fetching screening responses: " . $result['error']);
+            return [];
+        }
+        
+    } catch (Exception $e) {
+        error_log("Exception in getScreeningResponsesByTimeFrame: " . $e->getMessage());
+        return [];
+    }
+}
+
+// Function to get WHO classification data for donut chart using decision tree
+function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandard = 'weight-for-age') {
+    try {
+        error_log("🔍 WHO Classification Debug - Starting");
+        error_log("  - Time Frame: $timeFrame");
+        error_log("  - Barangay: " . ($barangay ?: 'null'));
+        error_log("  - WHO Standard: $whoStandard");
+        
+        // Get users data using the same method as other functions
+        $users = getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay);
+        error_log("  - Total users found: " . count($users));
+        
+        // Count classifications for the selected WHO standard
+        $classifications = [
+            'Underweight' => 0,
+            'Normal' => 0,
+            'Overweight' => 0,
+            'Obese' => 0,
+            'No Data' => 0
+        ];
+        
+        foreach ($users as $user) {
+            try {
+                error_log("  - Processing user: " . ($user['email'] ?? 'unknown'));
+                
+                // Calculate age in months like in screening.php
+                $birthDate = new DateTime($user['birthday']);
+                $today = new DateTime();
+                $age = $today->diff($birthDate);
+                $ageInMonths = ($age->y * 12) + $age->m;
+                
+                // Add partial month if more than half the month has passed
+                if ($age->d >= 15) {
+                    $ageInMonths += 1;
+                }
+                
+                error_log("    - Age in months: $ageInMonths");
+                error_log("    - Weight: " . ($user['weight'] ?? 'null'));
+                error_log("    - Height: " . ($user['height'] ?? 'null'));
+                error_log("    - Sex: " . ($user['sex'] ?? 'null'));
+                
+                $classification = 'No Data';
+                $shouldProcess = false;
+                
+                // Apply age and height restrictions like in screening.php
+                if ($whoStandard === 'weight-for-age' || $whoStandard === 'height-for-age' || $whoStandard === 'bmi-for-age') {
+                    // These standards are for children 0-71 months only
+                    $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
+                    error_log("    - Age restriction check: $shouldProcess (age: $ageInMonths, standard: $whoStandard)");
+                } elseif ($whoStandard === 'weight-for-height') {
+                    // Weight-for-Height: 65-120 cm height range
+                    $shouldProcess = ($user['height'] >= 65 && $user['height'] <= 120);
+                    error_log("    - Height restriction check: $shouldProcess (height: " . ($user['height'] ?? 'null') . ", standard: $whoStandard)");
+                } elseif ($whoStandard === 'weight-for-length') {
+                    // Weight-for-Length: 45-110 cm height range
+                    $shouldProcess = ($user['height'] >= 45 && $user['height'] <= 110);
+                    error_log("    - Length restriction check: $shouldProcess (height: " . ($user['height'] ?? 'null') . ", standard: $whoStandard)");
+                }
+                
+                error_log("    - Should process: $shouldProcess");
+                
+                if ($shouldProcess) {
+                    if ($ageInMonths > 71 && $whoStandard === 'bmi-for-age') {
+                        // For adults (>71 months), use adult BMI classification
+                        $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                        $classification = getAdultBMIClassification($bmi);
+                        error_log("    - Adult BMI classification: $classification (BMI: $bmi)");
+                    } else {
+                        // Use WHO Growth Standards for children 0-71 months
+                        $who = new WHOGrowthStandards();
+                        $assessment = $who->getComprehensiveAssessment(
+                            floatval($user['weight']), 
+                            floatval($user['height']), 
+                            $user['birthday'], 
+                            $user['sex']
+                        );
+                        
+                        if ($assessment['success'] && isset($assessment['results'])) {
+                            $results = $assessment['results'];
+                            
+                            // Get classification for the selected standard
+                            switch ($whoStandard) {
+                                case 'weight-for-age':
+                                    $classification = $results['weight_for_age']['classification'] ?? 'No Data';
+                                    break;
+                                case 'height-for-age':
+                                    $classification = $results['height_for_age']['classification'] ?? 'No Data';
+                                    break;
+                                case 'weight-for-height':
+                                    $classification = $results['weight_for_height']['classification'] ?? 'No Data';
+                                    break;
+                                case 'weight-for-length':
+                                    $classification = $results['weight_for_length']['classification'] ?? 'No Data';
+                                    break;
+                                case 'bmi-for-age':
+                                    $classification = $results['bmi_for_age']['classification'] ?? 'No Data';
+                                    break;
+                            }
+                            error_log("    - WHO classification: $classification");
+                        } else {
+                            error_log("    - WHO assessment failed");
+                        }
+                    }
+                }
+                
+                // Map classifications to our categories
+                error_log("    - Final classification: $classification");
+                
+                if (in_array($classification, ['Severely Underweight', 'Underweight'])) {
+                    $classifications['Underweight']++;
+                    error_log("    - Mapped to Underweight");
+                } elseif (in_array($classification, ['Normal', 'Normal weight'])) {
+                    $classifications['Normal']++;
+                    error_log("    - Mapped to Normal");
+                } elseif (in_array($classification, ['Overweight'])) {
+                    $classifications['Overweight']++;
+                    error_log("    - Mapped to Overweight");
+                } elseif (in_array($classification, ['Obese', 'Severely Obese'])) {
+                    $classifications['Obese']++;
+                    error_log("    - Mapped to Obese");
+                } else {
+                    $classifications['No Data']++;
+                    error_log("    - Mapped to No Data");
+                }
+                
+            } catch (Exception $e) {
+                error_log("WHO assessment error for user {$user['email']}: " . $e->getMessage());
+                $classifications['No Data']++;
+            }
+        }
+        
+        error_log("📊 Final WHO Classification Results:");
+        error_log("  - Underweight: " . $classifications['Underweight']);
+        error_log("  - Normal: " . $classifications['Normal']);
+        error_log("  - Overweight: " . $classifications['Overweight']);
+        error_log("  - Obese: " . $classifications['Obese']);
+        error_log("  - No Data: " . $classifications['No Data']);
+        error_log("  - Total Users: " . count($users));
+        
+        return [
+            'success' => true,
+            'classifications' => $classifications,
+            'total_users' => count($users),
+            'who_standard' => $whoStandard
+        ];
+        
+    } catch (Exception $e) {
+        error_log("Error getting WHO classification data: " . $e->getMessage());
+        return [
+            'success' => false,
+            'classifications' => [
+                'Underweight' => 0,
+                'Normal' => 0,
+                'Overweight' => 0,
+                'Obese' => 0,
+                'No Data' => 0
+            ],
+            'total_users' => 0,
+            'who_standard' => $whoStandard
+        ];
+    }
+}
+?>

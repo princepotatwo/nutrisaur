@@ -3655,8 +3655,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
-            // Include the WHO classification function from dash.php
-            require_once __DIR__ . '/../dash.php';
+            // Include the WHO classification functions (no HTML output)
+            require_once __DIR__ . '/who_classification_functions.php';
             
             // Use DatabaseHelper for data operations
             $dbHelper = DatabaseHelper::getInstance();
