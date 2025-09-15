@@ -1451,7 +1451,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     
     try {
         $db = DatabaseAPI::getInstance();
-        $result = $db->delete('programs', 'program_id = :id', ['id' => $programId]);
+        $result = $db->universalDelete('programs', 'program_id = ?', [$programId]);
         
         if ($result['success']) {
             $successMessage = "Event deleted successfully!";
@@ -1467,7 +1467,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 if (isset($_GET['delete_all']) && $_GET['delete_all'] === '1') {
     try {
         $db = DatabaseAPI::getInstance();
-        $result = $db->delete('programs', '1=1'); // Delete all records
+        $result = $db->universalDelete('programs', '1=1', []); // Delete all records
         
         if ($result['success']) {
             $successMessage = "All events deleted successfully!";
