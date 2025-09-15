@@ -89,6 +89,7 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
         
         // Count classifications for the selected WHO standard
         $classifications = [
+            'Severely Underweight' => 0,
             'Underweight' => 0,
             'Normal' => 0,
             'Overweight' => 0,
@@ -217,13 +218,16 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 
                 // Only count users that were actually processed (shouldProcess = true)
                 if ($shouldProcess) {
-                    if (in_array($classification, ['Severely Underweight', 'Underweight'])) {
+                    if ($classification === 'Severely Underweight') {
+                        $classifications['Severely Underweight']++;
+                        error_log("    - Mapped to Severely Underweight");
+                    } elseif ($classification === 'Underweight') {
                         $classifications['Underweight']++;
                         error_log("    - Mapped to Underweight");
                     } elseif (in_array($classification, ['Normal', 'Normal weight'])) {
                         $classifications['Normal']++;
                         error_log("    - Mapped to Normal");
-                    } elseif (in_array($classification, ['Overweight'])) {
+                    } elseif ($classification === 'Overweight') {
                         $classifications['Overweight']++;
                         error_log("    - Mapped to Overweight");
                     } elseif (in_array($classification, ['Obese', 'Severely Obese'])) {
@@ -245,9 +249,10 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
         }
         
         // Calculate total processed users (sum of all classifications)
-        $totalProcessedUsers = $classifications['Underweight'] + $classifications['Normal'] + $classifications['Overweight'] + $classifications['Obese'] + $classifications['No Data'];
+        $totalProcessedUsers = $classifications['Severely Underweight'] + $classifications['Underweight'] + $classifications['Normal'] + $classifications['Overweight'] + $classifications['Obese'] + $classifications['No Data'];
         
         error_log("📊 Final WHO Classification Results:");
+        error_log("  - Severely Underweight: " . $classifications['Severely Underweight']);
         error_log("  - Underweight: " . $classifications['Underweight']);
         error_log("  - Normal: " . $classifications['Normal']);
         error_log("  - Overweight: " . $classifications['Overweight']);

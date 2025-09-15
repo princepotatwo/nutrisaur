@@ -8028,17 +8028,19 @@ body {
                 
                 // Define colors and labels for WHO classifications
                 const colors = {
-                    'Underweight': '#FFD700',  // Yellow for underweight
-                    'Normal': '#4CAF50',       // Green for normal
-                    'Overweight': '#FF9800',   // Orange for overweight
-                    'Obese': '#F44336',        // Red for obese
-                    'No Data': '#9E9E9E'       // Gray for no data
+                    'Severely Underweight': '#FF5722',  // Dark orange for severely underweight
+                    'Underweight': '#FFD700',           // Yellow for underweight
+                    'Normal': '#4CAF50',                // Green for normal
+                    'Overweight': '#FF9800',            // Orange for overweight
+                    'Obese': '#F44336',                 // Red for obese
+                    'No Data': '#9E9E9E'                // Gray for no data
                 };
                 
-                const labels = ['Underweight', 'Normal', 'Overweight', 'Obese', 'No Data'];
+                const labels = ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese', 'No Data'];
                 
                 // Get classification data
                 let classifications = {
+                    'Severely Underweight': 0,
                     'Underweight': 0,
                     'Normal': 0,
                     'Overweight': 0,
