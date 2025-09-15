@@ -7958,11 +7958,15 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             }
             
             try {
+                console.log('✅ Validation passed, starting event creation process');
+                
                 // Show loading state
                 const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
                 submitBtn.disabled = true;
+                
+                console.log('🔄 Calling save_event_only API...');
                 
                 // 🚨 STEP 1: SAVE EVENT TO DATABASE FIRST (using the working PHP logic)
                 const saveResponse = await fetch('event.php', {
@@ -7983,10 +7987,14 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 });
                 
                 const saveResult = await saveResponse.json();
+                console.log('📊 Save API response:', saveResult);
                 
                 if (!saveResult.success) {
+                    console.error('❌ Save API failed:', saveResult.message);
                     throw new Error(`Failed to save event: ${saveResult.message}`);
                 }
+                
+                console.log('✅ Event saved successfully, proceeding to notifications...');
                 
                 // 🚨 STEP 2: SEND NOTIFICATION USING THE SAME EXTERNAL API AS DASH.PHP
                 // 🎯 RESPECT LOCATION SELECTION - Don't send to everyone!
