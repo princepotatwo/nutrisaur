@@ -1449,46 +1449,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
         }
 }
 
-// Handle program deletion
-if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
-    $programId = $_GET['delete'];
-    error_log("🗑️ DELETE REQUEST: Attempting to delete program ID: $programId");
-    
-    try {
-        $db = DatabaseAPI::getInstance();
-        error_log("🗑️ DATABASE: Got DatabaseAPI instance");
-        
-        $result = $db->universalDelete('programs', 'program_id = ?', [$programId]);
-        error_log("🗑️ DELETE RESULT: " . json_encode($result));
-
-        if ($result['success']) {
-        $successMessage = "Event deleted successfully!";
-            error_log("🗑️ SUCCESS: Event $programId deleted successfully");
-        } else {
-            $errorMessage = "Error deleting program: " . $result['message'];
-            error_log("🗑️ ERROR: " . $result['message']);
-        }
-    } catch(Exception $e) {
-        $errorMessage = "Error deleting program: " . $e->getMessage();
-        error_log("🗑️ EXCEPTION: " . $e->getMessage());
-    }
-}
-
-// Handle delete all programs
-if (isset($_GET['delete_all']) && $_GET['delete_all'] === '1') {
-    try {
-        $db = DatabaseAPI::getInstance();
-        $result = $db->universalDelete('programs', '1=1', []); // Delete all records
-        
-        if ($result['success']) {
-        $successMessage = "All events deleted successfully!";
-        } else {
-            $errorMessage = "Error deleting all programs: " . $result['message'];
-        }
-    } catch(Exception $e) {
-        $errorMessage = "Error deleting all programs: " . $e->getMessage();
-    }
-}
+// Note: Deletion is now handled via AJAX calls to /api/delete_program.php and /api/delete_all_programs.php
+// This provides real-time UI updates and better error handling
 
 // Handle program editing
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
@@ -5235,6 +5197,116 @@ header:hover {
                 return null;
             }
         };
+
+        // Show notification function (copied from settings.php)
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+
+            // Set background color based on type
+            if (type === 'success') {
+                notification.style.backgroundColor = '#4CAF50';
+            } else if (type === 'error') {
+                notification.style.backgroundColor = '#F44336';
+            } else {
+                notification.style.backgroundColor = '#2196F3';
+            }
+
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Individual event deletion function (like settings.php deleteUser)
+        function deleteEvent(eventId) {
+            if (!eventId || eventId === '') {
+                alert('Invalid event ID');
+                return;
+            }
+
+            // Confirm deletion
+            if (!confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
+                return;
+            }
+
+            // Show loading state
+            const deleteBtn = event.target;
+            const originalText = deleteBtn.innerHTML;
+            deleteBtn.innerHTML = '⏳';
+            deleteBtn.disabled = true;
+
+            // Send delete request to server
+            fetch('/api/delete_program.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    program_id: eventId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the event row from the page if it exists
+                    const eventRow = document.querySelector(`[data-event-id="${eventId}"]`) || 
+                                   document.querySelector(`.event-row[data-id="${eventId}"]`) ||
+                                   deleteBtn.closest('.event-row') ||
+                                   deleteBtn.closest('[data-event-id]');
+                    if (eventRow) {
+                        eventRow.remove();
+                    }
+                    
+                    showNotification('Event deleted successfully!', 'success');
+                    
+                    // Reload page to refresh event list
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotification('Error deleting event: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error deleting event: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                if (deleteBtn) {
+                    deleteBtn.innerHTML = originalText;
+                    deleteBtn.disabled = false;
+                }
+            });
+        }
     </script>
     
     <script>
@@ -5435,13 +5507,72 @@ header:hover {
             });
         }
 
-        // Function to confirm delete all events
+        // Function to confirm delete all events (AJAX version like settings.php)
         function confirmDeleteAll() {
-            if (confirm('WARNING: This will delete ALL events permanently!\n\nAre you absolutely sure you want to continue?')) {
-                if (confirm('FINAL WARNING: This action cannot be undone!\n\nClick OK to delete ALL events.')) {
-                    window.location.href = 'event.php?delete_all=1';
-                }
+            // Get total number of events
+            const eventRows = document.querySelectorAll('.event-row');
+            const eventCount = eventRows.length;
+            
+            if (eventCount === 0) {
+                showNotification('No events to delete!', 'info');
+                return;
             }
+
+            // Double confirmation for delete all
+            const confirmMessage = `⚠️ WARNING: This will delete ALL ${eventCount} events from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            // Second confirmation
+            if (!confirm('FINAL CONFIRMATION: Delete ALL events? This will permanently remove all event data.')) {
+                return;
+            }
+
+            // Show loading state
+            const deleteAllBtn = event.target;
+            const originalText = deleteAllBtn.innerHTML;
+            deleteAllBtn.innerHTML = '⏳ Deleting...';
+            deleteAllBtn.disabled = true;
+
+            // Send delete all request to server
+            fetch('/api/delete_all_programs.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    confirm: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove all event rows from the page
+                    eventRows.forEach(row => row.remove());
+                    
+                    showNotification(`Successfully deleted all ${data.deleted_count || eventCount} events!`, 'success');
+                    
+                    // Reload page to refresh event list
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotification('Error deleting all events: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error deleting all events: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                if (deleteAllBtn) {
+                    deleteAllBtn.innerHTML = originalText;
+                    deleteAllBtn.disabled = false;
+                }
+            });
         }
 
         // Function to send notifications
@@ -7087,13 +7218,72 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             });
         }
 
-        // Function to confirm delete all events
+        // Function to confirm delete all events (AJAX version like settings.php)
         function confirmDeleteAll() {
-            if (confirm('WARNING: This will delete ALL events permanently!\n\nAre you absolutely sure you want to continue?')) {
-                if (confirm('FINAL WARNING: This action cannot be undone!\n\nClick OK to delete ALL events.')) {
-                    window.location.href = 'event.php?delete_all=1';
-                }
+            // Get total number of events
+            const eventRows = document.querySelectorAll('.event-row');
+            const eventCount = eventRows.length;
+            
+            if (eventCount === 0) {
+                showNotification('No events to delete!', 'info');
+                return;
             }
+
+            // Double confirmation for delete all
+            const confirmMessage = `⚠️ WARNING: This will delete ALL ${eventCount} events from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            // Second confirmation
+            if (!confirm('FINAL CONFIRMATION: Delete ALL events? This will permanently remove all event data.')) {
+                return;
+            }
+
+            // Show loading state
+            const deleteAllBtn = event.target;
+            const originalText = deleteAllBtn.innerHTML;
+            deleteAllBtn.innerHTML = '⏳ Deleting...';
+            deleteAllBtn.disabled = true;
+
+            // Send delete all request to server
+            fetch('/api/delete_all_programs.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    confirm: true
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove all event rows from the page
+                    eventRows.forEach(row => row.remove());
+                    
+                    showNotification(`Successfully deleted all ${data.deleted_count || eventCount} events!`, 'success');
+                    
+                    // Reload page to refresh event list
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showNotification('Error deleting all events: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error deleting all events: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                if (deleteAllBtn) {
+                    deleteAllBtn.innerHTML = originalText;
+                    deleteAllBtn.disabled = false;
+                }
+            });
         }
 
         // Function to send notifications
