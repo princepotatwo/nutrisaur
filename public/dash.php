@@ -86,8 +86,14 @@ function getNutritionalAssessment($user) {
 // NEW: Function to get WHO classification data for donut chart using decision tree
 function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandard = 'weight-for-age') {
     try {
+        error_log("🔍 WHO Classification Debug - Starting");
+        error_log("  - Time Frame: $timeFrame");
+        error_log("  - Barangay: " . ($barangay ?: 'null'));
+        error_log("  - WHO Standard: $whoStandard");
+        
         // Get users data using the same method as other functions
         $users = getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay);
+        error_log("  - Total users found: " . count($users));
         
         // Count classifications for the selected WHO standard
         $classifications = [
@@ -100,6 +106,8 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
         
         foreach ($users as $user) {
             try {
+                error_log("  - Processing user: " . ($user['email'] ?? 'unknown'));
+                
                 // Calculate age in months like in screening.php
                 $birthDate = new DateTime($user['birthday']);
                 $today = new DateTime();
@@ -111,6 +119,11 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                     $ageInMonths += 1;
                 }
                 
+                error_log("    - Age in months: $ageInMonths");
+                error_log("    - Weight: " . ($user['weight'] ?? 'null'));
+                error_log("    - Height: " . ($user['height'] ?? 'null'));
+                error_log("    - Sex: " . ($user['sex'] ?? 'null'));
+                
                 $classification = 'No Data';
                 $shouldProcess = false;
                 
@@ -118,13 +131,18 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 if ($whoStandard === 'weight-for-age' || $whoStandard === 'height-for-age' || $whoStandard === 'bmi-for-age') {
                     // These standards are for children 0-71 months only
                     $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
+                    error_log("    - Age restriction check: $shouldProcess (age: $ageInMonths, standard: $whoStandard)");
                 } elseif ($whoStandard === 'weight-for-height') {
                     // Weight-for-Height: 65-120 cm height range
                     $shouldProcess = ($user['height'] >= 65 && $user['height'] <= 120);
+                    error_log("    - Height restriction check: $shouldProcess (height: " . ($user['height'] ?? 'null') . ", standard: $whoStandard)");
                 } elseif ($whoStandard === 'weight-for-length') {
                     // Weight-for-Length: 45-110 cm height range
                     $shouldProcess = ($user['height'] >= 45 && $user['height'] <= 110);
+                    error_log("    - Length restriction check: $shouldProcess (height: " . ($user['height'] ?? 'null') . ", standard: $whoStandard)");
                 }
+                
+                error_log("    - Should process: $shouldProcess");
                 
                 if ($shouldProcess) {
                     if ($ageInMonths > 71 && $whoStandard === 'bmi-for-age') {
@@ -167,16 +185,23 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 }
                 
                 // Map classifications to our categories
+                error_log("    - Final classification: $classification");
+                
                 if (in_array($classification, ['Severely Underweight', 'Underweight'])) {
                     $classifications['Underweight']++;
+                    error_log("    - Mapped to Underweight");
                 } elseif (in_array($classification, ['Normal', 'Normal weight'])) {
                     $classifications['Normal']++;
+                    error_log("    - Mapped to Normal");
                 } elseif (in_array($classification, ['Overweight'])) {
                     $classifications['Overweight']++;
+                    error_log("    - Mapped to Overweight");
                 } elseif (in_array($classification, ['Obese', 'Severely Obese'])) {
                     $classifications['Obese']++;
+                    error_log("    - Mapped to Obese");
                 } else {
                     $classifications['No Data']++;
+                    error_log("    - Mapped to No Data");
                 }
                 
             } catch (Exception $e) {
@@ -184,6 +209,14 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 $classifications['No Data']++;
             }
         }
+        
+        error_log("📊 Final WHO Classification Results:");
+        error_log("  - Underweight: " . $classifications['Underweight']);
+        error_log("  - Normal: " . $classifications['Normal']);
+        error_log("  - Overweight: " . $classifications['Overweight']);
+        error_log("  - Obese: " . $classifications['Obese']);
+        error_log("  - No Data: " . $classifications['No Data']);
+        error_log("  - Total Users: " . count($users));
         
         return [
             'success' => true,
@@ -8129,19 +8162,36 @@ body {
             const select = document.getElementById('whoStandardSelect');
             const selectedStandard = select.value;
             
+            console.log('🔄 WHO Standard Change Debug:');
+            console.log('  - Selected Standard:', selectedStandard);
+            console.log('  - Select Element:', select);
+            
             try {
                 // Get current time frame and barangay
                 const timeFrame = '1d'; // You can make this dynamic
                 const barangay = ''; // You can make this dynamic
                 
+                console.log('  - Time Frame:', timeFrame);
+                console.log('  - Barangay:', barangay);
+                
                 // Fetch WHO classification data
+                console.log('📡 Fetching WHO classification data...');
                 const data = await fetchWHOClassificationData(selectedStandard, timeFrame, barangay);
                 
+                console.log('📊 WHO Classification Data Received:');
+                console.log('  - Success:', data.success);
+                console.log('  - Classifications:', data.classifications);
+                console.log('  - Total Users:', data.total_users);
+                console.log('  - WHO Standard:', data.who_standard);
+                console.log('  - Full Data:', data);
+                
                 // Update the chart
+                console.log('🎨 Updating WHO classification chart...');
                 updateWHOClassificationChart(data);
                 
             } catch (error) {
-                console.error('Error updating WHO classification chart:', error);
+                console.error('❌ Error updating WHO classification chart:', error);
+                console.error('❌ Error stack:', error.stack);
             }
         }
 
@@ -8155,12 +8205,34 @@ body {
                     barangay: barangay
                 });
                 
-                const response = await fetch(`/api/DatabaseAPI.php?${params}`);
-                const data = await response.json();
+                const url = `/api/DatabaseAPI.php?${params}`;
+                console.log('🌐 Fetching from URL:', url);
+                
+                const response = await fetch(url);
+                console.log('📡 Response status:', response.status);
+                console.log('📡 Response ok:', response.ok);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const responseText = await response.text();
+                console.log('📄 Raw response text:', responseText);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                    console.log('✅ Successfully parsed JSON:', data);
+                } catch (parseError) {
+                    console.error('❌ JSON parse error:', parseError);
+                    console.error('❌ Response text that failed to parse:', responseText);
+                    throw new Error('Failed to parse JSON response');
+                }
                 
                 return data;
             } catch (error) {
-                console.error('Error fetching WHO classification data:', error);
+                console.error('❌ Error fetching WHO classification data:', error);
+                console.error('❌ Error stack:', error.stack);
                 return {
                     success: false,
                     classifications: {
