@@ -104,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     header('Content-Type: application/json');
     
     try {
-        // Test the notification API directly instead of the function
+        // Test the notification API directly with correct parameters
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
         curl_setopt($ch, CURLOPT_POST, true);
@@ -112,10 +112,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             'notification_data' => json_encode([
                 'title' => '🎯 Event: Test Event',
                 'body' => 'New event: Test Event at Bangkal on Sep 15, 2025 6:30 PM',
-                'target' => 'Bangkal'
+                'target_user' => 'all'
             ])
         ]));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/x-www-form-urlencoded'
         ]);
