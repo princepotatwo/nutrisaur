@@ -1,6 +1,6 @@
 <?php
 // Test deletion functionality
-require_once 'public/api/DatabaseAPI.php';
+require_once 'api/DatabaseAPI.php';
 
 echo "=== Testing Event Deletion ===\n";
 
