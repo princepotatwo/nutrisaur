@@ -700,7 +700,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                     'target' => $location
                 ];
                 
-                // Send via the working DatabaseAPI (same as dash.php)
+                // Send via the working DatabaseAPI (same as dash.php) with timeout
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
                 curl_setopt($ch, CURLOPT_POST, true);
@@ -708,15 +708,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                     'notification_data' => json_encode($notificationData)
                 ]));
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10); // 10 second timeout
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // 5 second connection timeout
                 curl_setopt($ch, CURLOPT_HTTPHEADER, [
                     'Content-Type: application/x-www-form-urlencoded'
                 ]);
                 
                 $response = curl_exec($ch);
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $error = curl_error($ch);
                 curl_close($ch);
                 
-                if ($httpCode == 200) {
+                if ($error) {
+                    $notificationMessage = "Event created but notification failed: cURL error - $error";
+                } elseif ($httpCode == 200) {
                     $result = json_decode($response, true);
                     if ($result && $result['success']) {
                         $notificationMessage = "Event created and notification sent to " . $result['success_count'] . " devices";
