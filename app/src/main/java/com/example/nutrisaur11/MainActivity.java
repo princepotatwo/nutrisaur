@@ -1146,7 +1146,11 @@ public class MainActivity extends AppCompatActivity {
         
         // Register the receiver
         IntentFilter filter = new IntentFilter("EVENT_REFRESH_NEEDED");
-        registerReceiver(eventRefreshReceiver, filter);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(eventRefreshReceiver, filter, android.content.Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(eventRefreshReceiver, filter);
+        }
     }
     
     /**

@@ -322,7 +322,7 @@ public class FoodLoggingActivity extends AppCompatActivity {
         } else {
             Log.w(TAG, "User profile not available, using default food search");
             // Fallback to regular search if user profile is not available
-            fatSecretService.searchFoods(currentMealCategory, maxCalories, new FatSecretService.FoodSearchCallback() {
+            fatSecretService.searchFoods(currentMealCategory, maxCalories, userProfile, new FatSecretService.FoodSearchCallback() {
                 @Override
                 public void onSuccess(List<FoodItem> foods) {
                     mainHandler.post(() -> {
@@ -353,7 +353,7 @@ public class FoodLoggingActivity extends AppCompatActivity {
     }
     
     private void searchFoods(String query) {
-        fatSecretService.searchFoods(query, maxCalories, new FatSecretService.FoodSearchCallback() {
+        fatSecretService.searchFoods(query, maxCalories, userProfile, new FatSecretService.FoodSearchCallback() {
             @Override
             public void onSuccess(List<FoodItem> foods) {
                 mainHandler.post(() -> {

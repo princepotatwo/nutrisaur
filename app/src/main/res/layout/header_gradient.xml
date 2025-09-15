@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="180dp"
     android:orientation="vertical"
     android:background="@drawable/header_gradient"
-    android:padding="24dp"
-    android:gravity="center">
+    android:paddingTop="40dp"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="20dp"
+    android:gravity="center"
+    android:fitsSystemWindows="true">
 
     <!-- Page Title -->
     <TextView
@@ -14,7 +18,7 @@
         android:layout_height="wrap_content"
         android:text="PAGE TITLE"
         android:textColor="@color/white"
-        android:textSize="28sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
         android:fontFamily="sans-serif"
@@ -26,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="PAGE SUBTITLE"
-        android:textColor="@color/white"
+        android:textColor="#B8E6B8"
         android:textSize="16sp"
         android:gravity="center"
         android:fontFamily="sans-serif"

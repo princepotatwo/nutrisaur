@@ -25,6 +25,11 @@
         <item name="colorTertiaryContainer">@color/colorPrimaryContainer</item>
         <item name="colorOnTertiary">@color/colorOnPrimary</item>
         <item name="colorOnTertiaryContainer">@color/colorOnSecondary</item>
+        
+        <!-- FORCE OVERRIDE ALL BUTTON STYLES -->
+        <item name="android:buttonStyle">@style/GreenOutlineButton</item>
+        <item name="buttonStyle">@style/GreenOutlineButton</item>
+        <item name="materialButtonStyle">@style/GreenOutlineButton</item>
     </style>
 
     <style name="Theme.Nutrisaur11" parent="Base.Theme.Nutrisaur11" />
@@ -55,6 +60,11 @@
         <item name="android:minHeight">52dp</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
     </style>
 
     <!-- FreshFood Selection Button Style -->
@@ -93,8 +103,35 @@
         <item name="android:minHeight">52dp</item>
     </style>
 
-    <!-- Legacy button style for backward compatibility -->
-    <style name="GreenOutlineButton" parent="FreshFoodOutlineButton" />
+    <!-- NEW SIMPLE OUTLINE BUTTON - Clean slate approach -->
+    <style name="GreenOutlineButton" parent="@android:style/Widget.Button">
+        <item name="android:textColor">#4CAF50</item>
+        <item name="android:background">@drawable/new_outline_button</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:buttonTint">@null</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+    
+    <!-- FORCE OVERRIDE BUTTON - More aggressive approach -->
+    <style name="ForceOutlineButton">
+        <item name="android:textColor">#4CAF50</item>
+        <item name="android:background">@drawable/new_outline_button</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:buttonTint">@null</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
 
     <!-- Green Filled Button Style for Social Login -->
     <style name="GreenFilledButton" parent="Widget.AppCompat.Button">

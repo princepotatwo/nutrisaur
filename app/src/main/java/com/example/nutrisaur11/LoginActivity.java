@@ -33,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize views
         initializeViews();
         setupClickListeners();
+        
+        // Button styling is handled by XML layout and themes
     }
 
     private void initializeViews() {
@@ -122,26 +124,56 @@ public class LoginActivity extends AppCompatActivity {
     // Removed WebViewAPIClient - using direct HTTP requests
     
     private void validateUserAndLogin(String email, String password) {
-        CommunityUserManager userManager = new CommunityUserManager(this);
-        userManager.loginUser(email, password, new CommunityUserManager.LoginCallback() {
-            @Override
-            public void onSuccess(String message) {
-                runOnUiThread(() -> {
-                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
-                    // Navigate to main activity (dashboard)
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                });
-            }
+        try {
+            // Show loading state
+            loginButton.setText("Signing In...");
+            loginButton.setEnabled(false);
             
-            @Override
-            public void onError(String error) {
-                runOnUiThread(() -> {
-                    Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
-                });
-            }
-        });
+            CommunityUserManager userManager = new CommunityUserManager(this);
+            userManager.loginUser(email, password, new CommunityUserManager.LoginCallback() {
+                @Override
+                public void onSuccess(String message) {
+                    runOnUiThread(() -> {
+                        try {
+                            Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+                            // Navigate to main activity (dashboard)
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } catch (Exception e) {
+                            android.util.Log.e("LoginActivity", "Error in success callback: " + e.getMessage());
+                            resetLoginButton();
+                        }
+                    });
+                }
+                
+                @Override
+                public void onError(String error) {
+                    runOnUiThread(() -> {
+                        try {
+                            Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
+                            resetLoginButton();
+                        } catch (Exception e) {
+                            android.util.Log.e("LoginActivity", "Error in error callback: " + e.getMessage());
+                            resetLoginButton();
+                        }
+                    });
+                }
+            });
+        } catch (Exception e) {
+            android.util.Log.e("LoginActivity", "Error in validateUserAndLogin: " + e.getMessage());
+            resetLoginButton();
+            Toast.makeText(this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    private void resetLoginButton() {
+        try {
+            loginButton.setText("Sign In");
+            loginButton.setEnabled(true);
+        } catch (Exception e) {
+            android.util.Log.e("LoginActivity", "Error resetting login button: " + e.getMessage());
+        }
     }
     
     private void clearLocalUserData(String email) {
@@ -190,5 +222,8 @@ public class LoginActivity extends AppCompatActivity {
         // TODO: Implement Apple Login
         Toast.makeText(this, "Apple Login coming soon!", Toast.LENGTH_SHORT).show();
     }
+    
+    // Button styling is handled by XML layout and themes
+    // Method removed to avoid compilation errors with R.drawable references
 
 } 

@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class FatSecretService {
@@ -38,6 +39,10 @@ public class FatSecretService {
     }
     
     public void searchFoods(String query, int maxCalories, FoodSearchCallback callback) {
+        searchFoods(query, maxCalories, null, callback);
+    }
+    
+    public void searchFoods(String query, int maxCalories, UserProfile userProfile, FoodSearchCallback callback) {
         Log.d(TAG, "searchFoods called with query: " + query + ", maxCalories: " + maxCalories);
         
         // Use FatSecret API only - no fallback
@@ -46,7 +51,13 @@ public class FatSecretService {
             public void onSuccess(List<FoodItem> foods) {
                 if (foods != null && !foods.isEmpty()) {
                     Log.d(TAG, "FatSecret API returned " + foods.size() + " foods");
-                    callback.onSuccess(foods);
+                    // Apply dietary filtering if user profile is available
+                    if (userProfile != null) {
+                        List<FoodItem> filteredFoods = applyStrictDietaryFiltering(foods, userProfile);
+                        callback.onSuccess(filteredFoods);
+                    } else {
+                        callback.onSuccess(foods);
+                    }
                 } else {
                     Log.e(TAG, "FatSecret API returned empty results - no fallback");
                     callback.onSuccess(new ArrayList<>());
@@ -102,7 +113,9 @@ public class FatSecretService {
                     Log.d(TAG, "Cached Gemini recommendations for " + mealCategory);
                 }
                 
-                callback.onSuccess(foods);
+                // Apply strict dietary filtering
+                List<FoodItem> filteredFoods = applyStrictDietaryFiltering(foods, userProfile);
+                callback.onSuccess(filteredFoods);
             }
             
             @Override
@@ -888,4 +901,165 @@ public class FatSecretService {
     }
     
     private android.os.Handler mainHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    
+    /**
+     * Apply strict dietary filtering based on user preferences
+     * This ensures that foods like "baboy" (pork) are completely excluded for vegans
+     */
+    private List<FoodItem> applyStrictDietaryFiltering(List<FoodItem> foods, UserProfile userProfile) {
+        if (foods == null || foods.isEmpty()) {
+            return foods;
+        }
+        
+        // Load user's dietary preferences from questionnaire
+        Map<String, String> questionnaireAnswers = FoodActivityIntegration.loadQuestionnaireAnswers(context);
+        String dietPreference = questionnaireAnswers.get("question_0");
+        
+        if (dietPreference == null || dietPreference.isEmpty() || dietPreference.equals("SKIPPED")) {
+            Log.d(TAG, "No dietary preferences found, returning all foods");
+            return foods;
+        }
+        
+        Log.d(TAG, "Applying strict dietary filtering for: " + dietPreference);
+        
+        List<FoodItem> filteredFoods = new ArrayList<>();
+        
+        for (FoodItem food : foods) {
+            if (isFoodAllowedForDiet(food, dietPreference)) {
+                filteredFoods.add(food);
+            } else {
+                Log.d(TAG, "Filtered out: " + food.getName() + " (not allowed for " + dietPreference + ")");
+            }
+        }
+        
+        Log.d(TAG, "Dietary filtering: " + foods.size() + " -> " + filteredFoods.size() + " foods");
+        return filteredFoods;
+    }
+    
+    /**
+     * Check if a food item is allowed for the given dietary preference
+     */
+    private boolean isFoodAllowedForDiet(FoodItem food, String dietPreference) {
+        String foodName = food.getName().toLowerCase();
+        String description = food.getDescription() != null ? food.getDescription().toLowerCase() : "";
+        String combinedText = foodName + " " + description;
+        
+        switch (dietPreference.toUpperCase()) {
+            case "VEGAN":
+                return isVeganFood(combinedText);
+            case "VEGETARIAN":
+                return isVegetarianFood(combinedText);
+            case "PESCATARIAN":
+                return isPescatarianFood(combinedText);
+            case "HALAL":
+                return isHalalFood(combinedText);
+            case "KOSHER":
+                return isKosherFood(combinedText);
+            case "STANDARD EATER":
+            default:
+                return true; // No restrictions for standard eaters
+        }
+    }
+    
+    /**
+     * Check if food is vegan (no animal products)
+     */
+    private boolean isVeganFood(String foodText) {
+        // Forbidden foods for vegans
+        String[] forbiddenKeywords = {
+            "meat", "chicken", "pork", "beef", "lamb", "goat", "duck", "turkey", "fish", "salmon", "tuna", "shrimp", "crab", "lobster",
+            "egg", "eggs", "dairy", "milk", "cheese", "butter", "cream", "yogurt", "whey", "casein",
+            "honey", "gelatin", "lard", "bacon", "ham", "sausage", "chorizo", "longganisa", "tocino",
+            "baboy", "manok", "isda", "hipon", "alimango", "bangus", "tilapia", "galunggong", "tuyo", "daing",
+            "itlog", "gatas", "keso", "mantikilya", "krema", "yogurt", "whey", "kasein",
+            "pulutan", "lechon", "adobo", "sinigang", "nilaga", "tinola", "kare-kare", "bistek", "kaldereta",
+            "paksiw", "ginataang", "ginisang", "pritong", "inihaw", "barbecue", "bbq"
+        };
+        
+        for (String keyword : forbiddenKeywords) {
+            if (foodText.contains(keyword)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Check if food is vegetarian (no meat, but dairy and eggs allowed)
+     */
+    private boolean isVegetarianFood(String foodText) {
+        // Forbidden foods for vegetarians (meat and fish, but dairy and eggs allowed)
+        String[] forbiddenKeywords = {
+            "meat", "chicken", "pork", "beef", "lamb", "goat", "duck", "turkey", "fish", "salmon", "tuna", "shrimp", "crab", "lobster",
+            "bacon", "ham", "sausage", "chorizo", "longganisa", "tocino",
+            "baboy", "manok", "isda", "hipon", "alimango", "bangus", "tilapia", "galunggong", "tuyo", "daing",
+            "pulutan", "lechon", "adobo", "sinigang", "nilaga", "tinola", "kare-kare", "bistek", "kaldereta",
+            "paksiw", "ginataang", "ginisang", "pritong", "inihaw", "barbecue", "bbq"
+        };
+        
+        for (String keyword : forbiddenKeywords) {
+            if (foodText.contains(keyword)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Check if food is pescatarian (vegetarian + fish/seafood)
+     */
+    private boolean isPescatarianFood(String foodText) {
+        // Forbidden foods for pescatarians (meat and poultry, but fish and dairy allowed)
+        String[] forbiddenKeywords = {
+            "meat", "chicken", "pork", "beef", "lamb", "goat", "duck", "turkey",
+            "bacon", "ham", "sausage", "chorizo", "longganisa", "tocino",
+            "baboy", "manok", "lechon", "adobo", "sinigang", "nilaga", "tinola", "kare-kare", "bistek", "kaldereta",
+            "paksiw", "ginataang", "ginisang", "pritong", "inihaw", "barbecue", "bbq"
+        };
+        
+        for (String keyword : forbiddenKeywords) {
+            if (foodText.contains(keyword)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Check if food is halal (no pork, alcohol, or non-halal meat)
+     */
+    private boolean isHalalFood(String foodText) {
+        // Forbidden foods for halal diet
+        String[] forbiddenKeywords = {
+            "pork", "bacon", "ham", "sausage", "chorizo", "longganisa", "tocino", "lard",
+            "alcohol", "wine", "beer", "liquor", "rum", "gin", "vodka", "whiskey",
+            "baboy", "lechon", "pulutan", "gin", "alak", "tuba", "lambanog"
+        };
+        
+        for (String keyword : forbiddenKeywords) {
+            if (foodText.contains(keyword)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Check if food is kosher (no pork, shellfish, mixing meat and dairy)
+     */
+    private boolean isKosherFood(String foodText) {
+        // Forbidden foods for kosher diet
+        String[] forbiddenKeywords = {
+            "pork", "bacon", "ham", "sausage", "chorizo", "longganisa", "tocino", "lard",
+            "shellfish", "shrimp", "crab", "lobster", "oyster", "clam", "mussel",
+            "baboy", "hipon", "alimango", "talaba", "tahong", "suso"
+        };
+        
+        for (String keyword : forbiddenKeywords) {
+            if (foodText.contains(keyword)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

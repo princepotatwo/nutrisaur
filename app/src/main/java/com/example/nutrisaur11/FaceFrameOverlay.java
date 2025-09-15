@@ -34,7 +34,7 @@ public class FaceFrameOverlay extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setAntiAlias(true);
-        paint.setShadowLayer(4, 0, 0, 0x80000000); // Add shadow for better visibility
+        paint.setShadowLayer(6, 0, 0, 0x80000000); // Add shadow for better visibility
     }
 
     @Override
@@ -44,19 +44,29 @@ public class FaceFrameOverlay extends View {
         int width = getWidth();
         int height = getHeight();
         
-        // Calculate frame dimensions (centered)
-        int frameWidth = width * 3 / 4;
-        int frameHeight = height * 3 / 4;
+        // Calculate frame dimensions (centered, slightly larger for better visibility)
+        int frameWidth = width * 4 / 5;
+        int frameHeight = height * 4 / 5;
         int left = (width - frameWidth) / 2;
         int top = (height - frameHeight) / 2;
         int right = left + frameWidth;
         int bottom = top + frameHeight;
         
-        // Draw L-shaped corners
+        // Draw L-shaped corners with better visibility
         drawCorner(canvas, left, top, cornerLength, cornerLength, true, true); // Top-left
         drawCorner(canvas, right, top, -cornerLength, cornerLength, true, true); // Top-right
         drawCorner(canvas, left, bottom, cornerLength, -cornerLength, true, true); // Bottom-left
         drawCorner(canvas, right, bottom, -cornerLength, -cornerLength, true, true); // Bottom-right
+        
+        // Draw center crosshair for better alignment
+        int centerX = width / 2;
+        int centerY = height / 2;
+        int crosshairSize = 20;
+        
+        // Horizontal line
+        canvas.drawLine(centerX - crosshairSize, centerY, centerX + crosshairSize, centerY, paint);
+        // Vertical line
+        canvas.drawLine(centerX, centerY - crosshairSize, centerX, centerY + crosshairSize, paint);
     }
     
     private void drawCorner(Canvas canvas, int x, int y, int lengthX, int lengthY, boolean horizontal, boolean vertical) {

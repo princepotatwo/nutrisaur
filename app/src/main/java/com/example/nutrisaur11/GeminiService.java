@@ -106,7 +106,8 @@ public class GeminiService {
     private String createPersonalizedPrompt(String mealCategory, int maxCalories, UserProfile userProfile) {
         StringBuilder prompt = new StringBuilder();
         
-        prompt.append("You are a professional nutritionist. Analyze this user's BMI and age, then recommend appropriate foods for their health goals.\n\n");
+        prompt.append("You are a professional nutritionist. Analyze this user's BMI and age, then recommend appropriate foods for their health goals.\n");
+        prompt.append("CRITICAL: NEVER recommend foods that violate the user's dietary preferences. If a food contains forbidden ingredients, do not include it.\n\n");
         
         // Load food preferences from questionnaire
         Map<String, String> questionnaireAnswers = FoodActivityIntegration.loadQuestionnaireAnswers(context);
@@ -786,13 +787,19 @@ public class GeminiService {
         
         switch (diet.toUpperCase()) {
             case "VEGETARIAN":
-                prompt.append("• No meat/poultry/fish. Use: tofu, beans, lentils, quinoa, nuts, dairy, eggs\n");
+                prompt.append("• STRICT VEGETARIAN: No meat, poultry, or fish. Dairy and eggs allowed\n");
+                prompt.append("• FORBIDDEN: baboy, manok, isda, hipon, alimango, bangus, tilapia, galunggong, tuyo, daing\n");
+                prompt.append("• ALLOWED: tofu, beans, lentils, quinoa, nuts, dairy, eggs, vegetables, fruits, grains\n");
                 break;
             case "VEGAN":
-                prompt.append("• No animal products. Use: tofu, tempeh, beans, lentils, quinoa, nuts, plant milks\n");
+                prompt.append("• STRICT VEGAN: Absolutely NO animal products including meat, fish, poultry, dairy, eggs, honey, gelatin\n");
+                prompt.append("• FORBIDDEN: baboy, manok, isda, itlog, gatas, keso, mantikilya, honey, gelatin, lard\n");
+                prompt.append("• ALLOWED: tofu, tempeh, beans, lentils, quinoa, nuts, plant milks, vegetables, fruits, grains\n");
                 break;
             case "PESCATARIAN":
-                prompt.append("• Vegetarian + fish/seafood. Use: fish, tofu, beans, lentils, dairy, eggs\n");
+                prompt.append("• STRICT PESCATARIAN: Vegetarian + fish/seafood only. No meat or poultry\n");
+                prompt.append("• FORBIDDEN: baboy, manok, baka, kambing, duck, turkey, bacon, ham, sausage\n");
+                prompt.append("• ALLOWED: fish, seafood, tofu, beans, lentils, dairy, eggs, vegetables, fruits, grains\n");
                 break;
             case "FLEXITARIAN":
                 prompt.append("• Plant-focused with occasional meat/fish. Emphasize plants, moderate animal products\n");

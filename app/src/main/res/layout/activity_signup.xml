@@ -259,7 +259,7 @@
                     <!-- Sign Up Button -->
                     <Button
                         android:id="@+id/signup_button"
-                        style="@style/GreenOutlineButton"
+                        style="@style/ForceOutlineButton"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:text="Create Account"
@@ -309,7 +309,7 @@
                         <!-- Google Sign Up -->
                         <Button
                             android:id="@+id/google_signup"
-                            style="@style/GreenOutlineButton"
+                            style="@style/ForceOutlineButton"
                             android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:layout_weight="1"
@@ -322,7 +322,7 @@
                         <!-- Apple Sign Up -->
                         <Button
                             android:id="@+id/apple_signup"
-                            style="@style/GreenOutlineButton"
+                            style="@style/ForceOutlineButton"
                             android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:layout_weight="1"

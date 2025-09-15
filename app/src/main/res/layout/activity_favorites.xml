@@ -6,33 +6,47 @@
     android:layout_height="match_parent"
     android:background="#F7F7F7">
 
-    <!-- Header with Gradient -->
-    <include
-        android:id="@+id/header_gradient"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/header_gradient"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Malnutrition Detection Content -->
-    <LinearLayout
+    <!-- Scrollable Content with Header -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="40dp"
-        app:layout_constraintTop_toBottomOf="@id/header_gradient"
-        app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+        android:clipToPadding="false"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header with Gradient -->
+            <include
+                android:id="@+id/header_gradient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                layout="@layout/header_gradient" />
+
+            <!-- Malnutrition Detection Content -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="40dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="120dp">
 
 
         <!-- Image Recognition Area -->
         <FrameLayout
             android:layout_width="240dp"
             android:layout_height="240dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="80dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="60dp"
             android:background="@android:color/transparent">
 
             <!-- Top-left corner bracket -->
@@ -83,7 +97,10 @@
             android:textColor="@color/white"
             android:background="@drawable/button_primary" />
 
-                    </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <!-- Glassy Bottom Nav Bar -->
     <androidx.cardview.widget.CardView

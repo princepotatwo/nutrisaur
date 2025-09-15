@@ -300,6 +300,38 @@ public class SignUpActivity extends AppCompatActivity {
         Toast.makeText(this, "Apple Sign Up coming soon!", Toast.LENGTH_SHORT).show();
     }
     
-    // Button styling is handled by XML layout and themes
-    // Method removed to avoid compilation errors with R.drawable references
-}
+    private void setupButtonStyling() {
+        try {
+            // Ensure buttons have consistent styling across different devices
+            if (signUpButton != null) {
+                try {
+                    signUpButton.setBackgroundResource(R.drawable.freshfood_button_outline);
+                } catch (Exception e) {
+                    // Fallback to simple outline if the main drawable fails
+                    signUpButton.setBackgroundResource(R.drawable.button_outline_fallback);
+                }
+                signUpButton.setTextColor(getResources().getColor(R.color.colorPrimary, null));
+            }
+            
+            if (googleSignUp != null) {
+                try {
+                    googleSignUp.setBackgroundResource(R.drawable/freshfood_button_outline);
+                } catch (Exception e) {
+                    googleSignUp.setBackgroundResource(R.drawable.button_outline_fallback);
+                }
+                googleSignUp.setTextColor(getResources().getColor(R.color.colorPrimary, null));
+            }
+            
+            if (appleSignUp != null) {
+                try {
+                    appleSignUp.setBackgroundResource(R.drawable/freshfood_button_outline);
+                } catch (Exception e) {
+                    appleSignUp.setBackgroundResource(R.drawable.button_outline_fallback);
+                }
+                appleSignUp.setTextColor(getResources().getColor(R.color.colorPrimary, null));
+            }
+        } catch (Exception e) {
+            android.util.Log.e("SignUpActivity", "Error setting up button styling: " + e.getMessage());
+        }
+    }
+} 

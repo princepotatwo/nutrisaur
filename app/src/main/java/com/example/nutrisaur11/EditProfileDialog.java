@@ -187,31 +187,31 @@ public class EditProfileDialog extends Dialog {
         // Set initial button backgrounds - use default button style like ScreeningFormActivity
         // No custom background resource needed
         
-        // Set light text color for all buttons with better contrast
-        setButtonTextColor(genderBoyBtn, 0xFFFFFFFF);
-        setButtonTextColor(genderGirlBtn, 0xFFFFFFFF);
-        setButtonTextColor(swellingYesBtn, 0xFFFFFFFF);
-        setButtonTextColor(swellingNoBtn, 0xFFFFFFFF);
-        setButtonTextColor(weightLoss10PlusBtn, 0xFFFFFFFF);
-        setButtonTextColor(weightLoss5To10Btn, 0xFFFFFFFF);
-        setButtonTextColor(weightLossLess5Btn, 0xFFFFFFFF);
-        setButtonTextColor(feedingGoodBtn, 0xFFFFFFFF);
-        setButtonTextColor(feedingModerateBtn, 0xFFFFFFFF);
-        setButtonTextColor(feedingPoorBtn, 0xFFFFFFFF);
-        setButtonTextColor(physicalThinBtn, 0xFFFFFFFF);
-        setButtonTextColor(physicalShorterBtn, 0xFFFFFFFF);
-        setButtonTextColor(physicalWeakBtn, 0xFFFFFFFF);
-        setButtonTextColor(physicalNoneBtn, 0xFFFFFFFF);
-        setButtonTextColor(illnessYesBtn, 0xFFFFFFFF);
-        setButtonTextColor(illnessNoBtn, 0xFFFFFFFF);
-        setButtonTextColor(eatingDifficultyYesBtn, 0xFFFFFFFF);
-        setButtonTextColor(eatingDifficultyNoBtn, 0xFFFFFFFF);
-        setButtonTextColor(foodInsecurityYesBtn, 0xFFFFFFFF);
-        setButtonTextColor(foodInsecurityNoBtn, 0xFFFFFFFF);
-        setButtonTextColor(micronutrientYesBtn, 0xFFFFFFFF);
-        setButtonTextColor(micronutrientNoBtn, 0xFFFFFFFF);
-        setButtonTextColor(functionalDeclineYesBtn, 0xFFFFFFFF);
-        setButtonTextColor(functionalDeclineNoBtn, 0xFFFFFFFF);
+        // Set outline style for all buttons - text color will be set by the style
+        setButtonOutlineStyle(genderBoyBtn);
+        setButtonOutlineStyle(genderGirlBtn);
+        setButtonOutlineStyle(swellingYesBtn);
+        setButtonOutlineStyle(swellingNoBtn);
+        setButtonOutlineStyle(weightLoss10PlusBtn);
+        setButtonOutlineStyle(weightLoss5To10Btn);
+        setButtonOutlineStyle(weightLossLess5Btn);
+        setButtonOutlineStyle(feedingGoodBtn);
+        setButtonOutlineStyle(feedingModerateBtn);
+        setButtonOutlineStyle(feedingPoorBtn);
+        setButtonOutlineStyle(physicalThinBtn);
+        setButtonOutlineStyle(physicalShorterBtn);
+        setButtonOutlineStyle(physicalWeakBtn);
+        setButtonOutlineStyle(physicalNoneBtn);
+        setButtonOutlineStyle(illnessYesBtn);
+        setButtonOutlineStyle(illnessNoBtn);
+        setButtonOutlineStyle(eatingDifficultyYesBtn);
+        setButtonOutlineStyle(eatingDifficultyNoBtn);
+        setButtonOutlineStyle(foodInsecurityYesBtn);
+        setButtonOutlineStyle(foodInsecurityNoBtn);
+        setButtonOutlineStyle(micronutrientYesBtn);
+        setButtonOutlineStyle(micronutrientNoBtn);
+        setButtonOutlineStyle(functionalDeclineYesBtn);
+        setButtonOutlineStyle(functionalDeclineNoBtn);
         
         // Initialize button states like ScreeningFormActivity
         initializeButtonStates();
@@ -1876,10 +1876,10 @@ public class EditProfileDialog extends Dialog {
 
     // Button state management methods - same style as ScreeningFormActivity
     private void updateButtonStates(Button selected, Button... unselected) {
-        // Set the selected button state with dark grey background, larger size, and rounded corners
+        // Set the selected button state with outline style
         selected.setSelected(true);
         selected.setElevation(8f); // Higher elevation for selected state
-        selected.setBackgroundColor(0xFF424242); // Dark grey for selected state
+        // Use XML style only - no programmatic styling
         selected.setVisibility(View.VISIBLE); // Ensure selected button is visible
         setButtonSizeAndShape(selected, true);
         
@@ -1887,7 +1887,7 @@ public class EditProfileDialog extends Dialog {
         for (Button btn : unselected) {
             btn.setSelected(false);
             btn.setElevation(6f); // Normal elevation for unselected state
-            btn.setBackgroundColor(0xFFBDBDBD); // Light grey for unselected state
+            // Use XML style only - no programmatic styling
             btn.setVisibility(View.VISIBLE); // Ensure unselected buttons remain visible
             setButtonSizeAndShape(btn, false);
         }
@@ -1905,6 +1905,11 @@ public class EditProfileDialog extends Dialog {
     // Helper method to set button text color
     private void setButtonTextColor(Button button, int color) {
         button.setTextColor(color);
+    }
+    
+    // Helper method to set button outline style - now uses XML only
+    private void setButtonOutlineStyle(Button button) {
+        // All styling is now handled by XML @style/GreenOutlineButton
     }
     
     // Helper method to set button size and shape

@@ -25,7 +25,7 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
     private List<PersonalizationQuestion> questions;
     private Map<String, Object> userAnswers = new HashMap<String, Object>();
     private ViewPager2 questionViewPager;
-    private TextView questionTitle;
+    private TextView pageTitle;
     private ImageButton btnBack;
     private PersonalizationQuestionAdapter adapter;
 
@@ -39,7 +39,7 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
         
         // Initialize views
         questionViewPager = findViewById(R.id.question_view_pager);
-        questionTitle = findViewById(R.id.question_title);
+        pageTitle = findViewById(R.id.page_title);
         btnBack = findViewById(R.id.btn_back);
         
         // Initialize questions
@@ -144,9 +144,9 @@ public class PersonalizationActivity extends AppCompatActivity implements Person
     
     private void updateHeader(int position) {
         PersonalizationQuestion question = questions.get(position);
-        questionTitle.setText(question.getTitle());
+        pageTitle.setText(question.getTitle());
         
-        TextView subtitle = findViewById(R.id.question_subtitle);
+        TextView subtitle = findViewById(R.id.page_subtitle);
         if (question.isMultipleChoice()) {
             subtitle.setText("SELECT ALL THAT APPLY");
         } else {

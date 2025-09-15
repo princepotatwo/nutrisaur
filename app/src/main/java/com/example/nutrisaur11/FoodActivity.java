@@ -84,7 +84,7 @@ public class FoodActivity extends AppCompatActivity {
         android.widget.TextView pageTitle = findViewById(R.id.page_title);
         android.widget.TextView pageSubtitle = findViewById(R.id.page_subtitle);
         if (pageTitle != null) {
-            pageTitle.setText("AI FOOD RECOMMENDATIONS");
+            pageTitle.setText("AI FOOD\nRECOMMENDATIONS");
         }
         if (pageSubtitle != null) {
             pageSubtitle.setText("Personalized nutrition suggestions");
@@ -271,7 +271,17 @@ public class FoodActivity extends AppCompatActivity {
                 int caloriesLeft = Integer.parseInt(currentText);
                 int totalDailyCalories = (int) caloriesLeftLoading.getMaxProgress();
                 int caloriesEaten = totalDailyCalories - caloriesLeft;
-                caloriesLeftLoading.showValueWithProgress(currentText, caloriesEaten);
+                
+                // Only update if the values are valid and different from current
+                if (caloriesEaten >= 0 && caloriesEaten <= totalDailyCalories) {
+                    // Use a small delay to prevent animation conflicts
+                    caloriesLeftLoading.postDelayed(() -> {
+                        caloriesLeftLoading.showValueWithProgress(currentText, caloriesEaten);
+                    }, 100);
+                } else {
+                    // Fallback to regular showValue if calculation is invalid
+                    caloriesLeftLoading.showValue(currentText);
+                }
             } catch (NumberFormatException e) {
                 // Fallback to regular showValue if parsing fails
                 caloriesLeftLoading.showValue(currentText);
@@ -827,9 +837,6 @@ public class FoodActivity extends AppCompatActivity {
         int totalEatenCalories = calorieTracker.getTotalEatenCalories();
         Log.d(TAG, "Total eaten calories after sync: " + totalEatenCalories);
         
-        // Enable progress colors when user adds food
-        enableProgressColors();
-        
         // Reload nutrition data to reflect changes from food logging
         if (nutritionService != null) {
             nutritionService.getNutritionRecommendationsWithUserData(currentUserData, new NutritionService.NutritionCallback() {
@@ -840,7 +847,7 @@ public class FoodActivity extends AppCompatActivity {
                         updateMacronutrientData(nutritionData);
                         updateMealProgress(nutritionData);
                         
-                        // Enable progress colors after data update
+                        // Enable progress colors only once after data update
                         enableProgressColors();
                         
                         Log.d(TAG, "Calorie data refreshed successfully");

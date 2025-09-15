@@ -178,7 +178,7 @@
                     <!-- Login Button -->
                     <Button
                         android:id="@+id/login_button"
-                        style="@style/GreenOutlineButton"
+                        style="@style/ForceOutlineButton"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:text="Sign In"
@@ -226,7 +226,7 @@
 
                         <Button
                             android:id="@+id/google_login"
-                            style="@style/GreenOutlineButton"
+                            style="@style/ForceOutlineButton"
                             android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:layout_weight="1"
@@ -236,7 +236,7 @@
 
                         <Button
                             android:id="@+id/apple_login"
-                            style="@style/GreenOutlineButton"
+                            style="@style/ForceOutlineButton"
                             android:layout_width="0dp"
                             android:layout_height="48dp"
                             android:layout_weight="1"

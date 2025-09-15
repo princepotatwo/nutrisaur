@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 
 public class FavoritesActivity extends AppCompatActivity {
     // Malnutrition detection activity - favorites functionality removed
@@ -13,6 +14,12 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
         
+        // Disable scrolling on NestedScrollView
+        NestedScrollView nestedScrollView = findViewById(R.id.nested_scroll_view);
+        if (nestedScrollView != null) {
+            nestedScrollView.setNestedScrollingEnabled(false);
+        }
+        
         // Set header title
         TextView pageTitle = findViewById(R.id.page_title);
         TextView pageSubtitle = findViewById(R.id.page_subtitle);
@@ -20,11 +27,12 @@ public class FavoritesActivity extends AppCompatActivity {
             pageTitle.setText("DETECT SIGNS OF MALNUTRITION");
         }
         if (pageSubtitle != null) {
-            pageSubtitle.setText("Take photo to analyze nutritional health indicators");
+            pageSubtitle.setText("Take photo to analyze nutrition");
         }
         
         setupButtons();
     }
+    
     
     private void setupFavoritesRecyclerView() {
         // RecyclerView functionality removed - now using malnutrition detection UI
