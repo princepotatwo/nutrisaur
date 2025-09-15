@@ -101,7 +101,7 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 error_log("  - Processing user: " . ($user['email'] ?? 'unknown'));
                 
                 // Calculate age in months like in screening.php
-                $birthDate = new DateTime($user['birthday']);
+                $birthDate = new DateTime($user['birth_date']);
                 $today = new DateTime();
                 $age = $today->diff($birthDate);
                 $ageInMonths = ($age->y * 12) + $age->m;
@@ -126,12 +126,14 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                     error_log("    - Age restriction check: $shouldProcess (age: $ageInMonths, standard: $whoStandard)");
                 } elseif ($whoStandard === 'weight-for-height') {
                     // Weight-for-Height: 65-120 cm height range
-                    $shouldProcess = ($user['height'] >= 65 && $user['height'] <= 120);
-                    error_log("    - Height restriction check: $shouldProcess (height: " . ($user['height'] ?? 'null') . ", standard: $whoStandard)");
+                    $heightCm = floatval($user['height']);
+                    $shouldProcess = ($heightCm >= 65 && $heightCm <= 120);
+                    error_log("    - Height restriction check: $shouldProcess (height: $heightCm cm, standard: $whoStandard)");
                 } elseif ($whoStandard === 'weight-for-length') {
                     // Weight-for-Length: 45-110 cm height range
-                    $shouldProcess = ($user['height'] >= 45 && $user['height'] <= 110);
-                    error_log("    - Length restriction check: $shouldProcess (height: " . ($user['height'] ?? 'null') . ", standard: $whoStandard)");
+                    $heightCm = floatval($user['height']);
+                    $shouldProcess = ($heightCm >= 45 && $heightCm <= 110);
+                    error_log("    - Length restriction check: $shouldProcess (height: $heightCm cm, standard: $whoStandard)");
                 }
                 
                 error_log("    - Should process: $shouldProcess");
@@ -148,9 +150,11 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                         $assessment = $who->getComprehensiveAssessment(
                             floatval($user['weight']), 
                             floatval($user['height']), 
-                            $user['birthday'], 
+                            $user['birth_date'], 
                             $user['sex']
                         );
+                        
+                        error_log("    - WHO Assessment result: " . json_encode($assessment));
                         
                         if ($assessment['success'] && isset($assessment['results'])) {
                             $results = $assessment['results'];
