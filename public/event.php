@@ -198,65 +198,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             $eventId = $nextId; // Use the program_id we calculated, not insert_id
             
             // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING
-            try {
-                // Get notification settings from POST data
-                $notificationType = $_POST['notification_type'] ?? 'push';
-                $recipientGroup = $_POST['recipient_group'] ?? 'All Users';
+            $notificationType = $_POST['notification_type'] ?? 'push';
+            if ($notificationType !== 'none') {
+                error_log("📱 Sending notifications for event ID: $eventId");
                 
-                if ($notificationType !== 'none') {
-                    error_log("📱 Sending notifications for event ID: $eventId");
-                    
-                    // Get FCM tokens based on location and recipient group
-                    $fcmTokens = [];
-                    if ($location === 'All Locations') {
-                        $fcmTokens = $db->getActiveFCMTokens();
-                    } else {
-                        $fcmTokens = $db->getFCMTokensByBarangay($location);
-                    }
-                    
-                    if (!empty($fcmTokens)) {
-                        // Send notification using the working FCM system
-                        $notificationData = [
-                            'title' => "🎯 Event: $title",
-                            'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
-                            'target_user' => 'all'
-                        ];
-                        
-                        // Send notification using the API endpoint
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
-                        curl_setopt($ch, CURLOPT_POST, true);
-                        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                            'notification_data' => json_encode($notificationData)
-                        ]));
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-                        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-                        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        ]);
-                        
-                        $notificationResponse = curl_exec($ch);
-                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                        $error = curl_error($ch);
-                        curl_close($ch);
-                        
-                        $notificationResult = json_decode($notificationResponse, true);
-                        
-                        if ($notificationResult['success']) {
-                            error_log("✅ Notifications sent successfully to " . count($fcmTokens) . " users");
-                        } else {
-                            error_log("⚠️ Notification sending failed: " . $notificationResult['message']);
-                        }
-                    } else {
-                        error_log("⚠️ No FCM tokens found for location: $location");
-                    }
-                } else {
-                    error_log("📱 Notifications disabled, skipping...");
-                }
-            } catch (Exception $e) {
-                error_log("❌ Error sending notifications: " . $e->getMessage());
-                // Don't fail the entire operation if notifications fail
+                // Simple notification data
+                $notificationData = [
+                    'title' => "🎯 Event: $title",
+                    'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
+                    'target_user' => 'all'
+                ];
+                
+                // Call the notification API
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                    'notification_data' => json_encode($notificationData)
+                ]));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/x-www-form-urlencoded'
+                ));
+                
+                $notificationResponse = curl_exec($ch);
+                curl_close($ch);
+                
+                error_log("📱 Notification sent: " . $notificationResponse);
             }
         } else {
             throw new Exception('Failed to insert event: ' . $result['message']);
@@ -5296,7 +5266,7 @@ header:hover {
             document.body.appendChild(notification);
 
             // Animate in
-            setTimeout(() => {
+                    setTimeout(() => {
                 notification.style.transform = 'translateX(0)';
             }, 100);
 
@@ -5357,7 +5327,7 @@ header:hover {
                     setTimeout(() => {
                         window.location.reload();
                     }, 1500);
-                } else {
+            } else {
                     showNotification('Error deleting event: ' + (data.message || 'Unknown error'), 'error');
                 }
             })
@@ -5405,17 +5375,17 @@ header:hover {
 
             // Send delete all request to server
             fetch('/api/delete_all_programs.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     confirm: true
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
                     // Remove all event rows from the page
                     eventRows.forEach(row => row.remove());
                     
@@ -5425,12 +5395,12 @@ header:hover {
                     setTimeout(() => {
                         window.location.reload();
                     }, 1500);
-                } else {
+                        } else {
                     showNotification('Error deleting all events: ' + (data.message || 'Unknown error'), 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
                 showNotification('Error deleting all events: ' + error.message, 'error');
             })
             .finally(() => {
