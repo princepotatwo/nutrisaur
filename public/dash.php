@@ -6258,13 +6258,16 @@ body {
             <div class="chart-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h3>WHO Growth Standards Classification</h3>
-                    <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
-                        <option value="weight-for-age">Weight for Age</option>
-                        <option value="height-for-age">Height for Age</option>
-                        <option value="weight-for-height">Weight for Height</option>
-                        <option value="weight-for-length">Weight for Length</option>
-                        <option value="bmi-for-age">BMI for Age</option>
-                    </select>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;" onclick="console.log('🖱️ Dropdown clicked!')" onchange="console.log('🔄 Dropdown changed to:', this.value)">
+                            <option value="weight-for-age">Weight for Age</option>
+                            <option value="height-for-age">Height for Age</option>
+                            <option value="weight-for-height">Weight for Height</option>
+                            <option value="weight-for-length">Weight for Length</option>
+                            <option value="bmi-for-age">BMI for Age</option>
+                        </select>
+                        <button onclick="console.log('🧪 Test button clicked!'); handleWHOStandardChange();" style="padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Test</button>
+                    </div>
                 </div>
                 <p class="chart-description">Distribution of children by WHO Growth Standards classification. Shows nutritional status based on selected WHO standard.</p>
                 <div class="donut-chart-container">
@@ -8159,6 +8162,9 @@ body {
 
         // Function to handle WHO standard dropdown change
         async function handleWHOStandardChange() {
+            console.log('🚨 WHO Standard Change Function Called!');
+            alert('WHO Standard Change Function Called!');
+            
             const select = document.getElementById('whoStandardSelect');
             const selectedStandard = select.value;
             
@@ -8247,15 +8253,51 @@ body {
                 };
             }
         }
-                // Risk levels: Low, Low-Medium, Medium, High, Very High
-                let riskLevels = [0, 0, 0, 0, 0]; // [Low, Low-Medium, Medium, High, Very High]
-                let totalUsers = 0;
-                let actualRiskScores = []; // Store actual risk scores from API
+
+        // Function to update Nutritional Status Overview Card
+        function updateNutritionalStatusCard(whzData, muacData) {
+            
+            try {
+                // Update WHZ Categories
+                if (whzData && whzData.length > 0) {
+                    whzData.forEach(item => {
+                        // Map the labels to the new IDs
+                        let elementId = '';
+                        if (item.label === 'Severe Acute Malnutrition') elementId = 'whz-sam-count';
+                        else if (item.label === 'Moderate Acute Malnutrition') elementId = 'whz-mam-count';
+                        else if (item.label === 'Normal Growth') elementId = 'whz-normal-count';
+                        else if (item.label === 'Overweight') elementId = 'whz-overweight-count';
+                        
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            element.textContent = item.value || 0;
+                        }
+                    });
+                }
                 
-                if (data && typeof data === 'object') {
-                    // Debug: Log the actual data structure
-                    console.log('🔍 Risk Chart Data Structure:', data);
-                    console.log('🔍 Risk Levels:', data.risk_levels);
+                // Update MUAC Categories
+                if (muacData && muacData.length > 0) {
+                    muacData.forEach(item => {
+                        // Map the labels to the new IDs
+                        let elementId = '';
+                        if (item.label === 'Severe Acute Malnutrition') elementId = 'muac-sam-count';
+                        else if (item.label === 'Moderate Acute Malnutrition') elementId = 'muac-mam-count';
+                        else if (item.label === 'Normal Growth') elementId = 'muac-normal-count';
+                        else if (item.label === 'Overweight') elementId = 'muac-overweight-count';
+                        
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            element.textContent = item.value || 0;
+                        }
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error updating nutritional status card:', error);
+            }
+        }
+        
+        // Function to update Nutritional Summary
                     
                     // API now returns data in format: {risk_levels: {low: 5, low_medium: 3, medium: 2, high: 1, very_high: 1}}
                     riskLevels[0] = data.risk_levels?.low || 0;
@@ -8796,12 +8838,35 @@ body {
         document.addEventListener('DOMContentLoaded', function() {
             window.globalAverageRiskScore = 0;
             
+            // Test if dropdown exists immediately
+            console.log('🔍 Testing dropdown element existence...');
+            const testDropdown = document.getElementById('whoStandardSelect');
+            console.log('🔍 Test dropdown element:', testDropdown);
+            
+            if (testDropdown) {
+                console.log('✅ Dropdown found immediately!');
+                console.log('✅ Dropdown value:', testDropdown.value);
+                console.log('✅ Dropdown options:', testDropdown.options.length);
+            } else {
+                console.error('❌ Dropdown NOT found immediately!');
+            }
+            
             // Add WHO standard dropdown listener
+            console.log('🔧 Setting up WHO standard dropdown listener...');
             const whoStandardSelect = document.getElementById('whoStandardSelect');
+            console.log('🔧 WHO Standard Select Element:', whoStandardSelect);
+            
             if (whoStandardSelect) {
-                whoStandardSelect.addEventListener('change', handleWHOStandardChange);
+                console.log('✅ WHO Standard Select found, adding event listener...');
+                whoStandardSelect.addEventListener('change', function() {
+                    console.log('🎯 WHO Standard dropdown change event triggered!');
+                    handleWHOStandardChange();
+                });
                 // Load initial data
+                console.log('🚀 Loading initial WHO classification data...');
                 handleWHOStandardChange();
+            } else {
+                console.error('❌ WHO Standard Select element not found!');
             }
             
             const keyElements = {
