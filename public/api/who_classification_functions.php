@@ -2,7 +2,7 @@
 // WHO Classification Functions - extracted from dash.php to avoid HTML output
 
 require_once __DIR__ . '/DatabaseHelper.php';
-require_once __DIR__ . '/../who_growth_standards.php';
+require_once __DIR__ . '/../../who_growth_standards.php';
 
 // Function to get adult BMI classification (for children over 71 months)
 function getAdultBMIClassification($bmi) {
