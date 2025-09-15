@@ -126,7 +126,7 @@ function handleCSVImport($db) {
         $header = fgetcsv($handle); // Read header row
         
         // Validate header - STRICT template format validation
-        $expectedHeaders = ['name', 'email', 'password', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight_kg', 'height_cm', 'muac_cm', 'screening_id', 'screening_date'];
+        $expectedHeaders = ['name', 'email', 'password', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight', 'height', 'screening_date'];
         
         // Check if headers match exactly (case-sensitive, order-sensitive)
         if ($header !== $expectedHeaders) {
@@ -177,7 +177,7 @@ function handleCSVImport($db) {
         foreach ($csvData as $rowIndex => $row) {
             $rowNumber = $rowIndex + 2; // +2 because we skip header and arrays are 0-indexed
             
-            // Clean and validate data - match mobile app column names exactly
+            // Clean and validate data - match actual database column names
             $name = trim($row['name'] ?? '');
             $email = trim($row['email'] ?? '');
             $password = trim($row['password'] ?? '');
@@ -186,10 +186,8 @@ function handleCSVImport($db) {
             $sex = trim($row['sex'] ?? '');
             $birthday = trim($row['birthday'] ?? '');
             $isPregnant = trim($row['is_pregnant'] ?? '');
-            $weight = floatval($row['weight_kg'] ?? 0);
-            $height = floatval($row['height_cm'] ?? 0);
-            $muac = floatval($row['muac_cm'] ?? 0);
-            $screeningId = trim($row['screening_id'] ?? '');
+            $weight = floatval($row['weight'] ?? 0);
+            $height = floatval($row['height'] ?? 0);
             $screeningDate = trim($row['screening_date'] ?? '');
             
             // Validate required fields - match mobile app validation exactly
@@ -276,45 +274,25 @@ function handleCSVImport($db) {
                 continue;
             }
             
-            // Screening ID validation
-            if (empty($screeningId)) {
-                $errors[] = "Row $rowNumber: Screening ID is required";
-                continue;
-            }
-            if (!preg_match('/^SCR-\d{4}-\d{3}$/', $screeningId)) {
-                $errors[] = "Row $rowNumber: Screening ID must be in format SCR-YYYY-XXX (e.g., SCR-2025-001)";
-                continue;
-            }
-            
-            // Strict validation for measurements - match mobile app exactly
-            if (!is_numeric($row['weight_kg']) || $weight <= 0 || $weight > 1000) {
+            // Strict validation for measurements - match actual database columns
+            if (!is_numeric($row['weight']) || $weight <= 0 || $weight > 1000) {
                 $errors[] = "Row $rowNumber: Weight must be a number between 0.1 and 1000 kg";
                 continue;
             }
             
-            if (!is_numeric($row['height_cm']) || $height <= 0 || $height > 300) {
+            if (!is_numeric($row['height']) || $height <= 0 || $height > 300) {
                 $errors[] = "Row $rowNumber: Height must be a number between 1 and 300 cm";
                 continue;
             }
             
-            if (!is_numeric($row['muac_cm']) || $muac <= 0 || $muac > 50) {
-                $errors[] = "Row $rowNumber: MUAC must be a number between 5 and 50 cm";
-                continue;
-            }
-            
             // Additional strict validation for decimal places
-            if (strpos($row['weight_kg'], '.') !== false && strlen(substr($row['weight_kg'], strpos($row['weight_kg'], '.') + 1)) > 2) {
+            if (strpos($row['weight'], '.') !== false && strlen(substr($row['weight'], strpos($row['weight'], '.') + 1)) > 2) {
                 $errors[] = "Row $rowNumber: Weight can have maximum 2 decimal places";
                 continue;
             }
             
-            if (strpos($row['height_cm'], '.') !== false && strlen(substr($row['height_cm'], strpos($row['height_cm'], '.') + 1)) > 2) {
+            if (strpos($row['height'], '.') !== false && strlen(substr($row['height'], strpos($row['height'], '.') + 1)) > 2) {
                 $errors[] = "Row $rowNumber: Height can have maximum 2 decimal places";
-                continue;
-            }
-            
-            if (strpos($row['muac_cm'], '.') !== false && strlen(substr($row['muac_cm'], strpos($row['muac_cm'], '.') + 1)) > 2) {
-                $errors[] = "Row $rowNumber: MUAC can have maximum 2 decimal places";
                 continue;
             }
             
@@ -351,23 +329,14 @@ function handleCSVImport($db) {
             
             // Note: BMI calculation removed as column may not exist in actual table
             
-            // Check if user already exists (by email or screening_id) using DatabaseHelper
+            // Check if user already exists (by email - the primary key) using DatabaseHelper
             $existingUser = null;
-            $checkResult = $db->select('community_users', 'id', "email = ? OR screening_id = ?", [$email, $screeningId]);
+            $checkResult = $db->select('community_users', 'email', "email = ?", [$email]);
             if ($checkResult['success'] && !empty($checkResult['data'])) {
                 $existingUser = $checkResult['data'][0];
             }
             
-            // Calculate age
-            $age = $today->diff($birthDate)->y;
-            
-            // Calculate BMI
-            $bmi = null;
-            if ($height > 0) {
-                $bmi = round($weight / pow($height / 100, 2), 1);
-            }
-            
-            // Prepare data for insert/update
+            // Prepare data for insert/update - only include columns that exist in the database
             $userData = [
                 'name' => $name,
                 'email' => $email,
@@ -376,19 +345,15 @@ function handleCSVImport($db) {
                 'barangay' => $barangay,
                 'sex' => $sex,
                 'birthday' => $birthday,
-                'age' => $age,
                 'is_pregnant' => $isPregnantValue,
-                'weight_kg' => $weight,
-                'height_cm' => $height,
-                'muac_cm' => $muac,
-                'bmi' => $bmi,
-                'screening_id' => $screeningId,
+                'weight' => $weight,
+                'height' => $height,
                 'screening_date' => $screeningDateTime->format('Y-m-d H:i:s')
             ];
             
             if ($existingUser) {
                 // Update existing user using DatabaseHelper
-                $updateResult = $db->update('community_users', $userData, "email = ? OR screening_id = ?", [$email, $screeningId]);
+                $updateResult = $db->update('community_users', $userData, "email = ?", [$email]);
                 
                 if (!$updateResult['success']) {
                     $errors[] = "Row $rowNumber: Failed to update existing user: " . ($updateResult['message'] ?? 'Unknown error');
