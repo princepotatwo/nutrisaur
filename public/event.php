@@ -186,7 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         ]);
         
         if ($result['success']) {
-            $eventId = $result['insert_id'];
+            $eventId = $nextId; // Use the program_id we calculated, not insert_id
         } else {
             throw new Exception('Failed to insert event: ' . $result['message']);
         }
