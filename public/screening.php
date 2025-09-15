@@ -3815,16 +3815,6 @@ header {
             tableRows.forEach((row, index) => {
                 let showRow = true;
                 
-                // Debug: Log first few rows' data attributes
-                if (index < 3) {
-                    console.log(`Row ${index}:`, {
-                        municipality: row.dataset.municipality,
-                        barangay: row.dataset.barangay,
-                        sex: row.dataset.sex,
-                        ageMonths: row.dataset.ageMonths,
-                        standard: row.dataset.standard
-                    });
-                }
                 
                 // Municipality filter
                 if (municipality && showRow) {
@@ -4737,19 +4727,31 @@ header {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showCSVStatus('success', `CSV imported successfully! ${data.imported_count} users imported.`);
-                    // Refresh the data table
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2000);
-                } else {
-                    showCSVStatus('error', `Import failed: ${data.message}`);
-                    if (data.errors && data.errors.length > 0) {
-                        showCSVStatus('error', `Errors: ${data.errors.join(', ')}`);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text(); // Get as text first
+            })
+            .then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        showCSVStatus('success', `CSV imported successfully! ${data.imported_count} users imported.`);
+                        // Refresh the data table
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showCSVStatus('error', `Import failed: ${data.message}`);
+                        if (data.errors && data.errors.length > 0) {
+                            showCSVStatus('error', `Errors: ${data.errors.join(', ')}`);
+                        }
                     }
+                } catch (parseError) {
+                    console.error('JSON Parse Error:', parseError);
+                    console.error('Response text:', text);
+                    showCSVStatus('error', 'Server returned invalid response. Please check server logs.');
                 }
             })
             .catch(error => {

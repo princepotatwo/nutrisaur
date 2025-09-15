@@ -15,9 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Include the main configuration file
-require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../../config.php';
 
 try {
+    // Check if config.php exists
+    if (!file_exists(__DIR__ . '/../../config.php')) {
+        throw new Exception("Config file not found at: " . __DIR__ . '/../../config.php');
+    }
+    
     $pdo = getDatabaseConnection();
     if (!$pdo) {
         throw new Exception("Failed to establish database connection");
@@ -37,9 +42,11 @@ try {
     
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
     echo json_encode(['success' => false, 'message' => 'Database connection failed: ' . $e->getMessage()]);
 } catch (Exception $e) {
     error_log("General error: " . $e->getMessage());
+    error_log("Stack trace: " . $e->getTraceAsString());
     echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
 
