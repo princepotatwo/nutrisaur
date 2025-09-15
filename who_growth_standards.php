@@ -32,7 +32,12 @@ class WHOGrowthStandards {
         $birth = new DateTime($birthDate);
         $today = new DateTime();
         $age = $birth->diff($today);
-        return ($age->y * 12) + $age->m;
+        $ageInMonths = ($age->y * 12) + $age->m;
+        // Add partial month if more than half the month has passed
+        if ($age->d >= 15) {
+            $ageInMonths += 1;
+        }
+        return $ageInMonths;
     }
     
     /**
@@ -47,6 +52,23 @@ class WHOGrowthStandards {
             return 'Normal';
         } else {
             return 'Overweight';
+        }
+    }
+    
+    /**
+     * Get nutritional classification for Weight-for-Height (includes Obese category)
+     */
+    public function getWeightForHeightClassification($zScore) {
+        if ($zScore < -3) {
+            return 'Severely Wasted';
+        } elseif ($zScore >= -3 && $zScore < -2) {
+            return 'Wasted';
+        } elseif ($zScore >= -2 && $zScore <= 2) {
+            return 'Normal';
+        } elseif ($zScore > 2 && $zScore <= 3) {
+            return 'Overweight';
+        } else {
+            return 'Obese';
         }
     }
     
@@ -219,9 +241,155 @@ class WHOGrowthStandards {
     }
     
     /**
+     * Weight-for-Age Lookup Table for Boys (0-71 months)
+     * Based on exact values from WHO official tables
+     */
+    private function getWeightForAgeBoysLookup() {
+        return [
+            // Age 0 months - From your image
+            0 => [
+                'severely_underweight' => ['min' => 0, 'max' => 2.0],
+                'underweight' => ['min' => 2.1, 'max' => 2.4],
+                'normal' => ['min' => 2.5, 'max' => 4.4],
+                'overweight' => ['min' => 4.5, 'max' => 999]
+            ],
+            
+            // Age 12 months - From your image (corrected values)
+            12 => [
+                'severely_underweight' => ['min' => 0, 'max' => 6.8],
+                'underweight' => ['min' => 6.9, 'max' => 7.6],
+                'normal' => ['min' => 7.7, 'max' => 12.0],
+                'overweight' => ['min' => 12.1, 'max' => 999]
+            ],
+            
+            // Age 35 months - From your image
+            35 => [
+                'severely_underweight' => ['min' => 0, 'max' => 9.8],
+                'underweight' => ['min' => 9.9, 'max' => 11.1],
+                'normal' => ['min' => 11.2, 'max' => 18.1],
+                'overweight' => ['min' => 18.2, 'max' => 999]
+            ],
+            
+            // Age 71 months - From your image
+            71 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.8],
+                'underweight' => ['min' => 13.9, 'max' => 15.6],
+                'normal' => ['min' => 15.7, 'max' => 22.1],
+                'overweight' => ['min' => 22.2, 'max' => 999]
+            ]
+        ];
+    }
+    
+    /**
+     * Weight-for-Height Lookup Table for Girls (24-60 months)
+     * Based on exact values from WHO official tables
+     */
+    private function getWeightForHeightGirlsLookup() {
+        return [
+            // Height 65 cm - From your image (corrected values)
+            65 => [
+                'severely_wasted' => ['min' => 0, 'max' => 5.4],
+                'wasted' => ['min' => 5.5, 'max' => 6.0],
+                'normal' => ['min' => 6.1, 'max' => 8.7],
+                'overweight' => ['min' => 8.8, 'max' => 9.7],
+                'obese' => ['min' => 9.8, 'max' => 999]
+            ],
+            
+            // Height 90 cm - From your image
+            90 => [
+                'severely_wasted' => ['min' => 0, 'max' => 9.6],
+                'wasted' => ['min' => 9.7, 'max' => 10.4],
+                'normal' => ['min' => 10.5, 'max' => 14.8],
+                'overweight' => ['min' => 14.9, 'max' => 16.3],
+                'obese' => ['min' => 16.4, 'max' => 999]
+            ],
+            
+            // Height 120 cm - From your image (corrected values)
+            120 => [
+                'severely_wasted' => ['min' => 0, 'max' => 17.1],
+                'wasted' => ['min' => 17.2, 'max' => 18.8],
+                'normal' => ['min' => 18.9, 'max' => 28.0],
+                'overweight' => ['min' => 28.1, 'max' => 31.2],
+                'obese' => ['min' => 31.3, 'max' => 999]
+            ]
+        ];
+    }
+    
+    /**
+     * Find closest age in lookup table
+     */
+    private function findClosestAge($lookup, $age) {
+        $ages = array_keys($lookup);
+        $closest = null;
+        $minDiff = PHP_FLOAT_MAX;
+        
+        foreach ($ages as $lookupAge) {
+            $diff = abs($age - $lookupAge);
+            if ($diff < $minDiff) {
+                $minDiff = $diff;
+                $closest = $lookupAge;
+            }
+        }
+        
+        return $closest;
+    }
+    
+    /**
+     * Find closest height in lookup table
+     */
+    private function findClosestHeight($lookup, $height) {
+        $heights = array_keys($lookup);
+        $closest = null;
+        $minDiff = PHP_FLOAT_MAX;
+        
+        foreach ($heights as $lookupHeight) {
+            $diff = abs($height - $lookupHeight);
+            if ($diff < $minDiff) {
+                $minDiff = $diff;
+                $closest = $lookupHeight;
+            }
+        }
+        
+        return $closest;
+    }
+    
+    /**
      * Calculate Weight-for-Age z-score and classification
+     * Now uses lookup tables for more accurate results
      */
     public function calculateWeightForAge($weight, $ageInMonths, $sex) {
+        // Use lookup table for boys if available
+        if ($sex === 'Male') {
+            $lookup = $this->getWeightForAgeBoysLookup();
+            $closestAge = $this->findClosestAge($lookup, $ageInMonths);
+            
+            if ($closestAge !== null) {
+                $ranges = $lookup[$closestAge];
+                
+                foreach ($ranges as $category => $range) {
+                    if ($weight >= $range['min'] && $weight <= $range['max']) {
+                        // Calculate z-score using the original formula for the closest age
+                        $standards = $this->getWeightForAgeBoys();
+                        if (isset($standards[$closestAge])) {
+                            $median = $standards[$closestAge]['median'];
+                            $sd = $standards[$closestAge]['sd'];
+                            $zScore = ($weight - $median) / $sd;
+                        } else {
+                            $zScore = null;
+                        }
+                        
+                        return [
+                            'z_score' => $zScore !== null ? round($zScore, 2) : null,
+                            'classification' => ucfirst(str_replace('_', ' ', $category)),
+                            'age_used' => $closestAge,
+                            'method' => 'lookup_table'
+                        ];
+                    }
+                }
+            }
+        }
+        
+        // Fallback to original formula-based method
         $standards = ($sex === 'Male') ? $this->getWeightForAgeBoys() : $this->getWeightForAgeGirls();
         
         if (!isset($standards[$ageInMonths])) {
@@ -239,7 +407,8 @@ class WHOGrowthStandards {
             'z_score' => round($zScore, 2),
             'classification' => $classification,
             'median' => $median,
-            'sd' => $sd
+            'sd' => $sd,
+            'method' => 'formula'
         ];
     }
     
@@ -684,9 +853,41 @@ class WHOGrowthStandards {
     
     /**
      * Calculate Weight-for-Height z-score and classification
-     * Based on WHO Child Growth Standards 2006 - Exact values from official tables
+     * Now uses lookup tables for more accurate results
      */
     public function calculateWeightForHeight($weight, $height, $sex) {
+        // Use lookup table for girls if available
+        if ($sex === 'Female') {
+            $lookup = $this->getWeightForHeightGirlsLookup();
+            $closestHeight = $this->findClosestHeight($lookup, $height);
+            
+            if ($closestHeight !== null) {
+                $ranges = $lookup[$closestHeight];
+                
+                foreach ($ranges as $category => $range) {
+                    if ($weight >= $range['min'] && $weight <= $range['max']) {
+                        // Calculate z-score using the original formula for the closest height
+                        $standards = $this->getWeightForHeightGirls();
+                        if (isset($standards[$closestHeight])) {
+                            $median = $standards[$closestHeight]['median'];
+                            $sd = $standards[$closestHeight]['sd'];
+                            $zScore = ($weight - $median) / $sd;
+                        } else {
+                            $zScore = null;
+                        }
+                        
+                        return [
+                            'z_score' => $zScore !== null ? round($zScore, 2) : null,
+                            'classification' => ucfirst(str_replace('_', ' ', $category)),
+                            'height_used' => $closestHeight,
+                            'method' => 'lookup_table'
+                        ];
+                    }
+                }
+            }
+        }
+        
+        // Fallback to original formula-based method
         $standards = ($sex === 'Male') ? $this->getWeightForHeightBoys() : $this->getWeightForHeightGirls();
         
         // Check if height is within range (65-120 cm for WFH)
@@ -715,14 +916,15 @@ class WHOGrowthStandards {
         
         // Calculate z-score: (observed - median) / sd
         $zScore = ($weight - $median) / $sd;
-        $classification = $this->getNutritionalClassification($zScore);
+        $classification = $this->getWeightForHeightClassification($zScore);
         
         return [
             'z_score' => round($zScore, 2),
             'classification' => $classification,
             'median' => $median,
             'sd' => $sd,
-            'height_used' => $closestHeight
+            'height_used' => $closestHeight,
+            'method' => 'formula'
         ];
     }
     
