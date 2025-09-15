@@ -28,10 +28,10 @@ class WHOGrowthStandards {
     /**
      * Calculate age in months from birth date
      */
-    public function calculateAgeInMonths($birthDate) {
+    public function calculateAgeInMonths($birthDate, $screeningDate = null) {
         $birth = new DateTime($birthDate);
-        $today = new DateTime();
-        $age = $birth->diff($today);
+        $referenceDate = $screeningDate ? new DateTime($screeningDate) : new DateTime();
+        $age = $birth->diff($referenceDate);
         $ageInMonths = ($age->y * 12) + $age->m;
         // Add partial month if more than half the month has passed
         if ($age->d >= 15) {
@@ -1172,8 +1172,8 @@ class WHOGrowthStandards {
     /**
      * Main function to process all growth standards for a child
      */
-    public function processAllGrowthStandards($weight, $height, $birthDate, $sex) {
-        $ageInMonths = $this->calculateAgeInMonths($birthDate);
+    public function processAllGrowthStandards($weight, $height, $birthDate, $sex, $screeningDate = null) {
+        $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
         $bmi = $weight / pow($height / 100, 2);
         
         $results = [
@@ -1366,7 +1366,7 @@ class WHOGrowthStandards {
     /**
      * Get comprehensive nutritional assessment
      */
-    public function getComprehensiveAssessment($weight, $height, $birthDate, $sex) {
+    public function getComprehensiveAssessment($weight, $height, $birthDate, $sex, $screeningDate = null) {
         $validation = $this->validateInput($weight, $height, $birthDate, $sex);
         
         if (!$validation['valid']) {
@@ -1376,7 +1376,7 @@ class WHOGrowthStandards {
             ];
         }
         
-        $results = $this->processAllGrowthStandards($weight, $height, $birthDate, $sex);
+        $results = $this->processAllGrowthStandards($weight, $height, $birthDate, $sex, $screeningDate);
         
         // Determine overall nutritional risk
         $riskFactors = [];

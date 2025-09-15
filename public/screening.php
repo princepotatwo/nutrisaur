@@ -39,7 +39,8 @@ function getNutritionalAssessment($user) {
             floatval($user['weight']), 
             floatval($user['height']), 
             $user['birthday'], 
-            $user['sex']
+            $user['sex'],
+            $user['screening_date'] ?? null
         );
         
         if ($assessment['success']) {
@@ -3490,7 +3491,8 @@ header {
                                                 floatval($user['weight']),
                                                 floatval($user['height']),
                                                 $user['birthday'],
-                                                $user['sex']
+                                                $user['sex'],
+                                                $user['screening_date']
                                             );
                                         } catch (Exception $e) {
                                             // If WHO calculation fails, use fallback
@@ -3534,10 +3536,10 @@ header {
                                             $bmi_classification = 'N/A';
                                         }
                                         
-                                        // Calculate age in years and months
+                                        // Calculate age in years and months using screening date
                                         $birthDate = new DateTime($user['birthday']);
-                                        $today = new DateTime();
-                                        $age = $today->diff($birthDate);
+                                        $screeningDate = new DateTime($user['screening_date']);
+                                        $age = $birthDate->diff($screeningDate);
                                         
                                         // More accurate age calculation including days
                                         $ageInMonths = ($age->y * 12) + $age->m;
