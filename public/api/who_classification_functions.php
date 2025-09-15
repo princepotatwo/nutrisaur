@@ -23,22 +23,23 @@ function getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay = null) {
         $whereClause = "1=1";
         $params = [];
         
-        // Add time frame filter - check if screening_date column exists
+        // Add time frame filter - for now, let's get all users regardless of date
+        // TODO: Implement proper date filtering based on actual screening dates
         switch ($timeFrame) {
             case '1d':
-                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 1 DAY) OR screening_date IS NULL)";
+                // Get all users for now - no date filtering
                 break;
             case '7d':
-                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 7 DAY) OR screening_date IS NULL)";
+                // Get all users for now - no date filtering
                 break;
             case '30d':
-                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 30 DAY) OR screening_date IS NULL)";
+                // Get all users for now - no date filtering
                 break;
             case '90d':
-                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 90 DAY) OR screening_date IS NULL)";
+                // Get all users for now - no date filtering
                 break;
             case '1y':
-                $whereClause .= " AND (screening_date >= DATE_SUB(NOW(), INTERVAL 1 YEAR) OR screening_date IS NULL)";
+                // Get all users for now - no date filtering
                 break;
         }
         
