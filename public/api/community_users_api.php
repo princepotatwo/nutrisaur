@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Include the main configuration file
 require_once __DIR__ . '/../../config.php';
+require_once __DIR__ . '/DatabaseHelper.php';
 
 try {
     // Check if config.php exists
@@ -23,16 +24,17 @@ try {
         throw new Exception("Config file not found at: " . __DIR__ . '/../../config.php');
     }
     
-    $pdo = getDatabaseConnection();
-    if (!$pdo) {
-        throw new Exception("Failed to establish database connection");
+    // Use DatabaseHelper like screening.php does
+    $db = DatabaseHelper::getInstance();
+    if (!$db->isAvailable()) {
+        throw new Exception("Database connection not available");
     }
     
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action = $_POST['action'] ?? '';
         
         if ($action === 'import_community_users') {
-            handleCSVImport($pdo);
+            handleCSVImport($db);
         } else {
             echo json_encode(['success' => false, 'message' => 'Invalid action']);
         }
@@ -50,7 +52,7 @@ try {
     echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
 
-function handleCSVImport($pdo) {
+function handleCSVImport($db) {
     if (!isset($_FILES['csvFile']) || $_FILES['csvFile']['error'] !== UPLOAD_ERR_OK) {
         echo json_encode(['success' => false, 'message' => 'No CSV file uploaded or upload error']);
         return;
@@ -170,9 +172,6 @@ function handleCSVImport($pdo) {
     
     $importedCount = 0;
     $errors = [];
-    
-    // Start transaction
-    $pdo->beginTransaction();
     
     try {
         foreach ($csvData as $rowIndex => $row) {
@@ -352,10 +351,12 @@ function handleCSVImport($pdo) {
             
             // Note: BMI calculation removed as column may not exist in actual table
             
-            // Check if user already exists (by email or screening_id)
-            $checkStmt = $pdo->prepare("SELECT community_user_id FROM community_users WHERE email = ? OR screening_id = ?");
-            $checkStmt->execute([$email, $screeningId]);
-            $existingUser = $checkStmt->fetch();
+            // Check if user already exists (by email or screening_id) using DatabaseHelper
+            $existingUser = null;
+            $checkResult = $db->select('community_users', 'id', "email = ? OR screening_id = ?", [$email, $screeningId]);
+            if ($checkResult['success'] && !empty($checkResult['data'])) {
+                $existingUser = $checkResult['data'][0];
+            }
             
             // Calculate age
             $age = $today->diff($birthDate)->y;
@@ -366,58 +367,45 @@ function handleCSVImport($pdo) {
                 $bmi = round($weight / pow($height / 100, 2), 1);
             }
             
+            // Prepare data for insert/update
+            $userData = [
+                'name' => $name,
+                'email' => $email,
+                'password' => $password,
+                'municipality' => $municipality,
+                'barangay' => $barangay,
+                'sex' => $sex,
+                'birthday' => $birthday,
+                'age' => $age,
+                'is_pregnant' => $isPregnantValue,
+                'weight_kg' => $weight,
+                'height_cm' => $height,
+                'muac_cm' => $muac,
+                'bmi' => $bmi,
+                'screening_id' => $screeningId,
+                'screening_date' => $screeningDateTime->format('Y-m-d H:i:s')
+            ];
+            
             if ($existingUser) {
-                // Update existing user - use correct database column names based on actual schema
-                $updateSql = "UPDATE community_users SET 
-                                name = ?,
-                                password = ?,
-                                municipality = ?, 
-                                barangay = ?, 
-                                sex = ?, 
-                                birthday = ?, 
-                                age = ?,
-                                is_pregnant = ?, 
-                                weight_kg = ?, 
-                                height_cm = ?,
-                                muac_cm = ?,
-                                bmi = ?,
-                                screening_date = ?
-                              WHERE email = ? OR screening_id = ?";
+                // Update existing user using DatabaseHelper
+                $updateResult = $db->update('community_users', $userData, "email = ? OR screening_id = ?", [$email, $screeningId]);
                 
-                $updateStmt = $pdo->prepare($updateSql);
-                $result = $updateStmt->execute([
-                    $name, $password, $municipality, $barangay, $sex, $birthday, $age,
-                    $isPregnantValue, $weight, $height, $muac, $bmi, $screeningDateTime->format('Y-m-d H:i:s'), 
-                    $email, $screeningId
-                ]);
-                
-                if (!$result) {
-                    $errors[] = "Row $rowNumber: Failed to update existing user: " . implode(', ', $updateStmt->errorInfo());
+                if (!$updateResult['success']) {
+                    $errors[] = "Row $rowNumber: Failed to update existing user: " . ($updateResult['message'] ?? 'Unknown error');
                     continue;
                 }
             } else {
-                // Insert new user - use correct database column names based on actual schema
-                $insertSql = "INSERT INTO community_users 
-                             (name, email, password, municipality, barangay, sex, birthday, age, is_pregnant, weight_kg, height_cm, muac_cm, bmi, screening_id, screening_date) 
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                // Insert new user using DatabaseHelper
+                $insertResult = $db->insert('community_users', $userData);
                 
-                $insertStmt = $pdo->prepare($insertSql);
-                $result = $insertStmt->execute([
-                    $name, $email, $password, $municipality, $barangay, $sex, $birthday, $age, 
-                    $isPregnantValue, $weight, $height, $muac, $bmi, $screeningId, $screeningDateTime->format('Y-m-d H:i:s')
-                ]);
-                
-                if (!$result) {
-                    $errors[] = "Row $rowNumber: Failed to insert new user: " . implode(', ', $insertStmt->errorInfo());
+                if (!$insertResult['success']) {
+                    $errors[] = "Row $rowNumber: Failed to insert new user: " . ($insertResult['message'] ?? 'Unknown error');
                     continue;
                 }
             }
             
             $importedCount++;
         }
-        
-        // Commit transaction
-        $pdo->commit();
         
         echo json_encode([
             'success' => true,
@@ -427,8 +415,6 @@ function handleCSVImport($pdo) {
         ]);
         
     } catch (Exception $e) {
-        // Rollback transaction on error
-        $pdo->rollBack();
         error_log("CSV import error: " . $e->getMessage());
         echo json_encode([
             'success' => false,
