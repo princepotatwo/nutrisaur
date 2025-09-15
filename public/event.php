@@ -5197,8 +5197,10 @@ header:hover {
             } finally {
                 // Restore button state
                 const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span class="btn-text">Create Event</span>';
+                    submitBtn.disabled = false;
+                }
             }
         };
         
