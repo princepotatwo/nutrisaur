@@ -145,13 +145,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 // 🚨 NEW ACTION: SAVE EVENT ONLY (no notifications, no redirects)
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'save_event_only') {
     error_log("=== SAVE EVENT ONLY CALLED ===");
+    error_log("POST data received: " . print_r($_POST, true));
+    error_log("HTTP_X_REQUESTED_WITH: " . ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? 'NOT SET'));
     
     // Check if it's an AJAX request
     if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+        error_log("❌ Not an AJAX request");
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => 'Invalid request']);
         exit;
     }
+    
+    error_log("✅ AJAX request validated");
     
     try {
         // Get form data
@@ -5093,9 +5098,21 @@ header:hover {
             };
             
             console.log('Event data:', eventData);
+            console.log('Form element found:', !!form);
+            console.log('FormData entries:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ': ' + value);
+            }
             
             // Validate required fields
             if (!eventData.title || !eventData.type || !eventData.description || !eventData.date_time || !eventData.organizer) {
+                console.error('Missing required fields:', {
+                    title: eventData.title,
+                    type: eventData.type,
+                    description: eventData.description,
+                    date_time: eventData.date_time,
+                    organizer: eventData.organizer
+                });
                 alert('Please fill in all required fields');
                 return;
             }
