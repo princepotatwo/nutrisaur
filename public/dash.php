@@ -8238,6 +8238,8 @@ body {
                 
                 const usersData = await usersResponse.json();
                 console.log('Users data from database:', usersData);
+                console.log('Users data type:', typeof usersData.data);
+                console.log('Users data is array:', Array.isArray(usersData.data));
                 
                 if (!usersData.success || !usersData.data) {
                     return {
@@ -8245,6 +8247,10 @@ body {
                         error: 'No user data available'
                     };
                 }
+                
+                // Ensure data is an array
+                const userArray = Array.isArray(usersData.data) ? usersData.data : [];
+                console.log('User array length:', userArray.length);
                 
                 // Process each user with WHO growth standards
                 const classifications = {
@@ -8263,7 +8269,7 @@ body {
                 
                 let totalProcessed = 0;
                 
-                for (const user of usersData.data) {
+                for (const user of userArray) {
                     try {
                         // Calculate age in months
                         const birthDate = new Date(user.birthday);

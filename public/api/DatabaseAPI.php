@@ -1570,8 +1570,8 @@ class DatabaseAPI {
             $stmt->execute($params);
             $rawData = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            // Process raw data into distributions
-            return $this->processScreeningDataIntoDistributions($rawData);
+            // Return raw data for dashboard, processed data for other uses
+            return $rawData;
         } catch (PDOException $e) {
             error_log("Detailed screening responses error: " . $e->getMessage());
             return [];
