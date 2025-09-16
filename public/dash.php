@@ -8212,6 +8212,8 @@ body {
             const select = document.getElementById('whoStandardSelect');
             const selectedStandard = select.value;
             
+            console.log('WHO Standard selected:', selectedStandard);
+            
             try {
                 // Get current time frame and barangay
                 const timeFrame = '1d'; // You can make this dynamic
@@ -8347,8 +8349,10 @@ body {
                                     // Map to our classification categories
                                     if (classifications.hasOwnProperty(classification)) {
                                         classifications[classification]++;
+                                        console.log(`✅ Mapped ${user.email}: ${classification} (count: ${classifications[classification]})`);
                                     } else {
                                         classifications['No Data']++;
+                                        console.log(`❌ Unknown classification for ${user.email}: "${classification}"`);
                                     }
                                     
                                     totalProcessed++;
