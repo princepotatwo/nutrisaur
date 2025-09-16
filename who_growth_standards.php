@@ -327,10 +327,12 @@ class WHOGrowthStandards {
         $minDiff = PHP_FLOAT_MAX;
         
         foreach ($heights as $lookupHeight) {
-            $diff = abs($height - $lookupHeight);
+            // Convert string keys back to float for comparison
+            $lookupHeightFloat = is_string($lookupHeight) ? (float)$lookupHeight : $lookupHeight;
+            $diff = abs($height - $lookupHeightFloat);
             if ($diff < $minDiff) {
                 $minDiff = $diff;
-                $closest = $lookupHeight;
+                $closest = $lookupHeight; // Keep original key format
             }
         }
         
@@ -610,7 +612,7 @@ class WHOGrowthStandards {
             71 => ['median' => 7.5, 'sd' => 0.2],
             71.5 => ['median' => 7.6, 'sd' => 0.2],
             72 => ['median' => 7.7, 'sd' => 0.2],
-            72.5 => ['median' => 7.8, 'sd' => 0.2],
+            "72.5" => ['median' => 7.8, 'sd' => 0.2],
             73 => ['median' => 7.9, 'sd' => 0.2],
             73.5 => ['median' => 8.0, 'sd' => 0.2],
             74 => ['median' => 8.1, 'sd' => 0.2],
@@ -720,21 +722,21 @@ class WHOGrowthStandards {
         return [
             // Height 65-92.5 cm (from official WHO table)
             65 => ['median' => 6.0, 'sd' => 0.2],
-            65.5 => ['median' => 6.1, 'sd' => 0.2],
+            "65.5" => ['median' => 6.1, 'sd' => 0.2],
             66 => ['median' => 6.2, 'sd' => 0.2],
-            66.5 => ['median' => 6.3, 'sd' => 0.2],
+            "66.5" => ['median' => 6.3, 'sd' => 0.2],
             67 => ['median' => 6.4, 'sd' => 0.2],
-            67.5 => ['median' => 6.5, 'sd' => 0.2],
+            "67.5" => ['median' => 6.5, 'sd' => 0.2],
             68 => ['median' => 6.6, 'sd' => 0.2],
-            68.5 => ['median' => 6.7, 'sd' => 0.2],
+            "68.5" => ['median' => 6.7, 'sd' => 0.2],
             69 => ['median' => 6.8, 'sd' => 0.2],
-            69.5 => ['median' => 6.9, 'sd' => 0.2],
+            "69.5" => ['median' => 6.9, 'sd' => 0.2],
             70 => ['median' => 7.0, 'sd' => 0.2],
-            70.5 => ['median' => 7.1, 'sd' => 0.2],
+            "70.5" => ['median' => 7.1, 'sd' => 0.2],
             71 => ['median' => 7.2, 'sd' => 0.2],
-            71.5 => ['median' => 7.3, 'sd' => 0.2],
+            "71.5" => ['median' => 7.3, 'sd' => 0.2],
             72 => ['median' => 7.4, 'sd' => 0.2],
-            72.5 => ['median' => 7.5, 'sd' => 0.2],
+            "72.5" => ['median' => 7.5, 'sd' => 0.2],
             73 => ['median' => 7.6, 'sd' => 0.2],
             73.5 => ['median' => 7.7, 'sd' => 0.2],
             74 => ['median' => 7.8, 'sd' => 0.2],
