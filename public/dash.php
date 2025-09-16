@@ -7014,7 +7014,7 @@ body {
                         if (whoSelect) {
                             whoSelect.value = 'weight-for-age';
                         }
-                        handleWHOStandardChange();
+                    handleWHOStandardChange();
                         window.whoDataLoaded = true;
                     }
                     
@@ -8242,11 +8242,32 @@ body {
             }
         }
 
-        // Function to fetch WHO classification data directly from who_growth_standards.php
+        // Function to fetch WHO classification data using same method as screening.php
         async function fetchWHOClassificationData(whoStandard, timeFrame, barangay) {
             try {
-                // Get all users from the database first
-                const usersResponse = await fetch(`/api/DatabaseAPI.php?action=detailed_screening_responses&time_frame=${timeFrame}&barangay=${barangay}`);
+                // Call the new server-side endpoint that processes all users at once
+                const response = await fetch(`/api/DatabaseAPI.php?action=get_who_classifications&who_standard=${whoStandard}&time_frame=${timeFrame}&barangay=${barangay}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('WHO classification data received:', data);
+                
+                if (!data.success) {
+                    throw new Error('Failed to fetch WHO classification data');
+                }
+                
+                return data.data || { classifications: {}, total: 0 };
+                
+            } catch (error) {
+                console.error('Error fetching WHO classification data:', error);
+                return { classifications: {}, total: 0 };
+            }
+        }
+
+        // Function to update Nutritional Status Overview Card
                 
                 if (!usersResponse.ok) {
                     throw new Error(`HTTP error! status: ${usersResponse.status}`);

@@ -1577,6 +1577,102 @@ class DatabaseAPI {
             return [];
         }
     }
+
+    public function getWHOClassifications($whoStandard, $timeFrame = '1d', $barangay = '') {
+        try {
+            // Get all users (same as screening.php)
+            $users = $this->getDetailedScreeningResponses($timeFrame, $barangay);
+            
+            if (empty($users)) {
+                return [
+                    'success' => true,
+                    'data' => [
+                        'classifications' => [],
+                        'total' => 0
+                    ]
+                ];
+            }
+            
+            // Initialize classifications
+            $classifications = [
+                'Severely Underweight' => 0,
+                'Underweight' => 0,
+                'Normal' => 0,
+                'Overweight' => 0,
+                'Obese' => 0,
+                'Severely Wasted' => 0,
+                'Wasted' => 0,
+                'Severely Stunted' => 0,
+                'Stunted' => 0,
+                'Tall' => 0,
+                'No Data' => 0
+            ];
+            
+            $totalProcessed = 0;
+            
+            // Process each user (same logic as screening.php)
+            foreach ($users as $user) {
+                try {
+                    require_once 'who_growth_standards.php';
+                    $who = new WHOGrowthStandards();
+                    
+                    $assessment = $who->getComprehensiveAssessment(
+                        floatval($user['weight']),
+                        floatval($user['height']),
+                        $user['birthday'],
+                        $user['sex'],
+                        $user['screening_date'] ?? null
+                    );
+                    
+                    if ($assessment['success'] && isset($assessment['results'])) {
+                        $results = $assessment['results'];
+                        $classification = 'Normal'; // default
+                        
+                        // Get classification based on selected WHO standard (same as screening.php)
+                        if ($whoStandard === 'weight-for-age' && isset($results['weight_for_age'])) {
+                            $classification = $results['weight_for_age']['classification'] ?? 'Normal';
+                        } else if ($whoStandard === 'height-for-age' && isset($results['height_for_age'])) {
+                            $classification = $results['height_for_age']['classification'] ?? 'Normal';
+                        } else if ($whoStandard === 'weight-for-height' && isset($results['weight_for_height'])) {
+                            $classification = $results['weight_for_height']['classification'] ?? 'Normal';
+                        } else if ($whoStandard === 'weight-for-length' && isset($results['weight_for_length'])) {
+                            $classification = $results['weight_for_length']['classification'] ?? 'Normal';
+                        } else if ($whoStandard === 'bmi-for-age' && isset($results['bmi_for_age'])) {
+                            $classification = $results['bmi_for_age']['classification'] ?? 'Normal';
+                        }
+                        
+                        // Count the classification
+                        if (isset($classifications[$classification])) {
+                            $classifications[$classification]++;
+                        } else {
+                            $classifications['No Data']++;
+                        }
+                        
+                        $totalProcessed++;
+                    } else {
+                        $classifications['No Data']++;
+                    }
+                } catch (Exception $e) {
+                    $classifications['No Data']++;
+                }
+            }
+            
+            return [
+                'success' => true,
+                'data' => [
+                    'classifications' => $classifications,
+                    'total' => $totalProcessed
+                ]
+            ];
+            
+        } catch (Exception $e) {
+            error_log("WHO classifications error: " . $e->getMessage());
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
     
     /**
      * Process raw screening data into distributions for UI display
@@ -3596,6 +3692,15 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             
             $responses = $db->getDetailedScreeningResponses($timeFrame, $barangay);
             echo json_encode(['success' => true, 'data' => $responses]);
+            break;
+            
+        case 'get_who_classifications':
+            $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            $result = $db->getWHOClassifications($whoStandard, $timeFrame, $barangay);
+            echo json_encode($result);
             break;
             
         case 'critical_alerts':
