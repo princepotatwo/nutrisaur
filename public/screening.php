@@ -2057,34 +2057,36 @@ header {
         .action-section {
             display: flex;
             gap: 12px;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             flex-wrap: nowrap;
+            flex: 1;
         }
 
         .action-buttons {
-            display: flex;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .filter-dropdowns {
             display: flex;
             gap: 8px;
             flex-shrink: 0;
         }
 
+        .filter-dropdowns {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
         .filter-select {
-            padding: 6px 8px;
+            padding: 5px 6px;
             border: 2px solid rgba(161, 180, 84, 0.3);
             background: var(--color-bg);
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--color-text);
             outline: none;
             transition: all 0.3s ease;
-            min-width: 120px;
-            max-width: 140px;
+            min-width: 100px;
+            max-width: 120px;
             cursor: pointer;
         }
 
@@ -2255,8 +2257,8 @@ header {
             }
 
             .btn-add, .btn-secondary {
-                flex: 1;
-                min-width: 140px;
+                flex: 0 0 auto;
+                min-width: 120px;
             }
 
             .filter-dropdowns {
@@ -2305,9 +2307,9 @@ header {
             }
 
             .filter-select {
-                min-width: 100px;
-                font-size: 10px;
-                padding: 5px 8px;
+                min-width: 80px;
+                font-size: 9px;
+                padding: 4px 6px;
             }
 
             .filter-item {
@@ -2358,7 +2360,7 @@ header {
         .btn-add {
             background: var(--color-highlight);
             color: white;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
@@ -2367,11 +2369,12 @@ header {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            font-size: 13px;
+            gap: 6px;
+            font-size: 12px;
             white-space: nowrap;
-            flex: 1;
-            height: 44px;
+            flex: 0 0 auto;
+            height: 36px;
+            min-width: 140px;
         }
 
         .btn-add:hover {
@@ -2392,7 +2395,7 @@ header {
         .btn-secondary {
             background: var(--color-accent3);
             color: white;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
@@ -2401,11 +2404,12 @@ header {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            font-size: 13px;
+            gap: 6px;
+            font-size: 12px;
             white-space: nowrap;
-            flex: 1;
-            height: 44px;
+            flex: 0 0 auto;
+            height: 36px;
+            min-width: 120px;
         }
 
         .btn-secondary:hover {
