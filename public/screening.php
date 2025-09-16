@@ -2057,19 +2057,25 @@ header {
         .action-section {
             display: flex;
             gap: 12px;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
         }
 
         .filter-dropdowns {
             display: flex;
             gap: 8px;
-            margin-left: 12px;
+            flex-shrink: 0;
         }
 
         .filter-select {
-            padding: 6px 10px;
+            padding: 6px 8px;
             border: 2px solid rgba(161, 180, 84, 0.3);
             background: var(--color-bg);
             border-radius: 6px;
@@ -2077,7 +2083,8 @@ header {
             color: var(--color-text);
             outline: none;
             transition: all 0.3s ease;
-            min-width: 140px;
+            min-width: 120px;
+            max-width: 140px;
             cursor: pointer;
         }
 
@@ -2238,9 +2245,13 @@ header {
             }
 
             .action-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .action-buttons {
                 justify-content: center;
                 flex-wrap: wrap;
-                gap: 10px;
             }
 
             .btn-add, .btn-secondary {
@@ -2249,10 +2260,8 @@ header {
             }
 
             .filter-dropdowns {
-                margin-left: 0;
-                margin-top: 8px;
-                width: 100%;
                 justify-content: center;
+                flex-wrap: wrap;
             }
 
             .filter-select {
@@ -2285,10 +2294,14 @@ header {
                 gap: 8px;
             }
 
+            .action-buttons {
+                flex-direction: column;
+                gap: 6px;
+            }
+
             .filter-dropdowns {
                 flex-direction: column;
                 gap: 6px;
-                margin-top: 6px;
             }
 
             .filter-select {
@@ -3448,14 +3461,16 @@ header {
                     <!-- Row 1: Action Buttons and Search -->
                     <div class="control-row-1">
                         <div class="action-section">
-                            <button class="btn-add" onclick="downloadCSVTemplate()">
-                                <span class="btn-icon">📥</span>
-                                <span class="btn-text">Download Template</span>
-                            </button>
-                            <button class="btn-secondary" onclick="showCSVImportModal()">
-                                <span class="btn-icon">📁</span>
-                                <span class="btn-text">Import CSV</span>
-                            </button>
+                            <div class="action-buttons">
+                                <button class="btn-add" onclick="downloadCSVTemplate()">
+                                    <span class="btn-icon">📥</span>
+                                    <span class="btn-text">Download Template</span>
+                                </button>
+                                <button class="btn-secondary" onclick="showCSVImportModal()">
+                                    <span class="btn-icon">📁</span>
+                                    <span class="btn-text">Import CSV</span>
+                                </button>
+                            </div>
                             
                             <!-- New Sorting and Classification Filters -->
                             <div class="filter-dropdowns">
