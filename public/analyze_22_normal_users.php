@@ -1,6 +1,6 @@
 <?php
 // Focused analysis of the 22 Normal users to find the accuracy problem
-require_once 'public/api/DatabaseAPI.php';
+require_once 'api/DatabaseAPI.php';
 
 echo "=== ANALYZING 22 NORMAL USERS FOR ACCURACY ISSUES ===\n\n";
 
@@ -44,7 +44,7 @@ if ($result['success'] && isset($result['data']['debug_info'])) {
             echo "\n--- MANUAL VERIFICATION ---\n";
             
             // Load WHO standards to manually verify
-            require_once 'who_growth_standards.php';
+            require_once '../who_growth_standards.php';
             $who = new WHOGrowthStandards();
             
             // Get the lookup table for manual verification

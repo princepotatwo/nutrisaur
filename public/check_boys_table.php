@@ -1,6 +1,6 @@
 <?php
 // Check the boys' lookup table for data accuracy
-require_once 'who_growth_standards.php';
+require_once '../who_growth_standards.php';
 
 echo "=== CHECKING BOYS' LOOKUP TABLE ACCURACY ===\n\n";
 

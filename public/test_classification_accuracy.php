@@ -1,6 +1,6 @@
 <?php
 // Test classification accuracy with known test cases
-require_once 'who_growth_standards.php';
+require_once '../who_growth_standards.php';
 
 echo "=== TESTING CLASSIFICATION ACCURACY ===\n\n";
 
