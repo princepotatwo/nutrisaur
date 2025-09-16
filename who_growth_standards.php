@@ -956,7 +956,7 @@ class WHOGrowthStandards {
                 default:
                     return ['classification' => 'Age not found', 'method' => 'hardcoded_simple'];
             }
-                } else {
+        } else {
             // GIRLS - Individual cases for each month 0-35
             switch ($ageInMonths) {
                 case 0: // Birth
