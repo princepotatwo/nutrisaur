@@ -6261,7 +6261,7 @@ body {
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h3>WHO Growth Standards Classification</h3>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;" onchange="handleWHOStandardChange()">
+                        <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
                             <option value="weight-for-age" selected>Weight for Age</option>
                             <option value="height-for-age">Height for Age</option>
                             <option value="weight-for-height">Weight for Height</option>
@@ -7013,8 +7013,13 @@ body {
                         const whoSelect = document.getElementById('whoStandardSelect');
                         if (whoSelect) {
                             whoSelect.value = 'weight-for-age';
+                            
+                            // Add event listener for dropdown change
+                            whoSelect.addEventListener('change', async function() {
+                                await handleWHOStandardChange();
+                            });
                         }
-                    await handleWHOStandardChange();
+                        await handleWHOStandardChange();
                         window.whoDataLoaded = true;
                     }
                     
