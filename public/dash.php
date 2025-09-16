@@ -8027,73 +8027,25 @@ body {
 
         // Function to update WHO classification chart
         function updateWHOClassificationChart(data) {
-            console.log('updateWHOClassificationChart called with data:', data);
+            console.log('WHO Chart Update - Data received:', data);
+            
             try {
-                // Get the donut chart elements
+                // Get chart elements
                 const chartBg = document.getElementById('risk-chart-bg');
                 const centerText = document.getElementById('risk-center-text');
                 const segments = document.getElementById('risk-segments');
                 
-                console.log('Chart elements found:', { chartBg, centerText, segments });
-                
                 if (!chartBg || !centerText || !segments) {
-                    console.log('Missing chart elements, returning');
+                    console.error('Chart elements not found');
                     return;
                 }
                 
-                // Update chart description based on WHO standard
-                if (data && data.who_standard) {
-                    updateWHOChartDescription(data.who_standard);
-                }
-                
-                // Add loading state to prevent flickering
+                // Clear previous data
+                segments.innerHTML = '';
                 chartBg.style.opacity = '0.8';
 
-                // Clear existing segments
-                segments.innerHTML = '';
-                
-                // Define colors and labels for WHO classifications
-                const colors = {
-                    'Severely Underweight': '#D32F2F',  // Dark red for severely underweight
-                    'Underweight': '#FF9800',           // Orange for underweight
-                    'Normal': '#4CAF50',                // Green for normal
-                    'Overweight': '#FFC107',            // Amber for overweight
-                    'Obese': '#F44336',                 // Red for obese
-                    'Severely Wasted': '#8E24AA',       // Purple for severely wasted
-                    'Wasted': '#9C27B0',                // Light purple for wasted
-                    'Severely Stunted': '#795548',      // Brown for severely stunted
-                    'Stunted': '#607D8B',               // Blue gray for stunted
-                    'Tall': '#2196F3',                  // Blue for tall
-                    'No Data': '#9E9E9E'                // Gray for no data
-                };
-                
-                // Get all possible labels from the data
-                const allLabels = ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese', 'Severely Wasted', 'Wasted', 'Severely Stunted', 'Stunted', 'Tall', 'No Data'];
-                
-                // Get classification data - initialize all possible classifications
-                let classifications = {
-                    'Severely Underweight': 0,
-                    'Underweight': 0,
-                    'Normal': 0,
-                    'Overweight': 0,
-                    'Obese': 0,
-                    'Severely Wasted': 0,
-                    'Wasted': 0,
-                    'Severely Stunted': 0,
-                    'Stunted': 0,
-                    'Tall': 0,
-                    'No Data': 0
-                };
-                
-                let totalUsers = 0;
-                
-                if (data && data.classifications) {
-                    classifications = data.classifications;
-                    totalUsers = data.total || 0;
-                }
-                
-                // If no data, show no data message
-                if (totalUsers === 0) {
+                // Check if we have valid data
+                if (!data || !data.classifications || data.total === 0) {
                     centerText.textContent = 'No Data';
                     centerText.style.color = '#999';
                     chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
@@ -8102,46 +8054,59 @@ body {
                     return;
                 }
                 
-                // Calculate percentages and create segments
-                const validSegments = [];
-                let totalPercentage = 0;
+                const classifications = data.classifications;
+                const totalUsers = data.total;
                 
-                allLabels.forEach(label => {
-                    const count = classifications[label] || 0;
+                console.log('Processing classifications:', classifications);
+                console.log('Total users:', totalUsers);
+                
+                // Define colors for each classification
+                const colors = {
+                    'Severely Underweight': '#D32F2F',
+                    'Underweight': '#FF9800',
+                    'Normal': '#4CAF50',
+                    'Overweight': '#FFC107',
+                    'Obese': '#F44336',
+                    'Severely Wasted': '#8E24AA',
+                    'Wasted': '#9C27B0',
+                    'Severely Stunted': '#795548',
+                    'Stunted': '#607D8B',
+                    'Tall': '#2196F3',
+                    'No Data': '#9E9E9E'
+                };
+                
+                // Create segments array with only classifications that have data
+                const chartSegments = [];
+                let currentAngle = 0;
+                
+                Object.keys(classifications).forEach(classification => {
+                    const count = classifications[classification];
                     if (count > 0) {
                         const percentage = (count / totalUsers) * 100;
-                        totalPercentage += percentage;
-                        validSegments.push({
-                            label: label,
+                        chartSegments.push({
+                            label: classification,
                             count: count,
                             percentage: percentage,
-                            color: colors[label]
+                            color: colors[classification] || '#999',
+                            startAngle: currentAngle,
+                            endAngle: currentAngle + percentage
                         });
+                        currentAngle += percentage;
                     }
                 });
                 
-                // Update center text with total users
+                console.log('Chart segments:', chartSegments);
+                
+                // Update center text
                 centerText.textContent = totalUsers;
                 centerText.style.color = '#333';
                 
                 // Create conic gradient
-                let gradientString = '';
-                let currentPercent = 0;
-                
-                validSegments.forEach((segment, index) => {
-                    const startPercent = currentPercent;
-                    const endPercent = index === validSegments.length - 1 ? 100 : currentPercent + segment.percentage;
-                    
-                    gradientString += `${segment.color} ${startPercent}% ${endPercent}%`;
-                    if (endPercent < 100) {
-                        gradientString += ', ';
-                    }
-                    currentPercent = endPercent;
-                });
-                
-                // Apply gradient
-                if (gradientString.trim()) {
-                    chartBg.style.background = `conic-gradient(${gradientString})`;
+                if (chartSegments.length > 0) {
+                    const gradientParts = chartSegments.map(segment => 
+                        `${segment.color} ${segment.startAngle}% ${segment.endAngle}%`
+                    );
+                    chartBg.style.background = `conic-gradient(${gradientParts.join(', ')})`;
                     chartBg.style.opacity = '1';
                 } else {
                     chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
@@ -8149,52 +8114,36 @@ body {
                 }
                 
                 // Create segment indicators
-                validSegments.forEach(segment => {
+                chartSegments.forEach(segment => {
                     const segmentDiv = document.createElement('div');
                     segmentDiv.className = 'segment compact';
-                    segmentDiv.setAttribute('data-classification', segment.label.toLowerCase().replace(/\s+/g, '-'));
-                    
-                    const labelSpan = document.createElement('span');
-                    labelSpan.className = 'segment-label';
-                    labelSpan.innerHTML = `
+                    segmentDiv.innerHTML = `
+                        <span class="segment-label">
                         <span style="background-color: ${segment.color}; width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
                         ${segment.label}: ${segment.count} (${segment.percentage.toFixed(1)}%)
+                        </span>
                     `;
-                    
-                    segmentDiv.appendChild(labelSpan);
                     segments.appendChild(segmentDiv);
                 });
                 
-                // Create percentage labels around donut
-                const percentageLabelsContainer = document.getElementById('percentage-labels');
-                if (percentageLabelsContainer) {
-                    percentageLabelsContainer.innerHTML = '';
-                    
-                    let currentAngle = 0;
-                    validSegments.forEach(segment => {
-                        const angle = (segment.percentage / 100) * 360;
-                        const midAngle = currentAngle + (angle / 2);
-                        const radians = (midAngle - 90) * (Math.PI / 180);
-                        
-                        const label = document.createElement('div');
-                        label.className = 'percentage-label';
-                        label.textContent = `${segment.percentage.toFixed(1)}%`;
-                        label.style.position = 'absolute';
-                        label.style.left = '50%';
-                        label.style.top = '50%';
-                        label.style.transform = `translate(-50%, -50%) translate(${Math.cos(radians) * 80}px, ${Math.sin(radians) * 80}px)`;
-                        label.style.fontSize = '12px';
-                        label.style.fontWeight = 'bold';
-                        label.style.color = '#333';
-                        label.style.textShadow = '1px 1px 2px rgba(255,255,255,0.8)';
-                        
-                        percentageLabelsContainer.appendChild(label);
-                        currentAngle += angle;
-                    });
-                }
+                console.log('WHO chart updated successfully');
                 
             } catch (error) {
                 console.error('Error updating WHO classification chart:', error);
+                
+                // Show error state
+                const centerText = document.getElementById('risk-center-text');
+                const chartBg = document.getElementById('risk-chart-bg');
+                const segments = document.getElementById('risk-segments');
+                
+                if (centerText) centerText.textContent = 'Error';
+                if (chartBg) {
+                    chartBg.style.background = 'conic-gradient(#ffebee 0% 100%)';
+                    chartBg.style.opacity = '0.5';
+                }
+                if (segments) {
+                    segments.innerHTML = '<div style="text-align: center; color: #f44336;">Error loading data</div>';
+                }
             }
         }
 
@@ -8202,222 +8151,88 @@ body {
         async function handleWHOStandardChange() {
             // Prevent multiple simultaneous calls
             if (window.whoClassificationLoading) {
+                console.log('WHO classification already loading, skipping...');
                 return;
             }
             
             window.whoClassificationLoading = true;
+            console.log('🔄 Starting WHO standard change handler...');
             
             const select = document.getElementById('whoStandardSelect');
             const selectedStandard = select ? select.value : 'weight-for-age';
             
-            console.log('WHO Standard selected:', selectedStandard);
-            console.log('Dropdown element found:', !!select);
-            console.log('Dropdown value:', select ? select.value : 'N/A');
+            console.log('📊 WHO Standard selected:', selectedStandard);
+            console.log('📊 Dropdown element found:', !!select);
+            console.log('📊 Dropdown value:', select ? select.value : 'N/A');
             
             try {
                 // Get current time frame and barangay
-                const timeFrame = '1d'; // You can make this dynamic
-                const barangay = ''; // You can make this dynamic
+                const timeFrame = '1d';
+                const barangay = '';
                 
+                console.log('📡 Fetching WHO data...');
                 // Fetch WHO classification data
                 const response = await fetchWHOClassificationData(selectedStandard, timeFrame, barangay);
-                console.log('Data received for chart update:', response);
+                console.log('📊 Data received for chart update:', response);
                 
                 // Update the chart with the correct data structure
+                console.log('🎨 Updating chart...');
                 updateWHOClassificationChart(response);
+                console.log('✅ Chart update completed');
                 
             } catch (error) {
-                console.error('Error updating WHO classification chart:', error);
+                console.error('❌ Error updating WHO classification chart:', error);
             } finally {
                 window.whoClassificationLoading = false;
+                console.log('🏁 WHO classification loading completed');
             }
         }
 
-        // Function to fetch WHO classification data using same method as screening.php
+        // Function to fetch WHO classification data
         async function fetchWHOClassificationData(whoStandard, timeFrame, barangay) {
             try {
-                // Call the new server-side endpoint that processes all users at once
-                const response = await fetch(`/api/DatabaseAPI.php?action=get_who_classifications&who_standard=${whoStandard}&time_frame=${timeFrame}&barangay=${barangay}`);
+                console.log('Fetching WHO data for:', { whoStandard, timeFrame, barangay });
+                
+                const url = `/api/DatabaseAPI.php?action=get_who_classifications&who_standard=${whoStandard}&time_frame=${timeFrame}&barangay=${barangay}`;
+                console.log('API URL:', url);
+                
+                const response = await fetch(url);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                const data = await response.json();
-                console.log('WHO classification data received:', data);
+                const result = await response.json();
+                console.log('API Response:', result);
                 
-                if (!data.success) {
-                    throw new Error('Failed to fetch WHO classification data');
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to fetch WHO classification data');
                 }
                 
-                return data.data || { classifications: {}, total: 0 };
+                // Ensure we have the expected data structure
+                const data = result.data || {};
+                const classifications = data.classifications || {};
+                const total = data.total || 0;
+                
+                console.log('Processed data:', { classifications, total });
+                
+                    return {
+                    classifications: classifications,
+                    total: total,
+                    who_standard: whoStandard
+                };
                 
             } catch (error) {
                 console.error('Error fetching WHO classification data:', error);
-                return { classifications: {}, total: 0 };
+                return {
+                    classifications: {}, 
+                    total: 0,
+                    who_standard: whoStandard,
+                    error: error.message
+                };
             }
         }
 
-        // Function to update Nutritional Status Overview Card
-                
-                if (!usersResponse.ok) {
-                    throw new Error(`HTTP error! status: ${usersResponse.status}`);
-                }
-                
-                const usersData = await usersResponse.json();
-                console.log('Users data from database:', usersData);
-                console.log('Users data type:', typeof usersData.data);
-                console.log('Users data is array:', Array.isArray(usersData.data));
-                
-                if (!usersData.success || !usersData.data) {
-                    return {
-                        success: false,
-                        error: 'No user data available'
-                    };
-                }
-                
-                // Ensure data is an array
-                const userArray = Array.isArray(usersData.data) ? usersData.data : [];
-                console.log('User array length:', userArray.length);
-                
-                // Process each user with WHO growth standards
-                const classifications = {
-                    'Severely Underweight': 0,
-                    'Underweight': 0,
-                    'Normal': 0,
-                    'Overweight': 0,
-                    'Obese': 0,
-                    'Severely Wasted': 0,
-                    'Wasted': 0,
-                    'Severely Stunted': 0,
-                    'Stunted': 0,
-                    'Tall': 0,
-                    'No Data': 0
-                };
-                
-                let totalProcessed = 0;
-                
-                for (const user of userArray) {
-                    try {
-                        // Calculate age in months
-                        const birthDate = new Date(user.birthday);
-                        const screeningDate = new Date(user.screening_date || new Date());
-                        const ageInMonths = ((screeningDate.getFullYear() - birthDate.getFullYear()) * 12) + 
-                                          (screeningDate.getMonth() - birthDate.getMonth());
-                        
-                        // Apply age and height restrictions based on WHO standard
-                        let shouldProcess = false;
-                        
-                        if (whoStandard === 'weight-for-age' || whoStandard === 'height-for-age') {
-                            shouldProcess = (ageInMonths >= 0 && ageInMonths <= 71);
-                        } else if (whoStandard === 'bmi-for-age') {
-                            shouldProcess = true; // BMI-for-age can be used for all ages
-                        } else if (whoStandard === 'weight-for-height') {
-                            const heightCm = parseFloat(user.height);
-                            shouldProcess = (heightCm >= 65 && heightCm <= 120);
-                        } else if (whoStandard === 'weight-for-length') {
-                            const heightCm = parseFloat(user.height);
-                            shouldProcess = (heightCm >= 45 && heightCm <= 110);
-                        }
-                        
-                        if (shouldProcess) {
-                            // Call WHO growth standards API for this user
-                            const whoResponse = await fetch(`/api/who_growth_standards.php`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                },
-                                body: new URLSearchParams({
-                                    action: 'process_growth_standards',
-                                    weight: user.weight,
-                                    height: user.height,
-                                    birth_date: user.birthday,
-                                    sex: user.sex,
-                                    screening_date: user.screening_date || new Date().toISOString().split('T')[0]
-                                })
-                            });
-                            
-                            if (whoResponse.ok) {
-                                const whoData = await whoResponse.json();
-                                console.log('WHO API Response for user:', user.email, whoData);
-                                if (whoData.success && whoData.results) {
-                                    let classification = 'No Data';
-                                    
-                                    // Get classification based on selected WHO standard
-                                    switch (whoStandard) {
-                                        case 'weight-for-age':
-                                            classification = whoData.results.weight_for_age?.classification || 'No Data';
-                                            break;
-                                        case 'height-for-age':
-                                            classification = whoData.results.height_for_age?.classification || 'No Data';
-                                            break;
-                                        case 'weight-for-height':
-                                            classification = whoData.results.weight_for_height?.classification || 'No Data';
-                                            break;
-                                        case 'weight-for-length':
-                                            classification = whoData.results.weight_for_length?.classification || 'No Data';
-                                            break;
-                                        case 'bmi-for-age':
-                                            classification = whoData.results.bmi_for_age?.classification || 'No Data';
-                                            break;
-                                    }
-                                    
-                                    console.log(`User ${user.email}: whoData.results =`, whoData.results);
-                                    console.log(`User ${user.email}: selected standard = ${whoStandard}`);
-                                    
-                                    console.log(`User ${user.email}: classification = "${classification}"`);
-                                    
-                                    // Map to our classification categories
-                                    if (classifications.hasOwnProperty(classification)) {
-                                        classifications[classification]++;
-                                        console.log(`✅ Mapped ${user.email}: ${classification} (count: ${classifications[classification]})`);
-                                    } else {
-                                        classifications['No Data']++;
-                                        console.log(`❌ Unknown classification for ${user.email}: "${classification}"`);
-                                    }
-                                    
-                                    totalProcessed++;
-                                }
-                            }
-                        }
-            } catch (error) {
-                        console.error('Error processing user:', error);
-                        classifications['No Data']++;
-                    }
-                }
-                
-                console.log('Final classifications:', classifications);
-                console.log('Total processed:', totalProcessed);
-                
-                return {
-                    success: true,
-                    classifications: classifications,
-                    total_users: totalProcessed,
-                    who_standard: whoStandard
-                };
-                
-            } catch (error) {
-                console.error('Error fetching WHO classification data:', error);
-                return {
-                    success: false,
-                    classifications: {
-                        'Severely Underweight': 0,
-                        'Underweight': 0,
-                        'Normal': 0,
-                        'Overweight': 0,
-                        'Obese': 0,
-                        'Severely Wasted': 0,
-                        'Wasted': 0,
-                        'Severely Stunted': 0,
-                        'Stunted': 0,
-                        'Tall': 0,
-                        'No Data': 0
-                    },
-                    total_users: 0,
-                    who_standard: whoStandard
-                };
-            }
-        }
 
         // Function to update Nutritional Status Overview Card
         function updateNutritionalStatusCard(whzData, muacData) {
