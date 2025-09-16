@@ -1520,6 +1520,7 @@ class WHOGrowthStandards {
     public function calculateWeightForAge($weight, $ageInMonths, $sex) {
         // DEBUG: Log input parameters
         error_log("DEBUG calculateWeightForAge: weight=$weight, ageInMonths=$ageInMonths, sex=$sex");
+        file_put_contents('debug_classification.log', "DEBUG calculateWeightForAge: weight=$weight, ageInMonths=$ageInMonths, sex=$sex\n", FILE_APPEND);
         
         // Step 1: Check sex
         if ($sex === 'Male') {
@@ -1528,10 +1529,12 @@ class WHOGrowthStandards {
             $closestAge = $this->findClosestAge($ranges, $ageInMonths);
             
             error_log("DEBUG: closestAge=$closestAge, ranges available: " . implode(',', array_keys($ranges)));
+            file_put_contents('debug_classification.log', "DEBUG: closestAge=$closestAge, ranges available: " . implode(',', array_keys($ranges)) . "\n", FILE_APPEND);
             
             if ($closestAge !== null) {
                 $ageRanges = $ranges[$closestAge];
                 error_log("DEBUG: ageRanges for age $closestAge: " . json_encode($ageRanges));
+                file_put_contents('debug_classification.log', "DEBUG: ageRanges for age $closestAge: " . json_encode($ageRanges) . "\n", FILE_APPEND);
                 
                 // Step 3: Hardcoded decision tree - check weight against exact ranges
                 // Also calculate z-score using the original WHO data for display
@@ -1549,8 +1552,15 @@ class WHOGrowthStandards {
                 error_log("  Normal: <= " . $ageRanges['normal']['max']);
                 error_log("  Overweight: >= " . $ageRanges['overweight']['min']);
                 
+                file_put_contents('debug_classification.log', "DEBUG: Checking weight $weight against ranges:\n", FILE_APPEND);
+                file_put_contents('debug_classification.log', "  Severely Underweight: <= " . $ageRanges['severely_underweight']['max'] . "\n", FILE_APPEND);
+                file_put_contents('debug_classification.log', "  Underweight: <= " . $ageRanges['underweight']['max'] . "\n", FILE_APPEND);
+                file_put_contents('debug_classification.log', "  Normal: <= " . $ageRanges['normal']['max'] . "\n", FILE_APPEND);
+                file_put_contents('debug_classification.log', "  Overweight: >= " . $ageRanges['overweight']['min'] . "\n", FILE_APPEND);
+                
                 if ($weight <= $ageRanges['severely_underweight']['max']) {
                     error_log("DEBUG: Classified as Severely Underweight");
+                    file_put_contents('debug_classification.log', "DEBUG: Classified as Severely Underweight\n", FILE_APPEND);
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Severely Underweight',
@@ -1560,6 +1570,7 @@ class WHOGrowthStandards {
                     ];
                 } elseif ($weight <= $ageRanges['underweight']['max']) {
                     error_log("DEBUG: Classified as Underweight");
+                    file_put_contents('debug_classification.log', "DEBUG: Classified as Underweight\n", FILE_APPEND);
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Underweight',
@@ -1569,6 +1580,7 @@ class WHOGrowthStandards {
                     ];
                 } elseif ($weight <= $ageRanges['normal']['max']) {
                     error_log("DEBUG: Classified as Normal");
+                    file_put_contents('debug_classification.log', "DEBUG: Classified as Normal\n", FILE_APPEND);
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Normal',
@@ -1578,6 +1590,7 @@ class WHOGrowthStandards {
                     ];
                 } else {
                     error_log("DEBUG: Classified as Overweight");
+                    file_put_contents('debug_classification.log', "DEBUG: Classified as Overweight\n", FILE_APPEND);
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Overweight',
