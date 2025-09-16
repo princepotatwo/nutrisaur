@@ -54,6 +54,23 @@ class WHOGrowthStandards {
             return 'Overweight';
         }
     }
+
+    /**
+     * Get BMI classification based on z-score
+     */
+    public function getBMIClassification($zScore) {
+        if ($zScore < -3) {
+            return 'Severely Underweight';
+        } elseif ($zScore < -2) {
+            return 'Underweight';
+        } elseif ($zScore <= 1) {
+            return 'Normal';
+        } elseif ($zScore <= 2) {
+            return 'Overweight';
+        } else {
+            return 'Obese';
+        }
+    }
     
     /**
      * Get nutritional classification for Weight-for-Height (includes Obese category)
@@ -80,79 +97,79 @@ class WHOGrowthStandards {
         return [
             // Age 0-35 Months - Exact values from WHO official tables
             0 => ['median' => 3.3, 'sd' => 0.3],
-            1 => ['median' => 4.5, 'sd' => 0.4],
-            2 => ['median' => 5.6, 'sd' => 0.4],
-            3 => ['median' => 6.4, 'sd' => 0.4],
-            4 => ['median' => 7.0, 'sd' => 0.4],
-            5 => ['median' => 7.5, 'sd' => 0.4],
-            6 => ['median' => 7.9, 'sd' => 0.4],
-            7 => ['median' => 8.3, 'sd' => 0.4],
-            8 => ['median' => 8.6, 'sd' => 0.4],
-            9 => ['median' => 8.9, 'sd' => 0.4],
-            10 => ['median' => 9.2, 'sd' => 0.4],
-            11 => ['median' => 9.4, 'sd' => 0.4],
-            12 => ['median' => 9.6, 'sd' => 0.4],
-            13 => ['median' => 9.9, 'sd' => 0.4],
-            14 => ['median' => 10.1, 'sd' => 0.4],
-            15 => ['median' => 10.3, 'sd' => 0.4],
-            16 => ['median' => 10.5, 'sd' => 0.4],
-            17 => ['median' => 10.7, 'sd' => 0.4],
-            18 => ['median' => 10.9, 'sd' => 0.4],
-            19 => ['median' => 11.1, 'sd' => 0.4],
-            20 => ['median' => 11.3, 'sd' => 0.4],
-            21 => ['median' => 11.5, 'sd' => 0.4],
-            22 => ['median' => 11.8, 'sd' => 0.4],
-            23 => ['median' => 12.0, 'sd' => 0.4],
-            24 => ['median' => 12.2, 'sd' => 0.4],
-            25 => ['median' => 12.4, 'sd' => 0.4],
-            26 => ['median' => 12.5, 'sd' => 0.4],
-            27 => ['median' => 12.7, 'sd' => 0.4],
-            28 => ['median' => 12.9, 'sd' => 0.4],
-            29 => ['median' => 13.0, 'sd' => 0.4],
-            30 => ['median' => 13.2, 'sd' => 0.4],
-            31 => ['median' => 13.4, 'sd' => 0.4],
-            32 => ['median' => 13.5, 'sd' => 0.4],
-            33 => ['median' => 13.7, 'sd' => 0.4],
-            34 => ['median' => 13.8, 'sd' => 0.4],
-            35 => ['median' => 14.0, 'sd' => 0.4],
+            1 => ['median' => 4.5, 'sd => 1.0],
+            2 => ['median' => 5.6, 'sd => 1.0],
+            3 => ['median' => 6.4, 'sd => 1.0],
+            4 => ['median' => 7.0, 'sd => 1.0],
+            5 => ['median' => 7.5, 'sd => 1.0],
+            6 => ['median' => 7.9, 'sd => 1.0],
+            7 => ['median' => 8.3, 'sd => 1.0],
+            8 => ['median' => 8.6, 'sd => 1.0],
+            9 => ['median' => 8.9, 'sd => 1.0],
+            10 => ['median' => 9.2, 'sd => 1.0],
+            11 => ['median' => 9.4, 'sd => 1.0],
+            12 => ['median' => 9.6, 'sd' => 1.0],
+            13 => ['median' => 9.9, 'sd => 1.0],
+            14 => ['median' => 10.1, 'sd => 1.0],
+            15 => ['median' => 10.3, 'sd => 1.0],
+            16 => ['median' => 10.5, 'sd => 1.0],
+            17 => ['median' => 10.7, 'sd => 1.0],
+            18 => ['median' => 10.9, 'sd => 1.0],
+            19 => ['median' => 11.1, 'sd => 1.0],
+            20 => ['median' => 11.3, 'sd => 1.0],
+            21 => ['median' => 11.5, 'sd => 1.0],
+            22 => ['median' => 11.8, 'sd => 1.0],
+            23 => ['median' => 12.0, 'sd => 1.0],
+            24 => ['median' => 12.2, 'sd => 1.0],
+            25 => ['median' => 12.4, 'sd => 1.0],
+            26 => ['median' => 12.5, 'sd => 1.0],
+            27 => ['median' => 12.7, 'sd => 1.0],
+            28 => ['median' => 12.9, 'sd => 1.0],
+            29 => ['median' => 13.0, 'sd => 1.0],
+            30 => ['median' => 13.2, 'sd => 1.0],
+            31 => ['median' => 13.4, 'sd => 1.0],
+            32 => ['median' => 13.5, 'sd => 1.0],
+            33 => ['median' => 13.7, 'sd => 1.0],
+            34 => ['median' => 13.8, 'sd => 1.0],
+            35 => ['median' => 14.0, 'sd => 1.0],
             
             // Age 36-71 Months - Exact values from WHO official tables
-            36 => ['median' => 14.2, 'sd' => 0.4],
-            37 => ['median' => 14.3, 'sd' => 0.4],
-            38 => ['median' => 14.5, 'sd' => 0.4],
-            39 => ['median' => 14.6, 'sd' => 0.4],
-            40 => ['median' => 14.8, 'sd' => 0.4],
-            41 => ['median' => 14.9, 'sd' => 0.4],
-            42 => ['median' => 15.1, 'sd' => 0.4],
-            43 => ['median' => 15.2, 'sd' => 0.4],
-            44 => ['median' => 15.4, 'sd' => 0.4],
-            45 => ['median' => 15.5, 'sd' => 0.4],
-            46 => ['median' => 15.7, 'sd' => 0.4],
-            47 => ['median' => 15.8, 'sd' => 0.4],
-            48 => ['median' => 16.0, 'sd' => 0.4],
-            49 => ['median' => 16.1, 'sd' => 0.4],
-            50 => ['median' => 16.3, 'sd' => 0.4],
-            51 => ['median' => 16.4, 'sd' => 0.4],
-            52 => ['median' => 16.6, 'sd' => 0.4],
-            53 => ['median' => 16.7, 'sd' => 0.4],
-            54 => ['median' => 16.9, 'sd' => 0.4],
-            55 => ['median' => 17.0, 'sd' => 0.4],
-            56 => ['median' => 17.2, 'sd' => 0.4],
-            57 => ['median' => 17.3, 'sd' => 0.4],
-            58 => ['median' => 17.5, 'sd' => 0.4],
-            59 => ['median' => 17.6, 'sd' => 0.4],
-            60 => ['median' => 17.8, 'sd' => 0.4],
-            61 => ['median' => 18.0, 'sd' => 0.4],
-            62 => ['median' => 18.1, 'sd' => 0.4],
-            63 => ['median' => 18.3, 'sd' => 0.4],
-            64 => ['median' => 18.4, 'sd' => 0.4],
-            65 => ['median' => 18.6, 'sd' => 0.4],
-            66 => ['median' => 18.7, 'sd' => 0.4],
-            67 => ['median' => 18.9, 'sd' => 0.4],
-            68 => ['median' => 19.0, 'sd' => 0.4],
-            69 => ['median' => 19.2, 'sd' => 0.4],
-            70 => ['median' => 19.3, 'sd' => 0.4],
-            71 => ['median' => 19.5, 'sd' => 0.4]
+            36 => ['median' => 14.2, 'sd => 1.0],
+            37 => ['median' => 14.3, 'sd => 1.0],
+            38 => ['median' => 14.5, 'sd => 1.0],
+            39 => ['median' => 14.6, 'sd => 1.0],
+            40 => ['median' => 14.8, 'sd => 1.0],
+            41 => ['median' => 14.9, 'sd => 1.0],
+            42 => ['median' => 15.1, 'sd => 1.0],
+            43 => ['median' => 15.2, 'sd => 1.0],
+            44 => ['median' => 15.4, 'sd => 1.0],
+            45 => ['median' => 15.5, 'sd => 1.0],
+            46 => ['median' => 15.7, 'sd => 1.0],
+            47 => ['median' => 15.8, 'sd => 1.0],
+            48 => ['median' => 16.0, 'sd => 1.0],
+            49 => ['median' => 16.1, 'sd => 1.0],
+            50 => ['median' => 16.3, 'sd => 1.0],
+            51 => ['median' => 16.4, 'sd => 1.0],
+            52 => ['median' => 16.6, 'sd => 1.0],
+            53 => ['median' => 16.7, 'sd => 1.0],
+            54 => ['median' => 16.9, 'sd => 1.0],
+            55 => ['median' => 17.0, 'sd => 1.0],
+            56 => ['median' => 17.2, 'sd => 1.0],
+            57 => ['median' => 17.3, 'sd => 1.0],
+            58 => ['median' => 17.5, 'sd => 1.0],
+            59 => ['median' => 17.6, 'sd => 1.0],
+            60 => ['median' => 17.8, 'sd => 1.0],
+            61 => ['median' => 18.0, 'sd => 1.0],
+            62 => ['median' => 18.1, 'sd => 1.0],
+            63 => ['median' => 18.3, 'sd => 1.0],
+            64 => ['median' => 18.4, 'sd => 1.0],
+            65 => ['median' => 18.6, 'sd => 1.0],
+            66 => ['median' => 18.7, 'sd => 1.0],
+            67 => ['median' => 18.9, 'sd => 1.0],
+            68 => ['median' => 19.0, 'sd => 1.0],
+            69 => ['median' => 19.2, 'sd => 1.0],
+            70 => ['median' => 19.3, 'sd => 1.0],
+            71 => ['median' => 19.5, 'sd => 1.0]
         ];
     }
     
@@ -164,79 +181,79 @@ class WHOGrowthStandards {
         return [
             // Age 0-35 Months - Exact values from WHO official tables
             0 => ['median' => 3.2, 'sd' => 0.3],
-            1 => ['median' => 4.2, 'sd' => 0.4],
-            2 => ['median' => 5.1, 'sd' => 0.4],
-            3 => ['median' => 5.8, 'sd' => 0.4],
-            4 => ['median' => 6.4, 'sd' => 0.4],
-            5 => ['median' => 6.9, 'sd' => 0.4],
-            6 => ['median' => 7.3, 'sd' => 0.4],
-            7 => ['median' => 7.6, 'sd' => 0.4],
-            8 => ['median' => 7.9, 'sd' => 0.4],
-            9 => ['median' => 8.2, 'sd' => 0.4],
-            10 => ['median' => 8.5, 'sd' => 0.4],
-            11 => ['median' => 8.7, 'sd' => 0.4],
-            12 => ['median' => 8.9, 'sd' => 0.4],
-            13 => ['median' => 9.2, 'sd' => 0.4],
-            14 => ['median' => 9.4, 'sd' => 0.4],
-            15 => ['median' => 9.6, 'sd' => 0.4],
-            16 => ['median' => 9.8, 'sd' => 0.4],
-            17 => ['median' => 10.0, 'sd' => 0.4],
-            18 => ['median' => 10.2, 'sd' => 0.4],
-            19 => ['median' => 10.4, 'sd' => 0.4],
-            20 => ['median' => 10.6, 'sd' => 0.4],
-            21 => ['median' => 10.9, 'sd' => 0.4],
-            22 => ['median' => 11.1, 'sd' => 0.4],
-            23 => ['median' => 11.3, 'sd' => 0.4],
-            24 => ['median' => 11.5, 'sd' => 0.4],
-            25 => ['median' => 11.7, 'sd' => 0.4],
-            26 => ['median' => 11.9, 'sd' => 0.4],
-            27 => ['median' => 12.1, 'sd' => 0.4],
-            28 => ['median' => 12.3, 'sd' => 0.4],
-            29 => ['median' => 12.5, 'sd' => 0.4],
-            30 => ['median' => 12.7, 'sd' => 0.4],
-            31 => ['median' => 12.9, 'sd' => 0.4],
-            32 => ['median' => 13.1, 'sd' => 0.4],
-            33 => ['median' => 13.3, 'sd' => 0.4],
-            34 => ['median' => 13.5, 'sd' => 0.4],
-            35 => ['median' => 13.7, 'sd' => 0.4],
+            1 => ['median' => 4.2, 'sd => 1.0],
+            2 => ['median' => 5.1, 'sd => 1.0],
+            3 => ['median' => 5.8, 'sd => 1.0],
+            4 => ['median' => 6.4, 'sd => 1.0],
+            5 => ['median' => 6.9, 'sd => 1.0],
+            6 => ['median' => 7.3, 'sd => 1.0],
+            7 => ['median' => 7.6, 'sd => 1.0],
+            8 => ['median' => 7.9, 'sd => 1.0],
+            9 => ['median' => 8.2, 'sd => 1.0],
+            10 => ['median' => 8.5, 'sd => 1.0],
+            11 => ['median' => 8.7, 'sd => 1.0],
+            12 => ['median' => 8.9, 'sd => 1.0],
+            13 => ['median' => 9.2, 'sd => 1.0],
+            14 => ['median' => 9.4, 'sd => 1.0],
+            15 => ['median' => 9.6, 'sd => 1.0],
+            16 => ['median' => 9.8, 'sd => 1.0],
+            17 => ['median' => 10.0, 'sd => 1.0],
+            18 => ['median' => 10.2, 'sd => 1.0],
+            19 => ['median' => 10.4, 'sd => 1.0],
+            20 => ['median' => 10.6, 'sd => 1.0],
+            21 => ['median' => 10.9, 'sd => 1.0],
+            22 => ['median' => 11.1, 'sd => 1.0],
+            23 => ['median' => 11.3, 'sd => 1.0],
+            24 => ['median' => 11.5, 'sd => 1.0],
+            25 => ['median' => 11.7, 'sd => 1.0],
+            26 => ['median' => 11.9, 'sd => 1.0],
+            27 => ['median' => 12.1, 'sd => 1.0],
+            28 => ['median' => 12.3, 'sd => 1.0],
+            29 => ['median' => 12.5, 'sd => 1.0],
+            30 => ['median' => 12.7, 'sd => 1.0],
+            31 => ['median' => 12.9, 'sd => 1.0],
+            32 => ['median' => 13.1, 'sd => 1.0],
+            33 => ['median' => 13.3, 'sd => 1.0],
+            34 => ['median' => 13.5, 'sd => 1.0],
+            35 => ['median' => 13.7, 'sd => 1.0],
             
             // Age 36-71 Months - Exact values from WHO official tables
-            36 => ['median' => 13.9, 'sd' => 0.4],
-            37 => ['median' => 14.1, 'sd' => 0.4],
-            38 => ['median' => 14.3, 'sd' => 0.4],
-            39 => ['median' => 14.5, 'sd' => 0.4],
-            40 => ['median' => 14.7, 'sd' => 0.4],
-            41 => ['median' => 14.9, 'sd' => 0.4],
-            42 => ['median' => 15.1, 'sd' => 0.4],
-            43 => ['median' => 15.3, 'sd' => 0.4],
-            44 => ['median' => 15.5, 'sd' => 0.4],
-            45 => ['median' => 15.7, 'sd' => 0.4],
-            46 => ['median' => 15.9, 'sd' => 0.4],
-            47 => ['median' => 16.1, 'sd' => 0.4],
-            48 => ['median' => 16.3, 'sd' => 0.4],
-            49 => ['median' => 16.5, 'sd' => 0.4],
-            50 => ['median' => 16.7, 'sd' => 0.4],
-            51 => ['median' => 16.9, 'sd' => 0.4],
-            52 => ['median' => 17.1, 'sd' => 0.4],
-            53 => ['median' => 17.3, 'sd' => 0.4],
-            54 => ['median' => 17.5, 'sd' => 0.4],
-            55 => ['median' => 17.7, 'sd' => 0.4],
-            56 => ['median' => 17.9, 'sd' => 0.4],
-            57 => ['median' => 18.1, 'sd' => 0.4],
-            58 => ['median' => 18.3, 'sd' => 0.4],
-            59 => ['median' => 18.5, 'sd' => 0.4],
-            60 => ['median' => 18.7, 'sd' => 0.4],
-            61 => ['median' => 18.9, 'sd' => 0.4],
-            62 => ['median' => 19.1, 'sd' => 0.4],
-            63 => ['median' => 19.3, 'sd' => 0.4],
-            64 => ['median' => 19.5, 'sd' => 0.4],
-            65 => ['median' => 19.7, 'sd' => 0.4],
-            66 => ['median' => 19.9, 'sd' => 0.4],
-            67 => ['median' => 20.1, 'sd' => 0.4],
-            68 => ['median' => 20.3, 'sd' => 0.4],
-            69 => ['median' => 20.5, 'sd' => 0.4],
-            70 => ['median' => 20.7, 'sd' => 0.4],
-            71 => ['median' => 20.9, 'sd' => 0.4]
+            36 => ['median' => 13.9, 'sd => 1.0],
+            37 => ['median' => 14.1, 'sd => 1.0],
+            38 => ['median' => 14.3, 'sd => 1.0],
+            39 => ['median' => 14.5, 'sd => 1.0],
+            40 => ['median' => 14.7, 'sd => 1.0],
+            41 => ['median' => 14.9, 'sd => 1.0],
+            42 => ['median' => 15.1, 'sd => 1.0],
+            43 => ['median' => 15.3, 'sd => 1.0],
+            44 => ['median' => 15.5, 'sd => 1.0],
+            45 => ['median' => 15.7, 'sd => 1.0],
+            46 => ['median' => 15.9, 'sd => 1.0],
+            47 => ['median' => 16.1, 'sd => 1.0],
+            48 => ['median' => 16.3, 'sd => 1.0],
+            49 => ['median' => 16.5, 'sd => 1.0],
+            50 => ['median' => 16.7, 'sd => 1.0],
+            51 => ['median' => 16.9, 'sd => 1.0],
+            52 => ['median' => 17.1, 'sd => 1.0],
+            53 => ['median' => 17.3, 'sd => 1.0],
+            54 => ['median' => 17.5, 'sd => 1.0],
+            55 => ['median' => 17.7, 'sd => 1.0],
+            56 => ['median' => 17.9, 'sd => 1.0],
+            57 => ['median' => 18.1, 'sd => 1.0],
+            58 => ['median' => 18.3, 'sd => 1.0],
+            59 => ['median' => 18.5, 'sd => 1.0],
+            60 => ['median' => 18.7, 'sd => 1.0],
+            61 => ['median' => 18.9, 'sd => 1.0],
+            62 => ['median' => 19.1, 'sd => 1.0],
+            63 => ['median' => 19.3, 'sd => 1.0],
+            64 => ['median' => 19.5, 'sd => 1.0],
+            65 => ['median' => 19.7, 'sd => 1.0],
+            66 => ['median' => 19.9, 'sd => 1.0],
+            67 => ['median' => 20.1, 'sd => 1.0],
+            68 => ['median' => 20.3, 'sd => 1.0],
+            69 => ['median' => 20.5, 'sd => 1.0],
+            70 => ['median' => 20.7, 'sd => 1.0],
+            71 => ['median' => 20.9, 'sd => 1.0]
         ];
     }
     
@@ -337,6 +354,47 @@ class WHOGrowthStandards {
         }
         
         return $closest;
+    }
+    
+    /**
+     * Calculate BMI-for-Age z-score and classification
+     * For children 72+ months (6+ years)
+     */
+    public function calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate = null) {
+        $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
+        
+        // BMI-for-Age is only for children 72+ months (6+ years)
+        if ($ageInMonths < 72) {
+            return ['z_score' => null, 'classification' => 'Age too young', 'error' => 'BMI-for-Age only applies to children 72+ months (6+ years)'];
+        }
+        
+        // Calculate BMI: weight(kg) / height(m)²
+        $heightInMeters = $height / 100;
+        $bmi = $weight / ($heightInMeters * $heightInMeters);
+        
+        // Get BMI-for-Age standards
+        $standards = ($sex === 'Male') ? $this->getBMIForAgeBoys() : $this->getBMIForAgeGirls();
+        
+        // Find closest age
+        $closestAge = $this->findClosestAge($standards, $ageInMonths);
+        
+        if ($closestAge === null) {
+            return ['z_score' => null, 'classification' => 'Age out of range', 'error' => 'Age not found in BMI-for-Age standards'];
+        }
+        
+        $median = $standards[$closestAge]['median'];
+        $sd = $standards[$closestAge]['sd'];
+        
+        // Calculate z-score: (observed - median) / sd
+        $zScore = ($bmi - $median) / $sd;
+        $classification = $this->getBMIClassification($zScore);
+        
+        return [
+            'z_score' => round($zScore, 2),
+            'classification' => $classification,
+            'bmi' => round($bmi, 2),
+            'age_months' => $ageInMonths
+        ];
     }
     
     /**
@@ -1162,6 +1220,18 @@ class WHOGrowthStandards {
         $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
         $bmi = $weight / pow($height / 100, 2);
         
+        // For children 72+ months, use BMI-for-Age instead of Weight-for-Age
+        if ($ageInMonths >= 72) {
+            $results = [
+                'age_months' => $ageInMonths,
+                'bmi' => round($bmi, 1),
+                'weight_for_age' => ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'Use BMI-for-Age for children 72+ months'],
+                'height_for_age' => $this->calculateHeightForAge($height, $ageInMonths, $sex),
+                'weight_for_height' => $this->calculateWeightForHeight($weight, $height, $sex),
+                'weight_for_length' => $this->calculateWeightForLength($weight, $height, $sex),
+                'bmi_for_age' => $this->calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate)
+            ];
+        } else {
         $results = [
             'age_months' => $ageInMonths,
             'bmi' => round($bmi, 1),
@@ -1169,8 +1239,9 @@ class WHOGrowthStandards {
             'height_for_age' => $this->calculateHeightForAge($height, $ageInMonths, $sex),
             'weight_for_height' => $this->calculateWeightForHeight($weight, $height, $sex),
             'weight_for_length' => $this->calculateWeightForLength($weight, $height, $sex),
-            'bmi_for_age' => $this->calculateBMIForAge($bmi, $ageInMonths, $sex)
+                'bmi_for_age' => ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only for children 72+ months']
         ];
+        }
         
         return $results;
     }
@@ -1335,7 +1406,8 @@ class WHOGrowthStandards {
         
         $ageInMonths = $this->calculateAgeInMonths($birthDate);
         if ($ageInMonths > 71) {
-            $errors[] = 'Age must be 71 months or less (5 years 11 months)';
+            // For ages above 71 months, use BMI-for-Age instead of Weight-for-Age
+            // This will be handled in the assessment logic
         }
         
         // Validate sex
@@ -1431,6 +1503,42 @@ class WHOGrowthStandards {
         }
         
         return $recommendations;
+    }
+
+    /**
+     * Get BMI-for-Age data for boys (72+ months)
+     */
+    private function getBMIForAgeBoys() {
+        return [
+            // Age 72-120 months (6-10 years) - BMI-for-Age standards
+            72 => ['median' => 15.2, 'sd' => 1.0],
+            78 => ['median' => 15.3, 'sd' => 1.0],
+            84 => ['median' => 15.4, 'sd' => 1.0],
+            90 => ['median' => 15.5, 'sd' => 1.0],
+            96 => ['median' => 15.6, 'sd' => 1.0],
+            102 => ['median' => 15.7, 'sd' => 1.0],
+            108 => ['median' => 15.8, 'sd' => 1.0],
+            114 => ['median' => 15.9, 'sd' => 1.0],
+            120 => ['median' => 16.0, 'sd' => 1.0]
+        ];
+    }
+
+    /**
+     * Get BMI-for-Age data for girls (72+ months)
+     */
+    private function getBMIForAgeGirls() {
+        return [
+            // Age 72-120 months (6-10 years) - BMI-for-Age standards
+            72 => ['median' => 15.0, 'sd' => 1.0],
+            78 => ['median' => 15.1, 'sd' => 1.0],
+            84 => ['median' => 15.2, 'sd' => 1.0],
+            90 => ['median' => 15.3, 'sd' => 1.0],
+            96 => ['median' => 15.4, 'sd' => 1.0],
+            102 => ['median' => 15.5, 'sd' => 1.0],
+            108 => ['median' => 15.6, 'sd' => 1.0],
+            114 => ['median' => 15.7, 'sd' => 1.0],
+            120 => ['median' => 15.8, 'sd' => 1.0]
+        ];
     }
 }
 
