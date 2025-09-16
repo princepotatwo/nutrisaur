@@ -8096,9 +8096,9 @@ body {
                 
                 let totalUsers = 0;
                 
-                if (data && data.success && data.classifications) {
+                if (data && data.classifications) {
                     classifications = data.classifications;
-                    totalUsers = data.total_users || 0;
+                    totalUsers = data.total || 0;
                 }
                 
                 // If no data, show no data message
@@ -8229,11 +8229,11 @@ body {
                 const barangay = ''; // You can make this dynamic
                 
                 // Fetch WHO classification data
-                const data = await fetchWHOClassificationData(selectedStandard, timeFrame, barangay);
-                console.log('Data received for chart update:', data);
+                const response = await fetchWHOClassificationData(selectedStandard, timeFrame, barangay);
+                console.log('Data received for chart update:', response);
                 
-                // Update the chart
-                updateWHOClassificationChart(data);
+                // Update the chart with the correct data structure
+                updateWHOClassificationChart(response);
                 
             } catch (error) {
                 console.error('Error updating WHO classification chart:', error);
