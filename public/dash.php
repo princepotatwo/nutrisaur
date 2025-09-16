@@ -7005,8 +7005,11 @@ body {
                 console.log('📈 Risk Data Data:', riskData?.data);
                 
                 if (riskData && riskData.success && riskData.data) {
-                    // Load initial WHO classification data
-                    handleWHOStandardChange();
+                    // Load initial WHO classification data only once
+                    if (typeof window.whoDataLoaded === 'undefined') {
+                        handleWHOStandardChange();
+                        window.whoDataLoaded = true;
+                    }
                     
                                     // Update individual cards with risk distribution data
                 const highRisk = document.getElementById('community-high-risk');
@@ -8195,6 +8198,13 @@ body {
 
         // Function to handle WHO standard dropdown change
         async function handleWHOStandardChange() {
+            // Prevent multiple simultaneous calls
+            if (window.whoClassificationLoading) {
+                return;
+            }
+            
+            window.whoClassificationLoading = true;
+            
             const select = document.getElementById('whoStandardSelect');
             const selectedStandard = select.value;
             
@@ -8211,54 +8221,149 @@ body {
                 
             } catch (error) {
                 console.error('Error updating WHO classification chart:', error);
+            } finally {
+                window.whoClassificationLoading = false;
             }
         }
 
-        // Function to fetch WHO classification data
+        // Function to fetch WHO classification data directly from who_growth_standards.php
         async function fetchWHOClassificationData(whoStandard, timeFrame, barangay) {
             try {
-                const params = new URLSearchParams({
-                    action: 'who_classification_data',
-                    who_standard: whoStandard,
-                    time_frame: timeFrame,
-                    barangay: barangay
-                });
+                // Get all users from the database first
+                const usersResponse = await fetch(`/api/DatabaseAPI.php?action=detailed_screening_responses&time_frame=${timeFrame}&barangay=${barangay}`);
                 
-                const url = `/api/DatabaseAPI.php?${params}`;
-                console.log('🌐 Fetching from URL:', url);
-                
-                const response = await fetch(url);
-                console.log('📡 Response status:', response.status);
-                console.log('📡 Response ok:', response.ok);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                if (!usersResponse.ok) {
+                    throw new Error(`HTTP error! status: ${usersResponse.status}`);
                 }
                 
-                const responseText = await response.text();
-                console.log('📄 Raw response text:', responseText);
+                const usersData = await usersResponse.json();
                 
-                let data;
-                try {
-                    data = JSON.parse(responseText);
-                    console.log('✅ Successfully parsed JSON:', data);
-                } catch (parseError) {
-                    console.error('❌ JSON parse error:', parseError);
-                    console.error('❌ Response text that failed to parse:', responseText);
-                    throw new Error('Failed to parse JSON response');
+                if (!usersData.success || !usersData.data) {
+                    return {
+                        success: false,
+                        error: 'No user data available'
+                    };
                 }
                 
-                return data;
+                // Process each user with WHO growth standards
+                const classifications = {
+                    'Severely Underweight': 0,
+                    'Underweight': 0,
+                    'Normal': 0,
+                    'Overweight': 0,
+                    'Obese': 0,
+                    'Severely Wasted': 0,
+                    'Wasted': 0,
+                    'Severely Stunted': 0,
+                    'Stunted': 0,
+                    'Tall': 0,
+                    'No Data': 0
+                };
+                
+                let totalProcessed = 0;
+                
+                for (const user of usersData.data) {
+                    try {
+                        // Calculate age in months
+                        const birthDate = new Date(user.birthday);
+                        const screeningDate = new Date(user.screening_date || new Date());
+                        const ageInMonths = ((screeningDate.getFullYear() - birthDate.getFullYear()) * 12) + 
+                                          (screeningDate.getMonth() - birthDate.getMonth());
+                        
+                        // Apply age and height restrictions based on WHO standard
+                        let shouldProcess = false;
+                        
+                        if (whoStandard === 'weight-for-age' || whoStandard === 'height-for-age') {
+                            shouldProcess = (ageInMonths >= 0 && ageInMonths <= 71);
+                        } else if (whoStandard === 'bmi-for-age') {
+                            shouldProcess = true; // BMI-for-age can be used for all ages
+                        } else if (whoStandard === 'weight-for-height') {
+                            const heightCm = parseFloat(user.height_cm);
+                            shouldProcess = (heightCm >= 65 && heightCm <= 120);
+                        } else if (whoStandard === 'weight-for-length') {
+                            const heightCm = parseFloat(user.height_cm);
+                            shouldProcess = (heightCm >= 45 && heightCm <= 110);
+                        }
+                        
+                        if (shouldProcess) {
+                            // Call WHO growth standards API for this user
+                            const whoResponse = await fetch(`/api/who_growth_standards.php`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                },
+                                body: new URLSearchParams({
+                                    action: 'process_growth_standards',
+                                    weight: user.weight_kg,
+                                    height: user.height_cm,
+                                    birth_date: user.birthday,
+                                    sex: user.sex
+                                })
+                            });
+                            
+                            if (whoResponse.ok) {
+                                const whoData = await whoResponse.json();
+                                if (whoData.success && whoData.results) {
+                                    let classification = 'No Data';
+                                    
+                                    // Get classification based on selected WHO standard
+                                    switch (whoStandard) {
+                                        case 'weight-for-age':
+                                            classification = whoData.results.weight_for_age?.classification || 'No Data';
+                                            break;
+                                        case 'height-for-age':
+                                            classification = whoData.results.height_for_age?.classification || 'No Data';
+                                            break;
+                                        case 'weight-for-height':
+                                            classification = whoData.results.weight_for_height?.classification || 'No Data';
+                                            break;
+                                        case 'weight-for-length':
+                                            classification = whoData.results.weight_for_length?.classification || 'No Data';
+                                            break;
+                                        case 'bmi-for-age':
+                                            classification = whoData.results.bmi_for_age?.classification || 'No Data';
+                                            break;
+                                    }
+                                    
+                                    // Map to our classification categories
+                                    if (classifications.hasOwnProperty(classification)) {
+                                        classifications[classification]++;
+                                    } else {
+                                        classifications['No Data']++;
+                                    }
+                                    
+                                    totalProcessed++;
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error processing user:', error);
+                        classifications['No Data']++;
+                    }
+                }
+                
+                return {
+                    success: true,
+                    classifications: classifications,
+                    total_users: totalProcessed,
+                    who_standard: whoStandard
+                };
+                
             } catch (error) {
-                console.error('❌ Error fetching WHO classification data:', error);
-                console.error('❌ Error stack:', error.stack);
+                console.error('Error fetching WHO classification data:', error);
                 return {
                     success: false,
                     classifications: {
+                        'Severely Underweight': 0,
                         'Underweight': 0,
                         'Normal': 0,
                         'Overweight': 0,
                         'Obese': 0,
+                        'Severely Wasted': 0,
+                        'Wasted': 0,
+                        'Severely Stunted': 0,
+                        'Stunted': 0,
+                        'Tall': 0,
                         'No Data': 0
                     },
                     total_users: 0,
