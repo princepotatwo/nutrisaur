@@ -774,9 +774,18 @@ class WHOGrowthStandards {
                 $ageRanges = $ranges[$closestAge];
                 
                 // Step 3: Hardcoded decision tree - check weight against exact ranges
+                // Also calculate z-score using the original WHO data for display
+                $whoData = $this->getWeightForAgeBoys();
+                $zScore = null;
+                if (isset($whoData[$closestAge])) {
+                    $median = $whoData[$closestAge]['median'];
+                    $sd = $whoData[$closestAge]['sd'];
+                    $zScore = ($weight - $median) / $sd;
+                }
+                
                 if ($weight <= $ageRanges['severely_underweight']['max']) {
                     return [
-                        'z_score' => null,
+                        'z_score' => $zScore,
                         'classification' => 'Severely Underweight',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
@@ -784,7 +793,7 @@ class WHOGrowthStandards {
                     ];
                 } elseif ($weight >= $ageRanges['underweight']['min'] && $weight <= $ageRanges['underweight']['max']) {
                     return [
-                        'z_score' => null,
+                        'z_score' => $zScore,
                         'classification' => 'Underweight',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
@@ -792,7 +801,7 @@ class WHOGrowthStandards {
                     ];
                 } elseif ($weight >= $ageRanges['normal']['min'] && $weight <= $ageRanges['normal']['max']) {
                     return [
-                        'z_score' => null,
+                        'z_score' => $zScore,
                         'classification' => 'Normal',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
@@ -800,7 +809,7 @@ class WHOGrowthStandards {
                     ];
                 } elseif ($weight >= $ageRanges['overweight']['min']) {
                     return [
-                        'z_score' => null,
+                        'z_score' => $zScore,
                         'classification' => 'Overweight',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
@@ -809,7 +818,7 @@ class WHOGrowthStandards {
                 } else {
                     // Fallback case - should not happen with proper ranges
                     return [
-                        'z_score' => null,
+                        'z_score' => $zScore,
                         'classification' => 'Unknown',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
@@ -825,10 +834,19 @@ class WHOGrowthStandards {
             if ($closestAge !== null) {
                 $ageRanges = $ranges[$closestAge];
                 
+                // Also calculate z-score using the original WHO data for display
+                $whoData = $this->getWeightForAgeGirls();
+                $zScore = null;
+                if (isset($whoData[$closestAge])) {
+                    $median = $whoData[$closestAge]['median'];
+                    $sd = $whoData[$closestAge]['sd'];
+                    $zScore = ($weight - $median) / $sd;
+                }
+                
                 // Hardcoded decision tree for girls
                 if ($weight <= $ageRanges['severely_underweight']['max']) {
                     return [
-                        'z_score' => null,
+                        'z_score' => $zScore,
                         'classification' => 'Severely Underweight',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
@@ -836,7 +854,7 @@ class WHOGrowthStandards {
                     ];
                 } elseif ($weight >= $ageRanges['underweight']['min'] && $weight <= $ageRanges['underweight']['max']) {
                     return [
-                        'z_score' => null,
+                        'z_score' => $zScore,
                         'classification' => 'Underweight',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
@@ -844,7 +862,7 @@ class WHOGrowthStandards {
                     ];
                 } elseif ($weight >= $ageRanges['normal']['min'] && $weight <= $ageRanges['normal']['max']) {
                     return [
-                        'z_score' => null,
+                        'z_score' => $zScore,
                         'classification' => 'Normal',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
@@ -852,7 +870,7 @@ class WHOGrowthStandards {
                     ];
                 } elseif ($weight >= $ageRanges['overweight']['min']) {
                     return [
-                        'z_score' => null,
+                        'z_score' => $zScore,
                         'classification' => 'Overweight',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
