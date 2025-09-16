@@ -41,9 +41,10 @@ class WHOGrowthStandards {
     }
     
     /**
-     * Get nutritional classification based on z-score
+     * Get nutritional classification based on z-score for Weight-for-Age
+     * WHO standards: < -3 SD = Severely Underweight, -3 to -2 SD = Underweight, -2 to +2 SD = Normal, > +2 SD = Overweight
      */
-    public function getNutritionalClassification($zScore) {
+    public function getWeightForAgeClassification($zScore) {
         if ($zScore < -3) {
             return 'Severely Underweight';
         } elseif ($zScore >= -3 && $zScore < -2) {
@@ -53,6 +54,55 @@ class WHOGrowthStandards {
         } else {
             return 'Overweight';
         }
+    }
+
+    /**
+     * Get nutritional classification based on z-score for Height-for-Age (Stunting)
+     * WHO standards: < -3 SD = Severely Stunted, -3 to -2 SD = Stunted, -2 to +2 SD = Normal, > +2 SD = Tall
+     */
+    public function getHeightForAgeClassification($zScore) {
+        if ($zScore < -3) {
+            return 'Severely Stunted';
+        } elseif ($zScore >= -3 && $zScore < -2) {
+            return 'Stunted';
+        } elseif ($zScore >= -2 && $zScore <= 2) {
+            return 'Normal';
+        } else {
+            return 'Tall';
+        }
+    }
+
+    /**
+     * Get nutritional classification based on z-score for Weight-for-Height (Wasting)
+     * WHO standards: < -3 SD = Severely Wasted, -3 to -2 SD = Wasted, -2 to +2 SD = Normal, > +2 SD = Overweight, > +3 SD = Obese
+     */
+    public function getWeightForHeightClassification($zScore) {
+        if ($zScore < -3) {
+            return 'Severely Wasted';
+        } elseif ($zScore >= -3 && $zScore < -2) {
+            return 'Wasted';
+        } elseif ($zScore >= -2 && $zScore <= 2) {
+            return 'Normal';
+        } elseif ($zScore > 2 && $zScore <= 3) {
+            return 'Overweight';
+        } else {
+            return 'Obese';
+        }
+    }
+
+    /**
+     * Get nutritional classification based on z-score for Weight-for-Length (Wasting)
+     * Same as Weight-for-Height but for children under 2 years
+     */
+    public function getWeightForLengthClassification($zScore) {
+        return $this->getWeightForHeightClassification($zScore);
+    }
+
+    /**
+     * Generic method for backward compatibility
+     */
+    public function getNutritionalClassification($zScore) {
+        return $this->getWeightForAgeClassification($zScore);
     }
 
     /**
@@ -1075,7 +1125,7 @@ class WHOGrowthStandards {
         
         // Calculate z-score: (observed - median) / sd
         $zScore = ($height - $median) / $sd;
-        $classification = $this->getNutritionalClassification($zScore);
+        $classification = $this->getHeightForAgeClassification($zScore);
         
         return [
             'z_score' => round($zScore, 2),
@@ -1360,7 +1410,7 @@ class WHOGrowthStandards {
                         
                         return [
                             'z_score' => $zScore !== null ? round($zScore, 2) : null,
-                            'classification' => ucfirst(str_replace('_', ' ', $category)),
+                            'classification' => $zScore !== null ? $this->getWeightForHeightClassification($zScore) : ucfirst(str_replace('_', ' ', $category)),
                             'height_used' => $closestHeight,
                             'method' => 'lookup_table'
                         ];
@@ -1447,7 +1497,7 @@ class WHOGrowthStandards {
         
         // Calculate z-score: (observed - median) / sd
         $zScore = ($weight - $median) / $sd;
-        $classification = $this->getNutritionalClassification($zScore);
+        $classification = $this->getWeightForLengthClassification($zScore);
         
         return [
             'z_score' => round($zScore, 2),
