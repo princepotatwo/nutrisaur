@@ -769,6 +769,13 @@ class WHOGrowthStandards {
             $ranges = $this->getWeightForAgeBoysLookupTable();
             $closestAge = $this->findClosestAge($ranges, $ageInMonths);
             
+            // Debug output
+            error_log("DEBUG: Weight=$weight, Age=$ageInMonths, ClosestAge=$closestAge");
+            if ($closestAge !== null) {
+                $ageRanges = $ranges[$closestAge];
+                error_log("DEBUG: AgeRanges=" . json_encode($ageRanges));
+            }
+            
             if ($closestAge !== null) {
                 $ageRanges = $ranges[$closestAge];
                 
@@ -805,7 +812,19 @@ class WHOGrowthStandards {
                         'method' => 'hardcoded_who_table',
                         'weight_range' => '≥' . $ageRanges['overweight']['min'] . 'kg'
                     ];
+                } else {
+                    // Fallback case - should not happen with proper ranges
+                    error_log("DEBUG: No condition matched for weight=$weight, age=$closestAge");
+                    return [
+                        'z_score' => null,
+                        'classification' => 'Unknown',
+                        'age_used' => $closestAge,
+                        'method' => 'hardcoded_who_table',
+                        'weight_range' => 'No match found'
+                    ];
                 }
+            } else {
+                error_log("DEBUG: No closest age found for age=$ageInMonths");
             }
         } else {
             // For girls, use similar hardcoded approach

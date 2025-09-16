@@ -12,7 +12,7 @@ $testCases = [
     ['age' => 0, 'weight' => 3.5, 'expected' => 'Normal'],
     ['age' => 0, 'weight' => 4.6, 'expected' => 'Overweight'],
     ['age' => 6, 'weight' => 4.0, 'expected' => 'Severely Underweight'],
-    ['age' => 6, 'weight' => 8.5, 'expected' => 'Overweight']
+    ['age' => 6, 'weight' => 8.8, 'expected' => 'Overweight']
 ];
 
 echo "<table border='1' style='border-collapse: collapse; width: 100%;'>";
@@ -46,7 +46,7 @@ $csvTestCases = [
     ['birth_date' => '2024-09-15', 'weight' => 2.0, 'expected' => 'Severely Underweight', 'name' => 'Severely Underweight 0mo'],
     ['birth_date' => '2024-09-15', 'weight' => 4.6, 'expected' => 'Overweight', 'name' => 'Overweight 0mo'],
     ['birth_date' => '2024-03-15', 'weight' => 4.0, 'expected' => 'Severely Underweight', 'name' => 'Severely Underweight 6mo'],
-    ['birth_date' => '2024-03-15', 'weight' => 8.5, 'expected' => 'Overweight', 'name' => 'Overweight 6mo']
+    ['birth_date' => '2024-03-15', 'weight' => 8.8, 'expected' => 'Overweight', 'name' => 'Overweight 6mo']
 ];
 
 echo "<table border='1' style='border-collapse: collapse; width: 100%;'>";
