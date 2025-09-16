@@ -245,39 +245,28 @@ class WHOGrowthStandards {
      * Based on exact values from WHO official tables
      */
     private function getWeightForAgeBoysLookup() {
-        return [
-            // Age 0 months - From your image
-            0 => [
-                'severely_underweight' => ['min' => 0, 'max' => 2.0],
-                'underweight' => ['min' => 2.1, 'max' => 2.4],
-                'normal' => ['min' => 2.5, 'max' => 4.4],
-                'overweight' => ['min' => 4.5, 'max' => 999]
-            ],
+        $boysData = $this->getWeightForAgeBoys();
+        $lookup = [];
+        
+        foreach ($boysData as $age => $data) {
+            $median = $data['median'];
+            $sd = $data['sd'];
             
-            // Age 12 months - From your image (corrected values)
-            12 => [
-                'severely_underweight' => ['min' => 0, 'max' => 6.8],
-                'underweight' => ['min' => 6.9, 'max' => 7.6],
-                'normal' => ['min' => 7.7, 'max' => 12.0],
-                'overweight' => ['min' => 12.1, 'max' => 999]
-            ],
+            // Calculate Z-score boundaries
+            $severely_underweight_max = $median - (3 * $sd);
+            $underweight_max = $median - (2 * $sd);
+            $normal_max = $median + (2 * $sd);
+            $overweight_max = $median + (3 * $sd);
             
-            // Age 35 months - From your image
-            35 => [
-                'severely_underweight' => ['min' => 0, 'max' => 9.8],
-                'underweight' => ['min' => 9.9, 'max' => 11.1],
-                'normal' => ['min' => 11.2, 'max' => 18.1],
-                'overweight' => ['min' => 18.2, 'max' => 999]
-            ],
-            
-            // Age 71 months - From your image
-            71 => [
-                'severely_underweight' => ['min' => 0, 'max' => 13.8],
-                'underweight' => ['min' => 13.9, 'max' => 15.6],
-                'normal' => ['min' => 15.7, 'max' => 22.1],
-                'overweight' => ['min' => 22.2, 'max' => 999]
-            ]
-        ];
+            $lookup[$age] = [
+                'severely_underweight' => ['min' => 0, 'max' => $severely_underweight_max],
+                'underweight' => ['min' => $severely_underweight_max + 0.1, 'max' => $underweight_max],
+                'normal' => ['min' => $underweight_max + 0.1, 'max' => $normal_max],
+                'overweight' => ['min' => $normal_max + 0.1, 'max' => 999]
+            ];
+        }
+        
+        return $lookup;
     }
     
     /**
@@ -285,34 +274,29 @@ class WHOGrowthStandards {
      * Based on exact values from WHO official tables
      */
     private function getWeightForHeightGirlsLookup() {
-        return [
-            // Height 65 cm - From your image (corrected values)
-            65 => [
-                'severely_wasted' => ['min' => 0, 'max' => 5.4],
-                'wasted' => ['min' => 5.5, 'max' => 6.0],
-                'normal' => ['min' => 6.1, 'max' => 8.7],
-                'overweight' => ['min' => 8.8, 'max' => 9.7],
-                'obese' => ['min' => 9.8, 'max' => 999]
-            ],
+        $girlsData = $this->getWeightForHeightGirls();
+        $lookup = [];
+        
+        foreach ($girlsData as $height => $data) {
+            $median = $data['median'];
+            $sd = $data['sd'];
             
-            // Height 90 cm - From your image
-            90 => [
-                'severely_wasted' => ['min' => 0, 'max' => 9.6],
-                'wasted' => ['min' => 9.7, 'max' => 10.4],
-                'normal' => ['min' => 10.5, 'max' => 14.8],
-                'overweight' => ['min' => 14.9, 'max' => 16.3],
-                'obese' => ['min' => 16.4, 'max' => 999]
-            ],
+            // Calculate Z-score boundaries for 5-category system
+            $severely_wasted_max = $median - (3 * $sd);
+            $wasted_max = $median - (2 * $sd);
+            $normal_max = $median + (2 * $sd);
+            $overweight_max = $median + (3 * $sd);
             
-            // Height 120 cm - From your image (corrected values)
-            120 => [
-                'severely_wasted' => ['min' => 0, 'max' => 17.1],
-                'wasted' => ['min' => 17.2, 'max' => 18.8],
-                'normal' => ['min' => 18.9, 'max' => 28.0],
-                'overweight' => ['min' => 28.1, 'max' => 31.2],
-                'obese' => ['min' => 31.3, 'max' => 999]
-            ]
-        ];
+            $lookup[$height] = [
+                'severely_wasted' => ['min' => 0, 'max' => $severely_wasted_max],
+                'wasted' => ['min' => $severely_wasted_max + 0.1, 'max' => $wasted_max],
+                'normal' => ['min' => $wasted_max + 0.1, 'max' => $normal_max],
+                'overweight' => ['min' => $normal_max + 0.1, 'max' => $overweight_max],
+                'obese' => ['min' => $overweight_max + 0.1, 'max' => 999]
+            ];
+        }
+        
+        return $lookup;
     }
     
     /**
