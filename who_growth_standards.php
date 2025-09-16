@@ -203,17 +203,17 @@ class WHOGrowthStandards {
             ],
             // Age 24 months
             24 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.5],
-                'underweight' => ['min' => 8.6, 'max' => 9.4],
-                'normal' => ['min' => 9.5, 'max' => 14.8],
+                'severely_underweight' => ['min' => 0, 'max' => 8.1],
+                'underweight' => ['min' => 8.2, 'max' => 8.9],
+                'normal' => ['min' => 9.0, 'max' => 14.8],
                 'overweight' => ['min' => 14.9, 'max' => 999]
             ],
             // Age 36 months
             36 => [
-                'severely_underweight' => ['min' => 0, 'max' => 9.9],
-                'underweight' => ['min' => 10.0, 'max' => 11.1],
-                'normal' => ['min' => 11.2, 'max' => 17.5],
-                'overweight' => ['min' => 17.6, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 9.6],
+                'underweight' => ['min' => 9.7, 'max' => 10.7],
+                'normal' => ['min' => 10.8, 'max' => 18.1],
+                'overweight' => ['min' => 18.2, 'max' => 999]
             ],
             // Age 60 months
             60 => [
@@ -295,8 +295,8 @@ class WHOGrowthStandards {
             // Age 71 months
             71 => [
                 'severely_underweight' => ['min' => 0, 'max' => 13.4],
-                'underweight' => ['min' => 13.5, 'max' => 15.0],
-                'normal' => ['min' => 15.1, 'max' => 22.6],
+                'underweight' => ['min' => 13.5, 'max' => 15.1],
+                'normal' => ['min' => 15.2, 'max' => 22.6],
                 'overweight' => ['min' => 22.7, 'max' => 999]
             ]
         ];
