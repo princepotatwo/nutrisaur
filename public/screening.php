@@ -4435,6 +4435,23 @@ header {
             updateNoDataMessage(visibleCount);
         }
 
+        // Helper function to parse age string to months
+        function parseAgeToMonths(ageString) {
+            if (!ageString || ageString === 'N/A') return 0;
+            
+            // Parse format like "3y 0m" or "0y 9m"
+            const match = ageString.match(/(\d+)y\s*(\d+)m/);
+            if (match) {
+                const years = parseInt(match[1]) || 0;
+                const months = parseInt(match[2]) || 0;
+                return (years * 12) + months;
+            }
+            
+            // If it's just a number, assume it's months
+            const num = parseInt(ageString);
+            return isNaN(num) ? 0 : num;
+        }
+
         // New sorting function
         function sortTable() {
             const sortBy = document.getElementById('sortBy').value;
@@ -4442,6 +4459,8 @@ header {
             
             const table = document.querySelector('.user-table tbody');
             const rows = Array.from(table.querySelectorAll('tr'));
+            
+            console.log('Sorting by:', sortBy, 'Rows found:', rows.length);
             
             rows.sort((a, b) => {
                 let aValue, bValue;
@@ -4458,18 +4477,20 @@ header {
                     case 'email_asc':
                         aValue = a.cells[1].textContent.trim();
                         bValue = b.cells[1].textContent.trim();
+                        console.log('Email ASC:', aValue, 'vs', bValue);
                         return aValue.localeCompare(bValue);
                     case 'email_desc':
                         aValue = a.cells[1].textContent.trim();
                         bValue = b.cells[1].textContent.trim();
+                        console.log('Email DESC:', aValue, 'vs', bValue);
                         return bValue.localeCompare(aValue);
                     case 'age_asc':
-                        aValue = parseInt(a.cells[2].textContent.trim());
-                        bValue = parseInt(b.cells[2].textContent.trim());
+                        aValue = parseAgeToMonths(a.cells[2].textContent.trim());
+                        bValue = parseAgeToMonths(b.cells[2].textContent.trim());
                         return aValue - bValue;
                     case 'age_desc':
-                        aValue = parseInt(a.cells[2].textContent.trim());
-                        bValue = parseInt(b.cells[2].textContent.trim());
+                        aValue = parseAgeToMonths(a.cells[2].textContent.trim());
+                        bValue = parseAgeToMonths(b.cells[2].textContent.trim());
                         return bValue - aValue;
                     case 'screening_date_asc':
                         aValue = new Date(a.cells[9].textContent.trim());
