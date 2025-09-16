@@ -1140,10 +1140,10 @@ class WHOGrowthStandards {
             ],
             // Age 71 months
             71 => [
-                'severely_underweight' => ['min' => 0, 'max' => 13.4],
-                'underweight' => ['min' => 13.5, 'max' => 15.1],
-                'normal' => ['min' => 15.2, 'max' => 22.6],
-                'overweight' => ['min' => 22.7, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.9],
+                'underweight' => ['min' => 14.0, 'max' => 15.6],
+                'normal' => ['min' => 15.7, 'max' => 25.5],
+                'overweight' => ['min' => 25.6, 'max' => 999]
             ]
         ];
     }
