@@ -3695,11 +3695,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         case 'get_who_classifications':
+            error_log("DEBUG: get_who_classifications case matched");
             $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
+            error_log("DEBUG: Parameters - whoStandard: $whoStandard, timeFrame: $timeFrame, barangay: $barangay");
             $result = $db->getWHOClassifications($whoStandard, $timeFrame, $barangay);
+            error_log("DEBUG: Result: " . json_encode($result));
             echo json_encode($result);
             break;
             
