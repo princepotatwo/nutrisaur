@@ -2056,14 +2056,8 @@ header {
 
         .action-section {
             display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .action-buttons {
-            display: flex;
             gap: 8px;
+            align-items: center;
             flex-shrink: 0;
         }
 
@@ -2071,7 +2065,7 @@ header {
             display: flex;
             gap: 6px;
             flex-shrink: 0;
-            margin: 0 12px;
+            align-items: center;
         }
 
         .filter-select {
@@ -2251,11 +2245,6 @@ header {
             }
 
             .action-section {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .action-buttons {
                 justify-content: center;
                 flex-wrap: wrap;
             }
@@ -3470,45 +3459,43 @@ header {
                     <!-- Row 1: Action Buttons and Search -->
                     <div class="control-row-1">
                         <div class="action-section">
-                            <div class="action-buttons">
-                                <button class="btn-add" onclick="downloadCSVTemplate()">
-                                    <span class="btn-icon">📥</span>
-                                    <span class="btn-text">Download Template</span>
-                                </button>
-                                <button class="btn-secondary" onclick="showCSVImportModal()">
-                                    <span class="btn-icon">📁</span>
-                                    <span class="btn-text">Import CSV</span>
-                                </button>
-                            </div>
+                            <button class="btn-add" onclick="downloadCSVTemplate()">
+                                <span class="btn-icon">📥</span>
+                                <span class="btn-text">Download Template</span>
+                            </button>
+                            <button class="btn-secondary" onclick="showCSVImportModal()">
+                                <span class="btn-icon">📁</span>
+                                <span class="btn-text">Import CSV</span>
+                            </button>
+                        </div>
+                        
+                        <!-- New Sorting and Classification Filters -->
+                        <div class="filter-dropdowns">
+                            <select id="sortBy" onchange="sortTable()" class="filter-select">
+                                <option value="">Sort by...</option>
+                                <option value="name_asc">Name (A-Z)</option>
+                                <option value="name_desc">Name (Z-A)</option>
+                                <option value="email_asc">Email (A-Z)</option>
+                                <option value="email_desc">Email (Z-A)</option>
+                                <option value="age_asc">Age (Youngest)</option>
+                                <option value="age_desc">Age (Oldest)</option>
+                                <option value="screening_date_asc">Screening Date (Oldest)</option>
+                                <option value="screening_date_desc">Screening Date (Newest)</option>
+                            </select>
                             
-                            <!-- New Sorting and Classification Filters -->
-                            <div class="filter-dropdowns">
-                                <select id="sortBy" onchange="sortTable()" class="filter-select">
-                                    <option value="">Sort by...</option>
-                                    <option value="name_asc">Name (A-Z)</option>
-                                    <option value="name_desc">Name (Z-A)</option>
-                                    <option value="email_asc">Email (A-Z)</option>
-                                    <option value="email_desc">Email (Z-A)</option>
-                                    <option value="age_asc">Age (Youngest)</option>
-                                    <option value="age_desc">Age (Oldest)</option>
-                                    <option value="screening_date_asc">Screening Date (Oldest)</option>
-                                    <option value="screening_date_desc">Screening Date (Newest)</option>
-                                </select>
-                                
-                                <select id="classificationFilter" onchange="filterByClassification()" class="filter-select">
-                                    <option value="">All Classifications</option>
-                                    <option value="Severely Underweight">Severely Underweight</option>
-                                    <option value="Underweight">Underweight</option>
-                                    <option value="Normal">Normal</option>
-                                    <option value="Overweight">Overweight</option>
-                                    <option value="Severely Wasted">Severely Wasted</option>
-                                    <option value="Wasted">Wasted</option>
-                                    <option value="Obese">Obese</option>
-                                    <option value="Severely Stunted">Severely Stunted</option>
-                                    <option value="Stunted">Stunted</option>
-                                    <option value="Tall">Tall</option>
-                                </select>
-                            </div>
+                            <select id="classificationFilter" onchange="filterByClassification()" class="filter-select">
+                                <option value="">All Classifications</option>
+                                <option value="Severely Underweight">Severely Underweight</option>
+                                <option value="Underweight">Underweight</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Overweight">Overweight</option>
+                                <option value="Severely Wasted">Severely Wasted</option>
+                                <option value="Wasted">Wasted</option>
+                                <option value="Obese">Obese</option>
+                                <option value="Severely Stunted">Severely Stunted</option>
+                                <option value="Stunted">Stunted</option>
+                                <option value="Tall">Tall</option>
+                            </select>
                         </div>
                         
                         <div class="search-section">
