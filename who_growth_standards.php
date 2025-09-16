@@ -1359,31 +1359,6 @@ class WHOGrowthStandards {
     }
     
     /**
-     * Calculate BMI-for-Age z-score and classification
-     */
-    public function calculateBMIForAge($bmi, $ageInMonths, $sex) {
-        $standards = ($sex === 'Male') ? $this->getBMIForAgeBoys() : $this->getBMIForAgeGirls();
-        
-        if (!isset($standards[$ageInMonths])) {
-            return ['z_score' => null, 'classification' => 'Age out of range', 'error' => 'Age must be 0-71 months'];
-        }
-        
-        $median = $standards[$ageInMonths]['median'];
-        $sd = $standards[$ageInMonths]['sd'];
-        
-        // Calculate z-score: (observed - median) / sd
-        $zScore = ($bmi - $median) / $sd;
-        $classification = $this->getNutritionalClassification($zScore);
-        
-        return [
-            'z_score' => round($zScore, 2),
-            'classification' => $classification,
-            'median' => $median,
-            'sd' => $sd
-        ];
-    }
-    
-    /**
      * Main function to process all growth standards for a child
      */
     public function processAllGrowthStandards($weight, $height, $birthDate, $sex, $screeningDate = null) {
