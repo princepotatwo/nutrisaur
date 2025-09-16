@@ -107,13 +107,13 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
             try {
                 error_log("  - Processing user: " . ($user['email'] ?? 'unknown'));
                 
-                // Calculate age in months - check if birth_date exists and is not null
+                // Calculate age in months using screening date (same as screening.php)
                 $ageInMonths = 0;
-                if (isset($user['birth_date']) && $user['birth_date'] !== null && $user['birth_date'] !== '') {
+                if (isset($user['birthday']) && $user['birthday'] !== null && $user['birthday'] !== '') {
                     try {
-                        $birthDate = new DateTime($user['birth_date']);
-                        $today = new DateTime();
-                        $age = $today->diff($birthDate);
+                        $birthDate = new DateTime($user['birthday']);
+                        $screeningDate = new DateTime($user['screening_date'] ?? date('Y-m-d H:i:s'));
+                        $age = $birthDate->diff($screeningDate);
                         $ageInMonths = ($age->y * 12) + $age->m;
                         
                         // Add partial month if more than half the month has passed
@@ -125,14 +125,14 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                         $ageInMonths = 0;
                     }
                 } else {
-                    // If no birth_date, assume adult (over 71 months)
+                    // If no birthday, assume adult (over 71 months)
                     $ageInMonths = 72; // 6 years old
-                    error_log("    - No birth_date found, assuming adult age (72 months)");
+                    error_log("    - No birthday found, assuming adult age (72 months)");
                 }
                 
                 error_log("    - Age in months: $ageInMonths");
-                error_log("    - Weight: " . ($user['weight'] ?? 'null'));
-                error_log("    - Height: " . ($user['height'] ?? 'null'));
+                error_log("    - Weight: " . ($user['weight_kg'] ?? 'null'));
+                error_log("    - Height: " . ($user['height_cm'] ?? 'null'));
                 error_log("    - Sex: " . ($user['sex'] ?? 'null'));
                 
                 $classification = 'No Data';
@@ -156,12 +156,12 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                     }
                 } elseif ($whoStandard === 'weight-for-height') {
                     // Weight-for-Height: 65-120 cm height range
-                    $heightCm = floatval($user['height']);
+                    $heightCm = floatval($user['height_cm']);
                     $shouldProcess = ($heightCm >= 65 && $heightCm <= 120);
                     error_log("    - Height restriction check: " . ($shouldProcess ? 'true' : 'false') . " (height: $heightCm cm, standard: $whoStandard)");
                 } elseif ($whoStandard === 'weight-for-length') {
                     // Weight-for-Length: 45-110 cm height range
-                    $heightCm = floatval($user['height']);
+                    $heightCm = floatval($user['height_cm']);
                     $shouldProcess = ($heightCm >= 45 && $heightCm <= 110);
                     error_log("    - Length restriction check: " . ($shouldProcess ? 'true' : 'false') . " (height: $heightCm cm, standard: $whoStandard)");
                 }
@@ -171,22 +171,19 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 if ($shouldProcess) {
                     if ($ageInMonths > 71 && $whoStandard === 'bmi-for-age') {
                         // For adults (>71 months), use adult BMI classification
-                        $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                        $bmi = floatval($user['weight_kg']) / pow(floatval($user['height_cm']) / 100, 2);
                         $classification = getAdultBMIClassification($bmi);
                         error_log("    - Adult BMI classification: $classification (BMI: $bmi)");
                     } else {
-                        // Use WHO Growth Standards for children 0-71 months
+                        // Use WHO Growth Standards for children 0-71 months (same as screening.php)
                         $who = new WHOGrowthStandards();
-                        // Use a default birth date if none exists (6 years ago for adult classification)
-                        $birthDateForAssessment = isset($user['birth_date']) && $user['birth_date'] !== null && $user['birth_date'] !== '' 
-                            ? $user['birth_date'] 
-                            : date('Y-m-d', strtotime('-6 years'));
                         
                         $assessment = $who->getComprehensiveAssessment(
-                            floatval($user['weight']), 
-                            floatval($user['height']), 
-                            $birthDateForAssessment, 
-                            $user['sex']
+                            floatval($user['weight_kg']), 
+                            floatval($user['height_cm']), 
+                            $user['birthday'], 
+                            $user['sex'],
+                            $user['screening_date'] ?? null
                         );
                         
                         error_log("    - WHO Assessment result: " . json_encode($assessment));
