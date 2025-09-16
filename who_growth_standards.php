@@ -131,10 +131,10 @@ class WHOGrowthStandards {
         return [
             // Age 0 months - Based on exact WHO table values
             0 => [
-                'severely_underweight' => ['min' => 0, 'max' => 2.0],
-                'underweight' => ['min' => 2.1, 'max' => 2.3],
-                'normal' => ['min' => 2.4, 'max' => 4.2],
-                'overweight' => ['min' => 4.3, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 2.1],
+                'underweight' => ['min' => 2.2, 'max' => 2.4],
+                'normal' => ['min' => 2.5, 'max' => 4.4],
+                'overweight' => ['min' => 4.5, 'max' => 999]
             ],
             // Age 1 month
             1 => [
@@ -278,10 +278,10 @@ class WHOGrowthStandards {
             ],
             // Age 71 months
             71 => [
-                'severely_underweight' => ['min' => 0, 'max' => 13.4],
-                'underweight' => ['min' => 13.5, 'max' => 15.1],
-                'normal' => ['min' => 15.2, 'max' => 22.6],
-                'overweight' => ['min' => 22.7, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.9],
+                'underweight' => ['min' => 14.0, 'max' => 15.6],
+                'normal' => ['min' => 15.7, 'max' => 26.8],
+                'overweight' => ['min' => 26.9, 'max' => 999]
             ]
         ];
     }
@@ -791,10 +791,10 @@ class WHOGrowthStandards {
             ],
             // Age 71 months
             71 => [
-                'severely_underweight' => ['min' => 0, 'max' => 13.9],
-                'underweight' => ['min' => 14.0, 'max' => 15.6],
-                'normal' => ['min' => 15.7, 'max' => 26.8],
-                'overweight' => ['min' => 26.9, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.4],
+                'underweight' => ['min' => 13.5, 'max' => 15.1],
+                'normal' => ['min' => 15.2, 'max' => 22.6],
+                'overweight' => ['min' => 22.7, 'max' => 999]
             ]
         ];
     }
