@@ -594,7 +594,7 @@ class WHOGrowthStandards {
                         
                         return [
                             'z_score' => $zScore !== null ? round($zScore, 2) : null,
-                            'classification' => ucfirst(str_replace('_', ' ', $category)),
+                            'classification' => $this->getNutritionalClassification($zScore),
                             'age_used' => $closestAge,
                             'method' => 'exact_who_table'
                         ];
