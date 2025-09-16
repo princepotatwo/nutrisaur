@@ -1617,6 +1617,9 @@ class DatabaseAPI {
                     require_once 'who_growth_standards.php';
                     $who = new WHOGrowthStandards();
                     
+                    // Calculate age in months from birthday
+                    $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                    
                     $assessment = $who->getComprehensiveAssessment(
                         floatval($user['weight']),
                         floatval($user['height']),
@@ -1632,9 +1635,11 @@ class DatabaseAPI {
                         // DEBUG: Log user data and assessment results
                         $debugInfo[] = [
                             'name' => $user['name'] ?? 'Unknown',
-                            'age_months' => $user['age_months'] ?? 'Unknown',
+                            'age_months' => $ageInMonths,
                             'weight' => $user['weight'],
                             'sex' => $user['sex'],
+                            'birthday' => $user['birthday'],
+                            'screening_date' => $user['screening_date'] ?? null,
                             'weight_for_age_result' => $results['weight_for_age'] ?? 'Not found',
                             'assessment_success' => $assessment['success']
                         ];
