@@ -6260,7 +6260,7 @@ body {
                     <h3>WHO Growth Standards Classification</h3>
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;" onchange="handleWHOStandardChange()">
-                            <option value="weight-for-age">Weight for Age</option>
+                            <option value="weight-for-age" selected>Weight for Age</option>
                             <option value="height-for-age">Height for Age</option>
                             <option value="weight-for-height">Weight for Height</option>
                             <option value="weight-for-length">Weight for Length</option>
@@ -6268,7 +6268,7 @@ body {
                         </select>
                     </div>
                 </div>
-                <p class="chart-description" id="who-chart-description">Distribution of children by WHO Growth Standards classification. Shows nutritional status based on selected WHO standard.</p>
+                <p class="chart-description" id="who-chart-description">Distribution of children by Weight-for-Age classification. Shows nutritional status based on weight relative to age (0-71 months).</p>
                 <div class="donut-chart-container">
                     <div class="donut-chart">
                         <div class="donut-chart-bg" id="risk-chart-bg"></div>
@@ -8195,42 +8195,22 @@ body {
 
         // Function to handle WHO standard dropdown change
         async function handleWHOStandardChange() {
-            console.log('🚨 WHO Standard Change Function Called!');
-            alert('WHO Standard Change Function Called!');
-            
             const select = document.getElementById('whoStandardSelect');
             const selectedStandard = select.value;
-            
-            console.log('🔄 WHO Standard Change Debug:');
-            console.log('  - Selected Standard:', selectedStandard);
-            console.log('  - Select Element:', select);
             
             try {
                 // Get current time frame and barangay
                 const timeFrame = '1d'; // You can make this dynamic
                 const barangay = ''; // You can make this dynamic
                 
-                console.log('  - Time Frame:', timeFrame);
-                console.log('  - Barangay:', barangay);
-                
                 // Fetch WHO classification data
-                console.log('📡 Fetching WHO classification data...');
                 const data = await fetchWHOClassificationData(selectedStandard, timeFrame, barangay);
                 
-                console.log('📊 WHO Classification Data Received:');
-                console.log('  - Success:', data.success);
-                console.log('  - Classifications:', data.classifications);
-                console.log('  - Total Users:', data.total_users);
-                console.log('  - WHO Standard:', data.who_standard);
-                console.log('  - Full Data:', data);
-                
                 // Update the chart
-                console.log('🎨 Updating WHO classification chart...');
                 updateWHOClassificationChart(data);
                 
             } catch (error) {
-                console.error('❌ Error updating WHO classification chart:', error);
-                console.error('❌ Error stack:', error.stack);
+                console.error('Error updating WHO classification chart:', error);
             }
         }
 
