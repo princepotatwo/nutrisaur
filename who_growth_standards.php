@@ -582,7 +582,10 @@ class WHOGrowthStandards {
                 
                 foreach ($ranges as $category => $range) {
                     if ($weight >= $range['min'] && $weight <= $range['max']) {
-                        // Calculate z-score using the original formula for the closest age
+                        // Simple decision tree - just return the category from the table
+                        $classification = ucfirst(str_replace('_', ' ', $category));
+                        
+                        // Calculate z-score for reference only
                         $standards = $this->getWeightForAgeBoys();
                         if (isset($standards[$closestAge])) {
                             $median = $standards[$closestAge]['median'];
@@ -594,7 +597,7 @@ class WHOGrowthStandards {
                         
                         return [
                             'z_score' => $zScore !== null ? round($zScore, 2) : null,
-                            'classification' => $this->getNutritionalClassification($zScore),
+                            'classification' => $classification,
                             'age_used' => $closestAge,
                             'method' => 'exact_who_table'
                         ];
