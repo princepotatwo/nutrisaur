@@ -129,7 +129,6 @@ class WHOGrowthStandards {
      */
     public function getWeightForAgeBoysLookupTable() {
         return [
-            // Age 0 months - Official WHO standards
             0 => [
                 'severely_underweight' => ['min' => 0, 'max' => 2.1],
                 'underweight' => ['min' => 2.2, 'max' => 2.4],
@@ -159,17 +158,17 @@ class WHOGrowthStandards {
             ],
             // Age 4 months
             4 => [
-                'severely_underweight' => ['min' => 0, 'max' => 3.9],
-                'underweight' => ['min' => 4.0, 'max' => 4.4],
-                'normal' => ['min' => 4.5, 'max' => 6.9],
-                'overweight' => ['min' => 7.0, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 4.9],
+                'underweight' => ['min' => 5.0, 'max' => 5.5],
+                'normal' => ['min' => 5.6, 'max' => 8.7],
+                'overweight' => ['min' => 8.8, 'max' => 999]
             ],
             // Age 5 months
             5 => [
-                'severely_underweight' => ['min' => 0, 'max' => 4.2],
-                'underweight' => ['min' => 4.3, 'max' => 4.7],
-                'normal' => ['min' => 4.8, 'max' => 7.3],
-                'overweight' => ['min' => 7.4, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 5.3],
+                'underweight' => ['min' => 5.4, 'max' => 5.9],
+                'normal' => ['min' => 6.0, 'max' => 9.3],
+                'overweight' => ['min' => 9.4, 'max' => 999]
             ],
             // Age 6 months
             6 => [
@@ -180,10 +179,10 @@ class WHOGrowthStandards {
             ],
             // Age 7 months
             7 => [
-                'severely_underweight' => ['min' => 0, 'max' => 4.6],
-                'underweight' => ['min' => 4.7, 'max' => 5.1],
-                'normal' => ['min' => 5.2, 'max' => 7.9],
-                'overweight' => ['min' => 8.0, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 5.9],
+                'underweight' => ['min' => 6.0, 'max' => 6.6],
+                'normal' => ['min' => 6.7, 'max' => 10.3],
+                'overweight' => ['min' => 10.4, 'max' => 999]
             ],
             // Age 8 months
             8 => [
@@ -201,430 +200,430 @@ class WHOGrowthStandards {
             ],
             // Age 10 months
             10 => [
-                'severely_underweight' => ['min' => 0, 'max' => 5.1],
-                'underweight' => ['min' => 5.2, 'max' => 5.7],
-                'normal' => ['min' => 5.8, 'max' => 8.8],
-                'overweight' => ['min' => 8.9, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 6.6],
+                'underweight' => ['min' => 6.7, 'max' => 7.3],
+                'normal' => ['min' => 7.4, 'max' => 11.4],
+                'overweight' => ['min' => 11.5, 'max' => 999]
             ],
             // Age 11 months
             11 => [
-                'severely_underweight' => ['min' => 0, 'max' => 5.3],
-                'underweight' => ['min' => 5.4, 'max' => 5.8],
-                'normal' => ['min' => 5.9, 'max' => 9.1],
-                'overweight' => ['min' => 9.2, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 6.8],
+                'underweight' => ['min' => 6.9, 'max' => 7.5],
+                'normal' => ['min' => 7.6, 'max' => 11.7],
+                'overweight' => ['min' => 11.8, 'max' => 999]
             ],
             // Age 12 months
             12 => [
-                'severely_underweight' => ['min' => 0, 'max' => 6.6],
-                'underweight' => ['min' => 6.7, 'max' => 7.3],
-                'normal' => ['min' => 7.4, 'max' => 11.5],
-                'overweight' => ['min' => 11.6, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 6.9],
+                'underweight' => ['min' => 7.0, 'max' => 7.6],
+                'normal' => ['min' => 7.7, 'max' => 12.0],
+                'overweight' => ['min' => 12.1, 'max' => 999]
             ],
             // Age 13 months
             13 => [
-                'severely_underweight' => ['min' => 0, 'max' => 6.8],
-                'underweight' => ['min' => 6.9, 'max' => 7.5],
-                'normal' => ['min' => 7.6, 'max' => 11.8],
-                'overweight' => ['min' => 11.9, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 7.1],
+                'underweight' => ['min' => 7.2, 'max' => 7.8],
+                'normal' => ['min' => 7.9, 'max' => 12.3],
+                'overweight' => ['min' => 12.4, 'max' => 999]
             ],
             // Age 14 months
             14 => [
-                'severely_underweight' => ['min' => 0, 'max' => 7.0],
-                'underweight' => ['min' => 7.1, 'max' => 7.7],
-                'normal' => ['min' => 7.8, 'max' => 12.1],
-                'overweight' => ['min' => 12.2, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 7.2],
+                'underweight' => ['min' => 7.3, 'max' => 8.0],
+                'normal' => ['min' => 8.1, 'max' => 12.6],
+                'overweight' => ['min' => 12.7, 'max' => 999]
             ],
             // Age 15 months
             15 => [
-                'severely_underweight' => ['min' => 0, 'max' => 7.1],
-                'underweight' => ['min' => 7.2, 'max' => 7.8],
-                'normal' => ['min' => 7.9, 'max' => 12.4],
-                'overweight' => ['min' => 12.5, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 7.4],
+                'underweight' => ['min' => 7.5, 'max' => 8.2],
+                'normal' => ['min' => 8.3, 'max' => 12.8],
+                'overweight' => ['min' => 12.9, 'max' => 999]
             ],
             // Age 16 months
             16 => [
-                'severely_underweight' => ['min' => 0, 'max' => 7.3],
-                'underweight' => ['min' => 7.4, 'max' => 8.0],
-                'normal' => ['min' => 8.1, 'max' => 12.7],
-                'overweight' => ['min' => 12.8, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 7.5],
+                'underweight' => ['min' => 7.6, 'max' => 8.3],
+                'normal' => ['min' => 8.4, 'max' => 13.1],
+                'overweight' => ['min' => 13.2, 'max' => 999]
             ],
             // Age 17 months
             17 => [
-                'severely_underweight' => ['min' => 0, 'max' => 7.4],
-                'underweight' => ['min' => 7.5, 'max' => 8.1],
-                'normal' => ['min' => 8.2, 'max' => 13.0],
-                'overweight' => ['min' => 13.1, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 7.7],
+                'underweight' => ['min' => 7.8, 'max' => 8.5],
+                'normal' => ['min' => 8.6, 'max' => 13.4],
+                'overweight' => ['min' => 13.5, 'max' => 999]
             ],
             // Age 18 months
             18 => [
-                'severely_underweight' => ['min' => 0, 'max' => 7.6],
-                'underweight' => ['min' => 7.7, 'max' => 8.3],
-                'normal' => ['min' => 8.4, 'max' => 13.3],
-                'overweight' => ['min' => 13.4, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 7.8],
+                'underweight' => ['min' => 7.9, 'max' => 8.7],
+                'normal' => ['min' => 8.8, 'max' => 13.7],
+                'overweight' => ['min' => 13.8, 'max' => 999]
             ],
             // Age 19 months
             19 => [
-                'severely_underweight' => ['min' => 0, 'max' => 7.7],
-                'underweight' => ['min' => 7.8, 'max' => 8.4],
-                'normal' => ['min' => 8.5, 'max' => 13.6],
-                'overweight' => ['min' => 13.7, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 8.0],
+                'underweight' => ['min' => 8.1, 'max' => 8.8],
+                'normal' => ['min' => 8.9, 'max' => 13.9],
+                'overweight' => ['min' => 14.0, 'max' => 999]
             ],
             // Age 20 months
             20 => [
-                'severely_underweight' => ['min' => 0, 'max' => 7.8],
-                'underweight' => ['min' => 7.9, 'max' => 8.6],
-                'normal' => ['min' => 8.7, 'max' => 13.9],
-                'overweight' => ['min' => 14.0, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 8.1],
+                'underweight' => ['min' => 8.2, 'max' => 9.0],
+                'normal' => ['min' => 9.1, 'max' => 14.2],
+                'overweight' => ['min' => 14.3, 'max' => 999]
             ],
             // Age 21 months
             21 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.0],
-                'underweight' => ['min' => 8.1, 'max' => 8.7],
-                'normal' => ['min' => 8.8, 'max' => 14.2],
-                'overweight' => ['min' => 14.3, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 8.2],
+                'underweight' => ['min' => 8.3, 'max' => 9.1],
+                'normal' => ['min' => 9.2, 'max' => 14.5],
+                'overweight' => ['min' => 14.6, 'max' => 999]
             ],
             // Age 22 months
             22 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.1],
-                'underweight' => ['min' => 8.2, 'max' => 8.9],
-                'normal' => ['min' => 9.0, 'max' => 14.5],
-                'overweight' => ['min' => 14.6, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 8.4],
+                'underweight' => ['min' => 8.5, 'max' => 9.3],
+                'normal' => ['min' => 9.4, 'max' => 14.7],
+                'overweight' => ['min' => 14.8, 'max' => 999]
             ],
             // Age 23 months
             23 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.2],
-                'underweight' => ['min' => 8.3, 'max' => 9.0],
-                'normal' => ['min' => 9.1, 'max' => 14.8],
-                'overweight' => ['min' => 14.9, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 8.5],
+                'underweight' => ['min' => 8.6, 'max' => 9.4],
+                'normal' => ['min' => 9.5, 'max' => 15.0],
+                'overweight' => ['min' => 15.1, 'max' => 999]
             ],
             // Age 24 months
             24 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.1],
-                'underweight' => ['min' => 8.2, 'max' => 8.9],
-                'normal' => ['min' => 9.0, 'max' => 14.8],
-                'overweight' => ['min' => 14.9, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 8.6],
+                'underweight' => ['min' => 8.7, 'max' => 9.6],
+                'normal' => ['min' => 9.7, 'max' => 15.3],
+                'overweight' => ['min' => 15.4, 'max' => 999]
             ],
             // Age 25 months
             25 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.3],
-                'underweight' => ['min' => 8.4, 'max' => 9.1],
-                'normal' => ['min' => 9.2, 'max' => 15.1],
-                'overweight' => ['min' => 15.2, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 8.8],
+                'underweight' => ['min' => 8.9, 'max' => 9.7],
+                'normal' => ['min' => 9.8, 'max' => 15.5],
+                'overweight' => ['min' => 15.6, 'max' => 999]
             ],
             // Age 26 months
             26 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.4],
-                'underweight' => ['min' => 8.5, 'max' => 9.2],
-                'normal' => ['min' => 9.3, 'max' => 15.4],
-                'overweight' => ['min' => 15.5, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 8.9],
+                'underweight' => ['min' => 9.0, 'max' => 9.9],
+                'normal' => ['min' => 10.0, 'max' => 15.8],
+                'overweight' => ['min' => 15.9, 'max' => 999]
             ],
             // Age 27 months
             27 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.5],
-                'underweight' => ['min' => 8.6, 'max' => 9.4],
-                'normal' => ['min' => 9.5, 'max' => 15.7],
-                'overweight' => ['min' => 15.8, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 9.0],
+                'underweight' => ['min' => 9.1, 'max' => 10.0],
+                'normal' => ['min' => 10.1, 'max' => 16.1],
+                'overweight' => ['min' => 16.2, 'max' => 999]
             ],
             // Age 28 months
             28 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.6],
-                'underweight' => ['min' => 8.7, 'max' => 9.5],
-                'normal' => ['min' => 9.6, 'max' => 16.0],
-                'overweight' => ['min' => 16.1, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 9.1],
+                'underweight' => ['min' => 9.2, 'max' => 10.1],
+                'normal' => ['min' => 10.2, 'max' => 16.3],
+                'overweight' => ['min' => 16.4, 'max' => 999]
             ],
             // Age 29 months
             29 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.7],
-                'underweight' => ['min' => 8.8, 'max' => 9.6],
-                'normal' => ['min' => 9.7, 'max' => 16.3],
-                'overweight' => ['min' => 16.4, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 9.2],
+                'underweight' => ['min' => 9.3, 'max' => 10.3],
+                'normal' => ['min' => 10.4, 'max' => 16.6],
+                'overweight' => ['min' => 16.7, 'max' => 999]
             ],
             // Age 30 months
             30 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.8],
-                'underweight' => ['min' => 8.9, 'max' => 9.7],
-                'normal' => ['min' => 9.8, 'max' => 16.6],
-                'overweight' => ['min' => 16.7, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 9.4],
+                'underweight' => ['min' => 9.5, 'max' => 10.4],
+                'normal' => ['min' => 10.5, 'max' => 16.9],
+                'overweight' => ['min' => 17.0, 'max' => 999]
             ],
             // Age 31 months
             31 => [
-                'severely_underweight' => ['min' => 0, 'max' => 8.9],
-                'underweight' => ['min' => 9.0, 'max' => 9.8],
-                'normal' => ['min' => 9.9, 'max' => 16.9],
-                'overweight' => ['min' => 17.0, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 9.5],
+                'underweight' => ['min' => 9.6, 'max' => 10.6],
+                'normal' => ['min' => 10.7, 'max' => 17.1],
+                'overweight' => ['min' => 17.2, 'max' => 999]
             ],
             // Age 32 months
             32 => [
-                'severely_underweight' => ['min' => 0, 'max' => 9.0],
-                'underweight' => ['min' => 9.1, 'max' => 9.9],
-                'normal' => ['min' => 10.0, 'max' => 17.2],
-                'overweight' => ['min' => 17.3, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 9.6],
+                'underweight' => ['min' => 9.7, 'max' => 10.7],
+                'normal' => ['min' => 10.8, 'max' => 17.4],
+                'overweight' => ['min' => 17.5, 'max' => 999]
             ],
             // Age 33 months
             33 => [
-                'severely_underweight' => ['min' => 0, 'max' => 9.1],
-                'underweight' => ['min' => 9.2, 'max' => 10.0],
-                'normal' => ['min' => 10.1, 'max' => 17.5],
-                'overweight' => ['min' => 17.6, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 9.7],
+                'underweight' => ['min' => 9.8, 'max' => 10.8],
+                'normal' => ['min' => 10.9, 'max' => 17.6],
+                'overweight' => ['min' => 17.7, 'max' => 999]
             ],
             // Age 34 months
             34 => [
-                'severely_underweight' => ['min' => 0, 'max' => 9.2],
-                'underweight' => ['min' => 9.3, 'max' => 10.1],
-                'normal' => ['min' => 10.2, 'max' => 17.8],
+                'severely_underweight' => ['min' => 0, 'max' => 9.8],
+                'underweight' => ['min' => 9.9, 'max' => 10.9],
+                'normal' => ['min' => 11.0, 'max' => 17.8],
                 'overweight' => ['min' => 17.9, 'max' => 999]
             ],
             // Age 35 months
             35 => [
-                'severely_underweight' => ['min' => 0, 'max' => 9.3],
-                'underweight' => ['min' => 9.4, 'max' => 10.2],
-                'normal' => ['min' => 10.3, 'max' => 18.1],
+                'severely_underweight' => ['min' => 0, 'max' => 9.9],
+                'underweight' => ['min' => 10.0, 'max' => 11.1],
+                'normal' => ['min' => 11.2, 'max' => 18.1],
                 'overweight' => ['min' => 18.2, 'max' => 999]
             ],
             // Age 36 months
             36 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.8],
-                'underweight' => ['min' => 10.9, 'max' => 12.2],
-                'normal' => ['min' => 12.3, 'max' => 16.1],
-                'overweight' => ['min' => 16.2, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 10.0],
+                'underweight' => ['min' => 10.1, 'max' => 11.2],
+                'normal' => ['min' => 11.3, 'max' => 18.4],
+                'overweight' => ['min' => 18.5, 'max' => 999]
             ],
             // Age 37 months
             37 => [
-                'severely_underweight' => ['min' => 0, 'max' => 9.7],
-                'underweight' => ['min' => 9.8, 'max' => 10.8],
-                'normal' => ['min' => 10.9, 'max' => 18.4],
-                'overweight' => ['min' => 18.5, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 10.1],
+                'underweight' => ['min' => 10.2, 'max' => 11.3],
+                'normal' => ['min' => 11.4, 'max' => 18.6],
+                'overweight' => ['min' => 18.7, 'max' => 999]
             ],
             // Age 38 months
             38 => [
-                'severely_underweight' => ['min' => 0, 'max' => 9.8],
-                'underweight' => ['min' => 9.9, 'max' => 10.9],
-                'normal' => ['min' => 11.0, 'max' => 18.7],
-                'overweight' => ['min' => 18.8, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 10.2],
+                'underweight' => ['min' => 10.3, 'max' => 11.4],
+                'normal' => ['min' => 11.5, 'max' => 18.8],
+                'overweight' => ['min' => 18.9, 'max' => 999]
             ],
             // Age 39 months
             39 => [
-                'severely_underweight' => ['min' => 0, 'max' => 9.9],
-                'underweight' => ['min' => 10.0, 'max' => 11.0],
-                'normal' => ['min' => 11.1, 'max' => 19.0],
+                'severely_underweight' => ['min' => 0, 'max' => 10.3],
+                'underweight' => ['min' => 10.4, 'max' => 11.5],
+                'normal' => ['min' => 11.6, 'max' => 19.0],
                 'overweight' => ['min' => 19.1, 'max' => 999]
             ],
             // Age 40 months
             40 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.0],
-                'underweight' => ['min' => 10.1, 'max' => 11.2],
-                'normal' => ['min' => 11.3, 'max' => 19.3],
-                'overweight' => ['min' => 19.4, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 10.4],
+                'underweight' => ['min' => 10.5, 'max' => 11.7],
+                'normal' => ['min' => 11.8, 'max' => 19.2],
+                'overweight' => ['min' => 19.3, 'max' => 999]
             ],
             // Age 41 months
             41 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.1],
-                'underweight' => ['min' => 10.2, 'max' => 11.3],
-                'normal' => ['min' => 11.4, 'max' => 19.6],
-                'overweight' => ['min' => 19.7, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 10.5],
+                'underweight' => ['min' => 10.6, 'max' => 11.8],
+                'normal' => ['min' => 11.9, 'max' => 19.4],
+                'overweight' => ['min' => 19.5, 'max' => 999]
             ],
             // Age 42 months
             42 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.2],
-                'underweight' => ['min' => 10.3, 'max' => 11.4],
-                'normal' => ['min' => 11.5, 'max' => 19.9],
-                'overweight' => ['min' => 20.0, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 10.6],
+                'underweight' => ['min' => 10.7, 'max' => 11.9],
+                'normal' => ['min' => 12.0, 'max' => 19.6],
+                'overweight' => ['min' => 19.7, 'max' => 999]
             ],
             // Age 43 months
             43 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.3],
-                'underweight' => ['min' => 10.4, 'max' => 11.5],
-                'normal' => ['min' => 11.6, 'max' => 20.2],
-                'overweight' => ['min' => 20.3, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 10.7],
+                'underweight' => ['min' => 10.8, 'max' => 12.0],
+                'normal' => ['min' => 12.1, 'max' => 19.8],
+                'overweight' => ['min' => 19.9, 'max' => 999]
             ],
             // Age 44 months
             44 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.4],
-                'underweight' => ['min' => 10.5, 'max' => 11.6],
-                'normal' => ['min' => 11.7, 'max' => 20.5],
-                'overweight' => ['min' => 20.6, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 10.8],
+                'underweight' => ['min' => 10.9, 'max' => 12.1],
+                'normal' => ['min' => 12.2, 'max' => 20.0],
+                'overweight' => ['min' => 20.1, 'max' => 999]
             ],
             // Age 45 months
             45 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.5],
-                'underweight' => ['min' => 10.6, 'max' => 11.7],
-                'normal' => ['min' => 11.8, 'max' => 20.8],
-                'overweight' => ['min' => 20.9, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 10.9],
+                'underweight' => ['min' => 11.0, 'max' => 12.3],
+                'normal' => ['min' => 12.4, 'max' => 20.2],
+                'overweight' => ['min' => 20.3, 'max' => 999]
             ],
             // Age 46 months
             46 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.6],
-                'underweight' => ['min' => 10.7, 'max' => 11.8],
-                'normal' => ['min' => 11.9, 'max' => 21.1],
-                'overweight' => ['min' => 21.2, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.0],
+                'underweight' => ['min' => 11.1, 'max' => 12.4],
+                'normal' => ['min' => 12.5, 'max' => 20.4],
+                'overweight' => ['min' => 20.5, 'max' => 999]
             ],
             // Age 47 months
             47 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.7],
-                'underweight' => ['min' => 10.8, 'max' => 11.9],
-                'normal' => ['min' => 12.0, 'max' => 21.4],
-                'overweight' => ['min' => 21.5, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.1],
+                'underweight' => ['min' => 11.2, 'max' => 12.5],
+                'normal' => ['min' => 12.6, 'max' => 20.6],
+                'overweight' => ['min' => 20.7, 'max' => 999]
             ],
             // Age 48 months
             48 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.8],
-                'underweight' => ['min' => 10.9, 'max' => 12.0],
-                'normal' => ['min' => 12.1, 'max' => 21.7],
-                'overweight' => ['min' => 21.8, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.2],
+                'underweight' => ['min' => 11.3, 'max' => 12.6],
+                'normal' => ['min' => 12.7, 'max' => 20.8],
+                'overweight' => ['min' => 20.9, 'max' => 999]
             ],
             // Age 49 months
             49 => [
-                'severely_underweight' => ['min' => 0, 'max' => 10.9],
-                'underweight' => ['min' => 11.0, 'max' => 12.1],
-                'normal' => ['min' => 12.2, 'max' => 22.0],
-                'overweight' => ['min' => 22.1, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.3],
+                'underweight' => ['min' => 11.4, 'max' => 12.7],
+                'normal' => ['min' => 12.8, 'max' => 21.0],
+                'overweight' => ['min' => 21.1, 'max' => 999]
             ],
             // Age 50 months
             50 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.0],
-                'underweight' => ['min' => 11.1, 'max' => 12.2],
-                'normal' => ['min' => 12.3, 'max' => 22.3],
-                'overweight' => ['min' => 22.4, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.4],
+                'underweight' => ['min' => 11.5, 'max' => 12.8],
+                'normal' => ['min' => 12.9, 'max' => 21.2],
+                'overweight' => ['min' => 21.3, 'max' => 999]
             ],
             // Age 51 months
             51 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.1],
-                'underweight' => ['min' => 11.2, 'max' => 12.3],
-                'normal' => ['min' => 12.4, 'max' => 22.6],
-                'overweight' => ['min' => 22.7, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.5],
+                'underweight' => ['min' => 11.6, 'max' => 13.0],
+                'normal' => ['min' => 13.1, 'max' => 21.4],
+                'overweight' => ['min' => 21.5, 'max' => 999]
             ],
             // Age 52 months
             52 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.2],
-                'underweight' => ['min' => 11.3, 'max' => 12.4],
-                'normal' => ['min' => 12.5, 'max' => 22.9],
-                'overweight' => ['min' => 23.0, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.6],
+                'underweight' => ['min' => 11.7, 'max' => 13.1],
+                'normal' => ['min' => 13.2, 'max' => 21.6],
+                'overweight' => ['min' => 21.7, 'max' => 999]
             ],
             // Age 53 months
             53 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.3],
-                'underweight' => ['min' => 11.4, 'max' => 12.5],
-                'normal' => ['min' => 12.6, 'max' => 23.2],
-                'overweight' => ['min' => 23.3, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.7],
+                'underweight' => ['min' => 11.8, 'max' => 13.2],
+                'normal' => ['min' => 13.3, 'max' => 21.8],
+                'overweight' => ['min' => 21.9, 'max' => 999]
             ],
             // Age 54 months
             54 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.4],
-                'underweight' => ['min' => 11.5, 'max' => 12.6],
-                'normal' => ['min' => 12.7, 'max' => 23.5],
-                'overweight' => ['min' => 23.6, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.8],
+                'underweight' => ['min' => 11.9, 'max' => 13.3],
+                'normal' => ['min' => 13.4, 'max' => 22.0],
+                'overweight' => ['min' => 22.1, 'max' => 999]
             ],
             // Age 55 months
             55 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.5],
-                'underweight' => ['min' => 11.6, 'max' => 12.7],
-                'normal' => ['min' => 12.8, 'max' => 23.8],
-                'overweight' => ['min' => 23.9, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 11.9],
+                'underweight' => ['min' => 12.0, 'max' => 13.4],
+                'normal' => ['min' => 13.5, 'max' => 22.2],
+                'overweight' => ['min' => 22.3, 'max' => 999]
             ],
             // Age 56 months
             56 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.6],
-                'underweight' => ['min' => 11.7, 'max' => 12.8],
-                'normal' => ['min' => 12.9, 'max' => 24.1],
-                'overweight' => ['min' => 24.2, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 12.0],
+                'underweight' => ['min' => 12.1, 'max' => 13.5],
+                'normal' => ['min' => 13.6, 'max' => 22.4],
+                'overweight' => ['min' => 22.5, 'max' => 999]
             ],
             // Age 57 months
             57 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.7],
-                'underweight' => ['min' => 11.8, 'max' => 12.9],
-                'normal' => ['min' => 13.0, 'max' => 24.4],
-                'overweight' => ['min' => 24.5, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 12.1],
+                'underweight' => ['min' => 12.2, 'max' => 13.6],
+                'normal' => ['min' => 13.7, 'max' => 22.6],
+                'overweight' => ['min' => 22.7, 'max' => 999]
             ],
             // Age 58 months
             58 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.8],
-                'underweight' => ['min' => 11.9, 'max' => 13.0],
-                'normal' => ['min' => 13.1, 'max' => 24.7],
-                'overweight' => ['min' => 24.8, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 12.2],
+                'underweight' => ['min' => 12.3, 'max' => 13.7],
+                'normal' => ['min' => 13.8, 'max' => 22.8],
+                'overweight' => ['min' => 22.9, 'max' => 999]
             ],
             // Age 59 months
             59 => [
-                'severely_underweight' => ['min' => 0, 'max' => 11.9],
-                'underweight' => ['min' => 12.0, 'max' => 13.1],
-                'normal' => ['min' => 13.2, 'max' => 25.0],
-                'overweight' => ['min' => 25.1, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 12.3],
+                'underweight' => ['min' => 12.4, 'max' => 13.9],
+                'normal' => ['min' => 14.0, 'max' => 23.0],
+                'overweight' => ['min' => 23.1, 'max' => 999]
             ],
             // Age 60 months
             60 => [
-                'severely_underweight' => ['min' => 0, 'max' => 12.3],
-                'underweight' => ['min' => 12.4, 'max' => 13.9],
-                'normal' => ['min' => 14.0, 'max' => 21.5],
-                'overweight' => ['min' => 21.6, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 12.4],
+                'underweight' => ['min' => 12.5, 'max' => 14.0],
+                'normal' => ['min' => 14.1, 'max' => 23.2],
+                'overweight' => ['min' => 23.3, 'max' => 999]
             ],
             // Age 61 months
             61 => [
-                'severely_underweight' => ['min' => 0, 'max' => 12.4],
-                'underweight' => ['min' => 12.5, 'max' => 14.0],
-                'normal' => ['min' => 14.1, 'max' => 21.6],
-                'overweight' => ['min' => 21.7, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 12.7],
+                'underweight' => ['min' => 12.8, 'max' => 14.3],
+                'normal' => ['min' => 14.4, 'max' => 23.5],
+                'overweight' => ['min' => 23.6, 'max' => 999]
             ],
             // Age 62 months
             62 => [
-                'severely_underweight' => ['min' => 0, 'max' => 12.5],
-                'underweight' => ['min' => 12.6, 'max' => 14.1],
-                'normal' => ['min' => 14.2, 'max' => 21.7],
-                'overweight' => ['min' => 21.8, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 12.8],
+                'underweight' => ['min' => 12.9, 'max' => 14.4],
+                'normal' => ['min' => 14.5, 'max' => 23.7],
+                'overweight' => ['min' => 23.8, 'max' => 999]
             ],
             // Age 63 months
             63 => [
-                'severely_underweight' => ['min' => 0, 'max' => 12.6],
-                'underweight' => ['min' => 12.7, 'max' => 14.2],
-                'normal' => ['min' => 14.3, 'max' => 21.8],
-                'overweight' => ['min' => 21.9, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.0],
+                'underweight' => ['min' => 13.1, 'max' => 14.5],
+                'normal' => ['min' => 14.6, 'max' => 23.9],
+                'overweight' => ['min' => 24.0, 'max' => 999]
             ],
             // Age 64 months
             64 => [
-                'severely_underweight' => ['min' => 0, 'max' => 12.7],
-                'underweight' => ['min' => 12.8, 'max' => 14.3],
-                'normal' => ['min' => 14.4, 'max' => 21.9],
-                'overweight' => ['min' => 22.0, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.1],
+                'underweight' => ['min' => 13.2, 'max' => 14.7],
+                'normal' => ['min' => 14.8, 'max' => 24.1],
+                'overweight' => ['min' => 24.2, 'max' => 999]
             ],
             // Age 65 months
             65 => [
-                'severely_underweight' => ['min' => 0, 'max' => 12.8],
-                'underweight' => ['min' => 12.9, 'max' => 14.4],
-                'normal' => ['min' => 14.5, 'max' => 22.0],
-                'overweight' => ['min' => 22.1, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.2],
+                'underweight' => ['min' => 13.3, 'max' => 14.8],
+                'normal' => ['min' => 14.9, 'max' => 24.3],
+                'overweight' => ['min' => 24.4, 'max' => 999]
             ],
             // Age 66 months
             66 => [
-                'severely_underweight' => ['min' => 0, 'max' => 12.9],
-                'underweight' => ['min' => 13.0, 'max' => 14.5],
-                'normal' => ['min' => 14.6, 'max' => 22.1],
-                'overweight' => ['min' => 22.2, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.3],
+                'underweight' => ['min' => 13.4, 'max' => 14.9],
+                'normal' => ['min' => 15.0, 'max' => 24.5],
+                'overweight' => ['min' => 24.6, 'max' => 999]
             ],
             // Age 67 months
             67 => [
-                'severely_underweight' => ['min' => 0, 'max' => 13.0],
-                'underweight' => ['min' => 13.1, 'max' => 14.6],
-                'normal' => ['min' => 14.7, 'max' => 22.2],
-                'overweight' => ['min' => 22.3, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.4],
+                'underweight' => ['min' => 13.5, 'max' => 15.1],
+                'normal' => ['min' => 15.2, 'max' => 24.7],
+                'overweight' => ['min' => 24.8, 'max' => 999]
             ],
             // Age 68 months
             68 => [
-                'severely_underweight' => ['min' => 0, 'max' => 13.1],
-                'underweight' => ['min' => 13.2, 'max' => 14.7],
-                'normal' => ['min' => 14.8, 'max' => 22.3],
-                'overweight' => ['min' => 22.4, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.6],
+                'underweight' => ['min' => 13.7, 'max' => 15.2],
+                'normal' => ['min' => 15.3, 'max' => 24.9],
+                'overweight' => ['min' => 25.0, 'max' => 999]
             ],
             // Age 69 months
             69 => [
-                'severely_underweight' => ['min' => 0, 'max' => 13.2],
-                'underweight' => ['min' => 13.3, 'max' => 14.8],
-                'normal' => ['min' => 14.9, 'max' => 22.4],
-                'overweight' => ['min' => 22.5, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.7],
+                'underweight' => ['min' => 13.8, 'max' => 15.3],
+                'normal' => ['min' => 15.4, 'max' => 25.1],
+                'overweight' => ['min' => 25.2, 'max' => 999]
             ],
             // Age 70 months
             70 => [
-                'severely_underweight' => ['min' => 0, 'max' => 13.3],
-                'underweight' => ['min' => 13.4, 'max' => 14.9],
-                'normal' => ['min' => 15.0, 'max' => 22.5],
-                'overweight' => ['min' => 22.6, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 13.8],
+                'underweight' => ['min' => 13.9, 'max' => 15.5],
+                'normal' => ['min' => 15.6, 'max' => 25.3],
+                'overweight' => ['min' => 25.4, 'max' => 999]
             ],
             // Age 71 months
             71 => [
