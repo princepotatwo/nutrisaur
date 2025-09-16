@@ -8541,6 +8541,33 @@ body {
             
             return date.toLocaleDateString();
         }
+
+        // Initialize WHO dropdown on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOM Content Loaded - Initializing WHO dropdown');
+            
+            // Set up WHO dropdown event listener
+            const whoSelect = document.getElementById('whoStandardSelect');
+            if (whoSelect) {
+                console.log('WHO dropdown found, setting up event listener');
+                whoSelect.value = 'weight-for-age';
+                
+                // Remove any existing event listeners first
+                whoSelect.removeEventListener('change', handleWHOStandardChange);
+                
+                // Add the event listener
+                whoSelect.addEventListener('change', async function() {
+                    console.log('WHO dropdown changed to:', this.value);
+                    await handleWHOStandardChange();
+                });
+                
+                // Load initial data
+                await handleWHOStandardChange();
+                window.whoDataLoaded = true;
+            } else {
+                console.log('WHO dropdown not found');
+            }
+        });
     </script>
 </body>
 </html>
