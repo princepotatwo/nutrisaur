@@ -127,7 +127,7 @@ class WHOGrowthStandards {
      * Get Weight-for-Age lookup table for girls based on exact WHO table values
      * This uses the precise weight ranges from the official WHO table
      */
-    public function getWeightForAgeGirlsLookupTable() {
+    public function getWeightForAgeBoysLookupTable() {
         return [
             // Age 0 months - Based on exact WHO table values
             0 => [
@@ -290,7 +290,7 @@ class WHOGrowthStandards {
      * Get Weight-for-Age lookup table for boys based on exact WHO table values
      * This uses the precise weight ranges from the official WHO table
      */
-    public function getWeightForAgeBoysLookupTable() {
+    public function getWeightForAgeGirlsLookupTable() {
         return [
             // Age 0 months
             0 => [
@@ -1172,7 +1172,7 @@ class WHOGrowthStandards {
         // Step 1: Check sex
         if ($sex === 'Male') {
             // Step 2: Check age and get exact WHO table ranges
-            $ranges = $this->getWeightForAgeBoysLookupTable();
+            $ranges = $this->getWeightForAgeGirlsLookupTable();
             $closestAge = $this->findClosestAge($ranges, $ageInMonths);
             
             
@@ -1234,7 +1234,7 @@ class WHOGrowthStandards {
             }
         } else {
             // For girls, use similar hardcoded approach
-            $ranges = $this->getWeightForAgeGirlsLookupTable();
+            $ranges = $this->getWeightForAgeBoysLookupTable();
             $closestAge = $this->findClosestAge($ranges, $ageInMonths);
             
             if ($closestAge !== null) {
