@@ -15,7 +15,7 @@
  * -2SD to +2SD (Normal), >+2SD (Overweight/Obese)
  */
 
-require_once 'config.php';
+require_once '../../config.php';
 
 class WHOGrowthStandards {
     
