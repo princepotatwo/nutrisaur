@@ -1110,13 +1110,13 @@ class DatabaseAPI {
             $stmt = $this->pdo->prepare("
                 SELECT 
                     COUNT(*) as total_users,
-                    AVG(risk_score) as average_risk,
-                    SUM(CASE WHEN risk_score >= 30 THEN 1 ELSE 0 END) as high_risk_count,
-                    SUM(CASE WHEN risk_score >= 80 THEN 1 ELSE 0 END) as sam_cases,
+                    COUNT(CASE WHEN nutritional_risk IN ('High', 'Severe') THEN 1 END) as average_risk,
+                    SUM(CASE WHEN nutritional_risk IN ('High', 'Severe') THEN 1 ELSE 0 END) as high_risk_count,
+                    SUM(CASE WHEN nutritional_risk = 'Severe' THEN 1 ELSE 0 END) as sam_cases,
                     SUM(CASE WHEN age < 5 THEN 1 ELSE 0 END) as children_count,
                     SUM(CASE WHEN age >= 65 THEN 1 ELSE 0 END) as elderly_count,
-                    SUM(CASE WHEN dietary_diversity <= 2 THEN 1 ELSE 0 END) as low_dietary_diversity
-                FROM user_preferences 
+                    0 as low_dietary_diversity
+                FROM community_users 
                 $whereClause
             ");
             $stmt->execute($params);
@@ -1275,41 +1275,35 @@ class DatabaseAPI {
             }
             
             // Check if preferences exist
-            $stmt = $this->pdo->prepare("SELECT id FROM user_preferences WHERE user_email = :user_email");
+            $stmt = $this->pdo->prepare("SELECT id FROM community_users WHERE user_email = :user_email");
             $stmt->bindParam(':user_email', $userEmail);
             $stmt->execute();
             
             if ($stmt->rowCount() > 0) {
                 // Update existing preferences
-                $stmt = $this->pdo->prepare("UPDATE user_preferences SET 
-                    username = :username,
-                    name = :name,
+                $stmt = $this->pdo->prepare("UPDATE community_users SET 
                     age = :age,
-                    weight = :weight,
-                    height = :height,
-                    gender = :gender,
+                    weight_kg = :weight,
+                    height_cm = :height,
+                    sex = :gender,
                     barangay = :barangay,
-                    income = :income,
-                    risk_score = :risk_score,
-                    updated_at = CURRENT_TIMESTAMP
-                    WHERE user_email = :user_email");
+                    nutritional_risk = :nutritional_risk,
+                    screening_date = CURRENT_TIMESTAMP
+                    WHERE screening_id = :user_email");
             } else {
                 // Insert new preferences
-                $stmt = $this->pdo->prepare("INSERT INTO user_preferences 
-                    (user_email, username, name, age, weight, height, gender, barangay, income, risk_score, created_at, updated_at) 
-                    VALUES (:user_email, :username, :name, :age, :weight, :height, :gender, :barangay, :income, :risk_score, NOW(), NOW())");
+                $stmt = $this->pdo->prepare("INSERT INTO community_users 
+                    (screening_id, age, weight_kg, height_cm, sex, barangay, nutritional_risk, screening_date) 
+                    VALUES (:user_email, :age, :weight, :height, :gender, :barangay, :nutritional_risk, NOW())");
             }
             
             $stmt->bindParam(':user_email', $userEmail);
-            $stmt->bindParam(':username', $preferences['username'] ?? null);
-            $stmt->bindParam(':name', $preferences['name'] ?? null);
             $stmt->bindParam(':age', $preferences['age'] ?? null);
             $stmt->bindParam(':weight', $preferences['weight'] ?? null);
             $stmt->bindParam(':height', $preferences['height'] ?? null);
             $stmt->bindParam(':gender', $preferences['gender'] ?? null);
             $stmt->bindParam(':barangay', $preferences['barangay'] ?? null);
-            $stmt->bindParam(':income', $preferences['income'] ?? null);
-            $stmt->bindParam(':risk_score', $preferences['risk_score'] ?? 0);
+            $stmt->bindParam(':nutritional_risk', $preferences['nutritional_risk'] ?? 'Low');
             $stmt->execute();
             
             return ['success' => true];
@@ -1331,7 +1325,7 @@ class DatabaseAPI {
                 return null;
             }
             
-            $stmt = $this->pdo->prepare("SELECT * FROM user_preferences WHERE user_id = :user_id");
+            $stmt = $this->pdo->prepare("SELECT * FROM community_users WHERE community_user_id = :user_id");
             $stmt->bindParam(':user_id', $userId);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1378,7 +1372,7 @@ class DatabaseAPI {
             }
             
             // Total users (filtered by barangay if specified)
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM user_preferences" . $whereClause);
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM community_users" . $whereClause);
             $stmt->execute($params);
             $metrics['total_users'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             
@@ -1393,7 +1387,7 @@ class DatabaseAPI {
             
             // Users by barangay (filtered if barangay specified)
             try {
-                $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as count FROM user_preferences" . $whereClause . " GROUP BY barangay");
+                $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as count FROM community_users" . $whereClause . " GROUP BY barangay");
                 $stmt->execute($params);
                 $metrics['users_by_barangay'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (PDOException $e) {
@@ -1405,7 +1399,7 @@ class DatabaseAPI {
             if (empty($recentWhereClause)) {
                 $recentWhereClause = " WHERE 1=1";
             }
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as recent FROM user_preferences" . $recentWhereClause);
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as recent FROM community_users" . $recentWhereClause);
             $stmt->execute($params);
             $metrics['recent_registrations'] = $stmt->fetch(PDO::FETCH_ASSOC)['recent'];
             
@@ -1447,7 +1441,7 @@ class DatabaseAPI {
                 }
             }
             
-            $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as user_count FROM user_preferences" . $whereClause . " GROUP BY barangay ORDER BY user_count DESC");
+            $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as user_count FROM community_users" . $whereClause . " GROUP BY barangay ORDER BY user_count DESC");
             $stmt->execute($params);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -1474,7 +1468,7 @@ class DatabaseAPI {
             }
             
             // Build WHERE clause for barangay filtering
-            $whereClause = "WHERE risk_score IS NOT NULL";
+            $whereClause = "WHERE nutritional_risk IS NOT NULL AND nutritional_risk != ''";
             $params = [];
             if (!empty($barangay)) {
                 if (strpos($barangay, 'MUNICIPALITY_') === 0) {
@@ -1489,17 +1483,18 @@ class DatabaseAPI {
                 }
             }
             
-            // Create risk levels based on risk_score
+            // Create risk levels based on nutritional_risk
             $stmt = $this->pdo->prepare("
                 SELECT 
                     CASE 
-                        WHEN risk_score < 20 THEN 'low'
-                        WHEN risk_score < 50 THEN 'moderate'
-                        WHEN risk_score < 80 THEN 'high'
-                        ELSE 'severe'
+                        WHEN nutritional_risk = 'Low' THEN 'low'
+                        WHEN nutritional_risk = 'Moderate' THEN 'moderate'
+                        WHEN nutritional_risk = 'High' THEN 'high'
+                        WHEN nutritional_risk = 'Severe' THEN 'severe'
+                        ELSE 'unknown'
                     END as risk_level,
                     COUNT(*) as count
-                FROM user_preferences 
+                FROM community_users 
                 $whereClause
                 GROUP BY risk_level
             ");
@@ -1566,11 +1561,15 @@ class DatabaseAPI {
             
             $stmt = $this->pdo->prepare("
                 SELECT 
-                    up.*,
-                    DATE_FORMAT(up.created_at, '%Y-%m-%d') as screening_date
-                FROM user_preferences up
+                    cu.*,
+                    u.username,
+                    u.name,
+                    u.email as user_email,
+                    DATE_FORMAT(cu.screening_date, '%Y-%m-%d') as screening_date
+                FROM community_users cu
+                LEFT JOIN users u ON cu.user_id = u.user_id
                 $whereClause
-                ORDER BY up.created_at DESC
+                ORDER BY cu.screening_date DESC
                 LIMIT 100
             ");
             $stmt->execute($params);
@@ -1730,8 +1729,8 @@ class DatabaseAPI {
             }
             
             // Count SAM cases, high risk cases, and critical MUAC
-            if (($record['risk_score'] ?? 0) >= 80) $samCases++;
-            if (($record['risk_score'] ?? 0) >= 30) $highRiskCases++;
+            if (($record['nutritional_risk'] ?? '') === 'Severe') $samCases++;
+            if (in_array($record['nutritional_risk'] ?? '', ['High', 'Severe'])) $highRiskCases++;
             if (($record['muac_cm'] ?? 0) < 11.5) $criticalMuac++;
         }
         
@@ -1776,8 +1775,8 @@ class DatabaseAPI {
                 SELECT 
                     up.*,
                     CASE 
-                        WHEN up.risk_score >= 80 THEN 'Severe Risk'
-                        WHEN up.risk_score >= 50 THEN 'High Risk'
+                        WHEN up.nutritional_risk = 'Severe' THEN 'Severe Risk'
+                        WHEN up.nutritional_risk = 'High' THEN 'High Risk'
                         ELSE 'Moderate Risk'
                     END as alert_level,
                     CASE 
@@ -1786,9 +1785,9 @@ class DatabaseAPI {
                         WHEN up.age < 65 THEN 'Adult'
                         ELSE 'Elderly'
                     END as age_group
-                FROM user_preferences up
-                WHERE up.risk_score >= 30
-                ORDER BY up.risk_score DESC, up.created_at DESC
+                FROM community_users up
+                WHERE up.nutritional_risk IN ('High', 'Severe')
+                ORDER BY up.nutritional_risk DESC, up.screening_date DESC
                 LIMIT 50
             ");
             $stmt->execute();
@@ -1834,22 +1833,22 @@ class DatabaseAPI {
             $analysis = [];
             
             // Total screenings
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM user_preferences $whereClause");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM community_users $whereClause");
             $stmt->execute($params);
             $analysis['total_screenings'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // High risk cases
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM user_preferences $whereClause AND risk_score >= 30");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause AND nutritional_risk IN ('High', 'Severe')");
             $stmt->execute($params);
             $analysis['high_risk_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['high_risk'];
             
             // SAM cases (Severe Acute Malnutrition)
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM user_preferences $whereClause AND risk_score >= 80");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause AND nutritional_risk = 'Severe'");
             $stmt->execute($params);
             $analysis['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
             
             // Critical MUAC
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM user_preferences $whereClause AND muac < 11.5");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM community_users $whereClause AND muac < 11.5");
             $stmt->execute($params);
             $analysis['critical_muac'] = $stmt->fetch(PDO::FETCH_ASSOC)['critical_muac'];
             
@@ -1925,7 +1924,7 @@ class DatabaseAPI {
         $bmi = round($weight / ($height * $height), 2);
         
         // Calculate risk score
-        $risk_score = $this->calculateRiskScore($input, $bmi);
+        $nutritional_risk = $this->calculateRiskScore($input, $bmi);
         
         // Prepare data for insertion
         $screening_data = [
@@ -1944,7 +1943,7 @@ class DatabaseAPI {
             'lifestyle' => $input['lifestyle'] ?? null,
             'lifestyle_other' => $input['lifestyle_other'] ?? null,
             'immunization' => is_array($input['immunization']) ? json_encode($input['immunization']) : $input['immunization'],
-            'risk_score' => $risk_score,
+            'nutritional_risk' => $nutritional_risk,
             'assessment_summary' => $input['assessment_summary'] ?? null,
             'recommendations' => $input['recommendations'] ?? null,
             'created_at' => date('Y-m-d H:i:s')
@@ -1954,7 +1953,7 @@ class DatabaseAPI {
         $stmt = $this->pdo->prepare("INSERT INTO screening_assessments (
             user_id, municipality, barangay, age, age_months, sex, pregnant, 
             weight, height, bmi, meal_recall, family_history, lifestyle, 
-            lifestyle_other, immunization, risk_score, assessment_summary, 
+            lifestyle_other, immunization, nutritional_risk, assessment_summary, 
             recommendations, created_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
@@ -1974,7 +1973,7 @@ class DatabaseAPI {
             $screening_data['lifestyle'],
             $screening_data['lifestyle_other'],
             $screening_data['immunization'],
-            $screening_data['risk_score'],
+            $screening_data['nutritional_risk'],
             $screening_data['assessment_summary'],
             $screening_data['recommendations'],
             $screening_data['created_at']
@@ -1987,7 +1986,7 @@ class DatabaseAPI {
             'success' => true,
             'message' => 'Screening assessment saved successfully',
             'screening_id' => $screening_id,
-            'risk_score' => $risk_score,
+            'nutritional_risk' => $nutritional_risk,
             'bmi' => $bmi,
             'assessment_summary' => $screening_data['assessment_summary'],
             'recommendations' => $screening_data['recommendations']
@@ -2045,23 +2044,23 @@ class DatabaseAPI {
      * Calculate risk score for screening
      */
     private function calculateRiskScore($input, $bmi) {
-        $risk_score = 0;
+        $nutritional_risk = 0;
         
         // BMI risk factors
         if ($bmi < 18.5) {
-            $risk_score += 10; // Underweight
+            $nutritional_risk += 10; // Underweight
         } elseif ($bmi >= 25 && $bmi < 30) {
-            $risk_score += 5; // Overweight
+            $nutritional_risk += 5; // Overweight
         } elseif ($bmi >= 30) {
-            $risk_score += 15; // Obese
+            $nutritional_risk += 15; // Obese
         }
         
         // Age risk factors
         $age = intval($input['age']);
         if ($age < 5) {
-            $risk_score += 10; // Young children
+            $nutritional_risk += 10; // Young children
         } elseif ($age > 65) {
-            $risk_score += 8; // Elderly
+            $nutritional_risk += 8; // Elderly
         }
         
         // Family history risk factors
@@ -2070,25 +2069,25 @@ class DatabaseAPI {
             foreach ($family_history as $condition) {
                 switch ($condition) {
                     case 'Diabetes':
-                        $risk_score += 8;
+                        $nutritional_risk += 8;
                         break;
                     case 'Hypertension':
-                        $risk_score += 6;
+                        $nutritional_risk += 6;
                         break;
                     case 'Heart Disease':
-                        $risk_score += 10;
+                        $nutritional_risk += 10;
                         break;
                     case 'Kidney Disease':
-                        $risk_score += 12;
+                        $nutritional_risk += 12;
                         break;
                     case 'Tuberculosis':
-                        $risk_score += 7;
+                        $nutritional_risk += 7;
                         break;
                     case 'Obesity':
-                        $risk_score += 5;
+                        $nutritional_risk += 5;
                         break;
                     case 'Malnutrition':
-                        $risk_score += 15;
+                        $nutritional_risk += 15;
                         break;
                 }
             }
@@ -2096,7 +2095,7 @@ class DatabaseAPI {
         
         // Lifestyle risk factors
         if ($input['lifestyle'] === 'Sedentary') {
-            $risk_score += 5;
+            $nutritional_risk += 5;
         }
         
         // Meal balance risk (if meal recall is provided)
@@ -2120,7 +2119,7 @@ class DatabaseAPI {
             }
             
             if ($found_groups < 3) {
-                $risk_score += 8; // Unbalanced diet
+                $nutritional_risk += 8; // Unbalanced diet
             }
         }
         
@@ -2131,11 +2130,11 @@ class DatabaseAPI {
             $missing_vaccines = array_diff($required_vaccines, $immunization);
             
             if (!empty($missing_vaccines)) {
-                $risk_score += count($missing_vaccines) * 2; // 2 points per missing vaccine
+                $nutritional_risk += count($missing_vaccines) * 2; // 2 points per missing vaccine
             }
         }
         
-        return $risk_score;
+        return $nutritional_risk;
     }
     
     /**
@@ -2173,22 +2172,22 @@ class DatabaseAPI {
             $data = [];
             
             // Total screenings in time frame
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM user_preferences $whereClause");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM community_users $whereClause");
             $stmt->execute($params);
             $data['total_screenings'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // High risk cases in time frame
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM user_preferences $whereClause AND risk_score >= 30");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause AND nutritional_risk IN ('High', 'Severe')");
             $stmt->execute($params);
             $data['high_risk_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['high_risk'];
             
             // SAM cases in time frame
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM user_preferences $whereClause AND risk_score >= 80");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause AND nutritional_risk = 'Severe'");
             $stmt->execute($params);
             $data['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
             
             // Critical MUAC in time frame
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM user_preferences $whereClause AND muac < 11.5");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM community_users $whereClause AND muac < 11.5");
             $stmt->execute($params);
             $data['critical_muac'] = $stmt->fetch(PDO::FETCH_ASSOC)['critical_muac'];
             
@@ -3672,8 +3671,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             echo json_encode(['success' => true, 'data' => $timeFrameData]);
             break;
             
-        case 'get_user_preferences':
-            // Get all user preferences data from user_preferences table (NOT users table)
+        case 'get_community_users':
+            // Get all user preferences data from community_users table (NOT users table)
             // This is used by settings.php to display user management interface
             try {
                 $pdo = $db->getPDO();
@@ -3689,10 +3688,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             name,
                             barangay,
                             income,
-                            risk_score,
+                            nutritional_risk,
                             created_at,
                             updated_at
-                        FROM user_preferences
+                        FROM community_users
                         ORDER BY updated_at DESC";
                 
                 $stmt = $pdo->prepare($sql);
@@ -3708,9 +3707,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'email' => $user['user_email'],
                         'name' => $user['name'] ?? 'N/A',
                         'barangay' => $user['barangay'],
-                        'municipality' => 'N/A', // Municipality not stored in user_preferences table
+                        'municipality' => 'N/A', // Municipality not stored in community_users table
                         'income' => $user['income'],
-                        'risk_score' => $user['risk_score'],
+                        'nutritional_risk' => $user['nutritional_risk'],
                         'created_at' => $user['created_at'],
                         'updated_at' => $user['updated_at']
                     ];
@@ -4419,7 +4418,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'community_metrics' => 'GET /DatabaseAPI.php?action=community_metrics',
                     'geographic_distribution' => 'GET /DatabaseAPI.php?action=geographic_distribution',
                     'risk_distribution' => 'GET /DatabaseAPI.php?action=risk_distribution',
-                    'get_user_preferences' => 'GET /DatabaseAPI.php?action=get_user_preferences',
+                    'get_community_users' => 'GET /DatabaseAPI.php?action=get_community_users',
                     'test' => 'GET /DatabaseAPI.php?action=test'
                 ],
                 'note' => 'Universal Database API - handles ALL database operations centrally. No more hardcoded connections!'
