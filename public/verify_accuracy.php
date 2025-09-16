@@ -1,5 +1,5 @@
 <?php
-require_once 'who_growth_standards.php';
+require_once '../who_growth_standards.php';
 
 echo "<h2>WHO Growth Standards Accuracy Verification</h2>";
 
