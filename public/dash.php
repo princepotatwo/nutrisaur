@@ -157,7 +157,8 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                             floatval($user['weight']), 
                             floatval($user['height']), 
                             $user['birthday'], 
-                            $user['sex']
+                            $user['sex'],
+                            $user['screening_date'] ?? null
                         );
                         
                         if ($assessment['success'] && isset($assessment['results'])) {
