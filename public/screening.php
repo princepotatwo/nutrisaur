@@ -2049,7 +2049,7 @@ header {
         /* Row 1: Action Buttons and Search */
         .control-row-1 {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 20px;
             align-items: center;
         }
@@ -2077,7 +2077,7 @@ header {
         }
 
         .filter-select {
-            padding: 5px 6px;
+            padding: 5px 8px;
             border: 2px solid rgba(161, 180, 84, 0.3);
             background: var(--color-bg);
             border-radius: 6px;
@@ -2085,9 +2085,12 @@ header {
             color: var(--color-text);
             outline: none;
             transition: all 0.3s ease;
-            min-width: 100px;
-            max-width: 120px;
+            min-width: 130px;
+            max-width: 150px;
             cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .filter-select:hover {
@@ -2102,11 +2105,13 @@ header {
         .search-section {
             display: flex;
             justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
         }
 
         .search-input {
             flex: 1;
-            border: 2px solid rgba(161, 180, 84, 0.3);
+            border: 2px solid rgba(161, 180, 84, 0.4);
             background: var(--color-bg);
             padding: 8px 12px;
             border-radius: 6px;
@@ -2115,6 +2120,7 @@ header {
             outline: none;
             transition: all 0.3s ease;
             max-width: 250px;
+            min-width: 200px;
         }
 
         .search-input:focus {
@@ -2267,7 +2273,7 @@ header {
             }
 
             .filter-select {
-                min-width: 120px;
+                min-width: 110px;
                 flex: 1;
             }
 
@@ -2307,7 +2313,7 @@ header {
             }
 
             .filter-select {
-                min-width: 80px;
+                min-width: 90px;
                 font-size: 9px;
                 padding: 4px 6px;
             }
