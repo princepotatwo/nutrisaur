@@ -3943,6 +3943,16 @@ header {
             tableRows.forEach((row, index) => {
                 let showRow = true;
                 
+                // Debug: Log first few rows
+                if (index < 3) {
+                    console.log(`Row ${index}:`, {
+                        municipality: row.dataset.municipality,
+                        barangay: row.dataset.barangay,
+                        sex: row.dataset.sex,
+                        ageMonths: row.dataset.ageMonths,
+                        standard: row.dataset.standard
+                    });
+                }
                 
                 // Municipality filter
                 if (municipality && showRow) {
@@ -4001,6 +4011,9 @@ header {
                     const rowSex = row.dataset.sex;
                     if (rowSex !== sex) {
                         showRow = false;
+                    }
+                    if (index < 3) {
+                        console.log(`Sex filter: looking for "${sex}", found "${rowSex}", showRow: ${showRow}`);
                     }
                 }
                 
@@ -4397,11 +4410,26 @@ header {
         function searchAssessments() {
             const searchInput = document.getElementById('searchInput');
             const searchTerm = searchInput.value.toLowerCase().trim();
-            const tableRows = document.querySelectorAll('.user-table tbody tr');
             
+            // If search term is empty, just apply filters
+            if (!searchTerm) {
+                applyAllFilters();
+                return;
+            }
+            
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
             let visibleCount = 0;
             
             tableRows.forEach(row => {
+                // First check if row passes current filters
+                const passesFilters = checkRowFilters(row);
+                
+                if (!passesFilters) {
+                    row.style.display = 'none';
+                    return;
+                }
+                
+                // Then check if row matches search term
                 const name = row.cells[0].textContent.toLowerCase();
                 const email = row.cells[1].textContent.toLowerCase();
                 const age = row.cells[2].textContent.toLowerCase();
@@ -4433,6 +4461,105 @@ header {
             });
             
             updateNoDataMessage(visibleCount);
+        }
+        
+        // Helper function to check if a row passes current filters
+        function checkRowFilters(row) {
+            const municipality = document.getElementById('municipalityFilter').value;
+            const barangay = document.getElementById('barangayFilter').value;
+            const ageFromYears = document.getElementById('ageFromYears').value;
+            const ageFromMonths = document.getElementById('ageFromMonths').value;
+            const ageToYears = document.getElementById('ageToYears').value;
+            const ageToMonths = document.getElementById('ageToMonths').value;
+            const sex = document.getElementById('sexFilter').value;
+            const standard = document.getElementById('standardFilter').value;
+            
+            // Municipality filter
+            if (municipality) {
+                const rowMunicipality = row.dataset.municipality;
+                if (rowMunicipality !== municipality) {
+                    return false;
+                }
+            }
+            
+            // Barangay filter
+            if (barangay) {
+                const rowBarangay = row.dataset.barangay;
+                if (rowBarangay !== barangay) {
+                    return false;
+                }
+            }
+            
+            // Age range filter
+            if ((ageFromYears || ageFromMonths || ageToYears || ageToMonths)) {
+                const ageMonths = parseInt(row.dataset.ageMonths);
+                
+                let fromMonths = null;
+                let toMonths = null;
+                
+                if (ageFromYears || ageFromMonths) {
+                    const years = parseInt(ageFromYears) || 0;
+                    const months = parseInt(ageFromMonths) || 0;
+                    fromMonths = years * 12 + months;
+                }
+                
+                if (ageToYears || ageToMonths) {
+                    const years = parseInt(ageToYears) || 0;
+                    const months = parseInt(ageToMonths) || 0;
+                    toMonths = years * 12 + months;
+                }
+                
+                if (fromMonths !== null && toMonths !== null && fromMonths > toMonths) {
+                    return false;
+                } else {
+                    if (fromMonths !== null && ageMonths < fromMonths) {
+                        return false;
+                    }
+                    if (toMonths !== null && ageMonths > toMonths) {
+                        return false;
+                    }
+                }
+            }
+            
+            // Sex filter
+            if (sex) {
+                const rowSex = row.dataset.sex;
+                if (rowSex !== sex) {
+                    return false;
+                }
+            }
+            
+            // Standard filter
+            if (standard) {
+                const rowStandard = row.dataset.standard;
+                const ageMonths = parseInt(row.dataset.ageMonths);
+                
+                if (standard === 'all-ages') {
+                    return true;
+                } else if (standard === 'bmi-for-age') {
+                    return rowStandard === 'bmi-for-age';
+                } else {
+                    if (standard === 'weight-for-age' || standard === 'height-for-age') {
+                        if (ageMonths > 71 || rowStandard !== standard) {
+                            return false;
+                        }
+                    } else if (standard === 'weight-for-height') {
+                        if (ageMonths > 60 || rowStandard !== standard) {
+                            return false;
+                        }
+                    } else if (standard === 'weight-for-length') {
+                        if (ageMonths >= 24 || rowStandard !== standard) {
+                            return false;
+                        }
+                    } else {
+                        if (rowStandard !== standard) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            
+            return true;
         }
 
         // Helper function to parse age string to months
