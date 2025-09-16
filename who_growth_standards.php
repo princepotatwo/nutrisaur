@@ -129,7 +129,7 @@ class WHOGrowthStandards {
      */
     public function getWeightForAgeBoysLookupTable() {
         return [
-            // Age 0 months - Based on exact WHO table values
+            // Age 0 months - Official WHO standards
             0 => [
                 'severely_underweight' => ['min' => 0, 'max' => 2.1],
                 'underweight' => ['min' => 2.2, 'max' => 2.4],
@@ -138,24 +138,24 @@ class WHOGrowthStandards {
             ],
             // Age 1 month
             1 => [
-                'severely_underweight' => ['min' => 0, 'max' => 2.7],
-                'underweight' => ['min' => 2.8, 'max' => 3.2],
-                'normal' => ['min' => 3.3, 'max' => 5.1],
-                'overweight' => ['min' => 5.2, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 2.9],
+                'underweight' => ['min' => 3.0, 'max' => 3.3],
+                'normal' => ['min' => 3.4, 'max' => 5.8],
+                'overweight' => ['min' => 5.9, 'max' => 999]
             ],
             // Age 2 months
             2 => [
-                'severely_underweight' => ['min' => 0, 'max' => 3.2],
-                'underweight' => ['min' => 3.3, 'max' => 3.7],
-                'normal' => ['min' => 3.8, 'max' => 5.8],
-                'overweight' => ['min' => 5.9, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 3.8],
+                'underweight' => ['min' => 3.9, 'max' => 4.2],
+                'normal' => ['min' => 4.3, 'max' => 7.1],
+                'overweight' => ['min' => 7.2, 'max' => 999]
             ],
             // Age 3 months
             3 => [
-                'severely_underweight' => ['min' => 0, 'max' => 3.6],
-                'underweight' => ['min' => 3.7, 'max' => 4.1],
-                'normal' => ['min' => 4.2, 'max' => 6.4],
-                'overweight' => ['min' => 6.5, 'max' => 999]
+                'severely_underweight' => ['min' => 0, 'max' => 4.4],
+                'underweight' => ['min' => 4.5, 'max' => 4.9],
+                'normal' => ['min' => 5.0, 'max' => 8.0],
+                'overweight' => ['min' => 8.1, 'max' => 999]
             ],
             // Age 4 months
             4 => [
