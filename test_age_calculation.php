@@ -1,38 +1,49 @@
 <?php
-echo "<h2>Age Calculation Test</h2>";
+require_once 'who_growth_standards.php';
 
-// Test the age calculation logic
-$birthDate = new DateTime('2024-09-15');
-$today = new DateTime();
-$age = $today->diff($birthDate);
+$who = new WHOGrowthStandards();
 
-echo "<p>Birth Date: " . $birthDate->format('Y-m-d') . "</p>";
-echo "<p>Today: " . $today->format('Y-m-d') . "</p>";
-echo "<p>Age: {$age->y} years, {$age->m} months, {$age->d} days</p>";
+// Test case: Overweight 71mo Boy
+$birthDate = '2018-10-15';
+$screeningDate = '2024-09-15 10:00:00';
+$weight = 24.1;
+$height = 115.0;
+$sex = 'Male';
 
-$ageInMonths = ($age->y * 12) + $age->m;
+echo "=== Testing Age Calculation ===\n";
+$ageInMonths = $who->calculateAgeInMonths($birthDate, $screeningDate);
+echo "Birth Date: $birthDate\n";
+echo "Screening Date: $screeningDate\n";
+echo "Age in Months: $ageInMonths\n";
+
+echo "\n=== Testing Weight-for-Age Classification ===\n";
+$result = $who->calculateWeightForAge($weight, $ageInMonths, $sex);
+echo "Weight: $weight kg\n";
+echo "Height: $height cm\n";
+echo "Sex: $sex\n";
+echo "Classification: " . ($result['classification'] ?? 'NULL') . "\n";
+echo "Z-Score: " . ($result['z_score'] ?? 'NULL') . "\n";
+
+echo "\n=== Testing Comprehensive Assessment ===\n";
+$assessment = $who->getComprehensiveAssessment($weight, $height, $birthDate, $sex, $screeningDate);
+if ($assessment['success']) {
+    $results = $assessment['results'];
+    echo "Weight-for-Age: " . ($results['weight_for_age']['classification'] ?? 'NULL') . "\n";
+    echo "Height-for-Age: " . ($results['height_for_age']['classification'] ?? 'NULL') . "\n";
+    echo "Weight-for-Height: " . ($results['weight_for_height']['classification'] ?? 'NULL') . "\n";
+    echo "BMI-for-Age: " . ($results['bmi_for_age']['classification'] ?? 'NULL') . "\n";
+} else {
+    echo "Assessment failed: " . ($assessment['error'] ?? 'Unknown error') . "\n";
+}
+
+echo "\n=== Manual Age Calculation ===\n";
+$birth = new DateTime($birthDate);
+$screening = new DateTime($screeningDate);
+$age = $birth->diff($screening);
+$manualAge = ($age->y * 12) + $age->m;
 if ($age->d >= 15) {
-    $ageInMonths += 1;
+    $manualAge += 1;
 }
-
-echo "<p>Age in months: {$ageInMonths}</p>";
-echo "<p>Age display: {$age->y}y {$age->m}m</p>";
-
-// Test with different birth dates
-$testDates = [
-    '2024-09-15', // 0 months
-    '2023-09-15', // 12 months  
-    '2021-10-15', // 35 months
-    '2018-10-15'  // 71 months
-];
-
-foreach ($testDates as $date) {
-    $birth = new DateTime($date);
-    $age = $today->diff($birth);
-    $ageInMonths = ($age->y * 12) + $age->m;
-    if ($age->d >= 15) {
-        $ageInMonths += 1;
-    }
-    echo "<p>Birth: {$date} -> Age: {$age->y}y {$age->m}m ({$ageInMonths} months)</p>";
-}
+echo "Manual calculation: $manualAge months\n";
+echo "Years: {$age->y}, Months: {$age->m}, Days: {$age->d}\n";
 ?>
