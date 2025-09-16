@@ -1614,7 +1614,7 @@ class DatabaseAPI {
             $debugInfo = [];
             foreach ($users as $user) {
                 try {
-                    require_once 'who_growth_standards.php';
+                    require_once __DIR__ . '/../../who_growth_standards.php';
                     $who = new WHOGrowthStandards();
                     
                     // Calculate age in months from birthday
