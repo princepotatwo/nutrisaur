@@ -8339,6 +8339,8 @@ body {
                                             break;
                                     }
                                     
+                                    console.log(`User ${user.email}: classification = "${classification}"`);
+                                    
                                     // Map to our classification categories
                                     if (classifications.hasOwnProperty(classification)) {
                                         classifications[classification]++;
