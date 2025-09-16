@@ -7007,21 +7007,7 @@ body {
                 console.log('📈 Risk Data Data:', riskData?.data);
                 
                 if (riskData && riskData.success && riskData.data) {
-                    // Load initial WHO classification data only once
-                    if (typeof window.whoDataLoaded === 'undefined') {
-                        // Ensure weight-for-age is selected by default
-                        const whoSelect = document.getElementById('whoStandardSelect');
-                        if (whoSelect) {
-                            whoSelect.value = 'weight-for-age';
-                            
-                            // Add event listener for dropdown change
-                            whoSelect.addEventListener('change', async function() {
-                                await handleWHOStandardChange();
-                            });
-                        }
-                        await handleWHOStandardChange();
-                        window.whoDataLoaded = true;
-                    }
+                    // WHO classification data will be loaded by the DOMContentLoaded event handler
                     
                                     // Update individual cards with risk distribution data
                 const highRisk = document.getElementById('community-high-risk');
@@ -8551,9 +8537,6 @@ body {
             if (whoSelect) {
                 console.log('WHO dropdown found, setting up event listener');
                 whoSelect.value = 'weight-for-age';
-                
-                // Remove any existing event listeners first
-                whoSelect.removeEventListener('change', handleWHOStandardChange);
                 
                 // Add the event listener
                 whoSelect.addEventListener('change', async function() {
