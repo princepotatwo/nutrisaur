@@ -1522,6 +1522,9 @@ class WHOGrowthStandards {
         error_log("DEBUG calculateWeightForAge: weight=$weight, ageInMonths=$ageInMonths, sex=$sex");
         file_put_contents(__DIR__ . '/debug_classification.log', "DEBUG calculateWeightForAge: weight=$weight, ageInMonths=$ageInMonths, sex=$sex\n", FILE_APPEND);
         
+        // Also try writing to a simple file in the public directory
+        file_put_contents(__DIR__ . '/public/debug_simple.log', "DEBUG calculateWeightForAge: weight=$weight, ageInMonths=$ageInMonths, sex=$sex\n", FILE_APPEND);
+        
         // Step 1: Check sex
         if ($sex === 'Male') {
             // Step 2: Check age and get exact WHO table ranges
