@@ -7014,7 +7014,7 @@ body {
                         if (whoSelect) {
                             whoSelect.value = 'weight-for-age';
                         }
-                    handleWHOStandardChange();
+                    await handleWHOStandardChange();
                         window.whoDataLoaded = true;
                     }
                     
