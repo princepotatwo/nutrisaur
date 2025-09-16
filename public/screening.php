@@ -3605,7 +3605,7 @@ header {
                                         ];
                                         
                                         // Determine which standard to show based on age and height
-                                        // Use WHO decision tree logic
+                                        // Use WHO decision tree logic - show Weight-for-Age by default for 0-71 months
                                         $showStandard = null;
                                         $showData = null;
                                         
@@ -3619,7 +3619,8 @@ header {
                                             $adultBmiClassification = getAdultBMIClassification($bmi);
                                             $showData = [
                                                 'display' => $bmi,
-                                                'classification' => $adultBmiClassification
+                                                'classification' => $adultBmiClassification,
+                                                'z_score' => null // Adult BMI doesn't have z-score
                                             ];
                                         }
                                         
@@ -3687,7 +3688,8 @@ header {
                                                 $adultBmiClassification = getAdultBMIClassification($bmi);
                                                 $displayData = [
                                                     'display' => $bmi,
-                                                    'classification' => $adultBmiClassification
+                                                    'classification' => $adultBmiClassification,
+                                                    'z_score' => null // Adult BMI doesn't have z-score
                                                 ];
                                             }
                                             
@@ -4004,6 +4006,11 @@ header {
                             // Weight-for-Length: 45-110 cm height range
                             const height = parseInt(row.dataset.height);
                             if (height < 45 || height > 110 || rowStandard !== standard) {
+                                showRow = false;
+                            }
+                        } else if (standard === 'bmi-for-age') {
+                            // BMI-for-Age: WHO standards for 0-71 months, adult BMI for >71 months
+                            if (rowStandard !== 'bmi-for-age') {
                                 showRow = false;
                             }
                         } else {
