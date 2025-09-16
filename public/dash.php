@@ -8339,6 +8339,9 @@ body {
                                             break;
                                     }
                                     
+                                    console.log(`User ${user.email}: whoData.results =`, whoData.results);
+                                    console.log(`User ${user.email}: selected standard = ${whoStandard}`);
+                                    
                                     console.log(`User ${user.email}: classification = "${classification}"`);
                                     
                                     // Map to our classification categories
