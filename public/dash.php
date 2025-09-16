@@ -6730,7 +6730,7 @@ body {
             });
             
             // Refresh dashboard with no barangay filter
-            updateDashboardForBarangay('');
+            await updateDashboardForBarangay('');
         }
         
         // Function to get current barangay selection
