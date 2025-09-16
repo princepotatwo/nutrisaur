@@ -1547,7 +1547,7 @@ class WHOGrowthStandards {
                         'method' => 'hardcoded_who_table',
                         'weight_range' => '≤' . $ageRanges['severely_underweight']['max'] . 'kg'
                     ];
-                } elseif ($weight >= $ageRanges['underweight']['min'] && $weight <= $ageRanges['underweight']['max']) {
+                } elseif ($weight <= $ageRanges['underweight']['max']) {
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Underweight',
@@ -1555,7 +1555,7 @@ class WHOGrowthStandards {
                         'method' => 'hardcoded_who_table',
                         'weight_range' => $ageRanges['underweight']['min'] . '-' . $ageRanges['underweight']['max'] . 'kg'
                     ];
-                } elseif ($weight >= $ageRanges['normal']['min'] && $weight <= $ageRanges['normal']['max']) {
+                } elseif ($weight <= $ageRanges['normal']['max']) {
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Normal',
@@ -1563,22 +1563,13 @@ class WHOGrowthStandards {
                         'method' => 'hardcoded_who_table',
                         'weight_range' => $ageRanges['normal']['min'] . '-' . $ageRanges['normal']['max'] . 'kg'
                     ];
-                } elseif ($weight >= $ageRanges['overweight']['min']) {
+                } else {
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Overweight',
                         'age_used' => $closestAge,
                         'method' => 'hardcoded_who_table',
                         'weight_range' => '≥' . $ageRanges['overweight']['min'] . 'kg'
-                    ];
-                } else {
-                    // Fallback case - should not happen with proper ranges
-                    return [
-                        'z_score' => $zScore,
-                        'classification' => 'Unknown',
-                        'age_used' => $closestAge,
-                        'method' => 'hardcoded_who_table',
-                        'weight_range' => 'No match found'
                     ];
                 }
             }
@@ -1608,7 +1599,7 @@ class WHOGrowthStandards {
                         'method' => 'hardcoded_who_table',
                         'weight_range' => '≤' . $ageRanges['severely_underweight']['max'] . 'kg'
                     ];
-                } elseif ($weight >= $ageRanges['underweight']['min'] && $weight <= $ageRanges['underweight']['max']) {
+                } elseif ($weight <= $ageRanges['underweight']['max']) {
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Underweight',
@@ -1616,7 +1607,7 @@ class WHOGrowthStandards {
                         'method' => 'hardcoded_who_table',
                         'weight_range' => $ageRanges['underweight']['min'] . '-' . $ageRanges['underweight']['max'] . 'kg'
                     ];
-                } elseif ($weight >= $ageRanges['normal']['min'] && $weight <= $ageRanges['normal']['max']) {
+                } elseif ($weight <= $ageRanges['normal']['max']) {
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Normal',
@@ -1624,7 +1615,7 @@ class WHOGrowthStandards {
                         'method' => 'hardcoded_who_table',
                         'weight_range' => $ageRanges['normal']['min'] . '-' . $ageRanges['normal']['max'] . 'kg'
                     ];
-                } elseif ($weight >= $ageRanges['overweight']['min']) {
+                } else {
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Overweight',
