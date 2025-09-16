@@ -3675,11 +3675,11 @@ header {
                                                 // These standards are for children 0-71 months only
                                                 $shouldShow = ($ageInMonths >= 0 && $ageInMonths <= 71);
                                             } elseif ($standard === 'weight-for-height') {
-                                                // Weight-for-Height: 65-120 cm height range
-                                                $shouldShow = ($user['height'] >= 65 && $user['height'] <= 120);
+                                                // Weight-for-Height: 24+ months (2+ years) - measured standing up
+                                                $shouldShow = ($ageInMonths >= 24);
                                             } elseif ($standard === 'weight-for-length') {
-                                                // Weight-for-Length: 45-110 cm height range
-                                                $shouldShow = ($user['height'] >= 45 && $user['height'] <= 110);
+                                                // Weight-for-Length: 0-24 months (0-2 years) - measured lying down
+                                                $shouldShow = ($ageInMonths >= 0 && $ageInMonths < 24);
                                             }
                                             
                                             // For adults (>71 months), only show BMI with adult classification
@@ -3997,15 +3997,13 @@ header {
                                 showRow = false;
                             }
                         } else if (standard === 'weight-for-height') {
-                            // Weight-for-Height: 65-120 cm height range
-                            const height = parseInt(row.dataset.height);
-                            if (height < 65 || height > 120 || rowStandard !== standard) {
+                            // Weight-for-Height: 24+ months (2+ years) - measured standing up
+                            if (ageMonths < 24 || rowStandard !== standard) {
                                 showRow = false;
                             }
                         } else if (standard === 'weight-for-length') {
-                            // Weight-for-Length: 45-110 cm height range
-                            const height = parseInt(row.dataset.height);
-                            if (height < 45 || height > 110 || rowStandard !== standard) {
+                            // Weight-for-Length: 0-24 months (0-2 years) - measured lying down
+                            if (ageMonths >= 24 || rowStandard !== standard) {
                                 showRow = false;
                             }
                         } else if (standard === 'bmi-for-age') {
