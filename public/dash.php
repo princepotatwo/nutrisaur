@@ -6575,7 +6575,7 @@ body {
             }
         }
 
-        function selectOption(value, text) {
+        async function selectOption(value, text) {
             const selectedOption = document.getElementById('selected-option');
             const dropdownContent = document.getElementById('dropdown-content');
             const dropdownArrow = document.querySelector('.dropdown-arrow');
@@ -6586,7 +6586,7 @@ body {
                 dropdownArrow.classList.remove('active');
                 
                 // Update dashboard data based on selected barangay or municipality
-                updateDashboardForBarangay(value);
+                await updateDashboardForBarangay(value);
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
@@ -6658,19 +6658,19 @@ body {
                 
                 if (alternativeOptions.length > 0) {
                     alternativeOptions.forEach((item) => {
-                        item.addEventListener('click', function() {
+                        item.addEventListener('click', async function() {
                             const value = this.getAttribute('data-value');
                             const text = this.textContent;
-                            selectOption(value, text);
+                            await selectOption(value, text);
                         });
                     });
                 }
             } else {
                 optionItems.forEach((item) => {
-                    item.addEventListener('click', function() {
+                    item.addEventListener('click', async function() {
                         const value = this.getAttribute('data-value');
                         const text = this.textContent;
-                        selectOption(value, text);
+                        await selectOption(value, text);
                     });
                 });
             }
@@ -6714,7 +6714,7 @@ body {
         }
         
         // Function to clear barangay selection
-        function clearBarangaySelection() {
+        async function clearBarangaySelection() {
             currentSelectedBarangay = '';
             localStorage.removeItem('selectedBarangay');
             
@@ -6744,7 +6744,7 @@ body {
         }
         
         // Function to update dashboard data based on selected barangay
-        function updateDashboardForBarangay(barangay) {
+        async function updateDashboardForBarangay(barangay) {
             // Store the selected barangay globally
             if (barangay !== undefined && barangay !== null) {
                 currentSelectedBarangay = barangay;
@@ -6758,25 +6758,25 @@ body {
             }
             
             // Update the "Programs in Barangay" metric
-            updateProgramsMetric(barangay);
+            await updateProgramsMetric(barangay);
             
             // Update all charts and metrics for the selected barangay
-            updateCommunityMetrics(barangay);
+            await updateCommunityMetrics(barangay);
             
             // Update all charts and metrics for the selected barangay
-            updateCharts(barangay);
+            await updateCharts(barangay);
             
             // Update analysis section
-            updateAnalysisSection(barangay);
+            await updateAnalysisSection(barangay);
             
             // Update geographic distribution chart
-            updateGeographicChart(barangay);
+            await updateGeographicChart(barangay);
             
             // Update critical alerts - Now handled by assessment data
             // updateCriticalAlerts(barangay); // Deprecated - using assessment data instead
             
             // Automatically refresh intelligent programs for the selected location
-            updateIntelligentPrograms(barangay);
+            await updateIntelligentPrograms(barangay);
             
             // Update screening responses for the selected barangay
             setTimeout(() => {
