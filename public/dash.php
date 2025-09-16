@@ -7008,7 +7008,12 @@ body {
                 if (riskData && riskData.success && riskData.data) {
                     // Load initial WHO classification data only once
                     if (typeof window.whoDataLoaded === 'undefined') {
-                    handleWHOStandardChange();
+                        // Ensure weight-for-age is selected by default
+                        const whoSelect = document.getElementById('whoStandardSelect');
+                        if (whoSelect) {
+                            whoSelect.value = 'weight-for-age';
+                        }
+                        handleWHOStandardChange();
                         window.whoDataLoaded = true;
                     }
                     
@@ -8211,9 +8216,11 @@ body {
             window.whoClassificationLoading = true;
             
             const select = document.getElementById('whoStandardSelect');
-            const selectedStandard = select.value;
+            const selectedStandard = select ? select.value : 'weight-for-age';
             
             console.log('WHO Standard selected:', selectedStandard);
+            console.log('Dropdown element found:', !!select);
+            console.log('Dropdown value:', select ? select.value : 'N/A');
             
             try {
                 // Get current time frame and barangay
