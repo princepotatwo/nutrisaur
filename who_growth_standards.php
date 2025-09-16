@@ -1172,7 +1172,7 @@ class WHOGrowthStandards {
         // Step 1: Check sex
         if ($sex === 'Male') {
             // Step 2: Check age and get exact WHO table ranges
-            $ranges = $this->getWeightForAgeGirlsLookupTable();
+            $ranges = $this->getWeightForAgeBoysLookupTable();
             $closestAge = $this->findClosestAge($ranges, $ageInMonths);
             
             
@@ -1234,7 +1234,7 @@ class WHOGrowthStandards {
             }
         } else {
             // For girls, use similar hardcoded approach
-            $ranges = $this->getWeightForAgeBoysLookupTable();
+            $ranges = $this->getWeightForAgeGirlsLookupTable();
             $closestAge = $this->findClosestAge($ranges, $ageInMonths);
             
             if ($closestAge !== null) {
