@@ -1,758 +1,218 @@
-2025-09-16T08:58:01.000000000Z [inf]  Starting Container
-2025-09-16T08:58:01.769419352Z [err]  [Tue Sep 16 08:58:01 2025] PHP 8.1.33 Development Server (http://0.0.0.0:8080) started
-2025-09-16T08:58:02.471131266Z [err]  [Tue Sep 16 08:58:02 2025] 100.64.0.2:51403 Accepted
-2025-09-16T08:58:02.471137342Z [err]  [Tue Sep 16 08:58:02 2025] === ROUTER DEBUG ===
-2025-09-16T08:58:02.471145060Z [err]  [Tue Sep 16 08:58:02 2025] Requested path: health
-2025-09-16T08:58:02.471151051Z [err]  [Tue Sep 16 08:58:02 2025] Public path: /var/www/html/public/
-2025-09-16T08:58:02.471156677Z [err]  [Tue Sep 16 08:58:02 2025] Public API path: /var/www/html/public/api/
-2025-09-16T08:58:02.471164060Z [err]  [Tue Sep 16 08:58:02 2025] Request URI: /health
-2025-09-16T08:58:02.471170121Z [err]  [Tue Sep 16 08:58:02 2025] Script Name: /index.php
-2025-09-16T08:58:02.471177290Z [err]  [Tue Sep 16 08:58:02 2025] 100.64.0.2:51403 [200]: GET /health
-2025-09-16T08:58:02.471184799Z [err]  [Tue Sep 16 08:58:02 2025] 100.64.0.2:51403 Closing
-2025-09-16T09:04:02.685293439Z [err]  [Tue Sep 16 09:03:53 2025] 100.64.0.3:22574 Accepted
-2025-09-16T09:04:02.685299894Z [err]  [Tue Sep 16 09:03:53 2025] === ROUTER DEBUG ===
-2025-09-16T09:04:02.685304299Z [err]  [Tue Sep 16 09:03:53 2025] Requested path: 
-2025-09-16T09:04:02.685310011Z [err]  [Tue Sep 16 09:03:53 2025] Public path: /var/www/html/public/
-2025-09-16T09:04:02.685315141Z [err]  [Tue Sep 16 09:03:53 2025] Public API path: /var/www/html/public/api/
-2025-09-16T09:04:02.685319972Z [err]  [Tue Sep 16 09:03:53 2025] Request URI: /
-2025-09-16T09:04:02.685323850Z [err]  [Tue Sep 16 09:03:53 2025] Script Name: /index.php
-2025-09-16T09:04:02.685328687Z [err]  [Tue Sep 16 09:03:53 2025] 100.64.0.3:22574 [200]: GET /
-2025-09-16T09:04:02.685332699Z [err]  [Tue Sep 16 09:03:53 2025] 100.64.0.3:22574 Closing
-2025-09-16T09:04:02.685337033Z [err]  [Tue Sep 16 09:03:53 2025] 100.64.0.3:22590 Accepted
-2025-09-16T09:04:02.685340823Z [err]  [Tue Sep 16 09:03:53 2025] 100.64.0.3:22590 [200]: GET /google-oauth-config.js
-2025-09-16T09:04:02.685344184Z [err]  [Tue Sep 16 09:03:53 2025] 100.64.0.3:22590 Closing
-2025-09-16T09:04:02.685348416Z [err]  [Tue Sep 16 09:03:53 2025] 100.64.0.3:22606 Accepted
-2025-09-16T09:04:02.685352536Z [err]  [Tue Sep 16 09:03:54 2025] 100.64.0.3:22606 [200]: POST /home.php
-2025-09-16T09:04:02.685356069Z [err]  [Tue Sep 16 09:03:54 2025] 100.64.0.3:22606 Closing
-2025-09-16T09:04:02.685360463Z [err]  [Tue Sep 16 09:03:55 2025] 100.64.0.3:22622 Accepted
-2025-09-16T09:04:02.685364507Z [err]  [Tue Sep 16 09:03:55 2025] 100.64.0.3:22622 [200]: POST /home.php
-2025-09-16T09:04:02.685368924Z [err]  [Tue Sep 16 09:03:55 2025] 100.64.0.3:22622 Closing
-2025-09-16T09:04:02.685373222Z [err]  [Tue Sep 16 09:03:57 2025] 100.64.0.3:22638 Accepted
-2025-09-16T09:04:02.685376903Z [err]  [Tue Sep 16 09:03:57 2025] === ROUTER DEBUG ===
-2025-09-16T09:04:02.685382313Z [err]  [Tue Sep 16 09:03:57 2025] Requested path: dash
-2025-09-16T09:04:02.685386472Z [err]  [Tue Sep 16 09:03:57 2025] Public path: /var/www/html/public/
-2025-09-16T09:04:02.685390147Z [err]  [Tue Sep 16 09:03:57 2025] Public API path: /var/www/html/public/api/
-2025-09-16T09:04:02.685395792Z [err]  [Tue Sep 16 09:03:57 2025] Request URI: /dash
-2025-09-16T09:04:02.685399788Z [err]  [Tue Sep 16 09:03:57 2025] Script Name: /index.php
-2025-09-16T09:04:02.685403761Z [err]  [Tue Sep 16 09:03:57 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-16T09:04:02.685407501Z [err]  [Tue Sep 16 09:03:57 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-16T09:04:02.685411305Z [err]  [Tue Sep 16 09:03:57 2025] 100.64.0.3:22638 [200]: GET /dash
-2025-09-16T09:04:02.685415513Z [err]  [Tue Sep 16 09:03:57 2025] 100.64.0.3:22638 Closing
-2025-09-16T09:04:02.685419147Z [err]  [Tue Sep 16 09:03:57 2025] 100.64.0.3:22640 Accepted
-2025-09-16T09:04:02.685425166Z [err]  [Tue Sep 16 09:03:57 2025] 100.64.0.3:22640 [200]: GET /logo.png
-2025-09-16T09:04:02.685428970Z [err]  [Tue Sep 16 09:03:57 2025] 100.64.0.3:22640 Closing
-2025-09-16T09:04:22.688436106Z [err]  [Tue Sep 16 09:04:15 2025] 100.64.0.4:31090 Accepted
-2025-09-16T09:04:22.688445006Z [err]  [Tue Sep 16 09:04:15 2025] === ROUTER DEBUG ===
-2025-09-16T09:04:22.688450190Z [err]  [Tue Sep 16 09:04:15 2025] Requested path: 
-2025-09-16T09:04:22.688454344Z [err]  [Tue Sep 16 09:04:15 2025] Public path: /var/www/html/public/
-2025-09-16T09:04:22.688460035Z [err]  [Tue Sep 16 09:04:15 2025] Public API path: /var/www/html/public/api/
-2025-09-16T09:04:22.688465293Z [err]  [Tue Sep 16 09:04:15 2025] Request URI: /
-2025-09-16T09:04:22.688470408Z [err]  [Tue Sep 16 09:04:15 2025] Script Name: /index.php
-2025-09-16T09:04:22.688477103Z [err]  [Tue Sep 16 09:04:15 2025] 100.64.0.4:31090 [302]: GET /
-2025-09-16T09:04:22.688482548Z [err]  [Tue Sep 16 09:04:15 2025] 100.64.0.4:31090 Closing
-2025-09-16T09:04:22.688486786Z [err]  [Tue Sep 16 09:04:15 2025] 100.64.0.4:31106 Accepted
-2025-09-16T09:04:22.688492080Z [err]  [Tue Sep 16 09:04:15 2025] === ROUTER DEBUG ===
-2025-09-16T09:04:22.688498708Z [err]  [Tue Sep 16 09:04:15 2025] Requested path: dash
-2025-09-16T09:04:22.688503450Z [err]  [Tue Sep 16 09:04:15 2025] Public path: /var/www/html/public/
-2025-09-16T09:04:22.688508026Z [err]  [Tue Sep 16 09:04:15 2025] Public API path: /var/www/html/public/api/
-2025-09-16T09:04:22.688513792Z [err]  [Tue Sep 16 09:04:15 2025] Request URI: /dash
-2025-09-16T09:04:22.688519200Z [err]  [Tue Sep 16 09:04:15 2025] Script Name: /index.php
-2025-09-16T09:04:22.688523545Z [err]  [Tue Sep 16 09:04:15 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-16T09:04:22.688527841Z [err]  [Tue Sep 16 09:04:15 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-16T09:04:22.688532054Z [err]  [Tue Sep 16 09:04:15 2025] 100.64.0.4:31106 [200]: GET /dash
-2025-09-16T09:04:22.688536699Z [err]  [Tue Sep 16 09:04:15 2025] 100.64.0.4:31106 Closing
-2025-09-16T09:04:22.688541434Z [err]  [Tue Sep 16 09:04:15 2025] 100.64.0.4:31118 Accepted
-2025-09-16T09:04:22.688545927Z [err]  [Tue Sep 16 09:04:15 2025] 100.64.0.4:31118 [200]: GET /logo.png
-2025-09-16T09:04:22.688550302Z [err]  [Tue Sep 16 09:04:15 2025] 100.64.0.4:31118 Closing
-2025-09-16T09:04:22.688554397Z [err]  [Tue Sep 16 09:04:18 2025] 100.64.0.5:54248 Accepted
-2025-09-16T09:04:22.688559685Z [err]  [Tue Sep 16 09:04:18 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-16T09:04:22.688565320Z [err]  [Tue Sep 16 09:04:18 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-16T09:04:22.688570608Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688574538Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688578910Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688583470Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688587933Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688592724Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688596559Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688600525Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688605741Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688610311Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688614340Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688618863Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688623551Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688628277Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688633726Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688638922Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688643637Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688648680Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688653015Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688658188Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688662927Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688666559Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688670561Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688674413Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688679342Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688683735Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688688403Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688692680Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.688698580Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.688702292Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690712912Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690718912Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690724733Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690731156Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690736037Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690742540Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690748133Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690752776Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690758086Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690763711Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690769985Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690775786Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690782543Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690788940Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690794762Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690799648Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690804543Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690810843Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690815682Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690820909Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690826532Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690833050Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690837837Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690842889Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690849003Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690854452Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690860671Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690866717Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690871970Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690877857Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690882713Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690888512Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690894277Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690900176Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690904958Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690909931Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690915775Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690920850Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690925905Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690930617Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690935712Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690941374Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690947561Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690952082Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690956711Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690961770Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690967767Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690974117Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690979559Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.690984686Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.690990121Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692724771Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692732724Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692737603Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692744755Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692749379Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692755394Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692759418Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692764002Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692768170Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692772771Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692777177Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692782147Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692786802Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692790618Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692795225Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692800303Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692805323Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692809619Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692814057Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692818360Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692823903Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692828665Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692832560Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692836528Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692841138Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692845425Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692850390Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692855771Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692860178Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692864554Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692868712Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692872935Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692876855Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692881038Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692884764Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692888607Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692892704Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692897294Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692901015Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692904725Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692909783Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692914165Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692918135Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692922069Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692925887Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692929613Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692935319Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692939792Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692943652Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692947638Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692951668Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692956666Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692960431Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692965146Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692969390Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692973372Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692979194Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.692986442Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692987360Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.692993434Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693000466Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693003534Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693014678Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693017525Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693025532Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693026594Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693035150Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693036242Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693045595Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693045785Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693055085Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693056019Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693066513Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693066520Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693079975Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693081800Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693092704Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693098423Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693106679Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693110665Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693119820Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693125438Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693135493Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693140888Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693147973Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693154947Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693163153Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693168900Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693179114Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693184411Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693191340Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693200142Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693205587Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693216142Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693216241Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693228297Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693233185Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693242493Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693247966Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693252938Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693263842Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693264739Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693273911Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693280651Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693286400Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693296149Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693299339Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693304029Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693309413Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693313966Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693323096Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693327619Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693337869Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693338169Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693349524Z [err]  [Tue Sep 16 09:04:19 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693357866Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693359332Z [err]  [Tue Sep 16 09:04:19 2025] 100.64.0.5:54248 [200]: GET /api/DatabaseAPI.php?action=who_classification_data&who_standard=bmi-for-age&time_frame=1d&barangay=
-2025-09-16T09:04:22.693366895Z [err]  [Tue Sep 16 09:04:19 2025] 100.64.0.5:54248 Closing
-2025-09-16T09:04:22.693373732Z [err]  [Tue Sep 16 09:04:21 2025] 100.64.0.5:50330 Accepted
-2025-09-16T09:04:22.693379775Z [err]  [Tue Sep 16 09:04:21 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-16T09:04:22.693384692Z [err]  [Tue Sep 16 09:04:21 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-16T09:04:22.693388786Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693392778Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693397429Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693402847Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693408413Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693413833Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.693419293Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.693424137Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695351742Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695361475Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695368958Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695375327Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695380321Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695386171Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695393431Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695399386Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695405808Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695412001Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695416924Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695422171Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695426912Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695432063Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695437409Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695442369Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695447908Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695452789Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695459006Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695465197Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695471510Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695477999Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695483622Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695489011Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695495899Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695500894Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.695507324Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.695513391Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696290404Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696301640Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696307195Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696313210Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696318608Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696324047Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696328710Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696333703Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696338585Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696345372Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696356828Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696362624Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696367080Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696372072Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696376177Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696381953Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696390236Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696394105Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696398425Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696401935Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696406253Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696411635Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696415522Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696420983Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696428131Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696432125Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696436027Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696441344Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696446326Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696450494Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696455560Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696459939Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696464512Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696469616Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696473747Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696478608Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696482484Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696486848Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696490773Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696494774Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696499207Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696503357Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696507896Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696511767Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696515985Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696520501Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696524717Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696528456Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696532521Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696536577Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696540991Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696546846Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696551862Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696555760Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696559310Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696564152Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696567641Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696571937Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696577953Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696583823Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696587962Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696593251Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696597856Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696603305Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696607097Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696611599Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696615916Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696620046Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696625043Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696628958Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696633344Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696637476Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696641193Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696645358Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696648817Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696653374Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696657320Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696661964Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696665942Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696669722Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696673864Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696677537Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696681210Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696684835Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696688542Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696693650Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696697908Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696701869Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696705384Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696709551Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696713953Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696718173Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696724482Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696728437Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696732092Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696736990Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696741109Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696745193Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.696749114Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.696752869Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.697328952Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.697333327Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:22.697337529Z [err]  [Tue Sep 16 09:04:21 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:22.697340933Z [err]  [Tue Sep 16 09:04:21 2025] 100.64.0.5:50330 [200]: GET /api/DatabaseAPI.php?action=who_classification_data&who_standard=weight-for-age&time_frame=1d&barangay=
-2025-09-16T09:04:22.697344346Z [err]  [Tue Sep 16 09:04:21 2025] 100.64.0.5:50330 Closing
-2025-09-16T09:04:25.063574708Z [err]  [Tue Sep 16 09:04:25 2025] 100.64.0.4:33592 Accepted
-2025-09-16T09:04:25.063579345Z [err]  [Tue Sep 16 09:04:25 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-16T09:04:25.071573234Z [err]  [Tue Sep 16 09:04:25 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-16T09:04:25.080648633Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.080657422Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.086914285Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.086918130Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.089598683Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.089603251Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.097758549Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.097765373Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.103585968Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.103595427Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.112626577Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.112636345Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.115323074Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.115328739Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.122839304Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.122848673Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.130956724Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.130962203Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.139259864Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.139270053Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.142946912Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.142956078Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.146440713Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.146448461Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.155073272Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.155080316Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.158694134Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.158704203Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.168064658Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.168069908Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.170869475Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.170878525Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.179652216Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.179657176Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.183079062Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.183083006Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.191522514Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.191531427Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.194877647Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.194884164Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.198173919Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.198180875Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.205022404Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.205030423Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.213484981Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.213492146Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.216558338Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.216565462Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.225408669Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.225415200Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.228490355Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.228497602Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.237505452Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.237510704Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.240710512Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.240718893Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.249250775Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.249257670Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.252585421Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.252591034Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.256155044Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.256159245Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.263086736Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.263093259Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.272670018Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.272677827Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.275627430Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.275635775Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.283907763Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.283914563Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.287157451Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.287161751Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.296403330Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.296407411Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.299232215Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.299238991Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.307346099Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.307351623Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.310817141Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.310825673Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.314152847Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.314159172Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.322928650Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.322935664Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.326374753Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.326382227Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.348199482Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.348205699Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.348209938Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.348214352Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.348218492Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.348223803Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.348227919Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.348231701Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.355823735Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.355831527Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.359121089Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.359129101Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.362613306Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.362620392Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.371387960Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.371398092Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.374784773Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.374792624Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.383982556Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.383987221Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.387030396Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.387037044Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.395789838Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.395808520Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.399137155Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.399143680Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.408112007Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.408121028Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.408126665Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.408132130Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.416765322Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.416772782Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.419470368Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.419478076Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.428254079Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.428260351Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.428264498Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.428269299Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.435268595Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.435274825Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.444057536Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.444064650Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.447551231Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.447558964Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.450850761Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.450857807Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.459458661Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.459467137Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.462755356Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.462763931Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.465018968Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.465025234Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.473624168Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.473632954Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.476910236Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.476917535Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.485528949Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.485535657Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.489032794Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.489042165Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.496632839Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.496639425Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.499132003Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.499141241Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.507924080Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.507933561Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.511644438Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.511650721Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.519669511Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.519677605Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.522163431Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.522174874Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.525845471Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.525853614Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.534923446Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.534927729Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.538755476Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.538764280Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.541408582Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.541416077Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.549669814Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:25.549676227Z [err]  [Tue Sep 16 09:04:25 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:25.549683911Z [err]  [Tue Sep 16 09:04:25 2025] 100.64.0.4:33592 [200]: GET /api/DatabaseAPI.php?action=who_classification_data&who_standard=height-for-age&time_frame=1d&barangay=
-2025-09-16T09:04:25.549691882Z [err]  [Tue Sep 16 09:04:25 2025] 100.64.0.4:33592 Closing
-2025-09-16T09:04:26.857339906Z [err]  [Tue Sep 16 09:04:26 2025] 100.64.0.4:33600 Accepted
-2025-09-16T09:04:26.857343755Z [err]  [Tue Sep 16 09:04:26 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-16T09:04:26.857347527Z [err]  [Tue Sep 16 09:04:26 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-16T09:04:26.865358230Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.865365522Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.868313936Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.868322830Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.877396149Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.877403875Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.881035356Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.881039701Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.888446470Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.888451651Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.896558351Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.896565974Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.899371788Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.899381338Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.908232794Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.908246118Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.911815131Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.911822726Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.920539742Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.920547365Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.924185645Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.924195343Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.932907920Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.932914287Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.936474587Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.936481518Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.946089762Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.946097083Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.949764103Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.949769469Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.952177546Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.952183928Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.961022813Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.961030255Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.964593134Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.964599497Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.970761418Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.970765923Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.976158781Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.976164182Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.985366046Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.985374261Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.988963204Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.988969545Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:26.997599052Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:26.997607730Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.000392975Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.000399048Z [err]  [Tue Sep 16 09:04:26 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.008573030Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.008583831Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.011281602Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.011287929Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.017886162Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.017893332Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.026560501Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.026567965Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.026572842Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.026577801Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.035303087Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.035310054Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.038623553Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.038631260Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.047318383Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.047328343Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.053755273Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.053764532Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.062518613Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.062528452Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.062535821Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.062542735Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.070729512Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.070737143Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.074788685Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.074792950Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.082535719Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.082543801Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.086150826Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.086156343Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.089883898Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.089891197Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.099053116Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.099059238Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.102432889Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.102439580Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.110646164Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.110651353Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.113399120Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.113406436Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.122315111Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.122322677Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.125959832Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.125965565Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.133672460Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.133677469Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.136817581Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.136822793Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.142309993Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.142317332Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.145854222Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.145863551Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.154482964Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.154491961Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.157791501Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.157797611Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.166140955Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.166148232Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.169548909Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.169559544Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.172779989Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.172786643Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.181275789Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.181284913Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.184369949Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.184378334Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.192901977Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.192910875Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.196315817Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.196320438Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.204816491Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.204825731Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.207982469Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.207989683Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.216729133Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.216738263Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.219920112Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.219926221Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.223497374Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.223505297Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.231893636Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.231901449Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.234886509Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.234891956Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.242571560Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.242578803Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.245200487Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.245206863Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.253942556Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.253953473Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.257899897Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.257904623Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.262016069Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.262025469Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.268480935Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.268489557Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.277246320Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.277251544Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.280129409Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.280136771Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.288939574Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.288948356Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.292675804Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.292683497Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.300729722Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.300734439Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.306674976Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.306681260Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.312668303Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.312675419Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.322509194Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.322516296Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.325425129Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.325457991Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.331697993Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.331705782Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.349638049Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.349644495Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.349650472Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "weight_kg" in /var/www/html/public/api/who_classification_functions.php on line 138
-2025-09-16T09:04:27.349654515Z [err]  [Tue Sep 16 09:04:27 2025] PHP Warning:  Undefined array key "height_cm" in /var/www/html/public/api/who_classification_functions.php on line 139
-2025-09-16T09:04:27.349658720Z [err]  [Tue Sep 16 09:04:27 2025] 100.64.0.4:33600 [200]: GET /api/DatabaseAPI.php?action=who_classification_data&who_standard=weight-for-age&time_frame=1d&barangay=
-2025-09-16T09:04:27.349665199Z [err]  [Tue Sep 16 09:04:27 2025] 100.64.0.4:33600 Closing
+# NUTRISAUR PROJECT - COMPLETE TECHNICAL CONTEXT
+
+## PROJECT OVERVIEW
+- **Project**: Nutrisaur - Nutritional screening and assessment system
+- **Tech Stack**: PHP backend, JavaScript frontend, MySQL database, Android app
+- **Deployment**: Railway (production), local development
+- **Main Features**: WHO Growth Standards assessment, community screening, dashboard analytics
+
+## CORE FILES AND STRUCTURE
+
+### 1. WHO GROWTH STANDARDS IMPLEMENTATION
+**File**: `public/api/who_growth_standards.php`
+- **Purpose**: Core decision tree for WHO Growth Standards 2006
+- **Key Methods**:
+  - `getComprehensiveAssessment()` - Main assessment function
+  - `calculateWeightForAge()` - Weight-for-Age calculations (0-71 months)
+  - `calculateHeightForAge()` - Height-for-Age calculations (0-71 months)
+  - `calculateWeightForHeight()` - Weight-for-Height calculations (0-60 months)
+  - `calculateWeightForLength()` - Weight-for-Length calculations (0-24 months)
+  - `calculateBMIForAge()` - BMI-for-Age calculations (24+ months)
+
+**Decision Tree Logic**:
+- Uses hardcoded lookup tables based on exact WHO table values
+- Age ranges: 0-71 months for most standards, 24+ months for BMI-for-Age
+- Classifications: Severely Underweight, Underweight, Normal, Overweight, Obese, etc.
+- Z-score calculations with standard deviation ranges
+
+### 2. DATABASE SCHEMA
+**Main Table**: `community_users`
+- **Columns**: `community_user_id`, `email`, `weight`, `height`, `sex`, `birthday`, `age`, `barangay`, `municipality`, `screening_date`, `created_at`, `updated_at`
+- **Key Points**: 
+  - Uses `email` as primary identifier (not `screening_id`)
+  - Weight/height stored as `weight`/`height` (not `weight_kg`/`height_cm`)
+  - No `nutritional_risk` column (classifications calculated dynamically)
+
+### 3. DASHBOARD IMPLEMENTATION
+**File**: `public/dash.php`
+- **Purpose**: Main dashboard with WHO classification donut chart
+- **Key Features**:
+  - Server-side WHO classification processing
+  - Dynamic chart updates based on WHO standard selection
+  - Barangay/municipality filtering
+  - Real-time data updates
+
+**API Integration**:
+- Uses `DatabaseAPI.php` with `get_who_classifications` endpoint
+- Processes all users server-side for performance
+- Returns classification counts and percentages
+
+### 4. SCREENING PAGE
+**File**: `public/screening.php`
+- **Purpose**: Community user screening and data display
+- **Features**:
+  - WHO Growth Standards assessment for each user
+  - Filtering by WHO standard, age range, classification
+  - Sorting by name, email, age, screening date
+  - CSV import/export functionality
+
+### 5. DATABASE API
+**File**: `public/api/DatabaseAPI.php`
+- **Purpose**: Centralized database operations
+- **Key Methods**:
+  - `getDetailedScreeningResponses()` - Get all user data
+  - `getWHOClassifications()` - Process WHO classifications server-side
+  - `getCommunityData()` - Community metrics and statistics
+
+## CRITICAL FIXES IMPLEMENTED
+
+### 1. WHO DECISION TREE ACCURACY
+**Problem**: Formula-based calculations were inaccurate
+**Solution**: Replaced with hardcoded lookup tables from exact WHO table values
+**Files Modified**: `who_growth_standards.php`
+**Result**: 100% accurate classifications matching WHO standards
+
+### 2. DASHBOARD PERFORMANCE
+**Problem**: Individual API calls for each user (slow, 84+ calls)
+**Solution**: Server-side processing with single API call
+**Files Modified**: `DatabaseAPI.php`, `dash.php`
+**Result**: Instant loading, same accuracy as screening page
+
+### 3. DATA STRUCTURE CONSISTENCY
+**Problem**: Mismatched column names between files
+**Solution**: Standardized on `community_users` table schema
+**Key Changes**:
+- `screening_id` → `email`
+- `weight_kg` → `weight`
+- `height_cm` → `height`
+- Removed `nutritional_risk` references
+
+### 4. JAVASCRIPT ASYNC/AWAIT FIXES
+**Problem**: `await` in non-async functions causing syntax errors
+**Solution**: Made all calling functions async and added proper await keywords
+**Files Modified**: `dash.php`
+**Functions Fixed**: `updateDashboardForBarangay()`, `selectOption()`, `clearBarangaySelection()`
+
+### 5. DROPDOWN FUNCTIONALITY
+**Problem**: Inline `onchange` handlers not working
+**Solution**: Replaced with `addEventListener` for proper event handling
+**Files Modified**: `dash.php`
+**Result**: WHO standard dropdown now works correctly
+
+## API ENDPOINTS
+
+### DatabaseAPI.php Endpoints
+- `get_who_classifications` - Get WHO classification counts by standard
+- `detailed_screening_responses` - Get all user screening data
+- `community_metrics` - Get community statistics
+- `geographic_distribution` - Get barangay distribution data
+
+### Parameters
+- `who_standard`: weight-for-age, height-for-age, weight-for-height, weight-for-length, bmi-for-age
+- `time_frame`: 1d, 7d, 30d, 90d, 1y
+- `barangay`: Specific barangay filter (empty for all)
+
+## WHO GROWTH STANDARDS DETAILS
+
+### Age Ranges
+- **Weight-for-Age**: 0-71 months
+- **Height-for-Age**: 0-71 months  
+- **Weight-for-Height**: 0-60 months
+- **Weight-for-Length**: 0-24 months
+- **BMI-for-Age**: 24+ months (different ranges for 2-19 years vs 20+ years)
+
+### Classifications
+- **Weight-for-Age**: Severely Underweight, Underweight, Normal, Overweight
+- **Height-for-Age**: Severely Stunted, Stunted, Normal, Tall
+- **Weight-for-Height**: Severely Wasted, Wasted, Normal, Overweight, Obese
+- **Weight-for-Length**: Severely Wasted, Wasted, Normal, Overweight, Obese
+- **BMI-for-Age**: Underweight, Normal, Overweight, Obese
+
+### Z-Score Ranges
+- **Severely Underweight/Stunted/Wasted**: Z < -3
+- **Underweight/Stunted/Wasted**: -3 ≤ Z < -2
+- **Normal**: -2 ≤ Z ≤ +2
+- **Overweight**: +2 < Z ≤ +3
+- **Obese**: Z > +3
+
+## TESTING AND VERIFICATION
+
+### Test Data
+**File**: `test_users_correct.csv`
+- Contains test users with expected classifications
+- Names indicate expected status (e.g., "normal8@test.com" should be "Normal")
+- Covers all age ranges and classifications
+
+### Verification Methods
+1. **API Testing**: `curl` commands to test endpoints
+2. **Console Logging**: JavaScript debugging for data flow
+3. **Cross-Reference**: Compare dashboard vs screening page results
+4. **Data Validation**: Ensure counts match expected values
+
+## COMMON ISSUES AND SOLUTIONS
+
+### 1. JavaScript Errors
+- **"await is only valid in async functions"**: Make calling function async
+- **"handleWHOStandardChange is not defined"**: Use addEventListener instead of inline handlers
+- **Function not found**: Check function definition order
+
+### 2. Data Mismatches
+- **Wrong column names**: Always use `community_users` schema
+- **Missing data**: Check API response structure
+- **Incorrect counts**: Verify server-side processing
+
+### 3. Performance Issues
+- **Slow loading**: Use server-side processing instead of individual API calls
+- **Rate limiting**: Remove excessive logging
+- **Memory issues**: Process data in batches
+
+## DEPLOYMENT NOTES
+
+### Railway Deployment
+- **Repository**: https://github.com/princepotatwo/nutrisaur.git
+- **Branch**: main
+- **Auto-deploy**: Yes (on push to main)
+- **Environment**: Production
+
+### File Locations
+- **Web Root**: `/public/` directory
+- **API Files**: `/public/api/`
+- **Database Config**: `config.php` (root level)
+- **WHO Standards**: `/public/api/who_growth_standards.php`
+
+## CURRENT STATUS
+
+### Working Features
+✅ WHO Growth Standards assessment (100% accurate)
+✅ Dashboard donut chart with correct counts
+✅ Server-side processing (fast performance)
+✅ Barangay/municipality filtering
+✅ CSV import/export
+✅ All WHO standards (Weight-for-Age, Height-for-Age, etc.)
+✅ Dropdown functionality
+✅ Data consistency across all pages
+
+### Data Accuracy
+- **Normal users**: 22 (matches screening page)
+- **Total users**: 84 processed
+- **Classifications**: All accurate based on WHO standards
+- **Performance**: Instant loading (single API call)
+
+## KEY LEARNINGS
+
+1. **Always use exact WHO table values** - formulas can be inaccurate
+2. **Server-side processing** is much faster than individual API calls
+3. **Data structure consistency** is critical across all files
+4. **JavaScript async/await** requires careful function definition order
+5. **Event listeners** are more reliable than inline handlers
+6. **Test data validation** is essential for accuracy verification
+
+## MAINTENANCE NOTES
+
+- **WHO Standards**: Update lookup tables if WHO publishes new standards
+- **Database Schema**: Any changes must be reflected in all API calls
+- **Performance**: Monitor API response times and optimize if needed
+- **Testing**: Always verify with test data after changes
+- **Deployment**: Test locally before pushing to production
+
+This context contains all the technical knowledge, fixes, and solutions implemented in this project. Use this as a reference for future development and maintenance.

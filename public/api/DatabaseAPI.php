@@ -1611,6 +1611,7 @@ class DatabaseAPI {
             $totalProcessed = 0;
             
             // Process each user (same logic as screening.php)
+            $debugInfo = [];
             foreach ($users as $user) {
                 try {
                     require_once 'who_growth_standards.php';
@@ -1627,6 +1628,16 @@ class DatabaseAPI {
                     if ($assessment['success'] && isset($assessment['results'])) {
                         $results = $assessment['results'];
                         $classification = 'Normal'; // default
+                        
+                        // DEBUG: Log user data and assessment results
+                        $debugInfo[] = [
+                            'name' => $user['name'] ?? 'Unknown',
+                            'age_months' => $user['age_months'] ?? 'Unknown',
+                            'weight' => $user['weight'],
+                            'sex' => $user['sex'],
+                            'weight_for_age_result' => $results['weight_for_age'] ?? 'Not found',
+                            'assessment_success' => $assessment['success']
+                        ];
                         
                         // Get classification based on selected WHO standard (same as screening.php)
                         if ($whoStandard === 'weight-for-age' && isset($results['weight_for_age'])) {
@@ -1651,9 +1662,18 @@ class DatabaseAPI {
                         $totalProcessed++;
                     } else {
                         $classifications['No Data']++;
+                        $debugInfo[] = [
+                            'name' => $user['name'] ?? 'Unknown',
+                            'error' => 'Assessment failed',
+                            'assessment' => $assessment
+                        ];
                     }
                 } catch (Exception $e) {
                     $classifications['No Data']++;
+                    $debugInfo[] = [
+                        'name' => $user['name'] ?? 'Unknown',
+                        'error' => $e->getMessage()
+                    ];
                 }
             }
             
@@ -1661,7 +1681,8 @@ class DatabaseAPI {
                 'success' => true,
                 'data' => [
                     'classifications' => $classifications,
-                    'total' => $totalProcessed
+                    'total' => $totalProcessed,
+                    'debug_info' => $debugInfo
                 ]
             ];
             

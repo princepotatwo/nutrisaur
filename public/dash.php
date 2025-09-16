@@ -8213,10 +8213,21 @@ body {
                 const data = result.data || {};
                 const classifications = data.classifications || {};
                 const total = data.total || 0;
+                const debugInfo = data.debug_info || [];
                 
                 console.log('Processed data:', { classifications, total });
+                console.log('DEBUG INFO - User Classifications:', debugInfo);
                 
-                    return {
+                // Log specific details about Normal classifications
+                const normalUsers = debugInfo.filter(user => {
+                    if (user.weight_for_age_result && user.weight_for_age_result.classification === 'Normal') {
+                        return true;
+                    }
+                    return false;
+                });
+                console.log('USERS CLASSIFIED AS NORMAL:', normalUsers);
+                
+                return {
                     classifications: classifications,
                     total: total,
                     who_standard: whoStandard
