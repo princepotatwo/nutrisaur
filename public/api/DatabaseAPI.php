@@ -1641,7 +1641,7 @@ class DatabaseAPI {
             $incomeLevels[$incomeLevel] = ($incomeLevels[$incomeLevel] ?? 0) + 1;
             
             // Height distribution
-            $heightCm = $record['height_cm'] ?? 0;
+            $heightCm = $record['height'] ?? 0;
             if ($heightCm < 100) $heightRange = 'Under 100 cm';
             elseif ($heightCm < 120) $heightRange = '100-119 cm';
             elseif ($heightCm < 140) $heightRange = '120-139 cm';
@@ -3031,7 +3031,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $email = $data['email'] ?? '';
                 
                 $pdo = $db->getPDO();
-                $stmt = $pdo->prepare("SELECT name, email, municipality, barangay, sex, birthday, is_pregnant, weight_kg, height_cm, screening_date FROM community_users WHERE email = ?");
+                $stmt = $pdo->prepare("SELECT name, email, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date FROM community_users WHERE email = ?");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 
@@ -3048,8 +3048,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             'birthday' => $user['birthday'],
                             'age' => '',
                             'is_pregnant' => $user['is_pregnant'],
-                            'weight_kg' => $user['weight'],
-                            'height_cm' => $user['height'],
+                            'weight' => $user['weight'],
+                            'height' => $user['height'],
                             'muac_cm' => '',
                             'bmi' => '',
                             'bmi_category' => '',
@@ -3080,7 +3080,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $email = $data['email'] ?? '';
                     
                     $pdo = $db->getPDO();
-                    $stmt = $pdo->prepare("SELECT weight_kg, height_cm FROM community_users WHERE email = ?");
+                    $stmt = $pdo->prepare("SELECT weight, height FROM community_users WHERE email = ?");
                     $stmt->execute([$email]);
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);
                     
@@ -3114,7 +3114,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     
                     // Direct database query
                     $pdo = $db->getPDO();
-                    $stmt = $pdo->prepare("SELECT name, email, weight_kg, height_cm, municipality, barangay FROM community_users WHERE email = ?");
+                    $stmt = $pdo->prepare("SELECT name, email, weight, height, municipality, barangay FROM community_users WHERE email = ?");
                     $stmt->execute([$email]);
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
@@ -3122,8 +3122,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         echo json_encode([
                             'success' => true,
                             'raw_data' => $user,
-                            'weight_kg' => $user['weight'],
-                            'height_cm' => $user['height']
+                            'weight' => $user['weight'],
+                            'height' => $user['height']
                         ]);
                     } else {
                         echo json_encode(['success' => false, 'message' => 'User not found']);
@@ -3197,7 +3197,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         if ($result) {
                             // Verify the update worked
-                            $verifyStmt = $pdo->prepare("SELECT weight_kg, height_cm, muac_cm FROM community_users WHERE email = ?");
+                            $verifyStmt = $pdo->prepare("SELECT weight, height, muac_cm FROM community_users WHERE email = ?");
                             $verifyStmt->execute([$email]);
                             $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
                             
@@ -3214,7 +3214,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     } else {
                         // Create new user with direct SQL
                         $insertSql = "INSERT INTO community_users 
-                                     (name, email, municipality, barangay, sex, birthday, is_pregnant, weight_kg, height_cm, muac_cm, screening_date) 
+                                     (name, email, municipality, barangay, sex, birthday, is_pregnant, weight, height, muac_cm, screening_date) 
                                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                         
                         $insertStmt = $pdo->prepare($insertSql);
@@ -3225,7 +3225,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         if ($result) {
                             // Verify the insert worked
-                            $verifyStmt = $pdo->prepare("SELECT weight_kg, height_cm, muac_cm FROM community_users WHERE email = ?");
+                            $verifyStmt = $pdo->prepare("SELECT weight, height, muac_cm FROM community_users WHERE email = ?");
                             $verifyStmt->execute([$email]);
                             $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
                             
@@ -4361,8 +4361,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 'birthday' => $user['birthday'] ?? '',
                                 'age' => $user['age'] ?? '',
                                 'is_pregnant' => $user['is_pregnant'] ?? '',
-                                'weight_kg' => $user['weight'] ?? '',
-                                'height_cm' => $user['height'] ?? '',
+                                'weight' => $user['weight'] ?? '',
+                                'height' => $user['height'] ?? '',
                                 'muac_cm' => '',
                                 'bmi' => $user['bmi'] ?? '',
                                 'bmi_category' => $user['bmi_category'] ?? '',
