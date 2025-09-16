@@ -8237,6 +8237,7 @@ body {
                 }
                 
                 const usersData = await usersResponse.json();
+                console.log('Users data from database:', usersData);
                 
                 if (!usersData.success || !usersData.data) {
                     return {
@@ -8297,12 +8298,14 @@ body {
                                     weight: user.weight,
                                     height: user.height,
                                     birth_date: user.birthday,
-                                    sex: user.sex
+                                    sex: user.sex,
+                                    screening_date: user.screening_date || new Date().toISOString().split('T')[0]
                                 })
                             });
                             
                             if (whoResponse.ok) {
                                 const whoData = await whoResponse.json();
+                                console.log('WHO API Response for user:', user.email, whoData);
                                 if (whoData.success && whoData.results) {
                                     let classification = 'No Data';
                                     
