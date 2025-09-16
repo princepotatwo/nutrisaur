@@ -23,6 +23,27 @@ function getAdultBMIClassification($bmi) {
     return 'Obese';
 }
 
+// Function to convert z-score to standard deviation range display
+function getStandardDeviationRange($zScore) {
+    if ($zScore === null || $zScore === 'N/A') {
+        return 'N/A';
+    }
+    
+    $zScore = floatval($zScore);
+    
+    if ($zScore < -3) {
+        return '< -3SD';
+    } elseif ($zScore >= -3 && $zScore < -2) {
+        return '-3SD to < -2SD';
+    } elseif ($zScore >= -2 && $zScore <= 2) {
+        return '-2SD to +2SD';
+    } elseif ($zScore > 2 && $zScore <= 3) {
+        return '> +2SD to +3SD';
+    } else {
+        return '> +3SD';
+    }
+}
+
 // Wrapper function to use WHO Growth Standards
 function getNutritionalAssessment($user) {
     try {
@@ -3305,7 +3326,25 @@ header {
         .category.error {
             color: #9E9E9E;
         }
-
+        
+        /* Conditional column styles */
+        .conditional-column {
+            transition: all 0.3s ease;
+        }
+        
+        .conditional-column[style*="display: none"] {
+            width: 0;
+            padding: 0;
+            margin: 0;
+            border: none;
+            overflow: hidden;
+        }
+        
+        /* Standard deviation range styling */
+        .sd-range {
+            font-weight: 600;
+            color: var(--color-highlight);
+        }
 
     </style>
 </head>
@@ -3458,11 +3497,11 @@ header {
                             <th>NAME</th>
                             <th>AGE</th>
                             <th>SEX</th>
-                            <th>WEIGHT (kg)</th>
-                            <th>HEIGHT (cm)</th>
-                            <th>BMI</th>
-                            <th id="standardHeader">WEIGHT-FOR-AGE</th>
-                            <th>CLASSIFICATION</th>
+                            <th id="weightHeader" class="conditional-column">WEIGHT (kg)</th>
+                            <th id="heightHeader" class="conditional-column">HEIGHT (cm)</th>
+                            <th id="bmiHeader" class="conditional-column">BMI</th>
+                            <th id="standardHeader">Z-SCORE</th>
+                            <th>STANDARD DEVIATION RANGE</th>
                             <th>SCREENING DATE</th>
                         </tr>
                     </thead>
@@ -3585,15 +3624,36 @@ header {
                                         }
                                         
                                         if ($showStandard && $showData) {
+                                            // Get z-score and standard deviation range
+                                            $zScore = $showData['z_score'] ?? null;
+                                            $sdRange = getStandardDeviationRange($zScore);
+                                            
                                             echo '<tr data-standard="' . $showStandard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             echo '<td class="text-center">' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . $ageDisplay . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
-                                            echo '<td class="text-center">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
-                                            echo '<td class="text-center">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
-                                            echo '<td class="text-center">' . $bmi . '</td>';
+                                            
+                                            // Show conditional columns based on standard
+                                            if ($showStandard === 'weight-for-age' || $showStandard === 'bmi-for-age') {
+                                                echo '<td class="text-center conditional-column">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                            } else {
+                                                echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                            }
+                                            
+                                            if ($showStandard === 'height-for-age' || $showStandard === 'weight-for-height' || $showStandard === 'weight-for-length') {
+                                                echo '<td class="text-center conditional-column">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                            } else {
+                                                echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                            }
+                                            
+                                            if ($showStandard === 'bmi-for-age') {
+                                                echo '<td class="text-center conditional-column">' . $bmi . '</td>';
+                                            } else {
+                                                echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
+                                            }
+                                            
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($showData['display']) . '</td>';
-                                            echo '<td class="text-center classification">' . htmlspecialchars($showData['classification']) . '</td>';
+                                            echo '<td class="text-center sd-range">' . htmlspecialchars($sdRange) . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                             echo '</tr>';
                                         }
@@ -3629,15 +3689,36 @@ header {
                                             }
                                             
                                             if ($shouldShow) {
+                                                // Get z-score and standard deviation range for hidden rows
+                                                $zScore = $displayData['z_score'] ?? null;
+                                                $sdRange = getStandardDeviationRange($zScore);
+                                                
                                                 echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
                                                 echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $ageDisplay . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
-                                                echo '<td>' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
-                                                echo '<td>' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
-                                                echo '<td>' . $bmi . '</td>';
+                                                
+                                                // Show conditional columns based on standard
+                                                if ($standard === 'weight-for-age' || $standard === 'bmi-for-age') {
+                                                    echo '<td class="conditional-column">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                                } else {
+                                                    echo '<td class="conditional-column" style="display:none;">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
+                                                }
+                                                
+                                                if ($standard === 'height-for-age' || $standard === 'weight-for-height' || $standard === 'weight-for-length') {
+                                                    echo '<td class="conditional-column">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                                } else {
+                                                    echo '<td class="conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                                }
+                                                
+                                                if ($standard === 'bmi-for-age') {
+                                                    echo '<td class="conditional-column">' . $bmi . '</td>';
+                                                } else {
+                                                    echo '<td class="conditional-column" style="display:none;">' . $bmi . '</td>';
+                                                }
+                                                
                                                 echo '<td class="standard-value">' . htmlspecialchars($displayData['display']) . '</td>';
-                                                echo '<td class="classification">' . htmlspecialchars($displayData['classification']) . '</td>';
+                                                echo '<td class="sd-range">' . htmlspecialchars($sdRange) . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                                 echo '</tr>';
                                             }
@@ -4370,38 +4451,90 @@ header {
 
         function filterByStandard() {
             updateTableHeaders();
+            updateTableBodyColumns();
             applyAllFilters();
+        }
+        
+        function updateTableBodyColumns() {
+            const standardFilter = document.getElementById('standardFilter');
+            const selectedStandard = standardFilter ? standardFilter.value : 'all-ages';
+            
+            // Get all table rows
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
+            
+            tableRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                
+                // Show/hide conditional columns based on selected standard
+                if (cells.length >= 9) { // Ensure we have enough cells
+                    // Weight column (index 3)
+                    if (selectedStandard === 'weight-for-age' || selectedStandard === 'bmi-for-age' || selectedStandard === 'all-ages') {
+                        cells[3].style.display = '';
+                    } else {
+                        cells[3].style.display = 'none';
+                    }
+                    
+                    // Height column (index 4)
+                    if (selectedStandard === 'height-for-age' || selectedStandard === 'weight-for-height' || selectedStandard === 'weight-for-length' || selectedStandard === 'all-ages') {
+                        cells[4].style.display = '';
+                    } else {
+                        cells[4].style.display = 'none';
+                    }
+                    
+                    // BMI column (index 5)
+                    if (selectedStandard === 'bmi-for-age' || selectedStandard === 'all-ages') {
+                        cells[5].style.display = '';
+                    } else {
+                        cells[5].style.display = 'none';
+                    }
+                }
+            });
         }
         
         function updateTableHeaders() {
             const standardFilter = document.getElementById('standardFilter');
             const standardHeader = document.getElementById('standardHeader');
+            const weightHeader = document.getElementById('weightHeader');
+            const heightHeader = document.getElementById('heightHeader');
+            const bmiHeader = document.getElementById('bmiHeader');
             
             if (standardFilter && standardHeader) {
                 const selectedStandard = standardFilter.value;
-                let headerText = '';
                 
-                switch(selectedStandard) {
-                    case 'weight-for-age':
-                        headerText = 'WEIGHT-FOR-AGE (0-71 months)';
-                        break;
-                    case 'height-for-age':
-                        headerText = 'HEIGHT-FOR-AGE (0-71 months)';
-                        break;
-                    case 'weight-for-height':
-                        headerText = 'WEIGHT-FOR-HEIGHT (65-120 cm)';
-                        break;
-                    case 'weight-for-length':
-                        headerText = 'WEIGHT-FOR-LENGTH (45-110 cm)';
-                        break;
-                    case 'bmi-for-age':
-                        headerText = 'BMI-FOR-AGE (All Ages)';
-                        break;
-                    default:
-                        headerText = 'GROWTH STANDARD';
+                // Update standard header to always show "Z-SCORE"
+                standardHeader.textContent = 'Z-SCORE';
+                
+                // Show/hide conditional columns based on selected standard
+                if (weightHeader && heightHeader && bmiHeader) {
+                    // Reset all columns
+                    weightHeader.style.display = '';
+                    heightHeader.style.display = '';
+                    bmiHeader.style.display = '';
+                    
+                    // Show only relevant columns based on standard
+                    switch(selectedStandard) {
+                        case 'weight-for-age':
+                        case 'bmi-for-age':
+                            // Show weight and BMI columns
+                            weightHeader.style.display = '';
+                            heightHeader.style.display = 'none';
+                            bmiHeader.style.display = selectedStandard === 'bmi-for-age' ? '' : 'none';
+                            break;
+                        case 'height-for-age':
+                        case 'weight-for-height':
+                        case 'weight-for-length':
+                            // Show height column
+                            weightHeader.style.display = 'none';
+                            heightHeader.style.display = '';
+                            bmiHeader.style.display = 'none';
+                            break;
+                        default:
+                            // Show all columns for 'all-ages'
+                            weightHeader.style.display = '';
+                            heightHeader.style.display = '';
+                            bmiHeader.style.display = '';
+                    }
                 }
-                
-                standardHeader.textContent = headerText;
             }
         }
 
