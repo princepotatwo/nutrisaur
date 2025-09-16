@@ -719,21 +719,26 @@ class WHOGrowthStandards {
     
     /**
      * Calculate BMI-for-Age z-score and classification
-     * For all ages: WHO standards (0-71 months) + Adult BMI (72+ months)
+     * WHO standards: 2-19 years (24-228 months) + Adult BMI (20+ years/240+ months)
      */
     public function calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate = null) {
         $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
+        
+        // BMI-for-Age only applies to children 2+ years (24+ months)
+        if ($ageInMonths < 24) {
+            return ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only applies to children 2+ years (24+ months)'];
+        }
         
         // Calculate BMI: weight(kg) / height(m)²
         $heightInMeters = $height / 100;
         $bmi = $weight / ($heightInMeters * $heightInMeters);
         
-        // For children 72+ months, use adult BMI classification
-        if ($ageInMonths >= 72) {
+        // For adults 20+ years (240+ months), use adult BMI classification
+        if ($ageInMonths >= 240) {
             return $this->getAdultBMIClassification($bmi);
         }
         
-        // For children 0-71 months, use WHO BMI-for-Age standards
+        // For children 2-19 years (24-228 months), use WHO BMI-for-Age standards
         $standards = ($sex === 'Male') ? $this->getBMIForAgeBoys() : $this->getBMIForAgeGirls();
         
         // Find closest age
@@ -1466,18 +1471,7 @@ class WHOGrowthStandards {
         $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
         $bmi = $weight / pow($height / 100, 2);
         
-        // For children 72+ months, use BMI-for-Age instead of Weight-for-Age
-        if ($ageInMonths >= 72) {
-            $results = [
-                'age_months' => $ageInMonths,
-                'bmi' => round($bmi, 1),
-                'weight_for_age' => ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'Use BMI-for-Age for children 72+ months'],
-                'height_for_age' => $this->calculateHeightForAge($height, $ageInMonths, $sex),
-                'weight_for_height' => $this->calculateWeightForHeight($weight, $height, $sex),
-                'weight_for_length' => $this->calculateWeightForLength($weight, $height, $sex),
-                'bmi_for_age' => $this->calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate)
-            ];
-        } else {
+        // Process all growth standards for all ages
         $results = [
             'age_months' => $ageInMonths,
             'bmi' => round($bmi, 1),
@@ -1487,7 +1481,6 @@ class WHOGrowthStandards {
             'weight_for_length' => $this->calculateWeightForLength($weight, $height, $sex),
             'bmi_for_age' => $this->calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate)
         ];
-        }
         
         return $results;
     }
