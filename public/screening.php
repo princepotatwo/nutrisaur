@@ -3671,12 +3671,15 @@ header {
                                             $displayData = $data;
                                             
                                             // Apply WHO age and height restrictions
-                                            if ($standard === 'weight-for-age' || $standard === 'height-for-age' || $standard === 'bmi-for-age') {
+                                            if ($standard === 'weight-for-age' || $standard === 'height-for-age') {
                                                 // These standards are for children 0-71 months only
                                                 $shouldShow = ($ageInMonths >= 0 && $ageInMonths <= 71);
+                                            } elseif ($standard === 'bmi-for-age') {
+                                                // BMI-for-Age: 0-71 months (WHO standards) + 72+ months (adult BMI)
+                                                $shouldShow = true; // All ages
                                             } elseif ($standard === 'weight-for-height') {
-                                                // Weight-for-Height: 24+ months (2+ years) - measured standing up
-                                                $shouldShow = ($ageInMonths >= 24);
+                                                // Weight-for-Height: 0-60 months (0-5 years) - for acute malnutrition assessment
+                                                $shouldShow = ($ageInMonths >= 0 && $ageInMonths <= 60);
                                             } elseif ($standard === 'weight-for-length') {
                                                 // Weight-for-Length: 0-24 months (0-2 years) - measured lying down
                                                 $shouldShow = ($ageInMonths >= 0 && $ageInMonths < 24);
@@ -3997,8 +4000,8 @@ header {
                                 showRow = false;
                             }
                         } else if (standard === 'weight-for-height') {
-                            // Weight-for-Height: 24+ months (2+ years) - measured standing up
-                            if (ageMonths < 24 || rowStandard !== standard) {
+                            // Weight-for-Height: 0-60 months (0-5 years) - for acute malnutrition assessment
+                            if (ageMonths > 60 || rowStandard !== standard) {
                                 showRow = false;
                             }
                         } else if (standard === 'weight-for-length') {
@@ -4007,7 +4010,7 @@ header {
                                 showRow = false;
                             }
                         } else if (standard === 'bmi-for-age') {
-                            // BMI-for-Age: WHO standards for 0-71 months, adult BMI for >71 months
+                            // BMI-for-Age: All ages (WHO standards for 0-71 months, adult BMI for 72+ months)
                             if (rowStandard !== 'bmi-for-age') {
                                 showRow = false;
                             }

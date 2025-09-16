@@ -719,21 +719,21 @@ class WHOGrowthStandards {
     
     /**
      * Calculate BMI-for-Age z-score and classification
-     * For children 72+ months (6+ years)
+     * For all ages: WHO standards (0-71 months) + Adult BMI (72+ months)
      */
     public function calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate = null) {
         $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
-        
-        // BMI-for-Age is only for children 72+ months (6+ years)
-        if ($ageInMonths < 72) {
-            return ['z_score' => null, 'classification' => 'Age too young', 'error' => 'BMI-for-Age only applies to children 72+ months (6+ years)'];
-        }
         
         // Calculate BMI: weight(kg) / height(m)²
         $heightInMeters = $height / 100;
         $bmi = $weight / ($heightInMeters * $heightInMeters);
         
-        // Get BMI-for-Age standards
+        // For children 72+ months, use adult BMI classification
+        if ($ageInMonths >= 72) {
+            return $this->getAdultBMIClassification($bmi);
+        }
+        
+        // For children 0-71 months, use WHO BMI-for-Age standards
         $standards = ($sex === 'Male') ? $this->getBMIForAgeBoys() : $this->getBMIForAgeGirls();
         
         // Find closest age
@@ -1478,15 +1478,15 @@ class WHOGrowthStandards {
                 'bmi_for_age' => $this->calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate)
             ];
         } else {
-            $results = [
-                'age_months' => $ageInMonths,
-                'bmi' => round($bmi, 1),
-                'weight_for_age' => $this->calculateWeightForAge($weight, $ageInMonths, $sex),
-                'height_for_age' => $this->calculateHeightForAge($height, $ageInMonths, $sex),
-                'weight_for_height' => $this->calculateWeightForHeight($weight, $height, $sex),
-                'weight_for_length' => $this->calculateWeightForLength($weight, $height, $sex),
-                'bmi_for_age' => ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only for children 72+ months']
-            ];
+        $results = [
+            'age_months' => $ageInMonths,
+            'bmi' => round($bmi, 1),
+            'weight_for_age' => $this->calculateWeightForAge($weight, $ageInMonths, $sex),
+            'height_for_age' => $this->calculateHeightForAge($height, $ageInMonths, $sex),
+            'weight_for_height' => $this->calculateWeightForHeight($weight, $height, $sex),
+            'weight_for_length' => $this->calculateWeightForLength($weight, $height, $sex),
+            'bmi_for_age' => $this->calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate)
+        ];
         }
         
         return $results;
