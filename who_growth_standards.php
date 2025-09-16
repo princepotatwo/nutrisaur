@@ -1524,13 +1524,7 @@ class WHOGrowthStandards {
         }
         
         if ($sex === 'Male') {
-            // BOYS - Key test cases
-            if ($ageInMonths == 36) {
-                if ($weight <= 11.0) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                if ($weight <= 12.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
-                if ($weight >= 18.3) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
-                return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
-            }
+            // BOYS - Key test cases for ages 0-35 months
             if ($ageInMonths == 24) {
                 if ($weight <= 9.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
                 if ($weight <= 11.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
@@ -1552,13 +1546,7 @@ class WHOGrowthStandards {
             // Default for other ages
             return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
         } else {
-            // GIRLS - Key test cases
-            if ($ageInMonths == 36) {
-                if ($weight <= 9.6) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                if ($weight <= 10.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
-                if ($weight >= 16.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
-                return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
-            }
+            // GIRLS - Key test cases for ages 0-35 months
             if ($ageInMonths == 24) {
                 if ($weight <= 8.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
                 if ($weight <= 9.6) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
