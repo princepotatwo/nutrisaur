@@ -7007,7 +7007,7 @@ body {
                 if (riskData && riskData.success && riskData.data) {
                     // Load initial WHO classification data only once
                     if (typeof window.whoDataLoaded === 'undefined') {
-                        handleWHOStandardChange();
+                    handleWHOStandardChange();
                         window.whoDataLoaded = true;
                     }
                     
@@ -8278,10 +8278,10 @@ body {
                         } else if (whoStandard === 'bmi-for-age') {
                             shouldProcess = true; // BMI-for-age can be used for all ages
                         } else if (whoStandard === 'weight-for-height') {
-                            const heightCm = parseFloat(user.height_cm);
+                            const heightCm = parseFloat(user.height);
                             shouldProcess = (heightCm >= 65 && heightCm <= 120);
                         } else if (whoStandard === 'weight-for-length') {
-                            const heightCm = parseFloat(user.height_cm);
+                            const heightCm = parseFloat(user.height);
                             shouldProcess = (heightCm >= 45 && heightCm <= 110);
                         }
                         
@@ -8294,8 +8294,8 @@ body {
                                 },
                                 body: new URLSearchParams({
                                     action: 'process_growth_standards',
-                                    weight: user.weight_kg,
-                                    height: user.height_cm,
+                                    weight: user.weight,
+                                    height: user.height,
                                     birth_date: user.birthday,
                                     sex: user.sex
                                 })
@@ -8336,7 +8336,7 @@ body {
                                 }
                             }
                         }
-                    } catch (error) {
+            } catch (error) {
                         console.error('Error processing user:', error);
                         classifications['No Data']++;
                     }
