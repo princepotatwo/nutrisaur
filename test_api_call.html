@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API Call</title>
+</head>
+<body>
+    <h1>Testing WHO Classifications API</h1>
+    <button onclick="testAPI()">Test API Call</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            try {
+                console.log('Making API call...');
+                const response = await fetch('/api/DatabaseAPI.php?action=get_who_classifications&who_standard=weight-for-age&time_frame=1d&barangay=');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('API Response:', result);
+                
+                document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                
+                // Show debug info if available
+                if (result.data && result.data.debug_info) {
+                    console.log('DEBUG INFO - User Classifications:', result.data.debug_info);
+                    
+                    // Log specific details about Normal classifications
+                    const normalUsers = result.data.debug_info.filter(user => {
+                        if (user.weight_for_age_result && user.weight_for_age_result.classification === 'Normal') {
+                            return true;
+                        }
+                        return false;
+                    });
+                    console.log('USERS CLASSIFIED AS NORMAL:', normalUsers);
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
