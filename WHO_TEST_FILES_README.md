@@ -4,30 +4,30 @@ This directory contains comprehensive test CSV files for validating the WHO Grow
 
 ## Test Files Created:
 
-### 1. `test_who_classifications_0_35_months.csv`
+### 1. `test_who_classifications_0_35_months_correct.csv`
 - **Purpose**: Basic test cases for key ages (0, 1, 6, 12, 18, 24, 30, 35 months)
-- **Format**: Follows the exact CSV template format from screening.php
+- **Format**: Follows the EXACT CSV template format from screening.php
 - **Test Cases**: 4 classifications per age (Severely Underweight, Underweight, Normal, Overweight)
 - **Total Records**: 64 test cases (32 boys + 32 girls)
 
-### 2. `comprehensive_who_test_0_35_months.csv`
+### 2. `comprehensive_who_test_0_35_months_correct.csv`
 - **Purpose**: Extended test cases for more ages
-- **Format**: Includes additional columns for age_months and expected_classification
-- **Test Cases**: Covers ages 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 months
-- **Total Records**: 144 test cases (72 boys + 72 girls)
+- **Format**: Follows the EXACT CSV template format from screening.php
+- **Test Cases**: Covers ages 0, 1, 2, 3, 4, 5, 6, 12, 18, 24, 30, 35 months
+- **Total Records**: 96 test cases (48 boys + 48 girls)
 
-### 3. `complete_boundary_test_0_35_months.csv`
+### 3. `boundary_test_0_35_months_correct.csv`
 - **Purpose**: Boundary testing for critical ages
-- **Format**: Tests exact boundary values for each classification
+- **Format**: Follows the EXACT CSV template format from screening.php
 - **Test Cases**: Tests the exact min/max values for each classification range
-- **Ages Covered**: 0, 6, 12, 24, 30, 35 months
+- **Ages Covered**: 0, 6, 12, 24, 35 months
 - **Total Records**: 60 boundary test cases (30 boys + 30 girls)
 
-### 4. `final_comprehensive_test_0_35_months.csv`
-- **Purpose**: Complete test suite for all ages 0-35 months
-- **Format**: Includes test_type column to identify test categories
-- **Test Cases**: Covers every month from 0-35 with multiple test cases per classification
-- **Total Records**: 144 test cases (72 boys + 72 girls)
+### 4. Legacy Files (Incorrect Format):
+- `test_who_classifications_0_35_months.csv` - Contains extra columns
+- `comprehensive_who_test_0_35_months.csv` - Contains extra columns
+- `complete_boundary_test_0_35_months.csv` - Contains extra columns
+- `final_comprehensive_test_0_35_months.csv` - Contains extra columns
 
 ## CSV Format Requirements:
 
