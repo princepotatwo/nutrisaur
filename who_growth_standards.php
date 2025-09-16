@@ -90,6 +90,92 @@ class WHOGrowthStandards {
     }
     
     /**
+     * Get Weight-for-Age lookup table for girls based on exact WHO table values
+     * This uses the precise weight ranges from the official WHO table
+     */
+    private function getWeightForAgeGirlsLookupTable() {
+        return [
+            // Age 0 months - Based on exact WHO table values
+            0 => [
+                'severely_underweight' => ['min' => 0, 'max' => 2.0],
+                'underweight' => ['min' => 2.1, 'max' => 2.3],
+                'normal' => ['min' => 2.4, 'max' => 4.2],
+                'overweight' => ['min' => 4.3, 'max' => 999]
+            ],
+            // Age 1 month
+            1 => [
+                'severely_underweight' => ['min' => 0, 'max' => 2.7],
+                'underweight' => ['min' => 2.8, 'max' => 3.2],
+                'normal' => ['min' => 3.3, 'max' => 5.1],
+                'overweight' => ['min' => 5.2, 'max' => 999]
+            ],
+            // Age 2 months
+            2 => [
+                'severely_underweight' => ['min' => 0, 'max' => 3.2],
+                'underweight' => ['min' => 3.3, 'max' => 3.7],
+                'normal' => ['min' => 3.8, 'max' => 5.8],
+                'overweight' => ['min' => 5.9, 'max' => 999]
+            ],
+            // Age 3 months
+            3 => [
+                'severely_underweight' => ['min' => 0, 'max' => 3.6],
+                'underweight' => ['min' => 3.7, 'max' => 4.1],
+                'normal' => ['min' => 4.2, 'max' => 6.4],
+                'overweight' => ['min' => 6.5, 'max' => 999]
+            ],
+            // Age 4 months
+            4 => [
+                'severely_underweight' => ['min' => 0, 'max' => 3.9],
+                'underweight' => ['min' => 4.0, 'max' => 4.4],
+                'normal' => ['min' => 4.5, 'max' => 6.9],
+                'overweight' => ['min' => 7.0, 'max' => 999]
+            ],
+            // Age 5 months
+            5 => [
+                'severely_underweight' => ['min' => 0, 'max' => 4.2],
+                'underweight' => ['min' => 4.3, 'max' => 4.7],
+                'normal' => ['min' => 4.8, 'max' => 7.3],
+                'overweight' => ['min' => 7.4, 'max' => 999]
+            ],
+            // Age 6 months
+            6 => [
+                'severely_underweight' => ['min' => 0, 'max' => 4.4],
+                'underweight' => ['min' => 4.5, 'max' => 4.9],
+                'normal' => ['min' => 5.0, 'max' => 7.6],
+                'overweight' => ['min' => 7.7, 'max' => 999]
+            ],
+            // Age 12 months
+            12 => [
+                'severely_underweight' => ['min' => 0, 'max' => 6.6],
+                'underweight' => ['min' => 6.7, 'max' => 7.3],
+                'normal' => ['min' => 7.4, 'max' => 11.5],
+                'overweight' => ['min' => 11.6, 'max' => 999]
+            ],
+            // Age 24 months
+            24 => [
+                'severely_underweight' => ['min' => 0, 'max' => 8.5],
+                'underweight' => ['min' => 8.6, 'max' => 9.4],
+                'normal' => ['min' => 9.5, 'max' => 14.8],
+                'overweight' => ['min' => 14.9, 'max' => 999]
+            ],
+            // Age 36 months
+            36 => [
+                'severely_underweight' => ['min' => 0, 'max' => 9.9],
+                'underweight' => ['min' => 10.0, 'max' => 11.1],
+                'normal' => ['min' => 11.2, 'max' => 17.5],
+                'overweight' => ['min' => 17.6, 'max' => 999]
+            ],
+            // Age 60 months
+            60 => [
+                'severely_underweight' => ['min' => 0, 'max' => 12.3],
+                'underweight' => ['min' => 12.4, 'max' => 13.9],
+                'normal' => ['min' => 14.0, 'max' => 21.5],
+                'overweight' => ['min' => 21.6, 'max' => 999]
+            ]
+        ];
+    }
+
+    /**
      * Get Weight-for-Age lookup table for boys based on exact WHO table values
      * This uses the precise weight ranges from the official WHO table
      */
@@ -568,64 +654,105 @@ class WHOGrowthStandards {
     }
     
     /**
-     * Calculate Weight-for-Age z-score and classification
-     * Now uses lookup tables for more accurate results
+     * Calculate Weight-for-Age classification using HARDCODED WHO decision tree
+     * This is a TRUE decision tree based on exact WHO table ranges
      */
     public function calculateWeightForAge($weight, $ageInMonths, $sex) {
-        // Use exact WHO table lookup for boys
+        // Step 1: Check sex
         if ($sex === 'Male') {
-            $lookup = $this->getWeightForAgeBoysLookupTable();
-            $closestAge = $this->findClosestAge($lookup, $ageInMonths);
+            // Step 2: Check age and get exact WHO table ranges
+            $ranges = $this->getWeightForAgeBoysLookupTable();
+            $closestAge = $this->findClosestAge($ranges, $ageInMonths);
             
             if ($closestAge !== null) {
-                $ranges = $lookup[$closestAge];
+                $ageRanges = $ranges[$closestAge];
                 
-                foreach ($ranges as $category => $range) {
-                    if ($weight >= $range['min'] && $weight <= $range['max']) {
-                        // Simple decision tree - just return the category from the table
-                        $classification = ucfirst(str_replace('_', ' ', $category));
-                        
-                        // Calculate z-score for reference only
-                        $standards = $this->getWeightForAgeBoys();
-                        if (isset($standards[$closestAge])) {
-                            $median = $standards[$closestAge]['median'];
-                            $sd = $standards[$closestAge]['sd'];
-                            $zScore = ($weight - $median) / $sd;
-                        } else {
-                            $zScore = null;
-                        }
-                        
-                        return [
-                            'z_score' => $zScore !== null ? round($zScore, 2) : null,
-                            'classification' => $classification,
-                            'age_used' => $closestAge,
-                            'method' => 'exact_who_table'
-                        ];
-                    }
+                // Step 3: Hardcoded decision tree - check weight against exact ranges
+                if ($weight <= $ageRanges['severely_underweight']['max']) {
+                    return [
+                        'z_score' => null,
+                        'classification' => 'Severely Underweight',
+                        'age_used' => $closestAge,
+                        'method' => 'hardcoded_who_table',
+                        'weight_range' => '≤' . $ageRanges['severely_underweight']['max'] . 'kg'
+                    ];
+                } elseif ($weight >= $ageRanges['underweight']['min'] && $weight <= $ageRanges['underweight']['max']) {
+                    return [
+                        'z_score' => null,
+                        'classification' => 'Underweight',
+                        'age_used' => $closestAge,
+                        'method' => 'hardcoded_who_table',
+                        'weight_range' => $ageRanges['underweight']['min'] . '-' . $ageRanges['underweight']['max'] . 'kg'
+                    ];
+                } elseif ($weight >= $ageRanges['normal']['min'] && $weight <= $ageRanges['normal']['max']) {
+                    return [
+                        'z_score' => null,
+                        'classification' => 'Normal',
+                        'age_used' => $closestAge,
+                        'method' => 'hardcoded_who_table',
+                        'weight_range' => $ageRanges['normal']['min'] . '-' . $ageRanges['normal']['max'] . 'kg'
+                    ];
+                } elseif ($weight >= $ageRanges['overweight']['min']) {
+                    return [
+                        'z_score' => null,
+                        'classification' => 'Overweight',
+                        'age_used' => $closestAge,
+                        'method' => 'hardcoded_who_table',
+                        'weight_range' => '≥' . $ageRanges['overweight']['min'] . 'kg'
+                    ];
+                }
+            }
+        } else {
+            // For girls, use similar hardcoded approach
+            $ranges = $this->getWeightForAgeGirlsLookupTable();
+            $closestAge = $this->findClosestAge($ranges, $ageInMonths);
+            
+            if ($closestAge !== null) {
+                $ageRanges = $ranges[$closestAge];
+                
+                // Hardcoded decision tree for girls
+                if ($weight <= $ageRanges['severely_underweight']['max']) {
+                    return [
+                        'z_score' => null,
+                        'classification' => 'Severely Underweight',
+                        'age_used' => $closestAge,
+                        'method' => 'hardcoded_who_table',
+                        'weight_range' => '≤' . $ageRanges['severely_underweight']['max'] . 'kg'
+                    ];
+                } elseif ($weight >= $ageRanges['underweight']['min'] && $weight <= $ageRanges['underweight']['max']) {
+                    return [
+                        'z_score' => null,
+                        'classification' => 'Underweight',
+                        'age_used' => $closestAge,
+                        'method' => 'hardcoded_who_table',
+                        'weight_range' => $ageRanges['underweight']['min'] . '-' . $ageRanges['underweight']['max'] . 'kg'
+                    ];
+                } elseif ($weight >= $ageRanges['normal']['min'] && $weight <= $ageRanges['normal']['max']) {
+                    return [
+                        'z_score' => null,
+                        'classification' => 'Normal',
+                        'age_used' => $closestAge,
+                        'method' => 'hardcoded_who_table',
+                        'weight_range' => $ageRanges['normal']['min'] . '-' . $ageRanges['normal']['max'] . 'kg'
+                    ];
+                } elseif ($weight >= $ageRanges['overweight']['min']) {
+                    return [
+                        'z_score' => null,
+                        'classification' => 'Overweight',
+                        'age_used' => $closestAge,
+                        'method' => 'hardcoded_who_table',
+                        'weight_range' => '≥' . $ageRanges['overweight']['min'] . 'kg'
+                    ];
                 }
             }
         }
         
-        // Fallback to original formula-based method
-        $standards = ($sex === 'Male') ? $this->getWeightForAgeBoys() : $this->getWeightForAgeGirls();
-        
-        if (!isset($standards[$ageInMonths])) {
-            return ['z_score' => null, 'classification' => 'Age out of range', 'error' => 'Age must be 0-71 months'];
-        }
-        
-        $median = $standards[$ageInMonths]['median'];
-        $sd = $standards[$ageInMonths]['sd'];
-        
-        // Calculate z-score: (observed - median) / sd
-        $zScore = ($weight - $median) / $sd;
-        $classification = $this->getNutritionalClassification($zScore);
-        
+        // Fallback if no match found
         return [
-            'z_score' => round($zScore, 2),
-            'classification' => $classification,
-            'median' => $median,
-            'sd' => $sd,
-            'method' => 'formula'
+            'z_score' => null,
+            'classification' => 'Age out of range',
+            'error' => 'Age must be 0-71 months for Weight-for-Age',
+            'method' => 'hardcoded_who_table'
         ];
     }
     
