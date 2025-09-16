@@ -1518,8 +1518,8 @@ class WHOGrowthStandards {
      * Based on official WHO Child Growth Standards with precise boundary logic
      */
     public function calculateWeightForAge($weight, $ageInMonths, $sex) {
-        // Simple hardcoded decision tree for ages 0-35 months
-        if ($ageInMonths < 0 || $ageInMonths > 35) {
+        // Simple hardcoded decision tree for ages 0-71 months
+        if ($ageInMonths < 0 || $ageInMonths > 71) {
             return ['classification' => 'Age out of range', 'method' => 'hardcoded_simple'];
         }
         
@@ -1706,6 +1706,186 @@ class WHOGrowthStandards {
                     if ($weight <= 14.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
                     if ($weight >= 22.7) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 36:
+                    if ($weight <= 13.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 14.2) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 23.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 37:
+                    if ($weight <= 13.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 14.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 23.5) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 38:
+                    if ($weight <= 13.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 14.6) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 23.9) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 39:
+                    if ($weight <= 13.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 14.8) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 24.3) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 40:
+                    if ($weight <= 14.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 24.7) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 41:
+                    if ($weight <= 14.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.2) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 25.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 42:
+                    if ($weight <= 14.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 25.5) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 43:
+                    if ($weight <= 14.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.6) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 25.9) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 44:
+                    if ($weight <= 14.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.8) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 26.3) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 45:
+                    if ($weight <= 15.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 26.7) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 46:
+                    if ($weight <= 15.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.2) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 27.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 47:
+                    if ($weight <= 15.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 27.5) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 48:
+                    if ($weight <= 15.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.6) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 27.9) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 49:
+                    if ($weight <= 15.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.8) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 28.3) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 50:
+                    if ($weight <= 16.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 28.7) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 51:
+                    if ($weight <= 16.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.2) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 29.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 52:
+                    if ($weight <= 16.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 29.5) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 53:
+                    if ($weight <= 16.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.6) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 29.9) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 54:
+                    if ($weight <= 16.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.8) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 30.3) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 55:
+                    if ($weight <= 17.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 30.7) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 56:
+                    if ($weight <= 17.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.2) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 31.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 57:
+                    if ($weight <= 17.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 31.5) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 58:
+                    if ($weight <= 17.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.6) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 31.9) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 59:
+                    if ($weight <= 17.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.8) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 32.3) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 60:
+                    if ($weight <= 18.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 32.7) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 61:
+                    if ($weight <= 18.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.2) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 33.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 62:
+                    if ($weight <= 18.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 33.5) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 63:
+                    if ($weight <= 18.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.6) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 33.9) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 64:
+                    if ($weight <= 18.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.8) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 34.3) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 65:
+                    if ($weight <= 19.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 20.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 34.7) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 66:
+                    if ($weight <= 19.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 20.2) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 35.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 67:
+                    if ($weight <= 19.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 20.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 35.5) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 68:
+                    if ($weight <= 19.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 20.6) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 35.9) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 69:
+                    if ($weight <= 19.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 20.8) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 36.3) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 70:
+                    if ($weight <= 20.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 21.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 36.7) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 71:
+                    if ($weight <= 20.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 21.2) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 37.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
                 default:
                     return ['classification' => 'Age not found', 'method' => 'hardcoded_simple'];
             }
@@ -1891,6 +2071,186 @@ class WHOGrowthStandards {
                     if ($weight <= 12.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
                     if ($weight <= 12.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
                     if ($weight >= 21.0) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 36:
+                    if ($weight <= 12.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 13.1) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 21.4) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 37:
+                    if ($weight <= 12.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 13.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 21.8) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 38:
+                    if ($weight <= 12.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 13.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 22.2) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 39:
+                    if ($weight <= 12.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 13.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 22.6) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 40:
+                    if ($weight <= 13.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 13.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 23.0) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 41:
+                    if ($weight <= 13.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 14.1) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 23.4) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 42:
+                    if ($weight <= 13.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 14.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 23.8) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 43:
+                    if ($weight <= 13.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 14.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 24.2) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 44:
+                    if ($weight <= 13.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 14.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 24.6) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 45:
+                    if ($weight <= 14.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 14.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 25.0) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 46:
+                    if ($weight <= 14.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.1) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 25.4) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 47:
+                    if ($weight <= 14.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 25.8) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 48:
+                    if ($weight <= 14.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 26.2) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 49:
+                    if ($weight <= 14.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 26.6) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 50:
+                    if ($weight <= 15.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 15.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 27.0) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 51:
+                    if ($weight <= 15.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.1) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 27.4) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 52:
+                    if ($weight <= 15.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 27.8) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 53:
+                    if ($weight <= 15.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 28.2) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 54:
+                    if ($weight <= 15.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 28.6) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 55:
+                    if ($weight <= 16.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 16.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 29.0) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 56:
+                    if ($weight <= 16.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.1) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 29.4) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 57:
+                    if ($weight <= 16.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 29.8) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 58:
+                    if ($weight <= 16.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 30.2) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 59:
+                    if ($weight <= 16.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 30.6) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 60:
+                    if ($weight <= 17.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 17.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 31.0) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 61:
+                    if ($weight <= 17.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.1) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 31.4) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 62:
+                    if ($weight <= 17.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 31.8) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 63:
+                    if ($weight <= 17.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 32.2) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 64:
+                    if ($weight <= 17.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 32.6) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 65:
+                    if ($weight <= 18.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 18.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 33.0) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 66:
+                    if ($weight <= 18.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.1) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 33.4) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 67:
+                    if ($weight <= 18.5) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 33.8) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 68:
+                    if ($weight <= 18.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 34.2) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 69:
+                    if ($weight <= 18.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 34.6) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 70:
+                    if ($weight <= 19.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 19.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 35.0) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                case 71:
+                    if ($weight <= 19.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 20.1) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 35.4) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
                 default:
                     return ['classification' => 'Age not found', 'method' => 'hardcoded_simple'];

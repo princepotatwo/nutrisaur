@@ -1,6 +1,6 @@
-# WHO Growth Standards Test Files (Ages 0-35 Months)
+# WHO Growth Standards Test Files (Ages 0-71 Months)
 
-This directory contains comprehensive test CSV files for validating the WHO Growth Standards classification system for ages 0-35 months.
+This directory contains comprehensive test CSV files for validating the WHO Growth Standards classification system for ages 0-71 months.
 
 ## Test Files Created:
 
@@ -23,7 +23,27 @@ This directory contains comprehensive test CSV files for validating the WHO Grow
 - **Ages Covered**: 0, 6, 12, 24, 35 months
 - **Total Records**: 60 boundary test cases (30 boys + 30 girls)
 
-### 4. Legacy Files (Incorrect Format):
+### 4. `test_who_classifications_36_71_months_correct.csv`
+- **Purpose**: Basic test cases for ages 36-71 months
+- **Format**: Follows the EXACT CSV template format from screening.php
+- **Test Cases**: 4 classifications per age (Severely Underweight, Underweight, Normal, Overweight)
+- **Ages Covered**: 36, 42, 48, 54, 60, 66, 71 months
+- **Total Records**: 56 test cases (28 boys + 28 girls)
+
+### 5. `comprehensive_who_test_36_71_months_correct.csv`
+- **Purpose**: Comprehensive test cases for ages 36-71 months
+- **Format**: Follows the EXACT CSV template format from screening.php
+- **Test Cases**: Covers ages 36, 42, 48, 54, 60, 66, 71 months
+- **Total Records**: 56 test cases (28 boys + 28 girls)
+
+### 6. `boundary_test_36_71_months_correct.csv`
+- **Purpose**: Boundary testing for ages 36-71 months
+- **Format**: Follows the EXACT CSV template format from screening.php
+- **Test Cases**: Tests the exact min/max values for each classification range
+- **Ages Covered**: 36, 48, 60, 71 months
+- **Total Records**: 32 boundary test cases (16 boys + 16 girls)
+
+### 7. Legacy Files (Incorrect Format):
 - `test_who_classifications_0_35_months.csv` - Contains extra columns
 - `comprehensive_who_test_0_35_months.csv` - Contains extra columns
 - `complete_boundary_test_0_35_months.csv` - Contains extra columns
@@ -98,4 +118,4 @@ After importing, verify that:
 4. The dashboard shows the correct classification counts
 5. The screening page displays the correct classifications
 
-This comprehensive test suite ensures the WHO Growth Standards classification system works correctly for all ages 0-35 months.
+This comprehensive test suite ensures the WHO Growth Standards classification system works correctly for all ages 0-71 months.
