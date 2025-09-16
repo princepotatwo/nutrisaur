@@ -88,12 +88,18 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
         error_log("  - Total users found: " . count($users));
         
         // Count classifications for the selected WHO standard
+        // Initialize all possible classifications
         $classifications = [
             'Severely Underweight' => 0,
             'Underweight' => 0,
             'Normal' => 0,
             'Overweight' => 0,
             'Obese' => 0,
+            'Severely Wasted' => 0,
+            'Wasted' => 0,
+            'Severely Stunted' => 0,
+            'Stunted' => 0,
+            'Tall' => 0,
             'No Data' => 0
         ];
         
@@ -218,6 +224,7 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 
                 // Only count users that were actually processed (shouldProcess = true)
                 if ($shouldProcess) {
+                    // Map all possible WHO classifications
                     if ($classification === 'Severely Underweight') {
                         $classifications['Severely Underweight']++;
                         error_log("    - Mapped to Severely Underweight");
@@ -233,6 +240,21 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                     } elseif (in_array($classification, ['Obese', 'Severely Obese'])) {
                         $classifications['Obese']++;
                         error_log("    - Mapped to Obese");
+                    } elseif ($classification === 'Severely Wasted') {
+                        $classifications['Severely Wasted']++;
+                        error_log("    - Mapped to Severely Wasted");
+                    } elseif ($classification === 'Wasted') {
+                        $classifications['Wasted']++;
+                        error_log("    - Mapped to Wasted");
+                    } elseif ($classification === 'Severely Stunted') {
+                        $classifications['Severely Stunted']++;
+                        error_log("    - Mapped to Severely Stunted");
+                    } elseif ($classification === 'Stunted') {
+                        $classifications['Stunted']++;
+                        error_log("    - Mapped to Stunted");
+                    } elseif ($classification === 'Tall') {
+                        $classifications['Tall']++;
+                        error_log("    - Mapped to Tall");
                     } else {
                         $classifications['No Data']++;
                         error_log("    - Mapped to No Data");
@@ -249,7 +271,7 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
         }
         
         // Calculate total processed users (sum of all classifications)
-        $totalProcessedUsers = $classifications['Severely Underweight'] + $classifications['Underweight'] + $classifications['Normal'] + $classifications['Overweight'] + $classifications['Obese'] + $classifications['No Data'];
+        $totalProcessedUsers = $classifications['Severely Underweight'] + $classifications['Underweight'] + $classifications['Normal'] + $classifications['Overweight'] + $classifications['Obese'] + $classifications['Severely Wasted'] + $classifications['Wasted'] + $classifications['Severely Stunted'] + $classifications['Stunted'] + $classifications['Tall'] + $classifications['No Data'];
         
         error_log("📊 Final WHO Classification Results:");
         error_log("  - Severely Underweight: " . $classifications['Severely Underweight']);
@@ -257,6 +279,11 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
         error_log("  - Normal: " . $classifications['Normal']);
         error_log("  - Overweight: " . $classifications['Overweight']);
         error_log("  - Obese: " . $classifications['Obese']);
+        error_log("  - Severely Wasted: " . $classifications['Severely Wasted']);
+        error_log("  - Wasted: " . $classifications['Wasted']);
+        error_log("  - Severely Stunted: " . $classifications['Severely Stunted']);
+        error_log("  - Stunted: " . $classifications['Stunted']);
+        error_log("  - Tall: " . $classifications['Tall']);
         error_log("  - No Data: " . $classifications['No Data']);
         error_log("  - Total Processed Users: " . $totalProcessedUsers);
         error_log("  - Total Database Users: " . count($users));
@@ -273,10 +300,16 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
         return [
             'success' => false,
             'classifications' => [
+                'Severely Underweight' => 0,
                 'Underweight' => 0,
                 'Normal' => 0,
                 'Overweight' => 0,
                 'Obese' => 0,
+                'Severely Wasted' => 0,
+                'Wasted' => 0,
+                'Severely Stunted' => 0,
+                'Stunted' => 0,
+                'Tall' => 0,
                 'No Data' => 0
             ],
             'total_users' => 0,

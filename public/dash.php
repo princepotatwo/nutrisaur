@@ -6268,7 +6268,7 @@ body {
                         </select>
                     </div>
                 </div>
-                <p class="chart-description">Distribution of children by WHO Growth Standards classification. Shows nutritional status based on selected WHO standard.</p>
+                <p class="chart-description" id="who-chart-description">Distribution of children by WHO Growth Standards classification. Shows nutritional status based on selected WHO standard.</p>
                 <div class="donut-chart-container">
                     <div class="donut-chart">
                         <div class="donut-chart-bg" id="risk-chart-bg"></div>
@@ -8008,6 +8008,22 @@ body {
             }
         }
 
+        // Function to update chart description based on WHO standard
+        function updateWHOChartDescription(whoStandard) {
+            const descriptions = {
+                'weight-for-age': 'Distribution of children by Weight-for-Age classification. Shows nutritional status based on weight relative to age (0-71 months).',
+                'height-for-age': 'Distribution of children by Height-for-Age classification. Shows stunting status based on height relative to age (0-71 months).',
+                'weight-for-height': 'Distribution of children by Weight-for-Height classification. Shows wasting status based on weight relative to height (65-120 cm).',
+                'weight-for-length': 'Distribution of children by Weight-for-Length classification. Shows wasting status based on weight relative to length (45-110 cm).',
+                'bmi-for-age': 'Distribution of children by BMI-for-Age classification. Shows nutritional status based on BMI relative to age (0-71 months for children, 72+ months for adults).'
+            };
+            
+            const descriptionElement = document.getElementById('who-chart-description');
+            if (descriptionElement) {
+                descriptionElement.textContent = descriptions[whoStandard] || descriptions['weight-for-age'];
+            }
+        }
+
         // Function to update WHO classification chart
         function updateWHOClassificationChart(data) {
             try {
@@ -8020,6 +8036,11 @@ body {
                     return;
                 }
                 
+                // Update chart description based on WHO standard
+                if (data && data.who_standard) {
+                    updateWHOChartDescription(data.who_standard);
+                }
+                
                 // Add loading state to prevent flickering
                 chartBg.style.opacity = '0.8';
 
@@ -8028,23 +8049,34 @@ body {
                 
                 // Define colors and labels for WHO classifications
                 const colors = {
-                    'Severely Underweight': '#FF5722',  // Dark orange for severely underweight
-                    'Underweight': '#FFD700',           // Yellow for underweight
+                    'Severely Underweight': '#D32F2F',  // Dark red for severely underweight
+                    'Underweight': '#FF9800',           // Orange for underweight
                     'Normal': '#4CAF50',                // Green for normal
-                    'Overweight': '#FF9800',            // Orange for overweight
+                    'Overweight': '#FFC107',            // Amber for overweight
                     'Obese': '#F44336',                 // Red for obese
+                    'Severely Wasted': '#8E24AA',       // Purple for severely wasted
+                    'Wasted': '#9C27B0',                // Light purple for wasted
+                    'Severely Stunted': '#795548',      // Brown for severely stunted
+                    'Stunted': '#607D8B',               // Blue gray for stunted
+                    'Tall': '#2196F3',                  // Blue for tall
                     'No Data': '#9E9E9E'                // Gray for no data
                 };
                 
-                const labels = ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese', 'No Data'];
+                // Get all possible labels from the data
+                const allLabels = ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese', 'Severely Wasted', 'Wasted', 'Severely Stunted', 'Stunted', 'Tall', 'No Data'];
                 
-                // Get classification data
+                // Get classification data - initialize all possible classifications
                 let classifications = {
                     'Severely Underweight': 0,
                     'Underweight': 0,
                     'Normal': 0,
                     'Overweight': 0,
                     'Obese': 0,
+                    'Severely Wasted': 0,
+                    'Wasted': 0,
+                    'Severely Stunted': 0,
+                    'Stunted': 0,
+                    'Tall': 0,
                     'No Data': 0
                 };
                 
@@ -8069,7 +8101,7 @@ body {
                 const validSegments = [];
                 let totalPercentage = 0;
                 
-                labels.forEach(label => {
+                allLabels.forEach(label => {
                     const count = classifications[label] || 0;
                     if (count > 0) {
                         const percentage = (count / totalUsers) * 100;
@@ -8115,7 +8147,7 @@ body {
                 validSegments.forEach(segment => {
                     const segmentDiv = document.createElement('div');
                     segmentDiv.className = 'segment compact';
-                    segmentDiv.setAttribute('data-classification', segment.label.toLowerCase().replace(' ', '-'));
+                    segmentDiv.setAttribute('data-classification', segment.label.toLowerCase().replace(/\s+/g, '-'));
                     
                     const labelSpan = document.createElement('span');
                     labelSpan.className = 'segment-label';
