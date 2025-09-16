@@ -2048,19 +2048,17 @@ header {
 
         /* Row 1: Action Buttons and Search */
         .control-row-1 {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
+            display: flex;
+            gap: 12px;
             align-items: center;
+            justify-content: space-between;
         }
 
         .action-section {
             display: flex;
             gap: 12px;
-            justify-content: flex-start;
             align-items: center;
-            flex-wrap: nowrap;
-            flex: 1;
+            flex-shrink: 0;
         }
 
         .action-buttons {
@@ -2073,7 +2071,7 @@ header {
             display: flex;
             gap: 6px;
             flex-shrink: 0;
-            margin-left: auto;
+            margin: 0 12px;
         }
 
         .filter-select {
@@ -2104,13 +2102,13 @@ header {
 
         .search-section {
             display: flex;
-            justify-content: flex-end;
             align-items: center;
             gap: 8px;
+            flex: 1;
+            justify-content: flex-end;
         }
 
         .search-input {
-            flex: 1;
             border: 2px solid rgba(161, 180, 84, 0.4);
             background: var(--color-bg);
             padding: 8px 12px;
@@ -2119,8 +2117,8 @@ header {
             color: var(--color-text);
             outline: none;
             transition: all 0.3s ease;
-            max-width: 250px;
-            min-width: 200px;
+            width: 250px;
+            flex-shrink: 0;
         }
 
         .search-input:focus {
@@ -2239,7 +2237,7 @@ header {
             }
 
             .control-row-1 {
-                grid-template-columns: 1fr;
+                flex-direction: column;
                 gap: 12px;
             }
 
@@ -2278,7 +2276,8 @@ header {
             }
 
             .search-input {
-                max-width: 100%;
+                width: 100%;
+                max-width: none;
             }
         }
 
