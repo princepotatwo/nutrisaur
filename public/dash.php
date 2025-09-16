@@ -8029,13 +8029,17 @@ body {
 
         // Function to update WHO classification chart
         function updateWHOClassificationChart(data) {
+            console.log('updateWHOClassificationChart called with data:', data);
             try {
                 // Get the donut chart elements
                 const chartBg = document.getElementById('risk-chart-bg');
                 const centerText = document.getElementById('risk-center-text');
                 const segments = document.getElementById('risk-segments');
                 
+                console.log('Chart elements found:', { chartBg, centerText, segments });
+                
                 if (!chartBg || !centerText || !segments) {
+                    console.log('Missing chart elements, returning');
                     return;
                 }
                 
@@ -8215,6 +8219,7 @@ body {
                 
                 // Fetch WHO classification data
                 const data = await fetchWHOClassificationData(selectedStandard, timeFrame, barangay);
+                console.log('Data received for chart update:', data);
                 
                 // Update the chart
                 updateWHOClassificationChart(data);
@@ -8350,6 +8355,9 @@ body {
                         classifications['No Data']++;
                     }
                 }
+                
+                console.log('Final classifications:', classifications);
+                console.log('Total processed:', totalProcessed);
                 
                 return {
                     success: true,
