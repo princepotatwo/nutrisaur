@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WHO Classification Analysis Tools</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 30px; }
+        .tool { background: #ecf0f1; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #3498db; }
+        .tool h3 { margin-top: 0; color: #2c3e50; }
+        .tool p { color: #7f8c8d; margin-bottom: 15px; }
+        .tool a { display: inline-block; background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .tool a:hover { background: #2980b9; }
+        .status { background: #e8f5e8; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #27ae60; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 WHO Classification Analysis Tools</h1>
+        
+        <div class="status">
+            <strong>Current Issue:</strong> 22 users are being classified as "Normal" when they should have different classifications. These tools will help us identify the exact cause of the accuracy problem.
+        </div>
+        
+        <div class="tool">
+            <h3>1. Analyze 22 Normal Users</h3>
+            <p>Detailed analysis of each user classified as "Normal". Shows their exact data, performs manual verification against WHO standards, and identifies potential misclassifications.</p>
+            <a href="analyze_22_normal_users.php" target="_blank">Run Analysis</a>
+        </div>
+        
+        <div class="tool">
+            <h3>2. Test Classification Accuracy</h3>
+            <p>Tests known cases including the problematic 71-month boy case. Verifies classification logic with expected results and tests edge cases around Normal/Overweight boundaries.</p>
+            <a href="test_classification_accuracy.php" target="_blank">Run Tests</a>
+        </div>
+        
+        <div class="tool">
+            <h3>3. Check Boys' Lookup Table</h3>
+            <p>Verifies the boys' lookup table data for logical consistency. Tests specific ages and weights to identify data accuracy issues in the WHO standards table.</p>
+            <a href="check_boys_table.php" target="_blank">Check Table</a>
+        </div>
+        
+        <div class="tool">
+            <h3>4. View Debug Info (Console Data)</h3>
+            <p>Displays the debug information from the console in a user-friendly format. Shows all 84 users and highlights the 22 Normal users with their classification details.</p>
+            <a href="view_debug_info.html" target="_blank">View Debug Info</a>
+        </div>
+        
+        <div class="tool">
+            <h3>5. Test API Call Directly</h3>
+            <p>Direct API testing page to trigger the WHO classification API call and see the raw response data in the console.</p>
+            <a href="test_api_call.html" target="_blank">Test API</a>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107;">
+            <strong>Next Steps:</strong> Run these tools in order to identify the root cause of the classification accuracy issue. Start with "Analyze 22 Normal Users" to see detailed information about each misclassified user.
+        </div>
+    </div>
+</body>
+</html>
