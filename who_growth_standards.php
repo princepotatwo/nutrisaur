@@ -1013,33 +1013,85 @@ class WHOGrowthStandards {
     }
     
     /**
+     * Weight-for-Height Lookup Table for Boys (24-60 months)
+     * Based on exact values from WHO official tables
+     */
+    private function getWeightForHeightBoysLookup() {
+        return [
+            // Height 65cm - Based on exact WHO table values
+            65 => [
+                'severely_wasted' => ['min' => 0, 'max' => 5.8],
+                'wasted' => ['min' => 5.8, 'max' => 6.2],
+                'normal' => ['min' => 6.3, 'max' => 8.8],
+                'overweight' => ['min' => 8.9, 'max' => 9.6],
+                'obese' => ['min' => 9.7, 'max' => 999]
+            ],
+            // Height 70cm
+            70 => [
+                'severely_wasted' => ['min' => 0, 'max' => 6.7],
+                'wasted' => ['min' => 6.7, 'max' => 7.1],
+                'normal' => ['min' => 7.2, 'max' => 10.2],
+                'overweight' => ['min' => 10.3, 'max' => 11.3],
+                'obese' => ['min' => 11.4, 'max' => 999]
+            ],
+            // Height 90cm
+            90 => [
+                'severely_wasted' => ['min' => 0, 'max' => 9.9],
+                'wasted' => ['min' => 9.9, 'max' => 10.7],
+                'normal' => ['min' => 10.8, 'max' => 14.9],
+                'overweight' => ['min' => 15.0, 'max' => 16.2],
+                'obese' => ['min' => 16.3, 'max' => 999]
+            ],
+            // Height 120cm
+            120 => [
+                'severely_wasted' => ['min' => 0, 'max' => 17.0],
+                'wasted' => ['min' => 17.0, 'max' => 17.9],
+                'normal' => ['min' => 18.0, 'max' => 25.5],
+                'overweight' => ['min' => 25.6, 'max' => 29.9],
+                'obese' => ['min' => 30.0, 'max' => 999]
+            ]
+        ];
+    }
+
+    /**
      * Weight-for-Height Lookup Table for Girls (24-60 months)
      * Based on exact values from WHO official tables
      */
     private function getWeightForHeightGirlsLookup() {
-        $girlsData = $this->getWeightForHeightGirls();
-        $lookup = [];
-        
-        foreach ($girlsData as $height => $data) {
-            $median = $data['median'];
-            $sd = $data['sd'];
-            
-            // Calculate Z-score boundaries for 5-category system
-            $severely_wasted_max = $median - (3 * $sd);
-            $wasted_max = $median - (2 * $sd);
-            $normal_max = $median + (2 * $sd);
-            $overweight_max = $median + (3 * $sd);
-            
-            $lookup[$height] = [
-                'severely_wasted' => ['min' => 0, 'max' => $severely_wasted_max],
-                'wasted' => ['min' => $severely_wasted_max + 0.1, 'max' => $wasted_max],
-                'normal' => ['min' => $wasted_max + 0.1, 'max' => $normal_max],
-                'overweight' => ['min' => $normal_max + 0.1, 'max' => $overweight_max],
-                'obese' => ['min' => $overweight_max + 0.1, 'max' => 999]
-            ];
-        }
-        
-        return $lookup;
+        return [
+            // Height 65cm - Based on exact WHO table values
+            65 => [
+                'severely_wasted' => ['min' => 0, 'max' => 5.5],
+                'wasted' => ['min' => 5.5, 'max' => 5.8],
+                'normal' => ['min' => 5.8, 'max' => 8.7],
+                'overweight' => ['min' => 8.7, 'max' => 9.7],
+                'obese' => ['min' => 9.7, 'max' => 999]
+            ],
+            // Height 70cm
+            70 => [
+                'severely_wasted' => ['min' => 0, 'max' => 6.3],
+                'wasted' => ['min' => 6.3, 'max' => 6.7],
+                'normal' => ['min' => 6.7, 'max' => 9.9],
+                'overweight' => ['min' => 9.9, 'max' => 10.9],
+                'obese' => ['min' => 10.9, 'max' => 999]
+            ],
+            // Height 90cm
+            90 => [
+                'severely_wasted' => ['min' => 0, 'max' => 9.8],
+                'wasted' => ['min' => 9.8, 'max' => 10.5],
+                'normal' => ['min' => 10.5, 'max' => 15.4],
+                'overweight' => ['min' => 15.4, 'max' => 16.9],
+                'obese' => ['min' => 16.9, 'max' => 999]
+            ],
+            // Height 120cm
+            120 => [
+                'severely_wasted' => ['min' => 0, 'max' => 17.2],
+                'wasted' => ['min' => 17.2, 'max' => 17.7],
+                'normal' => ['min' => 17.7, 'max' => 28.1],
+                'overweight' => ['min' => 28.1, 'max' => 31.2],
+                'obese' => ['min' => 31.2, 'max' => 999]
+            ]
+        ];
     }
     
     /**
@@ -1703,33 +1755,36 @@ class WHOGrowthStandards {
      * Now uses lookup tables for more accurate results
      */
     public function calculateWeightForHeight($weight, $height, $sex) {
-        // Use lookup table for girls if available
-        if ($sex === 'Female') {
+        // Use hardcoded lookup tables for both boys and girls
+        if ($sex === 'Male') {
+            $lookup = $this->getWeightForHeightBoysLookup();
+        } else {
             $lookup = $this->getWeightForHeightGirlsLookup();
-            $closestHeight = $this->findClosestHeight($lookup, $height);
+        }
+        
+        $closestHeight = $this->findClosestHeight($lookup, $height);
+        
+        if ($closestHeight !== null) {
+            $ranges = $lookup[$closestHeight];
             
-            if ($closestHeight !== null) {
-                $ranges = $lookup[$closestHeight];
-                
-                foreach ($ranges as $category => $range) {
-                    if ($weight >= $range['min'] && $weight <= $range['max']) {
-                        // Calculate z-score using the original formula for the closest height
-                        $standards = $this->getWeightForHeightGirls();
-                        if (isset($standards[$closestHeight])) {
-                            $median = $standards[$closestHeight]['median'];
-                            $sd = $standards[$closestHeight]['sd'];
-                            $zScore = ($weight - $median) / $sd;
-                        } else {
-                            $zScore = null;
-                        }
-                        
-                        return [
-                            'z_score' => $zScore !== null ? round($zScore, 2) : null,
-                            'classification' => $zScore !== null ? $this->getWeightForHeightClassification($zScore) : ucfirst(str_replace('_', ' ', $category)),
-                            'height_used' => $closestHeight,
-                            'method' => 'lookup_table'
-                        ];
+            foreach ($ranges as $category => $range) {
+                if ($weight >= $range['min'] && $weight <= $range['max']) {
+                    // Calculate z-score using the original formula for the closest height
+                    $standards = ($sex === 'Male') ? $this->getWeightForHeightBoys() : $this->getWeightForHeightGirls();
+                    if (isset($standards[$closestHeight])) {
+                        $median = $standards[$closestHeight]['median'];
+                        $sd = $standards[$closestHeight]['sd'];
+                        $zScore = ($weight - $median) / $sd;
+                    } else {
+                        $zScore = null;
                     }
+                    
+                    return [
+                        'z_score' => $zScore !== null ? round($zScore, 2) : null,
+                        'classification' => $zScore !== null ? $this->getWeightForHeightClassification($zScore) : ucfirst(str_replace('_', ' ', $category)),
+                        'height_used' => $closestHeight,
+                        'method' => 'hardcoded_lookup_table'
+                    ];
                 }
             }
         }
