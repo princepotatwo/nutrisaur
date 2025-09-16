@@ -449,7 +449,7 @@ class WHOGrowthStandards {
             ]
         ];
     }
-
+    
     /**
      * Weight-for-Age standards for boys (0-71 months)
      * Based on WHO Child Growth Standards 2006 - Exact values from official tables
