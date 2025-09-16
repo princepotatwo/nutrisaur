@@ -127,7 +127,7 @@ class WHOGrowthStandards {
      * Get Weight-for-Age lookup table for girls based on exact WHO table values
      * This uses the precise weight ranges from the official WHO table
      */
-    private function getWeightForAgeGirlsLookupTable() {
+    public function getWeightForAgeGirlsLookupTable() {
         return [
             // Age 0 months - Based on exact WHO table values
             0 => [
@@ -290,7 +290,7 @@ class WHOGrowthStandards {
      * Get Weight-for-Age lookup table for boys based on exact WHO table values
      * This uses the precise weight ranges from the official WHO table
      */
-    private function getWeightForAgeBoysLookupTable() {
+    public function getWeightForAgeBoysLookupTable() {
         return [
             // Age 0 months
             0 => [
@@ -1081,7 +1081,7 @@ class WHOGrowthStandards {
     /**
      * Find closest age in lookup table
      */
-    private function findClosestAge($lookup, $age) {
+    public function findClosestAge($lookup, $age) {
         $ages = array_keys($lookup);
         $closest = null;
         $minDiff = PHP_FLOAT_MAX;
