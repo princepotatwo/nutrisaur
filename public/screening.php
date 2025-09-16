@@ -3502,6 +3502,7 @@ header {
                             <th id="heightHeader" class="conditional-column">HEIGHT (cm)</th>
                             <th id="bmiHeader" class="conditional-column">BMI</th>
                             <th id="standardHeader">Z-SCORE (SD RANGE)</th>
+                            <th>CLASSIFICATION</th>
                             <th>SCREENING DATE</th>
                         </tr>
                     </thead>
@@ -3658,6 +3659,7 @@ header {
                                             }
                                             
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($showData['classification'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                             echo '</tr>';
                                         }
@@ -3730,6 +3732,7 @@ header {
                                                 }
                                                 
                                                 echo '<td class="standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
+                                                echo '<td>' . htmlspecialchars($displayData['classification'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                                 echo '</tr>';
                                             }
@@ -4385,7 +4388,8 @@ header {
                 const height = row.cells[5].textContent.toLowerCase();
                 const bmi = row.cells[6].textContent.toLowerCase();
                 const standardValue = row.cells[7].textContent.toLowerCase();
-                const screeningDate = row.cells[8].textContent.toLowerCase();
+                const classification = row.cells[8].textContent.toLowerCase();
+                const screeningDate = row.cells[9].textContent.toLowerCase();
                 
                 const matchesSearch = name.includes(searchTerm) || 
                                    email.includes(searchTerm) || 
@@ -4395,6 +4399,7 @@ header {
                                    height.includes(searchTerm) || 
                                    bmi.includes(searchTerm) || 
                                    standardValue.includes(searchTerm) || 
+                                   classification.includes(searchTerm) ||
                                    screeningDate.includes(searchTerm);
                 
                 if (matchesSearch) {
