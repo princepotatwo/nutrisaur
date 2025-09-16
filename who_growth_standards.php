@@ -171,6 +171,83 @@ class WHOGrowthStandards {
                 'underweight' => ['min' => 12.4, 'max' => 13.9],
                 'normal' => ['min' => 14.0, 'max' => 21.5],
                 'overweight' => ['min' => 21.6, 'max' => 999]
+            ],
+            // Age 61 months
+            61 => [
+                'severely_underweight' => ['min' => 0, 'max' => 12.4],
+                'underweight' => ['min' => 12.5, 'max' => 14.0],
+                'normal' => ['min' => 14.1, 'max' => 21.6],
+                'overweight' => ['min' => 21.7, 'max' => 999]
+            ],
+            // Age 62 months
+            62 => [
+                'severely_underweight' => ['min' => 0, 'max' => 12.5],
+                'underweight' => ['min' => 12.6, 'max' => 14.1],
+                'normal' => ['min' => 14.2, 'max' => 21.7],
+                'overweight' => ['min' => 21.8, 'max' => 999]
+            ],
+            // Age 63 months
+            63 => [
+                'severely_underweight' => ['min' => 0, 'max' => 12.6],
+                'underweight' => ['min' => 12.7, 'max' => 14.2],
+                'normal' => ['min' => 14.3, 'max' => 21.8],
+                'overweight' => ['min' => 21.9, 'max' => 999]
+            ],
+            // Age 64 months
+            64 => [
+                'severely_underweight' => ['min' => 0, 'max' => 12.7],
+                'underweight' => ['min' => 12.8, 'max' => 14.3],
+                'normal' => ['min' => 14.4, 'max' => 21.9],
+                'overweight' => ['min' => 22.0, 'max' => 999]
+            ],
+            // Age 65 months
+            65 => [
+                'severely_underweight' => ['min' => 0, 'max' => 12.8],
+                'underweight' => ['min' => 12.9, 'max' => 14.4],
+                'normal' => ['min' => 14.5, 'max' => 22.0],
+                'overweight' => ['min' => 22.1, 'max' => 999]
+            ],
+            // Age 66 months
+            66 => [
+                'severely_underweight' => ['min' => 0, 'max' => 12.9],
+                'underweight' => ['min' => 13.0, 'max' => 14.5],
+                'normal' => ['min' => 14.6, 'max' => 22.1],
+                'overweight' => ['min' => 22.2, 'max' => 999]
+            ],
+            // Age 67 months
+            67 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.0],
+                'underweight' => ['min' => 13.1, 'max' => 14.6],
+                'normal' => ['min' => 14.7, 'max' => 22.2],
+                'overweight' => ['min' => 22.3, 'max' => 999]
+            ],
+            // Age 68 months
+            68 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.1],
+                'underweight' => ['min' => 13.2, 'max' => 14.7],
+                'normal' => ['min' => 14.8, 'max' => 22.3],
+                'overweight' => ['min' => 22.4, 'max' => 999]
+            ],
+            // Age 69 months
+            69 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.2],
+                'underweight' => ['min' => 13.3, 'max' => 14.8],
+                'normal' => ['min' => 14.9, 'max' => 22.4],
+                'overweight' => ['min' => 22.5, 'max' => 999]
+            ],
+            // Age 70 months
+            70 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.3],
+                'underweight' => ['min' => 13.4, 'max' => 14.9],
+                'normal' => ['min' => 15.0, 'max' => 22.5],
+                'overweight' => ['min' => 22.6, 'max' => 999]
+            ],
+            // Age 71 months
+            71 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.4],
+                'underweight' => ['min' => 13.5, 'max' => 15.0],
+                'normal' => ['min' => 15.1, 'max' => 22.6],
+                'overweight' => ['min' => 22.7, 'max' => 999]
             ]
         ];
     }
@@ -334,6 +411,34 @@ class WHOGrowthStandards {
                 'underweight' => ['min' => 13.1, 'max' => 14.7],
                 'normal' => ['min' => 14.8, 'max' => 22.7],
                 'overweight' => ['min' => 22.8, 'max' => 999]
+            ],
+            // Age 67 months
+            67 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.1],
+                'underweight' => ['min' => 13.2, 'max' => 14.8],
+                'normal' => ['min' => 14.9, 'max' => 22.8],
+                'overweight' => ['min' => 22.9, 'max' => 999]
+            ],
+            // Age 68 months
+            68 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.2],
+                'underweight' => ['min' => 13.3, 'max' => 14.9],
+                'normal' => ['min' => 15.0, 'max' => 22.9],
+                'overweight' => ['min' => 23.0, 'max' => 999]
+            ],
+            // Age 69 months
+            69 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.3],
+                'underweight' => ['min' => 13.4, 'max' => 15.0],
+                'normal' => ['min' => 15.1, 'max' => 23.0],
+                'overweight' => ['min' => 23.1, 'max' => 999]
+            ],
+            // Age 70 months
+            70 => [
+                'severely_underweight' => ['min' => 0, 'max' => 13.4],
+                'underweight' => ['min' => 13.5, 'max' => 15.1],
+                'normal' => ['min' => 15.2, 'max' => 23.1],
+                'overweight' => ['min' => 23.2, 'max' => 999]
             ],
             // Age 71 months
             71 => [
