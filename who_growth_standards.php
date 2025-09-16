@@ -1460,15 +1460,15 @@ class WHOGrowthStandards {
                 'bmi_for_age' => $this->calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate)
             ];
         } else {
-        $results = [
-            'age_months' => $ageInMonths,
-            'bmi' => round($bmi, 1),
-            'weight_for_age' => $this->calculateWeightForAge($weight, $ageInMonths, $sex),
-            'height_for_age' => $this->calculateHeightForAge($height, $ageInMonths, $sex),
-            'weight_for_height' => $this->calculateWeightForHeight($weight, $height, $sex),
-            'weight_for_length' => $this->calculateWeightForLength($weight, $height, $sex),
+            $results = [
+                'age_months' => $ageInMonths,
+                'bmi' => round($bmi, 1),
+                'weight_for_age' => $this->calculateWeightForAge($weight, $ageInMonths, $sex),
+                'height_for_age' => $this->calculateHeightForAge($height, $ageInMonths, $sex),
+                'weight_for_height' => $this->calculateWeightForHeight($weight, $height, $sex),
+                'weight_for_length' => $this->calculateWeightForLength($weight, $height, $sex),
                 'bmi_for_age' => ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only for children 72+ months']
-        ];
+            ];
         }
         
         return $results;
