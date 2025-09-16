@@ -1562,12 +1562,9 @@ class DatabaseAPI {
             $stmt = $this->pdo->prepare("
                 SELECT 
                     cu.*,
-                    u.username,
-                    u.name,
-                    u.email as user_email,
+                    cu.screening_id as user_email,
                     DATE_FORMAT(cu.screening_date, '%Y-%m-%d') as screening_date
                 FROM community_users cu
-                LEFT JOIN users u ON cu.user_id = u.user_id
                 $whereClause
                 ORDER BY cu.screening_date DESC
                 LIMIT 100
