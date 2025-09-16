@@ -1581,7 +1581,7 @@ class WHOGrowthStandards {
                         'method' => 'hardcoded_who_table',
                         'weight_range' => $ageRanges['underweight']['min'] . '-' . $ageRanges['underweight']['max'] . 'kg'
                     ];
-                } elseif ($weight <= $ageRanges['normal']['max']) {
+                } elseif ($weight < $ageRanges['overweight']['min']) {
                     error_log("DEBUG: Classified as Normal");
                     file_put_contents(__DIR__ . '/debug_classification.log', "DEBUG: Classified as Normal\n", FILE_APPEND);
                     return [
@@ -1637,7 +1637,7 @@ class WHOGrowthStandards {
                         'method' => 'hardcoded_who_table',
                         'weight_range' => $ageRanges['underweight']['min'] . '-' . $ageRanges['underweight']['max'] . 'kg'
                     ];
-                } elseif ($weight <= $ageRanges['normal']['max']) {
+                } elseif ($weight < $ageRanges['overweight']['min']) {
                     return [
                         'z_score' => $zScore,
                         'classification' => 'Normal',
