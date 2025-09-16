@@ -3495,13 +3495,13 @@ header {
                     <thead id="tableHeaders">
                         <tr>
                             <th>NAME</th>
+                            <th>EMAIL</th>
                             <th>AGE</th>
                             <th>SEX</th>
                             <th id="weightHeader" class="conditional-column">WEIGHT (kg)</th>
                             <th id="heightHeader" class="conditional-column">HEIGHT (cm)</th>
                             <th id="bmiHeader" class="conditional-column">BMI</th>
-                            <th id="standardHeader">Z-SCORE</th>
-                            <th>STANDARD DEVIATION RANGE</th>
+                            <th id="standardHeader">Z-SCORE (SD RANGE)</th>
                             <th>SCREENING DATE</th>
                         </tr>
                     </thead>
@@ -3628,8 +3628,12 @@ header {
                                             $zScore = $showData['z_score'] ?? null;
                                             $sdRange = getStandardDeviationRange($zScore);
                                             
+                                            // Combine z-score with SD range
+                                            $zScoreDisplay = $zScore !== null ? number_format($zScore, 2) . ' (' . $sdRange . ')' : 'N/A';
+                                            
                                             echo '<tr data-standard="' . $showStandard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             echo '<td class="text-center">' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . $ageDisplay . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                             
@@ -3652,8 +3656,7 @@ header {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
                                             }
                                             
-                                            echo '<td class="text-center standard-value">' . htmlspecialchars($showData['display']) . '</td>';
-                                            echo '<td class="text-center sd-range">' . htmlspecialchars($sdRange) . '</td>';
+                                            echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                             echo '</tr>';
                                         }
@@ -3693,8 +3696,12 @@ header {
                                                 $zScore = $displayData['z_score'] ?? null;
                                                 $sdRange = getStandardDeviationRange($zScore);
                                                 
+                                                // Combine z-score with SD range
+                                                $zScoreDisplay = $zScore !== null ? number_format($zScore, 2) . ' (' . $sdRange . ')' : 'N/A';
+                                                
                                                 echo '<tr data-standard="' . $standard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '" style="display: none;">';
                                                 echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                                echo '<td>' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                                 echo '<td>' . $ageDisplay . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                                 
@@ -3717,8 +3724,7 @@ header {
                                                     echo '<td class="conditional-column" style="display:none;">' . $bmi . '</td>';
                                                 }
                                                 
-                                                echo '<td class="standard-value">' . htmlspecialchars($displayData['display']) . '</td>';
-                                                echo '<td class="sd-range">' . htmlspecialchars($sdRange) . '</td>';
+                                                echo '<td class="standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
                                                 echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                                 echo '</tr>';
                                             }
@@ -4364,23 +4370,23 @@ header {
             
             tableRows.forEach(row => {
                 const name = row.cells[0].textContent.toLowerCase();
-                const age = row.cells[1].textContent.toLowerCase();
-                const sex = row.cells[2].textContent.toLowerCase();
-                const weight = row.cells[3].textContent.toLowerCase();
-                const height = row.cells[4].textContent.toLowerCase();
-                const bmi = row.cells[5].textContent.toLowerCase();
-                const standardValue = row.cells[6].textContent.toLowerCase();
-                const classification = row.cells[7].textContent.toLowerCase();
+                const email = row.cells[1].textContent.toLowerCase();
+                const age = row.cells[2].textContent.toLowerCase();
+                const sex = row.cells[3].textContent.toLowerCase();
+                const weight = row.cells[4].textContent.toLowerCase();
+                const height = row.cells[5].textContent.toLowerCase();
+                const bmi = row.cells[6].textContent.toLowerCase();
+                const standardValue = row.cells[7].textContent.toLowerCase();
                 const screeningDate = row.cells[8].textContent.toLowerCase();
                 
                 const matchesSearch = name.includes(searchTerm) || 
+                                   email.includes(searchTerm) || 
                                    age.includes(searchTerm) || 
-                                   sex.includes(searchTerm) ||
+                                   sex.includes(searchTerm) || 
                                    weight.includes(searchTerm) || 
-                                   height.includes(searchTerm) ||
-                                   bmi.includes(searchTerm) ||
-                                   standardValue.includes(searchTerm) ||
-                                   classification.includes(searchTerm) ||
+                                   height.includes(searchTerm) || 
+                                   bmi.includes(searchTerm) || 
+                                   standardValue.includes(searchTerm) || 
                                    screeningDate.includes(searchTerm);
                 
                 if (matchesSearch) {
@@ -4466,26 +4472,26 @@ header {
                 const cells = row.querySelectorAll('td');
                 
                 // Show/hide conditional columns based on selected standard
-                if (cells.length >= 9) { // Ensure we have enough cells
-                    // Weight column (index 3)
+                if (cells.length >= 10) { // Ensure we have enough cells (now includes email)
+                    // Weight column (index 4) - shifted due to email column
                     if (selectedStandard === 'weight-for-age' || selectedStandard === 'bmi-for-age' || selectedStandard === 'all-ages') {
-                        cells[3].style.display = '';
-                    } else {
-                        cells[3].style.display = 'none';
-                    }
-                    
-                    // Height column (index 4)
-                    if (selectedStandard === 'height-for-age' || selectedStandard === 'weight-for-height' || selectedStandard === 'weight-for-length' || selectedStandard === 'all-ages') {
                         cells[4].style.display = '';
                     } else {
                         cells[4].style.display = 'none';
                     }
                     
-                    // BMI column (index 5)
-                    if (selectedStandard === 'bmi-for-age' || selectedStandard === 'all-ages') {
+                    // Height column (index 5) - shifted due to email column
+                    if (selectedStandard === 'height-for-age' || selectedStandard === 'weight-for-height' || selectedStandard === 'weight-for-length' || selectedStandard === 'all-ages') {
                         cells[5].style.display = '';
                     } else {
                         cells[5].style.display = 'none';
+                    }
+                    
+                    // BMI column (index 6) - shifted due to email column
+                    if (selectedStandard === 'bmi-for-age' || selectedStandard === 'all-ages') {
+                        cells[6].style.display = '';
+                    } else {
+                        cells[6].style.display = 'none';
                     }
                 }
             });
