@@ -1110,9 +1110,9 @@ class DatabaseAPI {
             $stmt = $this->pdo->prepare("
                 SELECT 
                     COUNT(*) as total_users,
-                    COUNT(CASE WHEN nutritional_risk IN ('High', 'Severe') THEN 1 END) as average_risk,
-                    SUM(CASE WHEN nutritional_risk IN ('High', 'Severe') THEN 1 ELSE 0 END) as high_risk_count,
-                    SUM(CASE WHEN nutritional_risk = 'Severe' THEN 1 ELSE 0 END) as sam_cases,
+                    COUNT(CASE WHEN bmi IN ('High', 'Severe') THEN 1 END) as average_risk,
+                    SUM(CASE WHEN bmi IN ('High', 'Severe') THEN 1 ELSE 0 END) as high_risk_count,
+                    SUM(CASE WHEN bmi = 'Severe' THEN 1 ELSE 0 END) as sam_cases,
                     SUM(CASE WHEN age < 5 THEN 1 ELSE 0 END) as children_count,
                     SUM(CASE WHEN age >= 65 THEN 1 ELSE 0 END) as elderly_count,
                     0 as low_dietary_diversity
@@ -1283,18 +1283,17 @@ class DatabaseAPI {
                 // Update existing preferences
                 $stmt = $this->pdo->prepare("UPDATE community_users SET 
                     age = :age,
-                    weight_kg = :weight,
-                    height_cm = :height,
+                    weight = :weight,
+                    height = :height,
                     sex = :gender,
                     barangay = :barangay,
-                    nutritional_risk = :nutritional_risk,
                     screening_date = CURRENT_TIMESTAMP
-                    WHERE screening_id = :user_email");
+                    WHERE email = :user_email");
             } else {
                 // Insert new preferences
                 $stmt = $this->pdo->prepare("INSERT INTO community_users 
-                    (screening_id, age, weight_kg, height_cm, sex, barangay, nutritional_risk, screening_date) 
-                    VALUES (:user_email, :age, :weight, :height, :gender, :barangay, :nutritional_risk, NOW())");
+                    (email, age, weight, height, sex, barangay, screening_date) 
+                    VALUES (:user_email, :age, :weight, :height, :gender, :barangay, NOW())");
             }
             
             $stmt->bindParam(':user_email', $userEmail);
@@ -1303,7 +1302,6 @@ class DatabaseAPI {
             $stmt->bindParam(':height', $preferences['height'] ?? null);
             $stmt->bindParam(':gender', $preferences['gender'] ?? null);
             $stmt->bindParam(':barangay', $preferences['barangay'] ?? null);
-            $stmt->bindParam(':nutritional_risk', $preferences['nutritional_risk'] ?? 'Low');
             $stmt->execute();
             
             return ['success' => true];
@@ -1468,7 +1466,7 @@ class DatabaseAPI {
             }
             
             // Build WHERE clause for barangay filtering
-            $whereClause = "WHERE nutritional_risk IS NOT NULL AND nutritional_risk != ''";
+            $whereClause = "WHERE bmi IS NOT NULL AND bmi != ''";
             $params = [];
             if (!empty($barangay)) {
                 if (strpos($barangay, 'MUNICIPALITY_') === 0) {
@@ -1483,14 +1481,14 @@ class DatabaseAPI {
                 }
             }
             
-            // Create risk levels based on nutritional_risk
+            // Create risk levels based on bmi
             $stmt = $this->pdo->prepare("
                 SELECT 
                     CASE 
-                        WHEN nutritional_risk = 'Low' THEN 'low'
-                        WHEN nutritional_risk = 'Moderate' THEN 'moderate'
-                        WHEN nutritional_risk = 'High' THEN 'high'
-                        WHEN nutritional_risk = 'Severe' THEN 'severe'
+                        WHEN bmi = 'Low' THEN 'low'
+                        WHEN bmi = 'Moderate' THEN 'moderate'
+                        WHEN bmi = 'High' THEN 'high'
+                        WHEN bmi = 'Severe' THEN 'severe'
                         ELSE 'unknown'
                     END as risk_level,
                     COUNT(*) as count
@@ -1562,7 +1560,7 @@ class DatabaseAPI {
             $stmt = $this->pdo->prepare("
                 SELECT 
                     cu.*,
-                    cu.screening_id as user_email,
+                    cu.email as user_email,
                     DATE_FORMAT(cu.screening_date, '%Y-%m-%d') as screening_date
                 FROM community_users cu
                 $whereClause
@@ -1726,8 +1724,8 @@ class DatabaseAPI {
             }
             
             // Count SAM cases, high risk cases, and critical MUAC
-            if (($record['nutritional_risk'] ?? '') === 'Severe') $samCases++;
-            if (in_array($record['nutritional_risk'] ?? '', ['High', 'Severe'])) $highRiskCases++;
+            if (($record['bmi'] ?? '') === 'Severe') $samCases++;
+            if (in_array($record['bmi'] ?? '', ['High', 'Severe'])) $highRiskCases++;
             if (($record['muac_cm'] ?? 0) < 11.5) $criticalMuac++;
         }
         
@@ -1772,8 +1770,8 @@ class DatabaseAPI {
                 SELECT 
                     up.*,
                     CASE 
-                        WHEN up.nutritional_risk = 'Severe' THEN 'Severe Risk'
-                        WHEN up.nutritional_risk = 'High' THEN 'High Risk'
+                        WHEN up.bmi = 'Severe' THEN 'Severe Risk'
+                        WHEN up.bmi = 'High' THEN 'High Risk'
                         ELSE 'Moderate Risk'
                     END as alert_level,
                     CASE 
@@ -1783,8 +1781,8 @@ class DatabaseAPI {
                         ELSE 'Elderly'
                     END as age_group
                 FROM community_users up
-                WHERE up.nutritional_risk IN ('High', 'Severe')
-                ORDER BY up.nutritional_risk DESC, up.screening_date DESC
+                WHERE up.bmi IN ('High', 'Severe')
+                ORDER BY up.bmi DESC, up.screening_date DESC
                 LIMIT 50
             ");
             $stmt->execute();
@@ -1835,12 +1833,12 @@ class DatabaseAPI {
             $analysis['total_screenings'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // High risk cases
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause AND nutritional_risk IN ('High', 'Severe')");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause AND bmi IN ('High', 'Severe')");
             $stmt->execute($params);
             $analysis['high_risk_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['high_risk'];
             
             // SAM cases (Severe Acute Malnutrition)
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause AND nutritional_risk = 'Severe'");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause AND bmi = 'Severe'");
             $stmt->execute($params);
             $analysis['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
             
@@ -1921,7 +1919,7 @@ class DatabaseAPI {
         $bmi = round($weight / ($height * $height), 2);
         
         // Calculate risk score
-        $nutritional_risk = $this->calculateRiskScore($input, $bmi);
+        $bmi = $this->calculateRiskScore($input, $bmi);
         
         // Prepare data for insertion
         $screening_data = [
@@ -1940,7 +1938,7 @@ class DatabaseAPI {
             'lifestyle' => $input['lifestyle'] ?? null,
             'lifestyle_other' => $input['lifestyle_other'] ?? null,
             'immunization' => is_array($input['immunization']) ? json_encode($input['immunization']) : $input['immunization'],
-            'nutritional_risk' => $nutritional_risk,
+            'bmi' => $bmi,
             'assessment_summary' => $input['assessment_summary'] ?? null,
             'recommendations' => $input['recommendations'] ?? null,
             'created_at' => date('Y-m-d H:i:s')
@@ -1950,7 +1948,7 @@ class DatabaseAPI {
         $stmt = $this->pdo->prepare("INSERT INTO screening_assessments (
             user_id, municipality, barangay, age, age_months, sex, pregnant, 
             weight, height, bmi, meal_recall, family_history, lifestyle, 
-            lifestyle_other, immunization, nutritional_risk, assessment_summary, 
+            lifestyle_other, immunization, bmi, assessment_summary, 
             recommendations, created_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
@@ -1970,7 +1968,7 @@ class DatabaseAPI {
             $screening_data['lifestyle'],
             $screening_data['lifestyle_other'],
             $screening_data['immunization'],
-            $screening_data['nutritional_risk'],
+            $screening_data['bmi'],
             $screening_data['assessment_summary'],
             $screening_data['recommendations'],
             $screening_data['created_at']
@@ -1983,7 +1981,7 @@ class DatabaseAPI {
             'success' => true,
             'message' => 'Screening assessment saved successfully',
             'screening_id' => $screening_id,
-            'nutritional_risk' => $nutritional_risk,
+            'bmi' => $bmi,
             'bmi' => $bmi,
             'assessment_summary' => $screening_data['assessment_summary'],
             'recommendations' => $screening_data['recommendations']
@@ -2041,23 +2039,23 @@ class DatabaseAPI {
      * Calculate risk score for screening
      */
     private function calculateRiskScore($input, $bmi) {
-        $nutritional_risk = 0;
+        $bmi = 0;
         
         // BMI risk factors
         if ($bmi < 18.5) {
-            $nutritional_risk += 10; // Underweight
+            $bmi += 10; // Underweight
         } elseif ($bmi >= 25 && $bmi < 30) {
-            $nutritional_risk += 5; // Overweight
+            $bmi += 5; // Overweight
         } elseif ($bmi >= 30) {
-            $nutritional_risk += 15; // Obese
+            $bmi += 15; // Obese
         }
         
         // Age risk factors
         $age = intval($input['age']);
         if ($age < 5) {
-            $nutritional_risk += 10; // Young children
+            $bmi += 10; // Young children
         } elseif ($age > 65) {
-            $nutritional_risk += 8; // Elderly
+            $bmi += 8; // Elderly
         }
         
         // Family history risk factors
@@ -2066,25 +2064,25 @@ class DatabaseAPI {
             foreach ($family_history as $condition) {
                 switch ($condition) {
                     case 'Diabetes':
-                        $nutritional_risk += 8;
+                        $bmi += 8;
                         break;
                     case 'Hypertension':
-                        $nutritional_risk += 6;
+                        $bmi += 6;
                         break;
                     case 'Heart Disease':
-                        $nutritional_risk += 10;
+                        $bmi += 10;
                         break;
                     case 'Kidney Disease':
-                        $nutritional_risk += 12;
+                        $bmi += 12;
                         break;
                     case 'Tuberculosis':
-                        $nutritional_risk += 7;
+                        $bmi += 7;
                         break;
                     case 'Obesity':
-                        $nutritional_risk += 5;
+                        $bmi += 5;
                         break;
                     case 'Malnutrition':
-                        $nutritional_risk += 15;
+                        $bmi += 15;
                         break;
                 }
             }
@@ -2092,7 +2090,7 @@ class DatabaseAPI {
         
         // Lifestyle risk factors
         if ($input['lifestyle'] === 'Sedentary') {
-            $nutritional_risk += 5;
+            $bmi += 5;
         }
         
         // Meal balance risk (if meal recall is provided)
@@ -2116,7 +2114,7 @@ class DatabaseAPI {
             }
             
             if ($found_groups < 3) {
-                $nutritional_risk += 8; // Unbalanced diet
+                $bmi += 8; // Unbalanced diet
             }
         }
         
@@ -2127,11 +2125,11 @@ class DatabaseAPI {
             $missing_vaccines = array_diff($required_vaccines, $immunization);
             
             if (!empty($missing_vaccines)) {
-                $nutritional_risk += count($missing_vaccines) * 2; // 2 points per missing vaccine
+                $bmi += count($missing_vaccines) * 2; // 2 points per missing vaccine
             }
         }
         
-        return $nutritional_risk;
+        return $bmi;
     }
     
     /**
@@ -2174,12 +2172,12 @@ class DatabaseAPI {
             $data['total_screenings'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // High risk cases in time frame
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause AND nutritional_risk IN ('High', 'Severe')");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause AND bmi IN ('High', 'Severe')");
             $stmt->execute($params);
             $data['high_risk_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['high_risk'];
             
             // SAM cases in time frame
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause AND nutritional_risk = 'Severe'");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause AND bmi = 'Severe'");
             $stmt->execute($params);
             $data['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
             
@@ -3054,7 +3052,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             'bmi' => '',
                             'bmi_category' => '',
                             'muac_category' => '',
-                            'nutritional_risk' => '',
+                            'bmi' => '',
                             'screening_date' => $user['screening_date'],
                             'screened_by' => '',
                             'notes' => '',
@@ -3685,7 +3683,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             name,
                             barangay,
                             income,
-                            nutritional_risk,
+                            bmi,
                             created_at,
                             updated_at
                         FROM community_users
@@ -3706,7 +3704,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'barangay' => $user['barangay'],
                         'municipality' => 'N/A', // Municipality not stored in community_users table
                         'income' => $user['income'],
-                        'nutritional_risk' => $user['nutritional_risk'],
+                        'bmi' => $user['bmi'],
                         'created_at' => $user['created_at'],
                         'updated_at' => $user['updated_at']
                     ];
@@ -4367,7 +4365,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 'bmi' => $user['bmi'] ?? '',
                                 'bmi_category' => $user['bmi_category'] ?? '',
                                 'muac_category' => $user['muac_category'] ?? '',
-                                'nutritional_risk' => $user['nutritional_risk'] ?? '',
+                                'bmi' => $user['bmi'] ?? '',
                                 'screening_date' => $user['screening_date'] ?? '',
                                 'screened_by' => $user['screened_by'] ?? '',
                                 'notes' => $user['notes'] ?? '',
