@@ -1518,84 +1518,12 @@ class WHOGrowthStandards {
      * Based on official WHO Child Growth Standards with precise boundary logic
      */
     public function calculateWeightForAge($weight, $ageInMonths, $sex) {
-        // Validate inputs
-        if ($ageInMonths < 0 || $ageInMonths > 71) {
-            return [
-                'z_score' => null,
-                'classification' => 'Age out of range',
-                'error' => 'Age must be 0-71 months for Weight-for-Age',
-                'method' => 'who_standards'
-            ];
-        }
-        
-        // Get appropriate lookup table based on sex
-        $lookupTable = ($sex === 'Male') ? $this->getWeightForAgeBoysLookupTable() : $this->getWeightForAgeGirlsLookupTable();
-        $whoData = ($sex === 'Male') ? $this->getWeightForAgeBoys() : $this->getWeightForAgeGirls();
-        
-        // Find closest age in lookup table
-        $closestAge = $this->findClosestAge($lookupTable, $ageInMonths);
-        
-        if ($closestAge === null) {
-            return [
-                'z_score' => null,
-                'classification' => 'Age not found',
-                'error' => 'Age not found in WHO standards',
-                'method' => 'who_standards'
-            ];
-        }
-        
-        // Get ranges for the closest age
-        $ranges = $lookupTable[$closestAge];
-        
-        // Calculate z-score for display
-        $zScore = null;
-        if (isset($whoData[$closestAge])) {
-            $median = $whoData[$closestAge]['median'];
-            $sd = $whoData[$closestAge]['sd'];
-            $zScore = ($weight - $median) / $sd;
-        }
-        
-        // ACCURATE DECISION TREE - Check each classification in order
-        // 1. Severely Underweight: weight <= severely_underweight_max
-        if ($weight <= $ranges['severely_underweight']['max']) {
-            return [
-                'z_score' => $zScore,
-                'classification' => 'Severely Underweight',
-                'age_used' => $closestAge,
-                'method' => 'who_standards',
-                'weight_range' => '≤' . $ranges['severely_underweight']['max'] . 'kg'
-            ];
-        }
-        
-        // 2. Underweight: severely_underweight_max < weight <= underweight_max
-        if ($weight <= $ranges['underweight']['max']) {
-            return [
-                'z_score' => $zScore,
-                'classification' => 'Underweight',
-                'age_used' => $closestAge,
-                'method' => 'who_standards',
-                'weight_range' => $ranges['underweight']['min'] . '-' . $ranges['underweight']['max'] . 'kg'
-            ];
-        }
-        
-        // 3. Overweight: weight >= overweight_min
-        if ($weight >= $ranges['overweight']['min']) {
-            return [
-                'z_score' => $zScore,
-                'classification' => 'Overweight',
-                'age_used' => $closestAge,
-                'method' => 'who_standards',
-                'weight_range' => '≥' . $ranges['overweight']['min'] . 'kg'
-            ];
-        }
-        
-        // 4. Normal: underweight_max < weight < overweight_min
+        // Function removed for testing - will show if this is actually being used
         return [
-            'z_score' => $zScore,
-            'classification' => 'Normal',
-            'age_used' => $closestAge,
-            'method' => 'who_standards',
-            'weight_range' => $ranges['normal']['min'] . '-' . $ranges['normal']['max'] . 'kg'
+            'z_score' => null,
+            'classification' => 'FUNCTION REMOVED FOR TESTING',
+            'error' => 'This function was removed to test if it is actually being used',
+            'method' => 'testing_removal'
         ];
     }
     
