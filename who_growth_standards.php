@@ -122,22 +122,6 @@ class WHOGrowthStandards {
         }
     }
     
-    /**
-     * Get nutritional classification for Weight-for-Height (includes Obese category)
-     */
-    public function getWeightForHeightClassification($zScore) {
-        if ($zScore < -3) {
-            return 'Severely Wasted';
-        } elseif ($zScore >= -3 && $zScore < -2) {
-            return 'Wasted';
-        } elseif ($zScore >= -2 && $zScore <= 2) {
-            return 'Normal';
-        } elseif ($zScore > 2 && $zScore <= 3) {
-            return 'Overweight';
-        } else {
-            return 'Obese';
-        }
-    }
     
     /**
      * Get Weight-for-Age lookup table for girls based on exact WHO table values
