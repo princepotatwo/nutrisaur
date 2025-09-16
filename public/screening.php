@@ -2058,6 +2058,36 @@ header {
             display: flex;
             gap: 12px;
             justify-content: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-dropdowns {
+            display: flex;
+            gap: 8px;
+            margin-left: 12px;
+        }
+
+        .filter-select {
+            padding: 6px 10px;
+            border: 2px solid rgba(161, 180, 84, 0.3);
+            background: var(--color-bg);
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--color-text);
+            outline: none;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            cursor: pointer;
+        }
+
+        .filter-select:hover {
+            border-color: rgba(161, 180, 84, 0.6);
+        }
+
+        .filter-select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
         }
 
         .search-section {
@@ -2218,6 +2248,18 @@ header {
                 min-width: 140px;
             }
 
+            .filter-dropdowns {
+                margin-left: 0;
+                margin-top: 8px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .filter-select {
+                min-width: 120px;
+                flex: 1;
+            }
+
             .search-input {
                 max-width: 100%;
             }
@@ -2241,6 +2283,18 @@ header {
             .action-section {
                 flex-direction: column;
                 gap: 8px;
+            }
+
+            .filter-dropdowns {
+                flex-direction: column;
+                gap: 6px;
+                margin-top: 6px;
+            }
+
+            .filter-select {
+                min-width: 100px;
+                font-size: 10px;
+                padding: 5px 8px;
             }
 
             .filter-item {
@@ -3402,6 +3456,35 @@ header {
                                 <span class="btn-icon">📁</span>
                                 <span class="btn-text">Import CSV</span>
                             </button>
+                            
+                            <!-- New Sorting and Classification Filters -->
+                            <div class="filter-dropdowns">
+                                <select id="sortBy" onchange="sortTable()" class="filter-select">
+                                    <option value="">Sort by...</option>
+                                    <option value="name_asc">Name (A-Z)</option>
+                                    <option value="name_desc">Name (Z-A)</option>
+                                    <option value="email_asc">Email (A-Z)</option>
+                                    <option value="email_desc">Email (Z-A)</option>
+                                    <option value="age_asc">Age (Youngest)</option>
+                                    <option value="age_desc">Age (Oldest)</option>
+                                    <option value="screening_date_asc">Screening Date (Oldest)</option>
+                                    <option value="screening_date_desc">Screening Date (Newest)</option>
+                                </select>
+                                
+                                <select id="classificationFilter" onchange="filterByClassification()" class="filter-select">
+                                    <option value="">All Classifications</option>
+                                    <option value="Severely Underweight">Severely Underweight</option>
+                                    <option value="Underweight">Underweight</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Overweight">Overweight</option>
+                                    <option value="Severely Wasted">Severely Wasted</option>
+                                    <option value="Wasted">Wasted</option>
+                                    <option value="Obese">Obese</option>
+                                    <option value="Severely Stunted">Severely Stunted</option>
+                                    <option value="Stunted">Stunted</option>
+                                    <option value="Tall">Tall</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <div class="search-section">
@@ -4403,6 +4486,81 @@ header {
                                    screeningDate.includes(searchTerm);
                 
                 if (matchesSearch) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            updateNoDataMessage(visibleCount);
+        }
+
+        // New sorting function
+        function sortTable() {
+            const sortBy = document.getElementById('sortBy').value;
+            if (!sortBy) return;
+            
+            const table = document.querySelector('.user-table tbody');
+            const rows = Array.from(table.querySelectorAll('tr'));
+            
+            rows.sort((a, b) => {
+                let aValue, bValue;
+                
+                switch(sortBy) {
+                    case 'name_asc':
+                        aValue = a.cells[0].textContent.trim();
+                        bValue = b.cells[0].textContent.trim();
+                        return aValue.localeCompare(bValue);
+                    case 'name_desc':
+                        aValue = a.cells[0].textContent.trim();
+                        bValue = b.cells[0].textContent.trim();
+                        return bValue.localeCompare(aValue);
+                    case 'email_asc':
+                        aValue = a.cells[1].textContent.trim();
+                        bValue = b.cells[1].textContent.trim();
+                        return aValue.localeCompare(bValue);
+                    case 'email_desc':
+                        aValue = a.cells[1].textContent.trim();
+                        bValue = b.cells[1].textContent.trim();
+                        return bValue.localeCompare(aValue);
+                    case 'age_asc':
+                        aValue = parseInt(a.cells[2].textContent.trim());
+                        bValue = parseInt(b.cells[2].textContent.trim());
+                        return aValue - bValue;
+                    case 'age_desc':
+                        aValue = parseInt(a.cells[2].textContent.trim());
+                        bValue = parseInt(b.cells[2].textContent.trim());
+                        return bValue - aValue;
+                    case 'screening_date_asc':
+                        aValue = new Date(a.cells[9].textContent.trim());
+                        bValue = new Date(b.cells[9].textContent.trim());
+                        return aValue - bValue;
+                    case 'screening_date_desc':
+                        aValue = new Date(a.cells[9].textContent.trim());
+                        bValue = new Date(b.cells[9].textContent.trim());
+                        return bValue - aValue;
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Clear the table and re-append sorted rows
+            table.innerHTML = '';
+            rows.forEach(row => table.appendChild(row));
+        }
+
+        // New classification filtering function
+        function filterByClassification() {
+            const classificationFilter = document.getElementById('classificationFilter').value;
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
+            
+            let visibleCount = 0;
+            
+            tableRows.forEach(row => {
+                const classification = row.cells[8].textContent.trim();
+                
+                if (!classificationFilter || classification === classificationFilter) {
                     row.style.display = '';
                     visibleCount++;
                 } else {
