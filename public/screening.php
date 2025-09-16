@@ -28,10 +28,10 @@ function getNutritionalAssessment($user) {
     try {
         $who = new WHOGrowthStandards();
         
-        // Calculate age in months for WHO standards
+        // Calculate age in months for WHO standards using screening date
         $birthDate = new DateTime($user['birthday']);
-        $today = new DateTime();
-        $age = $today->diff($birthDate);
+        $screeningDate = new DateTime($user['screening_date'] ?? date('Y-m-d H:i:s'));
+        $age = $birthDate->diff($screeningDate);
         $ageInMonths = ($age->y * 12) + $age->m;
         
         // Get comprehensive WHO Growth Standards assessment
