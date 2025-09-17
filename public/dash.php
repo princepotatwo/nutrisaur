@@ -350,84 +350,43 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
         
         $users = $result['data'] ?? [];
         
-        // Calculate metrics using WHO Growth Standards classifications
+        // Use the same logic as donut chart - call DatabaseAPI for each WHO standard
         $totalScreened = count($users);
         $highRiskCases = 0; // Count of Severely Underweight
         $samCases = 0; // Count of Severely Stunted
         $criticalMuac = 0; // Count of Severely Wasted
         $barangaysCovered = [];
         
-        error_log("🔍 Dashboard Metrics Debug - Starting calculation");
-        error_log("  - Total users: $totalScreened");
+        // Get Weight-for-Age classifications (for Severely Underweight)
+        $wfaData = $dbAPI->getWHOClassifications('weight-for-age', '1d', $barangay);
+        if ($wfaData['success'] && isset($wfaData['data']['classifications'])) {
+            $highRiskCases = $wfaData['data']['classifications']['Severely Underweight'] ?? 0;
+        }
         
-        $wfaProcessed = 0;
-        $hfaProcessed = 0;
-        $wfhProcessed = 0;
+        // Get Height-for-Age classifications (for Severely Stunted)
+        $hfaData = $dbAPI->getWHOClassifications('height-for-age', '1d', $barangay);
+        if ($hfaData['success'] && isset($hfaData['data']['classifications'])) {
+            $samCases = $hfaData['data']['classifications']['Severely Stunted'] ?? 0;
+        }
         
+        // Get Weight-for-Height classifications (for Severely Wasted)
+        $wfhData = $dbAPI->getWHOClassifications('weight-for-height', '1d', $barangay);
+        if ($wfhData['success'] && isset($wfhData['data']['classifications'])) {
+            $criticalMuac = $wfhData['data']['classifications']['Severely Wasted'] ?? 0;
+        }
+        
+        // Track barangays
         foreach ($users as $user) {
-            // Use the same age calculation as DatabaseAPI (donut chart)
-            $who = new WHOGrowthStandards();
-            $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
-            
-            // Check Weight-for-Age (0-71 months) for Severely Underweight
-            if ($ageInMonths >= 0 && $ageInMonths <= 71) {
-                $wfaProcessed++;
-                $weightForAge = $who->calculateWeightForAge(
-                    floatval($user['weight']), 
-                    $ageInMonths, 
-                    $user['sex']
-                );
-                
-                if ($weightForAge && isset($weightForAge['classification']) && 
-                    $weightForAge['classification'] === 'Severely Underweight') {
-                    $highRiskCases++;
-                }
-            }
-            
-            // Check Height-for-Age (0-71 months) for Severely Stunted
-            if ($ageInMonths >= 0 && $ageInMonths <= 71) {
-                $hfaProcessed++;
-                $heightForAge = $who->calculateHeightForAge(
-                    floatval($user['height']), 
-                    $ageInMonths, 
-                    $user['sex']
-                );
-                
-                if ($heightForAge && isset($heightForAge['classification']) && 
-                    $heightForAge['classification'] === 'Severely Stunted') {
-                    $samCases++;
-                }
-            }
-            
-            // Check Weight-for-Height (65-120 cm height) for Severely Wasted
-            if ($user['height'] >= 65 && $user['height'] <= 120) {
-                $wfhProcessed++;
-                $weightForHeight = $who->calculateWeightForHeight(
-                    floatval($user['weight']), 
-                    floatval($user['height']), 
-                    $user['sex']
-                );
-                
-                if ($weightForHeight && isset($weightForHeight['classification']) && 
-                    $weightForHeight['classification'] === 'Severely Wasted') {
-                    $criticalMuac++;
-                }
-            }
-            
-            // Track barangays
             if ($user['barangay']) {
                 $barangaysCovered[] = $user['barangay'];
             }
         }
         
-        error_log("🔍 Dashboard Metrics Debug - Final counts:");
+        error_log("🔍 Dashboard Metrics - Using donut chart logic:");
         error_log("  - Total Screened: $totalScreened");
-        error_log("  - WFA Processed: $wfaProcessed");
-        error_log("  - HFA Processed: $hfaProcessed");
-        error_log("  - WFH Processed: $wfhProcessed");
-        error_log("  - Severely Underweight: $highRiskCases");
-        error_log("  - Severely Stunted: $samCases");
-        error_log("  - Severely Wasted: $criticalMuac");
+        error_log("  - Severely Underweight (WFA): $highRiskCases");
+        error_log("  - Severely Stunted (HFA): $samCases");
+        error_log("  - Severely Wasted (WFH): $criticalMuac");
         
         $data = [
             'total_screened' => $totalScreened,
