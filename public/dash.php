@@ -361,25 +361,18 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
         error_log("  - Total users: $totalScreened");
         
         foreach ($users as $user) {
-            // Calculate age in months like in DatabaseAPI
-            $birthDate = new DateTime($user['birthday']);
-            $today = new DateTime();
-            $age = $today->diff($birthDate);
-            $ageInMonths = ($age->y * 12) + $age->m;
-            
-            // Add partial month if more than half the month has passed
-            if ($age->d >= 15) {
-                $ageInMonths += 1;
-            }
+            // Use the same age calculation as DatabaseAPI (donut chart)
+            $who = new WHOGrowthStandards();
+            $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
             
             // Check Weight-for-Age (0-71 months) for Severely Underweight
             if ($ageInMonths >= 0 && $ageInMonths <= 71) {
-                $who = new WHOGrowthStandards();
                 $weightForAge = $who->calculateWeightForAge(
                     floatval($user['weight']), 
                     $ageInMonths, 
                     $user['sex']
                 );
+                
                 
                 if ($weightForAge && isset($weightForAge['classification']) && 
                     $weightForAge['classification'] === 'Severely Underweight') {
@@ -390,7 +383,6 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
             
             // Check Height-for-Age (0-71 months) for Severely Stunted
             if ($ageInMonths >= 0 && $ageInMonths <= 71) {
-                $who = new WHOGrowthStandards();
                 $heightForAge = $who->calculateHeightForAge(
                     floatval($user['height']), 
                     $ageInMonths, 
@@ -406,7 +398,6 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
             
             // Check Weight-for-Height (65-120 cm height) for Severely Wasted
             if ($user['height'] >= 65 && $user['height'] <= 120) {
-                $who = new WHOGrowthStandards();
                 $weightForHeight = $who->calculateWeightForHeight(
                     floatval($user['weight']), 
                     floatval($user['height']), 
