@@ -23,7 +23,57 @@ function getAdultBMIClassification($bmi) {
     return ['z_score' => 2.0, 'classification' => 'Obese'];
 }
 
-// Function to convert z-score to standard deviation range display
+// Function to get accurate z-score range based on WHO classification and standard
+function getAccurateZScoreRange($classification, $standard) {
+    if ($classification === null || $classification === 'N/A') {
+        return 'N/A';
+    }
+    
+    // Define z-score ranges based on WHO standards for each classification
+    $ranges = [
+        'weight-for-age' => [
+            'Severely Underweight' => '≤ -3SD',
+            'Underweight' => '> -3SD to ≤ -2SD', 
+            'Normal' => '> -2SD to ≤ +2SD',
+            'Overweight' => '> +2SD'
+        ],
+        'height-for-age' => [
+            'Severely Stunted' => '≤ -3SD',
+            'Stunted' => '> -3SD to ≤ -2SD',
+            'Normal' => '> -2SD to ≤ +2SD', 
+            'Tall' => '> +2SD'
+        ],
+        'weight-for-height' => [
+            'Severely Wasted' => '≤ -3SD',
+            'Wasted' => '> -3SD to ≤ -2SD',
+            'Normal' => '> -2SD to ≤ +2SD',
+            'Overweight' => '> +2SD to ≤ +3SD',
+            'Obese' => '> +3SD'
+        ],
+        'bmi-for-age' => [
+            'Severely Underweight' => '≤ -3SD',
+            'Underweight' => '> -3SD to ≤ -2SD',
+            'Normal' => '> -2SD to ≤ +1SD',
+            'Overweight' => '> +1SD to ≤ +2SD',
+            'Obese' => '> +2SD'
+        ],
+        'bmi-adult' => [
+            'Underweight' => '< 18.5 kg/m²',
+            'Normal weight' => '18.5-24.9 kg/m²',
+            'Overweight' => '25.0-29.9 kg/m²',
+            'Obese' => '≥ 30.0 kg/m²'
+        ]
+    ];
+    
+    // Return the appropriate range for the classification and standard
+    if (isset($ranges[$standard][$classification])) {
+        return $ranges[$standard][$classification];
+    }
+    
+    return 'N/A';
+}
+
+// Function to convert z-score to standard deviation range display (legacy function)
 function getStandardDeviationRange($zScore) {
     if ($zScore === null || $zScore === 'N/A') {
         return 'N/A';
@@ -3719,12 +3769,13 @@ header {
                                             if ($standardName === 'bmi-adult' && $ageInMonths < 228) continue;
                                             
                                             
-                                            // Get z-score and standard deviation range
+                                            // Get z-score and accurate SD range based on classification
                                             $zScore = $standardData['z_score'] ?? null;
-                                            $sdRange = getStandardDeviationRange($zScore);
+                                            $classification = $standardData['classification'] ?? 'N/A';
+                                            $accurateRange = getAccurateZScoreRange($classification, $standardName);
                                             
-                                            // Combine z-score with SD range
-                                            $zScoreDisplay = $zScore !== null ? number_format($zScore, 2) . ' (' . $sdRange . ')' : 'N/A';
+                                            // Display accurate z-score range instead of calculated z-score
+                                            $zScoreDisplay = $accurateRange;
                                             
                                             echo '<tr data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             echo '<td class="text-center">' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
