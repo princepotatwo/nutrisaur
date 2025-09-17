@@ -1993,11 +1993,14 @@ header .user-info {
     font-weight: 600 !important;
     color: var(--color-text) !important;
     font-size: 10px !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
     min-width: auto !important;
     max-width: none !important;
     display: inline-block !important;
     text-align: center !important;
+    line-height: 1.2 !important;
+    word-wrap: break-word !important;
+    hyphens: auto !important;
 }
 
 /* Segment percentage styling */
@@ -2037,15 +2040,15 @@ header .user-info {
     align-items: center !important;
     justify-content: center !important;
     gap: 4px !important;
-    padding: 6px 8px !important;
+    padding: 8px 6px !important;
     margin-bottom: 0 !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 6px !important;
     font-size: 10px !important;
-    min-height: 24px !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
+    min-height: 50px !important;
+    flex-direction: column !important;
+    flex-wrap: wrap !important;
     flex: 1 !important;
     max-width: calc(33.33% - 8px) !important;
     box-sizing: border-box !important;
@@ -2055,11 +2058,14 @@ header .user-info {
     text-align: center !important;
     font-weight: 600 !important;
     color: var(--color-text) !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
     font-size: 9px !important;
     flex: 1 !important;
+    line-height: 1.2 !important;
+    word-wrap: break-word !important;
+    hyphens: auto !important;
 }
 
 /* Compact segment percentage styling */
@@ -4292,6 +4298,13 @@ header .user-info {
     box-shadow: 0 2px 8px var(--color-shadow);
 }
 
+/* Dark theme support for donut chart center text */
+.dark-theme .donut-center-text {
+    background-color: var(--color-card);
+    color: var(--color-text);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 .light-theme .bar {
     background-color: var(--color-accent1);
     box-shadow: 0 2px 5px var(--color-shadow);
@@ -4459,14 +4472,48 @@ header .user-info {
 
 .light-theme .custom-select-container .select-header {
     color: #1B3A1B !important;
+    background-color: var(--color-card) !important;
+    border-color: var(--color-border) !important;
 }
 
 .light-theme .dropdown-content .option-item {
     color: #1B3A1B !important;
 }
 
+.light-theme .dropdown-content .option-item:hover {
+    background-color: var(--color-hover) !important;
+}
+
 .light-theme .search-container input {
     color: #1B3A1B !important;
+    background-color: var(--color-card) !important;
+    border-color: var(--color-border) !important;
+}
+
+/* Dark theme support for custom select */
+.dark-theme .custom-select-container .select-header {
+    background-color: var(--color-card) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+}
+
+.dark-theme .dropdown-content {
+    background-color: var(--color-card) !important;
+    border-color: var(--color-border) !important;
+}
+
+.dark-theme .dropdown-content .option-item {
+    color: var(--color-text) !important;
+}
+
+.dark-theme .dropdown-content .option-item:hover {
+    background-color: var(--color-hover) !important;
+}
+
+.dark-theme .search-container input {
+    background-color: var(--color-card) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
 }
 
 .light-theme .search-container input::placeholder {

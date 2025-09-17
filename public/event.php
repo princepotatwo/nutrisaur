@@ -4256,7 +4256,7 @@ header:hover {
                 <h1>Nutrition Event Notifications</h1>
             </div>
             <div class="user-info">
-                <button id="new-theme-toggle" class="new-theme-toggle-btn" title="Toggle theme" onclick="newToggleTheme()">
+                <button id="new-theme-toggle" class="new-theme-toggle-btn" title="Toggle theme">
                     <span class="new-theme-icon">🌙</span>
                 </button>
             </div>
@@ -8070,6 +8070,12 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 body.classList.remove('light-theme');
                 body.classList.add('dark-theme');
                 if (icon) icon.textContent = '🌙';
+            }
+
+            // Add theme toggle event listener
+            const themeToggleBtn = document.getElementById('new-theme-toggle');
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', newToggleTheme);
             }
         });
     </script>
