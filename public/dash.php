@@ -672,6 +672,9 @@ try {
                 $result = $db->select('community_users', '*', '', [], 'screening_date DESC');
                 $users = $result['success'] ? $result['data'] : [];
                 
+                error_log("🔍 Geographic Distribution Debug:");
+                error_log("  - Total users found: " . count($users));
+                
                 // Count users per barangay
                 $barangayCounts = [];
                 foreach ($users as $user) {
@@ -681,6 +684,8 @@ try {
                     }
                     $barangayCounts[$barangay]++;
                 }
+                
+                error_log("  - Barangays with users: " . json_encode($barangayCounts));
                 
                 // Create distribution data with all barangays from municipalities array
                 $distribution = [];
@@ -697,10 +702,14 @@ try {
                     }
                 }
                 
+                error_log("  - Distribution entries created: " . count($distribution));
+                
                 // Sort by count descending
                 usort($distribution, function($a, $b) {
                     return $b['count'] - $a['count'];
                 });
+                
+                error_log("  - Final distribution: " . json_encode($distribution));
                 
                 return $distribution;
             } catch (Exception $e) {
@@ -6967,6 +6976,7 @@ body {
 
         // Geographic distribution data from PHP
         const geographicDistributionData = <?php echo json_encode($geographicDistributionData); ?>;
+        console.log('🌍 Pre-loaded Geographic Distribution Data:', geographicDistributionData);
 
         // Function to update community metrics
         async function updateCommunityMetrics(barangay = '') {
