@@ -1609,8 +1609,10 @@ class DatabaseAPI {
             ];
             
             $totalProcessed = 0;
+            $totalUsers = count($users);
+            $eligibleUsers = 0;
             
-            // Process each user (same logic as screening.php)
+            // Process each user with age restrictions (same logic as screening.php)
             $debugInfo = [];
             foreach ($users as $user) {
                 try {
@@ -1619,6 +1621,29 @@ class DatabaseAPI {
                     
                     // Calculate age in months from birthday
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                    
+                    // Apply age restrictions exactly like screening.php
+                    $shouldProcess = false;
+                    if ($whoStandard === 'weight-for-age' || $whoStandard === 'height-for-age') {
+                        // These standards are for children 0-71 months only
+                        $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
+                    } elseif ($whoStandard === 'bmi-for-age') {
+                        // BMI-for-Age: 2-19 years (24-228 months) - exactly like screening.php
+                        $shouldProcess = ($ageInMonths >= 24 && $ageInMonths < 228);
+                    } elseif ($whoStandard === 'bmi-adult') {
+                        // BMI Adult: ≥19 years (228+ months) - exactly like screening.php
+                        $shouldProcess = ($ageInMonths >= 228);
+                    } elseif ($whoStandard === 'weight-for-height') {
+                        // Weight-for-Height: 0-60 months (0-5 years) - exactly like screening.php
+                        $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 60);
+                    }
+                    
+                    // Only process users who meet the age criteria
+                    if (!$shouldProcess) {
+                        continue; // Skip this user
+                    }
+                    
+                    $eligibleUsers++; // Count eligible users
                     
                     $assessment = $who->getComprehensiveAssessment(
                         floatval($user['weight']),
@@ -1641,7 +1666,8 @@ class DatabaseAPI {
                             'birthday' => $user['birthday'],
                             'screening_date' => $user['screening_date'] ?? null,
                             'weight_for_age_result' => $results['weight_for_age'] ?? 'Not found',
-                            'assessment_success' => $assessment['success']
+                            'assessment_success' => $assessment['success'],
+                            'eligible_for_standard' => true
                         ];
                         
                         // Get classification based on selected WHO standard (same as screening.php)
@@ -1651,10 +1677,15 @@ class DatabaseAPI {
                             $classification = $results['height_for_age']['classification'] ?? 'Normal';
                         } else if ($whoStandard === 'weight-for-height' && isset($results['weight_for_height'])) {
                             $classification = $results['weight_for_height']['classification'] ?? 'Normal';
-                        } else if ($whoStandard === 'weight-for-length' && isset($results['weight_for_length'])) {
-                            $classification = $results['weight_for_length']['classification'] ?? 'Normal';
                         } else if ($whoStandard === 'bmi-for-age' && isset($results['bmi_for_age'])) {
                             $classification = $results['bmi_for_age']['classification'] ?? 'Normal';
+                        } else if ($whoStandard === 'bmi-adult') {
+                            // For BMI-adult, use adult BMI classification
+                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                            if ($bmi < 18.5) $classification = 'Underweight';
+                            else if ($bmi < 25) $classification = 'Normal';
+                            else if ($bmi < 30) $classification = 'Overweight';
+                            else $classification = 'Obese';
                         }
                         
                         // Count the classification
@@ -1670,7 +1701,8 @@ class DatabaseAPI {
                         $debugInfo[] = [
                             'name' => $user['name'] ?? 'Unknown',
                             'error' => 'Assessment failed',
-                            'assessment' => $assessment
+                            'assessment' => $assessment,
+                            'eligible_for_standard' => true
                         ];
                     }
                 } catch (Exception $e) {
@@ -1681,6 +1713,13 @@ class DatabaseAPI {
                     ];
                 }
             }
+            
+            // Add debugging output
+            error_log("📊 WHO Classification Summary for $whoStandard:");
+            error_log("  - Total users in database: $totalUsers");
+            error_log("  - Users eligible for standard: $eligibleUsers");
+            error_log("  - Users processed (with classifications): $totalProcessed");
+            error_log("  - Classifications: " . json_encode($classifications));
             
             return [
                 'success' => true,
