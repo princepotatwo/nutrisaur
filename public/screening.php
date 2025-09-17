@@ -4728,44 +4728,30 @@ header {
             const classificationFilter = document.getElementById('classificationFilter').value;
             const tableRows = document.querySelectorAll('.user-table tbody tr');
             
+            // Get the currently selected standard
+            const standardFilter = document.getElementById('standardFilter');
+            const currentStandard = standardFilter ? standardFilter.value : 'weight-for-age';
+            
             let visibleCount = 0;
             
             tableRows.forEach(row => {
                 const classification = row.cells[8].textContent.trim();
                 const rowStandard = row.dataset.standard;
                 
-                // Check if classification matches AND it's the right standard type
-                let matchesClassification = false;
-                
-                if (!classificationFilter) {
-                    matchesClassification = true;
-                } else {
-                    // Check if classification matches
-                    if (classification === classificationFilter) {
-                        // Now check if it's the right standard type based on classification
-                        if (classificationFilter === 'Severely Underweight' || 
-                            classificationFilter === 'Underweight' || 
-                            classificationFilter === 'Normal' || 
-                            classificationFilter === 'Overweight') {
-                            // These can be Weight-for-Age or BMI-for-Age
-                            matchesClassification = (rowStandard === 'weight-for-age' || rowStandard === 'bmi-for-age');
-                        } else if (classificationFilter === 'Severely Stunted' || 
-                                   classificationFilter === 'Stunted' || 
-                                   classificationFilter === 'Tall') {
-                            // These are Height-for-Age only
-                            matchesClassification = (rowStandard === 'height-for-age');
-                        } else if (classificationFilter === 'Severely Wasted' || 
-                                   classificationFilter === 'Wasted') {
-                            // These are Weight-for-Height only
-                            matchesClassification = (rowStandard === 'weight-for-height' || rowStandard === 'weight-for-length');
-                        } else if (classificationFilter === 'Obese') {
-                            // Obese can be Weight-for-Height or BMI-for-Age
-                            matchesClassification = (rowStandard === 'weight-for-height' || rowStandard === 'weight-for-length' || rowStandard === 'bmi-for-age');
-                        }
-                    }
+                // First check if row matches the current standard filter
+                let matchesStandard = true;
+                if (currentStandard && currentStandard !== 'all-ages') {
+                    matchesStandard = (rowStandard === currentStandard);
                 }
                 
-                if (matchesClassification) {
+                // Then check if classification matches
+                let matchesClassification = true;
+                if (classificationFilter) {
+                    matchesClassification = (classification === classificationFilter);
+                }
+                
+                // Row must match BOTH standard AND classification
+                if (matchesStandard && matchesClassification) {
                     row.style.display = '';
                     visibleCount++;
                 } else {

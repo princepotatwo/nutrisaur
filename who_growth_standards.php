@@ -3082,7 +3082,7 @@ class WHOGrowthStandards {
             $recommendations[] = 'Focus on weight gain strategies';
         }
         
-        if ($results['height_for_age']['classification'] === 'Underweight') {
+        if ($results['height_for_age']['classification'] === 'Stunted') {
             $recommendations[] = 'Address stunting concerns';
         }
         
