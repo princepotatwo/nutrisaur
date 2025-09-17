@@ -3396,52 +3396,58 @@ header .user-info {
 .geo-bar-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px;
+    gap: 12px;
+    padding: 10px 12px;
     background: var(--color-card);
-    border-radius: 6px;
-    border-left: 3px solid var(--color-highlight);
+    border-radius: 8px;
+    border: 1px solid rgba(161, 180, 84, 0.2);
     transition: all 0.3s ease;
-    cursor: pointer;
-    min-height: 32px;
-    max-height: 32px;
+    margin-bottom: 6px;
+    min-height: 45px;
     flex-shrink: 0;
 }
 
 .geo-bar-item:hover {
-    transform: translateX(3px);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-color: var(--color-highlight);
 }
 
 .geo-bar-name {
     flex: 1;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--color-text);
     font-weight: 500;
+    min-width: 120px;
 }
 
 .geo-bar-progress {
     flex: 2;
-    height: 16px;
-    background: rgba(161, 180, 84, 0.2);
-    border-radius: 8px;
+    height: 24px;
+    background: rgba(161, 180, 84, 0.15);
+    border-radius: 12px;
     overflow: hidden;
     position: relative;
+    margin: 0 8px;
 }
 
 .geo-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--color-highlight), var(--color-accent2));
-    border-radius: 8px;
-    transition: width 0.8s ease;
+    border-radius: 12px;
+    transition: width 0.5s ease;
+    position: relative;
 }
 
-.geo-bar-percentage {
-    font-size: 11px;
-    color: var(--color-text);
-    font-weight: bold;
-    min-width: 35px;
-    text-align: right;
+.geo-bar-count {
+    font-size: 12px;
+    color: white;
+    font-weight: 600;
+    min-width: 50px;
+    text-align: center;
+    background: var(--color-highlight);
+    padding: 6px 10px;
+    border-radius: 15px;
 }
 
 /* Critical Alerts Styles */
@@ -6299,9 +6305,9 @@ body {
         <div class="chart-row">
             <div class="chart-card geo-distribution-card">
                 <h3>Geographic Distribution</h3>
-                <p class="chart-description">User distribution by barangay showing percentage of total users. Red indicators show SAM cases per barangay.</p>
+                <p class="chart-description">User distribution by barangay showing total user counts per area.</p>
                 <div class="geo-chart-container">
-                    <div class="geo-bars" id="barangay-prevalence"></div>
+                    <div class="geo-bars" id="barangay-distribution"></div>
                 </div>
             </div>
             
@@ -7136,13 +7142,11 @@ body {
                 }
 
                 // Update Geographic Distribution Chart
-                console.log('🌍 Fetching Geographic Distribution...');
                 const geoData = await fetchDataFromAPI('geographic_distribution', params);
-                console.log('🔄 Geographic Data received:', geoData);
-                if (geoData && typeof geoData === 'object') {
-                    updateGeographicChartDisplay(geoData.data || geoData);
+                if (geoData && geoData.success && geoData.data) {
+                    updateGeographicChartDisplay(geoData.data);
                 } else {
-                    console.error('❌ Geographic data is null or invalid:', geoData);
+                    updateGeographicChartDisplay([]);
                 }
 
                 // Update Critical Alerts - Use assessment data from dashboard stats
@@ -7168,22 +7172,21 @@ body {
         // Function to update geographic distribution
         async function updateGeographicChart(barangay = '') {
             try {
-                console.log('🌍 updateGeographicChart called with barangay:', barangay);
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
                 }
-                console.log('🌍 Fetching geographic data with params:', params);
+                
                 const data = await fetchDataFromAPI('geographic_distribution', params);
-                console.log('🌍 Geographic API response:', data);
-                if (data && data.success) {
-                    console.log('🌍 Updating geographic chart display with data:', data.data);
+                if (data && data.success && data.data) {
                     updateGeographicChartDisplay(data.data);
                 } else {
-                    console.error('❌ Geographic API failed or returned no data:', data);
+                    console.log('No geographic data available');
+                    updateGeographicChartDisplay([]);
                 }
             } catch (error) {
                 console.error('Geographic chart update error:', error);
+                updateGeographicChartDisplay([]);
             }
         }
 
@@ -7191,53 +7194,56 @@ body {
 
         // Function to update geographic distribution display
         function updateGeographicChartDisplay(data) {
-            console.log('🌍 updateGeographicChartDisplay called with data:', data);
-            const container = document.getElementById('barangay-prevalence');
+            const container = document.getElementById('barangay-distribution');
             if (!container) {
-                console.error('❌ Geographic chart container not found!');
+                console.error('Geographic chart container not found!');
                 return;
             }
-            console.log('🌍 Geographic chart container found, updating display...');
 
             container.innerHTML = '';
             
             if (data && data.length > 0) {
-                console.log('🌍 Processing', data.length, 'geographic data items');
-                // Sort by count descending for better visualization
+                // Sort by count descending (highest to lowest)
                 const sortedData = data.sort((a, b) => (b.count || 0) - (a.count || 0));
                 
-                sortedData.forEach(item => {
+                // Find the maximum count for percentage calculation
+                const maxCount = Math.max(...sortedData.map(d => d.count || 0));
+                
+                sortedData.forEach((item, index) => {
                     const barItem = document.createElement('div');
                     barItem.className = 'geo-bar-item';
                     
                     // Calculate percentage based on count
-                    const maxCount = Math.max(...sortedData.map(d => d.count || 0));
                     const percentage = maxCount > 0 ? Math.round(((item.count || 0) / maxCount) * 100) : 0;
                     
+                    // Add ranking indicator for top 3
+                    let ranking = '';
+                    if (index === 0) ranking = '🥇 ';
+                    else if (index === 1) ranking = '🥈 ';
+                    else if (index === 2) ranking = '🥉 ';
+                    
                     barItem.innerHTML = `
-                        <div class="geo-bar-name">${item.barangay || 'Unknown'}</div>
+                        <div class="geo-bar-name">${ranking}${item.barangay || 'Unknown'}</div>
                         <div class="geo-bar-progress">
                             <div class="geo-bar-fill" style="width: ${percentage}%"></div>
                         </div>
-                        <div class="geo-bar-percentage">${item.count || 0}</div>
+                        <div class="geo-bar-count">${item.count || 0}</div>
                     `;
                     container.appendChild(barItem);
                 });
             } else {
-                console.log('🌍 No geographic data available, showing no data message');
                 // Show no data message
                 const noDataItem = document.createElement('div');
                 noDataItem.style.cssText = `
-                    padding: 15px;
+                    padding: 20px;
                     text-align: center;
                     color: var(--color-text);
                     opacity: 0.7;
                     font-style: italic;
                 `;
-                noDataItem.textContent = 'No geographic data available for selected area';
+                noDataItem.textContent = 'No users found in selected area';
                 container.appendChild(noDataItem);
             }
-            console.log('🌍 Geographic chart display update completed');
         }
         
         // Function to clean up expired cache entries
