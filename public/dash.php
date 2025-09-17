@@ -6908,6 +6908,7 @@ body {
 
         // Function to update community metrics
         async function updateCommunityMetrics(barangay = '') {
+            console.log('🔄 updateCommunityMetrics called with barangay:', barangay);
             // Debounce rapid successive calls to prevent flickering
             if (updateCommunityMetrics.debounceTimer) {
                 clearTimeout(updateCommunityMetrics.debounceTimer);
@@ -6921,7 +6922,7 @@ body {
                 }
                 dashboardState.updateInProgress = true;
                 try {
-                    console.log('🔄 updateCommunityMetrics called with barangay:', barangay);
+                    console.log('🔄 Starting community metrics update...');
                 
                 const params = {};
                 if (barangay && barangay !== '') {
@@ -7142,10 +7143,14 @@ body {
                 }
 
                 // Update Geographic Distribution Chart
+                console.log('🌍 Fetching Geographic Distribution...');
                 const geoData = await fetchDataFromAPI('geographic_distribution', params);
+                console.log('🌍 Geographic API Response:', geoData);
                 if (geoData && geoData.success && geoData.data) {
+                    console.log('🌍 Updating geographic display with data:', geoData.data);
                     updateGeographicChartDisplay(geoData.data);
                 } else {
+                    console.log('🌍 No geographic data, showing empty display');
                     updateGeographicChartDisplay([]);
                 }
 
@@ -7194,11 +7199,13 @@ body {
 
         // Function to update geographic distribution display
         function updateGeographicChartDisplay(data) {
+            console.log('🌍 updateGeographicChartDisplay called with data:', data);
             const container = document.getElementById('barangay-distribution');
             if (!container) {
-                console.error('Geographic chart container not found!');
+                console.error('❌ Geographic chart container not found!');
                 return;
             }
+            console.log('🌍 Geographic chart container found, updating display...');
 
             container.innerHTML = '';
             
@@ -7232,6 +7239,7 @@ body {
                     container.appendChild(barItem);
                 });
             } else {
+                console.log('🌍 No geographic data available, showing no data message');
                 // Show no data message
                 const noDataItem = document.createElement('div');
                 noDataItem.style.cssText = `
@@ -7244,6 +7252,7 @@ body {
                 noDataItem.textContent = 'No users found in selected area';
                 container.appendChild(noDataItem);
             }
+            console.log('🌍 Geographic chart display update completed');
         }
         
         // Function to clean up expired cache entries
