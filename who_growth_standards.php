@@ -408,7 +408,7 @@ class WHOGrowthStandards {
      * Weight-for-Height Lookup Table for Girls (24-60 months)
      * Based on exact values from WHO official tables
      */
-        private function getWeightForHeightGirlsLookup() {
+    private function getWeightForHeightGirlsLookup() {
         return [
             // Height 65.0cm
             65.0 => [
