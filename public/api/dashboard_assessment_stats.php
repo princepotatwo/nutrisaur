@@ -186,43 +186,16 @@ try {
     $barangay = $_GET['barangay'] ?? '';
     $timeFrame = $_GET['timeframe'] ?? '1d';
     
-    // Calculate date range
-    $now = new DateTime();
-    $startDate = new DateTime();
-    
-    switch($timeFrame) {
-        case '1d':
-            $startDate->modify('-1 day');
-            break;
-        case '1w':
-            $startDate->modify('-1 week');
-            break;
-        case '1m':
-            $startDate->modify('-1 month');
-            break;
-        case '3m':
-            $startDate->modify('-3 months');
-            break;
-        case '1y':
-            $startDate->modify('-1 year');
-            break;
-        default:
-            $startDate->modify('-1 day');
-    }
-    
-    $startDateStr = $startDate->format('Y-m-d H:i:s');
-    $endDateStr = $now->format('Y-m-d H:i:s');
-    
-    // Build query
-    $whereClause = "WHERE cu.screening_date BETWEEN :start_date AND :end_date";
-    $params = [':start_date' => $startDateStr, ':end_date' => $endDateStr];
+    // Build query (no time filtering to match donut chart behavior)
+    $whereClause = "WHERE 1=1";
+    $params = [];
     
     if ($barangay && $barangay !== '') {
         $whereClause .= " AND cu.barangay = :barangay";
         $params[':barangay'] = $barangay;
     }
     
-    // Get all users in time frame
+    // Get all users (no time filtering to match donut chart)
     $query = "
         SELECT 
             cu.*
@@ -235,7 +208,7 @@ try {
     $stmt->execute($params);
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Initialize counters
+    // Total screened count is now the same as users count (no time filtering)
     $totalScreened = count($users);
     $highRiskCases = 0;
     $samCases = 0;
@@ -395,11 +368,7 @@ try {
             'age_groups' => $ageGroups,
             'age_group_percentages' => $ageGroupPercentages,
             'critical_alerts' => $criticalAlerts,
-            'time_frame' => $timeFrame,
-            'start_date' => $startDateStr,
-            'end_date' => $endDateStr,
-            'start_date_formatted' => $startDate->format('M j, Y'),
-            'end_date_formatted' => $now->format('M j, Y')
+            'time_frame' => $timeFrame
         ]
     ];
     
