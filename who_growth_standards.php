@@ -343,7 +343,7 @@ class WHOGrowthStandards {
      * Weight-for-Height Lookup Table for Boys (24-60 months)
      * Based on exact values from WHO official tables
      */
-        private function getWeightForHeightBoysLookup() {
+    private function getWeightForHeightBoysLookup() {
         return [
             // Height 65.0cm
             65.0 => [

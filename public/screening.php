@@ -3573,7 +3573,7 @@ header {
                                     <option value="height-for-age">Height-for-Age (0-71 months)</option>
                                     <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
                                     <option value="bmi-for-age">BMI-for-Age (2-19 years)</option>
-                                    <option value="bmi-adult">BMI Adult (≥20 years)</option>
+                                    <option value="bmi-adult">BMI Adult (>19 years)</option>
                                 </select>
                             </div>
                         </div>
@@ -3699,7 +3699,7 @@ header {
                                             'bmi-for-age' => ['display' => $bmi_display, 'classification' => $bmi_classification]
                                         ];
                                         
-                                        // Add BMI Adult data for adults >=20 years (240+ months)
+                                        // Add BMI Adult data for adults >19 years (240+ months)
                                         if ($ageInMonths >= 240) {
                                             $adultBmiClassification = getAdultBMIClassification($bmi);
                                             $whoData['bmi-adult'] = [
@@ -4037,7 +4037,7 @@ header {
                             showRow = false;
                         }
                     } else if (standard === 'bmi-adult') {
-                        // BMI Adult: 20+ years (240+ months)
+                        // BMI Adult: >19 years (240+ months)
                         if (ageMonths < 240 || rowStandard !== 'bmi-adult') {
                             showRow = false;
                         }
