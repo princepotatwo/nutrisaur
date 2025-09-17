@@ -2057,6 +2057,7 @@ header .user-info {
 
 /* Higher specificity to override conflicting rules */
 .segments .segment.compact .segment-label {
+    position: relative !important; /* For absolute positioned color dot */
     text-align: center !important;
     font-weight: 600 !important;
     color: var(--color-text) !important;
@@ -2068,7 +2069,7 @@ header .user-info {
     line-height: 1.0 !important; /* Very tight line height */
     width: 100% !important; /* Force full width */
     margin: 0 !important; /* Remove all margins */
-    padding: 0 !important; /* Remove all padding */
+    padding: 0 0 0 10px !important; /* Left padding to make room for color dot */
     word-wrap: break-word !important; /* Break long words */
     hyphens: auto !important; /* Enable hyphenation */
     max-height: 14px !important; /* Limit height for label text only */
@@ -2096,6 +2097,18 @@ header .user-info {
     box-sizing: border-box !important;
 }
 
+/* Ensure segment-label spans have proper positioning for color dots */
+.segments .segment.compact .segment-label span {
+    position: relative !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
 /* Compact segment percentage styling - Higher specificity */
 .segments .segment.compact .segment-percentage {
     color: var(--color-text) !important;
@@ -2113,49 +2126,61 @@ header .user-info {
     box-sizing: border-box !important; /* Include padding in width calculation */
 }
 
-/* Color indicators for each risk level - Colored boxes matching donut chart colors */
+/* Color indicators for each risk level - Positioned absolutely to not affect text flow */
 .segment.compact[data-risk-level="0"] .segment-label::before {
     content: "" !important;
-    display: inline-block !important;
-    width: 8px !important;
-    height: 8px !important;
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    width: 6px !important;
+    height: 6px !important;
     background-color: #4CAF50 !important; /* Light theme: Green for Low Risk */
-    border-radius: 2px !important;
-    margin-right: 6px !important;
-    vertical-align: middle !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    vertical-align: top !important;
 }
 
 .segment.compact[data-risk-level="1"] .segment-label::before {
     content: "" !important;
-    display: inline-block !important;
-    width: 8px !important;
-    height: 8px !important;
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    width: 6px !important;
+    height: 6px !important;
     background-color: #FF9800 !important; /* Yellow for Moderate Risk */
-    border-radius: 2px !important;
-    margin-right: 6px !important;
-    vertical-align: middle !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    vertical-align: top !important;
 }
 
 .segment.compact[data-risk-level="2"] .segment-label::before {
     content: "" !important;
-    display: inline-block !important;
-    width: 8px !important;
-    height: 8px !important;
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    width: 6px !important;
+    height: 6px !important;
     background-color: #F44336 !important; /* Red for High Risk */
-    border-radius: 2px !important;
-    margin-right: 6px !important;
-    vertical-align: middle !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    vertical-align: top !important;
 }
 
 .segment.compact[data-risk-level="3"] .segment-label::before {
     content: "" !important;
-    display: inline-block !important;
-    width: 8px !important;
-    height: 8px !important;
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    width: 6px !important;
+    height: 6px !important;
     background-color: #D32F2F !important; /* Dark Red for Severe Risk */
-    border-radius: 2px !important;
-    margin-right: 6px !important;
-    vertical-align: middle !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    vertical-align: top !important;
 }
 
 /* Hover effects for compact segments */
@@ -4516,18 +4541,50 @@ header .user-info {
 /* Dark theme color indicators - matching donut chart colors */
 .dark-theme .segment.compact[data-risk-level="0"] .segment-label::before {
     background-color: #A1B454 !important; /* Dark theme: Green for Low Risk */
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .dark-theme .segment.compact[data-risk-level="1"] .segment-label::before {
     background-color: #F9B97F !important; /* Yellow for Moderate Risk */
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .dark-theme .segment.compact[data-risk-level="2"] .segment-label::before {
     background-color: #E53E3E !important; /* Red for High Risk */
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .dark-theme .segment.compact[data-risk-level="3"] .segment-label::before {
     background-color: #D32F2F !important; /* Dark Red for Severe Risk */
+    position: absolute !important;
+    left: 2px !important;
+    top: 2px !important;
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Dark theme segment text styling - ensure white text with higher specificity */
