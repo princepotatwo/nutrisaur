@@ -112,16 +112,20 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 if ($whoStandard === 'weight-for-age' || $whoStandard === 'height-for-age') {
                     // These standards are for children 0-71 months only
                     $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
+                    error_log("  - User age: {$ageInMonths} months, WFA/HFA eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 } elseif ($whoStandard === 'bmi-for-age') {
                     // BMI-for-age can be used for both children (24-71 months) and adults (>71 months)
                     $shouldProcess = ($ageInMonths >= 24);
+                    error_log("  - User age: {$ageInMonths} months, BMI-for-Age eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 } elseif ($whoStandard === 'bmi-adult') {
                     // BMI-adult: for adults 18+ years (216+ months)
                     $shouldProcess = ($ageInMonths >= 216);
+                    error_log("  - User age: {$ageInMonths} months, BMI-Adult eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 } elseif ($whoStandard === 'weight-for-height') {
                     // Weight-for-Height: 65-120 cm height range
                     $heightCm = floatval($user['height_cm']);
                     $shouldProcess = ($heightCm >= 65 && $heightCm <= 120);
+                    error_log("  - User height: {$heightCm} cm, WFH eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 }
                 
                 if ($shouldProcess) {
@@ -204,6 +208,11 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
         
         // Calculate total processed users (sum of all classifications)
         $totalProcessedUsers = $classifications['Severely Underweight'] + $classifications['Underweight'] + $classifications['Normal'] + $classifications['Overweight'] + $classifications['Obese'] + $classifications['Severely Wasted'] + $classifications['Wasted'] + $classifications['Severely Stunted'] + $classifications['Stunted'] + $classifications['Tall'] + $classifications['No Data'];
+        
+        error_log("📊 WHO Classification Summary for $whoStandard:");
+        error_log("  - Total users in database: " . count($users));
+        error_log("  - Users processed (eligible): $totalProcessedUsers");
+        error_log("  - Classifications: " . json_encode($classifications));
         
         return [
             'success' => true,
