@@ -2686,9 +2686,31 @@ class WHOGrowthStandards {
                         $zScore = null;
                     }
                     
+                    // Convert lookup table category to proper classification
+                    $properClassification = '';
+                    switch($category) {
+                        case 'severely_wasted':
+                            $properClassification = 'Severely Wasted';
+                            break;
+                        case 'wasted':
+                            $properClassification = 'Wasted';
+                            break;
+                        case 'normal':
+                            $properClassification = 'Normal';
+                            break;
+                        case 'overweight':
+                            $properClassification = 'Overweight';
+                            break;
+                        case 'obese':
+                            $properClassification = 'Obese';
+                            break;
+                        default:
+                            $properClassification = ucfirst(str_replace('_', ' ', $category));
+                    }
+                    
                     return [
                         'z_score' => $zScore !== null ? round($zScore, 2) : null,
-                        'classification' => $zScore !== null ? $this->getWeightForHeightClassification($zScore) : ucfirst(str_replace('_', ' ', $category)),
+                        'classification' => $properClassification,
                         'height_used' => $closestHeight,
                         'method' => 'hardcoded_lookup_table'
                     ];
@@ -3008,16 +3030,16 @@ class WHOGrowthStandards {
         
         // Check for severe malnutrition indicators
         if ($results['weight_for_age']['classification'] === 'Severely Underweight' ||
-            $results['height_for_age']['classification'] === 'Severely Underweight' ||
-            $results['weight_for_height']['classification'] === 'Severely Underweight') {
+            $results['height_for_age']['classification'] === 'Severely Stunted' ||
+            $results['weight_for_height']['classification'] === 'Severely Wasted') {
             $riskLevel = 'Severe';
             $riskFactors[] = 'Severe malnutrition detected';
         }
         
         // Check for moderate risk factors
         if ($results['weight_for_age']['classification'] === 'Underweight' ||
-            $results['height_for_age']['classification'] === 'Underweight' ||
-            $results['weight_for_height']['classification'] === 'Underweight') {
+            $results['height_for_age']['classification'] === 'Stunted' ||
+            $results['weight_for_height']['classification'] === 'Wasted') {
             if ($riskLevel === 'Low') $riskLevel = 'Moderate';
             $riskFactors[] = 'Underweight indicators present';
         }
