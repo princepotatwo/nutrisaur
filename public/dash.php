@@ -2030,23 +2030,82 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* ULTRA COMPACT DESIGN: Manual positioning - NO FLEX/AUTO */
+/* NEW ZERO-SPACING SEGMENT DESIGN */
 .segments .segment.compact {
-    display: inline-block !important; /* NO FLEXBOX */
+    display: inline-block !important;
     position: relative !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 4px !important;
-    height: 16px !important; /* Fixed height */
-    width: 80px !important; /* Fixed width - manual control */
+    height: 16px !important;
+    width: 80px !important;
     box-sizing: border-box !important;
     margin: 0 !important;
     padding: 0 !important;
-    font-size: 0 !important; /* Reset font size to eliminate spacing */
-    vertical-align: top !important; /* Align segments at top */
+    font-size: 0 !important;
+    vertical-align: top !important;
+    overflow: hidden !important; /* Hide any overflow */
 }
 
-/* Color dot - absolutely positioned */
+/* NEW: Zero-spacing text container */
+.segments .segment.compact .segment-text-container {
+    position: absolute !important;
+    left: 8px !important;
+    top: 0px !important;
+    right: 0px !important;
+    bottom: 0px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    width: calc(100% - 8px) !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* NEW: Zero-spacing label */
+.segments .segment.compact .segment-label {
+    position: absolute !important;
+    left: 0px !important;
+    top: 1px !important;
+    right: 0px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-weight: 600 !important;
+    color: var(--color-text) !important;
+    font-size: 5px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+    width: 100% !important;
+    height: 6px !important;
+    box-sizing: border-box !important;
+}
+
+/* NEW: Zero-spacing percentage */
+.segments .segment.compact .segment-percentage {
+    position: absolute !important;
+    left: 0px !important;
+    top: 7px !important;
+    right: 0px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: var(--color-text) !important;
+    opacity: 0.8 !important;
+    font-size: 4px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+    width: 100% !important;
+    height: 4px !important;
+    box-sizing: border-box !important;
+}
+
+/* NEW: Zero-spacing color dot */
 .segments .segment.compact .segment-dot {
     position: absolute !important;
     left: 2px !important;
@@ -2058,63 +2117,6 @@ header .user-info {
     margin: 0 !important;
     padding: 0 !important;
     display: block !important;
-}
-
-/* Text container - NO FLEXBOX, absolute positioning only */
-.segments .segment.compact .segment-text-container {
-    position: absolute !important;
-    left: 8px !important; /* Closer to dot */
-    right: 0px !important; /* NO right margin - flush to edge */
-    top: 0px !important;
-    bottom: 0px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important; /* NO FLEXBOX */
-    width: calc(100% - 8px) !important; /* Exact width calculation */
-    height: 100% !important;
-    box-sizing: border-box !important;
-}
-
-/* Classification label - NO FLEXBOX, absolute positioning */
-.segments .segment.compact .segment-label {
-    position: absolute !important;
-    left: 0px !important;
-    top: 2px !important; /* Small top offset */
-    right: 0px !important;
-    font-weight: 600 !important;
-    color: var(--color-text) !important;
-    font-size: 5px !important;
-    line-height: 1 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    display: block !important;
-    width: 100% !important;
-    height: 6px !important; /* Fixed height */
-    box-sizing: border-box !important;
-}
-
-/* Count and percentage - NO FLEXBOX, absolute positioning */
-.segments .segment.compact .segment-percentage {
-    position: absolute !important;
-    left: 0px !important;
-    top: 8px !important; /* Below the label */
-    right: 0px !important;
-    color: var(--color-text) !important;
-    opacity: 0.8 !important;
-    font-size: 4px !important;
-    line-height: 1 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    display: block !important;
-    width: 100% !important;
-    height: 4px !important; /* Fixed height */
-    box-sizing: border-box !important;
 }
 
 /* Color indicators for each risk level - Colored boxes matching donut chart colors */
