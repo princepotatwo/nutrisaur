@@ -3528,7 +3528,7 @@ header .user-info {
 
 /* Classification Trends Chart Styles */
 .trends-chart-container {
-    height: 300px;
+    height: 350px;
     margin-top: 20px;
 }
 
@@ -3536,16 +3536,17 @@ header .user-info {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    height: 250px;
-    gap: 8px;
-    padding: 20px;
+    height: 300px;
+    gap: 6px;
+    padding: 20px 20px 60px 20px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
+    overflow: visible;
 }
 
 .trend-bar {
-    width: 40px;
+    width: 25px;
     border-radius: 4px 4px 0 0;
     display: flex;
     flex-direction: column;
@@ -3575,21 +3576,28 @@ header .user-info {
 }
 
 .trend-bar-label {
-    margin-top: 8px;
-    font-size: 10px;
+    position: absolute;
+    bottom: -25px;
+    font-size: 9px;
     color: var(--color-text);
     text-align: center;
     font-weight: 500;
     line-height: 1.2;
-    max-width: 50px;
+    max-width: 60px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .trend-bar-standard {
+    position: absolute;
+    bottom: -40px;
     font-size: 8px;
     color: var(--color-text);
     opacity: 0.7;
-    margin-top: 2px;
     font-weight: 400;
+    text-align: center;
+    max-width: 60px;
 }
 
 /* Bar colors for different classifications */
@@ -8343,11 +8351,17 @@ body {
                 console.log('Fetching all classifications from:', url);
                 
                 const response = await fetch(url);
-                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 
+                const data = await response.json();
                 console.log('All classifications data received:', data);
+                console.log('Data success:', data.success);
+                console.log('Data keys:', data.data ? Object.keys(data.data) : 'No data object');
 
                 if (!data.success || !data.data || Object.keys(data.data).length === 0) {
+                    console.log('No data available for trends chart');
                     trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No data available</div>';
                     return;
                 }
@@ -8390,7 +8404,7 @@ body {
                 console.error('❌ Error updating trends chart:', error);
                 const trendsChart = document.getElementById('trends-chart');
                 if (trendsChart) {
-                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">Error loading trends</div>';
+                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">Error loading trends: ' + error.message + '</div>';
                 }
             }
         }
