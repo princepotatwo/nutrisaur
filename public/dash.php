@@ -3526,12 +3526,84 @@ header .user-info {
     border-radius: 15px;
 }
 
-/* Critical Alerts Styles */
-.critical-alerts {
-    max-height: 280px;
-    overflow-y: auto;
-    flex: 1;
+/* Classification Trends Chart Styles */
+.trends-chart-container {
+    height: 300px;
+    margin-top: 20px;
 }
+
+.trends-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 250px;
+    gap: 8px;
+    padding: 20px;
+    background: var(--color-bg);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+}
+
+.trend-bar {
+    width: 40px;
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    transition: all 0.3s ease;
+    min-height: 20px;
+}
+
+.trend-bar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.trend-bar-value {
+    position: absolute;
+    top: -25px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text);
+    background: var(--color-card);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    white-space: nowrap;
+}
+
+.trend-bar-label {
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--color-text);
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.2;
+    max-width: 50px;
+}
+
+.trend-bar-standard {
+    font-size: 8px;
+    color: var(--color-text);
+    opacity: 0.7;
+    margin-top: 2px;
+    font-weight: 400;
+}
+
+/* Bar colors for different classifications */
+.trend-bar.normal { background: #4CAF50; }
+.trend-bar.overweight { background: #FF9800; }
+.trend-bar.obese { background: #F44336; }
+.trend-bar.underweight { background: #FFC107; }
+.trend-bar.severely-underweight { background: #E91E63; }
+.trend-bar.stunted { background: #9C27B0; }
+.trend-bar.severely-stunted { background: #673AB7; }
+.trend-bar.wasted { background: #FF5722; }
+.trend-bar.severely-wasted { background: #D32F2F; }
+.trend-bar.tall { background: #00BCD4; }
+.trend-bar.no-data { background: #9E9E9E; }
 
 .alert-actions {
     display: flex;
@@ -6436,11 +6508,13 @@ body {
 
             
             <div class="chart-card">
-                <h3>Critical Alerts</h3>
-                <p class="chart-description">Priority cases requiring immediate medical attention based on clinical indicators and screening results.</p>
-                <ul class="alert-list" id="critical-alerts">
-                    <!-- Critical alerts will be added dynamically -->
-                </ul>
+                <h3>Classification Trends</h3>
+                <p class="chart-description">Distribution of nutritional classifications across different WHO standards. Shows trends and patterns in screening data.</p>
+                <div class="trends-chart-container">
+                    <div class="trends-chart" id="trends-chart">
+                        <!-- Bar chart will be generated dynamically -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -8242,6 +8316,81 @@ body {
             }
         }
 
+        // Function to update trends chart
+        function updateTrendsChart(data, whoStandard) {
+            console.log('📊 Updating trends chart with data:', data);
+            
+            try {
+                const trendsChart = document.getElementById('trends-chart');
+                if (!trendsChart) {
+                    console.error('Trends chart element not found');
+                    return;
+                }
+
+                // Clear previous chart
+                trendsChart.innerHTML = '';
+
+                if (!data || !data.classifications || data.total === 0) {
+                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No data available</div>';
+                    return;
+                }
+
+                // Get WHO standard abbreviation
+                const whoStandardLabels = {
+                    'weight-for-age': 'WFA',
+                    'height-for-age': 'HFA', 
+                    'weight-for-height': 'WFH',
+                    'bmi-for-age': 'BFA'
+                };
+
+                const standardLabel = whoStandardLabels[whoStandard] || whoStandard.toUpperCase();
+
+                // Convert classifications to array and sort by count (lowest to highest)
+                const classificationsArray = Object.entries(data.classifications)
+                    .filter(([key, value]) => value > 0) // Only show classifications with data
+                    .map(([classification, count]) => ({
+                        name: classification,
+                        count: count,
+                        standard: standardLabel
+                    }))
+                    .sort((a, b) => a.count - b.count); // Sort from lowest to highest
+
+                if (classificationsArray.length === 0) {
+                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No classifications found</div>';
+                    return;
+                }
+
+                // Find max count for scaling
+                const maxCount = Math.max(...classificationsArray.map(item => item.count));
+
+                // Create bars
+                classificationsArray.forEach(item => {
+                    const barHeight = maxCount > 0 ? (item.count / maxCount) * 200 : 20; // Scale to max 200px height
+                    
+                    const barDiv = document.createElement('div');
+                    barDiv.className = `trend-bar ${item.name.toLowerCase().replace(/\s+/g, '-')}`;
+                    barDiv.style.height = `${barHeight}px`;
+                    
+                    barDiv.innerHTML = `
+                        <div class="trend-bar-value">${item.count}</div>
+                        <div class="trend-bar-label">${item.name.replace(/([A-Z])/g, ' $1').trim()}</div>
+                        <div class="trend-bar-standard">${item.standard}</div>
+                    `;
+                    
+                    trendsChart.appendChild(barDiv);
+                });
+
+                console.log('✅ Trends chart updated successfully');
+
+            } catch (error) {
+                console.error('❌ Error updating trends chart:', error);
+                const trendsChart = document.getElementById('trends-chart');
+                if (trendsChart) {
+                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">Error loading trends</div>';
+                }
+            }
+        }
+
         // Function to update chart description based on WHO standard
         function updateWHOChartDescription(whoStandard) {
             const descriptions = {
@@ -8412,6 +8561,7 @@ body {
                 console.log('🎨 Updating chart...');
                 updateWHOClassificationChart(response);
                 updateWHOChartDescription(selectedStandard);
+                updateTrendsChart(response, selectedStandard);
                 console.log('✅ Chart update completed');
                 
             } catch (error) {
