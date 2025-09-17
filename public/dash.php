@@ -2035,67 +2035,79 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* NEW DESIGN: Clean segment layout with horizontal flexbox */
+/* ULTRA COMPACT DESIGN: Zero spacing inside boxes */
 .segments .segment.compact {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    padding: 4px 6px !important;
-    margin-bottom: 2px !important;
+    display: block !important;
+    position: relative !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 4px !important;
-    font-size: 9px !important;
-    min-height: 20px !important;
+    min-height: 16px !important;
     flex: 1 !important;
     max-width: calc(25% - 4px) !important;
     box-sizing: border-box !important;
-}
-
-/* Color indicator dot */
-.segments .segment.compact .segment-dot {
-    width: 8px !important;
-    height: 8px !important;
-    border-radius: 50% !important;
-    flex-shrink: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
+    font-size: 0 !important; /* Reset font size to eliminate spacing */
 }
 
-/* Text content container */
+/* Color dot - absolutely positioned */
+.segments .segment.compact .segment-dot {
+    position: absolute !important;
+    left: 2px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+}
+
+/* Text container - fills remaining space */
 .segments .segment.compact .segment-text-container {
+    position: absolute !important;
+    left: 10px !important;
+    right: 2px !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    flex: 1 !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
 }
 
-/* Classification label */
+/* Classification label - zero spacing */
 .segments .segment.compact .segment-label {
     font-weight: 600 !important;
     color: var(--color-text) !important;
-    font-size: 7px !important;
-    line-height: 1.0 !important;
+    font-size: 6px !important;
+    line-height: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    display: block !important;
+    width: 100% !important;
 }
 
-/* Count and percentage */
+/* Count and percentage - zero spacing */
 .segments .segment.compact .segment-percentage {
     color: var(--color-text) !important;
     opacity: 0.8 !important;
-    font-size: 6px !important;
-    line-height: 1.0 !important;
+    font-size: 5px !important;
+    line-height: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    display: block !important;
+    width: 100% !important;
 }
 
 /* Color indicators for each risk level - Colored boxes matching donut chart colors */
@@ -4487,19 +4499,26 @@ header .user-info {
     background-color: #D32F2F !important; /* Dark Red for Severe Risk */
 }
 
-/* Dark theme segment styling */
+/* Dark theme segment styling - ultra compact */
 .dark-theme .segments .segment.compact {
     background: rgba(255, 255, 255, 0.05) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0 !important;
 }
 
 .dark-theme .segments .segment.compact .segment-label {
     color: #FFFFFF !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .dark-theme .segments .segment.compact .segment-percentage {
     color: #FFFFFF !important;
     opacity: 0.8 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .dark-theme .segment-label {
