@@ -3699,61 +3699,59 @@ header {
                                             'bmi-for-age' => ['display' => $bmi_display, 'classification' => $bmi_classification]
                                         ];
                                         
-                                        // Determine which standard to show based on age and height
-                                        // Use WHO decision tree logic - show Weight-for-Age by default for 0-71 months
-                                        $showStandard = null;
-                                        $showData = null;
-                                        
-                                        if ($ageInMonths >= 0 && $ageInMonths <= 71) {
-                                            // For children 0-71 months, show Weight-for-Age by default
-                                            $showStandard = 'weight-for-age';
-                                            $showData = $whoData['weight-for-age'];
-                                        } elseif ($ageInMonths > 71) {
-                                            // For older children/adults, show BMI with adult classification
-                                            $showStandard = 'bmi-for-age';
-                                            $adultBmiClassification = getAdultBMIClassification($bmi);
-                                            $showData = [
-                                                'display' => $bmi,
-                                                'classification' => $adultBmiClassification,
-                                                'z_score' => null // Adult BMI doesn't have z-score
-                                            ];
-                                        }
-                                        
-                                        if ($showStandard && $showData) {
+                                        // Generate rows for ALL WHO standards, let JavaScript filter which ones to show
+                                        foreach ($whoData as $standardName => $standardData) {
+                                            // Skip standards that don't apply to this age/height
+                                            if ($standardName === 'weight-for-age' && $ageInMonths > 71) continue;
+                                            if ($standardName === 'height-for-age' && $ageInMonths > 71) continue;
+                                            if ($standardName === 'weight-for-length' && $ageInMonths >= 24) continue;
+                                            if ($standardName === 'weight-for-height' && $ageInMonths > 60) continue;
+                                            if ($standardName === 'bmi-for-age' && $ageInMonths < 24) continue;
+                                            
+                                            // For BMI-for-age in adults (>240 months), use adult BMI classification
+                                            if ($standardName === 'bmi-for-age' && $ageInMonths >= 240) {
+                                                $adultBmiClassification = getAdultBMIClassification($bmi);
+                                                $standardData = [
+                                                    'display' => $bmi,
+                                                    'classification' => $adultBmiClassification['classification'],
+                                                    'z_score' => $adultBmiClassification['z_score']
+                                                ];
+                                            }
+                                            
                                             // Get z-score and standard deviation range
-                                            $zScore = $showData['z_score'] ?? null;
+                                            $zScore = $standardData['z_score'] ?? null;
                                             $sdRange = getStandardDeviationRange($zScore);
                                             
                                             // Combine z-score with SD range
                                             $zScoreDisplay = $zScore !== null ? number_format($zScore, 2) . ' (' . $sdRange . ')' : 'N/A';
                                             
-                                            echo '<tr data-standard="' . $showStandard . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
+                                            echo '<tr data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             echo '<td class="text-center">' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . $ageDisplay . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                             
                                             // Show conditional columns based on standard
-                                            if ($showStandard === 'weight-for-age' || $showStandard === 'bmi-for-age') {
+                                            if ($standardName === 'weight-for-age' || $standardName === 'bmi-for-age') {
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                             } else {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                             }
                                             
-                                            if ($showStandard === 'height-for-age' || $showStandard === 'weight-for-height' || $showStandard === 'weight-for-length') {
+                                            if ($standardName === 'height-for-age' || $standardName === 'weight-for-height' || $standardName === 'weight-for-length') {
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             } else {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             }
                                             
-                                            if ($showStandard === 'bmi-for-age') {
+                                            if ($standardName === 'bmi-for-age') {
                                                 echo '<td class="text-center conditional-column">' . $bmi . '</td>';
                                             } else {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
                                             }
                                             
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
-                                            echo '<td class="text-center">' . htmlspecialchars($showData['classification'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">' . htmlspecialchars($standardData['classification'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                             echo '</tr>';
                                         }
@@ -4083,6 +4081,7 @@ header {
         document.addEventListener('DOMContentLoaded', function() {
             initializeTableFunctionality();
             updateTableHeaders(); // Initialize table headers on page load
+            filterByStandard(); // Initialize with default WHO standard (weight-for-age)
         });
 
 
@@ -4723,6 +4722,22 @@ header {
         function filterByStandard() {
             updateTableHeaders();
             updateTableBodyColumns();
+            
+            // Show only rows for the selected WHO standard
+            const standardFilter = document.getElementById('standardFilter');
+            const selectedStandard = standardFilter ? standardFilter.value : 'weight-for-age';
+            
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
+            tableRows.forEach(row => {
+                const rowStandard = row.dataset.standard;
+                if (rowStandard === selectedStandard) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Apply other filters on the visible rows
             applyAllFilters();
         }
         
