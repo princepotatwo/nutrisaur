@@ -2035,8 +2035,8 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Compact single-line segments */
-.segment.compact {
+/* Compact single-line segments - Higher specificity to override conflicting rules */
+.segments .segment.compact {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -2055,7 +2055,8 @@ header .user-info {
     box-sizing: border-box !important;
 }
 
-.segment.compact .segment-label {
+/* Higher specificity to override conflicting rules */
+.segments .segment.compact .segment-label {
     text-align: center !important;
     font-weight: 600 !important;
     color: var(--color-text) !important;
@@ -2074,8 +2075,8 @@ header .user-info {
     display: block !important; /* Ensure it takes full width */
 }
 
-/* Compact segment percentage styling */
-.segment.compact .segment-percentage {
+/* Compact segment percentage styling - Higher specificity */
+.segments .segment.compact .segment-percentage {
     color: var(--color-text) !important;
     opacity: 0.8 !important;
     text-align: center !important;
@@ -4507,13 +4508,20 @@ header .user-info {
     background-color: #D32F2F !important; /* Dark Red for Severe Risk */
 }
 
-/* Dark theme segment text styling - ensure white text */
-.dark-theme .segment.compact .segment-label {
+/* Dark theme segment text styling - ensure white text with higher specificity */
+.dark-theme .segments .segment.compact .segment-label {
     color: #FFFFFF !important; /* White text for dark theme */
+    display: block !important; /* Override any conflicting display rules */
+    white-space: normal !important; /* Allow two lines */
+    font-size: 7px !important; /* Override conflicting font size */
+    max-height: 14px !important; /* Limit height */
 }
 
-.dark-theme .segment.compact .segment-percentage {
+.dark-theme .segments .segment.compact .segment-percentage {
     color: #FFFFFF !important; /* White text for dark theme */
+    display: block !important; /* Override any conflicting display rules */
+    font-size: 6px !important; /* Override conflicting font size */
+    max-height: 8px !important; /* Limit height */
 }
 
 .dark-theme .segment-label {
