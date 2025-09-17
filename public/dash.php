@@ -360,6 +360,10 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
         error_log("🔍 Dashboard Metrics Debug - Starting calculation");
         error_log("  - Total users: $totalScreened");
         
+        $wfaProcessed = 0;
+        $hfaProcessed = 0;
+        $wfhProcessed = 0;
+        
         foreach ($users as $user) {
             // Use the same age calculation as DatabaseAPI (donut chart)
             $who = new WHOGrowthStandards();
@@ -367,55 +371,46 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
             
             // Check Weight-for-Age (0-71 months) for Severely Underweight
             if ($ageInMonths >= 0 && $ageInMonths <= 71) {
+                $wfaProcessed++;
                 $weightForAge = $who->calculateWeightForAge(
                     floatval($user['weight']), 
                     $ageInMonths, 
                     $user['sex']
                 );
                 
-                
                 if ($weightForAge && isset($weightForAge['classification']) && 
                     $weightForAge['classification'] === 'Severely Underweight') {
                     $highRiskCases++;
-                    error_log("  - Found Severely Underweight: " . ($user['email'] ?? 'unknown'));
                 }
             }
             
             // Check Height-for-Age (0-71 months) for Severely Stunted
             if ($ageInMonths >= 0 && $ageInMonths <= 71) {
+                $hfaProcessed++;
                 $heightForAge = $who->calculateHeightForAge(
                     floatval($user['height']), 
                     $ageInMonths, 
                     $user['sex']
                 );
                 
-                error_log("  - HFA: " . ($user['email'] ?? 'unknown') . 
-                         " | Age: $ageInMonths | Height: " . $user['height'] . 
-                         " | Classification: " . ($heightForAge['classification'] ?? 'null'));
-                
                 if ($heightForAge && isset($heightForAge['classification']) && 
                     $heightForAge['classification'] === 'Severely Stunted') {
                     $samCases++;
-                    error_log("  - Found Severely Stunted: " . ($user['email'] ?? 'unknown'));
                 }
             }
             
             // Check Weight-for-Height (65-120 cm height) for Severely Wasted
             if ($user['height'] >= 65 && $user['height'] <= 120) {
+                $wfhProcessed++;
                 $weightForHeight = $who->calculateWeightForHeight(
                     floatval($user['weight']), 
                     floatval($user['height']), 
                     $user['sex']
                 );
                 
-                error_log("  - WFH: " . ($user['email'] ?? 'unknown') . 
-                         " | Height: " . $user['height'] . " | Weight: " . $user['weight'] . 
-                         " | Classification: " . ($weightForHeight['classification'] ?? 'null'));
-                
                 if ($weightForHeight && isset($weightForHeight['classification']) && 
                     $weightForHeight['classification'] === 'Severely Wasted') {
                     $criticalMuac++;
-                    error_log("  - Found Severely Wasted: " . ($user['email'] ?? 'unknown'));
                 }
             }
             
@@ -427,6 +422,9 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
         
         error_log("🔍 Dashboard Metrics Debug - Final counts:");
         error_log("  - Total Screened: $totalScreened");
+        error_log("  - WFA Processed: $wfaProcessed");
+        error_log("  - HFA Processed: $hfaProcessed");
+        error_log("  - WFH Processed: $wfhProcessed");
         error_log("  - Severely Underweight: $highRiskCases");
         error_log("  - Severely Stunted: $samCases");
         error_log("  - Severely Wasted: $criticalMuac");
