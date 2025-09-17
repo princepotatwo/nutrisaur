@@ -7136,10 +7136,13 @@ body {
                 }
 
                 // Update Geographic Distribution Chart
+                console.log('🌍 Fetching Geographic Distribution...');
                 const geoData = await fetchDataFromAPI('geographic_distribution', params);
                 console.log('🔄 Geographic Data received:', geoData);
                 if (geoData && typeof geoData === 'object') {
-                    updateGeographicChartDisplay(geoData);
+                    updateGeographicChartDisplay(geoData.data || geoData);
+                } else {
+                    console.error('❌ Geographic data is null or invalid:', geoData);
                 }
 
                 // Update Critical Alerts - Use assessment data from dashboard stats
@@ -7165,13 +7168,19 @@ body {
         // Function to update geographic distribution
         async function updateGeographicChart(barangay = '') {
             try {
+                console.log('🌍 updateGeographicChart called with barangay:', barangay);
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
                 }
+                console.log('🌍 Fetching geographic data with params:', params);
                 const data = await fetchDataFromAPI('geographic_distribution', params);
+                console.log('🌍 Geographic API response:', data);
                 if (data && data.success) {
+                    console.log('🌍 Updating geographic chart display with data:', data.data);
                     updateGeographicChartDisplay(data.data);
+                } else {
+                    console.error('❌ Geographic API failed or returned no data:', data);
                 }
             } catch (error) {
                 console.error('Geographic chart update error:', error);
@@ -7182,12 +7191,18 @@ body {
 
         // Function to update geographic distribution display
         function updateGeographicChartDisplay(data) {
+            console.log('🌍 updateGeographicChartDisplay called with data:', data);
             const container = document.getElementById('barangay-prevalence');
-            if (!container) return;
+            if (!container) {
+                console.error('❌ Geographic chart container not found!');
+                return;
+            }
+            console.log('🌍 Geographic chart container found, updating display...');
 
             container.innerHTML = '';
             
             if (data && data.length > 0) {
+                console.log('🌍 Processing', data.length, 'geographic data items');
                 // Sort by count descending for better visualization
                 const sortedData = data.sort((a, b) => (b.count || 0) - (a.count || 0));
                 
@@ -7209,6 +7224,7 @@ body {
                     container.appendChild(barItem);
                 });
             } else {
+                console.log('🌍 No geographic data available, showing no data message');
                 // Show no data message
                 const noDataItem = document.createElement('div');
                 noDataItem.style.cssText = `
@@ -7221,6 +7237,7 @@ body {
                 noDataItem.textContent = 'No geographic data available for selected area';
                 container.appendChild(noDataItem);
             }
+            console.log('🌍 Geographic chart display update completed');
         }
         
         // Function to clean up expired cache entries
