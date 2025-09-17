@@ -4518,6 +4518,104 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // UPDATE COMMUNITY USER API
+        // ========================================
+        case 'update_community_user':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    $email = $data['email'] ?? '';
+                    
+                    if (empty($email)) {
+                        echo json_encode(['success' => false, 'message' => 'Email is required']);
+                        break;
+                    }
+                    
+                    $pdo = $db->getPDO();
+                    if (!$pdo) {
+                        echo json_encode(['success' => false, 'message' => 'Database connection not available']);
+                        break;
+                    }
+                    
+                    // Check if user exists
+                    $checkStmt = $pdo->prepare("SELECT id FROM community_users WHERE email = ?");
+                    $checkStmt->execute([$email]);
+                    $userExists = $checkStmt->fetch();
+                    
+                    if (!$userExists) {
+                        echo json_encode(['success' => false, 'message' => 'User not found']);
+                        break;
+                    }
+                    
+                    // Prepare update data
+                    $updateFields = [];
+                    $updateValues = [];
+                    
+                    if (isset($data['name']) && !empty($data['name'])) {
+                        $updateFields[] = "name = ?";
+                        $updateValues[] = $data['name'];
+                    }
+                    
+                    if (isset($data['height_cm']) && !empty($data['height_cm'])) {
+                        $updateFields[] = "height = ?";
+                        $updateValues[] = $data['height_cm'];
+                    }
+                    
+                    if (isset($data['weight_kg']) && !empty($data['weight_kg'])) {
+                        $updateFields[] = "weight = ?";
+                        $updateValues[] = $data['weight_kg'];
+                    }
+                    
+                    if (isset($data['birthday']) && !empty($data['birthday'])) {
+                        $updateFields[] = "birthday = ?";
+                        $updateValues[] = $data['birthday'];
+                    }
+                    
+                    if (isset($data['sex']) && !empty($data['sex'])) {
+                        $updateFields[] = "sex = ?";
+                        $updateValues[] = $data['sex'];
+                    }
+                    
+                    if (isset($data['email']) && !empty($data['email'])) {
+                        $updateFields[] = "email = ?";
+                        $updateValues[] = $data['email'];
+                    }
+                    
+                    // Always update screening_date
+                    $updateFields[] = "screening_date = NOW()";
+                    
+                    if (empty($updateFields)) {
+                        echo json_encode(['success' => false, 'message' => 'No fields to update']);
+                        break;
+                    }
+                    
+                    // Add email for WHERE clause
+                    $updateValues[] = $email;
+                    
+                    $updateSql = "UPDATE community_users SET " . implode(", ", $updateFields) . " WHERE email = ?";
+                    $updateStmt = $pdo->prepare($updateSql);
+                    $result = $updateStmt->execute($updateValues);
+                    
+                    if ($result) {
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'User profile updated successfully',
+                            'updated_fields' => $updateFields
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to update user profile']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'POST method required']);
+                }
+            } catch (Exception $e) {
+                error_log("Update community user error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Error updating user profile: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:

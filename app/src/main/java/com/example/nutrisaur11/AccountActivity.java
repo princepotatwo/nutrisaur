@@ -26,7 +26,6 @@ public class AccountActivity extends BaseActivity {
     
     // Edit Profile button
     private Button editProfileButton;
-    private Button refreshProfileButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,17 +85,10 @@ public class AccountActivity extends BaseActivity {
         // Edit Profile button
         editProfileButton = findViewById(R.id.edit_profile_button);
         if (editProfileButton != null) {
-            editProfileButton.setOnClickListener(v -> showEditProfileDialog());
-        }
-        
-        // Refresh Profile button
-        refreshProfileButton = findViewById(R.id.refresh_profile_button);
-        if (refreshProfileButton != null) {
-            refreshProfileButton.setOnClickListener(v -> {
+            editProfileButton.setOnClickListener(v -> {
                 onUserInteraction(); // Track user interaction
-                Log.d("AccountActivity", "Refresh button clicked");
-                refreshProfileData();
-                Toast.makeText(AccountActivity.this, "Profile data refreshed", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(AccountActivity.this, EditProfileActivity.class);
+                startActivity(intent);
             });
         }
     }
@@ -139,25 +131,45 @@ public class AccountActivity extends BaseActivity {
         }
         
         try {
-            // Parse birthday string (format: MM/DD/YYYY)
-            String[] parts = birthdayStr.split("/");
-            if (parts.length == 3) {
-                int birthMonth = Integer.parseInt(parts[0]) - 1; // Calendar months are 0-based
-                int birthDay = Integer.parseInt(parts[1]);
-                int birthYear = Integer.parseInt(parts[2]);
-                
-                java.util.Calendar birth = java.util.Calendar.getInstance();
-                birth.set(birthYear, birthMonth, birthDay);
-                
-                java.util.Calendar now = java.util.Calendar.getInstance();
-                int years = now.get(java.util.Calendar.YEAR) - birth.get(java.util.Calendar.YEAR);
-                int months = now.get(java.util.Calendar.MONTH) - birth.get(java.util.Calendar.MONTH);
-                int totalMonths = years * 12 + months;
-                if (now.get(java.util.Calendar.DAY_OF_MONTH) < birth.get(java.util.Calendar.DAY_OF_MONTH)) {
-                    totalMonths--;
+            // Parse birthday string - handle both MM/DD/YYYY and YYYY-MM-DD formats
+            String[] parts;
+            int birthYear, birthMonth, birthDay;
+            
+            if (birthdayStr.contains("-")) {
+                // ISO format: YYYY-MM-DD
+                parts = birthdayStr.split("-");
+                if (parts.length == 3) {
+                    birthYear = Integer.parseInt(parts[0]);
+                    birthMonth = Integer.parseInt(parts[1]) - 1; // Calendar months are 0-based
+                    birthDay = Integer.parseInt(parts[2]);
+                } else {
+                    return 0;
                 }
-                return Math.max(totalMonths, 0);
+            } else if (birthdayStr.contains("/")) {
+                // MM/DD/YYYY format
+                parts = birthdayStr.split("/");
+                if (parts.length == 3) {
+                    birthMonth = Integer.parseInt(parts[0]) - 1; // Calendar months are 0-based
+                    birthDay = Integer.parseInt(parts[1]);
+                    birthYear = Integer.parseInt(parts[2]);
+                } else {
+                    return 0;
+                }
+            } else {
+                return 0;
             }
+            
+            java.util.Calendar birth = java.util.Calendar.getInstance();
+            birth.set(birthYear, birthMonth, birthDay);
+            
+            java.util.Calendar now = java.util.Calendar.getInstance();
+            int years = now.get(java.util.Calendar.YEAR) - birth.get(java.util.Calendar.YEAR);
+            int months = now.get(java.util.Calendar.MONTH) - birth.get(java.util.Calendar.MONTH);
+            int totalMonths = years * 12 + months;
+            if (now.get(java.util.Calendar.DAY_OF_MONTH) < birth.get(java.util.Calendar.DAY_OF_MONTH)) {
+                totalMonths--;
+            }
+            return Math.max(totalMonths, 0);
         } catch (Exception e) {
             Log.e("AccountActivity", "Error calculating age from birthday '" + birthdayStr + "': " + e.getMessage());
         }
@@ -173,45 +185,63 @@ public class AccountActivity extends BaseActivity {
         
         Log.d("AccountActivity", "Loading user profile for email: " + email);
         
-        // Check if we have cached data first
-        if (hasCachedProfileData(email)) {
-            Log.d("AccountActivity", "Using cached profile data");
-            loadCachedProfileData(email);
-            return;
-        }
-        
-        // Use CommunityUserManager to fetch data from community_users table
+        // Always fetch fresh data from database (same pattern as EditProfileActivity)
+        // Removed caching logic to ensure we always get the latest data
         new Thread(() -> {
             try {
                 CommunityUserManager userManager = new CommunityUserManager(AccountActivity.this);
-                Map<String, String> userData = userManager.getCurrentUserData();
+                Map<String, String> userData = userManager.getCurrentUserDataFromDatabase();
                 
-                if (!userData.isEmpty()) {
+                if (userData != null && !userData.isEmpty()) {
                     Log.d("AccountActivity", "Retrieved user data from community_users: " + userData.toString());
                     
                     // Extract data from community_users table
                     final String name = userData.getOrDefault("name", "User");
                     final String sex = userData.getOrDefault("sex", "Not specified");
-                    final String ageStr = userData.getOrDefault("age", "0");
+                    final String birthday = userData.getOrDefault("birthday", "");
                     final String weightStr = userData.getOrDefault("weight_kg", "0");
                     final String heightStr = userData.getOrDefault("height_cm", "0");
                     final String bmiStr = userData.getOrDefault("bmi", "0");
                     
-                    // Parse values
-                    final int age = Integer.parseInt(ageStr);
-                    final double weight = Double.parseDouble(weightStr);
-                    final double height = Double.parseDouble(heightStr);
-                    final double bmi = Double.parseDouble(bmiStr);
-                    final String goal = "Healthy Nutrition";
+                    // Calculate age from birthday
+                    final int age = calculateAgeFromBirthday(birthday);
                     
-                    Log.d("AccountActivity", "Parsed community_users data - name: " + name + ", age: " + age + ", weight: " + weight + ", height: " + height + ", bmi: " + bmi + ", sex: " + sex);
+                    // Parse values with error handling
+                    double weight = 0.0;
+                    double height = 0.0;
+                    double bmi = 0.0;
                     
-                    // Cache the data
-                    cacheProfileData(email, name, age, height, weight, bmi, sex, goal);
+                    try {
+                        weight = Double.parseDouble(weightStr);
+                    } catch (NumberFormatException e) {
+                        Log.e("AccountActivity", "Error parsing weight: " + weightStr);
+                    }
                     
-                    // Update UI on main thread
+                    try {
+                        height = Double.parseDouble(heightStr);
+                    } catch (NumberFormatException e) {
+                        Log.e("AccountActivity", "Error parsing height: " + heightStr);
+                    }
+                    
+                    try {
+                        bmi = Double.parseDouble(bmiStr);
+                    } catch (NumberFormatException e) {
+                        Log.e("AccountActivity", "Error parsing BMI: " + bmiStr);
+                    }
+                    
+                    // Make final for lambda
+                    final double finalWeight = weight;
+                    final double finalHeight = height;
+                    final double finalBmi = bmi;
+                    
+                    // Use email as goal instead of "Healthy Nutrition"
+                    final String goal = email;
+                    
+                    Log.d("AccountActivity", "Parsed community_users data - name: " + name + ", age: " + age + ", weight: " + weight + ", height: " + height + ", bmi: " + bmi + ", sex: " + sex + ", email: " + email);
+                    
+                    // Update UI on main thread (no caching to ensure fresh data)
                     runOnUiThread(() -> {
-                        displayUserProfile(name, age, height, weight, bmi, sex, goal);
+                        displayUserProfile(name, age, finalHeight, finalWeight, finalBmi, sex, goal);
                         Log.d("AccountActivity", "Updated profile display with community_users data");
                     });
                     
@@ -359,7 +389,7 @@ public class AccountActivity extends BaseActivity {
         
         // Set user goal
         if (userGoalText != null) {
-            userGoalText.setText("Goal: " + (goal != null ? goal : "Healthy Nutrition"));
+            userGoalText.setText(goal != null ? goal : getCurrentUserEmail());
         }
         
         // Display BMI with accurate values
@@ -415,7 +445,7 @@ public class AccountActivity extends BaseActivity {
         double weight = 70.0; // Default weight in kg
         double bmi = calculateBMI(height, weight);
         String gender = "Not specified";
-        String goal = "Healthy Nutrition";
+        String goal = email;
         
         // Save to database
         android.content.ContentValues values = new android.content.ContentValues();
@@ -441,7 +471,7 @@ public class AccountActivity extends BaseActivity {
     private void setDefaultProfile() {
         // Set default values when no user data is available
         if (userNameText != null) userNameText.setText("User");
-        if (userGoalText != null) userGoalText.setText("Goal: Healthy Nutrition");
+        if (userGoalText != null) userGoalText.setText(getCurrentUserEmail());
         if (bmiDisplayText != null) bmiDisplayText.setText("--");
         if (ageDisplayText != null) ageDisplayText.setText("--");
         if (currentWeightText != null) currentWeightText.setText("-- kg");
@@ -497,7 +527,7 @@ public class AccountActivity extends BaseActivity {
         double weight = prefs.getFloat("profile_weight_" + email, 0.0f);
         double bmi = prefs.getFloat("profile_bmi_" + email, 0.0f);
         String gender = prefs.getString("profile_gender_" + email, "Not specified");
-        String goal = prefs.getString("profile_goal_" + email, "Healthy Nutrition");
+        String goal = prefs.getString("profile_goal_" + email, email);
         
         Log.d("AccountActivity", "Loaded cached profile data for: " + email);
         displayUserProfile(name, age, height, weight, bmi, gender, goal);

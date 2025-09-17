@@ -112,6 +112,11 @@
             android:name=".AccountActivity"
             android:exported="true"
             android:theme="@style/Theme.Nutrisaur11" />
+            
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Nutrisaur11" />
         <activity
             android:name=".FavoritesActivity"
             android:exported="true"

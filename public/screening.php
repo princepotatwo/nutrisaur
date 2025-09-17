@@ -17,10 +17,10 @@ require_once __DIR__ . '/../who_growth_standards.php';
 // Function to get adult BMI classification (for children over 71 months)
 // This is only used as fallback for children over 71 months when WHO standards don't apply
 function getAdultBMIClassification($bmi) {
-    if ($bmi < 18.5) return 'Underweight';
-    if ($bmi < 25) return 'Normal weight';
-    if ($bmi < 30) return 'Overweight';
-    return 'Obese';
+    if ($bmi < 18.5) return ['z_score' => -1.0, 'classification' => 'Underweight'];
+    if ($bmi < 25) return ['z_score' => 0.0, 'classification' => 'Normal weight'];
+    if ($bmi < 30) return ['z_score' => 1.0, 'classification' => 'Overweight'];
+    return ['z_score' => 2.0, 'classification' => 'Obese'];
 }
 
 // Function to convert z-score to standard deviation range display

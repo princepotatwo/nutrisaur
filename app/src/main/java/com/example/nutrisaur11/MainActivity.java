@@ -102,9 +102,8 @@ public class MainActivity extends BaseActivity {
         CommunityUserManager userManager = new CommunityUserManager(this);
         isLoggedIn = userManager.isLoggedIn();
         
-        // Debug: Log the login status and email
+        // Get current user email
         String currentEmail = userManager.getCurrentUserEmail();
-        Log.d("MainActivity", "Login check - isLoggedIn: " + isLoggedIn + ", email: " + currentEmail);
         
         if (isLoggedIn) {
             setContentView(R.layout.activity_dashboard);
@@ -131,7 +130,6 @@ public class MainActivity extends BaseActivity {
             androidx.swiperefreshlayout.widget.SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
             if (swipeRefreshLayout != null) {
                 swipeRefreshLayout.setOnRefreshListener(() -> {
-                    Log.d("MainActivity", "Manual refresh triggered by user");
                     fetchAndDisplayDashboardEvents();
                     swipeRefreshLayout.setRefreshing(false);
                 });
@@ -355,9 +353,8 @@ public class MainActivity extends BaseActivity {
             // Clear any old calorie data to ensure fresh start
             CalorieTracker calorieTracker = new CalorieTracker(this);
             calorieTracker.clearDay();
-            android.util.Log.d("MainActivity", "Cleared old calorie data for fresh start");
         } catch (Exception e) {
-            android.util.Log.e("MainActivity", "Error clearing old calorie data: " + e.getMessage());
+            // Silent error handling
         }
     }
     
@@ -372,7 +369,6 @@ public class MainActivity extends BaseActivity {
                 CalorieTracker.clearUserData(this, currentUserEmail);
                 GeminiCacheManager.clearUserData(this, currentUserEmail);
                 FavoritesManager.clearUserData(this, currentUserEmail);
-                android.util.Log.d("MainActivity", "Cleared user-specific data for: " + currentUserEmail);
             }
             
             // Clear all user data from main preferences
@@ -384,10 +380,8 @@ public class MainActivity extends BaseActivity {
             
             editor.apply();
             
-            android.util.Log.d("MainActivity", "All user data cleared from SharedPreferences");
-            
         } catch (Exception e) {
-            android.util.Log.e("MainActivity", "Error clearing user data: " + e.getMessage());
+            // Silent error handling
         }
     }
 
@@ -416,11 +410,8 @@ public class MainActivity extends BaseActivity {
     private void fetchAndDisplayDashboardEvents() {
         String userEmail = getCurrentUserEmail();
         if (userEmail == null) {
-            android.util.Log.e("MainActivity", "User email is null, cannot fetch events");
             return;
         }
-        
-        android.util.Log.d("MainActivity", "Fetching dashboard events for user: " + userEmail);
         
         // Use direct HTTP request to fetch events
         new Thread(() -> {
@@ -435,7 +426,6 @@ public class MainActivity extends BaseActivity {
                 conn.setReadTimeout(15000);
                 
                 int responseCode = conn.getResponseCode();
-                android.util.Log.d("MainActivity", "Events API response code: " + responseCode);
                 
                 if (responseCode == 200) {
                     java.io.BufferedReader reader = new java.io.BufferedReader(
@@ -447,12 +437,9 @@ public class MainActivity extends BaseActivity {
                     }
                     reader.close();
                     
-                    android.util.Log.d("MainActivity", "Events API response: " + response.toString());
-                    
                     org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
                     if (jsonResponse.has("events")) {
                         org.json.JSONArray eventsArray = jsonResponse.getJSONArray("events");
-                        android.util.Log.d("MainActivity", "Found " + eventsArray.length() + " events");
                         
                         // Fetch joined events for this user
                         List<Integer> joinedIds = fetchUserJoinedEvents(userEmail);
@@ -460,19 +447,16 @@ public class MainActivity extends BaseActivity {
                         // Now updateDashboardEvents with joinedIds
                         updateDashboardEvents(eventsArray, joinedIds);
                     } else {
-                        android.util.Log.e("MainActivity", "API returned no events data");
                         runOnUiThread(() -> {
                             showNoEventsMessage("No events data available");
                         });
                     }
                 } else {
-                    android.util.Log.e("MainActivity", "Failed to fetch events, response code: " + responseCode);
                     runOnUiThread(() -> {
                         showNoEventsMessage("Failed to load events");
                     });
                 }
             } catch (Exception e) {
-                android.util.Log.e("MainActivity", "Error fetching events: " + e.getMessage(), e);
                 runOnUiThread(() -> {
                     showNoEventsMessage("Error loading events");
                 });
@@ -500,7 +484,6 @@ public class MainActivity extends BaseActivity {
             os.close();
             
             int responseCode = conn.getResponseCode();
-            android.util.Log.d("MainActivity", "Unified API user events response code: " + responseCode);
             
             if (responseCode == 200) {
                 java.io.BufferedReader reader = new java.io.BufferedReader(
@@ -512,8 +495,6 @@ public class MainActivity extends BaseActivity {
                 }
                 reader.close();
                 
-                android.util.Log.d("MainActivity", "Unified API user events response: " + response.toString());
-                
                 org.json.JSONObject jsonResponse = new org.json.JSONObject(response.toString());
                 if (jsonResponse.getBoolean("success")) {
                     org.json.JSONArray userEvents = jsonResponse.getJSONArray("user_events");
@@ -521,11 +502,10 @@ public class MainActivity extends BaseActivity {
                         org.json.JSONObject userEvent = userEvents.getJSONObject(i);
                         joinedIds.add(userEvent.getInt("id"));
                     }
-                    android.util.Log.d("MainActivity", "User joined " + joinedIds.size() + " events");
                 }
             }
         } catch (Exception e) {
-            android.util.Log.e("MainActivity", "Error fetching user events: " + e.getMessage());
+            // Silent error handling
         }
         return joinedIds;
     }
@@ -537,7 +517,6 @@ public class MainActivity extends BaseActivity {
                 noEventsMessage.setText(message);
                 noEventsMessage.setVisibility(View.VISIBLE);
             }
-            android.util.Log.d("MainActivity", "Showing no events message: " + message);
         });
     }
     
@@ -548,8 +527,6 @@ public class MainActivity extends BaseActivity {
             List<Event> newEvents = new ArrayList<>();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date now = new Date();
-            
-            android.util.Log.d("MainActivity", "Processing " + eventsArray.length() + " events from API");
             
             // Get existing event IDs to detect new events
             Set<Integer> existingEventIds = new HashSet<>();
@@ -592,12 +569,9 @@ public class MainActivity extends BaseActivity {
                     // Track event ID for new event detection
                     currentEventIds.add(event.getProgramId());
                     
-                    android.util.Log.d("MainActivity", "Processing event: " + event.getTitle() + " at " + event.getDateTime());
-                    
                     // Mark as joined if in joinedIds
                     if (joinedIds != null && joinedIds.contains(event.getProgramId())) {
                         event.setJoined(true);
-                        android.util.Log.d("MainActivity", "Event " + event.getTitle() + " is joined");
                     }
                     
                     // Add all events for testing (remove date filtering temporarily)
@@ -606,15 +580,12 @@ public class MainActivity extends BaseActivity {
                         
                         // Show all events regardless of date for testing
                         allEvents.add(event);
-                        android.util.Log.d("MainActivity", "Added event: " + event.getTitle() + " at " + event.getDateTime());
                         
                         // Check if this is a new event
                         if (!existingEventIds.contains(event.getProgramId())) {
                             newEvents.add(event);
-                            android.util.Log.d("MainActivity", "New event detected: " + event.getTitle());
                         }
                     } catch (Exception e) {
-                        android.util.Log.w("MainActivity", "Error parsing event date for " + event.getTitle() + ": " + e.getMessage());
                         // Add event anyway if date parsing fails
                         allEvents.add(event);
                         if (!existingEventIds.contains(event.getProgramId())) {
@@ -622,11 +593,9 @@ public class MainActivity extends BaseActivity {
                         }
                     }
                 } catch (Exception e) {
-                    android.util.Log.e("MainActivity", "Error processing event at index " + i + ": " + e.getMessage());
+                    // Silent error handling
                 }
             }
-            
-            android.util.Log.d("MainActivity", "Total future events found: " + allEvents.size());
             
             // Sort by soonest date/time
             Collections.sort(allEvents, new Comparator<Event>() {
@@ -644,8 +613,6 @@ public class MainActivity extends BaseActivity {
             
             // Take only the first 3
             List<Event> displayEvents = allEvents.subList(0, Math.min(3, allEvents.size()));
-            
-            android.util.Log.d("MainActivity", "Displaying " + displayEvents.size() + " events on dashboard");
             
             runOnUiThread(() -> {
                 dashboardEvents.clear();
@@ -665,14 +632,9 @@ public class MainActivity extends BaseActivity {
                 
                 // Update last known event IDs for new event detection
                 lastKnownEventIds = currentEventIds;
-                
-                // Log for debugging
-                android.util.Log.d("MainActivity", "Dashboard events refreshed. Count: " + displayEvents.size());
             });
         } catch (Exception e) {
-            android.util.Log.e("MainActivity", "Error updating dashboard events: " + e.getMessage());
-            e.printStackTrace();
-            runOnUiThread(() -> showNoEventsMessage("Error processing events: " + e.getMessage()));
+            runOnUiThread(() -> showNoEventsMessage("Error processing events"));
         }
     }
     
