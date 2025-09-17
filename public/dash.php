@@ -2040,14 +2040,14 @@ header .user-info {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 2px !important; /* Reduced gap */
-    padding: 4px 2px !important; /* Reduced padding */
+    gap: 1px !important; /* Minimal gap */
+    padding: 2px 1px !important; /* Minimal padding */
     margin-bottom: 0 !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 6px !important;
     font-size: 9px !important; /* Smaller font */
-    min-height: 30px !important; /* Back to original height */
+    min-height: 24px !important; /* Reduced height to prevent card extension */
     flex-direction: column !important; /* Stack label and percentage vertically */
     flex-wrap: nowrap !important; /* Prevent wrapping */
     flex: 1 !important;
@@ -2070,7 +2070,8 @@ header .user-info {
     padding: 0 !important; /* Remove all padding */
     word-wrap: break-word !important; /* Break long words */
     hyphens: auto !important; /* Enable hyphenation */
-    max-height: 20px !important; /* Limit height for two lines */
+    max-height: 14px !important; /* Limit height for label text only */
+    display: block !important; /* Ensure it takes full width */
 }
 
 /* Compact segment percentage styling */
@@ -2084,7 +2085,9 @@ header .user-info {
     margin: 0 !important; /* Remove margins */
     padding: 0 !important; /* Remove padding */
     line-height: 1.0 !important; /* Tight line height */
-    max-height: 10px !important; /* Limit height */
+    max-height: 8px !important; /* Limit height */
+    display: block !important; /* Ensure it's on separate line */
+    flex-shrink: 0 !important; /* Don't shrink */
 }
 
 /* Color indicators for each risk level - Colored boxes matching donut chart colors */
