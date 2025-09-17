@@ -7041,6 +7041,18 @@ body {
             updateCharts.debounceTimer = setTimeout(async () => {
                 try {
                     console.log('🔄 updateCharts called with barangay:', barangay);
+                    
+                    // Debug: Check current metric values
+                    const totalScreened = document.getElementById('community-total-screened');
+                    const highRisk = document.getElementById('community-high-risk');
+                    const samCases = document.getElementById('community-sam-cases');
+                    const criticalMuac = document.getElementById('community-critical-muac');
+                    
+                    console.log('🔍 Current Dashboard Metrics:');
+                    console.log('  - Total Screened:', totalScreened ? totalScreened.textContent : 'NOT FOUND');
+                    console.log('  - High Risk (Severely Underweight):', highRisk ? highRisk.textContent : 'NOT FOUND');
+                    console.log('  - SAM Cases (Severely Stunted):', samCases ? samCases.textContent : 'NOT FOUND');
+                    console.log('  - Critical MUAC (Severely Wasted):', criticalMuac ? criticalMuac.textContent : 'NOT FOUND');
                 
                 const params = {};
                 if (barangay && barangay !== '') {
@@ -8407,6 +8419,20 @@ body {
         // Initialize WHO dropdown on page load
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM Content Loaded - Initializing WHO dropdown');
+            
+            // Debug: Check initial metric values on page load
+            setTimeout(() => {
+                const totalScreened = document.getElementById('community-total-screened');
+                const highRisk = document.getElementById('community-high-risk');
+                const samCases = document.getElementById('community-sam-cases');
+                const criticalMuac = document.getElementById('community-critical-muac');
+                
+                console.log('🔍 Initial Dashboard Metrics (Page Load):');
+                console.log('  - Total Screened:', totalScreened ? totalScreened.textContent : 'NOT FOUND');
+                console.log('  - High Risk (Severely Underweight):', highRisk ? highRisk.textContent : 'NOT FOUND');
+                console.log('  - SAM Cases (Severely Stunted):', samCases ? samCases.textContent : 'NOT FOUND');
+                console.log('  - Critical MUAC (Severely Wasted):', criticalMuac ? criticalMuac.textContent : 'NOT FOUND');
+            }, 1000);
             
             // Set up WHO dropdown event listener
             const whoSelect = document.getElementById('whoStandardSelect');
