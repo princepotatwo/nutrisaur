@@ -3569,11 +3569,11 @@ header {
                             <div class="filter-item">
                                 <label>WHO STANDARD</label>
                                 <select id="standardFilter" onchange="filterByStandard()">
-                                    <option value="weight-for-age">Weight-for-Age</option>
-                                    <option value="height-for-age">Height-for-Age</option>
-                                    <option value="weight-for-height">Weight-for-Height</option>
-                                    <option value="weight-for-length">Weight-for-Length</option>
-                                    <option value="bmi-for-age">BMI-for-Age</option>
+                                    <option value="weight-for-age">Weight-for-Age (0-71 months)</option>
+                                    <option value="height-for-age">Height-for-Age (0-71 months)</option>
+                                    <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
+                                    <option value="bmi-for-age">BMI-for-Age (2-19 years)</option>
+                                    <option value="bmi-adult">BMI Adult (≥20 years)</option>
                                 </select>
                             </div>
                         </div>
@@ -3699,24 +3699,25 @@ header {
                                             'bmi-for-age' => ['display' => $bmi_display, 'classification' => $bmi_classification]
                                         ];
                                         
+                                        // Add BMI Adult data for adults >=20 years (240+ months)
+                                        if ($ageInMonths >= 240) {
+                                            $adultBmiClassification = getAdultBMIClassification($bmi);
+                                            $whoData['bmi-adult'] = [
+                                                'display' => $bmi,
+                                                'classification' => $adultBmiClassification['classification'],
+                                                'z_score' => $adultBmiClassification['z_score']
+                                            ];
+                                        }
+                                        
                                         // Generate rows for ALL WHO standards, let JavaScript filter which ones to show
                                         foreach ($whoData as $standardName => $standardData) {
                                             // Skip standards that don't apply to this age/height
                                             if ($standardName === 'weight-for-age' && $ageInMonths > 71) continue;
                                             if ($standardName === 'height-for-age' && $ageInMonths > 71) continue;
-                                            if ($standardName === 'weight-for-length' && $ageInMonths >= 24) continue;
                                             if ($standardName === 'weight-for-height' && $ageInMonths > 60) continue;
-                                            if ($standardName === 'bmi-for-age' && $ageInMonths < 24) continue;
+                                            if ($standardName === 'bmi-for-age' && ($ageInMonths < 24 || $ageInMonths >= 240)) continue;
+                                            if ($standardName === 'bmi-adult' && $ageInMonths < 240) continue;
                                             
-                                            // For BMI-for-age in adults (>240 months), use adult BMI classification
-                                            if ($standardName === 'bmi-for-age' && $ageInMonths >= 240) {
-                                                $adultBmiClassification = getAdultBMIClassification($bmi);
-                                                $standardData = [
-                                                    'display' => $bmi,
-                                                    'classification' => $adultBmiClassification['classification'],
-                                                    'z_score' => $adultBmiClassification['z_score']
-                                                ];
-                                            }
                                             
                                             // Get z-score and standard deviation range
                                             $zScore = $standardData['z_score'] ?? null;
@@ -3732,19 +3733,19 @@ header {
                                             echo '<td class="text-center">' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                             
                                             // Show conditional columns based on standard
-                                            if ($standardName === 'weight-for-age' || $standardName === 'bmi-for-age') {
+                                            if ($standardName === 'weight-for-age' || $standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                             } else {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                             }
                                             
-                                            if ($standardName === 'height-for-age' || $standardName === 'weight-for-height' || $standardName === 'weight-for-length') {
+                                            if ($standardName === 'height-for-age' || $standardName === 'weight-for-height') {
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             } else {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             }
                                             
-                                            if ($standardName === 'bmi-for-age') {
+                                            if ($standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
                                                 echo '<td class="text-center conditional-column">' . $bmi . '</td>';
                                             } else {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
@@ -4031,8 +4032,13 @@ header {
                         // Show all standards for all ages
                         showRow = true;
                     } else if (standard === 'bmi-for-age') {
-                        // Show BMI for all ages (WHO standards for 0-71 months, adult BMI for >71 months)
-                        if (rowStandard !== 'bmi-for-age') {
+                        // BMI-for-Age: 2-19 years (24-228 months)
+                        if (ageMonths < 24 || ageMonths >= 240 || rowStandard !== 'bmi-for-age') {
+                            showRow = false;
+                        }
+                    } else if (standard === 'bmi-adult') {
+                        // BMI Adult: 20+ years (240+ months)
+                        if (ageMonths < 240 || rowStandard !== 'bmi-adult') {
                             showRow = false;
                         }
                     } else {
@@ -4047,14 +4053,9 @@ header {
                             if (ageMonths > 60 || rowStandard !== standard) {
                                 showRow = false;
                             }
-                        } else if (standard === 'weight-for-length') {
-                            // Weight-for-Length: 0-24 months (0-2 years) - measured lying down
-                            if (ageMonths >= 24 || rowStandard !== standard) {
-                                showRow = false;
-                            }
                         } else if (standard === 'bmi-for-age') {
-                            // BMI-for-Age: 24+ months (2+ years) - WHO standards 2-19 years + Adult BMI 20+ years
-                            if (ageMonths < 24 || rowStandard !== standard) {
+                            // BMI-for-Age: 2-19 years (24-228 months)
+                            if (ageMonths < 24 || ageMonths >= 240 || rowStandard !== standard) {
                                 showRow = false;
                             }
                         } else {
@@ -4543,7 +4544,9 @@ header {
                 if (standard === 'all-ages') {
                     return true;
                 } else if (standard === 'bmi-for-age') {
-                    return rowStandard === 'bmi-for-age';
+                    return rowStandard === 'bmi-for-age' && ageMonths >= 24 && ageMonths < 240;
+                } else if (standard === 'bmi-adult') {
+                    return rowStandard === 'bmi-adult' && ageMonths >= 240;
                 } else {
                     if (standard === 'weight-for-age' || standard === 'height-for-age') {
                         if (ageMonths > 71 || rowStandard !== standard) {
@@ -4551,10 +4554,6 @@ header {
                         }
                     } else if (standard === 'weight-for-height') {
                         if (ageMonths > 60 || rowStandard !== standard) {
-                            return false;
-                        }
-                    } else if (standard === 'weight-for-length') {
-                        if (ageMonths >= 24 || rowStandard !== standard) {
                             return false;
                         }
                     } else {
@@ -4754,21 +4753,21 @@ header {
                 // Show/hide conditional columns based on selected standard
                 if (cells.length >= 10) { // Ensure we have enough cells (now includes email)
                     // Weight column (index 4) - shifted due to email column
-                    if (selectedStandard === 'weight-for-age' || selectedStandard === 'bmi-for-age' || selectedStandard === 'all-ages') {
+                    if (selectedStandard === 'weight-for-age' || selectedStandard === 'bmi-for-age' || selectedStandard === 'bmi-adult' || selectedStandard === 'weight-for-height' || selectedStandard === 'all-ages') {
                         cells[4].style.display = '';
                     } else {
                         cells[4].style.display = 'none';
                     }
                     
                     // Height column (index 5) - shifted due to email column
-                    if (selectedStandard === 'height-for-age' || selectedStandard === 'weight-for-height' || selectedStandard === 'weight-for-length' || selectedStandard === 'all-ages') {
+                    if (selectedStandard === 'height-for-age' || selectedStandard === 'weight-for-height' || selectedStandard === 'all-ages') {
                         cells[5].style.display = '';
                     } else {
                         cells[5].style.display = 'none';
                     }
                     
                     // BMI column (index 6) - shifted due to email column
-                    if (selectedStandard === 'bmi-for-age' || selectedStandard === 'all-ages') {
+                    if (selectedStandard === 'bmi-for-age' || selectedStandard === 'bmi-adult' || selectedStandard === 'all-ages') {
                         cells[6].style.display = '';
                     } else {
                         cells[6].style.display = 'none';
@@ -4801,16 +4800,21 @@ header {
                     switch(selectedStandard) {
                         case 'weight-for-age':
                         case 'bmi-for-age':
+                        case 'bmi-adult':
                             // Show weight and BMI columns
                             weightHeader.style.display = '';
                             heightHeader.style.display = 'none';
-                            bmiHeader.style.display = selectedStandard === 'bmi-for-age' ? '' : 'none';
+                            bmiHeader.style.display = (selectedStandard === 'bmi-for-age' || selectedStandard === 'bmi-adult') ? '' : 'none';
                             break;
                         case 'height-for-age':
-                        case 'weight-for-height':
-                        case 'weight-for-length':
-                            // Show height column
+                            // Show height column only
                             weightHeader.style.display = 'none';
+                            heightHeader.style.display = '';
+                            bmiHeader.style.display = 'none';
+                            break;
+                        case 'weight-for-height':
+                            // Show both weight and height columns
+                            weightHeader.style.display = '';
                             heightHeader.style.display = '';
                             bmiHeader.style.display = 'none';
                             break;
