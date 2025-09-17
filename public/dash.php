@@ -2035,83 +2035,67 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Compact single-line segments - Grid layout with dot on left, text on right */
+/* NEW DESIGN: Clean segment layout with horizontal flexbox */
 .segments .segment.compact {
-    display: grid !important;
-    grid-template-columns: 8px 1fr !important; /* 8px for dot, rest for text */
-    gap: 2px !important; /* Smaller gap between dot and text */
+    display: flex !important;
     align-items: center !important;
-    padding: 1px 2px 1px 1px !important; /* Minimal padding, less right padding */
-    margin-bottom: 0 !important;
+    gap: 6px !important;
+    padding: 4px 6px !important;
+    margin-bottom: 2px !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    border-radius: 6px !important;
-    font-size: 9px !important; /* Smaller font */
-    min-height: 18px !important; /* Even smaller height */
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    min-height: 20px !important;
     flex: 1 !important;
-    max-width: calc(25% - 4px) !important; /* Smaller width for 4 items */
+    max-width: calc(25% - 4px) !important;
     box-sizing: border-box !important;
 }
 
-/* Text container for grid layout - holds both label and percentage */
-.segments .segment.compact .segment-text-container {
-    display: flex !important;
-    flex-direction: column !important; /* Stack label and percentage vertically */
-    align-items: flex-start !important; /* Left align text */
-    justify-content: center !important;
-    width: 100% !important;
+/* Color indicator dot */
+.segments .segment.compact .segment-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    flex-shrink: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    box-sizing: border-box !important;
-    gap: 0 !important; /* No gap between label and percentage */
 }
 
-/* Higher specificity to override conflicting rules */
+/* Text content container */
+.segments .segment.compact .segment-text-container {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Classification label */
 .segments .segment.compact .segment-label {
-    text-align: left !important; /* Left align text */
     font-weight: 600 !important;
     color: var(--color-text) !important;
-    white-space: normal !important; /* Allow two lines */
-    overflow: visible !important; /* Show all text */
-    text-overflow: unset !important; /* No ellipsis */
-    font-size: 6px !important; /* Even smaller font */
-    line-height: 0.8 !important; /* Very tight line height */
-    width: 100% !important; /* Force full width */
-    margin: 0 !important; /* Remove all margins */
-    padding: 0 !important; /* Remove all padding */
-    word-wrap: break-word !important; /* Break long words */
-    hyphens: auto !important; /* Enable hyphenation */
-    max-height: 10px !important; /* Smaller height limit */
-    display: block !important; /* Ensure it takes full width */
-    box-sizing: border-box !important; /* Include padding in width calculation */
+    font-size: 7px !important;
+    line-height: 1.0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
-/* Compact segment percentage styling - Higher specificity */
+/* Count and percentage */
 .segments .segment.compact .segment-percentage {
     color: var(--color-text) !important;
     opacity: 0.8 !important;
-    text-align: left !important; /* Left align text */
-    white-space: nowrap !important;
-    font-size: 5px !important; /* Even smaller font */
-    width: 100% !important; /* Force full width */
-    margin: 0 !important; /* Remove margins */
-    padding: 0 !important; /* Remove padding */
-    line-height: 0.8 !important; /* Very tight line height */
-    max-height: 6px !important; /* Smaller height limit */
-    display: block !important; /* Ensure it's on separate line */
-    flex-shrink: 0 !important; /* Don't shrink */
-    box-sizing: border-box !important; /* Include padding in width calculation */
-}
-
-/* Color dot for grid layout - positioned in first grid column */
-.segments .segment.compact .segment-dot {
-    width: 6px !important;
-    height: 6px !important;
-    border-radius: 50% !important;
+    font-size: 6px !important;
+    line-height: 1.0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    display: block !important;
-    align-self: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 /* Color indicators for each risk level - Colored boxes matching donut chart colors */
@@ -4503,28 +4487,19 @@ header .user-info {
     background-color: #D32F2F !important; /* Dark Red for Severe Risk */
 }
 
-/* Dark theme segment text styling - ensure white text with higher specificity */
+/* Dark theme segment styling */
+.dark-theme .segments .segment.compact {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
 .dark-theme .segments .segment.compact .segment-label {
-    color: #FFFFFF !important; /* White text for dark theme */
-    display: block !important; /* Override any conflicting display rules */
-    white-space: normal !important; /* Allow two lines */
-    font-size: 7px !important; /* Override conflicting font size */
-    max-height: 14px !important; /* Limit height */
-    width: 100% !important; /* Force full width */
-    margin: 0 !important; /* Remove all margins */
-    padding: 0 !important; /* Remove all padding */
-    box-sizing: border-box !important; /* Include padding in width calculation */
+    color: #FFFFFF !important;
 }
 
 .dark-theme .segments .segment.compact .segment-percentage {
-    color: #FFFFFF !important; /* White text for dark theme */
-    display: block !important; /* Override any conflicting display rules */
-    font-size: 6px !important; /* Override conflicting font size */
-    max-height: 8px !important; /* Limit height */
-    width: 100% !important; /* Force full width */
-    margin: 0 !important; /* Remove all margins */
-    padding: 0 !important; /* Remove all padding */
-    box-sizing: border-box !important; /* Include padding in width calculation */
+    color: #FFFFFF !important;
+    opacity: 0.8 !important;
 }
 
 .dark-theme .segment-label {
