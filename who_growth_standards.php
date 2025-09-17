@@ -1391,8 +1391,6 @@ class WHOGrowthStandards {
                     break;
                 default:
                     return ['classification' => 'Age not found', 'method' => 'hardcoded_simple'];
-            }default:
-                    return ['classification' => 'Age not found', 'method' => 'hardcoded_simple'];
             }
         }
     }
