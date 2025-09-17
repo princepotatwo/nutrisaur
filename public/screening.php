@@ -3758,11 +3758,11 @@ header {
                                         
                                         // Generate all WHO Growth Standards data for this user
                                         $whoData = [
-                                            'weight-for-age' => ['display' => $wfa_display, 'classification' => $wfa_classification],
-                                            'height-for-age' => ['display' => $hfa_display, 'classification' => $hfa_classification],
-                                            'weight-for-height' => ['display' => $wfh_display, 'classification' => $wfh_classification],
-                                            'weight-for-length' => ['display' => $wfl_display, 'classification' => $wfl_classification],
-                                            'bmi-for-age' => ['display' => $bmi_display, 'classification' => $bmi_classification]
+                                            'weight-for-age' => ['display' => $wfa_display, 'classification' => $wfa_classification, 'z_score' => $wfa_zscore],
+                                            'height-for-age' => ['display' => $hfa_display, 'classification' => $hfa_classification, 'z_score' => $hfa_zscore],
+                                            'weight-for-height' => ['display' => $wfh_display, 'classification' => $wfh_classification, 'z_score' => $wfh_zscore],
+                                            'weight-for-length' => ['display' => $wfl_display, 'classification' => $wfl_classification, 'z_score' => $wfl_zscore],
+                                            'bmi-for-age' => ['display' => $bmi_display, 'classification' => $bmi_classification, 'z_score' => $bmi_zscore]
                                         ];
                                         
                                         // Add BMI Adult data for adults ≥19 years (228+ months)
@@ -3790,10 +3790,15 @@ header {
                                                 // For BMI standards, show BMI value instead of z-score
                                                 $zScoreDisplay = $bmi;
                                             } else {
-                                                // For other standards, show accurate z-score range
-                                                $classification = $standardData['classification'] ?? 'N/A';
-                                                $accurateRange = getAccurateZScoreRange($classification, $standardName);
-                                                $zScoreDisplay = $accurateRange;
+                                                // For other standards, show actual z-score value if available
+                                                $zScoreValue = $standardData['z_score'] ?? null;
+                                                if ($zScoreValue !== null) {
+                                                    $zScoreDisplay = number_format($zScoreValue, 2);
+                                                } else {
+                                                    // Fallback to classification if z-score not available
+                                                    $classification = $standardData['classification'] ?? 'N/A';
+                                                    $zScoreDisplay = $classification;
+                                                }
                                             }
                                             
                                             echo '<tr data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';

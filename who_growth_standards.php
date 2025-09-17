@@ -1355,34 +1355,34 @@ class WHOGrowthStandards {
                     if ($weight >= 5.9) return ['z_score' => 2.5, 'classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 2:
-                    if ($weight <= 3.8) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 3.9 && $weight <= 4.2) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 4.3 && $weight <= 7.1) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 7.2) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 3.8) return ['z_score' => -3.0, 'classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 3.9 && $weight <= 4.2) return ['z_score' => -2.5, 'classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 4.3 && $weight <= 7.1) return ['z_score' => 0.0, 'classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 7.2) return ['z_score' => 2.5, 'classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 3:
-                    if ($weight <= 4.4) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 4.5 && $weight <= 4.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 5.0 && $weight <= 8.0) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 8.1) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 4.4) return ['z_score' => -3.0, 'classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 4.5 && $weight <= 4.9) return ['z_score' => -2.5, 'classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 5.0 && $weight <= 8.0) return ['z_score' => 0.0, 'classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 8.1) return ['z_score' => 2.5, 'classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 4:
-                    if ($weight <= 4.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 5.0 && $weight <= 5.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 5.6 && $weight <= 8.7) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 8.8) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 4.9) return ['z_score' => -3.0, 'classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 5.0 && $weight <= 5.5) return ['z_score' => -2.5, 'classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 5.6 && $weight <= 8.7) return ['z_score' => 0.0, 'classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 8.8) return ['z_score' => 2.5, 'classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 5:
-                    if ($weight <= 5.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 5.4 && $weight <= 5.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 6.0 && $weight <= 9.3) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 9.4) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 5.3) return ['z_score' => -3.0, 'classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 5.4 && $weight <= 5.9) return ['z_score' => -2.5, 'classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 6.0 && $weight <= 9.3) return ['z_score' => 0.0, 'classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 9.4) return ['z_score' => 2.5, 'classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 6:
-                    if ($weight <= 5.7) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 5.8 && $weight <= 6.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 6.4 && $weight <= 9.8) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 9.9) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 5.7) return ['z_score' => -3.0, 'classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 5.8 && $weight <= 6.3) return ['z_score' => -2.5, 'classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 6.4 && $weight <= 9.8) return ['z_score' => 0.0, 'classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 9.9) return ['z_score' => 2.5, 'classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 7:
                     if ($weight <= 5.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
