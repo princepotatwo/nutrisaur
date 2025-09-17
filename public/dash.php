@@ -365,31 +365,37 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
         
         $users = $result['data'] ?? [];
         
-        // Calculate metrics using nutritional assessments
+        // Calculate metrics using WHO Growth Standards classifications
         $totalScreened = count($users);
-        $highRiskCases = 0;
-        $samCases = 0;
-        $criticalMuac = 0;
+        $highRiskCases = 0; // Count of Severely Underweight
+        $samCases = 0; // Count of Severely Stunted
+        $criticalMuac = 0; // Count of Severely Wasted
         $barangaysCovered = [];
         
         foreach ($users as $user) {
             // Perform nutritional assessment using WHO Growth Standards
             $assessment = getNutritionalAssessment($user);
             
-            // Count high risk cases (High or Very High risk level)
-            if (in_array($assessment['risk_level'], ['High', 'Very High'])) {
-                $highRiskCases++;
-            }
-            
-            // Count SAM cases (Severe Acute Malnutrition)
-            if (strpos($assessment['nutritional_status'], 'Severe Acute Malnutrition') !== false) {
-                $samCases++;
-            }
-            
-            // Count critical MUAC cases (High risk malnutrition)
-            if (in_array($assessment['risk_level'], ['High', 'Very High']) && 
-                strpos($assessment['nutritional_status'], 'Malnutrition') !== false) {
-                $criticalMuac++;
+            if ($assessment['success'] && isset($assessment['results'])) {
+                $results = $assessment['results'];
+                
+                // Count Severely Underweight (High Risk Cases)
+                if (isset($results['weight_for_age']['classification']) && 
+                    $results['weight_for_age']['classification'] === 'Severely Underweight') {
+                    $highRiskCases++;
+                }
+                
+                // Count Severely Stunted (SAM Cases)
+                if (isset($results['height_for_age']['classification']) && 
+                    $results['height_for_age']['classification'] === 'Severely Stunted') {
+                    $samCases++;
+                }
+                
+                // Count Severely Wasted (Critical Malnutrition)
+                if (isset($results['weight_for_height']['classification']) && 
+                    $results['weight_for_height']['classification'] === 'Severely Wasted') {
+                    $criticalMuac++;
+                }
             }
             
             // Track barangays
@@ -6229,28 +6235,28 @@ body {
                 <div class="metric-note">Children & adults screened in selected time frame</div>
             </div>
             <div class="card">
-                <h2>High Risk Cases</h2>
+                <h2>Severely Underweight</h2>
                 <div class="metric-value" id="community-high-risk"><?php echo $timeFrameData['high_risk_cases']; ?></div>
                 <div class="metric-change" id="community-risk-change">
                     <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
                 </div>
-                <div class="metric-note">High/Very High risk from nutritional assessment</div>
+                <div class="metric-note">Children with severely underweight status (Weight-for-Age)</div>
             </div>
             <div class="card">
-                <h2>SAM Cases</h2>
+                <h2>Severely Stunted</h2>
                 <div class="metric-value" id="community-sam-cases"><?php echo $timeFrameData['sam_cases']; ?></div>
                 <div class="metric-change" id="community-sam-change">
                     <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
                 </div>
-                <div class="metric-note">Severe Acute Malnutrition (SAM) detected</div>
+                <div class="metric-note">Children with severely stunted status (Height-for-Age)</div>
             </div>
             <div class="card">
-                <h2>Critical Malnutrition</h2>
+                <h2>Severely Wasted</h2>
                 <div class="metric-value" id="community-critical-muac"><?php echo $timeFrameData['critical_muac']; ?></div>
                 <div class="metric-change" id="community-muac-change">
                     <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
                 </div>
-                <div class="metric-note">Critical malnutrition cases requiring immediate attention</div>
+                <div class="metric-note">Children with severely wasted status (Weight-for-Height)</div>
             </div>
         </div>
 
