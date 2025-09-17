@@ -1794,37 +1794,37 @@ class WHOGrowthStandards {
                     break;
                 case 2:
                     if ($weight <= 3.4) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 3.6 && $weight <= 3.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 3.5 && $weight <= 3.9) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
                     if ($weight >= 4.0 && $weight <= 6.5) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
                     if ($weight >= 6.6) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 3:
                     if ($weight <= 4.0) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 4.2 && $weight <= 4.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 4.1 && $weight <= 4.5) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
                     if ($weight >= 4.6 && $weight <= 7.4) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
                     if ($weight >= 7.5) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 4:
                     if ($weight <= 4.4) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 4.6 && $weight <= 5.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 4.5 && $weight <= 5.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
                     if ($weight >= 5.1 && $weight <= 8.1) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
                     if ($weight >= 8.2) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 5:
                     if ($weight <= 4.8) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 5.1 && $weight <= 5.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 4.9 && $weight <= 5.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
                     if ($weight >= 5.5 && $weight <= 8.7) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
                     if ($weight >= 8.8) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 6:
                     if ($weight <= 5.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 5.4 && $weight <= 5.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 5.2 && $weight <= 5.7) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
                     if ($weight >= 5.8 && $weight <= 9.2) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
                     if ($weight >= 9.3) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 7:
                     if ($weight <= 5.3) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 5.7 && $weight <= 6.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 5.4 && $weight <= 6.0) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
                     if ($weight >= 6.1 && $weight <= 9.6) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
                     if ($weight >= 9.7) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;

@@ -35,7 +35,8 @@ function getAccurateZScoreRange($classification, $standard) {
         'Age out of range', 
         'Height out of range',
         'Weight out of range',
-        'No data available'
+        'No data available',
+        'Age not found'
     ];
     
     if (in_array($classification, $errorClassifications)) {
