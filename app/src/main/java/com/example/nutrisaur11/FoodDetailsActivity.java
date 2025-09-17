@@ -30,8 +30,11 @@ public class FoodDetailsActivity extends Activity {
     private FoodItem foodItem;
     private FavoritesManager favoritesManager;
     private AddedFoodManager addedFoodManager;
+    private CalorieTracker calorieTracker;
     private ExecutorService executorService;
     private FoodImageService foodImageService;
+    private String currentMealCategory;
+    private int maxCalories = 500;
 
     // UI Elements
     private ImageView backButton;
@@ -61,9 +64,14 @@ public class FoodDetailsActivity extends Activity {
             return;
         }
 
+        // Get meal category and max calories from intent
+        currentMealCategory = getIntent().getStringExtra("meal_category");
+        maxCalories = getIntent().getIntExtra("max_calories", 500);
+
         // Initialize managers and services
         favoritesManager = new FavoritesManager(this);
         addedFoodManager = new AddedFoodManager(this);
+        calorieTracker = new CalorieTracker(this);
         executorService = Executors.newSingleThreadExecutor();
         foodImageService = new FoodImageService();
 
@@ -98,13 +106,15 @@ public class FoodDetailsActivity extends Activity {
         backButton.setOnClickListener(v -> finish());
         
         addToMealButton.setOnClickListener(v -> {
-            addedFoodManager.addToAddedFoods(foodItem);
-            Toast.makeText(this, "Added " + foodItem.getName() + " to meal!", Toast.LENGTH_SHORT).show();
+            addFoodToMeal();
         });
 
         // Favorites button logic
         updateFavoriteButton();
         addToFavoritesButton.setOnClickListener(v -> toggleFavorite());
+        
+        // Update add to meal button state
+        updateAddToMealButton();
         
         // Find Alternatives button
         findAlternativesButton.setOnClickListener(v -> openAlternativesActivity());
@@ -148,6 +158,7 @@ public class FoodDetailsActivity extends Activity {
         super.onResume();
         // Update button states when returning to this activity
         updateFavoriteButton();
+        updateAddToMealButton();
     }
 
     @Override
@@ -364,10 +375,91 @@ public class FoodDetailsActivity extends Activity {
         Intent intent = new Intent(this, FoodAlternativesActivity.class);
         intent.putExtra("food_item", foodItem);
         // Pass the current meal category if available
-        String currentMealCategory = getIntent().getStringExtra("meal_category");
         if (currentMealCategory != null) {
             intent.putExtra("meal_category", currentMealCategory);
         }
         startActivity(intent);
+    }
+    
+    /**
+     * Add food to meal with proper meal category assignment and calorie tracking
+     */
+    private void addFoodToMeal() {
+        try {
+            // Set meal category on food item if not already set
+            if (currentMealCategory != null && (foodItem.getMealCategory() == null || foodItem.getMealCategory().isEmpty())) {
+                foodItem.setMealCategory(currentMealCategory);
+            }
+            
+            // Add to added foods manager
+            addedFoodManager.addToAddedFoods(foodItem);
+            
+            // Add to calorie tracking
+            if (currentMealCategory != null) {
+                calorieTracker.addFoodToMeal(currentMealCategory, foodItem, maxCalories);
+            }
+            
+            // Update button state
+            updateAddToMealButton();
+            
+            // Show success message
+            Toast.makeText(this, "Added " + foodItem.getName() + " to " + 
+                          (currentMealCategory != null ? currentMealCategory : "meal") + "!", 
+                          Toast.LENGTH_SHORT).show();
+            
+            Log.d(TAG, "Successfully added " + foodItem.getName() + " to " + currentMealCategory);
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error adding food to meal: " + e.getMessage());
+            Toast.makeText(this, "Error adding food to meal", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    /**
+     * Remove food from meal
+     */
+    private void removeFoodFromMeal() {
+        try {
+            // Remove from added foods manager
+            addedFoodManager.removeFromAddedFoods(foodItem);
+            
+            // Remove from calorie tracking
+            if (currentMealCategory != null) {
+                calorieTracker.removeFoodFromMeal(currentMealCategory, foodItem);
+            }
+            
+            // Update button state
+            updateAddToMealButton();
+            
+            // Show success message
+            Toast.makeText(this, "Removed " + foodItem.getName() + " from " + 
+                          (currentMealCategory != null ? currentMealCategory : "meal"), 
+                          Toast.LENGTH_SHORT).show();
+            
+            Log.d(TAG, "Successfully removed " + foodItem.getName() + " from " + currentMealCategory);
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error removing food from meal: " + e.getMessage());
+            Toast.makeText(this, "Error removing food from meal", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    /**
+     * Update the add to meal button state based on whether food is already added
+     */
+    private void updateAddToMealButton() {
+        if (addToMealButton == null) return;
+        
+        boolean isAdded = addedFoodManager.isAdded(foodItem);
+        
+        if (isAdded) {
+            addToMealButton.setText("Remove from Meal");
+            addToMealButton.setBackgroundResource(R.drawable.button_blue_selector);
+            addToMealButton.setOnClickListener(v -> removeFoodFromMeal());
+        } else {
+            addToMealButton.setText("Add to Meal");
+            addToMealButton.setBackgroundResource(R.drawable.button_green_selector);
+            addToMealButton.setOnClickListener(v -> addFoodToMeal());
+        }
     }
 }

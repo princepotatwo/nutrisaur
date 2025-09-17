@@ -336,11 +336,14 @@ function handleCSVImport($db) {
                 $existingUser = $checkResult['data'][0];
             }
             
+            // Hash password using PHP's password_hash (same as registration API)
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            
             // Prepare data for insert/update - only include columns that exist in the database
             $userData = [
                 'name' => $name,
                 'email' => $email,
-                'password' => $password,
+                'password' => $hashedPassword,  // Store hashed password
                 'municipality' => $municipality,
                 'barangay' => $barangay,
                 'sex' => $sex,

@@ -60,7 +60,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * Call this method when user interacts with the app (button clicks, navigation, etc.)
      * This helps optimize battery usage by only checking session when user is active
      */
-    protected void onUserInteraction() {
+    public void onUserInteraction() {
         SessionManager.getInstance(this).recordUserInteraction();
     }
     

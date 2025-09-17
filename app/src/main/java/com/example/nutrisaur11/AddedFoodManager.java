@@ -103,6 +103,33 @@ public class AddedFoodManager {
 
     public boolean isAdded(FoodItem foodItem) {
         List<FoodItem> addedFoods = getAddedFoods();
+        
+        // First try exact match (name + meal category + calories)
+        boolean exactMatch = addedFoods.stream().anyMatch(item -> 
+            item.getName().equals(foodItem.getName()) && 
+            item.getMealCategory() != null && 
+            foodItem.getMealCategory() != null &&
+            item.getMealCategory().equals(foodItem.getMealCategory()) &&
+            Math.abs(item.getCalories() - foodItem.getCalories()) < 1
+        );
+        
+        if (exactMatch) {
+            return true;
+        }
+        
+        // If no exact match, try name + meal category match
+        boolean nameMealMatch = addedFoods.stream().anyMatch(item -> 
+            item.getName().equals(foodItem.getName()) && 
+            item.getMealCategory() != null && 
+            foodItem.getMealCategory() != null &&
+            item.getMealCategory().equals(foodItem.getMealCategory())
+        );
+        
+        if (nameMealMatch) {
+            return true;
+        }
+        
+        // Fallback to name-only match (for backward compatibility)
         return addedFoods.stream().anyMatch(item -> item.getName().equals(foodItem.getName()));
     }
 

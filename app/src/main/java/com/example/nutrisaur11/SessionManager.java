@@ -8,6 +8,10 @@ import android.util.Log;
 import androidx.appcompat.app.AlertDialog;
 import org.json.JSONObject;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import android.os.Handler;
+import android.os.Looper;
 
 public class SessionManager {
     private static final String TAG = "SessionManager";
@@ -24,9 +28,13 @@ public class SessionManager {
     
     private Context context;
     private static SessionManager instance;
+    private ExecutorService executorService;
+    private Handler mainHandler;
     
     private SessionManager(Context context) {
         this.context = context.getApplicationContext();
+        this.executorService = Executors.newSingleThreadExecutor();
+        this.mainHandler = new Handler(Looper.getMainLooper());
     }
     
     public static synchronized SessionManager getInstance(Context context) {
@@ -51,6 +59,40 @@ public class SessionManager {
         
         // Battery optimization: Check cache first, only hit database if needed
         return isUserValidCached(email);
+    }
+    
+    /**
+     * Async version of isUserValid for background validation
+     */
+    public void isUserValidAsync(ValidationCallback callback) {
+        SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        String email = prefs.getString("current_user_email", null);
+        boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
+        
+        if (email == null || !isLoggedIn) {
+            Log.d(TAG, "User not logged in");
+            if (callback != null) {
+                mainHandler.post(() -> callback.onValidationResult(false));
+            }
+            return;
+        }
+        
+        // Check cache first
+        boolean cachedResult = isUserValidCached(email);
+        if (cachedResult) {
+            if (callback != null) {
+                mainHandler.post(() -> callback.onValidationResult(true));
+            }
+            return;
+        }
+        
+        // If cache is invalid, check database in background
+        executorService.execute(() -> {
+            boolean isValid = checkUserExistsInDatabase(email);
+            if (callback != null) {
+                mainHandler.post(() -> callback.onValidationResult(isValid));
+            }
+        });
     }
     
     /**
@@ -145,12 +187,49 @@ public class SessionManager {
      * Validate session and handle invalid sessions
      */
     public boolean validateSession(Activity activity) {
-        if (!isUserValid()) {
-            Log.d(TAG, "Session invalid, redirecting to login");
+        // For immediate validation, use cached result only
+        SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        String email = prefs.getString("current_user_email", null);
+        boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
+        
+        if (email == null || !isLoggedIn) {
+            Log.d(TAG, "User not logged in");
             handleInvalidSession(activity);
             return false;
         }
-        return true;
+        
+        // Check if we have a recent valid session in cache
+        long lastCheck = prefs.getLong("session_last_check_" + email, 0);
+        long currentTime = System.currentTimeMillis();
+        boolean hasRecentValidSession = (currentTime - lastCheck < SESSION_CHECK_INTERVAL) && 
+                                       prefs.getBoolean("session_is_valid_" + email, false);
+        
+        if (hasRecentValidSession) {
+            Log.d(TAG, "Using cached valid session");
+            return true;
+        }
+        
+        // If no recent valid session, assume valid for now and validate in background
+        Log.d(TAG, "No recent valid session found, validating in background");
+        validateSessionAsync(activity);
+        return true; // Allow activity to continue while validation happens in background
+    }
+    
+    /**
+     * Async session validation
+     */
+    private void validateSessionAsync(Activity activity) {
+        isUserValidAsync(new ValidationCallback() {
+            @Override
+            public void onValidationResult(boolean isValid) {
+                if (!isValid) {
+                    Log.d(TAG, "Background validation failed, redirecting to login");
+                    handleInvalidSession(activity);
+                } else {
+                    Log.d(TAG, "Background validation successful");
+                }
+            }
+        });
     }
     
     /**
@@ -281,6 +360,21 @@ public class SessionManager {
     }
     
     /**
+     * Mark session as valid (useful after successful signup or login)
+     */
+    public void markSessionAsValid() {
+        String email = getCurrentUserEmail();
+        if (email != null) {
+            Log.d(TAG, "Marking session as valid for: " + email);
+            SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+            prefs.edit()
+                .putBoolean("session_is_valid_" + email, true)
+                .putLong("session_last_check_" + email, System.currentTimeMillis())
+                .apply();
+        }
+    }
+    
+    /**
      * Clear session cache (useful for logout or when user data changes)
      */
     public void clearSessionCache() {
@@ -293,5 +387,21 @@ public class SessionManager {
                 .apply();
             Log.d(TAG, "Session cache cleared for: " + email);
         }
+    }
+    
+    /**
+     * Cleanup resources
+     */
+    public void cleanup() {
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
+    }
+    
+    /**
+     * Callback interface for async validation
+     */
+    public interface ValidationCallback {
+        void onValidationResult(boolean isValid);
     }
 }

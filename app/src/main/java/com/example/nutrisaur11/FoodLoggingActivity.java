@@ -117,6 +117,13 @@ public class FoodLoggingActivity extends BaseActivity {
         // This method is called automatically by BaseActivity
     }
     
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh data when returning to this activity (e.g., from FoodDetailsActivity)
+        refreshFoodData();
+    }
+    
     private void initializeViews() {
         // Header elements
         backButton = findViewById(R.id.back_button);
@@ -599,5 +606,45 @@ public class FoodLoggingActivity extends BaseActivity {
         // This method can be called from dialogs to refresh calorie data
         // The actual refresh happens when returning to FoodActivity
         setResult(RESULT_OK);
+    }
+    
+    /**
+     * Refresh food data to sync with any changes made in other activities
+     */
+    private void refreshFoodData() {
+        if (foodAdapter != null) {
+            // Refresh the current tab data
+            String currentTab = getCurrentActiveTab();
+            switch (currentTab) {
+                case "recent":
+                    loadRecentFoods();
+                    break;
+                case "favorites":
+                    loadFavoriteFoods();
+                    break;
+                case "added_food":
+                    loadAddedFoods();
+                    break;
+            }
+            
+            // Notify adapter that data has changed
+            foodAdapter.notifyDataSetChanged();
+            
+            Log.d(TAG, "Refreshed food data for tab: " + currentTab);
+        }
+    }
+    
+    /**
+     * Get the currently active tab
+     */
+    private String getCurrentActiveTab() {
+        if (recentTab != null && recentTab.getBackground() != null) {
+            return "recent";
+        } else if (favoritesTab != null && favoritesTab.getBackground() != null) {
+            return "favorites";
+        } else if (addedFoodTab != null && addedFoodTab.getBackground() != null) {
+            return "added_food";
+        }
+        return "recent"; // Default to recent tab
     }
 }
