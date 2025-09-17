@@ -4301,7 +4301,7 @@ header .user-info {
 /* Dark theme support for donut chart center text */
 .dark-theme .donut-center-text {
     background-color: var(--color-card);
-    color: var(--color-text);
+    color: #FFFFFF !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -4513,7 +4513,24 @@ header .user-info {
 .dark-theme .search-container input {
     background-color: var(--color-card) !important;
     border-color: var(--color-border) !important;
-    color: var(--color-text) !important;
+    color: #FFFFFF !important;
+}
+
+.dark-theme .search-container input::placeholder {
+    color: #CCCCCC !important;
+}
+
+/* Dark theme support for metric cards */
+.dark-theme .metric-value {
+    color: #FFFFFF !important;
+}
+
+.dark-theme .card h2 {
+    color: #FFFFFF !important;
+}
+
+.dark-theme .metric-note {
+    color: #CCCCCC !important;
 }
 
 .light-theme .search-container input::placeholder {
@@ -4894,6 +4911,7 @@ header .user-info {
     margin-bottom: 15px;
     color: var(--color-text);
     font-weight: 600;
+    text-align: center;
 }
 
 .metric-value {
@@ -4901,13 +4919,12 @@ header .user-info {
     color: var(--color-text);
     margin-bottom: 8px;
     font-weight: 700;
+    text-align: center;
+    line-height: 1;
 }
 
 .metric-change {
-    font-size: 14px;
-    color: var(--color-text);
-    margin-bottom: 10px;
-    font-weight: 500;
+    display: none; /* Hide the small numbers below */
 }
 
         .metric-note {
@@ -4915,6 +4932,7 @@ header .user-info {
             color: var(--color-text);
             opacity: 0.7;
             line-height: 1.4;
+            text-align: center;
         }
 
         /* Custom Select Styles */
