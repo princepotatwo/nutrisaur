@@ -3769,13 +3769,17 @@ header {
                                             if ($standardName === 'bmi-adult' && $ageInMonths < 228) continue;
                                             
                                             
-                                            // Get z-score and accurate SD range based on classification
-                                            $zScore = $standardData['z_score'] ?? null;
-                                            $classification = $standardData['classification'] ?? 'N/A';
-                                            $accurateRange = getAccurateZScoreRange($classification, $standardName);
-                                            
-                                            // Display accurate z-score range instead of calculated z-score
-                                            $zScoreDisplay = $accurateRange;
+                                            // Display appropriate value based on standard type
+                                            if ($standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
+                                                // For BMI standards, show BMI value instead of z-score
+                                                $zScoreDisplay = $bmi;
+                                            } else {
+                                                // For other standards, show accurate z-score range
+                                                $zScore = $standardData['z_score'] ?? null;
+                                                $classification = $standardData['classification'] ?? 'N/A';
+                                                $accurateRange = getAccurateZScoreRange($classification, $standardName);
+                                                $zScoreDisplay = $accurateRange;
+                                            }
                                             
                                             echo '<tr data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             echo '<td class="text-center">' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
@@ -3796,11 +3800,8 @@ header {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             }
                                             
-                                            if ($standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                echo '<td class="text-center conditional-column">' . $bmi . '</td>';
-                                            } else {
-                                                echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
-                                            }
+                                            // BMI column is hidden for BMI standards since BMI is shown in main value column
+                                            echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
                                             
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($standardData['classification'] ?? 'N/A') . '</td>';
@@ -4837,8 +4838,12 @@ header {
             if (standardFilter && standardHeader) {
                 const selectedStandard = standardFilter.value;
                 
-                // Update standard header to always show "Z-SCORE"
-                standardHeader.textContent = 'Z-SCORE';
+                // Update standard header based on selected standard
+                if (selectedStandard === 'bmi-for-age' || selectedStandard === 'bmi-adult') {
+                    standardHeader.textContent = 'BMI';
+                } else {
+                    standardHeader.textContent = 'Z-SCORE (SD RANGE)';
+                }
                 
                 // Show/hide conditional columns based on selected standard
                 if (weightHeader && heightHeader && bmiHeader) {
@@ -4850,12 +4855,17 @@ header {
                     // Show only relevant columns based on standard
                     switch(selectedStandard) {
                         case 'weight-for-age':
-                        case 'bmi-for-age':
-                        case 'bmi-adult':
-                            // Show weight and BMI columns
+                            // Show weight column only
                             weightHeader.style.display = '';
                             heightHeader.style.display = 'none';
-                            bmiHeader.style.display = (selectedStandard === 'bmi-for-age' || selectedStandard === 'bmi-adult') ? '' : 'none';
+                            bmiHeader.style.display = 'none';
+                            break;
+                        case 'bmi-for-age':
+                        case 'bmi-adult':
+                            // Show weight column only (BMI shown in main value column)
+                            weightHeader.style.display = '';
+                            heightHeader.style.display = 'none';
+                            bmiHeader.style.display = 'none';
                             break;
                         case 'height-for-age':
                             // Show height column only
