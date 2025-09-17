@@ -2047,9 +2047,9 @@ header .user-info {
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 6px !important;
     font-size: 10px !important;
-    min-height: 50px !important;
-    flex-direction: column !important;
-    flex-wrap: wrap !important;
+    min-height: 30px !important; /* Reduced height for single row */
+    flex-direction: row !important; /* Keep label and percentage in same row */
+    flex-wrap: nowrap !important; /* Prevent wrapping */
     flex: 1 !important;
     max-width: calc(33.33% - 8px) !important;
     box-sizing: border-box !important;
@@ -2059,14 +2059,13 @@ header .user-info {
     text-align: center !important;
     font-weight: 600 !important;
     color: var(--color-text) !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: unset !important;
+    white-space: nowrap !important; /* Force single line */
+    overflow: hidden !important; /* Hide overflow */
+    text-overflow: ellipsis !important; /* Show ellipsis for long text */
     font-size: 9px !important;
     flex: 1 !important;
     line-height: 1.2 !important;
-    word-wrap: break-word !important;
-    hyphens: auto !important;
+    max-width: 100px !important; /* Limit width to force single line */
 }
 
 /* Compact segment percentage styling */
@@ -8472,18 +8471,18 @@ body {
                 console.log('Processing classifications:', classifications);
                 console.log('Total users:', totalUsers);
                 
-                // Define colors for each classification
+                // Define colors for each classification (matching bar graph colors)
                 const colors = {
-                    'Severely Underweight': '#D32F2F',
-                    'Underweight': '#FF9800',
+                    'Severely Underweight': '#E91E63',
+                    'Underweight': '#FFC107',
                     'Normal': '#4CAF50',
-                    'Overweight': '#FFC107',
+                    'Overweight': '#FF9800',
                     'Obese': '#F44336',
-                    'Severely Wasted': '#8E24AA',
-                    'Wasted': '#9C27B0',
-                    'Severely Stunted': '#795548',
-                    'Stunted': '#607D8B',
-                    'Tall': '#2196F3',
+                    'Severely Wasted': '#D32F2F',
+                    'Wasted': '#FF5722',
+                    'Severely Stunted': '#673AB7',
+                    'Stunted': '#9C27B0',
+                    'Tall': '#00BCD4',
                     'No Data': '#9E9E9E'
                 };
                 
