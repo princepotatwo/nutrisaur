@@ -4614,6 +4614,18 @@ header .user-info {
     color: #CCCCCC !important;
 }
 
+/* Dark theme support for WHO dropdown select */
+.dark-theme #whoStandardSelect {
+    background-color: var(--color-card) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+}
+
+.dark-theme #whoStandardSelect option {
+    background-color: var(--color-card) !important;
+    color: var(--color-text) !important;
+}
+
 .light-theme .search-container input::placeholder {
     color: #666 !important;
 }
@@ -8339,7 +8351,7 @@ body {
                 }
 
                 // Clear previous chart
-                trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">Loading all classifications...</div>';
+                trendsChart.innerHTML = '';
 
                 // Get current filter values
                 const timeFrame = document.querySelector('.time-btn.active')?.textContent?.trim() || '1d';
