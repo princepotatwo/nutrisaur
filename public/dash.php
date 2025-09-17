@@ -2076,6 +2076,26 @@ header .user-info {
     box-sizing: border-box !important; /* Include padding in width calculation */
 }
 
+/* Override any default margins on segment elements */
+.segments .segment.compact .segment-label,
+.segments .segment.compact .segment-percentage {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Universal reset for any span elements inside compact segments */
+.segments .segment.compact span {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
 /* Compact segment percentage styling - Higher specificity */
 .segments .segment.compact .segment-percentage {
     color: var(--color-text) !important;
