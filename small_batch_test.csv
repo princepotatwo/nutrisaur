@@ -1,0 +1,5 @@
+"name","email","password","municipality","barangay","sex","birthday","is_pregnant","weight","height","screening_date"
+"Test_Male_0m_SEVERELY_UNDERWEIGHT1","test0@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2024-01-15","No","1.0","50.0","2024-01-15 10:30:00"
+"Test_Male_0m_SEVERELY_UNDERWEIGHT2","test0@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2024-01-15","No","1.5","50.0","2024-01-15 10:30:00"
+"Test_Male_0m_SEVERELY_UNDERWEIGHT3","test0@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2024-01-15","No","2.0","50.0","2024-01-15 10:30:00"
+"Test_Male_0m_UNDERWEIGHT1","test0@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2024-01-15","No","2.2","50.0","2024-01-15 10:30:00"

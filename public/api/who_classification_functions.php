@@ -113,25 +113,28 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                     // These standards are for children 0-71 months only
                     $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
                 } elseif ($whoStandard === 'bmi-for-age') {
-                    // BMI-for-age can be used for both children (0-71 months) and adults (>71 months)
-                    $shouldProcess = true;
+                    // BMI-for-age can be used for both children (24-71 months) and adults (>71 months)
+                    $shouldProcess = ($ageInMonths >= 24);
+                } elseif ($whoStandard === 'bmi-adult') {
+                    // BMI-adult: for adults 18+ years (216+ months)
+                    $shouldProcess = ($ageInMonths >= 216);
                 } elseif ($whoStandard === 'weight-for-height') {
                     // Weight-for-Height: 65-120 cm height range
                     $heightCm = floatval($user['height_cm']);
                     $shouldProcess = ($heightCm >= 65 && $heightCm <= 120);
-                } elseif ($whoStandard === 'weight-for-length') {
-                    // Weight-for-Length: 45-110 cm height range
-                    $heightCm = floatval($user['height_cm']);
-                    $shouldProcess = ($heightCm >= 45 && $heightCm <= 110);
                 }
                 
                 if ($shouldProcess) {
-                    if ($ageInMonths > 71 && $whoStandard === 'bmi-for-age') {
-                        // For adults (>71 months), use adult BMI classification
+                    if ($whoStandard === 'bmi-adult') {
+                        // For BMI-adult, use adult BMI classification
+                        $bmi = floatval($user['weight_kg']) / pow(floatval($user['height_cm']) / 100, 2);
+                        $classification = getAdultBMIClassification($bmi);
+                    } elseif ($ageInMonths > 71 && $whoStandard === 'bmi-for-age') {
+                        // For adults (>71 months) using bmi-for-age, use adult BMI classification
                         $bmi = floatval($user['weight_kg']) / pow(floatval($user['height_cm']) / 100, 2);
                         $classification = getAdultBMIClassification($bmi);
                     } else {
-                        // Use WHO Growth Standards for children 0-71 months (same as screening.php)
+                        // Use WHO Growth Standards for children (same as screening.php)
                         $who = new WHOGrowthStandards();
                         
                         $assessment = $who->getComprehensiveAssessment(
@@ -155,9 +158,6 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                                     break;
                                 case 'weight-for-height':
                                     $classification = $results['weight_for_height']['classification'] ?? 'No Data';
-                                    break;
-                                case 'weight-for-length':
-                                    $classification = $results['weight_for_length']['classification'] ?? 'No Data';
                                     break;
                                 case 'bmi-for-age':
                                     $classification = $results['bmi_for_age']['classification'] ?? 'No Data';
