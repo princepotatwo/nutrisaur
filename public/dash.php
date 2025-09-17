@@ -999,7 +999,7 @@ header {
 }
 
 .select-header {
-    background: var(--color-bg);
+    background-color: var(--color-card);
     border: 2px solid var(--color-border);
     border-radius: 8px;
     padding: 10px 15px;
@@ -1008,6 +1008,7 @@ header {
     justify-content: space-between;
     align-items: center;
     transition: all 0.3s ease;
+    color: var(--color-text);
 }
 
 .select-header:hover {
@@ -4888,6 +4889,7 @@ header .user-info {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 20px;
     margin-bottom: 20px;
+    align-items: stretch;
 }
 
 .card {
@@ -4899,6 +4901,10 @@ header .user-info {
     position: relative;
     overflow: hidden;
     border-top: 3px solid var(--color-highlight);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .card:hover {
@@ -4915,12 +4921,16 @@ header .user-info {
 }
 
 .metric-value {
-    font-size: 32px;
+    font-size: 36px;
     color: var(--color-text);
-    margin-bottom: 8px;
+    margin: 10px 0;
     font-weight: 700;
     text-align: center;
     line-height: 1;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .metric-change {

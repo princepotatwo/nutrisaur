@@ -1,564 +1,124 @@
-2025-09-17T14:00:19.000000000Z [inf]  Starting Container
-2025-09-17T14:00:20.234483908Z [err]  [Wed Sep 17 14:00:19 2025] PHP 8.1.33 Development Server (http://0.0.0.0:8080) started
-2025-09-17T14:00:22.823949226Z [err]  [Wed Sep 17 14:00:22 2025] 100.64.0.2:38485 Accepted
-2025-09-17T14:00:22.823957196Z [err]  [Wed Sep 17 14:00:22 2025] === ROUTER DEBUG ===
-2025-09-17T14:00:22.823962361Z [err]  [Wed Sep 17 14:00:22 2025] Requested path: health
-2025-09-17T14:00:22.823968743Z [err]  [Wed Sep 17 14:00:22 2025] Public path: /var/www/html/public/
-2025-09-17T14:00:22.823973347Z [err]  [Wed Sep 17 14:00:22 2025] Public API path: /var/www/html/public/api/
-2025-09-17T14:00:22.823978129Z [err]  [Wed Sep 17 14:00:22 2025] Request URI: /health
-2025-09-17T14:00:22.823982476Z [err]  [Wed Sep 17 14:00:22 2025] Script Name: /index.php
-2025-09-17T14:00:22.823986723Z [err]  [Wed Sep 17 14:00:22 2025] 100.64.0.2:38485 [200]: GET /health
-2025-09-17T14:00:22.823991253Z [err]  [Wed Sep 17 14:00:22 2025] 100.64.0.2:38485 Closing
-2025-09-17T14:06:02.633681283Z [err]  [Wed Sep 17 14:05:55 2025] 100.64.0.3:46238 Accepted
-2025-09-17T14:06:02.633688967Z [err]  [Wed Sep 17 14:05:55 2025] === ROUTER DEBUG ===
-2025-09-17T14:06:02.633697411Z [err]  [Wed Sep 17 14:05:55 2025] Requested path: 
-2025-09-17T14:06:02.633702155Z [err]  [Wed Sep 17 14:05:55 2025] Public path: /var/www/html/public/
-2025-09-17T14:06:02.633707052Z [err]  [Wed Sep 17 14:05:55 2025] Public API path: /var/www/html/public/api/
-2025-09-17T14:06:02.633713158Z [err]  [Wed Sep 17 14:05:55 2025] Request URI: /
-2025-09-17T14:06:02.633717514Z [err]  [Wed Sep 17 14:05:55 2025] Script Name: /index.php
-2025-09-17T14:06:02.633721638Z [err]  [Wed Sep 17 14:05:55 2025] 100.64.0.3:46238 [200]: GET /
-2025-09-17T14:06:02.633725643Z [err]  [Wed Sep 17 14:05:55 2025] 100.64.0.3:46238 Closing
-2025-09-17T14:06:02.633731020Z [err]  [Wed Sep 17 14:05:55 2025] 100.64.0.3:16372 Accepted
-2025-09-17T14:06:02.633735883Z [err]  [Wed Sep 17 14:05:55 2025] 100.64.0.3:16372 [200]: GET /google-oauth-config.js
-2025-09-17T14:06:02.633740054Z [err]  [Wed Sep 17 14:05:55 2025] 100.64.0.3:16372 Closing
-2025-09-17T14:06:02.633744320Z [err]  [Wed Sep 17 14:05:55 2025] 100.64.0.3:16388 Accepted
-2025-09-17T14:06:02.633748419Z [err]  [Wed Sep 17 14:05:55 2025] 100.64.0.3:16388 [200]: POST /home.php
-2025-09-17T14:06:02.633753332Z [err]  [Wed Sep 17 14:05:55 2025] 100.64.0.3:16388 Closing
-2025-09-17T14:06:02.633759645Z [err]  [Wed Sep 17 14:05:57 2025] 100.64.0.4:12062 Accepted
-2025-09-17T14:06:02.633764481Z [err]  [Wed Sep 17 14:05:57 2025] 100.64.0.4:12062 [200]: POST /home.php
-2025-09-17T14:06:02.633770842Z [err]  [Wed Sep 17 14:05:57 2025] 100.64.0.4:12062 Closing
-2025-09-17T14:06:02.633774814Z [err]  [Wed Sep 17 14:05:59 2025] 100.64.0.4:12080 Accepted
-2025-09-17T14:06:02.633779647Z [err]  [Wed Sep 17 14:05:59 2025] === ROUTER DEBUG ===
-2025-09-17T14:06:02.633783829Z [err]  [Wed Sep 17 14:05:59 2025] Requested path: dash
-2025-09-17T14:06:02.633788419Z [err]  [Wed Sep 17 14:05:59 2025] Public path: /var/www/html/public/
-2025-09-17T14:06:02.633793038Z [err]  [Wed Sep 17 14:05:59 2025] Public API path: /var/www/html/public/api/
-2025-09-17T14:06:02.633797717Z [err]  [Wed Sep 17 14:05:59 2025] Request URI: /dash
-2025-09-17T14:06:02.633801871Z [err]  [Wed Sep 17 14:05:59 2025] Script Name: /index.php
-2025-09-17T14:06:02.633807288Z [err]  [Wed Sep 17 14:05:59 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-17T14:06:02.633812707Z [err]  [Wed Sep 17 14:05:59 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-17T14:06:02.633817614Z [err]  [Wed Sep 17 14:05:59 2025] 🔍 getTimeFrameData Debug - Starting
-2025-09-17T14:06:02.633822940Z [err]  [Wed Sep 17 14:05:59 2025]   - Time frame: 1d (ignored - getting all users)
-2025-09-17T14:06:02.633827162Z [err]  [Wed Sep 17 14:05:59 2025]   - Barangay: null
-2025-09-17T14:06:02.633831207Z [err]  [Wed Sep 17 14:05:59 2025] 🔍 getTimeFrameData Debug - Querying database
-2025-09-17T14:06:02.633835217Z [err]  [Wed Sep 17 14:05:59 2025]   - WHERE clause: 1=1
-2025-09-17T14:06:02.633839445Z [err]  [Wed Sep 17 14:05:59 2025]   - Params: []
-2025-09-17T14:06:02.633844588Z [err]  [Wed Sep 17 14:05:59 2025]   - Query result success: YES
-2025-09-17T14:06:02.633849344Z [err]  [Wed Sep 17 14:05:59 2025]   - Query result message: No message
-2025-09-17T14:06:02.633853776Z [err]  [Wed Sep 17 14:05:59 2025]   - Number of users found: 88
-2025-09-17T14:06:02.633857857Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.633861837Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.633866982Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.633871708Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 68.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.633875764Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.633879458Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 70.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.633883773Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634386660Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634392800Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 73.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634396577Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634400246Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634404172Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 76.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634408206Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 77.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634412003Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 78.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634415826Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634421094Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634425105Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 81.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634428856Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634432197Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634436315Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634440236Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 85.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634444238Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634448834Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634453535Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634457325Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634461151Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634465201Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 91.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634469440Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634473791Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 93.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634479656Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634484148Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 95.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634488706Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 96.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634493192Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634497677Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 98.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634501458Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 99.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634505343Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634509005Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 101.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634513224Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 102.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634517464Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 103.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634521124Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 104.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634525271Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 105.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634530801Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 106.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634534567Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 107.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634539090Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 108.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634543229Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 109.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634547703Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 110.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634551922Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 111.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634556220Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 112.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634563275Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 113.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634568173Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 114.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634572446Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 115.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634577409Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634581768Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 117.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634586688Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 118.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634591191Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 119.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634596157Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634601508Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634607634Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634612707Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 68.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634617693Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634622232Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 70.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634626583Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634630844Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634635168Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 73.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634640287Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634645502Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634652767Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 76.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634656903Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 77.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634661491Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 78.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634666748Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634671828Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634676584Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 81.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634680959Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634688653Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634693325Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634697724Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 85.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634701892Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634706740Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634710785Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634715291Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634719834Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634724371Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 91.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634728938Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634733627Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 93.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634738121Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634743358Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 95.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634747744Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 96.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634751745Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634755714Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 98.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634761493Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 99.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634765610Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634770542Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 101.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634775529Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 102.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634780667Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 103.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634785239Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 104.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634790496Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 105.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634794747Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 106.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634799940Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 107.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634807323Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 108.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.634812534Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 109.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635610742Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 110.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635622610Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 111.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635627755Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 112.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635632951Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 113.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635637887Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 114.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635642694Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 115.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635648143Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635653069Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 117.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635657262Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 118.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635663529Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 119.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635669572Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635674693Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635679499Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635683856Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 68.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635688204Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635695764Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 70.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635700625Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635707717Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635712671Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 73.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635718079Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635724268Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635729667Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 76.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635734963Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 77.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635739764Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 78.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635745037Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635750077Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635754708Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 81.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.635760808Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636301157Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636308921Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636315651Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 85.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636322819Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636327982Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636334187Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636339128Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636344011Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636349937Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 91.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636357653Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636363546Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 93.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636370107Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636377684Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 95.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636384310Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 96.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636391315Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636398561Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 98.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636407362Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 99.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636415077Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636422192Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 101.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636428966Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 102.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636435485Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 103.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636441328Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 104.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636447405Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 105.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636458378Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 106.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636463713Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 107.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636469271Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 108.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636474716Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 109.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636480446Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 110.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636487459Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 111.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636494483Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 112.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636500568Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 113.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636506371Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 114.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636513990Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 115.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636519812Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 73.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636527259Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636530621Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636538788Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 117.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636539971Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636549601Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 76.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636552707Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 118.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636558554Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 77.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636563628Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 119.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636569783Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 78.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636575225Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636581348Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636587648Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636589896Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636599722Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636603163Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 81.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636615460Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 68.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636616889Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636628555Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636632036Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636642492Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 70.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636646734Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636653354Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636660403Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 85.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636664734Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636669310Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636675947Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 73.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636685760Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636686310Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636695496Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636698505Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636709259Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636711104Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 76.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636720958Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636724043Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 77.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636728875Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 91.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636737122Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 78.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636741434Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636751228Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636753927Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 93.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636760562Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636769838Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636778532Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 95.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636780157Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 81.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636786526Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 96.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636790897Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636795098Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636803515Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 98.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636804197Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636810569Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 99.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636816481Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636817775Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636824838Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 101.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636829652Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 85.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636836943Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636843702Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636850937Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636858520Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636865120Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636871896Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 91.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636878411Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636886680Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 93.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636894282Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636900661Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 95.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636908086Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 96.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636915974Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636922751Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 98.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636931922Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 99.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636940268Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636946382Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 101.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636954473Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 102.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636963204Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 103.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636970149Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 104.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636976016Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 105.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636980900Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 106.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636985997Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 107.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636990555Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 108.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.636995637Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 109.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637002255Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 110.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637008771Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 111.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637014502Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 112.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637021805Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 113.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637035202Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 114.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637042872Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 115.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637049057Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637062113Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 102.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637064344Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 117.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637072919Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 103.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637074936Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 118.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637080277Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 104.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637083401Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 119.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637087034Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 105.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637105433Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 106.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637112197Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 107.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637112990Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637118330Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 108.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637123732Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 109.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637124497Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637131274Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637137620Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 68.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637144174Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637152955Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 70.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637159600Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637165882Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637702657Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 110.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637744481Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 111.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637755235Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 112.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637764940Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 113.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637774531Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 114.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637790590Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 115.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637801421Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637810782Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 117.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637820889Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 118.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637832012Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 119.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637847815Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637858765Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637869038Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637880920Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 68.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637893468Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637902093Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 70.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637911598Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637920651Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637928835Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 73.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637944278Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637952476Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637962406Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 76.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637971157Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 77.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637982814Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 78.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.637995534Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638004913Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638013922Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 81.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638025919Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638036538Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638045684Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638057052Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 85.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638065406Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638074518Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638088204Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638096550Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638105849Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638115374Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 91.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638128069Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638137662Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 93.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638146025Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638154229Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 95.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638162765Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 96.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638174087Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638182936Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 98.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638193964Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 99.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638205662Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638220165Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 101.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638231842Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 102.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638246507Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 103.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638253665Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 104.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638260734Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 105.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638271848Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 106.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638281495Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 107.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638293228Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 108.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638305156Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 109.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638899983Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 110.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638908770Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 111.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638917827Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 112.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638923354Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 113.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638928926Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 114.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638937714Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 115.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638943682Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638950075Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 117.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638955104Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 118.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638960027Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 119.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638964964Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638969177Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638973800Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638980113Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 68.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638984737Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638989498Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 70.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638994121Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.638999828Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639004909Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 73.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639009389Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639015196Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639021629Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 76.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639027361Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 77.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639031615Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 78.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639036335Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639040852Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639045009Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 81.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639050121Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639058728Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639063810Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639070044Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 85.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639075065Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639080600Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639085804Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639090766Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639096014Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639100643Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 91.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639105988Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639110937Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 93.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639116771Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639121638Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 95.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639128422Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 96.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639134699Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639140246Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 98.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639145153Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 99.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639149958Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639154583Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 101.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639162434Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 102.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639167738Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 103.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639172556Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 104.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639176941Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 105.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639182246Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 106.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639187798Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 107.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639192752Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 108.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639198017Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 109.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639203116Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 110.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639210536Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 111.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639215148Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 112.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639220200Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 113.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639225425Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 114.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639229994Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 115.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639235704Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639240461Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 117.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639246971Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 118.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639251479Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 119.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639257094Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639261834Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639267456Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639272420Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 68.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639277365Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639282338Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 70.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639286630Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639290549Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639296782Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 73.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639300834Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639305600Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639309846Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 76.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639314924Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 77.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639319777Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 78.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639324658Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639330267Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639336018Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 81.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639768918Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639774343Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639779557Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639784370Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 85.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639789494Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639796178Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639800906Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639806840Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639812186Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639817560Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 91.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639822329Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639827612Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 93.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639833174Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639942423Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 95.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639950774Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 96.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639955601Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639960138Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 98.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639965037Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 99.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639970101Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639975274Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 101.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639980290Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 102.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639986694Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 103.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639994433Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 104.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.639998764Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 105.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640003403Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 106.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640008138Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 107.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640012943Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 108.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640017468Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 109.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640022700Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 110.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640028913Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 111.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640034108Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 112.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640039635Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 113.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640044950Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 114.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640051281Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 115.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640056256Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640061307Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 117.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640066360Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 118.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640070744Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 119.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640076181Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640081941Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640086960Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640092785Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 68.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640098777Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640104476Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 70.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640110016Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640116024Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640121602Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 73.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640127283Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640135560Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640142429Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 76.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640149478Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 77.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640155418Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 78.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640161943Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640172688Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640177653Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 81.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640181770Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640186416Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640191492Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640196157Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 85.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640200537Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640205203Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640210060Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640215018Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640219194Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.640224210Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 75.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.642937062Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 87.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.644800630Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.646510206Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 118.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.647940954Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.651442085Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 111.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.651908146Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 112.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.653719768Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.655767565Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.657604269Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 82.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.661315446Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 103.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.663294795Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.663594885Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.666043593Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 67.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.667702797Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.670225483Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.672675084Z [err]  [Wed Sep 17 14:05:59 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.674215330Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.676008284Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.678157808Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 84.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.680896349Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 108.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.682966716Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.683954585Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 65.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.685797318Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 71.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.687736514Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 80.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.690214870Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 117.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.691616938Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 69.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.693913359Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 113.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.695906623Z [err]  [Wed Sep 17 14:06:00 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.698545801Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 72.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.699581769Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 100.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.701648023Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.704410857Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.705920796Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 66.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.708763703Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 83.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.710028294Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.712933415Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 74.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.714755391Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 116.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735300262Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 88.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735306834Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 89.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735315270Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 90.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735321494Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 91.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735328509Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 92.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735333785Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 93.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735340227Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 94.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735346401Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 95.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735353747Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 96.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.735360658Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 97.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.737259120Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 86.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:02.737818241Z [err]  [Wed Sep 17 14:06:01 2025] PHP Deprecated:  Implicit conversion from float 79.5 to int loses precision in /var/www/html/who_growth_standards.php on line 349
-2025-09-17T14:06:18.501386570Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 7434
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colorful Bar Chart</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h2 {
+      margin: 10px 0;
+    }
+
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      height: 400px;
+      margin: 40px auto;
+      gap: 10px;
+    }
+
+    .bar {
+      width: 50px;
+      border-radius: 5px 5px 0 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      position: relative;
+    }
+
+    .bar span {
+      position: absolute;
+      top: -25px;
+      font-size: 14px;
+    }
+
+    .label {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    /* Bar colors */
+    .jan {background: #ff3b3b; height: 60px;}
+    .feb {background: #ff7b2f; height: 80px;}
+    .mar {background: #ffb52e; height: 100px;}
+    .apr {background: #a4e02e; height: 140px;}
+    .may {background: #33d17a; height: 160px;}
+    .jun {background: #33d1d1; height: 180px;}
+    .jul {background: #2e9ae0; height: 200px;}
+    .aug {background: #9145ff; height: 220px;}
+    .sep {background: #d63be6; height: 240px;}
+    .oct {background: #ff4fa2; height: 260px;}
+    .nov {background: #ff6347; height: 280px;}
+    .dec {background: #ffd32a; height: 320px;}
+
+    .month {
+      text-align: center;
+      margin-top: 5px;
+      font-size: 13px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h2>Your Subtitle Here</h2>
+  <div class="chart">
+    <div>
+      <div class="bar jan"><span>60</span></div>
+      <div class="month">JAN</div>
+    </div>
+    <div>
+      <div class="bar feb"><span>80</span></div>
+      <div class="month">FEB</div>
+    </div>
+    <div>
+      <div class="bar mar"><span>100</span></div>
+      <div class="month">MAR</div>
+    </div>
+    <div>
+      <div class="bar apr"><span>140</span></div>
+      <div class="month">APR</div>
+    </div>
+    <div>
+      <div class="bar may"><span>160</span></div>
+      <div class="month">MAY</div>
+    </div>
+    <div>
+      <div class="bar jun"><span>180</span></div>
+      <div class="month">JUN</div>
+    </div>
+    <div>
+      <div class="bar jul"><span>200</span></div>
+      <div class="month">JUL</div>
+    </div>
+    <div>
+      <div class="bar aug"><span>220</span></div>
+      <div class="month">AUG</div>
+    </div>
+    <div>
+      <div class="bar sep"><span>240</span></div>
+      <div class="month">SEP</div>
+    </div>
+    <div>
+      <div class="bar oct"><span>260</span></div>
+      <div class="month">OCT</div>
+    </div>
+    <div>
+      <div class="bar nov"><span>280</span></div>
+      <div class="month">NOV</div>
+    </div>
+    <div>
+      <div class="bar dec"><span>320</span></div>
+      <div class="month">DEC</div>
+    </div>
+  </div>
+  <div style="text-align:right; padding: 20px; font-size: 14px;">2019</div>
+</body>
+</html>
