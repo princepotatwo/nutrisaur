@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtering Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .filter-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .filter-section h3 { margin-top: 0; }
+        select, input { margin: 5px; padding: 5px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .hidden { display: none; }
+        .filter-info { background: #e7f3ff; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Filtering Test - Male + Normal Classification</h1>
+    
+    <div class="filter-section">
+        <h3>Filters Applied:</h3>
+        <div class="filter-info">
+            <strong>Sex:</strong> <span id="sexDisplay">All</span> | 
+            <strong>Classification:</strong> <span id="classificationDisplay">All</span> | 
+            <strong>Visible Rows:</strong> <span id="rowCount">0</span>
+        </div>
+    </div>
+    
+    <div class="filter-section">
+        <h3>Test Controls:</h3>
+        <label>Sex Filter:</label>
+        <select id="sexFilter" onchange="applyFilters()">
+            <option value="">All Sexes</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+        
+        <label>Classification Filter:</label>
+        <select id="classificationFilter" onchange="applyFilters()">
+            <option value="">All Classifications</option>
+            <option value="Severely Underweight">Severely Underweight</option>
+            <option value="Underweight">Underweight</option>
+            <option value="Normal">Normal</option>
+            <option value="Overweight">Overweight</option>
+            <option value="Severely Wasted">Severely Wasted</option>
+            <option value="Wasted">Wasted</option>
+            <option value="Obese">Obese</option>
+        </select>
+    </div>
+    
+    <table id="testTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Sex</th>
+                <th>Age</th>
+                <th>Weight</th>
+                <th>Classification</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-sex="Male" data-classification="Normal">
+                <td>John Doe</td>
+                <td>Male</td>
+                <td>2 years</td>
+                <td>12.5 kg</td>
+                <td>Normal</td>
+            </tr>
+            <tr data-sex="Male" data-classification="Overweight">
+                <td>Mike Smith</td>
+                <td>Male</td>
+                <td>3 years</td>
+                <td>18.2 kg</td>
+                <td>Overweight</td>
+            </tr>
+            <tr data-sex="Female" data-classification="Normal">
+                <td>Jane Doe</td>
+                <td>Female</td>
+                <td>2 years</td>
+                <td>11.8 kg</td>
+                <td>Normal</td>
+            </tr>
+            <tr data-sex="Male" data-classification="Underweight">
+                <td>Tom Wilson</td>
+                <td>Male</td>
+                <td>1 year</td>
+                <td>8.5 kg</td>
+                <td>Underweight</td>
+            </tr>
+            <tr data-sex="Female" data-classification="Overweight">
+                <td>Sarah Johnson</td>
+                <td>Female</td>
+                <td>3 years</td>
+                <td>17.8 kg</td>
+                <td>Overweight</td>
+            </tr>
+            <tr data-sex="Male" data-classification="Normal">
+                <td>Bob Brown</td>
+                <td>Male</td>
+                <td>4 years</td>
+                <td>16.2 kg</td>
+                <td>Normal</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="filter-section">
+        <h3>Expected Results:</h3>
+        <ul>
+            <li><strong>Male + Normal:</strong> Should show John Doe and Bob Brown (2 rows)</li>
+            <li><strong>Female + Normal:</strong> Should show Jane Doe (1 row)</li>
+            <li><strong>Male + Overweight:</strong> Should show Mike Smith (1 row)</li>
+            <li><strong>All + Normal:</strong> Should show John Doe, Jane Doe, and Bob Brown (3 rows)</li>
+        </ul>
+    </div>
+
+    <script>
+        function applyFilters() {
+            const sexFilter = document.getElementById('sexFilter').value;
+            const classificationFilter = document.getElementById('classificationFilter').value;
+            const tableRows = document.querySelectorAll('#testTable tbody tr');
+            let visibleCount = 0;
+            
+            // Update display
+            document.getElementById('sexDisplay').textContent = sexFilter || 'All';
+            document.getElementById('classificationDisplay').textContent = classificationFilter || 'All';
+            
+            tableRows.forEach(row => {
+                let showRow = true;
+                
+                // Sex filter
+                if (sexFilter && showRow) {
+                    const rowSex = row.dataset.sex;
+                    if (rowSex !== sexFilter) {
+                        showRow = false;
+                    }
+                }
+                
+                // Classification filter
+                if (classificationFilter && showRow) {
+                    const classification = row.cells[4].textContent.trim();
+                    if (classification !== classificationFilter) {
+                        showRow = false;
+                    }
+                }
+                
+                if (showRow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            document.getElementById('rowCount').textContent = visibleCount;
+        }
+        
+        // Initialize
+        applyFilters();
+    </script>
+</body>
+</html>

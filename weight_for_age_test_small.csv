@@ -1,0 +1,7 @@
+"name","email","password","municipality","barangay","sex","birthday","is_pregnant","weight","height","screening_date"
+"Test_Male_0m_SU","test0@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2024-01-15","No","1.0","50.0","2024-01-15 10:30:00"
+"Test_Male_0m_N","test0@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2024-01-15","No","3.0","50.0","2024-01-15 10:30:00"
+"Test_Male_0m_O","test0@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2024-01-15","No","7.0","50.0","2024-01-15 10:30:00"
+"Test_Female_0m_SU","test0f@example.com","password123","MARIVELES","Alion","Female","2024-01-15","No","0.8","50.0","2024-01-15 10:30:00"
+"Test_Female_0m_N","test0f@example.com","password123","MARIVELES","Alion","Female","2024-01-15","No","2.8","50.0","2024-01-15 10:30:00"
+"Test_Female_0m_O","test0f@example.com","password123","MARIVELES","Alion","Female","2024-01-15","No","6.5","50.0","2024-01-15 10:30:00"

@@ -3551,16 +3551,22 @@ header {
                             
                             <select id="classificationFilter" onchange="filterByClassification()" class="filter-select">
                                 <option value="">All Classifications</option>
-                                <option value="Severely Underweight">Severely Underweight</option>
-                                <option value="Underweight">Underweight</option>
-                                <option value="Normal">Normal</option>
-                                <option value="Overweight">Overweight</option>
-                                <option value="Severely Wasted">Severely Wasted</option>
-                                <option value="Wasted">Wasted</option>
-                                <option value="Obese">Obese</option>
-                                <option value="Severely Stunted">Severely Stunted</option>
-                                <option value="Stunted">Stunted</option>
-                                <option value="Tall">Tall</option>
+                                <optgroup label="Weight-for-Age">
+                                    <option value="Severely Underweight">Severely Underweight</option>
+                                    <option value="Underweight">Underweight</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Overweight">Overweight</option>
+                                </optgroup>
+                                <optgroup label="Height-for-Age (Stunting)">
+                                    <option value="Severely Stunted">Severely Stunted</option>
+                                    <option value="Stunted">Stunted</option>
+                                    <option value="Tall">Tall</option>
+                                </optgroup>
+                                <optgroup label="Weight-for-Height (Wasting)">
+                                    <option value="Severely Wasted">Severely Wasted</option>
+                                    <option value="Wasted">Wasted</option>
+                                    <option value="Obese">Obese</option>
+                                </optgroup>
                             </select>
                         </div>
                         
