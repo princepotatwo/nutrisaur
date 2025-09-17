@@ -3565,6 +3565,14 @@ header {
                                 <optgroup label="Weight-for-Height (Wasting)">
                                     <option value="Severely Wasted">Severely Wasted</option>
                                     <option value="Wasted">Wasted</option>
+                                    <option value="Overweight">Overweight</option>
+                                    <option value="Obese">Obese</option>
+                                </optgroup>
+                                <optgroup label="BMI-for-Age">
+                                    <option value="Severely Underweight">Severely Underweight</option>
+                                    <option value="Underweight">Underweight</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Overweight">Overweight</option>
                                     <option value="Obese">Obese</option>
                                 </optgroup>
                             </select>
@@ -4724,8 +4732,40 @@ header {
             
             tableRows.forEach(row => {
                 const classification = row.cells[8].textContent.trim();
+                const rowStandard = row.dataset.standard;
                 
-                if (!classificationFilter || classification === classificationFilter) {
+                // Check if classification matches AND it's the right standard type
+                let matchesClassification = false;
+                
+                if (!classificationFilter) {
+                    matchesClassification = true;
+                } else {
+                    // Check if classification matches
+                    if (classification === classificationFilter) {
+                        // Now check if it's the right standard type based on classification
+                        if (classificationFilter === 'Severely Underweight' || 
+                            classificationFilter === 'Underweight' || 
+                            classificationFilter === 'Normal' || 
+                            classificationFilter === 'Overweight') {
+                            // These can be Weight-for-Age or BMI-for-Age
+                            matchesClassification = (rowStandard === 'weight-for-age' || rowStandard === 'bmi-for-age');
+                        } else if (classificationFilter === 'Severely Stunted' || 
+                                   classificationFilter === 'Stunted' || 
+                                   classificationFilter === 'Tall') {
+                            // These are Height-for-Age only
+                            matchesClassification = (rowStandard === 'height-for-age');
+                        } else if (classificationFilter === 'Severely Wasted' || 
+                                   classificationFilter === 'Wasted') {
+                            // These are Weight-for-Height only
+                            matchesClassification = (rowStandard === 'weight-for-height' || rowStandard === 'weight-for-length');
+                        } else if (classificationFilter === 'Obese') {
+                            // Obese can be Weight-for-Height or BMI-for-Age
+                            matchesClassification = (rowStandard === 'weight-for-height' || rowStandard === 'weight-for-length' || rowStandard === 'bmi-for-age');
+                        }
+                    }
+                }
+                
+                if (matchesClassification) {
                     row.style.display = '';
                     visibleCount++;
                 } else {
