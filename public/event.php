@@ -7448,477 +7448,6 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
 
 
         // CSV Upload Functions
-        // Flag to prevent double file selection
-        let isFileSelectionInProgress = false;
-        
-        function handleFileSelect(input) {
-            if (isFileSelectionInProgress) {
-                console.log('File selection already in progress, ignoring duplicate call');
-                return;
-            }
-            
-            isFileSelectionInProgress = true;
-            
-            const file = input.files[0];
-            if (file) {
-                console.log('File selected:', file.name);
-                
-                // Also set the file in the main file input for form submission
-                const mainFileInput = document.getElementById('csvFile');
-                if (mainFileInput && input !== mainFileInput) {
-                    // Create a new FileList-like object
-                    const dt = new DataTransfer();
-                    dt.items.add(file);
-                    mainFileInput.files = dt.files;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const csv = e.target.result;
-                        const lines = csv.split('\n');
-                        const headers = lines[0].split(',');
-                        const previewData = lines.slice(1, 6); // First 5 data rows
-                        
-                        showCSVPreview(headers, previewData);
-                        document.getElementById('importBtn').disabled = false;
-                        document.getElementById('cancelBtn').style.display = 'flex';
-                    } catch (error) {
-                        console.error('Error processing CSV file:', error);
-                        alert('Error processing CSV file. Please check the file format.');
-                    }
-                };
-                reader.onerror = function() {
-                    console.error('Error reading file');
-                    alert('Error reading file. Please try again.');
-                };
-                reader.readAsText(file);
-            }
-            
-            // Reset flag after a short delay
-            setTimeout(() => {
-                isFileSelectionInProgress = false;
-            }, 100);
-        }
-
-        function cancelUpload() {
-            try {
-                // Clear the file input
-                const fileInput = document.getElementById('csvFile');
-                if (fileInput) fileInput.value = '';
-                
-                // Hide the preview
-                const preview = document.getElementById('csvPreview');
-                if (preview) preview.style.display = 'none';
-                
-                // Disable import button and hide cancel button
-                const importBtn = document.getElementById('importBtn');
-                const cancelBtn = document.getElementById('cancelBtn');
-                if (importBtn) importBtn.disabled = true;
-                if (cancelBtn) cancelBtn.style.display = 'none';
-                
-                // Clear preview content
-                const previewContent = document.getElementById('previewContent');
-                if (previewContent) previewContent.innerHTML = '';
-                
-                console.log('Upload cancelled');
-            } catch (error) {
-                console.error('Error cancelling upload:', error);
-            }
-        }
-
-        function showCSVPreview(headers, data) {
-            const previewDiv = document.getElementById('csvPreview');
-            const contentDiv = document.getElementById('previewContent');
-            
-            let tableHTML = '<table class="preview-table"><thead><tr>';
-            headers.forEach(header => {
-                tableHTML += `<th>${header.trim()}</th>`;
-            });
-            tableHTML += '</tr></thead><tbody>';
-            
-            data.forEach(row => {
-                if (row.trim()) {
-                    tableHTML += '<tr>';
-                    const cells = row.split(',');
-                    cells.forEach(cell => {
-                        tableHTML += `<td>${cell.trim()}</td>`;
-                    });
-                    tableHTML += '</tr>';
-                }
-            });
-            
-            tableHTML += '</tbody></table>';
-            contentDiv.innerHTML = tableHTML;
-            previewDiv.style.display = 'block';
-        }
-
-        function downloadTemplate() {
-            // Get current date and add some future dates for examples
-            const now = new Date();
-            const future1 = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days from now
-            const future2 = new Date(now.getTime() + (14 * 24 * 60 * 60 * 1000)); // 14 days from now
-            const future3 = new Date(now.getTime() + (21 * 24 * 60 * 60 * 1000)); // 21 days from now
-            
-            const formatDate = (date) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                return `${year}-${month}-${day} ${hours}:${minutes}`;
-            };
-            
-            const csvContent = `title,type,description,date_time,location,organizer
-Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,Sample Organizer`;
-            
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'events_template.csv';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-        }
-
-        // Improved Drag and Drop functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing CSV upload...');
-            
-            // Form submission handling
-            const csvUploadForm = document.getElementById('csvUploadForm');
-            if (csvUploadForm) {
-                csvUploadForm.addEventListener('submit', function(e) {
-                    console.log('Form submission started');
-                    const fileInput = document.getElementById('csvFile');
-                    if (!fileInput.files[0]) {
-                        e.preventDefault();
-                        alert('Please select a CSV file first.');
-                        return false;
-                    }
-                    
-                    document.getElementById('importStatus').style.display = 'block';
-                    document.getElementById('importBtn').disabled = true;
-                    document.getElementById('cancelBtn').style.display = 'none';
-                });
-            }
-            
-            const uploadArea = document.getElementById('uploadArea') || document.querySelector('.csv-upload-area');
-            const fileInput = document.getElementById('csvFile');
-            
-            if (uploadArea && fileInput) {
-                console.log('Upload area and file input found');
-                
-                // Prevent default drag behaviors
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    uploadArea.addEventListener(eventName, preventDefaults, false);
-                    document.body.addEventListener(eventName, preventDefaults, false);
-                });
-                
-                // Highlight drop area when item is dragged over it
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    uploadArea.addEventListener(eventName, highlight, false);
-                });
-                
-                ['dragleave', 'drop'].forEach(eventName => {
-                    uploadArea.addEventListener(eventName, unhighlight, false);
-                });
-                
-                // Handle dropped files
-                uploadArea.addEventListener('drop', handleDrop, false);
-                
-                // Handle click on upload area to trigger file selection
-                uploadArea.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    // Create a temporary visible input (this method works)
-                    const tempInput = document.createElement('input');
-                    tempInput.type = 'file';
-                    tempInput.accept = '.csv';
-                    tempInput.style.position = 'absolute';
-                    tempInput.style.left = '-9999px';
-                    document.body.appendChild(tempInput);
-                    
-                    tempInput.addEventListener('change', function(e) {
-                        if (e.target.files[0]) {
-                            // Copy the file to the main input
-                            const dt = new DataTransfer();
-                            dt.items.add(e.target.files[0]);
-                            fileInput.files = dt.files;
-                            handleFileSelect(fileInput);
-                        }
-                        document.body.removeChild(tempInput);
-                    });
-                    
-                    tempInput.click();
-                });
-                
-                // Handle file input change (only once)
-                fileInput.addEventListener('change', function(e) {
-                    console.log('File input changed');
-                    handleFileSelect(this);
-                });
-                
-                // Make sure upload area is not focusable
-                uploadArea.setAttribute('tabindex', '-1');
-                
-
-            } else {
-                console.error('Upload area or file input not found');
-                console.log('Upload area:', uploadArea);
-                console.log('File input:', fileInput);
-            }
-            
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        });
-        
-
-        
-        // Function to toggle notification location dropdown
-        function toggleNotificationLocationDropdown() {
-            const dropdown = document.getElementById('notification-location-dropdown');
-            const arrow = document.querySelector('#notification-location-dropdown').previousElementSibling.querySelector('.dropdown-arrow');
-            
-            if (dropdown.classList.contains('active')) {
-                dropdown.classList.remove('active');
-                arrow.classList.remove('active');
-            } else {
-                dropdown.classList.add('active');
-                arrow.classList.add('active');
-            }
-        }
-        
-        // Function to select notification location
-        function selectNotificationLocation(value, text) {
-            selectedNotificationLocation = value;
-            selectedNotificationLocationText = text;
-            
-            document.getElementById('selected-notification-location').textContent = text;
-            
-            // Close dropdown
-            toggleNotificationLocationDropdown();
-            
-            // Show location preview
-            showNotificationLocationPreview(value);
-        }
-        
-        // Function to filter notification location options
-        function filterNotificationLocationOptions() {
-            const searchInput = document.getElementById('notification-location-search');
-            const searchTerm = searchInput.value.toLowerCase();
-            const optionItems = document.querySelectorAll('#notification-location-dropdown .option-item');
-            
-            optionItems.forEach((item) => {
-                const text = item.textContent.toLowerCase();
-                const matches = text.includes(searchTerm);
-                item.style.display = matches ? 'block' : 'none';
-            });
-        }
-        
-        // Function to show notification location preview
-        async function showNotificationLocationPreview(location) {
-            const previewContainer = document.getElementById('notificationLocationPreview');
-            const previewContent = document.getElementById('notificationLocationPreviewContent');
-            
-            if (!location) {
-                previewContainer.style.display = 'none';
-                return;
-            }
-            
-            try {
-                // Get location preview from server
-                const response = await fetch('event.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: new URLSearchParams({
-                        'action': 'get_location_preview',
-                        'location': location
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    const users = result.users || [];
-                    const userCount = users.length;
-                    
-                    let previewHTML = '';
-                    if (userCount > 0) {
-                        previewHTML = `
-                            <div style="margin-bottom: 10px;">
-                                <strong>${userCount} users will receive this notification:</strong>
-                            </div>
-                            <div style="max-height: 150px; overflow-y: auto;">
-                                ${users.map(user => `
-                                    <div style="padding: 5px 0; border-bottom: 1px solid rgba(161, 180, 84, 0.1);">
-                                        <strong>${user.user_name || user.user_email}</strong>
-                                        <br><small style="opacity: 0.7;">${user.user_email}</small>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `;
-                    } else {
-                        previewHTML = '<div style="text-align: center; opacity: 0.7; color: #f44336;">No users found in this location</div>';
-                    }
-                    
-                    previewContent.innerHTML = previewHTML;
-                    previewContainer.style.display = 'block';
-                } else {
-                    previewContent.innerHTML = '<div style="text-align: center; opacity: 0.7; color: #f44336;">Error loading location preview</div>';
-                    previewContainer.style.display = 'block';
-                }
-                
-            } catch (error) {
-                console.error('Error getting location preview:', error);
-                previewContent.innerHTML = '<div style="text-align: center; opacity: 0.7; color: #f44336;">Error loading location preview</div>';
-                previewContainer.style.display = 'block';
-            }
-        }
-        
-        // Function to send location notification from form
-        function sendLocationNotificationFromForm() {
-            const location = selectedNotificationLocation;
-            const title = document.getElementById('notificationTitle').value.trim();
-            const message = document.getElementById('notificationMessage').value.trim();
-            
-            if (!location) {
-                alert('Please select a target location');
-                return;
-            }
-            
-            if (!title) {
-                alert('Please enter a notification title');
-                return;
-            }
-            
-            if (!message) {
-                alert('Please enter a notification message');
-                return;
-            }
-            
-            // Confirm before sending
-            if (confirm(`Send notification to users in ${selectedNotificationLocationText}?\n\nTitle: ${title}\nMessage: ${message}`)) {
-                sendLocationNotification(location, title, message);
-                
-                // Clear form
-                document.getElementById('notificationTitle').value = '';
-                document.getElementById('notificationMessage').value = '';
-                selectedNotificationLocation = '';
-                selectedNotificationLocationText = '';
-                document.getElementById('selected-notification-location').textContent = 'Select Location';
-                document.getElementById('notificationLocationPreview').style.display = 'none';
-            }
-        }
-        
-        // Function to send location-based notifications
-        async function sendLocationNotification(location, title, message) {
-            try {
-                console.log('Sending location notification:', { location, title, message });
-                
-                // Get FCM tokens for the specified location
-                const response = await fetch('event.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: new URLSearchParams({
-
-                        'location': location,
-                        'title': title,
-                        'message': message
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showNotificationSuccess(`Location notification sent successfully to ${result.users_notified} users in ${location}!`);
-                } else {
-                    showNotificationError(`Failed to send location notification: ${result.message}`);
-                }
-                
-            } catch (error) {
-                console.error('Error sending location notification:', error);
-                showNotificationError('Error sending location notification. Please try again.');
-            }
-        }
-        
-        // Function to show notification success
-        function showNotificationSuccess(message) {
-            const successDiv = document.createElement('div');
-            successDiv.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #4CAF50, #45a049);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-                z-index: 1001;
-                max-width: 300px;
-                animation: slideInRight 0.3s ease;
-            `;
-            successDiv.innerHTML = `✅ ${message}`;
-            
-            document.body.appendChild(successDiv);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (successDiv.parentNode) {
-                    successDiv.style.animation = 'slideOutRight 0.3s ease';
-                    setTimeout(() => {
-                        if (successDiv.parentNode) {
-                            successDiv.parentNode.removeChild(successDiv);
-                        }
-                    }, 300);
-                }
-            }, 5000);
-        }
-        
-        // Function to show notification error
-        function showNotificationError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #f44336, #d32f2f);
-                color: white;
-                padding: 15px 20px;
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
-                z-index: 1001;
-                max-width: 300px;
-                animation: slideInRight 0.3s ease;
-            `;
-            errorDiv.innerHTML = `❌ ${message}`;
-            
-            document.body.appendChild(errorDiv);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (errorDiv.parentNode) {
-                    errorDiv.style.animation = 'slideOutRight 0.3s ease';
-                    setTimeout(() => {
-                        if (errorDiv.parentNode) {
-                            errorDiv.parentNode.removeChild(errorDiv);
-                        }
-                    }, 300);
-                }
-            }, 5000);
-        }
-        
         // 🚨 COMPLETELY NEW EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
         // Define this function globally so it's available immediately
         window.handleNewEventCreation = async function() {
@@ -8038,44 +7567,61 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
 
         // Theme toggle function
         function newToggleTheme() {
+            console.log('🎨 Theme toggle function called');
             const body = document.body;
             const icon = document.querySelector('.new-theme-icon');
+            
+            console.log('🎨 Current body classes:', body.className);
+            console.log('🎨 Icon element:', icon);
             
             if (body.classList.contains('dark-theme')) {
                 body.classList.remove('dark-theme');
                 body.classList.add('light-theme');
                 if (icon) icon.textContent = '☀️';
                 localStorage.setItem('theme', 'light');
-                console.log('Switched to light theme');
+                console.log('✅ Switched to light theme');
             } else {
                 body.classList.remove('light-theme');
                 body.classList.add('dark-theme');
                 if (icon) icon.textContent = '🌙';
                 localStorage.setItem('theme', 'dark');
-                console.log('Switched to dark theme');
+                console.log('✅ Switched to dark theme');
             }
+            
+            console.log('🎨 New body classes:', body.className);
         }
 
         // Initialize theme on page load
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 DOM Content Loaded - Initializing theme...');
             const savedTheme = localStorage.getItem('theme') || 'dark';
             const body = document.body;
             const icon = document.querySelector('.new-theme-icon');
+            
+            console.log('🎨 Saved theme from localStorage:', savedTheme);
+            console.log('🎨 Body element:', body);
+            console.log('🎨 Icon element:', icon);
             
             if (savedTheme === 'light') {
                 body.classList.remove('dark-theme');
                 body.classList.add('light-theme');
                 if (icon) icon.textContent = '☀️';
+                console.log('✅ Applied light theme on page load');
             } else {
                 body.classList.remove('light-theme');
                 body.classList.add('dark-theme');
                 if (icon) icon.textContent = '🌙';
+                console.log('✅ Applied dark theme on page load');
             }
 
             // Add theme toggle event listener
             const themeToggleBtn = document.getElementById('new-theme-toggle');
+            console.log('🎨 Theme toggle button:', themeToggleBtn);
             if (themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', newToggleTheme);
+                console.log('✅ Theme toggle event listener added');
+            } else {
+                console.error('❌ Theme toggle button not found!');
             }
         });
     </script>
