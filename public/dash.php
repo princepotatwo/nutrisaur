@@ -2040,18 +2040,18 @@ header .user-info {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 4px !important;
-    padding: 8px 6px !important;
+    gap: 2px !important; /* Reduced gap */
+    padding: 4px 2px !important; /* Reduced padding */
     margin-bottom: 0 !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 6px !important;
-    font-size: 10px !important;
-    min-height: 30px !important; /* Reduced height for single row */
-    flex-direction: row !important; /* Keep label and percentage in same row */
+    font-size: 9px !important; /* Smaller font */
+    min-height: 40px !important; /* Increased height for two lines */
+    flex-direction: column !important; /* Stack label and percentage vertically */
     flex-wrap: nowrap !important; /* Prevent wrapping */
     flex: 1 !important;
-    max-width: calc(33.33% - 8px) !important;
+    max-width: calc(25% - 4px) !important; /* Smaller width for 4 items */
     box-sizing: border-box !important;
 }
 
@@ -2059,13 +2059,17 @@ header .user-info {
     text-align: center !important;
     font-weight: 600 !important;
     color: var(--color-text) !important;
-    white-space: nowrap !important; /* Force single line */
-    overflow: hidden !important; /* Hide overflow */
-    text-overflow: ellipsis !important; /* Show ellipsis for long text */
-    font-size: 9px !important;
+    white-space: normal !important; /* Allow two lines */
+    overflow: visible !important; /* Show all text */
+    text-overflow: unset !important; /* No ellipsis */
+    font-size: 8px !important; /* Smaller font for two lines */
     flex: 1 !important;
-    line-height: 1.2 !important;
-    max-width: 100px !important; /* Limit width to force single line */
+    line-height: 1.1 !important; /* Tighter line height */
+    max-width: 100% !important; /* Use full width */
+    margin: 0 !important; /* Remove all margins */
+    padding: 0 !important; /* Remove all padding */
+    word-wrap: break-word !important; /* Break long words */
+    hyphens: auto !important; /* Enable hyphenation */
 }
 
 /* Compact segment percentage styling */
@@ -2074,8 +2078,10 @@ header .user-info {
     opacity: 0.8 !important;
     text-align: center !important;
     white-space: nowrap !important;
-    font-size: 9px !important;
-    min-width: 30px !important;
+    font-size: 7px !important; /* Smaller font */
+    min-width: 20px !important; /* Smaller width */
+    margin: 0 !important; /* Remove margins */
+    padding: 0 !important; /* Remove padding */
 }
 
 /* Color indicators for each risk level - Colored boxes matching donut chart colors */
@@ -2136,9 +2142,10 @@ header .user-info {
 .segments:has(.segment.compact) {
     display: flex !important;
     flex-direction: row !important;
-    gap: 8px !important;
+    gap: 4px !important; /* Reduced gap */
     width: 100% !important;
     justify-content: space-between !important;
+    flex-wrap: nowrap !important; /* Prevent wrapping to new row */
 }
 
 /* Responsive design for segments */
