@@ -1852,16 +1852,11 @@ header .user-info {
     color: #F44336 !important; /* Red for High Risk */
 }
 
-/* Enhanced segments with improved layout and responsiveness */
+/* Enhanced segments - NO FLEXBOX for manual control */
 .segments {
-    display: flex !important;
-    justify-content: center !important;
-    flex-wrap: wrap !important;
+    display: block !important; /* NO FLEXBOX */
     margin-top: 15px !important;
-    gap: 12px !important;
     max-width: 100% !important;
-    flex-direction: row !important;
-    align-items: flex-start !important;
     overflow: visible !important;
     white-space: normal !important;
     height: auto !important;
@@ -2035,21 +2030,20 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* ULTRA COMPACT DESIGN: Zero spacing inside boxes - HALF SIZE */
+/* ULTRA COMPACT DESIGN: Manual positioning - NO FLEX/AUTO */
 .segments .segment.compact {
-    display: block !important;
+    display: inline-block !important; /* NO FLEXBOX */
     position: relative !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 4px !important;
-    min-height: 16px !important;
-    flex: 1 !important;
-    max-width: calc(12.5% - 2px) !important; /* HALF SIZE - was 25% - 4px */
-    width: calc(12.5% - 2px) !important; /* Force exact width */
+    height: 16px !important; /* Fixed height */
+    width: 80px !important; /* Fixed width - manual control */
     box-sizing: border-box !important;
     margin: 0 !important;
     padding: 0 !important;
     font-size: 0 !important; /* Reset font size to eliminate spacing */
+    vertical-align: top !important; /* Align segments at top */
 }
 
 /* Color dot - absolutely positioned */
@@ -2149,14 +2143,10 @@ header .user-info {
     transition: all 0.2s ease !important;
 }
 
-/* Ensure segments container supports compact layout */
+/* Compact segments - NO FLEXBOX, manual positioning */
 .segments:has(.segment.compact) {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 4px !important; /* Reduced gap */
+    display: block !important; /* NO FLEXBOX */
     width: 100% !important;
-    justify-content: space-between !important;
-    flex-wrap: nowrap !important; /* Prevent wrapping to new row */
 }
 
 /* Responsive design for segments */
