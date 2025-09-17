@@ -2038,16 +2038,16 @@ header .user-info {
 /* Compact single-line segments - Grid layout with dot on left, text on right */
 .segments .segment.compact {
     display: grid !important;
-    grid-template-columns: 12px 1fr !important; /* 12px for dot, rest for text */
-    gap: 4px !important; /* Gap between dot and text */
+    grid-template-columns: 8px 1fr !important; /* 8px for dot, rest for text */
+    gap: 2px !important; /* Smaller gap between dot and text */
     align-items: center !important;
-    padding: 2px 4px !important; /* Small padding */
+    padding: 1px 2px !important; /* Minimal padding */
     margin-bottom: 0 !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 6px !important;
     font-size: 9px !important; /* Smaller font */
-    min-height: 24px !important; /* Reduced height to prevent card extension */
+    min-height: 18px !important; /* Even smaller height */
     flex: 1 !important;
     max-width: calc(25% - 4px) !important; /* Smaller width for 4 items */
     box-sizing: border-box !important;
@@ -2063,6 +2063,7 @@ header .user-info {
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
+    gap: 0 !important; /* No gap between label and percentage */
 }
 
 /* Higher specificity to override conflicting rules */
@@ -2073,14 +2074,14 @@ header .user-info {
     white-space: normal !important; /* Allow two lines */
     overflow: visible !important; /* Show all text */
     text-overflow: unset !important; /* No ellipsis */
-    font-size: 7px !important; /* Smaller font for compact layout */
-    line-height: 1.0 !important; /* Very tight line height */
+    font-size: 6px !important; /* Even smaller font */
+    line-height: 0.8 !important; /* Very tight line height */
     width: 100% !important; /* Force full width */
     margin: 0 !important; /* Remove all margins */
     padding: 0 !important; /* Remove all padding */
     word-wrap: break-word !important; /* Break long words */
     hyphens: auto !important; /* Enable hyphenation */
-    max-height: 14px !important; /* Limit height for label text only */
+    max-height: 10px !important; /* Smaller height limit */
     display: block !important; /* Ensure it takes full width */
     box-sizing: border-box !important; /* Include padding in width calculation */
 }
@@ -2091,12 +2092,12 @@ header .user-info {
     opacity: 0.8 !important;
     text-align: center !important;
     white-space: nowrap !important;
-    font-size: 6px !important; /* Very small font */
+    font-size: 5px !important; /* Even smaller font */
     width: 100% !important; /* Force full width */
     margin: 0 !important; /* Remove margins */
     padding: 0 !important; /* Remove padding */
-    line-height: 1.0 !important; /* Tight line height */
-    max-height: 8px !important; /* Limit height */
+    line-height: 0.8 !important; /* Very tight line height */
+    max-height: 6px !important; /* Smaller height limit */
     display: block !important; /* Ensure it's on separate line */
     flex-shrink: 0 !important; /* Don't shrink */
     box-sizing: border-box !important; /* Include padding in width calculation */
@@ -2104,8 +2105,8 @@ header .user-info {
 
 /* Color dot for grid layout - positioned in first grid column */
 .segments .segment.compact .segment-dot {
-    width: 8px !important;
-    height: 8px !important;
+    width: 6px !important;
+    height: 6px !important;
     border-radius: 50% !important;
     margin: 0 !important;
     padding: 0 !important;
