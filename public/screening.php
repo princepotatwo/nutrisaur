@@ -2714,7 +2714,7 @@ header {
 
         .user-table th,
         .user-table td {
-            padding: 6px 4px;
+            padding: 7.5px 5px;
             text-align: center;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             white-space: normal;
@@ -2790,7 +2790,7 @@ header {
             background-color: var(--color-card);
             z-index: 10;
             border-bottom: 2px solid rgba(161, 180, 84, 0.4);
-            padding: 8px 4px;
+            padding: 10px 5px;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
             letter-spacing: 0.3px;
