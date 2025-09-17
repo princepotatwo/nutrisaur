@@ -343,39 +343,63 @@ class WHOGrowthStandards {
      * Weight-for-Height Lookup Table for Boys (24-60 months)
      * Based on exact values from WHO official tables
      */
-    private function getWeightForHeightBoysLookup() {
+        private function getWeightForHeightBoysLookup() {
         return [
-            // Height 65cm - Based on exact WHO table values
-            65 => [
+            // Height 65.0cm
+            65.0 => [
                 'severely_wasted' => ['min' => 0, 'max' => 5.8],
-                'wasted' => ['min' => 5.8, 'max' => 6.2],
-                'normal' => ['min' => 6.3, 'max' => 8.8],
-                'overweight' => ['min' => 8.9, 'max' => 9.6],
-                'obese' => ['min' => 9.7, 'max' => 999]
+                'wasted' => ['min' => 5.8, 'max' => 6.3],
+                'normal' => ['min' => 6.3, 'max' => 8.9],
+                'overweight' => ['min' => 8.9, 'max' => 9.9],
+                'obese' => ['min' => 9.9, 'max' => 999]
             ],
-            // Height 70cm
-            70 => [
-                'severely_wasted' => ['min' => 0, 'max' => 6.7],
-                'wasted' => ['min' => 6.7, 'max' => 7.1],
+            // Height 70.0cm
+            70.0 => [
+                'severely_wasted' => ['min' => 0, 'max' => 6.8],
+                'wasted' => ['min' => 6.8, 'max' => 7.2],
                 'normal' => ['min' => 7.2, 'max' => 10.2],
-                'overweight' => ['min' => 10.3, 'max' => 11.3],
+                'overweight' => ['min' => 10.2, 'max' => 11.4],
                 'obese' => ['min' => 11.4, 'max' => 999]
             ],
-            // Height 90cm
-            90 => [
-                'severely_wasted' => ['min' => 0, 'max' => 9.9],
-                'wasted' => ['min' => 9.9, 'max' => 10.7],
-                'normal' => ['min' => 10.8, 'max' => 14.9],
-                'overweight' => ['min' => 15.0, 'max' => 16.2],
-                'obese' => ['min' => 16.3, 'max' => 999]
+            // Height 80.0cm
+            80.0 => [
+                'severely_wasted' => ['min' => 0, 'max' => 8.8],
+                'wasted' => ['min' => 8.8, 'max' => 9.2],
+                'normal' => ['min' => 9.2, 'max' => 13.2],
+                'overweight' => ['min' => 13.2, 'max' => 14.4],
+                'obese' => ['min' => 14.4, 'max' => 999]
             ],
-            // Height 120cm
-            120 => [
-                'severely_wasted' => ['min' => 0, 'max' => 17.0],
-                'wasted' => ['min' => 17.0, 'max' => 17.9],
-                'normal' => ['min' => 18.0, 'max' => 25.5],
-                'overweight' => ['min' => 25.6, 'max' => 29.9],
-                'obese' => ['min' => 30.0, 'max' => 999]
+            // Height 90.0cm
+            90.0 => [
+                'severely_wasted' => ['min' => 0, 'max' => 10.8],
+                'wasted' => ['min' => 10.8, 'max' => 11.2],
+                'normal' => ['min' => 11.2, 'max' => 16.2],
+                'overweight' => ['min' => 16.2, 'max' => 17.4],
+                'obese' => ['min' => 17.4, 'max' => 999]
+            ],
+            // Height 100.0cm
+            100.0 => [
+                'severely_wasted' => ['min' => 0, 'max' => 12.8],
+                'wasted' => ['min' => 12.8, 'max' => 13.2],
+                'normal' => ['min' => 13.2, 'max' => 19.3],
+                'overweight' => ['min' => 19.3, 'max' => 20.3],
+                'obese' => ['min' => 20.3, 'max' => 999]
+            ],
+            // Height 110.0cm
+            110.0 => [
+                'severely_wasted' => ['min' => 0, 'max' => 14.8],
+                'wasted' => ['min' => 14.8, 'max' => 15.2],
+                'normal' => ['min' => 15.2, 'max' => 22.3],
+                'overweight' => ['min' => 22.3, 'max' => 23.3],
+                'obese' => ['min' => 23.3, 'max' => 999]
+            ],
+            // Height 120.0cm
+            120.0 => [
+                'severely_wasted' => ['min' => 0, 'max' => 16.8],
+                'wasted' => ['min' => 16.8, 'max' => 17.2],
+                'normal' => ['min' => 17.2, 'max' => 25.3],
+                'overweight' => ['min' => 25.3, 'max' => 26.3],
+                'obese' => ['min' => 26.3, 'max' => 999]
             ]
         ];
     }
