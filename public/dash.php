@@ -372,6 +372,9 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
         $criticalMuac = 0; // Count of Severely Wasted
         $barangaysCovered = [];
         
+        error_log("🔍 Dashboard Metrics Debug - Starting calculation");
+        error_log("  - Total users: $totalScreened");
+        
         foreach ($users as $user) {
             // Calculate age in months like in DatabaseAPI
             $birthDate = new DateTime($user['birthday']);
@@ -396,6 +399,7 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
                 if ($weightForAge && isset($weightForAge['classification']) && 
                     $weightForAge['classification'] === 'Severely Underweight') {
                     $highRiskCases++;
+                    error_log("  - Found Severely Underweight: " . ($user['email'] ?? 'unknown'));
                 }
             }
             
@@ -411,6 +415,7 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
                 if ($heightForAge && isset($heightForAge['classification']) && 
                     $heightForAge['classification'] === 'Severely Stunted') {
                     $samCases++;
+                    error_log("  - Found Severely Stunted: " . ($user['email'] ?? 'unknown'));
                 }
             }
             
@@ -426,6 +431,7 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
                 if ($weightForHeight && isset($weightForHeight['classification']) && 
                     $weightForHeight['classification'] === 'Severely Wasted') {
                     $criticalMuac++;
+                    error_log("  - Found Severely Wasted: " . ($user['email'] ?? 'unknown'));
                 }
             }
             
@@ -434,6 +440,12 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
                 $barangaysCovered[] = $user['barangay'];
             }
         }
+        
+        error_log("🔍 Dashboard Metrics Debug - Final counts:");
+        error_log("  - Total Screened: $totalScreened");
+        error_log("  - Severely Underweight: $highRiskCases");
+        error_log("  - Severely Stunted: $samCases");
+        error_log("  - Severely Wasted: $criticalMuac");
         
         $data = [
             'total_screened' => $totalScreened,
