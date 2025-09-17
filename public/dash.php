@@ -8551,9 +8551,10 @@ body {
                     segmentDiv.className = 'segment compact';
                     segmentDiv.innerHTML = `
                         <span class="segment-label">
-                        <span style="background-color: ${segment.color}; width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
-                        ${segment.label}: ${segment.count} (${segment.percentage.toFixed(1)}%)
+                            <span style="background-color: ${segment.color}; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px;"></span>
+                            ${segment.label}
                         </span>
+                        <span class="segment-percentage">${segment.count} (${segment.percentage.toFixed(1)}%)</span>
                     `;
                     segments.appendChild(segmentDiv);
                 });
