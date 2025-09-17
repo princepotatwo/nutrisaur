@@ -361,18 +361,21 @@ function getTimeFrameData($db, $timeFrame, $barangay = null, $dbAPI = null) {
         $wfaData = $dbAPI->getWHOClassifications('weight-for-age', '1d', $barangay);
         if ($wfaData['success'] && isset($wfaData['data']['classifications'])) {
             $highRiskCases = $wfaData['data']['classifications']['Severely Underweight'] ?? 0;
+            error_log("🔍 WFA Classifications: " . json_encode($wfaData['data']['classifications']));
         }
         
         // Get Height-for-Age classifications (for Severely Stunted)
         $hfaData = $dbAPI->getWHOClassifications('height-for-age', '1d', $barangay);
         if ($hfaData['success'] && isset($hfaData['data']['classifications'])) {
             $samCases = $hfaData['data']['classifications']['Severely Stunted'] ?? 0;
+            error_log("🔍 HFA Classifications: " . json_encode($hfaData['data']['classifications']));
         }
         
         // Get Weight-for-Height classifications (for Severely Wasted)
         $wfhData = $dbAPI->getWHOClassifications('weight-for-height', '1d', $barangay);
         if ($wfhData['success'] && isset($wfhData['data']['classifications'])) {
             $criticalMuac = $wfhData['data']['classifications']['Severely Wasted'] ?? 0;
+            error_log("🔍 WFH Classifications: " . json_encode($wfhData['data']['classifications']));
         }
         
         // Track barangays
