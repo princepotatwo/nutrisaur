@@ -308,7 +308,7 @@ function formatDatePHP($dateString, $format = 'relative') {
 }
 
 // NEW: Function to get time frame data from community_users table with nutritional assessments
-function getTimeFrameData($db, $timeFrame, $barangay = null) {
+function getTimeFrameData($db, $timeFrame, $barangay = null, $dbAPI = null) {
     error_log("🔍 getTimeFrameData Debug - Starting");
     error_log("  - Time frame: $timeFrame (ignored - getting all users)");
     error_log("  - Barangay: " . ($barangay ?: 'null'));
@@ -627,7 +627,7 @@ try {
         
         $currentTimeFrame = '1d';
         $currentBarangay = '';
-        $timeFrameData = getTimeFrameData($db, $currentTimeFrame, $currentBarangay);
+        $timeFrameData = getTimeFrameData($db, $currentTimeFrame, $currentBarangay, $dbAPI);
         $screeningResponsesData = getScreeningResponsesByTimeFrame($db, $currentTimeFrame, $currentBarangay);
         
         // Get barangay list for dropdown using DatabaseHelper
