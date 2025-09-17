@@ -2035,29 +2035,38 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Compact single-line segments - Higher specificity to override conflicting rules */
+/* Compact single-line segments - Grid layout with dot on left, text on right */
 .segments .segment.compact {
-    display: flex !important;
+    display: grid !important;
+    grid-template-columns: 12px 1fr !important; /* 12px for dot, rest for text */
+    gap: 4px !important; /* Gap between dot and text */
     align-items: center !important;
-    justify-content: center !important;
-    gap: 1px !important; /* Minimal gap */
-    padding: 2px 0px !important; /* No left/right padding */
+    padding: 2px 4px !important; /* Small padding */
     margin-bottom: 0 !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 6px !important;
     font-size: 9px !important; /* Smaller font */
     min-height: 24px !important; /* Reduced height to prevent card extension */
-    flex-direction: column !important; /* Stack label and percentage vertically */
-    flex-wrap: nowrap !important; /* Prevent wrapping */
     flex: 1 !important;
     max-width: calc(25% - 4px) !important; /* Smaller width for 4 items */
     box-sizing: border-box !important;
 }
 
+/* Text container for grid layout - holds both label and percentage */
+.segments .segment.compact .segment-text-container {
+    display: flex !important;
+    flex-direction: column !important; /* Stack label and percentage vertically */
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
 /* Higher specificity to override conflicting rules */
 .segments .segment.compact .segment-label {
-    position: relative !important; /* For absolute positioned color dot */
     text-align: center !important;
     font-weight: 600 !important;
     color: var(--color-text) !important;
@@ -2065,48 +2074,15 @@ header .user-info {
     overflow: visible !important; /* Show all text */
     text-overflow: unset !important; /* No ellipsis */
     font-size: 7px !important; /* Smaller font for compact layout */
-    flex: 1 !important;
     line-height: 1.0 !important; /* Very tight line height */
     width: 100% !important; /* Force full width */
     margin: 0 !important; /* Remove all margins */
-    padding: 0 0 0 10px !important; /* Left padding to make room for color dot */
+    padding: 0 !important; /* Remove all padding */
     word-wrap: break-word !important; /* Break long words */
     hyphens: auto !important; /* Enable hyphenation */
     max-height: 14px !important; /* Limit height for label text only */
     display: block !important; /* Ensure it takes full width */
     box-sizing: border-box !important; /* Include padding in width calculation */
-}
-
-/* Override any default margins on segment elements */
-.segments .segment.compact .segment-label,
-.segments .segment.compact .segment-percentage {
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    outline: none !important;
-}
-
-/* Universal reset for any span elements inside compact segments */
-.segments .segment.compact span {
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    outline: none !important;
-    display: block !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-/* Ensure segment-label spans have proper positioning for color dots */
-.segments .segment.compact .segment-label span {
-    position: relative !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    outline: none !important;
-    display: block !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
 }
 
 /* Compact segment percentage styling - Higher specificity */
@@ -2126,61 +2102,32 @@ header .user-info {
     box-sizing: border-box !important; /* Include padding in width calculation */
 }
 
-/* Color indicators for each risk level - Positioned absolutely to not affect text flow */
-.segment.compact[data-risk-level="0"] .segment-label::before {
-    content: "" !important;
-    position: absolute !important;
-    left: 2px !important;
-    top: 2px !important;
-    width: 6px !important;
-    height: 6px !important;
+/* Color dot for grid layout - positioned in first grid column */
+.segments .segment.compact .segment-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    align-self: center !important;
+}
+
+/* Color indicators for each risk level - Colored boxes matching donut chart colors */
+.segment.compact[data-risk-level="0"] .segment-dot {
     background-color: #4CAF50 !important; /* Light theme: Green for Low Risk */
-    border-radius: 50% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    vertical-align: top !important;
 }
 
-.segment.compact[data-risk-level="1"] .segment-label::before {
-    content: "" !important;
-    position: absolute !important;
-    left: 2px !important;
-    top: 2px !important;
-    width: 6px !important;
-    height: 6px !important;
+.segment.compact[data-risk-level="1"] .segment-dot {
     background-color: #FF9800 !important; /* Yellow for Moderate Risk */
-    border-radius: 50% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    vertical-align: top !important;
 }
 
-.segment.compact[data-risk-level="2"] .segment-label::before {
-    content: "" !important;
-    position: absolute !important;
-    left: 2px !important;
-    top: 2px !important;
-    width: 6px !important;
-    height: 6px !important;
+.segment.compact[data-risk-level="2"] .segment-dot {
     background-color: #F44336 !important; /* Red for High Risk */
-    border-radius: 50% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    vertical-align: top !important;
 }
 
-.segment.compact[data-risk-level="3"] .segment-label::before {
-    content: "" !important;
-    position: absolute !important;
-    left: 2px !important;
-    top: 2px !important;
-    width: 6px !important;
-    height: 6px !important;
+.segment.compact[data-risk-level="3"] .segment-dot {
     background-color: #D32F2F !important; /* Dark Red for Severe Risk */
-    border-radius: 50% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    vertical-align: top !important;
 }
 
 /* Hover effects for compact segments */
@@ -4539,52 +4486,20 @@ header .user-info {
 }
 
 /* Dark theme color indicators - matching donut chart colors */
-.dark-theme .segment.compact[data-risk-level="0"] .segment-label::before {
+.dark-theme .segment.compact[data-risk-level="0"] .segment-dot {
     background-color: #A1B454 !important; /* Dark theme: Green for Low Risk */
-    position: absolute !important;
-    left: 2px !important;
-    top: 2px !important;
-    width: 6px !important;
-    height: 6px !important;
-    border-radius: 50% !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
-.dark-theme .segment.compact[data-risk-level="1"] .segment-label::before {
+.dark-theme .segment.compact[data-risk-level="1"] .segment-dot {
     background-color: #F9B97F !important; /* Yellow for Moderate Risk */
-    position: absolute !important;
-    left: 2px !important;
-    top: 2px !important;
-    width: 6px !important;
-    height: 6px !important;
-    border-radius: 50% !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
-.dark-theme .segment.compact[data-risk-level="2"] .segment-label::before {
+.dark-theme .segment.compact[data-risk-level="2"] .segment-dot {
     background-color: #E53E3E !important; /* Red for High Risk */
-    position: absolute !important;
-    left: 2px !important;
-    top: 2px !important;
-    width: 6px !important;
-    height: 6px !important;
-    border-radius: 50% !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
-.dark-theme .segment.compact[data-risk-level="3"] .segment-label::before {
+.dark-theme .segment.compact[data-risk-level="3"] .segment-dot {
     background-color: #D32F2F !important; /* Dark Red for Severe Risk */
-    position: absolute !important;
-    left: 2px !important;
-    top: 2px !important;
-    width: 6px !important;
-    height: 6px !important;
-    border-radius: 50% !important;
-    margin: 0 !important;
-    padding: 0 !important;
 }
 
 /* Dark theme segment text styling - ensure white text with higher specificity */
@@ -8632,16 +8547,16 @@ body {
                     chartBg.style.opacity = '0.3';
                 }
                 
-                // Create segment indicators
+                // Create segment indicators with grid layout
                 chartSegments.forEach(segment => {
                     const segmentDiv = document.createElement('div');
                     segmentDiv.className = 'segment compact';
                     segmentDiv.innerHTML = `
-                        <span class="segment-label">
-                            <span style="background-color: ${segment.color}; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px;"></span>
-                            ${segment.label}
-                        </span>
-                        <span class="segment-percentage">${segment.count} (${segment.percentage.toFixed(1)}%)</span>
+                        <div class="segment-dot" style="background-color: ${segment.color};"></div>
+                        <div class="segment-text-container">
+                            <span class="segment-label">${segment.label}</span>
+                            <span class="segment-percentage">${segment.count} (${segment.percentage.toFixed(1)}%)</span>
+                        </div>
                     `;
                     segments.appendChild(segmentDiv);
                 });

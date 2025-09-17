@@ -2731,6 +2731,12 @@ header {
             text-overflow: clip;
         }
 
+        /* Professional table borders - Add vertical grid lines between columns */
+        .user-table th:not(:last-child),
+        .user-table td:not(:last-child) {
+            border-right: 1px solid rgba(161, 180, 84, 0.1);
+        }
+
         /* Ensure actions column is always visible */
         .user-table th:last-child,
         .user-table td:last-child {
