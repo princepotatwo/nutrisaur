@@ -6814,6 +6814,9 @@ body {
                 // Update dashboard data based on selected barangay or municipality
                 await updateDashboardForBarangay(value);
                 
+                // Update trends chart with new barangay selection
+                await updateTrendsChart();
+                
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
                     // Municipality filtering handled by updateDashboardForBarangay
@@ -8316,9 +8319,9 @@ body {
             }
         }
 
-        // Function to update trends chart
-        function updateTrendsChart(data, whoStandard) {
-            console.log('📊 Updating trends chart with data:', data);
+        // Function to update trends chart with all classifications
+        async function updateTrendsChart() {
+            console.log('📊 Updating trends chart with all classifications...');
             
             try {
                 const trendsChart = document.getElementById('trends-chart');
@@ -8328,31 +8331,29 @@ body {
                 }
 
                 // Clear previous chart
-                trendsChart.innerHTML = '';
+                trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">Loading all classifications...</div>';
 
-                if (!data || !data.classifications || data.total === 0) {
+                // Get current filter values
+                const timeFrame = document.querySelector('.time-btn.active')?.textContent?.trim() || '1d';
+                const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
+                const barangayValue = barangay === 'All Barangays' ? '' : barangay;
+
+                // Fetch all classifications
+                const url = `/api/DatabaseAPI.php?action=get_all_classifications&time_frame=${timeFrame}&barangay=${barangayValue}`;
+                console.log('Fetching all classifications from:', url);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                console.log('All classifications data received:', data);
+
+                if (!data.success || !data.data || Object.keys(data.data).length === 0) {
                     trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No data available</div>';
                     return;
                 }
 
-                // Get WHO standard abbreviation
-                const whoStandardLabels = {
-                    'weight-for-age': 'WFA',
-                    'height-for-age': 'HFA', 
-                    'weight-for-height': 'WFH',
-                    'bmi-for-age': 'BFA'
-                };
-
-                const standardLabel = whoStandardLabels[whoStandard] || whoStandard.toUpperCase();
-
-                // Convert classifications to array and sort by count (lowest to highest)
-                const classificationsArray = Object.entries(data.classifications)
-                    .filter(([key, value]) => value > 0) // Only show classifications with data
-                    .map(([classification, count]) => ({
-                        name: classification,
-                        count: count,
-                        standard: standardLabel
-                    }))
+                // Convert to array and sort by count (lowest to highest)
+                const classificationsArray = Object.values(data.data)
                     .sort((a, b) => a.count - b.count); // Sort from lowest to highest
 
                 if (classificationsArray.length === 0) {
@@ -8368,19 +8369,22 @@ body {
                     const barHeight = maxCount > 0 ? (item.count / maxCount) * 200 : 20; // Scale to max 200px height
                     
                     const barDiv = document.createElement('div');
-                    barDiv.className = `trend-bar ${item.name.toLowerCase().replace(/\s+/g, '-')}`;
+                    barDiv.className = `trend-bar ${item.classification.toLowerCase().replace(/\s+/g, '-')}`;
                     barDiv.style.height = `${barHeight}px`;
+                    
+                    // Format classification name for display
+                    const displayName = item.classification.replace(/([A-Z])/g, ' $1').trim();
                     
                     barDiv.innerHTML = `
                         <div class="trend-bar-value">${item.count}</div>
-                        <div class="trend-bar-label">${item.name.replace(/([A-Z])/g, ' $1').trim()}</div>
-                        <div class="trend-bar-standard">${item.standard}</div>
+                        <div class="trend-bar-label">${displayName}</div>
+                        <div class="trend-bar-standard">${item.standard_label}</div>
                     `;
                     
                     trendsChart.appendChild(barDiv);
                 });
 
-                console.log('✅ Trends chart updated successfully');
+                console.log('✅ Trends chart updated successfully with all classifications');
 
             } catch (error) {
                 console.error('❌ Error updating trends chart:', error);
@@ -8561,7 +8565,6 @@ body {
                 console.log('🎨 Updating chart...');
                 updateWHOClassificationChart(response);
                 updateWHOChartDescription(selectedStandard);
-                updateTrendsChart(response, selectedStandard);
                 console.log('✅ Chart update completed');
                 
             } catch (error) {
@@ -8771,6 +8774,30 @@ body {
                 // Load initial data
                 updateWHOChartDescription('weight-for-age');
                 await handleWHOStandardChange();
+                
+                // Load initial trends chart with all classifications
+                console.log('📊 Loading initial trends chart...');
+                await updateTrendsChart();
+                
+                // Set up time frame button event listeners
+                const timeButtons = document.querySelectorAll('.time-btn');
+                timeButtons.forEach(button => {
+                    button.addEventListener('click', async function() {
+                        // Remove active class from all buttons
+                        timeButtons.forEach(btn => btn.classList.remove('active'));
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                        
+                        console.log('Time frame changed to:', this.textContent.trim());
+                        
+                        // Update trends chart with new time frame
+                        await updateTrendsChart();
+                        
+                        // Update other charts and metrics
+                        await handleWHOStandardChange();
+                        await updateCommunityMetrics('');
+                    });
+                });
                 
                 // Load initial dashboard metrics and geographic distribution
                 console.log('🔄 Loading initial dashboard metrics and geographic distribution...');

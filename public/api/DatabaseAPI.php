@@ -3768,6 +3768,34 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             echo json_encode($result);
             break;
             
+        case 'get_all_classifications':
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            // Get classifications from all WHO standards
+            $whoStandards = ['weight-for-age', 'height-for-age', 'weight-for-height', 'bmi-for-age'];
+            $allClassifications = [];
+            
+            foreach ($whoStandards as $standard) {
+                $result = $db->getWHOClassifications($standard, $timeFrame, $barangay);
+                if ($result['success'] && isset($result['data']['classifications'])) {
+                    foreach ($result['data']['classifications'] as $classification => $count) {
+                        if ($count > 0) {
+                            $key = $classification . '_' . $standard;
+                            $allClassifications[$key] = [
+                                'classification' => $classification,
+                                'count' => $count,
+                                'standard' => $standard,
+                                'standard_label' => strtoupper(str_replace('-', '', substr($standard, 0, 1)) . substr($standard, strpos($standard, '-') + 1, 1) . substr($standard, strrpos($standard, '-') + 1, 1))
+                            ];
+                        }
+                    }
+                }
+            }
+            
+            echo json_encode(['success' => true, 'data' => $allClassifications]);
+            break;
+            
         case 'critical_alerts':
             $alerts = $db->getCriticalAlerts();
             echo json_encode(['success' => true, 'data' => $alerts]);
