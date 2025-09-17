@@ -2035,7 +2035,7 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* ULTRA COMPACT DESIGN: Zero spacing inside boxes */
+/* ULTRA COMPACT DESIGN: Zero spacing inside boxes - HALF SIZE */
 .segments .segment.compact {
     display: block !important;
     position: relative !important;
@@ -2044,7 +2044,8 @@ header .user-info {
     border-radius: 4px !important;
     min-height: 16px !important;
     flex: 1 !important;
-    max-width: calc(25% - 4px) !important;
+    max-width: calc(12.5% - 2px) !important; /* HALF SIZE - was 25% - 4px */
+    width: calc(12.5% - 2px) !important; /* Force exact width */
     box-sizing: border-box !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -2065,11 +2066,11 @@ header .user-info {
     display: block !important;
 }
 
-/* Text container - fills remaining space */
+/* Text container - fills remaining space with tighter positioning */
 .segments .segment.compact .segment-text-container {
     position: absolute !important;
-    left: 10px !important;
-    right: 2px !important;
+    left: 8px !important; /* Closer to dot */
+    right: 1px !important; /* Minimal right margin */
     top: 0 !important;
     bottom: 0 !important;
     margin: 0 !important;
@@ -2080,11 +2081,11 @@ header .user-info {
     align-items: flex-start !important;
 }
 
-/* Classification label - zero spacing */
+/* Classification label - ultra compact for half-size containers */
 .segments .segment.compact .segment-label {
     font-weight: 600 !important;
     color: var(--color-text) !important;
-    font-size: 6px !important;
+    font-size: 5px !important; /* Smaller for half-size containers */
     line-height: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -2095,11 +2096,11 @@ header .user-info {
     width: 100% !important;
 }
 
-/* Count and percentage - zero spacing */
+/* Count and percentage - ultra compact for half-size containers */
 .segments .segment.compact .segment-percentage {
     color: var(--color-text) !important;
     opacity: 0.8 !important;
-    font-size: 5px !important;
+    font-size: 4px !important; /* Smaller for half-size containers */
     line-height: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
