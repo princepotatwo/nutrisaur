@@ -389,6 +389,10 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
                     $user['sex']
                 );
                 
+                error_log("  - HFA: " . ($user['email'] ?? 'unknown') . 
+                         " | Age: $ageInMonths | Height: " . $user['height'] . 
+                         " | Classification: " . ($heightForAge['classification'] ?? 'null'));
+                
                 if ($heightForAge && isset($heightForAge['classification']) && 
                     $heightForAge['classification'] === 'Severely Stunted') {
                     $samCases++;
@@ -403,6 +407,10 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
                     floatval($user['height']), 
                     $user['sex']
                 );
+                
+                error_log("  - WFH: " . ($user['email'] ?? 'unknown') . 
+                         " | Height: " . $user['height'] . " | Weight: " . $user['weight'] . 
+                         " | Classification: " . ($weightForHeight['classification'] ?? 'null'));
                 
                 if ($weightForHeight && isset($weightForHeight['classification']) && 
                     $weightForHeight['classification'] === 'Severely Wasted') {
