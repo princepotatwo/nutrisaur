@@ -8035,3 +8035,43 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 submitBtn.disabled = false;
             }
         }
+
+        // Theme toggle function
+        function newToggleTheme() {
+            const body = document.body;
+            const icon = document.querySelector('.new-theme-icon');
+            
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                if (icon) icon.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+                console.log('Switched to light theme');
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                if (icon) icon.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+                console.log('Switched to dark theme');
+            }
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const body = document.body;
+            const icon = document.querySelector('.new-theme-icon');
+            
+            if (savedTheme === 'light') {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                if (icon) icon.textContent = '☀️';
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                if (icon) icon.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+</html>

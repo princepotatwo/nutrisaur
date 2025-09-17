@@ -4406,7 +4406,8 @@ header {
             
             // Theme toggle button event listener
             const themeToggleBtn = document.getElementById('new-theme-toggle');
-            if (themeToggleBtn) {
+            if (themeToggleBtn && !themeToggleBtn.hasAttribute('data-listener-added')) {
+                themeToggleBtn.setAttribute('data-listener-added', 'true');
                 console.log('Theme toggle button found, adding event listener');
                 themeToggleBtn.addEventListener('click', function() {
                     console.log('Theme toggle clicked');
@@ -4448,27 +4449,7 @@ header {
                 if (icon) icon.textContent = '☀️';
             }
             
-            // Theme toggle button event listener
-            const themeToggleBtn = document.getElementById('new-theme-toggle');
-            if (themeToggleBtn && !themeToggleBtn.hasAttribute('data-listener-added')) {
-                themeToggleBtn.setAttribute('data-listener-added', 'true');
-                themeToggleBtn.addEventListener('click', function() {
-                    const body = document.body;
-                    const icon = this.querySelector('.new-theme-icon');
-                    
-                    if (body.classList.contains('dark-theme')) {
-                        body.classList.remove('dark-theme');
-                        body.classList.add('light-theme');
-                        if (icon) icon.textContent = '☀️';
-                        localStorage.setItem('theme', 'light');
-                    } else {
-                        body.classList.remove('light-theme');
-                        body.classList.add('dark-theme');
-                        if (icon) icon.textContent = '🌙';
-                        localStorage.setItem('theme', 'dark');
-                    }
-                });
-            }
+            // Theme toggle button event listener (already added above, skipping duplicate)
         }
 
         // Initialize theme immediately
