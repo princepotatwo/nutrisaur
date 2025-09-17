@@ -2030,7 +2030,7 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* NEW ZERO-SPACING SEGMENT DESIGN */
+/* NEW: Button-based segments with zero spacing */
 .segments .segment.compact {
     display: inline-block !important;
     position: relative !important;
@@ -2044,10 +2044,18 @@ header .user-info {
     padding: 0 !important;
     font-size: 0 !important;
     vertical-align: top !important;
-    overflow: hidden !important; /* Hide any overflow */
+    overflow: hidden !important;
+    cursor: default !important;
+    /* Button-like properties */
+    outline: none !important;
+    text-decoration: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
 }
 
-/* NEW: Zero-spacing text container */
+/* NEW: Button-style text container */
 .segments .segment.compact .segment-text-container {
     position: absolute !important;
     left: 8px !important;
@@ -2063,11 +2071,11 @@ header .user-info {
     overflow: hidden !important;
 }
 
-/* NEW: Zero-spacing label */
+/* NEW: Button-style label - no spacing */
 .segments .segment.compact .segment-label {
     position: absolute !important;
     left: 0px !important;
-    top: 1px !important;
+    top: 0px !important;
     right: 0px !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -2080,15 +2088,15 @@ header .user-info {
     text-overflow: ellipsis !important;
     display: block !important;
     width: 100% !important;
-    height: 6px !important;
+    height: 8px !important;
     box-sizing: border-box !important;
 }
 
-/* NEW: Zero-spacing percentage */
+/* NEW: Button-style percentage - no spacing */
 .segments .segment.compact .segment-percentage {
     position: absolute !important;
     left: 0px !important;
-    top: 7px !important;
+    top: 8px !important;
     right: 0px !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -2101,7 +2109,7 @@ header .user-info {
     text-overflow: ellipsis !important;
     display: block !important;
     width: 100% !important;
-    height: 4px !important;
+    height: 8px !important;
     box-sizing: border-box !important;
 }
 
