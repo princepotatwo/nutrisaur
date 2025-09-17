@@ -6262,11 +6262,11 @@ body {
                     <h3>WHO Growth Standards Classification</h3>
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
-                            <option value="weight-for-age" selected>Weight for Age</option>
-                            <option value="height-for-age">Height for Age (Stunting)</option>
-                            <option value="weight-for-height">Weight for Height (Wasting)</option>
-                            <option value="bmi-for-age">BMI for Age</option>
-                            <option value="bmi-adult">BMI for Adult</option>
+                            <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
+                            <option value="height-for-age">Height-for-Age (0-71 months)</option>
+                            <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
+                            <option value="bmi-for-age">BMI-for-Age (2-19 years)</option>
+                            <option value="bmi-adult">BMI Adult (≥19 years)</option>
                         </select>
                     </div>
                 </div>
@@ -8014,9 +8014,9 @@ body {
             const descriptions = {
                 'weight-for-age': 'Distribution of children by Weight-for-Age classification. Shows nutritional status based on weight relative to age (0-71 months).',
                 'height-for-age': 'Distribution of children by Height-for-Age classification. Shows stunting status based on height relative to age (0-71 months).',
-                'weight-for-height': 'Distribution of children by Weight-for-Height classification. Shows wasting status based on weight relative to height (65-120 cm).',
-                'bmi-for-age': 'Distribution of children by BMI-for-Age classification. Shows nutritional status based on BMI relative to age (24-71 months for children).',
-                'bmi-adult': 'Distribution of adults by BMI classification. Shows nutritional status based on BMI for adults (18+ years).'
+                'weight-for-height': 'Distribution of children by Weight-for-Height classification. Shows wasting status based on weight relative to height (0-60 months).',
+                'bmi-for-age': 'Distribution of children by BMI-for-Age classification. Shows nutritional status based on BMI relative to age (2-19 years).',
+                'bmi-adult': 'Distribution of adults by BMI classification. Shows nutritional status based on BMI for adults (≥19 years).'
             };
             
             const descriptionElement = document.getElementById('who-chart-description');

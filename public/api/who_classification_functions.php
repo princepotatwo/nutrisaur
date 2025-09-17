@@ -108,24 +108,23 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                 $classification = 'No Data';
                 $shouldProcess = false;
                 
-                // Apply age and height restrictions like in screening.php
+                // Apply age and height restrictions exactly like screening.php
                 if ($whoStandard === 'weight-for-age' || $whoStandard === 'height-for-age') {
                     // These standards are for children 0-71 months only
                     $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
                     error_log("  - User age: {$ageInMonths} months, WFA/HFA eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 } elseif ($whoStandard === 'bmi-for-age') {
-                    // BMI-for-age can be used for both children (24-71 months) and adults (>71 months)
-                    $shouldProcess = ($ageInMonths >= 24);
+                    // BMI-for-Age: 2-19 years (24-228 months) - exactly like screening.php
+                    $shouldProcess = ($ageInMonths >= 24 && $ageInMonths < 228);
                     error_log("  - User age: {$ageInMonths} months, BMI-for-Age eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 } elseif ($whoStandard === 'bmi-adult') {
-                    // BMI-adult: for adults 18+ years (216+ months)
-                    $shouldProcess = ($ageInMonths >= 216);
+                    // BMI Adult: ≥19 years (228+ months) - exactly like screening.php
+                    $shouldProcess = ($ageInMonths >= 228);
                     error_log("  - User age: {$ageInMonths} months, BMI-Adult eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 } elseif ($whoStandard === 'weight-for-height') {
-                    // Weight-for-Height: 65-120 cm height range
-                    $heightCm = floatval($user['height_cm']);
-                    $shouldProcess = ($heightCm >= 65 && $heightCm <= 120);
-                    error_log("  - User height: {$heightCm} cm, WFH eligible: " . ($shouldProcess ? 'YES' : 'NO'));
+                    // Weight-for-Height: 0-60 months (0-5 years) - exactly like screening.php
+                    $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 60);
+                    error_log("  - User age: {$ageInMonths} months, WFH eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 }
                 
                 if ($shouldProcess) {
