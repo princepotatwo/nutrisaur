@@ -2066,13 +2066,14 @@ header .user-info {
     font-size: 7px !important; /* Smaller font for compact layout */
     flex: 1 !important;
     line-height: 1.0 !important; /* Very tight line height */
-    max-width: 100% !important; /* Use full width */
+    width: 100% !important; /* Force full width */
     margin: 0 !important; /* Remove all margins */
     padding: 0 !important; /* Remove all padding */
     word-wrap: break-word !important; /* Break long words */
     hyphens: auto !important; /* Enable hyphenation */
     max-height: 14px !important; /* Limit height for label text only */
     display: block !important; /* Ensure it takes full width */
+    box-sizing: border-box !important; /* Include padding in width calculation */
 }
 
 /* Compact segment percentage styling - Higher specificity */
@@ -2082,13 +2083,14 @@ header .user-info {
     text-align: center !important;
     white-space: nowrap !important;
     font-size: 6px !important; /* Very small font */
-    min-width: 15px !important; /* Smaller width */
+    width: 100% !important; /* Force full width */
     margin: 0 !important; /* Remove margins */
     padding: 0 !important; /* Remove padding */
     line-height: 1.0 !important; /* Tight line height */
     max-height: 8px !important; /* Limit height */
     display: block !important; /* Ensure it's on separate line */
     flex-shrink: 0 !important; /* Don't shrink */
+    box-sizing: border-box !important; /* Include padding in width calculation */
 }
 
 /* Color indicators for each risk level - Colored boxes matching donut chart colors */
@@ -4515,6 +4517,10 @@ header .user-info {
     white-space: normal !important; /* Allow two lines */
     font-size: 7px !important; /* Override conflicting font size */
     max-height: 14px !important; /* Limit height */
+    width: 100% !important; /* Force full width */
+    margin: 0 !important; /* Remove all margins */
+    padding: 0 !important; /* Remove all padding */
+    box-sizing: border-box !important; /* Include padding in width calculation */
 }
 
 .dark-theme .segments .segment.compact .segment-percentage {
@@ -4522,6 +4528,10 @@ header .user-info {
     display: block !important; /* Override any conflicting display rules */
     font-size: 6px !important; /* Override conflicting font size */
     max-height: 8px !important; /* Limit height */
+    width: 100% !important; /* Force full width */
+    margin: 0 !important; /* Remove all margins */
+    padding: 0 !important; /* Remove all padding */
+    box-sizing: border-box !important; /* Include padding in width calculation */
 }
 
 .dark-theme .segment-label {
