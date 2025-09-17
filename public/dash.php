@@ -361,21 +361,18 @@ function getTimeFrameData($db, $timeFrame, $barangay = null, $dbAPI = null) {
         $wfaData = $dbAPI->getWHOClassifications('weight-for-age', '1d', $barangay);
         if ($wfaData['success'] && isset($wfaData['data']['classifications'])) {
             $highRiskCases = $wfaData['data']['classifications']['Severely Underweight'] ?? 0;
-            error_log("🔍 WFA Classifications: " . json_encode($wfaData['data']['classifications']));
         }
         
         // Get Height-for-Age classifications (for Severely Stunted)
         $hfaData = $dbAPI->getWHOClassifications('height-for-age', '1d', $barangay);
         if ($hfaData['success'] && isset($hfaData['data']['classifications'])) {
             $samCases = $hfaData['data']['classifications']['Severely Stunted'] ?? 0;
-            error_log("🔍 HFA Classifications: " . json_encode($hfaData['data']['classifications']));
         }
         
         // Get Weight-for-Height classifications (for Severely Wasted)
         $wfhData = $dbAPI->getWHOClassifications('weight-for-height', '1d', $barangay);
         if ($wfhData['success'] && isset($wfhData['data']['classifications'])) {
             $criticalMuac = $wfhData['data']['classifications']['Severely Wasted'] ?? 0;
-            error_log("🔍 WFH Classifications: " . json_encode($wfhData['data']['classifications']));
         }
         
         // Track barangays
@@ -385,11 +382,23 @@ function getTimeFrameData($db, $timeFrame, $barangay = null, $dbAPI = null) {
             }
         }
         
-        error_log("🔍 Dashboard Metrics - Using donut chart logic:");
-        error_log("  - Total Screened: $totalScreened");
-        error_log("  - Severely Underweight (WFA): $highRiskCases");
-        error_log("  - Severely Stunted (HFA): $samCases");
-        error_log("  - Severely Wasted (WFH): $criticalMuac");
+        // Log to browser console for debugging
+        echo "<script>console.log('🔍 Dashboard Metrics - Using donut chart logic:');</script>";
+        echo "<script>console.log('  - Total Screened: $totalScreened');</script>";
+        echo "<script>console.log('  - Severely Underweight (WFA): $highRiskCases');</script>";
+        echo "<script>console.log('  - Severely Stunted (HFA): $samCases');</script>";
+        echo "<script>console.log('  - Severely Wasted (WFH): $criticalMuac');</script>";
+        
+        // Log full classification objects
+        if (isset($wfaData['data']['classifications'])) {
+            echo "<script>console.log('🔍 WFA Classifications:', " . json_encode($wfaData['data']['classifications']) . ");</script>";
+        }
+        if (isset($hfaData['data']['classifications'])) {
+            echo "<script>console.log('🔍 HFA Classifications:', " . json_encode($hfaData['data']['classifications']) . ");</script>";
+        }
+        if (isset($wfhData['data']['classifications'])) {
+            echo "<script>console.log('🔍 WFH Classifications:', " . json_encode($wfhData['data']['classifications']) . ");</script>";
+        }
         
         $data = [
             'total_screened' => $totalScreened,
