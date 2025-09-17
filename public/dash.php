@@ -2066,26 +2066,30 @@ header .user-info {
     display: block !important;
 }
 
-/* Text container - fills remaining space with tighter positioning */
+/* Text container - NO FLEXBOX, absolute positioning only */
 .segments .segment.compact .segment-text-container {
     position: absolute !important;
     left: 8px !important; /* Closer to dot */
-    right: 1px !important; /* Minimal right margin */
-    top: 0 !important;
-    bottom: 0 !important;
+    right: 0px !important; /* NO right margin - flush to edge */
+    top: 0px !important;
+    bottom: 0px !important;
     margin: 0 !important;
     padding: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: flex-start !important;
+    display: block !important; /* NO FLEXBOX */
+    width: calc(100% - 8px) !important; /* Exact width calculation */
+    height: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* Classification label - ultra compact for half-size containers */
+/* Classification label - NO FLEXBOX, absolute positioning */
 .segments .segment.compact .segment-label {
+    position: absolute !important;
+    left: 0px !important;
+    top: 2px !important; /* Small top offset */
+    right: 0px !important;
     font-weight: 600 !important;
     color: var(--color-text) !important;
-    font-size: 5px !important; /* Smaller for half-size containers */
+    font-size: 5px !important;
     line-height: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -2094,13 +2098,19 @@ header .user-info {
     text-overflow: ellipsis !important;
     display: block !important;
     width: 100% !important;
+    height: 6px !important; /* Fixed height */
+    box-sizing: border-box !important;
 }
 
-/* Count and percentage - ultra compact for half-size containers */
+/* Count and percentage - NO FLEXBOX, absolute positioning */
 .segments .segment.compact .segment-percentage {
+    position: absolute !important;
+    left: 0px !important;
+    top: 8px !important; /* Below the label */
+    right: 0px !important;
     color: var(--color-text) !important;
     opacity: 0.8 !important;
-    font-size: 4px !important; /* Smaller for half-size containers */
+    font-size: 4px !important;
     line-height: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -2109,6 +2119,8 @@ header .user-info {
     text-overflow: ellipsis !important;
     display: block !important;
     width: 100% !important;
+    height: 4px !important; /* Fixed height */
+    box-sizing: border-box !important;
 }
 
 /* Color indicators for each risk level - Colored boxes matching donut chart colors */
