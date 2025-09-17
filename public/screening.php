@@ -29,7 +29,21 @@ function getAccurateZScoreRange($classification, $standard) {
         return 'N/A';
     }
     
+    // Handle special error cases that don't have z-score ranges
+    $errorClassifications = [
+        'Not applicable',
+        'Age out of range', 
+        'Height out of range',
+        'Weight out of range',
+        'No data available'
+    ];
+    
+    if (in_array($classification, $errorClassifications)) {
+        return $classification; // Return the error message as-is
+    }
+    
     // Define z-score ranges based on WHO standards for each classification
+    // This works for ALL WHO standards - just use the classification from the decision tree
     $ranges = [
         'weight-for-age' => [
             'Severely Underweight' => '≤ -3SD',
@@ -70,7 +84,8 @@ function getAccurateZScoreRange($classification, $standard) {
         return $ranges[$standard][$classification];
     }
     
-    return 'N/A';
+    // If classification not found, return the classification itself (might be a new error type)
+    return $classification;
 }
 
 // Function to convert z-score to standard deviation range display (legacy function)
@@ -3775,7 +3790,6 @@ header {
                                                 $zScoreDisplay = $bmi;
                                             } else {
                                                 // For other standards, show accurate z-score range
-                                                $zScore = $standardData['z_score'] ?? null;
                                                 $classification = $standardData['classification'] ?? 'N/A';
                                                 $accurateRange = getAccurateZScoreRange($classification, $standardName);
                                                 $zScoreDisplay = $accurateRange;

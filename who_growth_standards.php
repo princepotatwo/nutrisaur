@@ -1325,23 +1325,34 @@ class WHOGrowthStandards {
     public function calculateWeightForAge($weight, $ageInMonths, $sex) {
         // Simple hardcoded decision tree for ages 0-71 months
         if ($ageInMonths < 0 || $ageInMonths > 71) {
-            return ['classification' => 'Age out of range', 'method' => 'hardcoded_simple'];
+            return ['z_score' => null, 'classification' => 'Age out of range', 'method' => 'hardcoded_simple'];
         }
+        
+        // Helper function to add approximate z-score to classification
+        $addZScore = function($classification) {
+            switch($classification) {
+                case 'Severely Underweight': return -3.0;
+                case 'Underweight': return -2.5;
+                case 'Normal': return 0.0;
+                case 'Overweight': return 2.5;
+                default: return null;
+            }
+        };
         
         if ($sex === 'Male') {
             // BOYS - Individual cases for each month 0-35
             switch ($ageInMonths) {
                 case 0: // Birth
-                        if ($weight <= 2.1) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                        if ($weight >= 2.2 && $weight <= 2.4) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
-                        if ($weight >= 2.5 && $weight <= 4.4) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
-                        if ($weight >= 4.5) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                        if ($weight <= 2.1) return ['z_score' => -3.0, 'classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                        if ($weight >= 2.2 && $weight <= 2.4) return ['z_score' => -2.5, 'classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                        if ($weight >= 2.5 && $weight <= 4.4) return ['z_score' => 0.0, 'classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                        if ($weight >= 4.5) return ['z_score' => 2.5, 'classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                         break;
                 case 1:
-                    if ($weight <= 2.9) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 3.0 && $weight <= 3.3) return ['classification' => 'Underweight', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 3.4 && $weight <= 5.8) return ['classification' => 'Normal', 'method' => 'hardcoded_simple'];
-                    if ($weight >= 5.9) return ['classification' => 'Overweight', 'method' => 'hardcoded_simple'];
+                    if ($weight <= 2.9) return ['z_score' => -3.0, 'classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 3.0 && $weight <= 3.3) return ['z_score' => -2.5, 'classification' => 'Underweight', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 3.4 && $weight <= 5.8) return ['z_score' => 0.0, 'classification' => 'Normal', 'method' => 'hardcoded_simple'];
+                    if ($weight >= 5.9) return ['z_score' => 2.5, 'classification' => 'Overweight', 'method' => 'hardcoded_simple'];
                     break;
                 case 2:
                     if ($weight <= 3.8) return ['classification' => 'Severely Underweight', 'method' => 'hardcoded_simple'];
