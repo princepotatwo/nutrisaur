@@ -373,9 +373,9 @@ function getTimeFrameData($db, $timeFrame, $barangay = null, $dbAPI = null) {
         $wfhData = $dbAPI->getWHOClassifications('weight-for-height', '1d', $barangay);
         if ($wfhData['success'] && isset($wfhData['data']['classifications'])) {
             $criticalMuac = $wfhData['data']['classifications']['Severely Wasted'] ?? 0;
-        }
-        
-        // Track barangays
+            }
+            
+            // Track barangays
         foreach ($users as $user) {
             if ($user['barangay']) {
                 $barangaysCovered[] = $user['barangay'];
@@ -641,6 +641,9 @@ try {
         $currentBarangay = '';
         $timeFrameData = getTimeFrameData($db, $currentTimeFrame, $currentBarangay, $dbAPI);
         $screeningResponsesData = getScreeningResponsesByTimeFrame($db, $currentTimeFrame, $currentBarangay);
+        
+        // Get geographic distribution data using the same strategy as settings.php
+        $geographicDistributionData = getGeographicDistributionData($db, $municipalities);
         
         // Get barangay list for dropdown using DatabaseHelper
         $barangayResult = $db->select('community_users', 'DISTINCT barangay', "barangay IS NOT NULL AND barangay != ''", [], 'barangay');
@@ -6962,6 +6965,9 @@ body {
             cacheTimeout: 30000 // 30 seconds cache
         };
 
+        // Geographic distribution data from PHP
+        const geographicDistributionData = <?php echo json_encode($geographicDistributionData); ?>;
+
         // Function to update community metrics
         async function updateCommunityMetrics(barangay = '') {
             console.log('🔄 updateCommunityMetrics called with barangay:', barangay);
@@ -7198,13 +7204,12 @@ body {
                     updateScreeningResponsesDisplay(screeningData);
                 }
 
-                // Update Geographic Distribution Chart using PHP function
-                console.log('🌍 Getting Geographic Distribution from PHP...');
-                const geoData = <?php echo json_encode(getGeographicDistributionData($db, $municipalities)); ?>;
-                console.log('🌍 Geographic Data from PHP:', geoData);
-                if (geoData && geoData.length > 0) {
-                    console.log('🌍 Updating geographic display with data:', geoData);
-                    updateGeographicChartDisplay(geoData);
+                // Update Geographic Distribution Chart using pre-loaded data
+                console.log('🌍 Using pre-loaded Geographic Distribution data...');
+                console.log('🌍 Geographic Data:', geographicDistributionData);
+                if (geographicDistributionData && geographicDistributionData.length > 0) {
+                    console.log('🌍 Updating geographic display with data:', geographicDistributionData);
+                    updateGeographicChartDisplay(geographicDistributionData);
                 } else {
                     console.log('🌍 No geographic data, showing empty display');
                     updateGeographicChartDisplay([]);
@@ -7234,12 +7239,11 @@ body {
         async function updateGeographicChart(barangay = '') {
             try {
                 console.log('🌍 updateGeographicChart called with barangay:', barangay);
-                // Use the same PHP function approach as the main update
-                const geoData = <?php echo json_encode(getGeographicDistributionData($db, $municipalities)); ?>;
-                console.log('🌍 Geographic Data from PHP in updateGeographicChart:', geoData);
+                // Use pre-loaded data
+                console.log('🌍 Using pre-loaded Geographic Data in updateGeographicChart:', geographicDistributionData);
                 
-                if (geoData && geoData.length > 0) {
-                    updateGeographicChartDisplay(geoData);
+                if (geographicDistributionData && geographicDistributionData.length > 0) {
+                    updateGeographicChartDisplay(geographicDistributionData);
                 } else {
                     console.log('No geographic data available');
                     updateGeographicChartDisplay([]);
@@ -8541,6 +8545,16 @@ body {
                 // Load initial dashboard metrics and geographic distribution
                 console.log('🔄 Loading initial dashboard metrics and geographic distribution...');
                 await updateCommunityMetrics('');
+                
+                // Load geographic distribution immediately with pre-loaded data
+                console.log('🌍 Loading geographic distribution with pre-loaded data...');
+                if (geographicDistributionData && geographicDistributionData.length > 0) {
+                    console.log('🌍 Updating geographic display with pre-loaded data:', geographicDistributionData);
+                    updateGeographicChartDisplay(geographicDistributionData);
+                } else {
+                    console.log('🌍 No pre-loaded geographic data available');
+                    updateGeographicChartDisplay([]);
+                }
                 
                 window.whoDataLoaded = true;
             } else {
