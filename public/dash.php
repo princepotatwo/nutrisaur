@@ -6895,7 +6895,9 @@ body {
             samChange: null,
             criticalAlerts: null,
             lastUpdate: null,
-            isFirstLoad: true
+            isFirstLoad: true,
+            cache: new Map(),
+            cacheTimeout: 30000 // 30 seconds cache
         };
 
         // Function to update community metrics
@@ -6906,6 +6908,12 @@ body {
             }
             
             updateCommunityMetrics.debounceTimer = setTimeout(async () => {
+                // Prevent concurrent updates
+                if (dashboardState.updateInProgress) {
+                    console.log('⏳ Update already in progress, skipping...');
+                    return;
+                }
+                dashboardState.updateInProgress = true;
                 try {
                     console.log('🔄 updateCommunityMetrics called with barangay:', barangay);
                 
@@ -7147,7 +7155,9 @@ body {
                 // Update Nutritional Status Overview Card
                 updateNutritionalStatusCard([], []);
             } catch (error) {
-                // Error handling for charts update
+                console.error('Error updating community metrics:', error);
+            } finally {
+                dashboardState.updateInProgress = false;
             }
             }, 1000); // 1000ms debounce delay to prevent flickering
         }
@@ -7164,7 +7174,7 @@ body {
                     updateGeographicChartDisplay(data.data);
                 }
             } catch (error) {
-                // Error handling for geographic chart update
+                console.error('Geographic chart update error:', error);
             }
         }
 
@@ -7178,20 +7188,23 @@ body {
             container.innerHTML = '';
             
             if (data && data.length > 0) {
-                data.forEach(item => {
+                // Sort by count descending for better visualization
+                const sortedData = data.sort((a, b) => (b.count || 0) - (a.count || 0));
+                
+                sortedData.forEach(item => {
                     const barItem = document.createElement('div');
                     barItem.className = 'geo-bar-item';
                     
                     // Calculate percentage based on count
-                    const maxCount = Math.max(...data.map(d => d.count));
-                    const percentage = maxCount > 0 ? Math.round((item.count / maxCount) * 100) : 0;
+                    const maxCount = Math.max(...sortedData.map(d => d.count || 0));
+                    const percentage = maxCount > 0 ? Math.round(((item.count || 0) / maxCount) * 100) : 0;
                     
                     barItem.innerHTML = `
-                        <div class="geo-bar-name">${item.barangay}</div>
+                        <div class="geo-bar-name">${item.barangay || 'Unknown'}</div>
                         <div class="geo-bar-progress">
                             <div class="geo-bar-fill" style="width: ${percentage}%"></div>
                         </div>
-                        <div class="geo-bar-percentage">${item.count}</div>
+                        <div class="geo-bar-percentage">${item.count || 0}</div>
                     `;
                     container.appendChild(barItem);
                 });
@@ -7209,6 +7222,19 @@ body {
                 container.appendChild(noDataItem);
             }
         }
+        
+        // Function to clean up expired cache entries
+        function cleanupCache() {
+            const now = Date.now();
+            for (const [key, value] of dashboardState.cache.entries()) {
+                if (now - value.timestamp > dashboardState.cacheTimeout) {
+                    dashboardState.cache.delete(key);
+                }
+            }
+        }
+        
+        // Clean up cache every 5 minutes
+        setInterval(cleanupCache, 300000);
 
         // Function to update critical alerts - DEPRECATED
         // Critical alerts are now updated via updateCriticalAlertsFromScreeningData()
@@ -7981,6 +8007,19 @@ body {
         // Function to fetch data from centralized DatabaseAPI
         async function fetchDataFromAPI(endpoint, params = {}) {
             try {
+                // Create cache key
+                const cacheKey = `${endpoint}_${JSON.stringify(params)}`;
+                const now = Date.now();
+                
+                // Check cache first (skip cache for real-time data)
+                if (!endpoint.includes('dashboard_assessment_stats') && dashboardState.cache.has(cacheKey)) {
+                    const cached = dashboardState.cache.get(cacheKey);
+                    if (now - cached.timestamp < dashboardState.cacheTimeout) {
+                        console.log(`📦 Using cached data for ${endpoint}`);
+                        return cached.data;
+                    }
+                }
+                
                 // Use our new assessment API for dashboard stats
                 let url;
                 if (endpoint === 'dashboard_assessment_stats') {
@@ -8009,6 +8048,15 @@ body {
                 
                 const data = await response.json();
                 console.log('DatabaseAPI response for', endpoint, ':', data);
+                
+                // Cache the result (skip cache for real-time data)
+                if (!endpoint.includes('dashboard_assessment_stats')) {
+                    dashboardState.cache.set(cacheKey, {
+                        data: data,
+                        timestamp: now
+                    });
+                    console.log(`🌐 Cached fresh data for ${endpoint}`);
+                }
                 console.log('Returning data:', data.data || data);
                 
                 // For dashboard_assessment_stats, return the full response to preserve success field

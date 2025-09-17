@@ -1439,7 +1439,7 @@ class DatabaseAPI {
                 }
             }
             
-            $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as user_count FROM community_users" . $whereClause . " GROUP BY barangay ORDER BY user_count DESC");
+            $stmt = $this->pdo->prepare("SELECT barangay, COUNT(*) as count FROM community_users" . $whereClause . " GROUP BY barangay ORDER BY count DESC");
             $stmt->execute($params);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
