@@ -665,7 +665,7 @@ try {
             'SAMAL' => ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan (Pob.)', 'San Roque (Pob.)', 'Santa Lucia', 'Sapa', 'Tabing Ilog', 'Gugo', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
         ];
 
-        // Function to get geographic distribution using the same strategy as settings.php
+        // Function to get geographic distribution - show ALL barangays from database
         function getGeographicDistributionData($db, $municipalities) {
             try {
                 // Get all users from database
@@ -679,26 +679,27 @@ try {
                 $barangayCounts = [];
                 foreach ($users as $user) {
                     $barangay = $user['barangay'] ?? 'Unknown';
+                    $municipality = $user['municipality'] ?? 'Unknown';
                     if (!isset($barangayCounts[$barangay])) {
-                        $barangayCounts[$barangay] = 0;
+                        $barangayCounts[$barangay] = [
+                            'count' => 0,
+                            'municipality' => $municipality
+                        ];
                     }
-                    $barangayCounts[$barangay]++;
+                    $barangayCounts[$barangay]['count']++;
                 }
                 
                 error_log("  - Barangays with users: " . json_encode($barangayCounts));
                 
-                // Create distribution data with all barangays from municipalities array
+                // Create distribution data with ALL barangays from database (not just hardcoded ones)
                 $distribution = [];
-                foreach ($municipalities as $municipality => $barangays) {
-                    foreach ($barangays as $barangay) {
-                        $count = $barangayCounts[$barangay] ?? 0;
-                        if ($count > 0) { // Only include barangays with users
-                            $distribution[] = [
-                                'barangay' => $barangay,
-                                'municipality' => $municipality,
-                                'count' => $count
-                            ];
-                        }
+                foreach ($barangayCounts as $barangay => $data) {
+                    if ($data['count'] > 0) {
+                        $distribution[] = [
+                            'barangay' => $barangay,
+                            'municipality' => $data['municipality'],
+                            'count' => $data['count']
+                        ];
                     }
                 }
                 
