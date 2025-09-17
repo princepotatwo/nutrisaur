@@ -3817,7 +3817,9 @@ header {
                                             }
                                             
                                             echo '<tr data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
-                                            echo '<td class="text-center">' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
+                                            $fullName = htmlspecialchars($user['name'] ?? 'N/A');
+                                            $truncatedName = strlen($fullName) > 8 ? substr($fullName, 0, 8) . '...' : $fullName;
+                                            echo '<td class="text-center" title="' . $fullName . '" data-full-name="' . $fullName . '">' . $truncatedName . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . $ageDisplay . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
@@ -4506,6 +4508,7 @@ header {
                 
                 // Then check if row matches search term
                 const name = row.cells[0].textContent.toLowerCase();
+                const fullName = row.cells[0].getAttribute('data-full-name')?.toLowerCase() || '';
                 const email = row.cells[1].textContent.toLowerCase();
                 const age = row.cells[2].textContent.toLowerCase();
                 const sex = row.cells[3].textContent.toLowerCase();
@@ -4517,6 +4520,7 @@ header {
                 const screeningDate = row.cells[9].textContent.toLowerCase();
                 
                 const matchesSearch = name.includes(searchTerm) || 
+                                   fullName.includes(searchTerm) ||
                                    email.includes(searchTerm) || 
                                    age.includes(searchTerm) || 
                                    sex.includes(searchTerm) || 
