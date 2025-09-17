@@ -7293,14 +7293,8 @@ body {
                     // Calculate percentage based on count
                     const percentage = maxCount > 0 ? Math.round(((item.count || 0) / maxCount) * 100) : 0;
                     
-                    // Add ranking indicator for top 3
-                    let ranking = '';
-                    if (index === 0) ranking = '🥇 ';
-                    else if (index === 1) ranking = '🥈 ';
-                    else if (index === 2) ranking = '🥉 ';
-                    
                     barItem.innerHTML = `
-                        <div class="geo-bar-name">${ranking}${item.barangay || 'Unknown'}</div>
+                        <div class="geo-bar-name">${item.barangay || 'Unknown'}</div>
                         <div class="geo-bar-progress">
                             <div class="geo-bar-fill" style="width: ${percentage}%"></div>
                         </div>
