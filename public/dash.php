@@ -646,9 +646,65 @@ try {
         $barangayResult = $db->select('community_users', 'DISTINCT barangay', "barangay IS NOT NULL AND barangay != ''", [], 'barangay');
         $barangays = $barangayResult['success'] ? array_column($barangayResult['data'], 'barangay') : [];
         
-        // Get municipality list for dropdown using DatabaseHelper
-        $municipalityResult = $db->select('community_users', 'DISTINCT municipality', "municipality IS NOT NULL AND municipality != ''", [], 'municipality');
-        $municipalities = $municipalityResult['success'] ? array_column($municipalityResult['data'], 'municipality') : [];
+        // Municipalities and Barangays data - Same as settings.php
+        $municipalities = [
+            'ABUCAY' => ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Omboy', 'Salian', 'Wawa (Pob.)'],
+            'BAGAC' => ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibis', 'Pag-asa (Wawa-Sibacan)', 'Parang', 'Paysawan', 'Quinawan', 'San Antonio', 'Saysain', 'Tabing-Ilog (Pob.)', 'Atilano L. Ricardo'],
+            'CITY OF BALANGA (Capital)' => ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Cupang Proper', 'Cupang West', 'Dangcol (Bernabe)', 'Ibayo', 'Malabia', 'Poblacion', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Jose', 'Sibacan', 'Camacho', 'Talisay', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo', 'Bagong Silang', 'Cupang North', 'Doña Francisca', 'Lote'],
+            'DINALUPIHAN' => ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar (Pob.)', 'Gen. Luna (Pob.)', 'Gomez (Pob.)', 'Happy Valley', 'Kataasan', 'Layac', 'Luacan', 'Mabini Proper (Pob.)', 'Mabini Ext. (Pob.)', 'Magsaysay', 'Naparing', 'New San Jose', 'Old San Jose', 'Padre Dandan (Pob.)', 'Pag-asa', 'Pagalanggang', 'Pinulot', 'Pita', 'Rizal (Pob.)', 'Roosevelt', 'Roxas (Pob.)', 'Saguing', 'San Benito', 'San Isidro (Pob.)', 'San Pablo (Bulate)', 'San Ramon', 'San Simon', 'Santo Niño', 'Sapang Balas', 'Santa Isabel (Tabacan)', 'Torres Bugauen (Pob.)', 'Tucop', 'Zamora (Pob.)', 'Aquino', 'Bayan-bayanan', 'Maligaya', 'Payangan', 'Pentor', 'Tubo-tubo', 'Jose C. Payumo, Jr.'],
+            'HERMOSA' => ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culis', 'Daungan (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Mambog - Mandama', 'Palihan', 'Pandatung', 'Pulo', 'Saba', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo', 'Judge Roman Cruz Sr. (Mandama)', 'Sacrifice Valley'],
+            'LIMAY' => ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reformista', 'Townsite', 'Wawa', 'Duale', 'San Francisco de Asis', 'St. Francis II'],
+            'MARIVELES' => ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Baseco Country (Nassco)', 'Poblacion', 'San Carlos', 'San Isidro', 'Sisiman', 'Balon-Anito', 'Biaan', 'Camaya', 'Ipag', 'Malaya', 'Maligaya', 'Mt. View', 'Townsite'],
+            'MORONG' => ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang'],
+            'ORANI' => ['Bagong Paraiso (Pob.)', 'Balut (Pob.)', 'Bayan (Pob.)', 'Calero (Pob.)', 'Paking-Carbonero (Pob.)', 'Centro II (Pob.)', 'Dona', 'Kaparangan', 'Masantol', 'Mulawin', 'Pag-asa', 'Palihan (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang Parang (Pob.)', 'Centro I (Pob.)', 'Sibul', 'Silahis', 'Tala', 'Talimundoc', 'Tapulao', 'Tenejero (Pob.)', 'Tugatog', 'Wawa (Pob.)', 'Apollo', 'Kabalutan', 'Maria Fe', 'Puksuan', 'Tagumpay'],
+            'ORION' => ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago (Pob.)', 'Daang Bilolo (Pob.)', 'Daang Pare', 'General Lim (Kaput)', 'Kapunitan', 'Lati (Pob.)', 'Lusungan (Pob.)', 'Puting Buhangin', 'Sabatan', 'San Vicente (Pob.)', 'Santo Domingo', 'Villa Angeles (Pob.)', 'Wakas (Pob.)', 'Wawa (Pob.)', 'Santa Elena'],
+            'PILAR' => ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Burgos', 'Del Rosario (Pob.)', 'Diwa', 'Landing', 'Liyang', 'Nagwaling', 'Panilao', 'Pantingan', 'Poblacion', 'Rizal (Pob.)', 'Santa Rosa', 'Wakas North', 'Wakas South', 'Wawa'],
+            'SAMAL' => ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan (Pob.)', 'San Roque (Pob.)', 'Santa Lucia', 'Sapa', 'Tabing Ilog', 'Gugo', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
+        ];
+
+        // Function to get geographic distribution using the same strategy as settings.php
+        function getGeographicDistributionData($db, $municipalities) {
+            try {
+                // Get all users from database
+                $result = $db->select('community_users', '*', '', [], 'screening_date DESC');
+                $users = $result['success'] ? $result['data'] : [];
+                
+                // Count users per barangay
+                $barangayCounts = [];
+                foreach ($users as $user) {
+                    $barangay = $user['barangay'] ?? 'Unknown';
+                    if (!isset($barangayCounts[$barangay])) {
+                        $barangayCounts[$barangay] = 0;
+                    }
+                    $barangayCounts[$barangay]++;
+                }
+                
+                // Create distribution data with all barangays from municipalities array
+                $distribution = [];
+                foreach ($municipalities as $municipality => $barangays) {
+                    foreach ($barangays as $barangay) {
+                        $count = $barangayCounts[$barangay] ?? 0;
+                        if ($count > 0) { // Only include barangays with users
+                            $distribution[] = [
+                                'barangay' => $barangay,
+                                'municipality' => $municipality,
+                                'count' => $count
+                            ];
+                        }
+                    }
+                }
+                
+                // Sort by count descending
+                usort($distribution, function($a, $b) {
+                    return $b['count'] - $a['count'];
+                });
+                
+                return $distribution;
+            } catch (Exception $e) {
+                error_log("Geographic distribution error: " . $e->getMessage());
+                return [];
+            }
+        }
 
 if (isset($_GET['logout'])) {
     session_unset();
@@ -7142,13 +7198,13 @@ body {
                     updateScreeningResponsesDisplay(screeningData);
                 }
 
-                // Update Geographic Distribution Chart
-                console.log('🌍 Fetching Geographic Distribution...');
-                const geoData = await fetchDataFromAPI('geographic_distribution', params);
-                console.log('🌍 Geographic API Response:', geoData);
-                if (geoData && geoData.success && geoData.data) {
-                    console.log('🌍 Updating geographic display with data:', geoData.data);
-                    updateGeographicChartDisplay(geoData.data);
+                // Update Geographic Distribution Chart using PHP function
+                console.log('🌍 Getting Geographic Distribution from PHP...');
+                const geoData = <?php echo json_encode(getGeographicDistributionData($db, $municipalities)); ?>;
+                console.log('🌍 Geographic Data from PHP:', geoData);
+                if (geoData && geoData.length > 0) {
+                    console.log('🌍 Updating geographic display with data:', geoData);
+                    updateGeographicChartDisplay(geoData);
                 } else {
                     console.log('🌍 No geographic data, showing empty display');
                     updateGeographicChartDisplay([]);
@@ -7177,14 +7233,13 @@ body {
         // Function to update geographic distribution
         async function updateGeographicChart(barangay = '') {
             try {
-                const params = {};
-                if (barangay && barangay !== '') {
-                    params.barangay = barangay;
-                }
+                console.log('🌍 updateGeographicChart called with barangay:', barangay);
+                // Use the same PHP function approach as the main update
+                const geoData = <?php echo json_encode(getGeographicDistributionData($db, $municipalities)); ?>;
+                console.log('🌍 Geographic Data from PHP in updateGeographicChart:', geoData);
                 
-                const data = await fetchDataFromAPI('geographic_distribution', params);
-                if (data && data.success && data.data) {
-                    updateGeographicChartDisplay(data.data);
+                if (geoData && geoData.length > 0) {
+                    updateGeographicChartDisplay(geoData);
                 } else {
                     console.log('No geographic data available');
                     updateGeographicChartDisplay([]);
