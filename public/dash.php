@@ -2041,7 +2041,7 @@ header .user-info {
     grid-template-columns: 8px 1fr !important; /* 8px for dot, rest for text */
     gap: 2px !important; /* Smaller gap between dot and text */
     align-items: center !important;
-    padding: 1px 2px !important; /* Minimal padding */
+    padding: 1px 2px 1px 1px !important; /* Minimal padding, less right padding */
     margin-bottom: 0 !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
@@ -2057,7 +2057,7 @@ header .user-info {
 .segments .segment.compact .segment-text-container {
     display: flex !important;
     flex-direction: column !important; /* Stack label and percentage vertically */
-    align-items: center !important;
+    align-items: flex-start !important; /* Left align text */
     justify-content: center !important;
     width: 100% !important;
     margin: 0 !important;
@@ -2068,7 +2068,7 @@ header .user-info {
 
 /* Higher specificity to override conflicting rules */
 .segments .segment.compact .segment-label {
-    text-align: center !important;
+    text-align: left !important; /* Left align text */
     font-weight: 600 !important;
     color: var(--color-text) !important;
     white-space: normal !important; /* Allow two lines */
@@ -2090,7 +2090,7 @@ header .user-info {
 .segments .segment.compact .segment-percentage {
     color: var(--color-text) !important;
     opacity: 0.8 !important;
-    text-align: center !important;
+    text-align: left !important; /* Left align text */
     white-space: nowrap !important;
     font-size: 5px !important; /* Even smaller font */
     width: 100% !important; /* Force full width */
