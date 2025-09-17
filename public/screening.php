@@ -3573,7 +3573,7 @@ header {
                                     <option value="height-for-age">Height-for-Age (0-71 months)</option>
                                     <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
                                     <option value="bmi-for-age">BMI-for-Age (2-19 years)</option>
-                                    <option value="bmi-adult">BMI Adult (>19 years)</option>
+                                    <option value="bmi-adult">BMI Adult (≥19 years)</option>
                                 </select>
                             </div>
                         </div>
@@ -3699,8 +3699,8 @@ header {
                                             'bmi-for-age' => ['display' => $bmi_display, 'classification' => $bmi_classification]
                                         ];
                                         
-                                        // Add BMI Adult data for adults >19 years (240+ months)
-                                        if ($ageInMonths >= 240) {
+                                        // Add BMI Adult data for adults ≥19 years (228+ months)
+                                        if ($ageInMonths >= 228) {
                                             $adultBmiClassification = getAdultBMIClassification($bmi);
                                             $whoData['bmi-adult'] = [
                                                 'display' => $bmi,
@@ -3715,8 +3715,8 @@ header {
                                             if ($standardName === 'weight-for-age' && $ageInMonths > 71) continue;
                                             if ($standardName === 'height-for-age' && $ageInMonths > 71) continue;
                                             if ($standardName === 'weight-for-height' && $ageInMonths > 60) continue;
-                                            if ($standardName === 'bmi-for-age' && ($ageInMonths < 24 || $ageInMonths >= 240)) continue;
-                                            if ($standardName === 'bmi-adult' && $ageInMonths < 240) continue;
+                                            if ($standardName === 'bmi-for-age' && ($ageInMonths < 24 || $ageInMonths >= 228)) continue;
+                                            if ($standardName === 'bmi-adult' && $ageInMonths < 228) continue;
                                             
                                             
                                             // Get z-score and standard deviation range
@@ -4033,12 +4033,12 @@ header {
                         showRow = true;
                     } else if (standard === 'bmi-for-age') {
                         // BMI-for-Age: 2-19 years (24-228 months)
-                        if (ageMonths < 24 || ageMonths >= 240 || rowStandard !== 'bmi-for-age') {
+                        if (ageMonths < 24 || ageMonths >= 228 || rowStandard !== 'bmi-for-age') {
                             showRow = false;
                         }
                     } else if (standard === 'bmi-adult') {
-                        // BMI Adult: >19 years (240+ months)
-                        if (ageMonths < 240 || rowStandard !== 'bmi-adult') {
+                        // BMI Adult: ≥19 years (228+ months)
+                        if (ageMonths < 228 || rowStandard !== 'bmi-adult') {
                             showRow = false;
                         }
                     } else {
@@ -4544,9 +4544,9 @@ header {
                 if (standard === 'all-ages') {
                     return true;
                 } else if (standard === 'bmi-for-age') {
-                    return rowStandard === 'bmi-for-age' && ageMonths >= 24 && ageMonths < 240;
+                    return rowStandard === 'bmi-for-age' && ageMonths >= 24 && ageMonths < 228;
                 } else if (standard === 'bmi-adult') {
-                    return rowStandard === 'bmi-adult' && ageMonths >= 240;
+                    return rowStandard === 'bmi-adult' && ageMonths >= 228;
                 } else {
                     if (standard === 'weight-for-age' || standard === 'height-for-age') {
                         if (ageMonths > 71 || rowStandard !== standard) {
