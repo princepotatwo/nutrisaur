@@ -2047,7 +2047,7 @@ header .user-info {
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 6px !important;
     font-size: 9px !important; /* Smaller font */
-    min-height: 40px !important; /* Increased height for two lines */
+    min-height: 30px !important; /* Back to original height */
     flex-direction: column !important; /* Stack label and percentage vertically */
     flex-wrap: nowrap !important; /* Prevent wrapping */
     flex: 1 !important;
@@ -2062,14 +2062,15 @@ header .user-info {
     white-space: normal !important; /* Allow two lines */
     overflow: visible !important; /* Show all text */
     text-overflow: unset !important; /* No ellipsis */
-    font-size: 8px !important; /* Smaller font for two lines */
+    font-size: 7px !important; /* Smaller font for compact layout */
     flex: 1 !important;
-    line-height: 1.1 !important; /* Tighter line height */
+    line-height: 1.0 !important; /* Very tight line height */
     max-width: 100% !important; /* Use full width */
     margin: 0 !important; /* Remove all margins */
     padding: 0 !important; /* Remove all padding */
     word-wrap: break-word !important; /* Break long words */
     hyphens: auto !important; /* Enable hyphenation */
+    max-height: 20px !important; /* Limit height for two lines */
 }
 
 /* Compact segment percentage styling */
@@ -2078,10 +2079,12 @@ header .user-info {
     opacity: 0.8 !important;
     text-align: center !important;
     white-space: nowrap !important;
-    font-size: 7px !important; /* Smaller font */
-    min-width: 20px !important; /* Smaller width */
+    font-size: 6px !important; /* Very small font */
+    min-width: 15px !important; /* Smaller width */
     margin: 0 !important; /* Remove margins */
     padding: 0 !important; /* Remove padding */
+    line-height: 1.0 !important; /* Tight line height */
+    max-height: 10px !important; /* Limit height */
 }
 
 /* Color indicators for each risk level - Colored boxes matching donut chart colors */
