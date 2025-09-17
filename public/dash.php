@@ -376,8 +376,8 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
             // Perform nutritional assessment using WHO Growth Standards
             $assessment = getNutritionalAssessment($user);
             
-            if ($assessment['success'] && isset($assessment['results'])) {
-                $results = $assessment['results'];
+            if (isset($assessment['who_classifications']) && !empty($assessment['who_classifications'])) {
+                $results = $assessment['who_classifications'];
                 
                 // Count Severely Underweight (High Risk Cases)
                 if (isset($results['weight_for_age']['classification']) && 
