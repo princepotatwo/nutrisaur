@@ -8482,6 +8482,11 @@ body {
                 // Load initial data
                 updateWHOChartDescription('weight-for-age');
                 await handleWHOStandardChange();
+                
+                // Load initial dashboard metrics and geographic distribution
+                console.log('🔄 Loading initial dashboard metrics and geographic distribution...');
+                await updateCommunityMetrics('');
+                
                 window.whoDataLoaded = true;
             } else {
                 console.log('WHO dropdown not found');
