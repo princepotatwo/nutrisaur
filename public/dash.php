@@ -309,37 +309,14 @@ function formatDatePHP($dateString, $format = 'relative') {
 
 // NEW: Function to get time frame data from community_users table with nutritional assessments
 function getTimeFrameData($db, $timeFrame, $barangay = null) {
-    $now = new DateTime();
-    $startDate = new DateTime();
-    
-    // Calculate start date based on time frame
-    switch($timeFrame) {
-        case '1d':
-            $startDate->modify('-1 day');
-            break;
-        case '1w':
-            $startDate->modify('-1 week');
-            break;
-        case '1m':
-            $startDate->modify('-1 month');
-            break;
-        case '3m':
-            $startDate->modify('-3 months');
-            break;
-        case '1y':
-            $startDate->modify('-1 year');
-            break;
-        default:
-            $startDate->modify('-1 day');
-    }
-    
-    $startDateStr = $startDate->format('Y-m-d H:i:s');
-    $endDateStr = $now->format('Y-m-d H:i:s');
+    error_log("🔍 getTimeFrameData Debug - Starting");
+    error_log("  - Time frame: $timeFrame (ignored - getting all users)");
+    error_log("  - Barangay: " . ($barangay ?: 'null'));
     
     try {
-        // Build the WHERE clause for DatabaseHelper
-        $whereClause = "screening_date BETWEEN ? AND ?";
-        $params = [$startDateStr, $endDateStr];
+        // Build the WHERE clause for DatabaseHelper - no time filtering
+        $whereClause = "1=1"; // Get all users
+        $params = [];
         
         if ($barangay && $barangay !== '') {
             $whereClause .= " AND barangay = ?";
@@ -347,7 +324,15 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
         }
         
         // Use DatabaseHelper like screening.php
+        error_log("🔍 getTimeFrameData Debug - Querying database");
+        error_log("  - WHERE clause: $whereClause");
+        error_log("  - Params: " . json_encode($params));
+        
         $result = $db->select('community_users', '*', $whereClause, $params, 'screening_date DESC');
+        
+        error_log("  - Query result success: " . ($result['success'] ? 'YES' : 'NO'));
+        error_log("  - Query result message: " . ($result['message'] ?? 'No message'));
+        error_log("  - Number of users found: " . (isset($result['data']) ? count($result['data']) : 'NO DATA'));
         
         if (!$result['success']) {
             error_log("Error fetching community_users: " . ($result['message'] ?? 'Unknown error'));
@@ -357,9 +342,9 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
                 'sam_cases' => 0,
                 'critical_muac' => 0,
                 'barangays_covered' => 0,
-                'time_frame' => $timeFrame,
-                'start_date_formatted' => $startDate->format('M j, Y'),
-                'end_date_formatted' => $now->format('M j, Y')
+                'time_frame' => 'all',
+                'start_date_formatted' => 'All Time',
+                'end_date_formatted' => 'Present'
             ];
         }
         
@@ -457,12 +442,12 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
             'latest_update' => $totalScreened > 0 ? $users[0]['screening_date'] : null
         ];
         
-        // Add time frame info
-        $data['time_frame'] = $timeFrame;
-        $data['start_date'] = $startDateStr;
-        $data['end_date'] = $endDateStr;
-        $data['start_date_formatted'] = $startDate->format('M j, Y');
-        $data['end_date_formatted'] = $now->format('M j, Y');
+        // Add time frame info (simplified since we're getting all users)
+        $data['time_frame'] = 'all';
+        $data['start_date'] = null;
+        $data['end_date'] = null;
+        $data['start_date_formatted'] = 'All Time';
+        $data['end_date_formatted'] = 'Present';
         
         return $data;
         
@@ -474,9 +459,9 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
             'sam_cases' => 0,
             'critical_muac' => 0,
             'barangays_covered' => 0,
-            'time_frame' => $timeFrame,
-            'start_date_formatted' => $startDate->format('M j, Y'),
-            'end_date_formatted' => $now->format('M j, Y')
+            'time_frame' => 'all',
+            'start_date_formatted' => 'All Time',
+            'end_date_formatted' => 'Present'
         ];
     }
 }
