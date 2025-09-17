@@ -373,27 +373,58 @@ function getTimeFrameData($db, $timeFrame, $barangay = null) {
         $barangaysCovered = [];
         
         foreach ($users as $user) {
-            // Perform nutritional assessment using WHO Growth Standards
-            $assessment = getNutritionalAssessment($user);
+            // Calculate age in months like in DatabaseAPI
+            $birthDate = new DateTime($user['birthday']);
+            $today = new DateTime();
+            $age = $today->diff($birthDate);
+            $ageInMonths = ($age->y * 12) + $age->m;
             
-            if (isset($assessment['who_classifications']) && !empty($assessment['who_classifications'])) {
-                $results = $assessment['who_classifications'];
+            // Add partial month if more than half the month has passed
+            if ($age->d >= 15) {
+                $ageInMonths += 1;
+            }
+            
+            // Check Weight-for-Age (0-71 months) for Severely Underweight
+            if ($ageInMonths >= 0 && $ageInMonths <= 71) {
+                $who = new WHOGrowthStandards();
+                $weightForAge = $who->calculateWeightForAge(
+                    floatval($user['weight']), 
+                    $ageInMonths, 
+                    $user['sex']
+                );
                 
-                // Count Severely Underweight (High Risk Cases)
-                if (isset($results['weight_for_age']['classification']) && 
-                    $results['weight_for_age']['classification'] === 'Severely Underweight') {
+                if ($weightForAge && isset($weightForAge['classification']) && 
+                    $weightForAge['classification'] === 'Severely Underweight') {
                     $highRiskCases++;
                 }
+            }
+            
+            // Check Height-for-Age (0-71 months) for Severely Stunted
+            if ($ageInMonths >= 0 && $ageInMonths <= 71) {
+                $who = new WHOGrowthStandards();
+                $heightForAge = $who->calculateHeightForAge(
+                    floatval($user['height']), 
+                    $ageInMonths, 
+                    $user['sex']
+                );
                 
-                // Count Severely Stunted (SAM Cases)
-                if (isset($results['height_for_age']['classification']) && 
-                    $results['height_for_age']['classification'] === 'Severely Stunted') {
+                if ($heightForAge && isset($heightForAge['classification']) && 
+                    $heightForAge['classification'] === 'Severely Stunted') {
                     $samCases++;
                 }
+            }
+            
+            // Check Weight-for-Height (65-120 cm height) for Severely Wasted
+            if ($user['height'] >= 65 && $user['height'] <= 120) {
+                $who = new WHOGrowthStandards();
+                $weightForHeight = $who->calculateWeightForHeight(
+                    floatval($user['weight']), 
+                    floatval($user['height']), 
+                    $user['sex']
+                );
                 
-                // Count Severely Wasted (Critical Malnutrition)
-                if (isset($results['weight_for_height']['classification']) && 
-                    $results['weight_for_height']['classification'] === 'Severely Wasted') {
+                if ($weightForHeight && isset($weightForHeight['classification']) && 
+                    $weightForHeight['classification'] === 'Severely Wasted') {
                     $criticalMuac++;
                 }
             }
