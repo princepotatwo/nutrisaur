@@ -2041,7 +2041,7 @@ header .user-info {
     align-items: center !important;
     justify-content: center !important;
     gap: 1px !important; /* Minimal gap */
-    padding: 2px 1px !important; /* Minimal padding */
+    padding: 2px 0px !important; /* No left/right padding */
     margin-bottom: 0 !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
