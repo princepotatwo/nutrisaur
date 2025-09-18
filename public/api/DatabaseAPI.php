@@ -4759,6 +4759,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
+            // Helper function to calculate age (same as dashboard_assessment_stats.php)
+            function calculateAge($birthday) {
+                $birthDate = new DateTime($birthday);
+                $today = new DateTime();
+                $age = $today->diff($birthDate);
+                return $age->y + ($age->m / 12);
+            }
+            
             try {
                 // Define age groups
                 $ageGroups = [
@@ -4810,11 +4818,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 foreach ($ageGroups as $ageGroup => $ageRange) {
                     $ageGroupUsers = [];
                     
-                    // Filter users by age group
+                    // Filter users by age group using same calculateAge function
                     foreach ($users as $user) {
-                        $birthday = new DateTime($user['birthday']);
-                        $now = new DateTime();
-                        $ageInMonths = $birthday->diff($now)->y * 12 + $birthday->diff($now)->m;
+                        $age = calculateAge($user['birthday']); // Age in years as decimal
+                        $ageInMonths = $age * 12; // Convert to months
                         
                         if ($ageInMonths >= $ageRange[0] && $ageInMonths < $ageRange[1]) {
                             $ageGroupUsers[] = $user;
