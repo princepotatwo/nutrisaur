@@ -2030,7 +2030,7 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* NEW: Button-based segments with zero spacing */
+/* SEPARATE CONTAINER BOX - NO TEXT INSIDE */
 .segments .segment.compact {
     display: inline-block !important;
     position: relative !important;
@@ -2045,36 +2045,28 @@ header .user-info {
     font-size: 0 !important;
     vertical-align: top !important;
     overflow: hidden !important;
-    cursor: default !important;
-    /* Button-like properties */
-    outline: none !important;
-    text-decoration: none !important;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    -moz-user-select: none !important;
-    -ms-user-select: none !important;
+    /* Container only - no text content */
 }
 
-/* NEW: Button-style text container */
-.segments .segment.compact .segment-text-container {
+/* SEPARATE COLOR DOT - INDEPENDENT */
+.segments .segment.compact .segment-dot {
     position: absolute !important;
-    left: 8px !important;
-    top: 0px !important;
-    right: 0px !important;
-    bottom: 0px !important;
+    left: 2px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 6px !important;
+    height: 6px !important;
+    border-radius: 50% !important;
     margin: 0 !important;
     padding: 0 !important;
     display: block !important;
-    width: calc(100% - 8px) !important;
-    height: 100% !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
+    z-index: 1 !important;
 }
 
-/* NEW: Button-style label - no spacing */
+/* SEPARATE LABEL - COMPLETELY INDEPENDENT */
 .segments .segment.compact .segment-label {
     position: absolute !important;
-    left: 0px !important;
+    left: 8px !important;
     top: 0px !important;
     right: 0px !important;
     margin: 0 !important;
@@ -2087,15 +2079,16 @@ header .user-info {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     display: block !important;
-    width: 100% !important;
+    width: calc(100% - 8px) !important;
     height: 8px !important;
     box-sizing: border-box !important;
+    z-index: 2 !important;
 }
 
-/* NEW: Button-style percentage - no spacing */
+/* SEPARATE PERCENTAGE - COMPLETELY INDEPENDENT */
 .segments .segment.compact .segment-percentage {
     position: absolute !important;
-    left: 0px !important;
+    left: 8px !important;
     top: 8px !important;
     right: 0px !important;
     margin: 0 !important;
@@ -2108,24 +2101,12 @@ header .user-info {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     display: block !important;
-    width: 100% !important;
+    width: calc(100% - 8px) !important;
     height: 8px !important;
     box-sizing: border-box !important;
+    z-index: 2 !important;
 }
 
-/* NEW: Zero-spacing color dot */
-.segments .segment.compact .segment-dot {
-    position: absolute !important;
-    left: 2px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 6px !important;
-    height: 6px !important;
-    border-radius: 50% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-}
 
 /* Color indicators for each risk level - Colored boxes matching donut chart colors */
 .segment.compact[data-risk-level="0"] .segment-dot {
