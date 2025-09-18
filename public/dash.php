@@ -3526,6 +3526,7 @@ header .user-info {
     flex-wrap: nowrap;
     min-width: 0;
     box-sizing: border-box;
+    margin: 0 auto;
 }
 
 .trend-bar {
@@ -3614,17 +3615,19 @@ header .user-info {
     right: 0;
     padding: 0 20px;
     height: 50px;
+    margin: 0 auto;
 }
 
 .trend-label-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     width: 24px;
     position: relative;
     height: 100%;
     flex-shrink: 0;
+    text-align: center;
 }
 
 .trend-label-classification {
@@ -3716,6 +3719,7 @@ header .user-info {
         padding: 0 15px;
         height: 45px;
         gap: 6px;
+        margin: 0 auto;
     }
     
     .trend-bar {
@@ -3725,6 +3729,7 @@ header .user-info {
     .trend-label-item {
         width: 20px;
         flex-shrink: 0;
+        text-align: center;
     }
     
     .trend-label-classification {
@@ -3756,6 +3761,7 @@ header .user-info {
         padding: 0 10px;
         height: 40px;
         gap: 4px;
+        margin: 0 auto;
     }
     
     .trend-bar {
@@ -3765,6 +3771,7 @@ header .user-info {
     .trend-label-item {
         width: 16px;
         flex-shrink: 0;
+        text-align: center;
     }
     
     .trend-label-classification {
