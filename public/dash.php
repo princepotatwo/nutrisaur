@@ -3322,8 +3322,8 @@ header .user-info {
 
 /* Age Classification Chart Styles */
 .age-classification-chart-container {
-    flex: 1;
-    min-height: 0;
+    height: 350px;
+    max-height: 350px;
     width: 100%;
     max-width: 100%;
     display: flex;
@@ -3355,8 +3355,6 @@ header .user-info {
     box-sizing: border-box;
     padding: 20px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
 }
 
 /* Responsive adjustments for age classification chart */
@@ -3368,6 +3366,8 @@ header .user-info {
     }
     
     .age-classification-chart-container {
+        height: 300px;
+        max-height: 300px;
         padding: 8px;
     }
 }
@@ -3380,6 +3380,8 @@ header .user-info {
     }
     
     .age-classification-chart-container {
+        height: 250px;
+        max-height: 250px;
         padding: 5px;
     }
 }
@@ -8770,10 +8772,13 @@ body {
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
                 
-                // Let Chart.js handle responsive sizing automatically
-                // Remove any fixed canvas dimensions to let flexbox work
-                canvas.style.width = '100%';
-                canvas.style.height = '100%';
+                // Set fixed canvas size to prevent overflow
+                const container = canvas.parentElement;
+                const containerRect = container.getBoundingClientRect();
+                const availableWidth = Math.max(300, containerRect.width - 20);
+                const availableHeight = Math.max(250, containerRect.height - 20);
+                canvas.width = availableWidth;
+                canvas.height = availableHeight;
                 
                 const ctx = canvas.getContext('2d');
                 ageClassificationChartInstance = new Chart(ctx, {
@@ -8785,6 +8790,14 @@ body {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                top: 10,
+                                bottom: 10,
+                                left: 10,
+                                right: 10
+                            }
+                        },
                         plugins: {
                             legend: {
                                 display: true,
@@ -8792,9 +8805,9 @@ body {
                                 labels: {
                                     usePointStyle: true,
                                     pointStyle: 'line',
-                                    padding: 10,
+                                    padding: 8,
                                     font: {
-                                        size: 10
+                                        size: 9
                                     }
                                 }
                             },
@@ -8814,13 +8827,15 @@ body {
                                     display: true,
                                     text: 'Age Groups',
                                     font: {
-                                        size: 11
+                                        size: 10
                                     }
                                 },
                                 ticks: {
                                     font: {
-                                        size: 9
-                                    }
+                                        size: 8
+                                    },
+                                    maxRotation: 45,
+                                    minRotation: 0
                                 }
                             },
                             y: {
@@ -8832,14 +8847,14 @@ body {
                                         return value + '%';
                                     },
                                     font: {
-                                        size: 9
+                                        size: 8
                                     }
                                 },
                                 title: {
                                     display: true,
                                     text: 'Population %',
                                     font: {
-                                        size: 11
+                                        size: 10
                                     }
                                 }
                             }
@@ -9041,10 +9056,13 @@ body {
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
                 
-                // Let Chart.js handle responsive sizing automatically
-                // Remove any fixed canvas dimensions to let flexbox work
-                canvas.style.width = '100%';
-                canvas.style.height = '100%';
+                // Set fixed canvas size to prevent overflow
+                const container = canvas.parentElement;
+                const containerRect = container.getBoundingClientRect();
+                const availableWidth = Math.max(300, containerRect.width - 20);
+                const availableHeight = Math.max(250, containerRect.height - 20);
+                canvas.width = availableWidth;
+                canvas.height = availableHeight;
                 
                 const ctx = canvas.getContext('2d');
                 ageClassificationChartInstance = new Chart(ctx, {
@@ -9056,6 +9074,14 @@ body {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                top: 10,
+                                bottom: 10,
+                                left: 10,
+                                right: 10
+                            }
+                        },
                         plugins: {
                             legend: {
                                 display: true,
@@ -9063,9 +9089,9 @@ body {
                                 labels: {
                                     usePointStyle: true,
                                     pointStyle: 'line',
-                                    padding: 10,
+                                    padding: 8,
                                     font: {
-                                        size: 10
+                                        size: 9
                                     }
                                 }
                             },
@@ -9085,13 +9111,15 @@ body {
                                     display: true,
                                     text: 'Age Groups',
                                     font: {
-                                        size: 11
+                                        size: 10
                                     }
                                 },
                                 ticks: {
                                     font: {
-                                        size: 9
-                                    }
+                                        size: 8
+                                    },
+                                    maxRotation: 45,
+                                    minRotation: 0
                                 }
                             },
                             y: {
@@ -9099,14 +9127,14 @@ body {
                                 max: 100,
                                 ticks: {
                                     font: {
-                                        size: 9
+                                        size: 8
                                     }
                                 },
                                 title: {
                                     display: true,
                                     text: 'Percentage (%)',
                                     font: {
-                                        size: 11
+                                        size: 10
                                     }
                                 }
                             }
@@ -9553,8 +9581,16 @@ body {
             // Add window resize listener to resize chart
             window.addEventListener('resize', () => {
                 if (ageClassificationChartInstance) {
-                    // Let Chart.js handle the resize automatically with flexbox
-                    ageClassificationChartInstance.resize();
+                    const canvas = document.getElementById('ageClassificationChart');
+                    if (canvas) {
+                        const container = canvas.parentElement;
+                        const containerRect = container.getBoundingClientRect();
+                        const availableWidth = Math.max(300, containerRect.width - 20);
+                        const availableHeight = Math.max(250, containerRect.height - 20);
+                        canvas.width = availableWidth;
+                        canvas.height = availableHeight;
+                        ageClassificationChartInstance.resize();
+                    }
                 }
             });
         }
