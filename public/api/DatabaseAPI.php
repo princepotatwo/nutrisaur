@@ -4972,7 +4972,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 ];
                 
                 $classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
-                $whoStandards = ['weight-for-age', 'height-for-age', 'weight-for-height', 'bmi-for-age'];
                 
                 $ageClassificationData = [];
                 
@@ -4986,9 +4985,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $params[':barangay'] = $barangay;
                 }
                 
-                // Get all users in the filtered group
-                $userQuery = "SELECT email, birthday, sex, screening_date FROM community_users WHERE $whereClause";
+                // Get all users in the filtered group with weight and height data
+                $userQuery = "SELECT email, birthday, sex, screening_date, weight, height FROM community_users WHERE $whereClause";
                 $userResult = $db->executeQuery($userQuery, $params);
+                
                 
                 // Check if executeQuery returned an error
                 if (isset($userResult['error']) || empty($userResult)) {
@@ -5002,17 +5002,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Log basic info for debugging
                 error_log("Age Classification API - Total users: $totalUsers");
                 
-                // OPTIMIZED: Get bulk classifications once outside the loop
+                // Initialize WHO growth standards
                 require_once __DIR__ . '/../../who_growth_standards.php';
                 $who = new WHOGrowthStandards();
-                
-                $bulkResult = $db->getAllWHOClassificationsBulk('1d', $barangay); // Use 1d as default but ignore time filtering
-                if (!$bulkResult['success'] || !isset($bulkResult['data'])) {
-                    // If bulk API fails, return empty data
-                    echo json_encode(['success' => true, 'data' => []]);
-                    break;
-                }
-                $allClassifications = $bulkResult['data'];
                 
                 // Process each age group
                 foreach ($ageGroups as $ageGroup => $ageRange) {
@@ -5036,48 +5028,45 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         continue;
                     }
                     
-                    // Calculate classifications for THIS age group only
+                    // Calculate classifications for THIS age group only (simplified to weight-for-age only)
                     $ageGroupClassifications = [];
-                    foreach ($whoStandards as $standard) {
-                        $standardKey = str_replace('-', '_', $standard);
-                        $ageGroupClassifications[$standardKey] = [];
-                    }
                     
                     // Process each user in this age group
                     foreach ($ageGroupUsers as $user) {
-                        foreach ($whoStandards as $standard) {
-                            $standardKey = str_replace('-', '_', $standard);
-                            $classification = $who->classifyUser($user, $standard);
+                        try {
+                            // Use getComprehensiveAssessment for weight-for-age only (simplified)
+                            $assessment = $who->getComprehensiveAssessment(
+                                floatval($user['weight']), 
+                                floatval($user['height']), 
+                                $user['birthday'], 
+                                $user['sex'],
+                                $user['screening_date'] ?? null
+                            );
                             
-                            if ($classification && $classification !== 'No Data') {
-                                if (!isset($ageGroupClassifications[$standardKey][$classification])) {
-                                    $ageGroupClassifications[$standardKey][$classification] = 0;
+                            if ($assessment['success'] && isset($assessment['results'])) {
+                                $results = $assessment['results'];
+                                $classification = $results['weight_for_age']['classification'] ?? 'No Data';
+                                
+                                if ($classification && $classification !== 'No Data') {
+                                    if (!isset($ageGroupClassifications[$classification])) {
+                                        $ageGroupClassifications[$classification] = 0;
+                                    }
+                                    $ageGroupClassifications[$classification]++;
                                 }
-                                $ageGroupClassifications[$standardKey][$classification]++;
                             }
+                        } catch (Exception $e) {
+                            error_log("Error processing user for age classification: " . $e->getMessage());
+                            continue;
                         }
                     }
                     
                     // Calculate percentages for this age group
-                    foreach ($whoStandards as $standard) {
-                        $standardKey = str_replace('-', '_', $standard);
-                        $standardData = $ageGroupClassifications[$standardKey] ?? [];
-                        
-                        // Calculate total users for this standard in this age group
-                        $ageGroupTotal = 0;
-                        foreach ($standardData as $classification => $count) {
-                            if ($classification !== 'No Data') {
-                                $ageGroupTotal += $count;
-                            }
-                        }
-                        
-                        foreach ($standardData as $classification => $count) {
-                            if (in_array($classification, $classifications)) {
-                                // Calculate percentage based on users in this age group
-                                $percentage = $ageGroupTotal > 0 ? round(($count / $ageGroupTotal) * 100, 1) : 0;
-                                $ageClassificationData["{$ageGroup}_{$classification}"] = $percentage;
-                            }
-                        }
+                    $ageGroupTotal = array_sum($ageGroupClassifications);
+                    
+                    foreach ($classifications as $classification) {
+                        $count = $ageGroupClassifications[$classification] ?? 0;
+                        $percentage = $ageGroupTotal > 0 ? round(($count / $ageGroupTotal) * 100, 1) : 0;
+                        $ageClassificationData["{$ageGroup}_{$classification}"] = $percentage;
                     }
                 }
                 
