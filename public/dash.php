@@ -3606,7 +3606,7 @@ header .user-info {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 6px;
+    gap: 3px;
     width: 100%;
     position: absolute;
     bottom: 15px;
@@ -3632,7 +3632,7 @@ header .user-info {
     color: var(--color-text);
     text-align: center;
     line-height: 1.2;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3651,8 +3651,6 @@ header .user-info {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 50px;
-    transform: rotate(-45deg);
-    transform-origin: center;
 }
 
 /* Bar colors for different classifications - Enhanced with gradients */
@@ -3727,6 +3725,7 @@ header .user-info {
     .trend-label-classification {
         font-size: 7px;
         max-width: 45px;
+        margin-bottom: 1px;
     }
     
     .trend-label-standard {
@@ -3760,6 +3759,7 @@ header .user-info {
     .trend-label-classification {
         font-size: 6px;
         max-width: 40px;
+        margin-bottom: 1px;
     }
     
     .trend-label-standard {
