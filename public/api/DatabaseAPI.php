@@ -5138,19 +5138,24 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $ageGroupUsers = [];
                     
                     // Filter users by age group using screening date
+                    $usersInRange = 0;
                     foreach ($users as $user) {
                         // Use screening date for age calculation
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                         
                         // Debug: Log age calculation for first few users
-                        if (count($ageGroupUsers) < 3) {
+                        if ($usersInRange < 3) {
                             error_log("User age calculation: birthday={$user['birthday']}, screening_date={$user['screening_date']}, ageInMonths=$ageInMonths, ageGroup=$ageGroup, range=[{$ageRange[0]}, {$ageRange[1]})");
                         }
                         
                         if ($ageInMonths >= $ageRange[0] && $ageInMonths < $ageRange[1]) {
                             $ageGroupUsers[] = $user;
+                            $usersInRange++;
                         }
                     }
+                    
+                    // Debug: Log how many users were found in this age range
+                    error_log("Age group $ageGroup: Found $usersInRange users in range [{$ageRange[0]}, {$ageRange[1]})");
                     
                     if (empty($ageGroupUsers)) {
                         // No users in this age group, set all classifications to 0
