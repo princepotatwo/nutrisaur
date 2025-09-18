@@ -4999,14 +4999,29 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $users = $userResult['data'];
                 $totalUsers = count($users);
                 
+                // Debug: Log some user data to check screening dates
+                error_log("Age Classification API - Total users: $totalUsers");
+                if (!empty($users)) {
+                    $sampleUser = $users[0];
+                    error_log("Sample user - Birthday: {$sampleUser['birthday']}, Screening Date: " . ($sampleUser['screening_date'] ?? 'NULL'));
+                }
+                
                 // Process each age group
                 foreach ($ageGroups as $ageGroup => $ageRange) {
                     $ageGroupUsers = [];
                     
-                    // Filter users by age group using same calculateAge function
+                    // Filter users by age group using screening date (same as bulk API)
+                    require_once __DIR__ . '/../../who_growth_standards.php';
+                    $who = new WHOGrowthStandards();
+                    
                     foreach ($users as $user) {
-                        $age = calculateAge($user['birthday']); // Age in years as decimal
-                        $ageInMonths = $age * 12; // Convert to months
+                        // Use screening date for age calculation (same as bulk API)
+                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                        
+                        // Debug: Log age calculation for first few users
+                        if (count($ageGroupUsers) < 3) {
+                            error_log("User {$user['email']} - Birthday: {$user['birthday']}, Screening: " . ($user['screening_date'] ?? 'NULL') . ", Age in months: $ageInMonths");
+                        }
                         
                         if ($ageInMonths >= $ageRange[0] && $ageInMonths < $ageRange[1]) {
                             $ageGroupUsers[] = $user;
