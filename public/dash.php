@@ -9270,23 +9270,33 @@ body {
                 console.log('User data received:', userData);
                 
                 if (userData.success && userData.data && userData.data.length > 0) {
+                    console.log(`Processing ${userData.data.length} users for age classification`);
+                    
                     // Process each user and classify them by age group
-                    userData.data.forEach(user => {
+                    userData.data.forEach((user, index) => {
                         const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
-                        console.log(`User: ${user.name}, Birthday: ${user.birthday}, Screening: ${user.screening_date}, Age: ${ageInMonths} months`);
+                        console.log(`User ${index + 1}: ${user.name}, Birthday: ${user.birthday}, Screening: ${user.screening_date}, Age: ${ageInMonths} months`);
                         
                         // Find which age group this user belongs to
+                        let userClassified = false;
                         Object.keys(ageGroups).forEach(ageGroup => {
                             const [minMonths, maxMonths] = ageGroups[ageGroup];
                             if (ageInMonths >= minMonths && ageInMonths < maxMonths) {
+                                console.log(`  -> User ${user.name} fits in age group ${ageGroup} (${minMonths}-${maxMonths} months)`);
                                 // Classify the user using the bulk data
                                 const classification = classifyUserFromBulkData(user, bulkData);
                                 if (classification) {
                                     const key = `${ageGroup}_${classification}`;
                                     ageClassificationData[key] = (ageClassificationData[key] || 0) + 1;
+                                    console.log(`  -> Classified as ${classification}, key: ${key}, count: ${ageClassificationData[key]}`);
+                                    userClassified = true;
                                 }
                             }
                         });
+                        
+                        if (!userClassified) {
+                            console.log(`  -> User ${user.name} (${ageInMonths} months) did not fit in any age group`);
+                        }
                     });
                 }
             } catch (error) {
@@ -9353,21 +9363,34 @@ body {
         function calculateAgeInMonths(birthday, screeningDate) {
             if (!birthday) return 0;
             
-            const birthDate = new Date(birthday);
-            const screenDate = screeningDate ? new Date(screeningDate) : new Date();
-            
-            const yearDiff = screenDate.getFullYear() - birthDate.getFullYear();
-            const monthDiff = screenDate.getMonth() - birthDate.getMonth();
-            const dayDiff = screenDate.getDate() - birthDate.getDate();
-            
-            let totalMonths = yearDiff * 12 + monthDiff;
-            
-            // Adjust if the day hasn't occurred yet this month
-            if (dayDiff < 0) {
-                totalMonths--;
+            try {
+                const birthDate = new Date(birthday);
+                const screenDate = screeningDate ? new Date(screeningDate) : new Date();
+                
+                // Check if dates are valid
+                if (isNaN(birthDate.getTime()) || isNaN(screenDate.getTime())) {
+                    console.warn('Invalid date:', { birthday, screeningDate });
+                    return 0;
+                }
+                
+                const yearDiff = screenDate.getFullYear() - birthDate.getFullYear();
+                const monthDiff = screenDate.getMonth() - birthDate.getMonth();
+                const dayDiff = screenDate.getDate() - birthDate.getDate();
+                
+                let totalMonths = yearDiff * 12 + monthDiff;
+                
+                // Adjust if the day hasn't occurred yet this month
+                if (dayDiff < 0) {
+                    totalMonths--;
+                }
+                
+                const result = Math.max(0, totalMonths);
+                console.log(`Age calculation: ${birthday} to ${screeningDate} = ${result} months`);
+                return result;
+            } catch (error) {
+                console.error('Error calculating age:', error, { birthday, screeningDate });
+                return 0;
             }
-            
-            return Math.max(0, totalMonths);
         }
 
         // Classify user based on bulk data (simplified version)
