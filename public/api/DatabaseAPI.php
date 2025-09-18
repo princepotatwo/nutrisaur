@@ -5015,6 +5015,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         // Use screening date for age calculation
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                         
+                        // Debug: Log age calculation for first few users
+                        if (count($ageGroupUsers) < 3) {
+                            error_log("User age calculation: birthday={$user['birthday']}, screening_date={$user['screening_date']}, ageInMonths=$ageInMonths, ageGroup=$ageGroup, range=[{$ageRange[0]}, {$ageRange[1]})");
+                        }
+                        
                         if ($ageInMonths >= $ageRange[0] && $ageInMonths < $ageRange[1]) {
                             $ageGroupUsers[] = $user;
                         }
@@ -5022,11 +5027,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     
                     if (empty($ageGroupUsers)) {
                         // No users in this age group, set all classifications to 0
+                        error_log("Age group $ageGroup: No users found");
                         foreach ($classifications as $classification) {
                             $ageClassificationData["{$ageGroup}_{$classification}"] = 0;
                         }
                         continue;
                     }
+                    
+                    error_log("Age group $ageGroup: " . count($ageGroupUsers) . " users found");
                     
                     // Calculate classifications for THIS age group only (simplified to weight-for-age only)
                     $ageGroupClassifications = [];
@@ -5069,6 +5077,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         $ageClassificationData["{$ageGroup}_{$classification}"] = $percentage;
                     }
                 }
+                
+                // Debug: Log the age classification data
+                error_log("Age Classification Data: " . json_encode($ageClassificationData));
                 
                 echo json_encode([
                     'success' => true,
