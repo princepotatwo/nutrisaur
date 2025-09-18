@@ -1561,8 +1561,24 @@ header {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
-            padding-top: 20px;
+            padding: 20px 0 0 0;
             border-top: 1px solid var(--color-border);
+            margin-top: 20px;
+            position: sticky;
+            bottom: 0;
+            background-color: var(--color-card);
+        }
+
+        /* Ensure edit modal footer is visible */
+        #editUserModal .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 20px 0 0 0;
+            border-top: 1px solid var(--color-border);
+            margin-top: 20px;
+            position: relative;
+            background-color: var(--color-card);
         }
 
         .btn {
@@ -1608,6 +1624,45 @@ header {
 
         .close:hover {
             color: var(--text-color);
+        }
+
+        /* Additional modal centering and visibility fixes */
+        #editUserModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        #editUserModal .modal-content {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 1001 !important;
+            margin: 0 !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+        }
+
+        #editUserModal .modal-footer {
+            position: relative !important;
+            bottom: auto !important;
+            margin-top: 20px !important;
+            padding: 20px 0 0 0 !important;
+            border-top: 1px solid var(--color-border) !important;
+            background-color: var(--color-card) !important;
+        }
+
+        #editUserModal .btn-primary {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
 
         .close {
@@ -2898,12 +2953,33 @@ header {
 
         .modal-content {
             background-color: var(--color-card);
-            margin: 15% auto;
+            margin: 2% auto;
             padding: 20px;
-    border-radius: 10px;
-            width: 80%;
-            max-width: 600px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 95vh;
+            overflow-y: auto;
             position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Specific styling for edit user modal */
+        #editUserModal .modal-content {
+            background-color: var(--color-card);
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 95vh;
+            overflow-y: auto;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
         }
 
         .close {
@@ -4072,11 +4148,34 @@ header {
                 console.log('Showing edit modal for user:', completeUserData);
                 document.getElementById('editUserModal').style.display = 'block';
                 
-                // Ensure modal is visible
+                // Ensure modal is visible and centered
                 setTimeout(() => {
                     const modal = document.getElementById('editUserModal');
+                    const modalContent = modal.querySelector('.modal-content');
+                    const saveButton = modal.querySelector('.btn-primary');
+                    
                     if (modal.style.display === 'block') {
                         console.log('Modal is visible');
+                        console.log('Modal content:', modalContent);
+                        console.log('Save button:', saveButton);
+                        
+                        // Force center the modal
+                        if (modalContent) {
+                            modalContent.style.position = 'fixed';
+                            modalContent.style.top = '50%';
+                            modalContent.style.left = '50%';
+                            modalContent.style.transform = 'translate(-50%, -50%)';
+                            modalContent.style.zIndex = '1001';
+                        }
+                        
+                        // Ensure save button is visible
+                        if (saveButton) {
+                            console.log('Save button found and visible');
+                            saveButton.style.display = 'block';
+                            saveButton.style.visibility = 'visible';
+                        } else {
+                            console.log('Save button not found!');
+                        }
                     } else {
                         console.log('Modal display issue');
                     }
