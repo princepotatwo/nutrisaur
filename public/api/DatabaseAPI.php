@@ -4644,6 +4644,27 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         $updateValues[] = $data['sex'];
                     }
                     
+                    if (isset($data['municipality']) && !empty($data['municipality'])) {
+                        $updateFields[] = "municipality = ?";
+                        $updateValues[] = $data['municipality'];
+                    }
+                    
+                    if (isset($data['barangay']) && !empty($data['barangay'])) {
+                        $updateFields[] = "barangay = ?";
+                        $updateValues[] = $data['barangay'];
+                    }
+                    
+                    if (isset($data['is_pregnant']) && !empty($data['is_pregnant'])) {
+                        $isPregnant = ($data['is_pregnant'] === 'Yes') ? 1 : 0;
+                        $updateFields[] = "is_pregnant = ?";
+                        $updateValues[] = $isPregnant;
+                    }
+                    
+                    if (isset($data['muac']) && !empty($data['muac'])) {
+                        $updateFields[] = "muac = ?";
+                        $updateValues[] = $data['muac'];
+                    }
+                    
                     if (isset($data['email']) && !empty($data['email'])) {
                         $updateFields[] = "email = ?";
                         $updateValues[] = $data['email'];

@@ -1518,6 +1518,98 @@ header {
             color: var(--text-color);
         }
 
+        /* Edit User Modal Styles */
+        .modal-body {
+            padding: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: var(--color-card);
+            color: var(--text-color);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+        }
+
+        .form-group input[readonly] {
+            background-color: #f5f5f5;
+            color: #666;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--color-highlight);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #8a9a5c;
+        }
+
+        .btn-primary:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: var(--text-color);
+        }
+
         .close {
             color: var(--text-color);
             font-size: 28px;
@@ -3749,8 +3841,25 @@ header {
                 return;
             }
             
-            // For now, show an alert. In a real implementation, this would open an edit modal or redirect to edit page
-            alert(`Edit user with email: ${userEmail}\n\nThis would open an edit form in a real implementation.`);
+            // Get user data from the table row
+            const userRow = document.querySelector(`tr[data-user-email="${userEmail}"]`);
+            if (!userRow) {
+                alert('User data not found');
+                return;
+            }
+            
+            // Extract user data from table cells
+            const userData = {
+                email: userEmail,
+                name: userRow.cells[0].textContent.trim(),
+                municipality: userRow.cells[2].textContent.trim(),
+                barangay: userRow.cells[3].textContent.trim(),
+                sex: userRow.cells[4].textContent.trim(),
+                birthday: userRow.cells[5].textContent.trim()
+            };
+            
+            // Show edit modal
+            showEditUserModal(userData);
         }
 
         function deleteUser(userEmail) {
@@ -3917,7 +4026,397 @@ header {
             }, 3000);
         }
 
+        // Edit User Modal Functions
+        function showEditUserModal(userData) {
+            // First, fetch complete user data from database
+            fetchUserData(userData.email, (completeUserData) => {
+                // Populate form with complete user data
+                document.getElementById('editName').value = completeUserData.name || userData.name;
+                document.getElementById('editEmail').value = completeUserData.email || userData.email;
+                document.getElementById('editSex').value = completeUserData.sex || userData.sex;
+                document.getElementById('editBirthday').value = completeUserData.birthday || userData.birthday;
+                document.getElementById('editWeight').value = completeUserData.weight || '';
+                document.getElementById('editHeight').value = completeUserData.height || '';
+                document.getElementById('editMuac').value = completeUserData.muac || '';
+                
+                // Initialize municipality and barangay dropdowns
+                initializeMunicipalityDropdown();
+                document.getElementById('editMunicipality').value = completeUserData.municipality || userData.municipality;
+                updateBarangayOptions();
+                
+                // Set barangay after options are loaded
+                setTimeout(() => {
+                    document.getElementById('editBarangay').value = completeUserData.barangay || userData.barangay;
+                }, 100);
+                
+                // Calculate and display age
+                calculateAge();
+                
+                // Toggle pregnancy field based on sex
+                togglePregnancyField();
+                
+                // Set pregnancy status if available
+                if (completeUserData.is_pregnant !== undefined) {
+                    document.getElementById('editPregnancy').value = completeUserData.is_pregnant ? 'Yes' : 'No';
+                }
+                
+                // Show modal
+                document.getElementById('editUserModal').style.display = 'block';
+            });
+        }
+
+        function fetchUserData(email, callback) {
+            fetch('api/DatabaseAPI.php?action=get_community_user_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.user) {
+                    callback(data.user);
+                } else {
+                    // Fallback to basic data if API fails
+                    callback({});
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+                // Fallback to basic data if API fails
+                callback({});
+            });
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').style.display = 'none';
+            document.getElementById('editUserForm').reset();
+        }
+
+        function initializeMunicipalityDropdown() {
+            const municipalities = [
+                "ABUCAY", "BAGAC", "CITY OF BALANGA", "DINALUPIHAN", "HERMOSA", 
+                "LIMAY", "MARIVELES", "MORONG", "ORANI", "ORION", "PILAR", "SAMAL"
+            ];
+            
+            const select = document.getElementById('editMunicipality');
+            select.innerHTML = '<option value="">Select Municipality</option>';
+            
+            municipalities.forEach(municipality => {
+                const option = document.createElement('option');
+                option.value = municipality;
+                option.textContent = municipality;
+                select.appendChild(option);
+            });
+        }
+
+        function updateBarangayOptions() {
+            const municipality = document.getElementById('editMunicipality').value;
+            const barangaySelect = document.getElementById('editBarangay');
+            
+            // Clear existing options
+            barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+            
+            if (!municipality) return;
+            
+            // Barangay data (same as in NutritionalScreeningActivity.java)
+            const barangayMap = {
+                "ABUCAY": ["Bangkal", "Calaylayan (Pob.)", "Capitangan", "Gabon", "Laon (Pob.)", "Mabatang", "Omboy", "Salian", "Wawa (Pob.)"],
+                "BAGAC": ["Bagumbayan (Pob.)", "Banawang", "Binuangan", "Binukawan", "Ibaba", "Ibis", "Pag-asa (Wawa-Sibacan)", "Parang", "Paysawan", "Quinawan", "San Antonio", "Saysain", "Tabing-Ilog (Pob.)", "Atilano L. Ricardo"],
+                "CITY OF BALANGA": ["Bagong Silang", "Bagumbayan", "Batanes", "Cataning", "Central", "Dangcol", "Doña Francisca", "Lote", "Malabia", "Munting Batangas", "Poblacion", "Puerto Rivas Ibaba", "Puerto Rivas Itaas", "San Jose", "Sibacan", "Talipapa", "Tanato", "Tenejero", "Tortugas", "Tuyo"],
+                "DINALUPIHAN": ["Bayan-bayanan", "Bonifacio", "Burgos", "Daang Bago", "Del Pilar", "General Emilio Aguinaldo", "General Luna", "Kawayan", "Layac", "Lourdes", "Luakan", "Maligaya", "Naparing", "Paco", "Pag-asa", "Pagalanggang", "Panggalangan", "Pinulot", "Poblacion", "Rizal", "Saguing", "San Benito", "San Isidro", "San Ramon", "Santo Niño", "Sapang Kawayan", "Tipo", "Tubo-tubo", "Zamora"],
+                "HERMOSA": ["A. Ricardo", "Almacen", "Bamban", "Burgos-Soliman", "Cataning", "Culis", "Daungan", "Judicial", "Mabiga", "Mabuco", "Maite", "Mambog - Mandama", "Palihan", "Pandatung", "Poblacion", "Saba", "Sacatihan", "Sumalo", "Tipo", "Tortugas"],
+                "LIMAY": ["Alangan", "Kitang I", "Kitang II", "Kitang III", "Kitang IV", "Kitang V", "Lamao", "Luz", "Poblacion", "Reforma", "Sitio Baga", "Sitio Pulo", "Wawa"],
+                "MARIVELES": ["Alion", "Balong Anito", "Baseco Country", "Batan", "Biaan", "Cabcaben", "Camaya", "Lucanin", "Mabayo", "Malaya", "Maligaya", "Mountain View", "Poblacion", "San Carlos", "San Isidro", "San Nicolas", "Saysain", "Sisiman", "Townsite", "Vista Alegre"],
+                "MORONG": ["Binaritan", "Mabayo", "Nagbalayong", "Poblacion", "Sabang", "San Jose", "Sitio Pulo"],
+                "ORANI": ["Apollo", "Bagong Paraiso", "Balut", "Bayani", "Cabral", "Calero", "Calutit", "Camachile", "Kaparangan", "Luna", "Mabolo", "Magtaong", "Maligaya", "Pag-asa", "Paglabanan", "Pagtakhan", "Palihan", "Poblacion", "Rizal", "Sagrada", "San Jose", "Sulong", "Tagumpay", "Tala", "Talimundoc", "Tapulao", "Tugatog", "Wawa"],
+                "ORION": ["Balagtas", "Balut", "Bantan", "Bilolo", "Calungusan", "Camachile", "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente", "Wawa", "Poblacion"],
+                "PILAR": ["Alas-asin", "Bantan Munti", "Bantan", "Del Rosario", "Diwa", "Landing", "Liwayway", "Nagbalayong", "Panilao", "Pantingan", "Poblacion", "Rizal", "Saguing", "Santo Cristo", "Wakas"],
+                "SAMAL": ["Bagumbayan", "Bantan", "Bilolo", "Calungusan", "Camachile", "Kapunitan", "Lati", "Puting Bato", "Sabatan", "San Vicente", "Wawa", "Balagtas", "Balut", "Bataan"]
+            };
+            
+            const barangays = barangayMap[municipality] || [];
+            barangays.forEach(barangay => {
+                const option = document.createElement('option');
+                option.value = barangay;
+                option.textContent = barangay;
+                barangaySelect.appendChild(option);
+            });
+        }
+
+        function togglePregnancyField() {
+            const sex = document.getElementById('editSex').value;
+            const pregnancyGroup = document.getElementById('pregnancyGroup');
+            const birthday = document.getElementById('editBirthday').value;
+            
+            if (sex === 'Female' && birthday) {
+                const age = calculateAgeFromBirthday(birthday);
+                if (age >= 18 && age <= 50) {
+                    pregnancyGroup.style.display = 'block';
+                    document.getElementById('editPregnancy').required = true;
+                } else {
+                    pregnancyGroup.style.display = 'none';
+                    document.getElementById('editPregnancy').required = false;
+                }
+            } else {
+                pregnancyGroup.style.display = 'none';
+                document.getElementById('editPregnancy').required = false;
+            }
+        }
+
+        function calculateAge() {
+            const birthday = document.getElementById('editBirthday').value;
+            if (birthday) {
+                const age = calculateAgeFromBirthday(birthday);
+                document.getElementById('ageDisplay').textContent = `Age: ${age} years`;
+                
+                // Also toggle pregnancy field
+                togglePregnancyField();
+            } else {
+                document.getElementById('ageDisplay').textContent = '';
+            }
+        }
+
+        function calculateAgeFromBirthday(birthday) {
+            const today = new Date();
+            const birthDate = new Date(birthday);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        function saveUserChanges() {
+            // Validate form
+            if (!validateEditForm()) {
+                return;
+            }
+            
+            // Get form data
+            const formData = new FormData(document.getElementById('editUserForm'));
+            const userData = {
+                email: formData.get('email'),
+                name: formData.get('name'),
+                municipality: formData.get('municipality'),
+                barangay: formData.get('barangay'),
+                sex: formData.get('sex'),
+                birthday: formData.get('birthday'),
+                is_pregnant: formData.get('is_pregnant') || 'No',
+                weight_kg: formData.get('weight'),
+                height_cm: formData.get('height'),
+                muac: formData.get('muac') || '0'
+            };
+            
+            // Show loading
+            const saveButton = document.querySelector('#editUserModal .btn-primary');
+            const originalText = saveButton.textContent;
+            saveButton.textContent = 'Saving...';
+            saveButton.disabled = true;
+            
+            // Make API request to update user
+            fetch('api/DatabaseAPI.php?action=update_community_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('User updated successfully!');
+                    closeEditUserModal();
+                    // Refresh the page to show updated data
+                    location.reload();
+                } else {
+                    alert('Error updating user: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating user: ' + error.message);
+            })
+            .finally(() => {
+                saveButton.textContent = originalText;
+                saveButton.disabled = false;
+            });
+        }
+
+        function validateEditForm() {
+            const name = document.getElementById('editName').value.trim();
+            const municipality = document.getElementById('editMunicipality').value;
+            const barangay = document.getElementById('editBarangay').value;
+            const sex = document.getElementById('editSex').value;
+            const birthday = document.getElementById('editBirthday').value;
+            const weight = document.getElementById('editWeight').value;
+            const height = document.getElementById('editHeight').value;
+            
+            // Basic validation
+            if (!name) {
+                alert('Please enter a name');
+                return false;
+            }
+            
+            if (!municipality) {
+                alert('Please select a municipality');
+                return false;
+            }
+            
+            if (!barangay) {
+                alert('Please select a barangay');
+                return false;
+            }
+            
+            if (!sex) {
+                alert('Please select sex');
+                return false;
+            }
+            
+            if (!birthday) {
+                alert('Please select a birthday');
+                return false;
+            }
+            
+            if (!weight || isNaN(weight) || parseFloat(weight) <= 0 || parseFloat(weight) > 1000) {
+                alert('Please enter a valid weight between 0.1 and 1000 kg');
+                return false;
+            }
+            
+            if (!height || isNaN(height) || parseFloat(height) <= 0 || parseFloat(height) > 300) {
+                alert('Please enter a valid height between 1 and 300 cm');
+                return false;
+            }
+            
+            // Age-based validation (same as in NutritionalScreeningActivity.java)
+            const age = calculateAgeFromBirthday(birthday);
+            const weightNum = parseFloat(weight);
+            const heightNum = parseFloat(height);
+            
+            // Weight validation based on age
+            if (age < 2 && weightNum < 3) {
+                alert('Weight seems impossible for this age. Please check your input.');
+                return false;
+            } else if (age >= 2 && age < 5 && weightNum < 8) {
+                alert('Weight seems impossible for this age. Please check your input.');
+                return false;
+            } else if (age >= 5 && age < 10 && weightNum < 15) {
+                alert('Weight seems impossible for this age. Please check your input.');
+                return false;
+            } else if (age >= 10 && age < 15 && weightNum < 25) {
+                alert('Weight seems impossible for this age. Please check your input.');
+                return false;
+            } else if (age >= 15 && weightNum < 30) {
+                alert('Weight seems impossible for this age. Please check your input.');
+                return false;
+            }
+            
+            // Height validation based on age
+            if (age < 2 && heightNum < 30) {
+                alert('Height seems impossible for this age. Please check your input.');
+                return false;
+            } else if (age >= 2 && age < 5 && heightNum < 50) {
+                alert('Height seems impossible for this age. Please check your input.');
+                return false;
+            } else if (age >= 5 && age < 10 && heightNum < 80) {
+                alert('Height seems impossible for this age. Please check your input.');
+                return false;
+            } else if (age >= 10 && age < 15 && heightNum < 120) {
+                alert('Height seems impossible for this age. Please check your input.');
+                return false;
+            } else if (age >= 15 && heightNum < 140) {
+                alert('Height seems impossible for this age. Please check your input.');
+                return false;
+            }
+            
+            return true;
+        }
+
     </script>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit User Information</h2>
+                <span class="close" onclick="closeEditUserModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <div class="form-group">
+                        <label for="editName">Full Name *</label>
+                        <input type="text" id="editName" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editEmail">Email *</label>
+                        <input type="email" id="editEmail" name="email" readonly style="background-color: #f5f5f5;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editMunicipality">Municipality *</label>
+                        <select id="editMunicipality" name="municipality" required onchange="updateBarangayOptions()">
+                            <option value="">Select Municipality</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editBarangay">Barangay *</label>
+                        <select id="editBarangay" name="barangay" required>
+                            <option value="">Select Barangay</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editSex">Sex *</label>
+                        <select id="editSex" name="sex" required onchange="togglePregnancyField()">
+                            <option value="">Select Sex</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editBirthday">Birthday *</label>
+                        <input type="date" id="editBirthday" name="birthday" required onchange="calculateAge()">
+                        <small id="ageDisplay" style="color: #666; font-size: 12px;"></small>
+                    </div>
+                    
+                    <div class="form-group" id="pregnancyGroup" style="display: none;">
+                        <label for="editPregnancy">Are you pregnant? *</label>
+                        <select id="editPregnancy" name="is_pregnant">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editWeight">Weight (kg) *</label>
+                        <input type="number" id="editWeight" name="weight" step="0.1" min="0.1" max="1000" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editHeight">Height (cm) *</label>
+                        <input type="number" id="editHeight" name="height" step="0.1" min="1" max="300" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editMuac">MUAC (cm)</label>
+                        <input type="number" id="editMuac" name="muac" step="0.1" min="0" max="50">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditUserModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveUserChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
                                                                         
