@@ -3325,23 +3325,44 @@ header .user-info {
     padding: 15px;
     height: 400px;
     max-height: 400px;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    position: relative;
 }
 
 #ageClassificationChart {
     width: 100% !important;
     height: 100% !important;
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    display: block !important;
+    box-sizing: border-box !important;
 }
 
 /* Specific styling for age classification chart card */
 .chart-card[style*="grid-column: 1 / -1"] {
     max-height: 500px;
+    width: 100%;
     overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Responsive adjustments for age classification chart */
+@media (max-width: 768px) {
+    .age-classification-chart-container {
+        height: 350px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .age-classification-chart-container {
+        height: 300px;
+        padding: 8px;
+    }
 }
 
 .dds-score-display {
