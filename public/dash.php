@@ -3505,25 +3505,32 @@ header .user-info {
 
 /* Classification Trends Chart Styles */
 .trends-chart-container {
-    height: 350px;
+    height: 400px;
     margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .trends-chart {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    height: 300px;
-    gap: 6px;
-    padding: 20px 20px 60px 20px;
+    height: 320px;
+    gap: 8px;
+    padding: 20px 20px 80px 20px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
     overflow: visible;
+    width: 100%;
+    max-width: 100%;
+    flex-wrap: nowrap;
+    min-width: 0;
 }
 
 .trend-bar {
-    width: 25px;
+    width: 20px;
     border-radius: 4px 4px 0 0;
     display: flex;
     flex-direction: column;
@@ -3532,6 +3539,7 @@ header .user-info {
     position: relative;
     transition: all 0.3s ease;
     min-height: 20px;
+    flex-shrink: 0;
 }
 
 .trend-bar:hover {
@@ -3542,39 +3550,47 @@ header .user-info {
 .trend-bar-value {
     position: absolute;
     top: -25px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: var(--color-text);
     background: var(--color-card);
-    padding: 2px 6px;
+    padding: 2px 4px;
     border-radius: 4px;
     border: 1px solid var(--color-border);
     white-space: nowrap;
+    z-index: 10;
 }
 
 .trend-bar-label {
     position: absolute;
-    bottom: -25px;
-    font-size: 9px;
+    bottom: -35px;
+    font-size: 8px;
     color: var(--color-text);
     text-align: center;
     font-weight: 500;
-    line-height: 1.2;
-    max-width: 60px;
+    line-height: 1.1;
+    max-width: 50px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transform: rotate(-45deg);
+    transform-origin: left center;
+    left: 50%;
+    margin-left: -25px;
 }
 
 .trend-bar-standard {
     position: absolute;
-    bottom: -40px;
-    font-size: 8px;
+    bottom: -50px;
+    font-size: 7px;
     color: var(--color-text);
     opacity: 0.7;
     font-weight: 400;
     text-align: center;
-    max-width: 60px;
+    max-width: 50px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Bar colors for different classifications */
@@ -3589,6 +3605,69 @@ header .user-info {
 .trend-bar.severely-wasted { background: #D32F2F; }
 .trend-bar.tall { background: #00BCD4; }
 .trend-bar.no-data { background: #9E9E9E; }
+
+/* Responsive adjustments for Classification Trends Chart */
+@media (max-width: 1200px) {
+    .trends-chart {
+        gap: 6px;
+        padding: 20px 15px 80px 15px;
+    }
+    
+    .trend-bar {
+        width: 18px;
+    }
+    
+    .trend-bar-label {
+        font-size: 7px;
+        max-width: 45px;
+    }
+    
+    .trend-bar-standard {
+        font-size: 6px;
+        max-width: 45px;
+    }
+}
+
+@media (max-width: 768px) {
+    .trends-chart-container {
+        height: 350px;
+    }
+    
+    .trends-chart {
+        height: 280px;
+        gap: 4px;
+        padding: 15px 10px 70px 10px;
+    }
+    
+    .trend-bar {
+        width: 16px;
+    }
+    
+    .trend-bar-label {
+        font-size: 6px;
+        max-width: 40px;
+        bottom: -30px;
+    }
+    
+    .trend-bar-standard {
+        font-size: 5px;
+        max-width: 40px;
+        bottom: -45px;
+    }
+    
+    .trend-bar-value {
+        font-size: 10px;
+        padding: 1px 3px;
+    }
+}
+
+/* Ensure chart stays centered on all screen sizes */
+.chart-card .trends-chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
 
 .alert-actions {
     display: flex;
@@ -8380,21 +8459,35 @@ body {
                 // Find max count for scaling
                 const maxCount = Math.max(...classificationsArray.map(item => item.count));
 
+                // Calculate dynamic scaling based on number of bars
+                const numBars = classificationsArray.length;
+                const maxBarHeight = Math.min(220, Math.max(150, 300 - (numBars * 2))); // Dynamic height based on number of bars
+                
                 // Create bars
-                classificationsArray.forEach(item => {
-                    const barHeight = maxCount > 0 ? (item.count / maxCount) * 200 : 20; // Scale to max 200px height
+                classificationsArray.forEach((item, index) => {
+                    const barHeight = maxCount > 0 ? (item.count / maxCount) * maxBarHeight : 20;
                     
                     const barDiv = document.createElement('div');
                     barDiv.className = `trend-bar ${item.classification.toLowerCase().replace(/\s+/g, '-')}`;
                     barDiv.style.height = `${barHeight}px`;
+                    barDiv.style.flex = '0 0 auto'; // Prevent flex shrinking
                     
-                    // Format classification name for display
-                    const displayName = item.classification.replace(/([A-Z])/g, ' $1').trim();
+                    // Format classification name for display - shorten long names
+                    let displayName = item.classification.replace(/([A-Z])/g, ' $1').trim();
+                    if (displayName.length > 12) {
+                        displayName = displayName.substring(0, 12) + '...';
+                    }
+                    
+                    // Shorten standard labels
+                    let standardLabel = item.standard_label;
+                    if (standardLabel && standardLabel.length > 8) {
+                        standardLabel = standardLabel.substring(0, 8);
+                    }
                     
                     barDiv.innerHTML = `
                         <div class="trend-bar-value">${item.count}</div>
                         <div class="trend-bar-label">${displayName}</div>
-                        <div class="trend-bar-standard">${item.standard_label}</div>
+                        <div class="trend-bar-standard">${standardLabel}</div>
                     `;
                     
                     trendsChart.appendChild(barDiv);
