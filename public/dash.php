@@ -9035,12 +9035,21 @@ body {
                     return;
                 }
 
-                // Process data for Chart.js - use the same age groups as the data
-                const ageGroups = Object.keys(ageClassificationData).map(key => key.split('_')[0]).filter((value, index, self) => self.indexOf(value) === index).sort((a, b) => {
+                // Process data for Chart.js - use intelligent mathematical mapping
+                console.log('🔍 Raw age classification data:', ageClassificationData);
+                
+                // Extract all unique age groups from the data
+                const allAgeGroups = Object.keys(ageClassificationData).map(key => key.split('_')[0]).filter((value, index, self) => self.indexOf(value) === index);
+                console.log('🔍 All age groups found:', allAgeGroups);
+                
+                // Sort age groups chronologically
+                const ageGroups = allAgeGroups.sort((a, b) => {
                     const aMonths = convertAgeGroupToMonths(a);
                     const bMonths = convertAgeGroupToMonths(b);
                     return aMonths - bMonths;
                 });
+                console.log('🔍 Sorted age groups:', ageGroups);
+                
                 const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
                 
                 // Color mapping (same as bar chart colors)
@@ -9060,8 +9069,12 @@ body {
                 const datasets = classifications.map(classification => {
                     const chartData = ageGroups.map(ageGroup => {
                         const key = `${ageGroup}_${classification}`;
-                        return ageClassificationData[key] || 0;
+                        const value = ageClassificationData[key] || 0;
+                        console.log(`🔍 Mapping ${key}: ${value}`);
+                        return value;
                     });
+                    
+                    console.log(`🔍 ${classification} data:`, chartData);
 
                     return {
                         label: classification,
@@ -9077,15 +9090,35 @@ body {
                     };
                 });
 
-                console.log('Chart datasets:', datasets);
-                console.log('Chart age groups:', ageGroups);
-                console.log('Chart datasets length:', datasets.length);
-                console.log('Chart age groups length:', ageGroups.length);
+                // Comprehensive data validation and mathematical mapping
+                console.log('🔍 Chart datasets:', datasets);
+                console.log('🔍 Chart age groups:', ageGroups);
+                console.log('🔍 Chart datasets length:', datasets.length);
+                console.log('🔍 Chart age groups length:', ageGroups.length);
                 
-                // Log each dataset to see what data is being passed to Chart.js
+                // Validate that we have real data
+                let totalDataPoints = 0;
+                let nonZeroDataPoints = 0;
+                
                 datasets.forEach((dataset, index) => {
-                    console.log(`Dataset ${index} (${dataset.label}):`, dataset.data);
+                    console.log(`🔍 Dataset ${index} (${dataset.label}):`, dataset.data);
+                    dataset.data.forEach((value, dataIndex) => {
+                        totalDataPoints++;
+                        if (value > 0) {
+                            nonZeroDataPoints++;
+                            console.log(`✅ Non-zero data: ${dataset.label} at ${ageGroups[dataIndex]}: ${value}`);
+                        }
+                    });
                 });
+                
+                console.log(`🔍 Data Summary: ${nonZeroDataPoints}/${totalDataPoints} data points are non-zero`);
+                
+                // If no data, show warning
+                if (nonZeroDataPoints === 0) {
+                    console.warn('⚠️ WARNING: No data found in chart datasets!');
+                    console.log('🔍 Available age classification data keys:', Object.keys(ageClassificationData));
+                    console.log('🔍 Sample age classification data values:', Object.values(ageClassificationData).slice(0, 10));
+                }
 
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
@@ -9553,8 +9586,12 @@ body {
                 const datasets = classifications.map(classification => {
                     const chartData = ageGroups.map(ageGroup => {
                         const key = `${ageGroup}_${classification}`;
-                        return ageClassificationData[key] || 0;
+                        const value = ageClassificationData[key] || 0;
+                        console.log(`🔍 Mapping ${key}: ${value}`);
+                        return value;
                     });
+                    
+                    console.log(`🔍 ${classification} data:`, chartData);
 
                     return {
                         label: classification,
@@ -9570,15 +9607,35 @@ body {
                     };
                 });
 
-                console.log('Chart datasets:', datasets);
-                console.log('Chart age groups:', ageGroups);
-                console.log('Chart datasets length:', datasets.length);
-                console.log('Chart age groups length:', ageGroups.length);
+                // Comprehensive data validation and mathematical mapping
+                console.log('🔍 Chart datasets:', datasets);
+                console.log('🔍 Chart age groups:', ageGroups);
+                console.log('🔍 Chart datasets length:', datasets.length);
+                console.log('🔍 Chart age groups length:', ageGroups.length);
                 
-                // Log each dataset to see what data is being passed to Chart.js
+                // Validate that we have real data
+                let totalDataPoints = 0;
+                let nonZeroDataPoints = 0;
+                
                 datasets.forEach((dataset, index) => {
-                    console.log(`Dataset ${index} (${dataset.label}):`, dataset.data);
+                    console.log(`🔍 Dataset ${index} (${dataset.label}):`, dataset.data);
+                    dataset.data.forEach((value, dataIndex) => {
+                        totalDataPoints++;
+                        if (value > 0) {
+                            nonZeroDataPoints++;
+                            console.log(`✅ Non-zero data: ${dataset.label} at ${ageGroups[dataIndex]}: ${value}`);
+                        }
+                    });
                 });
+                
+                console.log(`🔍 Data Summary: ${nonZeroDataPoints}/${totalDataPoints} data points are non-zero`);
+                
+                // If no data, show warning
+                if (nonZeroDataPoints === 0) {
+                    console.warn('⚠️ WARNING: No data found in chart datasets!');
+                    console.log('🔍 Available age classification data keys:', Object.keys(ageClassificationData));
+                    console.log('🔍 Sample age classification data values:', Object.values(ageClassificationData).slice(0, 10));
+                }
 
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
