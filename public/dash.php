@@ -3613,7 +3613,7 @@ header .user-info {
     left: 0;
     right: 0;
     padding: 0 20px;
-    height: 40px;
+    height: 50px;
 }
 
 .trend-label-item {
@@ -3624,15 +3624,16 @@ header .user-info {
     width: 24px;
     position: relative;
     height: 100%;
+    flex-shrink: 0;
 }
 
 .trend-label-classification {
-    font-size: 6px;
+    font-size: 8px;
     font-weight: 600;
     color: var(--color-text);
     text-align: center;
-    line-height: 1;
-    margin-bottom: 0;
+    line-height: 1.2;
+    margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3640,7 +3641,7 @@ header .user-info {
 }
 
 .trend-label-standard {
-    font-size: 5px;
+    font-size: 7px;
     font-weight: 500;
     color: var(--color-text);
     opacity: 0.8;
@@ -3713,7 +3714,7 @@ header .user-info {
     .trends-labels-row {
         bottom: 10px;
         padding: 0 15px;
-        height: 35px;
+        height: 45px;
         gap: 6px;
     }
     
@@ -3723,16 +3724,17 @@ header .user-info {
     
     .trend-label-item {
         width: 20px;
+        flex-shrink: 0;
     }
     
     .trend-label-classification {
-        font-size: 5px;
+        font-size: 7px;
         max-width: 20px;
-        margin-bottom: 0;
+        margin-bottom: 2px;
     }
     
     .trend-label-standard {
-        font-size: 4px;
+        font-size: 6px;
         max-width: 20px;
     }
 }
@@ -3752,7 +3754,7 @@ header .user-info {
     .trends-labels-row {
         bottom: 8px;
         padding: 0 10px;
-        height: 30px;
+        height: 40px;
         gap: 4px;
     }
     
@@ -3762,16 +3764,17 @@ header .user-info {
     
     .trend-label-item {
         width: 16px;
+        flex-shrink: 0;
     }
     
     .trend-label-classification {
-        font-size: 4px;
+        font-size: 6px;
         max-width: 16px;
-        margin-bottom: 0;
+        margin-bottom: 2px;
     }
     
     .trend-label-standard {
-        font-size: 3px;
+        font-size: 5px;
         max-width: 16px;
     }
     
