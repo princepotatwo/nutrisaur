@@ -4941,7 +4941,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // GET AGE CLASSIFICATIONS API
         // ========================================
         case 'get_age_classifications':
-            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
             // Helper function to calculate age (same as dashboard_assessment_stats.php)
@@ -4989,7 +4988,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 // Get all users in the filtered group
                 $userQuery = "SELECT email, birthday, sex FROM community_users WHERE $whereClause";
-                $userResult = $db->query($userQuery, $params);
+                $userResult = $db->executeQuery($userQuery, $params);
                 
                 if (!$userResult['success'] || empty($userResult['data'])) {
                     echo json_encode(['success' => true, 'data' => []]);
@@ -5006,7 +5005,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 require_once __DIR__ . '/../../who_growth_standards.php';
                 $who = new WHOGrowthStandards();
                 
-                $bulkResult = $db->getAllWHOClassificationsBulk($timeFrame, $barangay);
+                $bulkResult = $db->getAllWHOClassificationsBulk('1d', $barangay); // Use 1d as default but ignore time filtering
                 if (!$bulkResult['success'] || !isset($bulkResult['data'])) {
                     // If bulk API fails, return empty data
                     echo json_encode(['success' => true, 'data' => []]);

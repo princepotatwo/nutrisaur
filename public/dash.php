@@ -8628,7 +8628,7 @@ body {
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
                 // Fetch age-based classification data
-                const url = `/api/DatabaseAPI.php?action=get_age_classifications&time_frame=${timeFrame}&barangay=${barangayValue}`;
+                const url = `/api/DatabaseAPI.php?action=get_age_classifications&barangay=${barangayValue}`;
                 console.log('Fetching age classifications from:', url);
                 
                 const response = await fetch(url);
