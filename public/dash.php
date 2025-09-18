@@ -9524,26 +9524,11 @@ body {
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
-                // Use the same bulk API approach as other charts
-                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangayValue}`;
-                console.log('Fetching age classifications from bulk API:', url);
+                // Use the new frontend approach - let processBulkDataForAgeGroups handle everything
+                console.log('Using new frontend approach for age classification');
                 
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('Bulk API data received for age classification:', data);
-
-                if (!data.success || !data.data) {
-                    console.log('No classification data available');
-                    createEmptyAgeChart(canvas);
-                    return;
-                }
-
-                // Process the bulk data to create age-based classifications
-                const ageClassificationData = await processBulkDataForAgeGroups(data.data, fromMonths, toMonths);
+                // Process the data using the new frontend approach
+                const ageClassificationData = await processBulkDataForAgeGroups(null, fromMonths, toMonths);
                 console.log('Processed age classification data:', ageClassificationData);
                 console.log('Processed age classification data keys:', Object.keys(ageClassificationData));
                 console.log('Processed age classification data values:', Object.values(ageClassificationData));
