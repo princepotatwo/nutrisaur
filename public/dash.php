@@ -3323,17 +3323,25 @@ header .user-info {
 /* Age Classification Chart Styles */
 .age-classification-chart-container {
     padding: 15px;
-    height: 300px;
+    height: 400px;
+    max-height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 #ageClassificationChart {
     width: 100% !important;
     height: 100% !important;
     max-width: 100%;
-    max-height: 280px;
+    max-height: 100%;
+}
+
+/* Specific styling for age classification chart card */
+.chart-card[style*="grid-column: 1 / -1"] {
+    max-height: 500px;
+    overflow: hidden;
 }
 
 .dds-score-display {
