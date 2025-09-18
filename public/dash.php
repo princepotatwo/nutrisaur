@@ -3610,8 +3610,8 @@ header .user-info {
     gap: 6px;
     width: 100%;
     position: absolute;
-    bottom: 25px;
-    left: 5px;
+    bottom: 35px;
+    left: 8px;
     right: 0;
     padding: 0 10px;
     height: 50px;
@@ -3715,11 +3715,11 @@ header .user-info {
     }
     
     .trends-labels-row {
-        bottom: 20px;
+        bottom: 30px;
         padding: 0 8px;
         height: 45px;
         gap: 5px;
-        left: 4px;
+        left: 6px;
         margin: 0;
     }
     
@@ -3758,11 +3758,11 @@ header .user-info {
     }
     
     .trends-labels-row {
-        bottom: 18px;
+        bottom: 28px;
         padding: 0 5px;
         height: 40px;
         gap: 3px;
-        left: 2px;
+        left: 4px;
         margin: 0;
     }
     
