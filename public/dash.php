@@ -8802,6 +8802,9 @@ body {
         // Function to update WHO classification chart
         function updateWHOClassificationChart(data) {
             console.log('WHO Chart Update - Data received:', data);
+            console.log('Data type:', typeof data);
+            console.log('Data classifications:', data?.classifications);
+            console.log('Data total:', data?.total);
             
             try {
                 // Get chart elements
@@ -8986,8 +8989,21 @@ body {
                 
                 // OPTIMIZED: Extract specific WHO standard from bulk response
                 const data = result.data || {};
-                const classifications = data[whoStandard] || {};
+                
+                // Map WHO standard names to bulk API keys
+                const standardMapping = {
+                    'weight-for-age': 'weight_for_age',
+                    'height-for-age': 'height_for_age', 
+                    'weight-for-height': 'weight_for_height',
+                    'bmi-for-age': 'bmi_for_age',
+                    'bmi-adult': 'bmi_adult'
+                };
+                
+                const apiKey = standardMapping[whoStandard] || whoStandard;
+                const classifications = data[apiKey] || {};
                 const total = result.total_users || 0;
+                
+                console.log(`Mapping ${whoStandard} to ${apiKey}:`, classifications);
                 
                 console.log(`Extracted ${whoStandard} data:`, { classifications, total });
                 
@@ -9004,8 +9020,7 @@ body {
                 
                 return {
                     classifications: classifications,
-                    total: total,
-                    who_standard: whoStandard
+                    total: total
                 };
                 
             } catch (error) {
