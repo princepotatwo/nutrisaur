@@ -1852,14 +1852,15 @@ header .user-info {
     color: #F44336 !important; /* Red for High Risk */
 }
 
-/* Enhanced segments - NO FLEXBOX for manual control */
+/* Enhanced segments - CENTERED */
 .segments {
-    display: block !important; /* NO FLEXBOX */
+    display: block !important;
     margin-top: 15px !important;
     max-width: 100% !important;
     overflow: visible !important;
     white-space: normal !important;
     height: auto !important;
+    text-align: center !important; /* Center the text boxes */
 }
 
 /* Ensure segments are displayed properly */
@@ -2030,15 +2031,15 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* NEW SIMPLE TEXT BOX DESIGN */
+/* NEW SIMPLE TEXT BOX DESIGN - CENTERED */
 .segments .simple-text-box {
     display: inline-block !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 4px !important;
-    width: 80px !important;
-    height: 16px !important;
-    margin: 0 !important;
+    width: 100px !important; /* Wider for bigger text */
+    height: 20px !important; /* Taller for bigger text */
+    margin: 0 2px !important; /* Small margin between boxes */
     padding: 0 !important;
     position: relative !important;
     vertical-align: top !important;
@@ -2057,36 +2058,36 @@ header .user-info {
     padding: 0 !important;
 }
 
-/* Text box label */
+/* Text box label - BIGGER TEXT */
 .segments .simple-text-box .text-box-label {
     position: absolute !important;
-    left: 8px !important;
+    left: 10px !important; /* More space for bigger text */
     top: 0px !important;
     right: 0px !important;
-    height: 8px !important;
+    height: 10px !important; /* Taller for bigger text */
     margin: 0 !important;
     padding: 0 !important;
     font-weight: 600 !important;
     color: var(--color-text) !important;
-    font-size: 5px !important;
+    font-size: 7px !important; /* Bigger text */
     line-height: 1 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
 }
 
-/* Text box count */
+/* Text box count - BIGGER TEXT */
 .segments .simple-text-box .text-box-count {
     position: absolute !important;
-    left: 8px !important;
-    top: 8px !important;
+    left: 10px !important; /* More space for bigger text */
+    top: 10px !important; /* Adjusted for bigger text */
     right: 0px !important;
-    height: 8px !important;
+    height: 10px !important; /* Taller for bigger text */
     margin: 0 !important;
     padding: 0 !important;
     color: var(--color-text) !important;
     opacity: 0.8 !important;
-    font-size: 4px !important;
+    font-size: 6px !important; /* Bigger text */
     line-height: 1 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
