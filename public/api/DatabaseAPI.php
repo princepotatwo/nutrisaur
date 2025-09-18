@@ -5002,6 +5002,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             $ageFromMonths = $_GET['age_from_months'] ?? $_POST['age_from_months'] ?? 0;
             $ageToMonths = $_GET['age_to_months'] ?? $_POST['age_to_months'] ?? 71;
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             
             // Function to generate age groups based on custom range
             function generateAgeGroups($fromMonths, $toMonths) {
@@ -5074,6 +5075,33 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 if (!empty($barangay)) {
                     $whereClause .= " AND barangay = :barangay";
                     $params[':barangay'] = $barangay;
+                }
+                
+                // Add time frame filter (same logic as other APIs)
+                $timeFrameCondition = '';
+                switch ($timeFrame) {
+                    case '1d':
+                        $timeFrameCondition = "screening_date >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                        break;
+                    case '7d':
+                        $timeFrameCondition = "screening_date >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+                        break;
+                    case '30d':
+                        $timeFrameCondition = "screening_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+                        break;
+                    case '90d':
+                        $timeFrameCondition = "screening_date >= DATE_SUB(NOW(), INTERVAL 90 DAY)";
+                        break;
+                    case '1y':
+                        $timeFrameCondition = "screening_date >= DATE_SUB(NOW(), INTERVAL 1 YEAR)";
+                        break;
+                    default:
+                        $timeFrameCondition = "screening_date >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                        break;
+                }
+                
+                if (!empty($timeFrameCondition)) {
+                    $whereClause .= " AND $timeFrameCondition";
                 }
                 
                 // Get all users in the filtered group with weight and height data

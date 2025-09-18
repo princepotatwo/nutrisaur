@@ -6715,47 +6715,49 @@ body {
 
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
-                    <div>
-                        <h3>Classification Trends by Age</h3>
-                        <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
-                    </div>
-                    
-                    <!-- Age Range Controls - Moved to right side -->
-                    <div class="age-range-controls" style="padding: 15px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                            <label style="font-weight: 600; color: var(--text-color);">Age Range Filter:</label>
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div>
+                <h3>Classification Trends by Age</h3>
+                <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
+            </div>
+        </div>
+
+                    <!-- Age Range Controls - Moved below title, full width -->
+                    <div class="age-range-controls" style="padding: 12px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px;">
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                            <label style="font-weight: 600; color: var(--text-color); font-size: 14px;">Age Range Filter:</label>
                             
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <label style="font-size: 14px; color: var(--text-color-secondary);">From:</label>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <label style="font-size: 13px; color: var(--text-color-secondary);">From:</label>
                                 <input type="number" id="ageFromMonths" min="0" max="1200" value="0" 
-                                       style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--input-bg); color: var(--text-color);">
-                                <select id="ageFromUnit" style="padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--input-bg); color: var(--text-color);">
+                                       style="width: 70px; padding: 5px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: var(--input-bg); color: var(--text-color);">
+                                <select id="ageFromUnit" style="padding: 5px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: var(--input-bg); color: var(--text-color);">
                                     <option value="months">Months</option>
                                     <option value="years">Years</option>
                                 </select>
                             </div>
                             
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <label style="font-size: 14px; color: var(--text-color-secondary);">To:</label>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <label style="font-size: 13px; color: var(--text-color-secondary);">To:</label>
                                 <input type="number" id="ageToMonths" min="0" max="1200" value="71" 
-                                       style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--input-bg); color: var(--text-color);">
-                                <select id="ageToUnit" style="padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--input-bg); color: var(--text-color);">
+                                       style="width: 70px; padding: 5px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: var(--input-bg); color: var(--text-color);">
+                                <select id="ageToUnit" style="padding: 5px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: var(--input-bg); color: var(--text-color);">
                                     <option value="months">Months</option>
                                     <option value="years">Years</option>
                                 </select>
                             </div>
                             
-                            <button id="applyAgeRange" style="padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.2s;">
-                                Apply Range
+                            <button id="applyAgeRange" style="padding: 6px 12px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background-color 0.2s;">
+                                Apply
                             </button>
                             
-                            <button id="resetAgeRange" style="padding: 8px 16px; background: var(--text-color-secondary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.2s;">
+                            <button id="resetAgeRange" style="padding: 6px 12px; background: var(--text-color-secondary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background-color 0.2s;">
                                 Reset
-                            </button>
+                        </button>
                         </div>
-                        
-                        <div style="margin-top: 10px; font-size: 12px; color: var(--text-color-secondary);">
+
+                        <div style="margin-top: 8px; font-size: 11px; color: var(--text-color-secondary); text-align: center;">
                             <span id="ageRangeDisplay">Current range: 0-71 months (0-5 years 11 months)</span>
                         </div>
                     </div>
@@ -6764,12 +6766,12 @@ body {
                 <div class="age-classification-chart-container">
                     <canvas id="ageClassificationChart"></canvas>
                 </div>
-            </div>
-        </div>
+                    </div>
+                </div>
+                
 
-
-
-
+                
+                
 
 
 
@@ -8626,8 +8628,8 @@ body {
                         // Create abbreviation for classification
                         const abbreviation = createAbbreviation(item.classification);
                         
-                        // Format standard label
-                        let standardLabel = item.standard_label;
+                        // Format classification label
+                        let standardLabel = item.classification;
                         if (standardLabel && standardLabel.length > 10) {
                             standardLabel = standardLabel.substring(0, 10);
                         }
@@ -8926,7 +8928,7 @@ body {
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
                 // Fetch age-based classification data with custom range
-                const url = `/api/DatabaseAPI.php?action=get_age_classifications&barangay=${barangayValue}&age_from_months=${fromMonths}&age_to_months=${toMonths}`;
+                const url = `/api/DatabaseAPI.php?action=get_age_classifications&barangay=${barangayValue}&age_from_months=${fromMonths}&age_to_months=${toMonths}&time_frame=${timeFrame}`;
                 console.log('Fetching age classifications from:', url);
                 
                 const response = await fetch(url);
