@@ -8834,6 +8834,28 @@ body {
             return unit === 'years' ? value * 12 : value;
         }
 
+        // Convert age group string to months for proper sorting
+        function convertAgeGroupToMonths(ageGroup) {
+            if (ageGroup.includes('y')) {
+                // Handle year format like "1y", "2y", etc.
+                const years = parseInt(ageGroup.replace('y', ''));
+                return years * 12;
+            } else if (ageGroup.includes('m')) {
+                // Handle month format like "0m", "1m", etc.
+                return parseInt(ageGroup.replace('m', ''));
+            } else if (ageGroup.includes('-')) {
+                // Handle range format like "0-5m", "1-2y", etc.
+                const parts = ageGroup.split('-');
+                const start = parts[0];
+                if (start.includes('y')) {
+                    return parseInt(start.replace('y', '')) * 12;
+                } else {
+                    return parseInt(start.replace('m', ''));
+                }
+            }
+            return 0; // Default fallback
+        }
+
         function convertFromMonths(months, unit) {
             return unit === 'years' ? Math.floor(months / 12) : months;
         }
@@ -8917,7 +8939,12 @@ body {
                 const ageGroups = Object.keys(data.data).map(key => {
                     // Extract age group from keys like "0m_Normal", "1m_Overweight", etc.
                     return key.split('_')[0];
-                }).filter((value, index, self) => self.indexOf(value) === index).sort();
+                }).filter((value, index, self) => self.indexOf(value) === index).sort((a, b) => {
+                    // Convert age groups to months for proper chronological sorting
+                    const aMonths = convertAgeGroupToMonths(a);
+                    const bMonths = convertAgeGroupToMonths(b);
+                    return aMonths - bMonths;
+                });
 
                 const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
                 
