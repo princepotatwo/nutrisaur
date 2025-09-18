@@ -3505,8 +3505,8 @@ header .user-info {
 
 /* Classification Trends Chart Styles */
 .trends-chart-container {
-    height: 300px;
-    margin-top: 20px;
+    height: 350px;
+    margin-top: 15px;
 }
 
 .trends-chart {
@@ -3514,8 +3514,8 @@ header .user-info {
     align-items: flex-end;
     justify-content: center;
     height: 100%;
-    gap: 4px;
-    padding: 15px 10px 60px 10px;
+    gap: 8px;
+    padding: 10px 15px 50px 15px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
@@ -3526,8 +3526,8 @@ header .user-info {
 }
 
 .trend-bar {
-    width: 16px;
-    border-radius: 4px 4px 0 0;
+    width: 24px;
+    border-radius: 6px 6px 0 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3536,6 +3536,7 @@ header .user-info {
     transition: all 0.3s ease;
     min-height: 20px;
     flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .trend-bar:hover {
@@ -3545,116 +3546,154 @@ header .user-info {
 
 .trend-bar-value {
     position: absolute;
-    top: -25px;
-    font-size: 11px;
-    font-weight: 600;
+    top: -30px;
+    font-size: 12px;
+    font-weight: 700;
     color: var(--color-text);
     background: var(--color-card);
-    padding: 2px 4px;
-    border-radius: 4px;
+    padding: 4px 6px;
+    border-radius: 6px;
     border: 1px solid var(--color-border);
     white-space: nowrap;
     z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .trend-bar-label {
     position: absolute;
-    bottom: -30px;
-    font-size: 7px;
+    bottom: -35px;
+    font-size: 8px;
     color: var(--color-text);
     text-align: center;
-    font-weight: 500;
-    line-height: 1.1;
-    max-width: 40px;
+    font-weight: 600;
+    line-height: 1.2;
+    max-width: 50px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transform: rotate(-45deg);
     transform-origin: left center;
     left: 50%;
-    margin-left: -20px;
+    margin-left: -25px;
 }
 
 .trend-bar-standard {
     position: absolute;
-    bottom: -45px;
-    font-size: 6px;
+    bottom: -50px;
+    font-size: 7px;
     color: var(--color-text);
-    opacity: 0.7;
-    font-weight: 400;
+    opacity: 0.8;
+    font-weight: 500;
     text-align: center;
-    max-width: 40px;
+    max-width: 50px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* Bar colors for different classifications */
-.trend-bar.normal { background: #4CAF50; }
-.trend-bar.overweight { background: #FF9800; }
-.trend-bar.obese { background: #F44336; }
-.trend-bar.underweight { background: #FFC107; }
-.trend-bar.severely-underweight { background: #E91E63; }
-.trend-bar.stunted { background: #9C27B0; }
-.trend-bar.severely-stunted { background: #673AB7; }
-.trend-bar.wasted { background: #FF5722; }
-.trend-bar.severely-wasted { background: #D32F2F; }
-.trend-bar.tall { background: #00BCD4; }
-.trend-bar.no-data { background: #9E9E9E; }
+/* Bar colors for different classifications - Enhanced with gradients */
+.trend-bar.normal { 
+    background: linear-gradient(135deg, #4CAF50, #66BB6A); 
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+.trend-bar.overweight { 
+    background: linear-gradient(135deg, #FF9800, #FFB74D); 
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+.trend-bar.obese { 
+    background: linear-gradient(135deg, #F44336, #EF5350); 
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+.trend-bar.underweight { 
+    background: linear-gradient(135deg, #FFC107, #FFD54F); 
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+.trend-bar.severely-underweight { 
+    background: linear-gradient(135deg, #E91E63, #F06292); 
+    border: 1px solid rgba(233, 30, 99, 0.3);
+}
+.trend-bar.stunted { 
+    background: linear-gradient(135deg, #9C27B0, #BA68C8); 
+    border: 1px solid rgba(156, 39, 176, 0.3);
+}
+.trend-bar.severely-stunted { 
+    background: linear-gradient(135deg, #673AB7, #9575CD); 
+    border: 1px solid rgba(103, 58, 183, 0.3);
+}
+.trend-bar.wasted { 
+    background: linear-gradient(135deg, #FF5722, #FF7043); 
+    border: 1px solid rgba(255, 87, 34, 0.3);
+}
+.trend-bar.severely-wasted { 
+    background: linear-gradient(135deg, #D32F2F, #E57373); 
+    border: 1px solid rgba(211, 47, 47, 0.3);
+}
+.trend-bar.tall { 
+    background: linear-gradient(135deg, #00BCD4, #4DD0E1); 
+    border: 1px solid rgba(0, 188, 212, 0.3);
+}
+.trend-bar.no-data { 
+    background: linear-gradient(135deg, #9E9E9E, #BDBDBD); 
+    border: 1px solid rgba(158, 158, 158, 0.3);
+}
 
 /* Responsive adjustments for Classification Trends Chart */
 @media (max-width: 1200px) {
+    .trends-chart-container {
+        height: 320px;
+    }
+    
     .trends-chart {
-        gap: 3px;
-        padding: 15px 8px 50px 8px;
+        gap: 6px;
+        padding: 8px 12px 45px 12px;
     }
     
     .trend-bar {
-        width: 14px;
+        width: 20px;
     }
     
     .trend-bar-label {
-        font-size: 6px;
-        max-width: 35px;
-        bottom: -25px;
+        font-size: 7px;
+        max-width: 45px;
+        bottom: -30px;
     }
     
     .trend-bar-standard {
-        font-size: 5px;
-        max-width: 35px;
-        bottom: -40px;
+        font-size: 6px;
+        max-width: 45px;
+        bottom: -45px;
     }
 }
 
 @media (max-width: 768px) {
     .trends-chart-container {
-        height: 250px;
+        height: 280px;
     }
     
     .trends-chart {
-        gap: 2px;
-        padding: 10px 5px 40px 5px;
+        gap: 4px;
+        padding: 6px 8px 40px 8px;
     }
     
     .trend-bar {
-        width: 12px;
+        width: 16px;
     }
     
     .trend-bar-label {
-        font-size: 5px;
-        max-width: 30px;
-        bottom: -20px;
+        font-size: 6px;
+        max-width: 40px;
+        bottom: -25px;
     }
     
     .trend-bar-standard {
-        font-size: 4px;
-        max-width: 30px;
-        bottom: -35px;
+        font-size: 5px;
+        max-width: 40px;
+        bottom: -40px;
     }
     
     .trend-bar-value {
-        font-size: 9px;
-        padding: 1px 2px;
+        font-size: 10px;
+        padding: 2px 4px;
     }
 }
 
@@ -8450,10 +8489,10 @@ body {
 
                 // Calculate dynamic scaling based on number of bars and available space
                 const numBars = classificationsArray.length;
-                const containerHeight = 300; // Fixed container height
-                const padding = 60; // Top and bottom padding
+                const containerHeight = 350; // Increased container height
+                const padding = 50; // Reduced padding for more chart space
                 const availableHeight = containerHeight - padding;
-                const maxBarHeight = Math.min(availableHeight * 0.8, Math.max(80, availableHeight - (numBars * 3)));
+                const maxBarHeight = Math.min(availableHeight * 0.85, Math.max(100, availableHeight - (numBars * 2)));
                 
                 // Create bars
                 classificationsArray.forEach((item, index) => {
