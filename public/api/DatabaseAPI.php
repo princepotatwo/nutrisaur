@@ -4704,6 +4704,46 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // CHECK EMAIL EXISTS API
+        // ========================================
+        case 'check_email_exists':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    $email = $data['email'] ?? '';
+                    
+                    if (empty($email)) {
+                        echo json_encode(['success' => false, 'message' => 'Email is required']);
+                        break;
+                    }
+                    
+                    $pdo = $db->getPDO();
+                    if (!$pdo) {
+                        echo json_encode(['success' => false, 'message' => 'Database connection not available']);
+                        break;
+                    }
+                    
+                    // Check if email exists in community_users table
+                    $stmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ?");
+                    $stmt->execute([$email]);
+                    $count = $stmt->fetchColumn();
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'exists' => $count > 0,
+                        'message' => $count > 0 ? 'Email already exists' : 'Email is available'
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'POST method required']);
+                }
+            } catch (Exception $e) {
+                error_log("Check email exists error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Error checking email: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:

@@ -4039,6 +4039,10 @@ header {
                 document.getElementById('editHeight').value = completeUserData.height || '';
                 document.getElementById('editMuac').value = completeUserData.muac || '';
                 
+                // Store original email for comparison
+                const originalEmail = completeUserData.email || userData.email;
+                document.getElementById('editEmail').setAttribute('data-original-email', originalEmail);
+                
                 // Initialize municipality and barangay dropdowns
                 initializeMunicipalityDropdown();
                 document.getElementById('editMunicipality').value = completeUserData.municipality || userData.municipality;
@@ -4060,8 +4064,23 @@ header {
                     document.getElementById('editPregnancy').value = completeUserData.is_pregnant ? 'Yes' : 'No';
                 }
                 
+                // Clear any previous error messages
+                document.getElementById('emailError').textContent = '';
+                document.getElementById('editEmail').style.borderColor = '';
+                
                 // Show modal
+                console.log('Showing edit modal for user:', completeUserData);
                 document.getElementById('editUserModal').style.display = 'block';
+                
+                // Ensure modal is visible
+                setTimeout(() => {
+                    const modal = document.getElementById('editUserModal');
+                    if (modal.style.display === 'block') {
+                        console.log('Modal is visible');
+                    } else {
+                        console.log('Modal display issue');
+                    }
+                }, 100);
             });
         }
 
@@ -4092,6 +4111,14 @@ header {
         function closeEditUserModal() {
             document.getElementById('editUserModal').style.display = 'none';
             document.getElementById('editUserForm').reset();
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('editUserModal');
+            if (event.target === modal) {
+                closeEditUserModal();
+            }
         }
 
         function initializeMunicipalityDropdown() {
@@ -4191,7 +4218,7 @@ header {
             return age;
         }
 
-        function saveUserChanges() {
+        async function saveUserChanges() {
             // Validate form
             if (!validateEditForm()) {
                 return;
@@ -4218,16 +4245,33 @@ header {
             saveButton.textContent = 'Saving...';
             saveButton.disabled = true;
             
-            // Make API request to update user
-            fetch('api/DatabaseAPI.php?action=update_community_user', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData)
-            })
-            .then(response => response.json())
-            .then(data => {
+            try {
+                // Check if email already exists (only if email changed)
+                const originalEmail = document.getElementById('editEmail').getAttribute('data-original-email');
+                if (userData.email !== originalEmail) {
+                    const emailExists = await new Promise((resolve) => {
+                        checkEmailExists(userData.email, resolve);
+                    });
+                    
+                    if (emailExists) {
+                        alert('This email already exists. Please use a different email.');
+                        saveButton.textContent = originalText;
+                        saveButton.disabled = false;
+                        return;
+                    }
+                }
+                
+                // Make API request to update user
+                const response = await fetch('api/DatabaseAPI.php?action=update_community_user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
                 if (data.success) {
                     alert('User updated successfully!');
                     closeEditUserModal();
@@ -4236,19 +4280,62 @@ header {
                 } else {
                     alert('Error updating user: ' + (data.message || 'Unknown error'));
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error:', error);
                 alert('Error updating user: ' + error.message);
-            })
-            .finally(() => {
+            } finally {
                 saveButton.textContent = originalText;
                 saveButton.disabled = false;
+            }
+        }
+
+        function validateEmail() {
+            const email = document.getElementById('editEmail').value.trim();
+            const emailError = document.getElementById('emailError');
+            const emailInput = document.getElementById('editEmail');
+            
+            // Clear previous error
+            emailError.textContent = '';
+            emailInput.style.borderColor = '';
+            
+            if (!email) {
+                emailError.textContent = 'Email is required';
+                emailInput.style.borderColor = 'red';
+                return false;
+            }
+            
+            // Basic email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailError.textContent = 'Please enter a valid email address';
+                emailInput.style.borderColor = 'red';
+                return false;
+            }
+            
+            return true;
+        }
+
+        function checkEmailExists(email, callback) {
+            fetch('api/DatabaseAPI.php?action=check_email_exists', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                callback(data.exists || false);
+            })
+            .catch(error => {
+                console.error('Error checking email:', error);
+                callback(false);
             });
         }
 
         function validateEditForm() {
             const name = document.getElementById('editName').value.trim();
+            const email = document.getElementById('editEmail').value.trim();
             const municipality = document.getElementById('editMunicipality').value;
             const barangay = document.getElementById('editBarangay').value;
             const sex = document.getElementById('editSex').value;
@@ -4259,6 +4346,18 @@ header {
             // Basic validation
             if (!name) {
                 alert('Please enter a name');
+                return false;
+            }
+            
+            if (!email) {
+                alert('Please enter an email');
+                return false;
+            }
+            
+            // Email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address');
                 return false;
             }
             
@@ -4354,7 +4453,8 @@ header {
                     
                     <div class="form-group">
                         <label for="editEmail">Email *</label>
-                        <input type="email" id="editEmail" name="email" readonly style="background-color: #f5f5f5;">
+                        <input type="email" id="editEmail" name="email" required onblur="validateEmail()">
+                        <small id="emailError" style="color: red; font-size: 12px;"></small>
                     </div>
                     
                     <div class="form-group">
