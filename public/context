@@ -1,124 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Colorful Bar Chart</title>
-  <style>
-    body {
-      background: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
+# NutriSaur Application Context
 
-    h2 {
-      margin: 10px 0;
-    }
+## Database Structure
 
-    .chart {
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      height: 400px;
-      margin: 40px auto;
-      gap: 10px;
-    }
+### Main Table: `community_users`
+- **Primary Key**: `community_user_id` (AUTO_INCREMENT)
+- **Unique Identifier**: `email` (used as the main identifier for operations)
+- **Columns**:
+  - `community_user_id` - Primary key (int, auto-increment)
+  - `name` - User's full name (varchar)
+  - `email` - User's email address (varchar, unique identifier)
+  - `password` - Hashed password (varchar)
+  - `municipality` - Municipality name (varchar)
+  - `barangay` - Barangay name (varchar)
+  - `sex` - Gender (enum: 'Male', 'Female')
+  - `birthday` - Date of birth (date)
+  - `age` - Calculated age (int)
+  - `is_pregnant` - Pregnancy status (tinyint: 0=No, 1=Yes, NULL=Not applicable)
+  - `weight` - Weight in kg (decimal)
+  - `height` - Height in cm (decimal)
+  - `muac` - Mid-Upper Arm Circumference (decimal)
+  - `bmi` - Calculated BMI (decimal)
+  - `bmi_category` - BMI classification (varchar)
+  - `muac_category` - MUAC classification (varchar)
+  - `nutritional_risk` - Risk level (varchar)
+  - `screening_date` - Date of screening (timestamp)
+  - `screened_by` - Health worker name (varchar)
+  - `notes` - Additional notes (text)
+  - `follow_up_required` - Follow-up needed (tinyint)
+  - `follow_up_date` - Follow-up date (date)
+  - `status` - User status (enum: 'active', 'inactive', 'deleted')
+  - `created_at` - Creation timestamp
+  - `updated_at` - Last update timestamp
 
-    .bar {
-      width: 50px;
-      border-radius: 5px 5px 0 0;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      position: relative;
-    }
+## Key Points
 
-    .bar span {
-      position: absolute;
-      top: -25px;
-      font-size: 14px;
-    }
+1. **Email as Identifier**: The application uses `email` as the primary identifier for user operations, not `community_user_id`
+2. **Weight/Height Storage**: Stored as `weight` and `height` (not `weight_kg`/`height_cm`)
+3. **Pregnancy Field**: Only relevant for females aged 18-50
+4. **Dynamic Classifications**: BMI and nutritional risk are calculated dynamically
+5. **Screening Process**: Users go through screening form with same validation as edit form
 
-    .label {
-      margin-top: 10px;
-      font-size: 14px;
-    }
+## API Endpoints
 
-    /* Bar colors */
-    .jan {background: #ff3b3b; height: 60px;}
-    .feb {background: #ff7b2f; height: 80px;}
-    .mar {background: #ffb52e; height: 100px;}
-    .apr {background: #a4e02e; height: 140px;}
-    .may {background: #33d17a; height: 160px;}
-    .jun {background: #33d1d1; height: 180px;}
-    .jul {background: #2e9ae0; height: 200px;}
-    .aug {background: #9145ff; height: 220px;}
-    .sep {background: #d63be6; height: 240px;}
-    .oct {background: #ff4fa2; height: 260px;}
-    .nov {background: #ff6347; height: 280px;}
-    .dec {background: #ffd32a; height: 320px;}
+### User Management
+- `get_community_user_data` - Get user data by email
+- `update_community_user` - Update user data
+- `check_email_exists` - Check if email already exists
+- `register_community_user` - Register new user
 
-    .month {
-      text-align: center;
-      margin-top: 5px;
-      font-size: 13px;
-      color: white;
-    }
-  </style>
-</head>
-<body>
-  <h2>Your Subtitle Here</h2>
-  <div class="chart">
-    <div>
-      <div class="bar jan"><span>60</span></div>
-      <div class="month">JAN</div>
-    </div>
-    <div>
-      <div class="bar feb"><span>80</span></div>
-      <div class="month">FEB</div>
-    </div>
-    <div>
-      <div class="bar mar"><span>100</span></div>
-      <div class="month">MAR</div>
-    </div>
-    <div>
-      <div class="bar apr"><span>140</span></div>
-      <div class="month">APR</div>
-    </div>
-    <div>
-      <div class="bar may"><span>160</span></div>
-      <div class="month">MAY</div>
-    </div>
-    <div>
-      <div class="bar jun"><span>180</span></div>
-      <div class="month">JUN</div>
-    </div>
-    <div>
-      <div class="bar jul"><span>200</span></div>
-      <div class="month">JUL</div>
-    </div>
-    <div>
-      <div class="bar aug"><span>220</span></div>
-      <div class="month">AUG</div>
-    </div>
-    <div>
-      <div class="bar sep"><span>240</span></div>
-      <div class="month">SEP</div>
-    </div>
-    <div>
-      <div class="bar oct"><span>260</span></div>
-      <div class="month">OCT</div>
-    </div>
-    <div>
-      <div class="bar nov"><span>280</span></div>
-      <div class="month">NOV</div>
-    </div>
-    <div>
-      <div class="bar dec"><span>320</span></div>
-      <div class="month">DEC</div>
-    </div>
-  </div>
-  <div style="text-align:right; padding: 20px; font-size: 14px;">2019</div>
-</body>
-</html>
+### Edit User Functionality
+- Modal opens with user data pre-populated
+- Same validation as screening form
+- Email uniqueness check before saving
+- Real-time validation and error messages
+
+## Validation Rules
+
+### Email Validation
+- Required field
+- Valid email format (regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+- Uniqueness check (no duplicates)
+
+### Weight/Height Validation
+- Weight: 0.1 - 1000 kg
+- Height: 1 - 300 cm
+- Age-based validation for realistic values
+
+### Pregnancy Field
+- Only shown for females aged 18-50
+- Required when visible
+- Values: "Yes" or "No"
+
+## Modal Positioning
+- Centered on screen using CSS transforms
+- Responsive design with max-height constraints
+- Save button always visible at bottom
