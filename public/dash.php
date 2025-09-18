@@ -6683,6 +6683,46 @@ body {
             <div class="chart-card">
                 <h3>Classification Trends by Age</h3>
                 <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
+                
+                <!-- Age Range Controls -->
+                <div class="age-range-controls" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <label style="font-weight: 600; color: #495057;">Age Range Filter:</label>
+                        
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label style="font-size: 14px; color: #6c757d;">From:</label>
+                            <input type="number" id="ageFromMonths" min="0" max="1200" value="0" 
+                                   style="width: 80px; padding: 6px 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
+                            <select id="ageFromUnit" style="padding: 6px 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
+                                <option value="months">Months</option>
+                                <option value="years">Years</option>
+                            </select>
+                        </div>
+                        
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <label style="font-size: 14px; color: #6c757d;">To:</label>
+                            <input type="number" id="ageToMonths" min="0" max="1200" value="71" 
+                                   style="width: 80px; padding: 6px 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
+                            <select id="ageToUnit" style="padding: 6px 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
+                                <option value="months">Months</option>
+                                <option value="years">Years</option>
+                            </select>
+                        </div>
+                        
+                        <button id="applyAgeRange" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500;">
+                            Apply Range
+                        </button>
+                        
+                        <button id="resetAgeRange" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500;">
+                            Reset
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">
+                        <span id="ageRangeDisplay">Current range: 0-71 months (0-5 years 11 months)</span>
+                    </div>
+                </div>
+                
                 <div class="age-classification-chart-container">
                     <canvas id="ageClassificationChart"></canvas>
                 </div>
@@ -8783,6 +8823,216 @@ body {
             ctx.fillText('No age classification data available', canvas.width / 2, canvas.height / 2);
         }
 
+        // Age range control functions
+        function convertToMonths(value, unit) {
+            return unit === 'years' ? value * 12 : value;
+        }
+
+        function convertFromMonths(months, unit) {
+            return unit === 'years' ? Math.floor(months / 12) : months;
+        }
+
+        function updateAgeRangeDisplay() {
+            const fromValue = document.getElementById('ageFromMonths').value;
+            const fromUnit = document.getElementById('ageFromUnit').value;
+            const toValue = document.getElementById('ageToMonths').value;
+            const toUnit = document.getElementById('ageToUnit').value;
+            
+            const fromMonths = convertToMonths(parseInt(fromValue), fromUnit);
+            const toMonths = convertToMonths(parseInt(toValue), toUnit);
+            
+            const fromDisplay = fromMonths < 12 ? `${fromMonths}m` : `${Math.floor(fromMonths/12)}y${fromMonths%12 ? `${fromMonths%12}m` : ''}`;
+            const toDisplay = toMonths < 12 ? `${toMonths}m` : `${Math.floor(toMonths/12)}y${toMonths%12 ? `${toMonths%12}m` : ''}`;
+            
+            document.getElementById('ageRangeDisplay').textContent = `Current range: ${fromDisplay} - ${toDisplay}`;
+        }
+
+        function applyAgeRange() {
+            const fromValue = document.getElementById('ageFromMonths').value;
+            const fromUnit = document.getElementById('ageFromUnit').value;
+            const toValue = document.getElementById('ageToMonths').value;
+            const toUnit = document.getElementById('ageToUnit').value;
+            
+            const fromMonths = convertToMonths(parseInt(fromValue), fromUnit);
+            const toMonths = convertToMonths(parseInt(toValue), toUnit);
+            
+            if (fromMonths >= toMonths) {
+                alert('From age must be less than To age');
+                return;
+            }
+            
+            updateAgeRangeDisplay();
+            updateAgeClassificationChartWithRange(fromMonths, toMonths);
+        }
+
+        function resetAgeRange() {
+            document.getElementById('ageFromMonths').value = 0;
+            document.getElementById('ageFromUnit').value = 'months';
+            document.getElementById('ageToMonths').value = 71;
+            document.getElementById('ageToUnit').value = 'months';
+            updateAgeRangeDisplay();
+            updateAgeClassificationChartWithRange(0, 71);
+        }
+
+        async function updateAgeClassificationChartWithRange(fromMonths, toMonths) {
+            console.log('📊 Updating age classification chart with range:', fromMonths, 'to', toMonths, 'months');
+            
+            try {
+                const canvas = document.getElementById('ageClassificationChart');
+                if (!canvas) {
+                    console.error('Age classification chart canvas not found');
+                    return;
+                }
+
+                // Get current filter values
+                const timeFrame = document.querySelector('.time-btn.active')?.dataset.timeframe || '1d';
+                const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
+                const barangayValue = barangay === 'All Barangays' ? '' : barangay;
+
+                // Fetch age-based classification data with custom range
+                const url = `/api/DatabaseAPI.php?action=get_age_classifications&barangay=${barangayValue}&age_from_months=${fromMonths}&age_to_months=${toMonths}`;
+                console.log('Fetching age classifications from:', url);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Age classifications data received:', data);
+
+                if (!data.success || !data.data || Object.keys(data.data).length === 0) {
+                    console.log('No age classification data available');
+                    createEmptyAgeChart(canvas);
+                    return;
+                }
+
+                // Process data for Chart.js with dynamic age groups
+                const ageGroups = Object.keys(data.data).map(key => {
+                    // Extract age group from keys like "0m_Normal", "1m_Overweight", etc.
+                    return key.split('_')[0];
+                }).filter((value, index, self) => self.indexOf(value) === index).sort();
+
+                const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
+                
+                // Color mapping (same as bar chart colors)
+                const colors = {
+                    'Normal': '#4CAF50',
+                    'Overweight': '#FF9800', 
+                    'Obese': '#F44336',
+                    'Underweight': '#FFC107',
+                    'Severely Underweight': '#E91E63',
+                    'Stunted': '#9C27B0',
+                    'Severely Stunted': '#673AB7',
+                    'Wasted': '#3F51B5',
+                    'Severely Wasted': '#2196F3',
+                    'Tall': '#00BCD4'
+                };
+
+                const datasets = classifications.map(classification => {
+                    const chartData = ageGroups.map(ageGroup => {
+                        const key = `${ageGroup}_${classification}`;
+                        return data.data[key] || 0;
+                    });
+
+                    return {
+                        label: classification,
+                        data: chartData,
+                        borderColor: colors[classification] || '#666',
+                        backgroundColor: colors[classification] || '#666',
+                        tension: 0.1,
+                        pointStyle: 'circle',
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        borderWidth: 2,
+                        fill: false
+                    };
+                });
+
+                // Create chart
+                const ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ageGroups,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    pointStyle: 'line',
+                                    padding: 10,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.parsed.y + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Age Groups',
+                                    font: {
+                                        size: 11
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 9
+                                    }
+                                }
+                            },
+                            y: {
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    font: {
+                                        size: 9
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Percentage (%)',
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                });
+
+                console.log('✅ Age classification chart updated successfully with custom range');
+
+            } catch (error) {
+                console.error('❌ Error updating age classification chart:', error);
+                const canvas = document.getElementById('ageClassificationChart');
+                if (canvas) {
+                    createEmptyAgeChart(canvas);
+                }
+            }
+        }
+
         // Function to update chart description based on WHO standard
         function updateWHOChartDescription(whoStandard) {
             const descriptions = {
@@ -9177,6 +9427,34 @@ body {
             return date.toLocaleDateString();
         }
 
+        // Set up age range control event listeners
+        function setupAgeRangeControls() {
+            // Apply button
+            const applyBtn = document.getElementById('applyAgeRange');
+            if (applyBtn) {
+                applyBtn.addEventListener('click', applyAgeRange);
+            }
+            
+            // Reset button
+            const resetBtn = document.getElementById('resetAgeRange');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', resetAgeRange);
+            }
+            
+            // Update display when inputs change
+            const inputs = ['ageFromMonths', 'ageFromUnit', 'ageToMonths', 'ageToUnit'];
+            inputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', updateAgeRangeDisplay);
+                    element.addEventListener('input', updateAgeRangeDisplay);
+                }
+            });
+            
+            // Initialize display
+            updateAgeRangeDisplay();
+        }
+
         // Initialize WHO dropdown on page load
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM Content Loaded - Initializing WHO dropdown');
@@ -9218,6 +9496,9 @@ body {
                 // Load initial age classification chart
                 console.log('📊 Loading initial age classification chart...');
                 await updateAgeClassificationChart();
+                
+                // Set up age range control event listeners
+                setupAgeRangeControls();
                 
                 // Set up time frame button event listeners
                 const timeButtons = document.querySelectorAll('.time-btn');

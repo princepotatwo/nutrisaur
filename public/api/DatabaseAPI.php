@@ -5000,6 +5000,55 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // ========================================
         case 'get_age_classifications':
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $ageFromMonths = $_GET['age_from_months'] ?? $_POST['age_from_months'] ?? 0;
+            $ageToMonths = $_GET['age_to_months'] ?? $_POST['age_to_months'] ?? 71;
+            
+            // Function to generate age groups based on custom range
+            function generateAgeGroups($fromMonths, $toMonths) {
+                $ageGroups = [];
+                $currentMonth = $fromMonths;
+                
+                // If range is small (less than 12 months), create monthly groups
+                if (($toMonths - $fromMonths) <= 12) {
+                    while ($currentMonth < $toMonths) {
+                        $nextMonth = min($currentMonth + 1, $toMonths);
+                        $label = $currentMonth . 'm';
+                        if ($nextMonth - $currentMonth > 1) {
+                            $label .= '-' . ($nextMonth - 1) . 'm';
+                        }
+                        $ageGroups[$label] = [$currentMonth, $nextMonth];
+                        $currentMonth = $nextMonth;
+                    }
+                }
+                // If range is medium (12-60 months), create 6-month groups
+                elseif (($toMonths - $fromMonths) <= 60) {
+                    while ($currentMonth < $toMonths) {
+                        $nextMonth = min($currentMonth + 6, $toMonths);
+                        $label = $currentMonth . 'm-' . ($nextMonth - 1) . 'm';
+                        $ageGroups[$label] = [$currentMonth, $nextMonth];
+                        $currentMonth = $nextMonth;
+                    }
+                }
+                // If range is large (60+ months), create yearly groups
+                else {
+                    while ($currentMonth < $toMonths) {
+                        $nextMonth = min($currentMonth + 12, $toMonths);
+                        $fromYears = floor($currentMonth / 12);
+                        $toYears = floor(($nextMonth - 1) / 12);
+                        
+                        if ($fromYears == $toYears) {
+                            $label = $fromYears . 'y';
+                        } else {
+                            $label = $fromYears . 'y-' . $toYears . 'y';
+                        }
+                        
+                        $ageGroups[$label] = [$currentMonth, $nextMonth];
+                        $currentMonth = $nextMonth;
+                    }
+                }
+                
+                return $ageGroups;
+            }
             
             // Helper function to calculate age (same as dashboard_assessment_stats.php)
             function calculateAge($birthday) {
@@ -5010,24 +5059,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             }
             
             try {
-                // Define age groups
-                $ageGroups = [
-                    '0-6m' => [0, 6],
-                    '7-12m' => [7, 12],
-                    '13-18m' => [13, 18],
-                    '19-24m' => [19, 24],
-                    '25-30m' => [25, 30],
-                    '31-36m' => [31, 36],
-                    '37-42m' => [37, 42],
-                    '43-48m' => [43, 48],
-                    '49-54m' => [49, 54],
-                    '55-60m' => [55, 60],
-                    '6-7y' => [72, 84], // 6-7 years in months
-                    '7-8y' => [84, 96], // 7-8 years in months
-                    '8-9y' => [96, 108], // 8-9 years in months
-                    '9-10y' => [108, 120], // 9-10 years in months
-                    '10-11y' => [120, 132] // 10-11 years in months
-                ];
+                // Generate age groups based on custom range
+                $ageGroups = generateAgeGroups($ageFromMonths, $ageToMonths);
                 
                 $classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
                 
