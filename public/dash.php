@@ -9039,11 +9039,9 @@ body {
                 }
 
                 // Process data for Chart.js - use intelligent mathematical mapping
-                console.log('🔍 Raw age classification data:', ageClassificationData);
                 
                 // Extract all unique age groups from the data
                 const allAgeGroups = Object.keys(ageClassificationData).map(key => key.split('_')[0]).filter((value, index, self) => self.indexOf(value) === index);
-                console.log('🔍 All age groups found:', allAgeGroups);
                 
                 // Sort age groups chronologically
                 const ageGroups = allAgeGroups.sort((a, b) => {
@@ -9051,7 +9049,6 @@ body {
                     const bMonths = convertAgeGroupToMonths(b);
                     return aMonths - bMonths;
                 });
-                console.log('🔍 Sorted age groups:', ageGroups);
                 
                 const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
                 
@@ -9073,11 +9070,9 @@ body {
                     const chartData = ageGroups.map(ageGroup => {
                         const key = `${ageGroup}_${classification}`;
                         const value = ageClassificationData[key] || 0;
-                        console.log(`🔍 Mapping ${key}: ${value}`);
                         return value;
                     });
                     
-                    console.log(`🔍 ${classification} data:`, chartData);
 
                     return {
                         label: classification,
@@ -9094,17 +9089,12 @@ body {
                 });
 
                 // Comprehensive data validation and mathematical mapping
-                console.log('🔍 Chart datasets:', datasets);
-                console.log('🔍 Chart age groups:', ageGroups);
-                console.log('🔍 Chart datasets length:', datasets.length);
-                console.log('🔍 Chart age groups length:', ageGroups.length);
                 
                 // Validate that we have real data
                 let totalDataPoints = 0;
                 let nonZeroDataPoints = 0;
                 
                 datasets.forEach((dataset, index) => {
-                    console.log(`🔍 Dataset ${index} (${dataset.label}):`, dataset.data);
                     dataset.data.forEach((value, dataIndex) => {
                         totalDataPoints++;
                         if (value > 0) {
@@ -9114,13 +9104,10 @@ body {
                     });
                 });
                 
-                console.log(`🔍 Data Summary: ${nonZeroDataPoints}/${totalDataPoints} data points are non-zero`);
                 
                 // If no data, show warning
                 if (nonZeroDataPoints === 0) {
                     console.warn('⚠️ WARNING: No data found in chart datasets!');
-                    console.log('🔍 Available age classification data keys:', Object.keys(ageClassificationData));
-                    console.log('🔍 Sample age classification data values:', Object.values(ageClassificationData).slice(0, 10));
                 }
 
                 // Destroy existing chart and create new one
@@ -9291,205 +9278,22 @@ body {
         }
 
         // Frontend approach: Get all data once, process efficiently
+        // Age classification chart logic - TO BE IMPLEMENTED
         async function processBulkDataForAgeGroups(bulkData, fromMonths, toMonths) {
-            console.log('Processing bulk data for age groups:', fromMonths, 'to', toMonths, 'months');
-            
-            // Generate simple age groups
-            const ageGroups = generateAgeGroups(fromMonths, toMonths);
-            console.log('Generated age groups:', ageGroups);
-            
-            // Initialize age classification data
-            const ageClassificationData = {};
-            Object.keys(ageGroups).forEach(ageGroup => {
-                const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
-                classifications.forEach(classification => {
-                    ageClassificationData[`${ageGroup}_${classification}`] = 0;
-                });
-            });
-            
-            // Get time frame and barangay from current state
-            const timeFrame = document.querySelector('.time-btn.active')?.dataset.timeframe || '1d';
-            const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
-            const barangayValue = barangay === 'All Barangays' ? '' : barangay;
-            
-            // SINGLE API CALL: Get all user data once
-            const userUrl = `/api/DatabaseAPI.php?action=get_users_for_age_classification&time_frame=${timeFrame}&barangay=${barangayValue}`;
-            console.log('Fetching all user data:', userUrl);
-            
-            try {
-                const userResponse = await fetch(userUrl);
-                const userData = await userResponse.json();
-                
-                if (userData.success && userData.data && userData.data.length > 0) {
-                    console.log('Processing', userData.data.length, 'users for age classification');
-                    
-                    // Create age group buckets
-                    const ageGroupBuckets = {};
-                    Object.keys(ageGroups).forEach(ageGroup => {
-                        ageGroupBuckets[ageGroup] = [];
-                    });
-                    
-                    // Distribute users into age groups (efficient grouping)
-                    userData.data.forEach(user => {
-                        const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
-                        
-                        // Find which age group this user belongs to
-                        Object.keys(ageGroups).forEach(ageGroup => {
-                            const [minAge, maxAge] = ageGroups[ageGroup];
-                            if (ageInMonths >= minAge && ageInMonths < maxAge) {
-                                ageGroupBuckets[ageGroup].push(user);
-                            }
-                        });
-                    });
-                    
-                    console.log('Age group distribution:', Object.keys(ageGroupBuckets).map(group => ({
-                        group,
-                        count: ageGroupBuckets[group].length
-                    })));
-                    
-                    // Debug: Show which age groups actually have users
-                    const nonEmptyGroups = Object.keys(ageGroupBuckets).filter(group => ageGroupBuckets[group].length > 0);
-                    console.log('Non-empty age groups:', nonEmptyGroups.map(group => ({
-                        group,
-                        count: ageGroupBuckets[group].length,
-                        users: ageGroupBuckets[group].map(u => ({ age: calculateAgeInMonths(u.birthday, u.screening_date), weight: u.weight, height: u.height }))
-                    })));
-                    
-                    // Apply donut chart logic to each age group
-                    Object.keys(ageGroupBuckets).forEach(ageGroup => {
-                        const usersInGroup = ageGroupBuckets[ageGroup];
-                        if (usersInGroup.length > 0) {
-                            console.log(`Processing ${usersInGroup.length} users in age group ${ageGroup}`);
-                            
-                        // Apply the SAME classification logic as donut chart
-                        const classifications = classifyUsersInGroup(usersInGroup);
-                        console.log(`Classifications for ${ageGroup} (${usersInGroup.length} users):`, classifications);
-                        
-                        // Map to our data structure
-                        Object.keys(classifications).forEach(classification => {
-                            const count = classifications[classification];
-                            if (count > 0) {
-                                const key = `${ageGroup}_${classification}`;
-                                ageClassificationData[key] = count;
-                                console.log(`✅ Set ${key}: ${count}`);
-                            }
-                        });
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error processing user data:', error);
-            }
-            
-            console.log('Final age classification data:', ageClassificationData);
-            return ageClassificationData;
-        }
-        
-        // Apply donut chart classification logic to a group of users
-        function classifyUsersInGroup(users) {
-            const classifications = {
-                'Normal': 0,
-                'Overweight': 0,
-                'Obese': 0,
-                'Underweight': 0,
-                'Severely Underweight': 0,
-                'Stunted': 0,
-                'Severely Stunted': 0,
-                'Wasted': 0,
-                'Severely Wasted': 0,
-                'Tall': 0
-            };
-            
-            // Apply the SAME logic as donut chart for each user
-            users.forEach(user => {
-                const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
-                const weight = parseFloat(user.weight) || 0;
-                const height = parseFloat(user.height) || 0;
-                
-                // Use the SAME classification logic as donut chart
-                if (ageInMonths < 24) {
-                    // Weight-for-Age for children under 2
-                    if (weight < 8) classifications['Severely Underweight']++;
-                    else if (weight < 10) classifications['Underweight']++;
-                    else if (weight < 12) classifications['Normal']++;
-                    else if (weight < 14) classifications['Overweight']++;
-                    else classifications['Obese']++;
-                } else if (ageInMonths < 228) {
-                    // BMI-for-Age for children 2-19
-                    if (height > 0) {
-                        const bmi = weight / Math.pow(height / 100, 2);
-                        if (bmi < 14) classifications['Severely Underweight']++;
-                        else if (bmi < 16) classifications['Underweight']++;
-                        else if (bmi < 25) classifications['Normal']++;
-                        else if (bmi < 30) classifications['Overweight']++;
-                        else classifications['Obese']++;
-                    }
-                } else {
-                    // BMI Adult for adults 19+
-                    if (height > 0) {
-                        const bmi = weight / Math.pow(height / 100, 2);
-                        if (bmi < 18.5) classifications['Underweight']++;
-                        else if (bmi < 25) classifications['Normal']++;
-                        else if (bmi < 30) classifications['Overweight']++;
-                        else classifications['Obese']++;
-                    }
-                }
-            });
-            
-            return classifications;
+            // TODO: Implement new age classification logic
+            return {};
         }
 
-        // Simple age group generation - just create basic groups
+        // Age group generation - TO BE IMPLEMENTED
         function generateAgeGroups(fromMonths, toMonths) {
-            const ageGroups = {};
-            let currentMonth = fromMonths;
-            
-            console.log(`🔍 Generating simple age groups from ${fromMonths} to ${toMonths} months`);
-            
-            // Create simple 6-month groups
-            while (currentMonth < toMonths) {
-                const nextMonth = Math.min(currentMonth + 6, toMonths);
-                const label = currentMonth + 'm-' + (nextMonth - 1) + 'm';
-                ageGroups[label] = [currentMonth, nextMonth];
-                currentMonth = nextMonth;
-            }
-            
-            console.log(`🔍 Generated ${Object.keys(ageGroups).length} age groups:`, ageGroups);
-            return ageGroups;
+            // TODO: Implement new age group generation logic
+            return {};
         }
 
-        // Calculate age in months from birthday and screening date
+        // Age calculation - TO BE IMPLEMENTED
         function calculateAgeInMonths(birthday, screeningDate) {
-            if (!birthday) return 0;
-            
-            try {
-                const birthDate = new Date(birthday);
-                const screenDate = screeningDate ? new Date(screeningDate) : new Date();
-                
-                // Check if dates are valid
-                if (isNaN(birthDate.getTime()) || isNaN(screenDate.getTime())) {
-                    console.warn('Invalid date:', { birthday, screeningDate });
-                    return 0;
-                }
-                
-                const yearDiff = screenDate.getFullYear() - birthDate.getFullYear();
-                const monthDiff = screenDate.getMonth() - birthDate.getMonth();
-                const dayDiff = screenDate.getDate() - birthDate.getDate();
-                
-                let totalMonths = yearDiff * 12 + monthDiff;
-                
-                // Adjust if the day hasn't occurred yet this month
-                if (dayDiff < 0) {
-                    totalMonths--;
-                }
-                
-                const result = Math.max(0, totalMonths);
-                console.log(`Age calculation: ${birthday} to ${screeningDate} = ${result} months`);
-                return result;
-            } catch (error) {
-                console.error('Error calculating age:', error, { birthday, screeningDate });
-                return 0;
-            }
+            // TODO: Implement age calculation logic
+            return 0;
         }
 
         // This function is no longer needed - we use real donut chart data
@@ -9580,11 +9384,9 @@ body {
                     const chartData = ageGroups.map(ageGroup => {
                         const key = `${ageGroup}_${classification}`;
                         const value = ageClassificationData[key] || 0;
-                        console.log(`🔍 Mapping ${key}: ${value}`);
                         return value;
                     });
                     
-                    console.log(`🔍 ${classification} data:`, chartData);
 
                     return {
                         label: classification,
@@ -9601,17 +9403,12 @@ body {
                 });
 
                 // Comprehensive data validation and mathematical mapping
-                console.log('🔍 Chart datasets:', datasets);
-                console.log('🔍 Chart age groups:', ageGroups);
-                console.log('🔍 Chart datasets length:', datasets.length);
-                console.log('🔍 Chart age groups length:', ageGroups.length);
                 
                 // Validate that we have real data
                 let totalDataPoints = 0;
                 let nonZeroDataPoints = 0;
                 
                 datasets.forEach((dataset, index) => {
-                    console.log(`🔍 Dataset ${index} (${dataset.label}):`, dataset.data);
                     dataset.data.forEach((value, dataIndex) => {
                         totalDataPoints++;
                         if (value > 0) {
@@ -9621,13 +9418,10 @@ body {
                     });
                 });
                 
-                console.log(`🔍 Data Summary: ${nonZeroDataPoints}/${totalDataPoints} data points are non-zero`);
                 
                 // If no data, show warning
                 if (nonZeroDataPoints === 0) {
                     console.warn('⚠️ WARNING: No data found in chart datasets!');
-                    console.log('🔍 Available age classification data keys:', Object.keys(ageClassificationData));
-                    console.log('🔍 Sample age classification data values:', Object.values(ageClassificationData).slice(0, 10));
                 }
 
                 // Destroy existing chart and create new one
