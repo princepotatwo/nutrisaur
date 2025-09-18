@@ -9073,6 +9073,16 @@ body {
                     };
                 });
 
+                console.log('Chart datasets:', datasets);
+                console.log('Chart age groups:', ageGroups);
+                console.log('Chart datasets length:', datasets.length);
+                console.log('Chart age groups length:', ageGroups.length);
+                
+                // Log each dataset to see what data is being passed to Chart.js
+                datasets.forEach((dataset, index) => {
+                    console.log(`Dataset ${index} (${dataset.label}):`, dataset.data);
+                });
+
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
                 
@@ -9085,6 +9095,11 @@ body {
                 canvas.height = availableHeight;
                 
                 const ctx = canvas.getContext('2d');
+                console.log('Creating Chart.js with data:', {
+                    labels: ageGroups,
+                    datasets: datasets
+                });
+                
                 ageClassificationChartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -9551,6 +9566,16 @@ body {
                     };
                 });
 
+                console.log('Chart datasets:', datasets);
+                console.log('Chart age groups:', ageGroups);
+                console.log('Chart datasets length:', datasets.length);
+                console.log('Chart age groups length:', ageGroups.length);
+                
+                // Log each dataset to see what data is being passed to Chart.js
+                datasets.forEach((dataset, index) => {
+                    console.log(`Dataset ${index} (${dataset.label}):`, dataset.data);
+                });
+
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
                 
@@ -9563,6 +9588,11 @@ body {
                 canvas.height = availableHeight;
                 
                 const ctx = canvas.getContext('2d');
+                console.log('Creating Chart.js with data:', {
+                    labels: ageGroups,
+                    datasets: datasets
+                });
+                
                 ageClassificationChartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
