@@ -4594,7 +4594,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $data = json_decode($input, true);
                     $email = $data['email'] ?? '';
                     
+                    error_log("UPDATE_DEBUG: Received data: " . json_encode($data));
+                    error_log("UPDATE_DEBUG: Email from data: " . $email);
+                    
                     if (empty($email)) {
+                        error_log("UPDATE_DEBUG: Email is empty");
                         echo json_encode(['success' => false, 'message' => 'Email is required']);
                         break;
                     }
@@ -4606,11 +4610,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                     
                     // Check if user exists
+                    error_log("UPDATE_DEBUG: Checking if user exists with email: " . $email);
                     $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ?");
                     $checkStmt->execute([$email]);
                     $userExists = $checkStmt->fetchColumn() > 0;
+                    error_log("UPDATE_DEBUG: User exists check result: " . ($userExists ? 'YES' : 'NO'));
                     
                     if (!$userExists) {
+                        error_log("UPDATE_DEBUG: User not found for email: " . $email);
                         echo json_encode(['success' => false, 'message' => 'User not found']);
                         break;
                     }
@@ -4624,14 +4631,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         $updateValues[] = $data['name'];
                     }
                     
-                    if (isset($data['height_cm']) && !empty($data['height_cm'])) {
+                    if (isset($data['height']) && !empty($data['height'])) {
                         $updateFields[] = "height = ?";
-                        $updateValues[] = $data['height_cm'];
+                        $updateValues[] = $data['height'];
                     }
                     
-                    if (isset($data['weight_kg']) && !empty($data['weight_kg'])) {
+                    if (isset($data['weight']) && !empty($data['weight'])) {
                         $updateFields[] = "weight = ?";
-                        $updateValues[] = $data['weight_kg'];
+                        $updateValues[] = $data['weight'];
                     }
                     
                     if (isset($data['birthday']) && !empty($data['birthday'])) {

@@ -4333,8 +4333,8 @@ header {
                 sex: formData.get('sex'),
                 birthday: formData.get('birthday'),
                 is_pregnant: formData.get('is_pregnant') || 'No',
-                weight_kg: formData.get('weight'),
-                height_cm: formData.get('height'),
+                weight: formData.get('weight'),
+                height: formData.get('height'),
                 muac: formData.get('muac') || '0'
             };
             
