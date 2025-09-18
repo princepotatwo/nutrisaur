@@ -7353,9 +7353,8 @@ body {
                     const highRisk = document.getElementById('community-high-risk');
                     const riskChange = document.getElementById('community-risk-change');
                     if (highRisk && riskChange) {
-                        // These will be updated when risk_distribution data is loaded
-                        highRisk.textContent = '0';
-                        riskChange.textContent = '0';
+                        // Don't reset to 0 - keep existing values until risk_distribution data loads
+                        console.log('High Risk and Risk Change elements found, keeping existing values');
                     } else {
                         console.log('❌ HTML elements not found for High Risk Cases');
                     }
@@ -7364,9 +7363,8 @@ body {
                     const samCases = document.getElementById('community-sam-cases');
                     const samChange = document.getElementById('community-sam-change');
                     if (samCases && samChange) {
-                        // These will be updated when risk_distribution data is loaded
-                        samCases.textContent = '0';
-                        samChange.textContent = '0';
+                        // Don't reset to 0 - keep existing values until risk_distribution data loads
+                        console.log('SAM Cases and SAM Change elements found, keeping existing values');
                     } else {
                         console.log('❌ HTML elements not found for SAM Cases');
                     }
