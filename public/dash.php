@@ -9347,23 +9347,33 @@ body {
                         count: ageGroupBuckets[group].length
                     })));
                     
+                    // Debug: Show which age groups actually have users
+                    const nonEmptyGroups = Object.keys(ageGroupBuckets).filter(group => ageGroupBuckets[group].length > 0);
+                    console.log('Non-empty age groups:', nonEmptyGroups.map(group => ({
+                        group,
+                        count: ageGroupBuckets[group].length,
+                        users: ageGroupBuckets[group].map(u => ({ age: calculateAgeInMonths(u.birthday, u.screening_date), weight: u.weight, height: u.height }))
+                    })));
+                    
                     // Apply donut chart logic to each age group
                     Object.keys(ageGroupBuckets).forEach(ageGroup => {
                         const usersInGroup = ageGroupBuckets[ageGroup];
                         if (usersInGroup.length > 0) {
                             console.log(`Processing ${usersInGroup.length} users in age group ${ageGroup}`);
                             
-                            // Apply the SAME classification logic as donut chart
-                            const classifications = classifyUsersInGroup(usersInGroup);
-                            
-                            // Map to our data structure
-                            Object.keys(classifications).forEach(classification => {
-                                const count = classifications[classification];
-                                if (count > 0) {
-                                    const key = `${ageGroup}_${classification}`;
-                                    ageClassificationData[key] = count;
-                                }
-                            });
+                        // Apply the SAME classification logic as donut chart
+                        const classifications = classifyUsersInGroup(usersInGroup);
+                        console.log(`Classifications for ${ageGroup} (${usersInGroup.length} users):`, classifications);
+                        
+                        // Map to our data structure
+                        Object.keys(classifications).forEach(classification => {
+                            const count = classifications[classification];
+                            if (count > 0) {
+                                const key = `${ageGroup}_${classification}`;
+                                ageClassificationData[key] = count;
+                                console.log(`✅ Set ${key}: ${count}`);
+                            }
+                        });
                         }
                     });
                 }
