@@ -9361,33 +9361,42 @@ body {
             return ageClassificationData;
         }
 
-        // Generate age groups based on month range (same logic as backend)
+        // Generate age groups based on month range with intelligent granularity
         function generateAgeGroups(fromMonths, toMonths) {
             const ageGroups = {};
             let currentMonth = fromMonths;
             
-            // If range is small (less than 12 months), create monthly groups
-            if ((toMonths - fromMonths) <= 12) {
+            console.log(`🔍 Generating age groups from ${fromMonths} to ${toMonths} months`);
+            
+            // Always create granular groups to capture all data
+            if ((toMonths - fromMonths) <= 6) {
+                // Very small range: monthly groups
                 while (currentMonth < toMonths) {
                     const nextMonth = Math.min(currentMonth + 1, toMonths);
                     const label = currentMonth + 'm';
                     ageGroups[label] = [currentMonth, nextMonth];
                     currentMonth = nextMonth;
                 }
-            }
-            // If range is medium (12-60 months), create 6-month groups
-            else if ((toMonths - fromMonths) <= 60) {
+            } else if ((toMonths - fromMonths) <= 24) {
+                // Small range: 2-month groups
                 while (currentMonth < toMonths) {
-                    const nextMonth = Math.min(currentMonth + 6, toMonths);
+                    const nextMonth = Math.min(currentMonth + 2, toMonths);
                     const label = currentMonth + 'm-' + (nextMonth - 1) + 'm';
                     ageGroups[label] = [currentMonth, nextMonth];
                     currentMonth = nextMonth;
                 }
-            }
-            // If range is large (60+ months), create yearly groups
-            else {
+            } else if ((toMonths - fromMonths) <= 60) {
+                // Medium range: 3-month groups
                 while (currentMonth < toMonths) {
-                    const nextMonth = Math.min(currentMonth + 12, toMonths);
+                    const nextMonth = Math.min(currentMonth + 3, toMonths);
+                    const label = currentMonth + 'm-' + (nextMonth - 1) + 'm';
+                    ageGroups[label] = [currentMonth, nextMonth];
+                    currentMonth = nextMonth;
+                }
+            } else {
+                // Large range: 6-month groups
+                while (currentMonth < toMonths) {
+                    const nextMonth = Math.min(currentMonth + 6, toMonths);
                     const fromYears = Math.floor(currentMonth / 12);
                     const toYears = Math.floor((nextMonth - 1) / 12);
                     
@@ -9408,6 +9417,7 @@ body {
                 }
             }
             
+            console.log(`🔍 Generated ${Object.keys(ageGroups).length} age groups:`, ageGroups);
             return ageGroups;
         }
 

@@ -5004,36 +5004,42 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $ageToMonths = $_GET['age_to_months'] ?? $_POST['age_to_months'] ?? 71;
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             
-            // Function to generate age groups based on custom range
+            // Function to generate age groups based on custom range with intelligent granularity
             function generateAgeGroups($fromMonths, $toMonths) {
                 $ageGroups = [];
                 $currentMonth = $fromMonths;
                 
-                // If range is small (less than 12 months), create monthly groups
-                if (($toMonths - $fromMonths) <= 12) {
+                error_log("Generating age groups from $fromMonths to $toMonths months");
+                
+                // Always create granular groups to capture all data
+                if (($toMonths - $fromMonths) <= 6) {
+                    // Very small range: monthly groups
                     while ($currentMonth < $toMonths) {
                         $nextMonth = min($currentMonth + 1, $toMonths);
                         $label = $currentMonth . 'm';
-                        if ($nextMonth - $currentMonth > 1) {
-                            $label .= '-' . ($nextMonth - 1) . 'm';
-                        }
                         $ageGroups[$label] = [$currentMonth, $nextMonth];
                         $currentMonth = $nextMonth;
                     }
-                }
-                // If range is medium (12-60 months), create 6-month groups
-                elseif (($toMonths - $fromMonths) <= 60) {
+                } elseif (($toMonths - $fromMonths) <= 24) {
+                    // Small range: 2-month groups
                     while ($currentMonth < $toMonths) {
-                        $nextMonth = min($currentMonth + 6, $toMonths);
+                        $nextMonth = min($currentMonth + 2, $toMonths);
                         $label = $currentMonth . 'm-' . ($nextMonth - 1) . 'm';
                         $ageGroups[$label] = [$currentMonth, $nextMonth];
                         $currentMonth = $nextMonth;
                     }
-                }
-                // If range is large (60+ months), create yearly groups
-                else {
+                } elseif (($toMonths - $fromMonths) <= 60) {
+                    // Medium range: 3-month groups
                     while ($currentMonth < $toMonths) {
-                        $nextMonth = min($currentMonth + 12, $toMonths);
+                        $nextMonth = min($currentMonth + 3, $toMonths);
+                        $label = $currentMonth . 'm-' . ($nextMonth - 1) . 'm';
+                        $ageGroups[$label] = [$currentMonth, $nextMonth];
+                        $currentMonth = $nextMonth;
+                    }
+                } else {
+                    // Large range: 6-month groups
+                    while ($currentMonth < $toMonths) {
+                        $nextMonth = min($currentMonth + 6, $toMonths);
                         $fromYears = floor($currentMonth / 12);
                         $toYears = floor(($nextMonth - 1) / 12);
                         
@@ -5053,6 +5059,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
+                error_log("Generated " . count($ageGroups) . " age groups: " . json_encode($ageGroups));
                 return $ageGroups;
             }
             
