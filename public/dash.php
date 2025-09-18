@@ -3505,32 +3505,28 @@ header .user-info {
 
 /* Classification Trends Chart Styles */
 .trends-chart-container {
-    height: 400px;
+    height: 300px;
     margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .trends-chart {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    height: 320px;
-    gap: 8px;
-    padding: 20px 20px 80px 20px;
+    height: 100%;
+    gap: 4px;
+    padding: 15px 10px 60px 10px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
     overflow: visible;
     width: 100%;
-    max-width: 100%;
     flex-wrap: nowrap;
     min-width: 0;
 }
 
 .trend-bar {
-    width: 20px;
+    width: 16px;
     border-radius: 4px 4px 0 0;
     display: flex;
     flex-direction: column;
@@ -3563,31 +3559,31 @@ header .user-info {
 
 .trend-bar-label {
     position: absolute;
-    bottom: -35px;
-    font-size: 8px;
+    bottom: -30px;
+    font-size: 7px;
     color: var(--color-text);
     text-align: center;
     font-weight: 500;
     line-height: 1.1;
-    max-width: 50px;
+    max-width: 40px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transform: rotate(-45deg);
     transform-origin: left center;
     left: 50%;
-    margin-left: -25px;
+    margin-left: -20px;
 }
 
 .trend-bar-standard {
     position: absolute;
-    bottom: -50px;
-    font-size: 7px;
+    bottom: -45px;
+    font-size: 6px;
     color: var(--color-text);
     opacity: 0.7;
     font-weight: 400;
     text-align: center;
-    max-width: 50px;
+    max-width: 40px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3609,64 +3605,57 @@ header .user-info {
 /* Responsive adjustments for Classification Trends Chart */
 @media (max-width: 1200px) {
     .trends-chart {
-        gap: 6px;
-        padding: 20px 15px 80px 15px;
+        gap: 3px;
+        padding: 15px 8px 50px 8px;
     }
     
     .trend-bar {
-        width: 18px;
+        width: 14px;
     }
     
     .trend-bar-label {
-        font-size: 7px;
-        max-width: 45px;
+        font-size: 6px;
+        max-width: 35px;
+        bottom: -25px;
     }
     
     .trend-bar-standard {
-        font-size: 6px;
-        max-width: 45px;
+        font-size: 5px;
+        max-width: 35px;
+        bottom: -40px;
     }
 }
 
 @media (max-width: 768px) {
     .trends-chart-container {
-        height: 350px;
+        height: 250px;
     }
     
     .trends-chart {
-        height: 280px;
-        gap: 4px;
-        padding: 15px 10px 70px 10px;
+        gap: 2px;
+        padding: 10px 5px 40px 5px;
     }
     
     .trend-bar {
-        width: 16px;
+        width: 12px;
     }
     
     .trend-bar-label {
-        font-size: 6px;
-        max-width: 40px;
-        bottom: -30px;
+        font-size: 5px;
+        max-width: 30px;
+        bottom: -20px;
     }
     
     .trend-bar-standard {
-        font-size: 5px;
-        max-width: 40px;
-        bottom: -45px;
+        font-size: 4px;
+        max-width: 30px;
+        bottom: -35px;
     }
     
     .trend-bar-value {
-        font-size: 10px;
-        padding: 1px 3px;
+        font-size: 9px;
+        padding: 1px 2px;
     }
-}
-
-/* Ensure chart stays centered on all screen sizes */
-.chart-card .trends-chart-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
 }
 
 .alert-actions {
@@ -8459,9 +8448,12 @@ body {
                 // Find max count for scaling
                 const maxCount = Math.max(...classificationsArray.map(item => item.count));
 
-                // Calculate dynamic scaling based on number of bars
+                // Calculate dynamic scaling based on number of bars and available space
                 const numBars = classificationsArray.length;
-                const maxBarHeight = Math.min(220, Math.max(150, 300 - (numBars * 2))); // Dynamic height based on number of bars
+                const containerHeight = 300; // Fixed container height
+                const padding = 60; // Top and bottom padding
+                const availableHeight = containerHeight - padding;
+                const maxBarHeight = Math.min(availableHeight * 0.8, Math.max(80, availableHeight - (numBars * 3)));
                 
                 // Create bars
                 classificationsArray.forEach((item, index) => {
