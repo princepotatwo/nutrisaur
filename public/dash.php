@@ -8812,6 +8812,11 @@ body {
                 const centerText = document.getElementById('risk-center-text');
                 const segments = document.getElementById('risk-segments');
                 
+                console.log('Chart elements found:');
+                console.log('  - chartBg (risk-chart-bg):', chartBg);
+                console.log('  - centerText (risk-center-text):', centerText);
+                console.log('  - segments (risk-segments):', segments);
+                
                 if (!chartBg || !centerText || !segments) {
                     console.error('Chart elements not found');
                     return;
@@ -8896,6 +8901,17 @@ body {
                     chartBg.style.background = gradientString;
                     chartBg.style.opacity = '1';
                     console.log('Chart background set to:', chartBg.style.background);
+                    
+                    // Check computed styles
+                    const computedStyle = window.getComputedStyle(chartBg);
+                    console.log('Computed background:', computedStyle.background);
+                    console.log('Computed opacity:', computedStyle.opacity);
+                    console.log('Element dimensions:', {
+                        width: chartBg.offsetWidth,
+                        height: chartBg.offsetHeight,
+                        display: computedStyle.display,
+                        visibility: computedStyle.visibility
+                    });
                 } else {
                     console.log('No chart segments, showing no data state');
                     chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
