@@ -5023,8 +5023,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         // Use screening date for age calculation
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                         
-                        // Debug logging removed to prevent rate limiting
-                        
                         if ($ageInMonths >= $ageRange[0] && $ageInMonths < $ageRange[1]) {
                             $ageGroupUsers[] = $user;
                         }
@@ -5038,23 +5036,45 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         continue;
                     }
                     
-                    // Process each WHO standard from pre-fetched bulk data
+                    // Calculate classifications for THIS age group only
+                    $ageGroupClassifications = [];
                     foreach ($whoStandards as $standard) {
                         $standardKey = str_replace('-', '_', $standard);
-                        $standardData = $allClassifications[$standardKey] ?? [];
+                        $ageGroupClassifications[$standardKey] = [];
+                    }
+                    
+                    // Process each user in this age group
+                    foreach ($ageGroupUsers as $user) {
+                        foreach ($whoStandards as $standard) {
+                            $standardKey = str_replace('-', '_', $standard);
+                            $classification = $who->classifyUser($user, $standard);
+                            
+                            if ($classification && $classification !== 'No Data') {
+                                if (!isset($ageGroupClassifications[$standardKey][$classification])) {
+                                    $ageGroupClassifications[$standardKey][$classification] = 0;
+                                }
+                                $ageGroupClassifications[$standardKey][$classification]++;
+                            }
+                        }
+                    }
+                    
+                    // Calculate percentages for this age group
+                    foreach ($whoStandards as $standard) {
+                        $standardKey = str_replace('-', '_', $standard);
+                        $standardData = $ageGroupClassifications[$standardKey] ?? [];
                         
-                        // Calculate total users for this standard (excluding "No Data")
-                        $standardTotal = 0;
+                        // Calculate total users for this standard in this age group
+                        $ageGroupTotal = 0;
                         foreach ($standardData as $classification => $count) {
                             if ($classification !== 'No Data') {
-                                $standardTotal += $count;
+                                $ageGroupTotal += $count;
                             }
                         }
                         
                         foreach ($standardData as $classification => $count) {
                             if (in_array($classification, $classifications)) {
-                                // Calculate percentage based on total users for this standard
-                                $percentage = $standardTotal > 0 ? round(($count / $standardTotal) * 100, 1) : 0;
+                                // Calculate percentage based on users in this age group
+                                $percentage = $ageGroupTotal > 0 ? round(($count / $ageGroupTotal) * 100, 1) : 0;
                                 $ageClassificationData["{$ageGroup}_{$classification}"] = $percentage;
                             }
                         }
