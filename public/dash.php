@@ -3605,17 +3605,17 @@ header .user-info {
 /* Labels positioned outside chart but within card */
 .trends-labels-row {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
     width: 100%;
     position: absolute;
-    bottom: 15px;
-    left: 0;
+    bottom: 25px;
+    left: 5px;
     right: 0;
-    padding: 0 20px;
+    padding: 0 10px;
     height: 50px;
-    margin: 0 auto;
+    margin: 0;
 }
 
 .trend-label-item {
@@ -3715,11 +3715,12 @@ header .user-info {
     }
     
     .trends-labels-row {
-        bottom: 10px;
-        padding: 0 15px;
+        bottom: 20px;
+        padding: 0 8px;
         height: 45px;
-        gap: 6px;
-        margin: 0 auto;
+        gap: 5px;
+        left: 4px;
+        margin: 0;
     }
     
     .trend-bar {
@@ -3757,11 +3758,12 @@ header .user-info {
     }
     
     .trends-labels-row {
-        bottom: 8px;
-        padding: 0 10px;
+        bottom: 18px;
+        padding: 0 5px;
         height: 40px;
-        gap: 4px;
-        margin: 0 auto;
+        gap: 3px;
+        left: 2px;
+        margin: 0;
     }
     
     .trend-bar {
