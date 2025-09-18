@@ -5045,6 +5045,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         $ageGroups[$label] = [$currentMonth, $nextMonth];
                         $currentMonth = $nextMonth;
+                        
+                        // Safety check to prevent infinite loops
+                        if ($currentMonth >= $toMonths) {
+                            break;
+                        }
                     }
                 }
                 
