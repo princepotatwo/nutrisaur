@@ -5023,12 +5023,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     
                     $ageGroupCount = count($ageGroupUsers);
                     
-                    // Get classifications for this age group
-                    foreach ($whoStandards as $standard) {
-                        $result = $db->getWHOClassifications($standard, $timeFrame, $barangay);
+                    // OPTIMIZED: Use bulk API to get all classifications at once
+                    $bulkResult = $db->getAllWHOClassificationsBulk($timeFrame, $barangay);
+                    
+                    if ($bulkResult['success'] && isset($bulkResult['data'])) {
+                        $allClassifications = $bulkResult['data'];
                         
-                        if ($result['success'] && isset($result['data']['classifications'])) {
-                            foreach ($result['data']['classifications'] as $classification => $count) {
+                        // Process each WHO standard from bulk data
+                        foreach ($whoStandards as $standard) {
+                            $standardKey = str_replace('-', '_', $standard);
+                            $standardData = $allClassifications[$standardKey] ?? [];
+                            
+                            foreach ($standardData as $classification => $count) {
                                 if (in_array($classification, $classifications)) {
                                     // Calculate percentage for this age group
                                     $percentage = $ageGroupCount > 0 ? round(($count / $ageGroupCount) * 100, 1) : 0;
