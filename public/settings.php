@@ -4325,8 +4325,12 @@ header {
             
             // Get form data
             const formData = new FormData(document.getElementById('editUserForm'));
+            // Get original email for finding the user
+            const originalEmail = document.getElementById('editEmail').getAttribute('data-original-email');
+            
             const userData = {
-                email: formData.get('email'),
+                original_email: originalEmail,  // Use this to find the user
+                email: formData.get('email'),   // New email to update to
                 name: formData.get('name'),
                 municipality: formData.get('municipality'),
                 barangay: formData.get('barangay'),

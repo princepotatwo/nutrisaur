@@ -4592,14 +4592,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $input = file_get_contents('php://input');
                     $data = json_decode($input, true);
-                    $email = $data['email'] ?? '';
+                    $originalEmail = $data['original_email'] ?? '';
+                    $newEmail = $data['email'] ?? '';
                     
                     error_log("UPDATE_DEBUG: Received data: " . json_encode($data));
-                    error_log("UPDATE_DEBUG: Email from data: " . $email);
+                    error_log("UPDATE_DEBUG: Original email: " . $originalEmail);
+                    error_log("UPDATE_DEBUG: New email: " . $newEmail);
                     
-                    if (empty($email)) {
-                        error_log("UPDATE_DEBUG: Email is empty");
-                        echo json_encode(['success' => false, 'message' => 'Email is required']);
+                    if (empty($originalEmail)) {
+                        error_log("UPDATE_DEBUG: Original email is empty");
+                        echo json_encode(['success' => false, 'message' => 'Original email is required']);
                         break;
                     }
                     
@@ -4609,15 +4611,15 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         break;
                     }
                     
-                    // Check if user exists
-                    error_log("UPDATE_DEBUG: Checking if user exists with email: " . $email);
+                    // Check if user exists (using original email)
+                    error_log("UPDATE_DEBUG: Checking if user exists with original email: " . $originalEmail);
                     $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ?");
-                    $checkStmt->execute([$email]);
+                    $checkStmt->execute([$originalEmail]);
                     $userExists = $checkStmt->fetchColumn() > 0;
                     error_log("UPDATE_DEBUG: User exists check result: " . ($userExists ? 'YES' : 'NO'));
                     
                     if (!$userExists) {
-                        error_log("UPDATE_DEBUG: User not found for email: " . $email);
+                        error_log("UPDATE_DEBUG: User not found for original email: " . $originalEmail);
                         echo json_encode(['success' => false, 'message' => 'User not found']);
                         break;
                     }
@@ -4672,7 +4674,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         $updateValues[] = $data['muac'];
                     }
                     
-                    if (isset($data['email']) && !empty($data['email'])) {
+                    if (isset($data['email']) && !empty($data['email']) && $data['email'] !== $originalEmail) {
                         $updateFields[] = "email = ?";
                         $updateValues[] = $data['email'];
                     }
@@ -4685,8 +4687,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         break;
                     }
                     
-                    // Add email for WHERE clause
-                    $updateValues[] = $email;
+                    // Add original email for WHERE clause
+                    $updateValues[] = $originalEmail;
                     
                     $updateSql = "UPDATE community_users SET " . implode(", ", $updateFields) . " WHERE email = ?";
                     $updateStmt = $pdo->prepare($updateSql);
