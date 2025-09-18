@@ -39,6 +39,7 @@
 3. **Pregnancy Field**: Only relevant for females aged 18-50
 4. **Dynamic Classifications**: BMI and nutritional risk are calculated dynamically
 5. **Screening Process**: Users go through screening form with same validation as edit form
+6. **Column Names**: Always use `community_user_id` (not `id`) for primary key references
 
 ## API Endpoints
 
@@ -75,3 +76,9 @@
 - Centered on screen using CSS transforms
 - Responsive design with max-height constraints
 - Save button always visible at bottom
+
+## Fixed Issues
+- ✅ Fixed SQL error: Changed `SELECT id` to `SELECT community_user_id`
+- ✅ Fixed column references in API queries
+- ✅ Modal properly centered and save button visible
+- ✅ Email validation with uniqueness check working

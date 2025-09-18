@@ -1275,7 +1275,7 @@ class DatabaseAPI {
             }
             
             // Check if preferences exist
-            $stmt = $this->pdo->prepare("SELECT id FROM community_users WHERE user_email = :user_email");
+            $stmt = $this->pdo->prepare("SELECT community_user_id FROM community_users WHERE email = :user_email");
             $stmt->bindParam(':user_email', $userEmail);
             $stmt->execute();
             
@@ -4606,7 +4606,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                     
                     // Check if user exists
-                    $checkStmt = $pdo->prepare("SELECT id FROM community_users WHERE email = ?");
+                    $checkStmt = $pdo->prepare("SELECT community_user_id FROM community_users WHERE email = ?");
                     $checkStmt->execute([$email]);
                     $userExists = $checkStmt->fetch();
                     
