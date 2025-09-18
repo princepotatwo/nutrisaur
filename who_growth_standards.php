@@ -345,7 +345,7 @@ class WHOGrowthStandards {
      */
     private function getWeightForHeightBoysLookup() {
         return [
-            65.0 => [
+            65 => [
                 'severely_wasted' => ['min' => 0, 'max' => 5.8],
                 'wasted' => ['min' => 5.9, 'max' => 6.2],
                 'normal' => ['min' => 6.3, 'max' => 8.8],
@@ -359,7 +359,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 9.1, 'max' => 9.8],
                 'obese' => ['min' => 9.9, 'max' => 999]
             ],
-            66.0 => [
+            66 => [
                 'severely_wasted' => ['min' => 0, 'max' => 6.0],
                 'wasted' => ['min' => 6.1, 'max' => 6.4],
                 'normal' => ['min' => 6.5, 'max' => 9.2],
@@ -1133,7 +1133,7 @@ class WHOGrowthStandards {
     private function getWeightForHeightGirlsLookup() {
         return [
             // Height 65.0cm
-            65.0 => [
+            65 => [
                 'severely_wasted' => ['min' => 0, 'max' => 5.5],
                 'wasted' => ['min' => 5.6, 'max' => 6.0],
                 'normal' => ['min' => 6.1, 'max' => 8.7],

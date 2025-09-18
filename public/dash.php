@@ -8967,8 +8967,9 @@ body {
             try {
                 console.log('Fetching WHO data for:', { whoStandard, timeFrame, barangay });
                 
-                const url = `/api/DatabaseAPI.php?action=get_who_classifications&who_standard=${whoStandard}&time_frame=${timeFrame}&barangay=${barangay}`;
-                console.log('API URL:', url);
+                // OPTIMIZED: Use bulk API and extract specific standard
+                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangay}`;
+                console.log('API URL (bulk):', url);
                 
                 const response = await fetch(url);
                 
@@ -8977,29 +8978,29 @@ body {
                 }
                 
                 const result = await response.json();
-                console.log('API Response:', result);
+                console.log('Bulk API Response:', result);
                 
                 if (!result.success) {
                     throw new Error(result.error || 'Failed to fetch WHO classification data');
                 }
                 
-                // Ensure we have the expected data structure
+                // OPTIMIZED: Extract specific WHO standard from bulk response
                 const data = result.data || {};
-                const classifications = data.classifications || {};
-                const total = data.total || 0;
-                const debugInfo = data.debug_info || [];
+                const classifications = data[whoStandard] || {};
+                const total = result.total_users || 0;
                 
-                console.log('Processed data:', { classifications, total });
-                console.log('DEBUG INFO - User Classifications:', debugInfo);
+                console.log(`Extracted ${whoStandard} data:`, { classifications, total });
                 
-                // Log specific details about Normal classifications
-                const normalUsers = debugInfo.filter(user => {
-                    if (user.weight_for_age_result && user.weight_for_age_result.classification === 'Normal') {
-                        return true;
+                // Convert to expected format for donut chart
+                const processedData = {
+                    success: true,
+                    data: {
+                        classifications: classifications,
+                        total: total
                     }
-                    return false;
-                });
-                console.log('USERS CLASSIFIED AS NORMAL:', normalUsers);
+                };
+                
+                console.log('Processed data for donut chart:', processedData);
                 
                 return {
                     classifications: classifications,
