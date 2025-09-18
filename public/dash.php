@@ -9290,7 +9290,7 @@ body {
             return unit === 'years' ? Math.floor(months / 12) : months;
         }
 
-        // Use REAL donut chart data - NO individual user scanning, just batch data
+        // Use the SAME API approach as donut chart but with age filtering
         async function processBulkDataForAgeGroups(bulkData, fromMonths, toMonths) {
             console.log('Processing bulk data for age groups:', fromMonths, 'to', toMonths, 'months');
             
@@ -9307,41 +9307,58 @@ body {
                 });
             });
             
-            // Get the REAL classifications from bulkData (donut chart data) - NO user scanning!
-            const realClassifications = {
-                'Severely Underweight': bulkData.weight_for_age?.['Severely Underweight'] || 0,
-                'Underweight': bulkData.weight_for_age?.['Underweight'] || 0,
-                'Normal': bulkData.weight_for_age?.['Normal'] || 0,
-                'Overweight': bulkData.weight_for_age?.['Overweight'] || 0,
-                'Obese': bulkData.weight_for_age?.['Obese'] || 0,
-                'Severely Stunted': bulkData.height_for_age?.['Severely Stunted'] || 0,
-                'Stunted': bulkData.height_for_age?.['Stunted'] || 0,
-                'Tall': bulkData.height_for_age?.['Tall'] || 0,
-                'Severely Wasted': bulkData.weight_for_height?.['Severely Wasted'] || 0,
-                'Wasted': bulkData.weight_for_height?.['Wasted'] || 0
-            };
+            // Get time frame and barangay from current state
+            const timeFrame = document.querySelector('.time-btn.active')?.dataset.timeframe || '1d';
+            const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
+            const barangayValue = barangay === 'All Barangays' ? '' : barangay;
             
-            console.log('Real classifications from donut chart:', realClassifications);
-            
-            // Distribute the REAL data across age groups proportionally - NO user scanning!
-            Object.keys(realClassifications).forEach(classification => {
-                const totalCount = realClassifications[classification];
-                if (totalCount > 0) {
-                    // Distribute this classification across all age groups proportionally
-                    Object.keys(ageGroups).forEach(ageGroup => {
-                        const [minAge, maxAge] = ageGroups[ageGroup];
-                        const ageGroupSize = maxAge - minAge;
-                        const totalAgeRange = toMonths - fromMonths;
-                        const proportion = ageGroupSize / totalAgeRange;
-                        const distributedCount = Math.round(totalCount * proportion);
+            // For each age group, fetch data using the SAME API as donut chart
+            for (const ageGroup of Object.keys(ageGroups)) {
+                const [minAge, maxAge] = ageGroups[ageGroup];
+                console.log(`Fetching data for age group ${ageGroup} (${minAge}-${maxAge} months)`);
+                
+                // Use the SAME API as donut chart but with age filtering
+                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangayValue}&age_from_months=${minAge}&age_to_months=${maxAge}`;
+                
+                try {
+                    const response = await fetch(url);
+                    const result = await response.json();
+                    
+                    if (result.success && result.data) {
+                        // Extract classifications from this age group's data
+                        const wfaData = result.data.weight_for_age || {};
+                        const hfaData = result.data.height_for_age || {};
+                        const wfhData = result.data.weight_for_height || {};
                         
-                        if (distributedCount > 0) {
-                            const key = `${ageGroup}_${classification}`;
-                            ageClassificationData[key] = distributedCount;
-                        }
-                    });
+                        // Map the data to our age group
+                        Object.keys(wfaData).forEach(classification => {
+                            const count = wfaData[classification] || 0;
+                            if (count > 0) {
+                                const key = `${ageGroup}_${classification}`;
+                                ageClassificationData[key] = count;
+                            }
+                        });
+                        
+                        Object.keys(hfaData).forEach(classification => {
+                            const count = hfaData[classification] || 0;
+                            if (count > 0) {
+                                const key = `${ageGroup}_${classification}`;
+                                ageClassificationData[key] = count;
+                            }
+                        });
+                        
+                        Object.keys(wfhData).forEach(classification => {
+                            const count = wfhData[classification] || 0;
+                            if (count > 0) {
+                                const key = `${ageGroup}_${classification}`;
+                                ageClassificationData[key] = count;
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error(`Error fetching data for age group ${ageGroup}:`, error);
                 }
-            });
+            }
             
             console.log('Final age classification data:', ageClassificationData);
             return ageClassificationData;
