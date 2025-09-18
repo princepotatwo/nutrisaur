@@ -773,14 +773,14 @@ class DatabaseAPI {
             error_log("FCM_DEBUG: Platform: " . $platform);
             
             // Check if user exists in community_users table
-            $stmt = $this->pdo->prepare("SELECT community_user_id FROM community_users WHERE email = :email");
+            $stmt = $this->pdo->prepare("SELECT email FROM community_users WHERE email = :email");
             $stmt->bindParam(':email', $userEmail);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
             error_log("FCM_DEBUG: User exists check - Found: " . ($user ? 'YES' : 'NO'));
             if ($user) {
-                error_log("FCM_DEBUG: User ID found: " . $user['community_user_id']);
+                error_log("FCM_DEBUG: User found: " . $user['email']);
             }
             
             if ($user) {
@@ -1275,11 +1275,11 @@ class DatabaseAPI {
             }
             
             // Check if preferences exist
-            $stmt = $this->pdo->prepare("SELECT community_user_id FROM community_users WHERE email = :user_email");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = :user_email");
             $stmt->bindParam(':user_email', $userEmail);
             $stmt->execute();
             
-            if ($stmt->rowCount() > 0) {
+            if ($stmt->fetchColumn() > 0) {
                 // Update existing preferences
                 $stmt = $this->pdo->prepare("UPDATE community_users SET 
                     age = :age,
@@ -1323,7 +1323,7 @@ class DatabaseAPI {
                 return null;
             }
             
-            $stmt = $this->pdo->prepare("SELECT * FROM community_users WHERE community_user_id = :user_id");
+            $stmt = $this->pdo->prepare("SELECT * FROM community_users WHERE email = :user_id");
             $stmt->bindParam(':user_id', $userId);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -4606,9 +4606,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                     
                     // Check if user exists
-                    $checkStmt = $pdo->prepare("SELECT community_user_id FROM community_users WHERE email = ?");
+                    $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ?");
                     $checkStmt->execute([$email]);
-                    $userExists = $checkStmt->fetch();
+                    $userExists = $checkStmt->fetchColumn() > 0;
                     
                     if (!$userExists) {
                         echo json_encode(['success' => false, 'message' => 'User not found']);
