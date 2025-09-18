@@ -732,7 +732,7 @@ if (isset($_GET['logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NutriSaur Dashboard</title>
-  
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <style>
 /* Dark Theme - Default */
@@ -3304,13 +3304,20 @@ header .user-info {
     line-height: 1.2;
 }
 
-/* Dietary Diversity Score Styles */
-.dds-container {
-    padding: 20px;
+/* Age Classification Chart Styles */
+.age-classification-chart-container {
+    padding: 15px;
+    height: 300px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 20px;
+    justify-content: center;
+}
+
+#ageClassificationChart {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+    max-height: 280px;
 }
 
 .dds-score-display {
@@ -6674,9 +6681,11 @@ body {
             </div>
             
             <div class="chart-card">
-                <h3>Dietary Diversity Score</h3>
-                <p class="chart-description">Minimum Dietary Diversity for Women (MDD-W) - evidence-based indicator of dietary quality and nutritional adequacy.</p>
-                <div id="dds-issues-chart"></div>
+                <h3>Classification Trends by Age</h3>
+                <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
+                <div class="age-classification-chart-container">
+                    <canvas id="ageClassificationChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -6960,6 +6969,9 @@ body {
                 
                 // Update trends chart with new barangay selection
                 await updateTrendsChart();
+                
+                // Update age classification chart with new barangay selection
+                await updateAgeClassificationChart();
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
@@ -8584,6 +8596,178 @@ body {
             }
         }
 
+        // Function to update age classification chart
+        async function updateAgeClassificationChart() {
+            console.log('📊 Updating age classification chart...');
+            
+            try {
+                const canvas = document.getElementById('ageClassificationChart');
+                if (!canvas) {
+                    console.error('Age classification chart canvas not found');
+                    return;
+                }
+
+                // Get current filter values
+                const timeFrame = document.querySelector('.time-btn.active')?.textContent?.trim() || '1d';
+                const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
+                const barangayValue = barangay === 'All Barangays' ? '' : barangay;
+
+                // Fetch age-based classification data
+                const url = `/api/DatabaseAPI.php?action=get_age_classifications&time_frame=${timeFrame}&barangay=${barangayValue}`;
+                console.log('Fetching age classifications from:', url);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Age classifications data received:', data);
+
+                if (!data.success || !data.data || Object.keys(data.data).length === 0) {
+                    console.log('No age classification data available');
+                    // Show empty chart
+                    createEmptyAgeChart(canvas);
+                    return;
+                }
+
+                // Process data for Chart.js
+                const ageGroups = ['0-6m', '7-12m', '13-18m', '19-24m', '25-30m', '31-36m', '37-42m', '43-48m', '49-54m', '55-60m', '6-7y', '7-8y', '8-9y', '9-10y', '10-11y'];
+                const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
+                
+                // Color mapping (same as bar chart colors)
+                const colors = {
+                    'Normal': '#4CAF50',
+                    'Overweight': '#FF9800', 
+                    'Obese': '#F44336',
+                    'Underweight': '#FFC107',
+                    'Severely Underweight': '#E91E63',
+                    'Stunted': '#9C27B0',
+                    'Severely Stunted': '#673AB7',
+                    'Wasted': '#3F51B5',
+                    'Severely Wasted': '#2196F3',
+                    'Tall': '#00BCD4'
+                };
+
+                const datasets = classifications.map(classification => {
+                    const data = ageGroups.map(ageGroup => {
+                        const key = `${ageGroup}_${classification}`;
+                        return data.data[key] || 0;
+                    });
+
+                    return {
+                        label: classification,
+                        data: data,
+                        borderColor: colors[classification] || '#666',
+                        backgroundColor: colors[classification] || '#666',
+                        tension: 0.1,
+                        pointStyle: 'circle',
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        borderWidth: 2,
+                        fill: false
+                    };
+                });
+
+                // Create chart
+                const ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ageGroups,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    pointStyle: 'line',
+                                    padding: 10,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.parsed.y + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Age Groups',
+                                    font: {
+                                        size: 11
+                                    }
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 9
+                                    }
+                                }
+                            },
+                            y: {
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 20,
+                                    callback: function(value) {
+                                        return value + '%';
+                                    },
+                                    font: {
+                                        size: 9
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Population %',
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        }
+                    }
+                });
+
+                console.log('✅ Age classification chart updated successfully');
+
+            } catch (error) {
+                console.error('❌ Error updating age classification chart:', error);
+                const canvas = document.getElementById('ageClassificationChart');
+                if (canvas) {
+                    createEmptyAgeChart(canvas);
+                }
+            }
+        }
+
+        // Function to create empty age chart
+        function createEmptyAgeChart(canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'var(--color-text)';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('No age classification data available', canvas.width / 2, canvas.height / 2);
+        }
+
         // Function to update chart description based on WHO standard
         function updateWHOChartDescription(whoStandard) {
             const descriptions = {
@@ -8967,6 +9151,10 @@ body {
                 console.log('📊 Loading initial trends chart...');
                 await updateTrendsChart();
                 
+                // Load initial age classification chart
+                console.log('📊 Loading initial age classification chart...');
+                await updateAgeClassificationChart();
+                
                 // Set up time frame button event listeners
                 const timeButtons = document.querySelectorAll('.time-btn');
                 timeButtons.forEach(button => {
@@ -8980,6 +9168,9 @@ body {
                         
                         // Update trends chart with new time frame
                         await updateTrendsChart();
+                        
+                        // Update age classification chart with new time frame
+                        await updateAgeClassificationChart();
                         
                         // Update other charts and metrics
                         await handleWHOStandardChange();
