@@ -2030,26 +2030,22 @@ header .user-info {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* SEPARATE CONTAINER BOX - NO TEXT INSIDE */
-.segments .segment.compact {
+/* NEW SIMPLE TEXT BOX DESIGN */
+.segments .simple-text-box {
     display: inline-block !important;
-    position: relative !important;
     background: rgba(0, 0, 0, 0.05) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     border-radius: 4px !important;
-    height: 16px !important;
     width: 80px !important;
-    box-sizing: border-box !important;
+    height: 16px !important;
     margin: 0 !important;
     padding: 0 !important;
-    font-size: 0 !important;
+    position: relative !important;
     vertical-align: top !important;
-    overflow: hidden !important;
-    /* Container only - no text content */
 }
 
-/* SEPARATE COLOR DOT - INDEPENDENT */
-.segments .segment.compact .segment-dot {
+/* Text box dot */
+.segments .simple-text-box .text-box-dot {
     position: absolute !important;
     left: 2px !important;
     top: 50% !important;
@@ -2059,16 +2055,15 @@ header .user-info {
     border-radius: 50% !important;
     margin: 0 !important;
     padding: 0 !important;
-    display: block !important;
-    z-index: 1 !important;
 }
 
-/* SEPARATE LABEL - COMPLETELY INDEPENDENT */
-.segments .segment.compact .segment-label {
+/* Text box label */
+.segments .simple-text-box .text-box-label {
     position: absolute !important;
     left: 8px !important;
     top: 0px !important;
     right: 0px !important;
+    height: 8px !important;
     margin: 0 !important;
     padding: 0 !important;
     font-weight: 600 !important;
@@ -2078,19 +2073,15 @@ header .user-info {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    display: block !important;
-    width: calc(100% - 8px) !important;
-    height: 8px !important;
-    box-sizing: border-box !important;
-    z-index: 2 !important;
 }
 
-/* SEPARATE PERCENTAGE - COMPLETELY INDEPENDENT */
-.segments .segment.compact .segment-percentage {
+/* Text box count */
+.segments .simple-text-box .text-box-count {
     position: absolute !important;
     left: 8px !important;
     top: 8px !important;
     right: 0px !important;
+    height: 8px !important;
     margin: 0 !important;
     padding: 0 !important;
     color: var(--color-text) !important;
@@ -2100,44 +2091,31 @@ header .user-info {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    display: block !important;
-    width: calc(100% - 8px) !important;
-    height: 8px !important;
-    box-sizing: border-box !important;
-    z-index: 2 !important;
 }
 
 
-/* Color indicators for each risk level - Colored boxes matching donut chart colors */
-.segment.compact[data-risk-level="0"] .segment-dot {
-    background-color: #4CAF50 !important; /* Light theme: Green for Low Risk */
+/* Dark theme for simple text boxes */
+.dark-theme .segments .simple-text-box {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-.segment.compact[data-risk-level="1"] .segment-dot {
-    background-color: #FF9800 !important; /* Yellow for Moderate Risk */
+.dark-theme .segments .simple-text-box .text-box-label {
+    color: #FFFFFF !important;
 }
 
-.segment.compact[data-risk-level="2"] .segment-dot {
-    background-color: #F44336 !important; /* Red for High Risk */
+.dark-theme .segments .simple-text-box .text-box-count {
+    color: #FFFFFF !important;
+    opacity: 0.8 !important;
 }
 
-.segment.compact[data-risk-level="3"] .segment-dot {
-    background-color: #D32F2F !important; /* Dark Red for Severe Risk */
-}
-
-/* Hover effects for compact segments */
-.segment.compact:hover {
+/* Hover effects for simple text boxes */
+.segments .simple-text-box:hover {
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     border-color: rgba(0, 0, 0, 0.2) !important;
     background: rgba(0, 0, 0, 0.08) !important;
     transition: all 0.2s ease !important;
-}
-
-/* Compact segments - NO FLEXBOX, manual positioning */
-.segments:has(.segment.compact) {
-    display: block !important; /* NO FLEXBOX */
-    width: 100% !important;
 }
 
 /* Responsive design for segments */
@@ -8536,18 +8514,16 @@ body {
                     chartBg.style.opacity = '0.3';
                 }
                 
-                // Create segment indicators with grid layout
+                // Create simple text boxes - no complex UI
                 chartSegments.forEach(segment => {
-                    const segmentDiv = document.createElement('div');
-                    segmentDiv.className = 'segment compact';
-                    segmentDiv.innerHTML = `
-                        <div class="segment-dot" style="background-color: ${segment.color};"></div>
-                        <div class="segment-text-container">
-                            <span class="segment-label">${segment.label}</span>
-                            <span class="segment-percentage">${segment.count} (${segment.percentage.toFixed(1)}%)</span>
-                        </div>
+                    const textBox = document.createElement('div');
+                    textBox.className = 'simple-text-box';
+                    textBox.innerHTML = `
+                        <div class="text-box-dot" style="background-color: ${segment.color};"></div>
+                        <div class="text-box-label">${segment.label}</div>
+                        <div class="text-box-count">${segment.count} (${segment.percentage.toFixed(1)}%)</div>
                     `;
-                    segments.appendChild(segmentDiv);
+                    segments.appendChild(textBox);
                 });
                 
                 console.log('WHO chart updated successfully');
