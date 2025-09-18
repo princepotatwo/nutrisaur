@@ -4999,29 +4999,29 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $users = $userResult['data'];
                 $totalUsers = count($users);
                 
-                // Debug: Log some user data to check screening dates
+                // Log basic info for debugging
                 error_log("Age Classification API - Total users: $totalUsers");
-                if (!empty($users)) {
-                    $sampleUser = $users[0];
-                    error_log("Sample user - Birthday: {$sampleUser['birthday']}, Screening Date: " . ($sampleUser['screening_date'] ?? 'NULL'));
+                
+                // OPTIMIZED: Get bulk classifications once outside the loop
+                require_once __DIR__ . '/../../who_growth_standards.php';
+                $who = new WHOGrowthStandards();
+                
+                $bulkResult = $db->getAllWHOClassificationsBulk($timeFrame, $barangay);
+                if (!$bulkResult['success'] || !isset($bulkResult['data'])) {
+                    // If bulk API fails, return empty data
+                    echo json_encode(['success' => true, 'data' => []]);
+                    break;
                 }
+                $allClassifications = $bulkResult['data'];
                 
                 // Process each age group
                 foreach ($ageGroups as $ageGroup => $ageRange) {
                     $ageGroupUsers = [];
                     
-                    // Filter users by age group using screening date (same as bulk API)
-                    require_once __DIR__ . '/../../who_growth_standards.php';
-                    $who = new WHOGrowthStandards();
-                    
+                    // Filter users by age group using screening date
                     foreach ($users as $user) {
-                        // Use screening date for age calculation (same as bulk API)
+                        // Use screening date for age calculation
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
-                        
-                        // Debug: Log age calculation for first few users
-                        if (count($ageGroupUsers) < 3) {
-                            error_log("User {$user['email']} - Birthday: {$user['birthday']}, Screening: " . ($user['screening_date'] ?? 'NULL') . ", Age in months: $ageInMonths");
-                        }
                         
                         if ($ageInMonths >= $ageRange[0] && $ageInMonths < $ageRange[1]) {
                             $ageGroupUsers[] = $user;
@@ -5036,33 +5036,24 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         continue;
                     }
                     
-                    $ageGroupCount = count($ageGroupUsers);
-                    
-                    // OPTIMIZED: Use bulk API to get all classifications at once
-                    $bulkResult = $db->getAllWHOClassificationsBulk($timeFrame, $barangay);
-                    
-                    if ($bulkResult['success'] && isset($bulkResult['data'])) {
-                        $allClassifications = $bulkResult['data'];
+                    // Process each WHO standard from pre-fetched bulk data
+                    foreach ($whoStandards as $standard) {
+                        $standardKey = str_replace('-', '_', $standard);
+                        $standardData = $allClassifications[$standardKey] ?? [];
                         
-                        // Process each WHO standard from bulk data
-                        foreach ($whoStandards as $standard) {
-                            $standardKey = str_replace('-', '_', $standard);
-                            $standardData = $allClassifications[$standardKey] ?? [];
-                            
-                            // Calculate total users for this standard (excluding "No Data")
-                            $standardTotal = 0;
-                            foreach ($standardData as $classification => $count) {
-                                if ($classification !== 'No Data') {
-                                    $standardTotal += $count;
-                                }
+                        // Calculate total users for this standard (excluding "No Data")
+                        $standardTotal = 0;
+                        foreach ($standardData as $classification => $count) {
+                            if ($classification !== 'No Data') {
+                                $standardTotal += $count;
                             }
-                            
-                            foreach ($standardData as $classification => $count) {
-                                if (in_array($classification, $classifications)) {
-                                    // Calculate percentage based on total users for this standard
-                                    $percentage = $standardTotal > 0 ? round(($count / $standardTotal) * 100, 1) : 0;
-                                    $ageClassificationData["{$ageGroup}_{$classification}"] = $percentage;
-                                }
+                        }
+                        
+                        foreach ($standardData as $classification => $count) {
+                            if (in_array($classification, $classifications)) {
+                                // Calculate percentage based on total users for this standard
+                                $percentage = $standardTotal > 0 ? round(($count / $standardTotal) * 100, 1) : 0;
+                                $ageClassificationData["{$ageGroup}_{$classification}"] = $percentage;
                             }
                         }
                     }
