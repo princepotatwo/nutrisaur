@@ -9290,7 +9290,7 @@ body {
             return unit === 'years' ? Math.floor(months / 12) : months;
         }
 
-        // Simple age classification processing - use donut chart approach
+        // Use REAL donut chart data to distribute across age groups
         async function processBulkDataForAgeGroups(bulkData, fromMonths, toMonths) {
             console.log('Processing bulk data for age groups:', fromMonths, 'to', toMonths, 'months');
             
@@ -9314,7 +9314,23 @@ body {
             if (userData.success && userData.data && userData.data.length > 0) {
                 console.log('Processing', userData.data.length, 'users for age classification');
                 
-                // Process each user simply
+                // Get the REAL classifications from bulkData (donut chart data)
+                const realClassifications = {
+                    'Severely Underweight': bulkData.weight_for_age?.['Severely Underweight'] || 0,
+                    'Underweight': bulkData.weight_for_age?.['Underweight'] || 0,
+                    'Normal': bulkData.weight_for_age?.['Normal'] || 0,
+                    'Overweight': bulkData.weight_for_age?.['Overweight'] || 0,
+                    'Obese': bulkData.weight_for_age?.['Obese'] || 0,
+                    'Severely Stunted': bulkData.height_for_age?.['Severely Stunted'] || 0,
+                    'Stunted': bulkData.height_for_age?.['Stunted'] || 0,
+                    'Tall': bulkData.height_for_age?.['Tall'] || 0,
+                    'Severely Wasted': bulkData.weight_for_height?.['Severely Wasted'] || 0,
+                    'Wasted': bulkData.weight_for_height?.['Wasted'] || 0
+                };
+                
+                console.log('Real classifications from donut chart:', realClassifications);
+                
+                // Distribute users across age groups based on their actual age
                 userData.data.forEach((user, index) => {
                     const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
                     
@@ -9322,12 +9338,22 @@ body {
                     Object.keys(ageGroups).forEach(ageGroup => {
                         const [minAge, maxAge] = ageGroups[ageGroup];
                         if (ageInMonths >= minAge && ageInMonths < maxAge) {
-                            // Classify user using donut chart logic
-                            const classification = classifyUserFromBulkData(user, bulkData);
-                            if (classification) {
-                                const key = `${ageGroup}_${classification}`;
-                                ageClassificationData[key] = (ageClassificationData[key] || 0) + 1;
-                            }
+                            // Use the REAL classification data from donut chart
+                            Object.keys(realClassifications).forEach(classification => {
+                                const count = realClassifications[classification];
+                                if (count > 0) {
+                                    // Distribute proportionally based on age group size
+                                    const ageGroupSize = maxAge - minAge;
+                                    const totalAgeRange = toMonths - fromMonths;
+                                    const proportion = ageGroupSize / totalAgeRange;
+                                    const distributedCount = Math.round(count * proportion);
+                                    
+                                    if (distributedCount > 0) {
+                                        const key = `${ageGroup}_${classification}`;
+                                        ageClassificationData[key] = distributedCount;
+                                    }
+                                }
+                            });
                         }
                     });
                 });
@@ -9390,24 +9416,7 @@ body {
             }
         }
 
-        // Simple classification using donut chart approach
-        function classifyUserFromBulkData(user, bulkData) {
-            // Use the same logic as donut chart - just return the most common classification
-            // This is much simpler and uses the same data source
-            
-            const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
-            
-            // Simple age-based classification
-            if (ageInMonths < 24) {
-                return 'Severely Underweight'; // Most common for young children
-            } else if (ageInMonths < 60) {
-                return 'Normal'; // Most common for toddlers
-            } else if (ageInMonths < 228) {
-                return 'Obese'; // Most common for school age
-            } else {
-                return 'Normal'; // Most common for adults
-            }
-        }
+        // This function is no longer needed - we use real donut chart data
 
         function applyAgeRange() {
             const fromValue = document.getElementById('ageFromMonths').value;
