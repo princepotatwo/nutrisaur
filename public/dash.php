@@ -3505,31 +3505,47 @@ header .user-info {
 
 /* Classification Trends Chart Styles */
 .trends-chart-container {
-    height: 300px;
+    height: 400px;
     margin-top: 15px;
     padding: 0 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .trends-chart {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    height: 100%;
-    gap: 6px;
-    padding: 15px 10px 60px 10px;
+    height: 250px;
+    gap: 8px;
+    padding: 15px 10px 10px 10px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
     flex-wrap: nowrap;
     min-width: 0;
     box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.trends-labels-container {
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px 15px;
+    background: var(--color-bg);
+    border-radius: 0 0 12px 12px;
+    border: 1px solid var(--color-border);
+    border-top: none;
+    overflow: visible;
 }
 
 .trend-bar {
-    width: 20px;
-    border-radius: 4px 4px 0 0;
+    width: 24px;
+    border-radius: 6px 6px 0 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3548,49 +3564,102 @@ header .user-info {
 
 .trend-bar-value {
     position: absolute;
-    top: -20px;
-    font-size: 10px;
+    top: -25px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--color-text);
     background: var(--color-card);
-    padding: 2px 4px;
-    border-radius: 3px;
+    padding: 4px 6px;
+    border-radius: 4px;
     border: 1px solid var(--color-border);
     white-space: nowrap;
     z-index: 10;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Labels positioned outside the chart */
 .trend-bar-label {
     position: absolute;
-    bottom: -25px;
-    font-size: 6px;
+    bottom: -5px;
+    font-size: 8px;
     color: var(--color-text);
     text-align: center;
     font-weight: 600;
     line-height: 1.2;
-    max-width: 40px;
+    max-width: 50px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transform: rotate(-45deg);
     transform-origin: left center;
     left: 50%;
-    margin-left: -20px;
+    margin-left: -25px;
+    z-index: 5;
 }
 
 .trend-bar-standard {
     position: absolute;
-    bottom: -40px;
-    font-size: 5px;
+    bottom: -20px;
+    font-size: 7px;
     color: var(--color-text);
     opacity: 0.8;
     font-weight: 500;
     text-align: center;
-    max-width: 40px;
+    max-width: 50px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transform: rotate(-45deg);
+    transform-origin: left center;
+    left: 50%;
+    margin-left: -25px;
+    z-index: 5;
+}
+
+/* External labels container */
+.trends-labels-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.trend-label-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+    height: 100%;
+    position: relative;
+}
+
+.trend-label-classification {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60px;
+}
+
+.trend-label-standard {
+    font-size: 8px;
+    font-weight: 500;
+    color: var(--color-text);
+    opacity: 0.8;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60px;
 }
 
 /* Bar colors for different classifications - Enhanced with gradients */
@@ -3642,63 +3711,71 @@ header .user-info {
 /* Responsive adjustments for Classification Trends Chart */
 @media (max-width: 1200px) {
     .trends-chart-container {
-        height: 280px;
+        height: 350px;
         padding: 0 8px;
     }
     
     .trends-chart {
-        gap: 5px;
-        padding: 12px 8px 50px 8px;
+        height: 200px;
+        gap: 6px;
+        padding: 12px 8px 8px 8px;
+    }
+    
+    .trends-labels-container {
+        height: 150px;
+        padding: 8px 12px;
     }
     
     .trend-bar {
-        width: 18px;
+        width: 20px;
     }
     
-    .trend-bar-label {
-        font-size: 5px;
-        max-width: 35px;
-        bottom: -20px;
+    .trend-label-classification {
+        font-size: 8px;
+        max-width: 50px;
     }
     
-    .trend-bar-standard {
-        font-size: 4px;
-        max-width: 35px;
-        bottom: -35px;
+    .trend-label-standard {
+        font-size: 7px;
+        max-width: 50px;
     }
 }
 
 @media (max-width: 768px) {
     .trends-chart-container {
-        height: 250px;
+        height: 300px;
         padding: 0 5px;
     }
     
     .trends-chart {
-        gap: 3px;
-        padding: 8px 5px 40px 5px;
+        height: 180px;
+        gap: 4px;
+        padding: 8px 5px 5px 5px;
+    }
+    
+    .trends-labels-container {
+        height: 120px;
+        padding: 5px 8px;
     }
     
     .trend-bar {
-        width: 14px;
+        width: 16px;
     }
     
-    .trend-bar-label {
-        font-size: 4px;
-        max-width: 30px;
-        bottom: -15px;
+    .trend-label-classification {
+        font-size: 7px;
+        max-width: 40px;
     }
     
-    .trend-bar-standard {
-        font-size: 3px;
-        max-width: 30px;
-        bottom: -30px;
+    .trend-label-standard {
+        font-size: 6px;
+        max-width: 40px;
     }
     
     .trend-bar-value {
-        font-size: 8px;
-        padding: 1px 3px;
-        top: -15px;
+        font-size: 10px;
+        padding: 2px 4px;
+        top: -20px;
     }
 }
 
@@ -6636,6 +6713,11 @@ body {
                     <div class="trends-chart" id="trends-chart">
                         <!-- Bar chart will be generated dynamically -->
                     </div>
+                    <div class="trends-labels-container">
+                        <div class="trends-labels-row" id="trends-labels">
+                            <!-- Labels will be generated dynamically -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -8494,10 +8576,8 @@ body {
 
                 // Calculate dynamic scaling based on number of bars and available space
                 const numBars = classificationsArray.length;
-                const containerHeight = 300; // Container height
-                const padding = 60; // Bottom padding for labels
-                const availableHeight = containerHeight - padding;
-                const maxBarHeight = Math.min(availableHeight * 0.75, Math.max(60, availableHeight - (numBars * 2)));
+                const chartHeight = 250; // Chart area height (no padding needed for labels)
+                const maxBarHeight = Math.min(chartHeight * 0.8, Math.max(80, chartHeight - (numBars * 3)));
                 
                 // Create bars
                 classificationsArray.forEach((item, index) => {
@@ -8508,26 +8588,42 @@ body {
                     barDiv.style.height = `${barHeight}px`;
                     barDiv.style.flex = '0 0 auto'; // Prevent flex shrinking
                     
-                    // Format classification name for display - shorten long names
-                    let displayName = item.classification.replace(/([A-Z])/g, ' $1').trim();
-                    if (displayName.length > 12) {
-                        displayName = displayName.substring(0, 12) + '...';
-                    }
-                    
-                    // Shorten standard labels
-                    let standardLabel = item.standard_label;
-                    if (standardLabel && standardLabel.length > 8) {
-                        standardLabel = standardLabel.substring(0, 8);
-                    }
-                    
                     barDiv.innerHTML = `
                         <div class="trend-bar-value">${item.count}</div>
-                        <div class="trend-bar-label">${displayName}</div>
-                        <div class="trend-bar-standard">${standardLabel}</div>
                     `;
                     
                     trendsChart.appendChild(barDiv);
                 });
+
+                // Create external labels
+                const trendsLabels = document.getElementById('trends-labels');
+                if (trendsLabels) {
+                    trendsLabels.innerHTML = '';
+                    
+                    classificationsArray.forEach((item, index) => {
+                        const labelDiv = document.createElement('div');
+                        labelDiv.className = 'trend-label-item';
+                        
+                        // Format classification name for display
+                        let displayName = item.classification.replace(/([A-Z])/g, ' $1').trim();
+                        if (displayName.length > 15) {
+                            displayName = displayName.substring(0, 15) + '...';
+                        }
+                        
+                        // Format standard label
+                        let standardLabel = item.standard_label;
+                        if (standardLabel && standardLabel.length > 10) {
+                            standardLabel = standardLabel.substring(0, 10);
+                        }
+                        
+                        labelDiv.innerHTML = `
+                            <div class="trend-label-classification">${displayName}</div>
+                            <div class="trend-label-standard">${standardLabel}</div>
+                        `;
+                        
+                        trendsLabels.appendChild(labelDiv);
+                    });
+                }
 
                 console.log('✅ Trends chart updated successfully with all classifications');
 
