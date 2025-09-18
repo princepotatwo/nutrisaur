@@ -3322,8 +3322,8 @@ header .user-info {
 
 /* Age Classification Chart Styles */
 .age-classification-chart-container {
-    height: 350px;
-    max-height: 350px;
+    height: 300px;
+    max-height: 300px;
     width: 100%;
     max-width: 100%;
     display: flex;
@@ -3357,6 +3357,118 @@ header .user-info {
     margin: 0 auto;
 }
 
+/* Age Range Controls - Bootstrap Style */
+.age-range-controls {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.age-range-header {
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.age-range-label {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 14px;
+    margin: 0;
+}
+
+.age-range-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 120px;
+}
+
+.input-label {
+    font-size: 12px;
+    color: var(--text-color-secondary);
+    font-weight: 500;
+    margin: 0;
+}
+
+.input-wrapper {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.form-control, .form-select {
+    padding: 6px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 13px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-width: 60px;
+}
+
+.form-control:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.form-control {
+    width: 70px;
+}
+
+.form-select {
+    width: 80px;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: var(--text-color-secondary);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: var(--text-color);
+    transform: translateY(-1px);
+}
+
 /* Responsive adjustments for age classification chart */
 @media (max-width: 768px) {
     .chart-card[style*="grid-column: 1 / -1"] {
@@ -3366,9 +3478,24 @@ header .user-info {
     }
     
     .age-classification-chart-container {
-        height: 300px;
-        max-height: 300px;
+        height: 250px;
+        max-height: 250px;
         padding: 8px;
+    }
+    
+    .age-range-inputs {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .input-group {
+        min-width: 100%;
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    .input-wrapper {
+        gap: 8px;
     }
 }
 
@@ -3380,9 +3507,19 @@ header .user-info {
     }
     
     .age-classification-chart-container {
-        height: 250px;
-        max-height: 250px;
+        height: 200px;
+        max-height: 200px;
         padding: 5px;
+    }
+    
+    .form-control, .form-select {
+        font-size: 12px;
+        padding: 5px 6px;
+    }
+    
+    .btn {
+        font-size: 12px;
+        padding: 5px 10px;
     }
 }
 
@@ -6767,41 +6904,40 @@ body {
 
                     <!-- Age Range Controls - Moved below title, full width -->
                     <div class="age-range-controls" style="padding: 12px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px;">
-                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
-                            <label style="font-weight: 600; color: var(--text-color); font-size: 14px;">Age Range Filter:</label>
-                            
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <label style="font-size: 13px; color: var(--text-color-secondary);">From:</label>
-                                <input type="number" id="ageFromMonths" min="0" max="1200" value="0" 
-                                       style="width: 70px; padding: 5px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: var(--input-bg); color: var(--text-color);">
-                                <select id="ageFromUnit" style="padding: 5px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: var(--input-bg); color: var(--text-color);">
-                                    <option value="months">Months</option>
-                                    <option value="years">Years</option>
-                                </select>
+                            <div class="age-range-header">
+                                <label class="age-range-label">Age Range Filter</label>
                             </div>
                             
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <label style="font-size: 13px; color: var(--text-color-secondary);">To:</label>
-                                <input type="number" id="ageToMonths" min="0" max="1200" value="71" 
-                                       style="width: 70px; padding: 5px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: var(--input-bg); color: var(--text-color);">
-                                <select id="ageToUnit" style="padding: 5px 6px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; background: var(--input-bg); color: var(--text-color);">
-                                    <option value="months">Months</option>
-                                    <option value="years">Years</option>
-                                </select>
+                            <div class="age-range-inputs">
+                                <div class="input-group">
+                                    <label class="input-label">From:</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control">
+                                        <select id="ageFromUnit" class="form-select">
+                                            <option value="months">Months</option>
+                                            <option value="years">Years</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label class="input-label">To:</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control">
+                                        <select id="ageToUnit" class="form-select">
+                                            <option value="months">Months</option>
+                                            <option value="years">Years</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="button-group">
+                                    <button id="applyAgeRange" class="btn btn-primary">Apply</button>
+                                    <button id="resetAgeRange" class="btn btn-secondary">Reset</button>
+                                </div>
                             </div>
-                            
-                            <button id="applyAgeRange" style="padding: 6px 12px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background-color 0.2s;">
-                                Apply
-                            </button>
-                            
-                            <button id="resetAgeRange" style="padding: 6px 12px; background: var(--text-color-secondary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 500; transition: background-color 0.2s;">
-                                Reset
-                        </button>
                         </div>
 
-                        <div style="margin-top: 8px; font-size: 11px; color: var(--text-color-secondary); text-align: center;">
-                            <span id="ageRangeDisplay">Current range: 0-71 months (0-5 years 11 months)</span>
-                        </div>
                     </div>
                 </div>
                 
@@ -8931,20 +9067,6 @@ body {
             return unit === 'years' ? Math.floor(months / 12) : months;
         }
 
-        function updateAgeRangeDisplay() {
-            const fromValue = document.getElementById('ageFromMonths').value;
-            const fromUnit = document.getElementById('ageFromUnit').value;
-            const toValue = document.getElementById('ageToMonths').value;
-            const toUnit = document.getElementById('ageToUnit').value;
-            
-            const fromMonths = convertToMonths(parseInt(fromValue), fromUnit);
-            const toMonths = convertToMonths(parseInt(toValue), toUnit);
-            
-            const fromDisplay = fromMonths < 12 ? `${fromMonths}m` : `${Math.floor(fromMonths/12)}y${fromMonths%12 ? `${fromMonths%12}m` : ''}`;
-            const toDisplay = toMonths < 12 ? `${toMonths}m` : `${Math.floor(toMonths/12)}y${toMonths%12 ? `${toMonths%12}m` : ''}`;
-            
-            document.getElementById('ageRangeDisplay').textContent = `Current range: ${fromDisplay} - ${toDisplay}`;
-        }
 
         function applyAgeRange() {
             const fromValue = document.getElementById('ageFromMonths').value;
@@ -8960,7 +9082,6 @@ body {
                 return;
             }
             
-            updateAgeRangeDisplay();
             updateAgeClassificationChartWithRange(fromMonths, toMonths);
         }
 
@@ -8969,7 +9090,6 @@ body {
             document.getElementById('ageFromUnit').value = 'months';
             document.getElementById('ageToMonths').value = 71;
             document.getElementById('ageToUnit').value = 'months';
-            updateAgeRangeDisplay();
             updateAgeClassificationChartWithRange(0, 71);
         }
 
@@ -9570,13 +9690,9 @@ body {
             inputs.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
-                    element.addEventListener('change', updateAgeRangeDisplay);
-                    element.addEventListener('input', updateAgeRangeDisplay);
                 }
             });
             
-            // Initialize display
-            updateAgeRangeDisplay();
             
             // Add window resize listener to resize chart
             window.addEventListener('resize', () => {
