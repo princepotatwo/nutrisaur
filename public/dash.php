@@ -3515,13 +3515,13 @@ header .user-info {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    height: 250px;
+    height: 200px;
     gap: 2px;
-    padding: 15px 10px 60px 10px;
+    padding: 15px 10px 10px 10px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
-    overflow: visible;
+    overflow: hidden;
     width: 100%;
     flex-wrap: nowrap;
     min-width: 0;
@@ -3564,30 +3564,48 @@ header .user-info {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.trend-bar-label {
-    position: absolute;
-    bottom: -45px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    white-space: nowrap;
-    z-index: 5;
+.trends-labels-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2px;
+    width: 100%;
+    padding: 10px 10px 0 10px;
+    height: 50px;
+    box-sizing: border-box;
 }
 
-.trend-bar-classification {
+.trend-label-item {
+    flex: 1;
+    min-width: 15px;
+    max-width: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+}
+
+.trend-label-classification {
     font-size: 8px;
     font-weight: 600;
-    color: inherit;
+    color: var(--color-text);
     line-height: 1.2;
     margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.trend-bar-standard {
+.trend-label-standard {
     font-size: 7px;
     font-weight: 500;
-    color: inherit;
+    color: var(--color-text);
     opacity: 0.8;
     line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -3646,12 +3664,22 @@ header .user-info {
     }
     
     .trends-chart {
-        height: 200px;
+        height: 160px;
         gap: 1px;
-        padding: 12px 8px 50px 8px;
+        padding: 12px 8px 8px 8px;
     }
     
     .trend-bar {
+        min-width: 12px;
+        max-width: 25px;
+    }
+    
+    .trends-labels-container {
+        padding: 8px 8px 0 8px;
+        height: 45px;
+    }
+    
+    .trend-label-item {
         min-width: 12px;
         max-width: 25px;
     }
@@ -3665,12 +3693,22 @@ header .user-info {
     }
     
     .trends-chart {
-        height: 180px;
+        height: 140px;
         gap: 1px;
-        padding: 8px 5px 40px 5px;
+        padding: 8px 5px 5px 5px;
     }
     
     .trend-bar {
+        min-width: 10px;
+        max-width: 20px;
+    }
+    
+    .trends-labels-container {
+        padding: 6px 5px 0 5px;
+        height: 40px;
+    }
+    
+    .trend-label-item {
         min-width: 10px;
         max-width: 20px;
     }
@@ -6617,6 +6655,9 @@ body {
                     <div class="trends-chart" id="trends-chart">
                         <!-- Bar chart will be generated dynamically -->
                     </div>
+                    <div class="trends-labels-container" id="trends-labels">
+                        <!-- Labels will be generated dynamically -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -8490,7 +8531,7 @@ body {
                     return classification.charAt(0).toUpperCase();
                 }
 
-                // Create bars with attached labels
+                // Create bars
                 classificationsArray.forEach((item, index) => {
                     const barHeight = maxCount > 0 ? (item.count / maxCount) * maxBarHeight : 20;
                     
@@ -8498,25 +8539,39 @@ body {
                     barDiv.className = `trend-bar ${item.classification.toLowerCase().replace(/\s+/g, '-')}`;
                     barDiv.style.height = `${barHeight}px`;
                     
-                    // Create abbreviation for classification
-                    const abbreviation = createAbbreviation(item.classification);
-                    
-                    // Format standard label
-                    let standardLabel = item.standard_label;
-                    if (standardLabel && standardLabel.length > 10) {
-                        standardLabel = standardLabel.substring(0, 10);
-                    }
-                    
                     barDiv.innerHTML = `
                         <div class="trend-bar-value">${item.count}</div>
-                        <div class="trend-bar-label">
-                            <div class="trend-bar-classification">${abbreviation}</div>
-                            <div class="trend-bar-standard">${standardLabel}</div>
-                        </div>
                     `;
                     
                     trendsChart.appendChild(barDiv);
                 });
+
+                // Create labels in separate container
+                const trendsLabels = document.getElementById('trends-labels');
+                if (trendsLabels) {
+                    trendsLabels.innerHTML = '';
+                    
+                    classificationsArray.forEach((item, index) => {
+                        const labelDiv = document.createElement('div');
+                        labelDiv.className = 'trend-label-item';
+                        
+                        // Create abbreviation for classification
+                        const abbreviation = createAbbreviation(item.classification);
+                        
+                        // Format standard label
+                        let standardLabel = item.standard_label;
+                        if (standardLabel && standardLabel.length > 10) {
+                            standardLabel = standardLabel.substring(0, 10);
+                        }
+                        
+                        labelDiv.innerHTML = `
+                            <div class="trend-label-classification">${abbreviation}</div>
+                            <div class="trend-label-standard">${standardLabel}</div>
+                        `;
+                        
+                        trendsLabels.appendChild(labelDiv);
+                    });
+                }
 
                 console.log('✅ Trends chart updated successfully with all classifications');
 
