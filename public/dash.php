@@ -9397,16 +9397,7 @@ body {
                 // Large range: 6-month groups
                 while (currentMonth < toMonths) {
                     const nextMonth = Math.min(currentMonth + 6, toMonths);
-                    const fromYears = Math.floor(currentMonth / 12);
-                    const toYears = Math.floor((nextMonth - 1) / 12);
-                    
-                    let label;
-                    if (fromYears === toYears) {
-                        label = fromYears + 'y';
-                    } else {
-                        label = fromYears + 'y-' + toYears + 'y';
-                    }
-                    
+                    const label = currentMonth + 'm-' + (nextMonth - 1) + 'm';
                     ageGroups[label] = [currentMonth, nextMonth];
                     currentMonth = nextMonth;
                     
