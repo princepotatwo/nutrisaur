@@ -17,12 +17,211 @@
 
 require_once 'config.php';
 
+/**
+ * Decision Tree Node Class for WHO Growth Standards
+ */
+class DecisionTreeNode {
+    public $condition;
+    public $trueChild;
+    public $falseChild;
+    public $result;
+    public $isLeaf;
+    
+    public function __construct($condition = null, $result = null, $isLeaf = false) {
+        $this->condition = $condition;
+        $this->result = $result;
+        $this->isLeaf = $isLeaf;
+        $this->trueChild = null;
+        $this->falseChild = null;
+    }
+    
+    public function evaluate($value) {
+        if ($this->isLeaf) {
+            return $this->result;
+        }
+        
+        if ($this->condition($value)) {
+            return $this->trueChild ? $this->trueChild->evaluate($value) : $this->result;
+        } else {
+            return $this->falseChild ? $this->falseChild->evaluate($value) : $this->result;
+        }
+    }
+}
+
+/**
+ * Decision Tree Builder for WHO Growth Standards
+ */
+class WHOGrowthDecisionTreeBuilder {
+    
+    public static function buildWeightForAgeTree() {
+        $root = new DecisionTreeNode();
+        $root->condition = function($zScore) { return $zScore < -3; };
+        $root->trueChild = new DecisionTreeNode(null, 'Severely Underweight', true);
+        
+        $underweight = new DecisionTreeNode();
+        $underweight->condition = function($zScore) { return $zScore >= -3 && $zScore < -2; };
+        $underweight->trueChild = new DecisionTreeNode(null, 'Underweight', true);
+        
+        $normal = new DecisionTreeNode();
+        $normal->condition = function($zScore) { return $zScore >= -2 && $zScore <= 2; };
+        $normal->trueChild = new DecisionTreeNode(null, 'Normal', true);
+        
+        $overweight = new DecisionTreeNode(null, 'Overweight', true);
+        
+        $root->falseChild = $underweight;
+        $underweight->falseChild = $normal;
+        $normal->falseChild = $overweight;
+        
+        return $root;
+    }
+    
+    public static function buildHeightForAgeTree() {
+        $root = new DecisionTreeNode();
+        $root->condition = function($zScore) { return $zScore < -3; };
+        $root->trueChild = new DecisionTreeNode(null, 'Severely Stunted', true);
+        
+        $stunted = new DecisionTreeNode();
+        $stunted->condition = function($zScore) { return $zScore >= -3 && $zScore < -2; };
+        $stunted->trueChild = new DecisionTreeNode(null, 'Stunted', true);
+        
+        $normal = new DecisionTreeNode();
+        $normal->condition = function($zScore) { return $zScore >= -2 && $zScore <= 2; };
+        $normal->trueChild = new DecisionTreeNode(null, 'Normal', true);
+        
+        $tall = new DecisionTreeNode(null, 'Tall', true);
+        
+        $root->falseChild = $stunted;
+        $stunted->falseChild = $normal;
+        $normal->falseChild = $tall;
+        
+        return $root;
+    }
+    
+    public static function buildWeightForHeightTree() {
+        $root = new DecisionTreeNode();
+        $root->condition = function($zScore) { return $zScore < -3; };
+        $root->trueChild = new DecisionTreeNode(null, 'Severely Wasted', true);
+        
+        $wasted = new DecisionTreeNode();
+        $wasted->condition = function($zScore) { return $zScore >= -3 && $zScore < -2; };
+        $wasted->trueChild = new DecisionTreeNode(null, 'Wasted', true);
+        
+        $normal = new DecisionTreeNode();
+        $normal->condition = function($zScore) { return $zScore >= -2 && $zScore <= 2; };
+        $normal->trueChild = new DecisionTreeNode(null, 'Normal', true);
+        
+        $overweight = new DecisionTreeNode();
+        $overweight->condition = function($zScore) { return $zScore > 2 && $zScore <= 3; };
+        $overweight->trueChild = new DecisionTreeNode(null, 'Overweight', true);
+        
+        $obese = new DecisionTreeNode(null, 'Obese', true);
+        
+        $root->falseChild = $wasted;
+        $wasted->falseChild = $normal;
+        $normal->falseChild = $overweight;
+        $overweight->falseChild = $obese;
+        
+        return $root;
+    }
+    
+    public static function buildBMIClassificationTree() {
+        $root = new DecisionTreeNode();
+        $root->condition = function($zScore) { return $zScore < -3; };
+        $root->trueChild = new DecisionTreeNode(null, 'Severely Underweight', true);
+        
+        $underweight = new DecisionTreeNode();
+        $underweight->condition = function($zScore) { return $zScore < -2; };
+        $underweight->trueChild = new DecisionTreeNode(null, 'Underweight', true);
+        
+        $normal = new DecisionTreeNode();
+        $normal->condition = function($zScore) { return $zScore <= 1; };
+        $normal->trueChild = new DecisionTreeNode(null, 'Normal', true);
+        
+        $overweight = new DecisionTreeNode();
+        $overweight->condition = function($zScore) { return $zScore <= 2; };
+        $overweight->trueChild = new DecisionTreeNode(null, 'Overweight', true);
+        
+        $obese = new DecisionTreeNode(null, 'Obese', true);
+        
+        $root->falseChild = $underweight;
+        $underweight->falseChild = $normal;
+        $normal->falseChild = $overweight;
+        $overweight->falseChild = $obese;
+        
+        return $root;
+    }
+    
+    public static function buildAdultBMITree() {
+        $root = new DecisionTreeNode();
+        $root->condition = function($bmi) { return $bmi < 18.5; };
+        $root->trueChild = new DecisionTreeNode(null, 'Underweight', true);
+        
+        $normal = new DecisionTreeNode();
+        $normal->condition = function($bmi) { return $bmi < 25; };
+        $normal->trueChild = new DecisionTreeNode(null, 'Normal', true);
+        
+        $overweight = new DecisionTreeNode();
+        $overweight->condition = function($bmi) { return $bmi < 30; };
+        $overweight->trueChild = new DecisionTreeNode(null, 'Overweight', true);
+        
+        $obese = new DecisionTreeNode(null, 'Obese', true);
+        
+        $root->falseChild = $normal;
+        $normal->falseChild = $overweight;
+        $overweight->falseChild = $obese;
+        
+        return $root;
+    }
+    
+    public static function buildRiskAssessmentTree() {
+        $root = new DecisionTreeNode();
+        $root->condition = function($results) {
+            return $results['weight_for_age']['classification'] === 'Severely Underweight' ||
+                   $results['height_for_age']['classification'] === 'Severely Stunted' ||
+                   $results['weight_for_height']['classification'] === 'Severely Wasted';
+        };
+        $root->trueChild = new DecisionTreeNode(null, ['level' => 'Severe', 'factors' => ['Severe malnutrition detected']], true);
+        
+        $moderate = new DecisionTreeNode();
+        $moderate->condition = function($results) {
+            return $results['weight_for_age']['classification'] === 'Underweight' ||
+                   $results['height_for_age']['classification'] === 'Stunted' ||
+                   $results['weight_for_height']['classification'] === 'Wasted' ||
+                   $results['bmi_for_age']['classification'] === 'Overweight';
+        };
+        $moderate->trueChild = new DecisionTreeNode(null, ['level' => 'Moderate', 'factors' => ['Underweight indicators present', 'Overweight indicators present']], true);
+        
+        $low = new DecisionTreeNode(null, ['level' => 'Low', 'factors' => []], true);
+        
+        $root->falseChild = $moderate;
+        $moderate->falseChild = $low;
+        
+        return $root;
+    }
+}
+
 class WHOGrowthStandards {
     
     private $pdo;
+    private $decisionTrees;
     
     public function __construct() {
         $this->pdo = getDatabaseConnection();
+        $this->initializeDecisionTrees();
+    }
+    
+    /**
+     * Initialize all decision trees
+     */
+    private function initializeDecisionTrees() {
+        $this->decisionTrees = [
+            'weight_for_age' => WHOGrowthDecisionTreeBuilder::buildWeightForAgeTree(),
+            'height_for_age' => WHOGrowthDecisionTreeBuilder::buildHeightForAgeTree(),
+            'weight_for_height' => WHOGrowthDecisionTreeBuilder::buildWeightForHeightTree(),
+            'bmi_classification' => WHOGrowthDecisionTreeBuilder::buildBMIClassificationTree(),
+            'adult_bmi' => WHOGrowthDecisionTreeBuilder::buildAdultBMITree(),
+            'risk_assessment' => WHOGrowthDecisionTreeBuilder::buildRiskAssessmentTree()
+        ];
     }
     
     /**
@@ -43,51 +242,28 @@ class WHOGrowthStandards {
     /**
      * Get nutritional classification based on z-score for Weight-for-Age
      * WHO standards: < -3 SD = Severely Underweight, -3 to -2 SD = Underweight, -2 to +2 SD = Normal, > +2 SD = Overweight
+     * Now using Decision Tree Algorithm
      */
     public function getWeightForAgeClassification($zScore) {
-        if ($zScore < -3) {
-            return 'Severely Underweight';
-        } elseif ($zScore >= -3 && $zScore < -2) {
-            return 'Underweight';
-        } elseif ($zScore >= -2 && $zScore <= 2) {
-            return 'Normal';
-        } else {
-            return 'Overweight';
-        }
+        return $this->decisionTrees['weight_for_age']->evaluate($zScore);
     }
 
     /**
      * Get nutritional classification based on z-score for Height-for-Age (Stunting)
      * WHO standards: < -3 SD = Severely Stunted, -3 to -2 SD = Stunted, -2 to +2 SD = Normal, > +2 SD = Tall
+     * Now using Decision Tree Algorithm
      */
     public function getHeightForAgeClassification($zScore) {
-        if ($zScore < -3) {
-            return 'Severely Stunted';
-        } elseif ($zScore >= -3 && $zScore < -2) {
-            return 'Stunted';
-        } elseif ($zScore >= -2 && $zScore <= 2) {
-            return 'Normal';
-        } else {
-            return 'Tall';
-        }
+        return $this->decisionTrees['height_for_age']->evaluate($zScore);
     }
 
     /**
      * Get nutritional classification based on z-score for Weight-for-Height (Wasting)
      * WHO standards: < -3 SD = Severely Wasted, -3 to -2 SD = Wasted, -2 to +2 SD = Normal, > +2 SD = Overweight, > +3 SD = Obese
+     * Now using Decision Tree Algorithm
      */
     public function getWeightForHeightClassification($zScore) {
-        if ($zScore < -3) {
-            return 'Severely Wasted';
-        } elseif ($zScore >= -3 && $zScore < -2) {
-            return 'Wasted';
-        } elseif ($zScore >= -2 && $zScore <= 2) {
-            return 'Normal';
-        } elseif ($zScore > 2 && $zScore <= 3) {
-            return 'Overweight';
-        } else {
-            return 'Obese';
-        }
+        return $this->decisionTrees['weight_for_height']->evaluate($zScore);
     }
 
     /**
@@ -107,36 +283,21 @@ class WHOGrowthStandards {
 
     /**
      * Get BMI classification based on z-score
+     * Now using Decision Tree Algorithm
      */
     public function getBMIClassification($zScore) {
-        if ($zScore < -3) {
-            return 'Severely Underweight';
-        } elseif ($zScore < -2) {
-            return 'Underweight';
-        } elseif ($zScore <= 1) {
-            return 'Normal';
-        } elseif ($zScore <= 2) {
-            return 'Overweight';
-        } else {
-            return 'Obese';
-        }
+        return $this->decisionTrees['bmi_classification']->evaluate($zScore);
     }
     
     /**
      * Get adult BMI classification based on BMI value
      * @param float $bmi BMI value
      * @return array Array with z_score and classification
+     * Now using Decision Tree Algorithm
      */
     public function getAdultBMIClassification($bmi) {
-        if ($bmi < 18.5) {
-            return ['z_score' => null, 'classification' => 'Underweight'];
-        } elseif ($bmi < 25) {
-            return ['z_score' => null, 'classification' => 'Normal'];
-        } elseif ($bmi < 30) {
-            return ['z_score' => null, 'classification' => 'Overweight'];
-        } else {
-            return ['z_score' => null, 'classification' => 'Obese'];
-        }
+        $classification = $this->decisionTrees['adult_bmi']->evaluate($bmi);
+        return ['z_score' => null, 'classification' => $classification];
     }
     
     
@@ -3024,30 +3185,10 @@ class WHOGrowthStandards {
         
         $results = $this->processAllGrowthStandards($weight, $height, $birthDate, $sex, $screeningDate);
         
-        // Determine overall nutritional risk
-        $riskFactors = [];
-        $riskLevel = 'Low';
-        
-        // Check for severe malnutrition indicators
-        if ($results['weight_for_age']['classification'] === 'Severely Underweight' ||
-            $results['height_for_age']['classification'] === 'Severely Stunted' ||
-            $results['weight_for_height']['classification'] === 'Severely Wasted') {
-            $riskLevel = 'Severe';
-            $riskFactors[] = 'Severe malnutrition detected';
-        }
-        
-        // Check for moderate risk factors
-        if ($results['weight_for_age']['classification'] === 'Underweight' ||
-            $results['height_for_age']['classification'] === 'Stunted' ||
-            $results['weight_for_height']['classification'] === 'Wasted') {
-            if ($riskLevel === 'Low') $riskLevel = 'Moderate';
-            $riskFactors[] = 'Underweight indicators present';
-        }
-        
-        if ($results['bmi_for_age']['classification'] === 'Overweight') {
-            if ($riskLevel === 'Low') $riskLevel = 'Moderate';
-            $riskFactors[] = 'Overweight indicators present';
-        }
+        // Determine overall nutritional risk using Decision Tree Algorithm
+        $riskAssessment = $this->decisionTrees['risk_assessment']->evaluate($results);
+        $riskLevel = $riskAssessment['level'];
+        $riskFactors = $riskAssessment['factors'];
         
         return [
             'success' => true,

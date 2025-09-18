@@ -1,55 +1,1000 @@
-[Thu Sep 18 03:04:48 2025] 100.64.0.4:27518 Accepted
-[Thu Sep 18 03:04:48 2025] 100.64.0.4:27518 [200]: GET /logo.png
-[Thu Sep 18 03:04:48 2025] 100.64.0.4:27518 Closing
-[Thu Sep 18 03:04:51 2025] 100.64.0.4:55062 Accepted
-[Thu Sep 18 03:04:51 2025] DatabaseAPI: PDO connection established on attempt 1
-[Thu Sep 18 03:04:51 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Thu Sep 18 03:04:51 2025] 100.64.0.4:55062 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
-[Thu Sep 18 03:04:51 2025] 100.64.0.4:55062 Closing
-[Thu Sep 18 03:04:55 2025] 100.64.0.3:46590 Accepted
-[Thu Sep 18 03:04:55 2025] DatabaseAPI: PDO connection established on attempt 1
-[Thu Sep 18 03:04:55 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Thu Sep 18 03:04:55 2025] 100.64.0.3:46590 [200]: POST /api/DatabaseAPI.php?action=check_email_exists
-[Thu Sep 18 03:04:55 2025] 100.64.0.3:46590 Closing
-[Thu Sep 18 03:04:55 2025] 100.64.0.3:46602 Accepted
-[Thu Sep 18 03:04:55 2025] DatabaseAPI: PDO connection established on attempt 1
-[Thu Sep 18 03:04:55 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Thu Sep 18 03:04:55 2025] UPDATE_DEBUG: Received data: {"email":"meow@udj.d","name":"meow","municipality":"ORANI","barangay":"Calutit","sex":"Male","birthday":"2005-09-18","is_pregnant":"Yes","weight":"100","height":"160","muac":"0"}
-[Thu Sep 18 03:04:55 2025] UPDATE_DEBUG: Email from data: meow@udj.d
-[Thu Sep 18 03:04:55 2025] UPDATE_DEBUG: Checking if user exists with email: meow@udj.d
-[Thu Sep 18 03:04:55 2025] UPDATE_DEBUG: User exists check result: NO
-[Thu Sep 18 03:04:55 2025] UPDATE_DEBUG: User not found for email: meow@udj.d
-[Thu Sep 18 03:04:55 2025] 100.64.0.3:46602 [200]: POST /api/DatabaseAPI.php?action=update_community_user
-[Thu Sep 18 03:04:55 2025] 100.64.0.3:46602 Closing
-Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 11147
-[Thu Sep 18 03:05:04 2025] 100.64.0.5:25390 Accepted
-[Thu Sep 18 03:05:04 2025] DatabaseAPI: PDO connection established on attempt 1
-[Thu Sep 18 03:05:04 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Thu Sep 18 03:05:04 2025] 100.64.0.5:25390 [200]: POST /api/DatabaseAPI.php?action=check_email_exists
-[Thu Sep 18 03:05:04 2025] 100.64.0.5:25390 Closing
-[Thu Sep 18 03:05:04 2025] 100.64.0.5:25400 Accepted
-[Thu Sep 18 03:05:04 2025] DatabaseAPI: PDO connection established on attempt 1
-[Thu Sep 18 03:05:04 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Thu Sep 18 03:05:04 2025] UPDATE_DEBUG: Received data: {"email":"meow@udj.d","name":"meow","municipality":"ORANI","barangay":"Calutit","sex":"Male","birthday":"2005-09-18","is_pregnant":"Yes","weight":"50","height":"160","muac":"0"}
-[Thu Sep 18 03:05:04 2025] UPDATE_DEBUG: Email from data: meow@udj.d
-[Thu Sep 18 03:05:04 2025] UPDATE_DEBUG: Checking if user exists with email: meow@udj.d
-[Thu Sep 18 03:05:04 2025] UPDATE_DEBUG: User exists check result: NO
-[Thu Sep 18 03:05:04 2025] UPDATE_DEBUG: User not found for email: meow@udj.d
-[Thu Sep 18 03:05:04 2025] 100.64.0.5:25400 [200]: POST /api/DatabaseAPI.php?action=update_community_user
-[Thu Sep 18 03:05:04 2025] 100.64.0.5:25400 Closing
-Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 160
-[Thu Sep 18 03:05:12 2025] 100.64.0.4:43034 Accepted
-[Thu Sep 18 03:05:12 2025] DatabaseAPI: PDO connection established on attempt 1
-[Thu Sep 18 03:05:12 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Thu Sep 18 03:05:12 2025] 100.64.0.4:43034 [200]: POST /api/DatabaseAPI.php?action=check_email_exists
-[Thu Sep 18 03:05:12 2025] 100.64.0.4:43034 Closing
-[Thu Sep 18 03:05:13 2025] 100.64.0.4:43038 Accepted
-[Thu Sep 18 03:05:13 2025] DatabaseAPI: PDO connection established on attempt 1
-[Thu Sep 18 03:05:13 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Thu Sep 18 03:05:13 2025] UPDATE_DEBUG: Received data: {"email":"meow@udj.d","name":"meow","municipality":"ORANI","barangay":"Calutit","sex":"Male","birthday":"2005-09-18","is_pregnant":"Yes","weight":"50","height":"160","muac":"0"}
-[Thu Sep 18 03:05:13 2025] UPDATE_DEBUG: Email from data: meow@udj.d
-[Thu Sep 18 03:05:13 2025] UPDATE_DEBUG: Checking if user exists with email: meow@udj.d
-[Thu Sep 18 03:05:13 2025] UPDATE_DEBUG: User exists check result: NO
-[Thu Sep 18 03:05:13 2025] UPDATE_DEBUG: User not found for email: meow@udj.d
-[Thu Sep 18 03:05:13 2025] 100.64.0.4:43038 [200]: POST /api/DatabaseAPI.php?action=update_community_user
-[Thu Sep 18 03:05:13 2025] 100.64.0.4:43038 Closing
+dash:8817 🔍 Mapping 174m-179m_Underweight: 0
+dash:8817 🔍 Mapping 180m-185m_Underweight: 0
+dash:8817 🔍 Mapping 186m-191m_Underweight: 0
+dash:8817 🔍 Mapping 192m-197m_Underweight: 0
+dash:8817 🔍 Mapping 198m-203m_Underweight: 0
+dash:8817 🔍 Mapping 204m-209m_Underweight: 0
+dash:8817 🔍 Mapping 210m-215m_Underweight: 0
+dash:8817 🔍 Mapping 216m-221m_Underweight: 0
+dash:8817 🔍 Mapping 222m-227m_Underweight: 0
+dash:8817 🔍 Mapping 228m-233m_Underweight: 0
+dash:8817 🔍 Mapping 234m-239m_Underweight: 0
+dash:8817 🔍 Mapping 240m-245m_Underweight: 0
+dash:8817 🔍 Mapping 246m-251m_Underweight: 0
+dash:8817 🔍 Mapping 252m-257m_Underweight: 0
+dash:8817 🔍 Mapping 258m-263m_Underweight: 0
+dash:8817 🔍 Mapping 264m-269m_Underweight: 0
+dash:8817 🔍 Mapping 270m-275m_Underweight: 0
+dash:8817 🔍 Mapping 276m-281m_Underweight: 0
+dash:8817 🔍 Mapping 282m-287m_Underweight: 0
+dash:8817 🔍 Mapping 288m-293m_Underweight: 0
+dash:8817 🔍 Mapping 294m-299m_Underweight: 0
+dash:8817 🔍 Mapping 300m-305m_Underweight: 0
+dash:8817 🔍 Mapping 306m-311m_Underweight: 0
+dash:8817 🔍 Mapping 312m-317m_Underweight: 0
+dash:8817 🔍 Mapping 318m-323m_Underweight: 0
+dash:8817 🔍 Mapping 324m-329m_Underweight: 0
+dash:8817 🔍 Mapping 330m-335m_Underweight: 0
+dash:8817 🔍 Mapping 336m-341m_Underweight: 0
+dash:8817 🔍 Mapping 342m-347m_Underweight: 0
+dash:8817 🔍 Mapping 348m-353m_Underweight: 0
+dash:8817 🔍 Mapping 354m-359m_Underweight: 0
+dash:8817 🔍 Mapping 360m-365m_Underweight: 0
+dash:8817 🔍 Mapping 366m-371m_Underweight: 0
+dash:8817 🔍 Mapping 372m-377m_Underweight: 0
+dash:8817 🔍 Mapping 378m-383m_Underweight: 0
+dash:8817 🔍 Mapping 384m-389m_Underweight: 0
+dash:8817 🔍 Mapping 390m-395m_Underweight: 0
+dash:8817 🔍 Mapping 396m-401m_Underweight: 0
+dash:8817 🔍 Mapping 402m-407m_Underweight: 0
+dash:8817 🔍 Mapping 408m-413m_Underweight: 0
+dash:8817 🔍 Mapping 414m-419m_Underweight: 0
+dash:8817 🔍 Mapping 420m-425m_Underweight: 0
+dash:8817 🔍 Mapping 426m-431m_Underweight: 0
+dash:8817 🔍 Mapping 432m-437m_Underweight: 0
+dash:8817 🔍 Mapping 438m-443m_Underweight: 0
+dash:8817 🔍 Mapping 444m-449m_Underweight: 0
+dash:8817 🔍 Mapping 450m-455m_Underweight: 0
+dash:8817 🔍 Mapping 456m-461m_Underweight: 0
+dash:8817 🔍 Mapping 462m-467m_Underweight: 0
+dash:8817 🔍 Mapping 468m-473m_Underweight: 0
+dash:8817 🔍 Mapping 474m-479m_Underweight: 0
+dash:8817 🔍 Mapping 480m-485m_Underweight: 0
+dash:8817 🔍 Mapping 486m-491m_Underweight: 0
+dash:8817 🔍 Mapping 492m-497m_Underweight: 0
+dash:8817 🔍 Mapping 498m-503m_Underweight: 0
+dash:8817 🔍 Mapping 504m-509m_Underweight: 0
+dash:8817 🔍 Mapping 510m-515m_Underweight: 0
+dash:8817 🔍 Mapping 516m-521m_Underweight: 0
+dash:8817 🔍 Mapping 522m-527m_Underweight: 0
+dash:8817 🔍 Mapping 528m-533m_Underweight: 0
+dash:8817 🔍 Mapping 534m-539m_Underweight: 0
+dash:8817 🔍 Mapping 540m-545m_Underweight: 0
+dash:8817 🔍 Mapping 546m-551m_Underweight: 0
+dash:8817 🔍 Mapping 552m-557m_Underweight: 0
+dash:8817 🔍 Mapping 558m-563m_Underweight: 0
+dash:8817 🔍 Mapping 564m-569m_Underweight: 0
+dash:8817 🔍 Mapping 570m-575m_Underweight: 0
+dash:8817 🔍 Mapping 576m-581m_Underweight: 0
+dash:8817 🔍 Mapping 582m-587m_Underweight: 0
+dash:8817 🔍 Mapping 588m-593m_Underweight: 0
+dash:8817 🔍 Mapping 594m-599m_Underweight: 0
+dash:8817 🔍 Mapping 600m-605m_Underweight: 0
+dash:8817 🔍 Mapping 606m-611m_Underweight: 0
+dash:8817 🔍 Mapping 612m-617m_Underweight: 0
+dash:8817 🔍 Mapping 618m-623m_Underweight: 0
+dash:8817 🔍 Mapping 624m-629m_Underweight: 0
+dash:8817 🔍 Mapping 630m-635m_Underweight: 0
+dash:8817 🔍 Mapping 636m-641m_Underweight: 0
+dash:8817 🔍 Mapping 642m-647m_Underweight: 0
+dash:8817 🔍 Mapping 648m-653m_Underweight: 0
+dash:8817 🔍 Mapping 654m-659m_Underweight: 0
+dash:8817 🔍 Mapping 660m-665m_Underweight: 0
+dash:8817 🔍 Mapping 666m-671m_Underweight: 0
+dash:8817 🔍 Mapping 672m-677m_Underweight: 0
+dash:8817 🔍 Mapping 678m-683m_Underweight: 0
+dash:8817 🔍 Mapping 684m-689m_Underweight: 0
+dash:8817 🔍 Mapping 690m-695m_Underweight: 0
+dash:8817 🔍 Mapping 696m-701m_Underweight: 0
+dash:8817 🔍 Mapping 702m-707m_Underweight: 0
+dash:8817 🔍 Mapping 708m-713m_Underweight: 0
+dash:8817 🔍 Mapping 714m-719m_Underweight: 0
+dash:8817 🔍 Mapping 720m-725m_Underweight: 0
+dash:8817 🔍 Mapping 726m-731m_Underweight: 0
+dash:8817 🔍 Mapping 732m-737m_Underweight: 0
+dash:8817 🔍 Mapping 738m-743m_Underweight: 0
+dash:8817 🔍 Mapping 744m-749m_Underweight: 0
+dash:8817 🔍 Mapping 750m-755m_Underweight: 0
+dash:8817 🔍 Mapping 756m-761m_Underweight: 0
+dash:8817 🔍 Mapping 762m-767m_Underweight: 0
+dash:8817 🔍 Mapping 768m-773m_Underweight: 0
+dash:8817 🔍 Mapping 774m-779m_Underweight: 0
+dash:8817 🔍 Mapping 780m-785m_Underweight: 0
+dash:8817 🔍 Mapping 786m-791m_Underweight: 0
+dash:8817 🔍 Mapping 792m-797m_Underweight: 0
+dash:8817 🔍 Mapping 798m-803m_Underweight: 0
+dash:8817 🔍 Mapping 804m-809m_Underweight: 0
+dash:8817 🔍 Mapping 810m-815m_Underweight: 0
+dash:8817 🔍 Mapping 816m-821m_Underweight: 0
+dash:8817 🔍 Mapping 822m-827m_Underweight: 0
+dash:8817 🔍 Mapping 828m-833m_Underweight: 0
+dash:8817 🔍 Mapping 834m-839m_Underweight: 0
+dash:8817 🔍 Mapping 840m-845m_Underweight: 0
+dash:8817 🔍 Mapping 846m-851m_Underweight: 0
+dash:8821 🔍 Underweight data: Array(140)
+dash:8817 🔍 Mapping 12m-17m_Severely Underweight: 0
+dash:8817 🔍 Mapping 18m-23m_Severely Underweight: 2
+dash:8817 🔍 Mapping 24m-29m_Severely Underweight: 0
+dash:8817 🔍 Mapping 30m-35m_Severely Underweight: 0
+dash:8817 🔍 Mapping 36m-41m_Severely Underweight: 0
+dash:8817 🔍 Mapping 42m-47m_Severely Underweight: 0
+dash:8817 🔍 Mapping 48m-53m_Severely Underweight: 0
+dash:8817 🔍 Mapping 54m-59m_Severely Underweight: 0
+dash:8817 🔍 Mapping 60m-65m_Severely Underweight: 0
+dash:8817 🔍 Mapping 66m-71m_Severely Underweight: 0
+dash:8817 🔍 Mapping 72m-77m_Severely Underweight: 0
+dash:8817 🔍 Mapping 78m-83m_Severely Underweight: 0
+dash:8817 🔍 Mapping 84m-89m_Severely Underweight: 0
+dash:8817 🔍 Mapping 90m-95m_Severely Underweight: 0
+dash:8817 🔍 Mapping 96m-101m_Severely Underweight: 0
+dash:8817 🔍 Mapping 102m-107m_Severely Underweight: 0
+dash:8817 🔍 Mapping 108m-113m_Severely Underweight: 0
+dash:8817 🔍 Mapping 114m-119m_Severely Underweight: 0
+dash:8817 🔍 Mapping 120m-125m_Severely Underweight: 0
+dash:8817 🔍 Mapping 126m-131m_Severely Underweight: 0
+dash:8817 🔍 Mapping 132m-137m_Severely Underweight: 0
+dash:8817 🔍 Mapping 138m-143m_Severely Underweight: 0
+dash:8817 🔍 Mapping 144m-149m_Severely Underweight: 0
+dash:8817 🔍 Mapping 150m-155m_Severely Underweight: 0
+dash:8817 🔍 Mapping 156m-161m_Severely Underweight: 0
+dash:8817 🔍 Mapping 162m-167m_Severely Underweight: 0
+dash:8817 🔍 Mapping 168m-173m_Severely Underweight: 0
+dash:8817 🔍 Mapping 174m-179m_Severely Underweight: 0
+dash:8817 🔍 Mapping 180m-185m_Severely Underweight: 0
+dash:8817 🔍 Mapping 186m-191m_Severely Underweight: 0
+dash:8817 🔍 Mapping 192m-197m_Severely Underweight: 0
+dash:8817 🔍 Mapping 198m-203m_Severely Underweight: 0
+dash:8817 🔍 Mapping 204m-209m_Severely Underweight: 0
+dash:8817 🔍 Mapping 210m-215m_Severely Underweight: 0
+dash:8817 🔍 Mapping 216m-221m_Severely Underweight: 0
+dash:8817 🔍 Mapping 222m-227m_Severely Underweight: 0
+dash:8817 🔍 Mapping 228m-233m_Severely Underweight: 0
+dash:8817 🔍 Mapping 234m-239m_Severely Underweight: 0
+dash:8817 🔍 Mapping 240m-245m_Severely Underweight: 0
+dash:8817 🔍 Mapping 246m-251m_Severely Underweight: 0
+dash:8817 🔍 Mapping 252m-257m_Severely Underweight: 0
+dash:8817 🔍 Mapping 258m-263m_Severely Underweight: 0
+dash:8817 🔍 Mapping 264m-269m_Severely Underweight: 0
+dash:8817 🔍 Mapping 270m-275m_Severely Underweight: 0
+dash:8817 🔍 Mapping 276m-281m_Severely Underweight: 0
+dash:8817 🔍 Mapping 282m-287m_Severely Underweight: 0
+dash:8817 🔍 Mapping 288m-293m_Severely Underweight: 0
+dash:8817 🔍 Mapping 294m-299m_Severely Underweight: 0
+dash:8817 🔍 Mapping 300m-305m_Severely Underweight: 0
+dash:8817 🔍 Mapping 306m-311m_Severely Underweight: 0
+dash:8817 🔍 Mapping 312m-317m_Severely Underweight: 0
+dash:8817 🔍 Mapping 318m-323m_Severely Underweight: 0
+dash:8817 🔍 Mapping 324m-329m_Severely Underweight: 0
+dash:8817 🔍 Mapping 330m-335m_Severely Underweight: 0
+dash:8817 🔍 Mapping 336m-341m_Severely Underweight: 0
+dash:8817 🔍 Mapping 342m-347m_Severely Underweight: 0
+dash:8817 🔍 Mapping 348m-353m_Severely Underweight: 0
+dash:8817 🔍 Mapping 354m-359m_Severely Underweight: 0
+dash:8817 🔍 Mapping 360m-365m_Severely Underweight: 0
+dash:8817 🔍 Mapping 366m-371m_Severely Underweight: 0
+dash:8817 🔍 Mapping 372m-377m_Severely Underweight: 0
+dash:8817 🔍 Mapping 378m-383m_Severely Underweight: 0
+dash:8817 🔍 Mapping 384m-389m_Severely Underweight: 0
+dash:8817 🔍 Mapping 390m-395m_Severely Underweight: 0
+dash:8817 🔍 Mapping 396m-401m_Severely Underweight: 0
+dash:8817 🔍 Mapping 402m-407m_Severely Underweight: 0
+dash:8817 🔍 Mapping 408m-413m_Severely Underweight: 0
+dash:8817 🔍 Mapping 414m-419m_Severely Underweight: 0
+dash:8817 🔍 Mapping 420m-425m_Severely Underweight: 0
+dash:8817 🔍 Mapping 426m-431m_Severely Underweight: 0
+dash:8817 🔍 Mapping 432m-437m_Severely Underweight: 0
+dash:8817 🔍 Mapping 438m-443m_Severely Underweight: 0
+dash:8817 🔍 Mapping 444m-449m_Severely Underweight: 0
+dash:8817 🔍 Mapping 450m-455m_Severely Underweight: 0
+dash:8817 🔍 Mapping 456m-461m_Severely Underweight: 0
+dash:8817 🔍 Mapping 462m-467m_Severely Underweight: 0
+dash:8817 🔍 Mapping 468m-473m_Severely Underweight: 0
+dash:8817 🔍 Mapping 474m-479m_Severely Underweight: 0
+dash:8817 🔍 Mapping 480m-485m_Severely Underweight: 0
+dash:8817 🔍 Mapping 486m-491m_Severely Underweight: 0
+dash:8817 🔍 Mapping 492m-497m_Severely Underweight: 0
+dash:8817 🔍 Mapping 498m-503m_Severely Underweight: 0
+dash:8817 🔍 Mapping 504m-509m_Severely Underweight: 0
+dash:8817 🔍 Mapping 510m-515m_Severely Underweight: 0
+dash:8817 🔍 Mapping 516m-521m_Severely Underweight: 0
+dash:8817 🔍 Mapping 522m-527m_Severely Underweight: 0
+dash:8817 🔍 Mapping 528m-533m_Severely Underweight: 0
+dash:8817 🔍 Mapping 534m-539m_Severely Underweight: 0
+dash:8817 🔍 Mapping 540m-545m_Severely Underweight: 0
+dash:8817 🔍 Mapping 546m-551m_Severely Underweight: 0
+dash:8817 🔍 Mapping 552m-557m_Severely Underweight: 0
+dash:8817 🔍 Mapping 558m-563m_Severely Underweight: 0
+dash:8817 🔍 Mapping 564m-569m_Severely Underweight: 0
+dash:8817 🔍 Mapping 570m-575m_Severely Underweight: 0
+dash:8817 🔍 Mapping 576m-581m_Severely Underweight: 0
+dash:8817 🔍 Mapping 582m-587m_Severely Underweight: 0
+dash:8817 🔍 Mapping 588m-593m_Severely Underweight: 0
+dash:8817 🔍 Mapping 594m-599m_Severely Underweight: 0
+dash:8817 🔍 Mapping 600m-605m_Severely Underweight: 0
+dash:8817 🔍 Mapping 606m-611m_Severely Underweight: 0
+dash:8817 🔍 Mapping 612m-617m_Severely Underweight: 0
+dash:8817 🔍 Mapping 618m-623m_Severely Underweight: 0
+dash:8817 🔍 Mapping 624m-629m_Severely Underweight: 0
+dash:8817 🔍 Mapping 630m-635m_Severely Underweight: 0
+dash:8817 🔍 Mapping 636m-641m_Severely Underweight: 0
+dash:8817 🔍 Mapping 642m-647m_Severely Underweight: 0
+dash:8817 🔍 Mapping 648m-653m_Severely Underweight: 0
+dash:8817 🔍 Mapping 654m-659m_Severely Underweight: 0
+dash:8817 🔍 Mapping 660m-665m_Severely Underweight: 0
+dash:8817 🔍 Mapping 666m-671m_Severely Underweight: 0
+dash:8817 🔍 Mapping 672m-677m_Severely Underweight: 0
+dash:8817 🔍 Mapping 678m-683m_Severely Underweight: 0
+dash:8817 🔍 Mapping 684m-689m_Severely Underweight: 0
+dash:8817 🔍 Mapping 690m-695m_Severely Underweight: 0
+dash:8817 🔍 Mapping 696m-701m_Severely Underweight: 0
+dash:8817 🔍 Mapping 702m-707m_Severely Underweight: 0
+dash:8817 🔍 Mapping 708m-713m_Severely Underweight: 0
+dash:8817 🔍 Mapping 714m-719m_Severely Underweight: 0
+dash:8817 🔍 Mapping 720m-725m_Severely Underweight: 0
+dash:8817 🔍 Mapping 726m-731m_Severely Underweight: 0
+dash:8817 🔍 Mapping 732m-737m_Severely Underweight: 0
+dash:8817 🔍 Mapping 738m-743m_Severely Underweight: 0
+dash:8817 🔍 Mapping 744m-749m_Severely Underweight: 0
+dash:8817 🔍 Mapping 750m-755m_Severely Underweight: 0
+dash:8817 🔍 Mapping 756m-761m_Severely Underweight: 0
+dash:8817 🔍 Mapping 762m-767m_Severely Underweight: 0
+dash:8817 🔍 Mapping 768m-773m_Severely Underweight: 0
+dash:8817 🔍 Mapping 774m-779m_Severely Underweight: 0
+dash:8817 🔍 Mapping 780m-785m_Severely Underweight: 0
+dash:8817 🔍 Mapping 786m-791m_Severely Underweight: 0
+dash:8817 🔍 Mapping 792m-797m_Severely Underweight: 0
+dash:8817 🔍 Mapping 798m-803m_Severely Underweight: 0
+dash:8817 🔍 Mapping 804m-809m_Severely Underweight: 0
+dash:8817 🔍 Mapping 810m-815m_Severely Underweight: 0
+dash:8817 🔍 Mapping 816m-821m_Severely Underweight: 0
+dash:8817 🔍 Mapping 822m-827m_Severely Underweight: 0
+dash:8817 🔍 Mapping 828m-833m_Severely Underweight: 0
+dash:8817 🔍 Mapping 834m-839m_Severely Underweight: 0
+dash:8817 🔍 Mapping 840m-845m_Severely Underweight: 0
+dash:8817 🔍 Mapping 846m-851m_Severely Underweight: 0
+dash:8821 🔍 Severely Underweight data: Array(140)
+dash:8817 🔍 Mapping 12m-17m_Stunted: 0
+dash:8817 🔍 Mapping 18m-23m_Stunted: 0
+dash:8817 🔍 Mapping 24m-29m_Stunted: 0
+dash:8817 🔍 Mapping 30m-35m_Stunted: 0
+dash:8817 🔍 Mapping 36m-41m_Stunted: 0
+dash:8817 🔍 Mapping 42m-47m_Stunted: 0
+dash:8817 🔍 Mapping 48m-53m_Stunted: 0
+dash:8817 🔍 Mapping 54m-59m_Stunted: 0
+dash:8817 🔍 Mapping 60m-65m_Stunted: 0
+dash:8817 🔍 Mapping 66m-71m_Stunted: 0
+dash:8817 🔍 Mapping 72m-77m_Stunted: 0
+dash:8817 🔍 Mapping 78m-83m_Stunted: 0
+dash:8817 🔍 Mapping 84m-89m_Stunted: 0
+dash:8817 🔍 Mapping 90m-95m_Stunted: 0
+dash:8817 🔍 Mapping 96m-101m_Stunted: 0
+dash:8817 🔍 Mapping 102m-107m_Stunted: 0
+dash:8817 🔍 Mapping 108m-113m_Stunted: 0
+dash:8817 🔍 Mapping 114m-119m_Stunted: 0
+dash:8817 🔍 Mapping 120m-125m_Stunted: 0
+dash:8817 🔍 Mapping 126m-131m_Stunted: 0
+dash:8817 🔍 Mapping 132m-137m_Stunted: 0
+dash:8817 🔍 Mapping 138m-143m_Stunted: 0
+dash:8817 🔍 Mapping 144m-149m_Stunted: 0
+dash:8817 🔍 Mapping 150m-155m_Stunted: 0
+dash:8817 🔍 Mapping 156m-161m_Stunted: 0
+dash:8817 🔍 Mapping 162m-167m_Stunted: 0
+dash:8817 🔍 Mapping 168m-173m_Stunted: 0
+dash:8817 🔍 Mapping 174m-179m_Stunted: 0
+dash:8817 🔍 Mapping 180m-185m_Stunted: 0
+dash:8817 🔍 Mapping 186m-191m_Stunted: 0
+dash:8817 🔍 Mapping 192m-197m_Stunted: 0
+dash:8817 🔍 Mapping 198m-203m_Stunted: 0
+dash:8817 🔍 Mapping 204m-209m_Stunted: 0
+dash:8817 🔍 Mapping 210m-215m_Stunted: 0
+dash:8817 🔍 Mapping 216m-221m_Stunted: 0
+dash:8817 🔍 Mapping 222m-227m_Stunted: 0
+dash:8817 🔍 Mapping 228m-233m_Stunted: 0
+dash:8817 🔍 Mapping 234m-239m_Stunted: 0
+dash:8817 🔍 Mapping 240m-245m_Stunted: 0
+dash:8817 🔍 Mapping 246m-251m_Stunted: 0
+dash:8817 🔍 Mapping 252m-257m_Stunted: 0
+dash:8817 🔍 Mapping 258m-263m_Stunted: 0
+dash:8817 🔍 Mapping 264m-269m_Stunted: 0
+dash:8817 🔍 Mapping 270m-275m_Stunted: 0
+dash:8817 🔍 Mapping 276m-281m_Stunted: 0
+dash:8817 🔍 Mapping 282m-287m_Stunted: 0
+dash:8817 🔍 Mapping 288m-293m_Stunted: 0
+dash:8817 🔍 Mapping 294m-299m_Stunted: 0
+dash:8817 🔍 Mapping 300m-305m_Stunted: 0
+dash:8817 🔍 Mapping 306m-311m_Stunted: 0
+dash:8817 🔍 Mapping 312m-317m_Stunted: 0
+dash:8817 🔍 Mapping 318m-323m_Stunted: 0
+dash:8817 🔍 Mapping 324m-329m_Stunted: 0
+dash:8817 🔍 Mapping 330m-335m_Stunted: 0
+dash:8817 🔍 Mapping 336m-341m_Stunted: 0
+dash:8817 🔍 Mapping 342m-347m_Stunted: 0
+dash:8817 🔍 Mapping 348m-353m_Stunted: 0
+dash:8817 🔍 Mapping 354m-359m_Stunted: 0
+dash:8817 🔍 Mapping 360m-365m_Stunted: 0
+dash:8817 🔍 Mapping 366m-371m_Stunted: 0
+dash:8817 🔍 Mapping 372m-377m_Stunted: 0
+dash:8817 🔍 Mapping 378m-383m_Stunted: 0
+dash:8817 🔍 Mapping 384m-389m_Stunted: 0
+dash:8817 🔍 Mapping 390m-395m_Stunted: 0
+dash:8817 🔍 Mapping 396m-401m_Stunted: 0
+dash:8817 🔍 Mapping 402m-407m_Stunted: 0
+dash:8817 🔍 Mapping 408m-413m_Stunted: 0
+dash:8817 🔍 Mapping 414m-419m_Stunted: 0
+dash:8817 🔍 Mapping 420m-425m_Stunted: 0
+dash:8817 🔍 Mapping 426m-431m_Stunted: 0
+dash:8817 🔍 Mapping 432m-437m_Stunted: 0
+dash:8817 🔍 Mapping 438m-443m_Stunted: 0
+dash:8817 🔍 Mapping 444m-449m_Stunted: 0
+dash:8817 🔍 Mapping 450m-455m_Stunted: 0
+dash:8817 🔍 Mapping 456m-461m_Stunted: 0
+dash:8817 🔍 Mapping 462m-467m_Stunted: 0
+dash:8817 🔍 Mapping 468m-473m_Stunted: 0
+dash:8817 🔍 Mapping 474m-479m_Stunted: 0
+dash:8817 🔍 Mapping 480m-485m_Stunted: 0
+dash:8817 🔍 Mapping 486m-491m_Stunted: 0
+dash:8817 🔍 Mapping 492m-497m_Stunted: 0
+dash:8817 🔍 Mapping 498m-503m_Stunted: 0
+dash:8817 🔍 Mapping 504m-509m_Stunted: 0
+dash:8817 🔍 Mapping 510m-515m_Stunted: 0
+dash:8817 🔍 Mapping 516m-521m_Stunted: 0
+dash:8817 🔍 Mapping 522m-527m_Stunted: 0
+dash:8817 🔍 Mapping 528m-533m_Stunted: 0
+dash:8817 🔍 Mapping 534m-539m_Stunted: 0
+dash:8817 🔍 Mapping 540m-545m_Stunted: 0
+dash:8817 🔍 Mapping 546m-551m_Stunted: 0
+dash:8817 🔍 Mapping 552m-557m_Stunted: 0
+dash:8817 🔍 Mapping 558m-563m_Stunted: 0
+dash:8817 🔍 Mapping 564m-569m_Stunted: 0
+dash:8817 🔍 Mapping 570m-575m_Stunted: 0
+dash:8817 🔍 Mapping 576m-581m_Stunted: 0
+dash:8817 🔍 Mapping 582m-587m_Stunted: 0
+dash:8817 🔍 Mapping 588m-593m_Stunted: 0
+dash:8817 🔍 Mapping 594m-599m_Stunted: 0
+dash:8817 🔍 Mapping 600m-605m_Stunted: 0
+dash:8817 🔍 Mapping 606m-611m_Stunted: 0
+dash:8817 🔍 Mapping 612m-617m_Stunted: 0
+dash:8817 🔍 Mapping 618m-623m_Stunted: 0
+dash:8817 🔍 Mapping 624m-629m_Stunted: 0
+dash:8817 🔍 Mapping 630m-635m_Stunted: 0
+dash:8817 🔍 Mapping 636m-641m_Stunted: 0
+dash:8817 🔍 Mapping 642m-647m_Stunted: 0
+dash:8817 🔍 Mapping 648m-653m_Stunted: 0
+dash:8817 🔍 Mapping 654m-659m_Stunted: 0
+dash:8817 🔍 Mapping 660m-665m_Stunted: 0
+dash:8817 🔍 Mapping 666m-671m_Stunted: 0
+dash:8817 🔍 Mapping 672m-677m_Stunted: 0
+dash:8817 🔍 Mapping 678m-683m_Stunted: 0
+dash:8817 🔍 Mapping 684m-689m_Stunted: 0
+dash:8817 🔍 Mapping 690m-695m_Stunted: 0
+dash:8817 🔍 Mapping 696m-701m_Stunted: 0
+dash:8817 🔍 Mapping 702m-707m_Stunted: 0
+dash:8817 🔍 Mapping 708m-713m_Stunted: 0
+dash:8817 🔍 Mapping 714m-719m_Stunted: 0
+dash:8817 🔍 Mapping 720m-725m_Stunted: 0
+dash:8817 🔍 Mapping 726m-731m_Stunted: 0
+dash:8817 🔍 Mapping 732m-737m_Stunted: 0
+dash:8817 🔍 Mapping 738m-743m_Stunted: 0
+dash:8817 🔍 Mapping 744m-749m_Stunted: 0
+dash:8817 🔍 Mapping 750m-755m_Stunted: 0
+dash:8817 🔍 Mapping 756m-761m_Stunted: 0
+dash:8817 🔍 Mapping 762m-767m_Stunted: 0
+dash:8817 🔍 Mapping 768m-773m_Stunted: 0
+dash:8817 🔍 Mapping 774m-779m_Stunted: 0
+dash:8817 🔍 Mapping 780m-785m_Stunted: 0
+dash:8817 🔍 Mapping 786m-791m_Stunted: 0
+dash:8817 🔍 Mapping 792m-797m_Stunted: 0
+dash:8817 🔍 Mapping 798m-803m_Stunted: 0
+dash:8817 🔍 Mapping 804m-809m_Stunted: 0
+dash:8817 🔍 Mapping 810m-815m_Stunted: 0
+dash:8817 🔍 Mapping 816m-821m_Stunted: 0
+dash:8817 🔍 Mapping 822m-827m_Stunted: 0
+dash:8817 🔍 Mapping 828m-833m_Stunted: 0
+dash:8817 🔍 Mapping 834m-839m_Stunted: 0
+dash:8817 🔍 Mapping 840m-845m_Stunted: 0
+dash:8817 🔍 Mapping 846m-851m_Stunted: 0
+dash:8821 🔍 Stunted data: Array(140)
+dash:8817 🔍 Mapping 12m-17m_Severely Stunted: 0
+dash:8817 🔍 Mapping 18m-23m_Severely Stunted: 0
+dash:8817 🔍 Mapping 24m-29m_Severely Stunted: 0
+dash:8817 🔍 Mapping 30m-35m_Severely Stunted: 0
+dash:8817 🔍 Mapping 36m-41m_Severely Stunted: 0
+dash:8817 🔍 Mapping 42m-47m_Severely Stunted: 0
+dash:8817 🔍 Mapping 48m-53m_Severely Stunted: 0
+dash:8817 🔍 Mapping 54m-59m_Severely Stunted: 0
+dash:8817 🔍 Mapping 60m-65m_Severely Stunted: 0
+dash:8817 🔍 Mapping 66m-71m_Severely Stunted: 0
+dash:8817 🔍 Mapping 72m-77m_Severely Stunted: 0
+dash:8817 🔍 Mapping 78m-83m_Severely Stunted: 0
+dash:8817 🔍 Mapping 84m-89m_Severely Stunted: 0
+dash:8817 🔍 Mapping 90m-95m_Severely Stunted: 0
+dash:8817 🔍 Mapping 96m-101m_Severely Stunted: 0
+dash:8817 🔍 Mapping 102m-107m_Severely Stunted: 0
+dash:8817 🔍 Mapping 108m-113m_Severely Stunted: 0
+dash:8817 🔍 Mapping 114m-119m_Severely Stunted: 0
+dash:8817 🔍 Mapping 120m-125m_Severely Stunted: 0
+dash:8817 🔍 Mapping 126m-131m_Severely Stunted: 0
+dash:8817 🔍 Mapping 132m-137m_Severely Stunted: 0
+dash:8817 🔍 Mapping 138m-143m_Severely Stunted: 0
+dash:8817 🔍 Mapping 144m-149m_Severely Stunted: 0
+dash:8817 🔍 Mapping 150m-155m_Severely Stunted: 0
+dash:8817 🔍 Mapping 156m-161m_Severely Stunted: 0
+dash:8817 🔍 Mapping 162m-167m_Severely Stunted: 0
+dash:8817 🔍 Mapping 168m-173m_Severely Stunted: 0
+dash:8817 🔍 Mapping 174m-179m_Severely Stunted: 0
+dash:8817 🔍 Mapping 180m-185m_Severely Stunted: 0
+dash:8817 🔍 Mapping 186m-191m_Severely Stunted: 0
+dash:8817 🔍 Mapping 192m-197m_Severely Stunted: 0
+dash:8817 🔍 Mapping 198m-203m_Severely Stunted: 0
+dash:8817 🔍 Mapping 204m-209m_Severely Stunted: 0
+dash:8817 🔍 Mapping 210m-215m_Severely Stunted: 0
+dash:8817 🔍 Mapping 216m-221m_Severely Stunted: 0
+dash:8817 🔍 Mapping 222m-227m_Severely Stunted: 0
+dash:8817 🔍 Mapping 228m-233m_Severely Stunted: 0
+dash:8817 🔍 Mapping 234m-239m_Severely Stunted: 0
+dash:8817 🔍 Mapping 240m-245m_Severely Stunted: 0
+dash:8817 🔍 Mapping 246m-251m_Severely Stunted: 0
+dash:8817 🔍 Mapping 252m-257m_Severely Stunted: 0
+dash:8817 🔍 Mapping 258m-263m_Severely Stunted: 0
+dash:8817 🔍 Mapping 264m-269m_Severely Stunted: 0
+dash:8817 🔍 Mapping 270m-275m_Severely Stunted: 0
+dash:8817 🔍 Mapping 276m-281m_Severely Stunted: 0
+dash:8817 🔍 Mapping 282m-287m_Severely Stunted: 0
+dash:8817 🔍 Mapping 288m-293m_Severely Stunted: 0
+dash:8817 🔍 Mapping 294m-299m_Severely Stunted: 0
+dash:8817 🔍 Mapping 300m-305m_Severely Stunted: 0
+dash:8817 🔍 Mapping 306m-311m_Severely Stunted: 0
+dash:8817 🔍 Mapping 312m-317m_Severely Stunted: 0
+dash:8817 🔍 Mapping 318m-323m_Severely Stunted: 0
+dash:8817 🔍 Mapping 324m-329m_Severely Stunted: 0
+dash:8817 🔍 Mapping 330m-335m_Severely Stunted: 0
+dash:8817 🔍 Mapping 336m-341m_Severely Stunted: 0
+dash:8817 🔍 Mapping 342m-347m_Severely Stunted: 0
+dash:8817 🔍 Mapping 348m-353m_Severely Stunted: 0
+dash:8817 🔍 Mapping 354m-359m_Severely Stunted: 0
+dash:8817 🔍 Mapping 360m-365m_Severely Stunted: 0
+dash:8817 🔍 Mapping 366m-371m_Severely Stunted: 0
+dash:8817 🔍 Mapping 372m-377m_Severely Stunted: 0
+dash:8817 🔍 Mapping 378m-383m_Severely Stunted: 0
+dash:8817 🔍 Mapping 384m-389m_Severely Stunted: 0
+dash:8817 🔍 Mapping 390m-395m_Severely Stunted: 0
+dash:8817 🔍 Mapping 396m-401m_Severely Stunted: 0
+dash:8817 🔍 Mapping 402m-407m_Severely Stunted: 0
+dash:8817 🔍 Mapping 408m-413m_Severely Stunted: 0
+dash:8817 🔍 Mapping 414m-419m_Severely Stunted: 0
+dash:8817 🔍 Mapping 420m-425m_Severely Stunted: 0
+dash:8817 🔍 Mapping 426m-431m_Severely Stunted: 0
+dash:8817 🔍 Mapping 432m-437m_Severely Stunted: 0
+dash:8817 🔍 Mapping 438m-443m_Severely Stunted: 0
+dash:8817 🔍 Mapping 444m-449m_Severely Stunted: 0
+dash:8817 🔍 Mapping 450m-455m_Severely Stunted: 0
+dash:8817 🔍 Mapping 456m-461m_Severely Stunted: 0
+dash:8817 🔍 Mapping 462m-467m_Severely Stunted: 0
+dash:8817 🔍 Mapping 468m-473m_Severely Stunted: 0
+dash:8817 🔍 Mapping 474m-479m_Severely Stunted: 0
+dash:8817 🔍 Mapping 480m-485m_Severely Stunted: 0
+dash:8817 🔍 Mapping 486m-491m_Severely Stunted: 0
+dash:8817 🔍 Mapping 492m-497m_Severely Stunted: 0
+dash:8817 🔍 Mapping 498m-503m_Severely Stunted: 0
+dash:8817 🔍 Mapping 504m-509m_Severely Stunted: 0
+dash:8817 🔍 Mapping 510m-515m_Severely Stunted: 0
+dash:8817 🔍 Mapping 516m-521m_Severely Stunted: 0
+dash:8817 🔍 Mapping 522m-527m_Severely Stunted: 0
+dash:8817 🔍 Mapping 528m-533m_Severely Stunted: 0
+dash:8817 🔍 Mapping 534m-539m_Severely Stunted: 0
+dash:8817 🔍 Mapping 540m-545m_Severely Stunted: 0
+dash:8817 🔍 Mapping 546m-551m_Severely Stunted: 0
+dash:8817 🔍 Mapping 552m-557m_Severely Stunted: 0
+dash:8817 🔍 Mapping 558m-563m_Severely Stunted: 0
+dash:8817 🔍 Mapping 564m-569m_Severely Stunted: 0
+dash:8817 🔍 Mapping 570m-575m_Severely Stunted: 0
+dash:8817 🔍 Mapping 576m-581m_Severely Stunted: 0
+dash:8817 🔍 Mapping 582m-587m_Severely Stunted: 0
+dash:8817 🔍 Mapping 588m-593m_Severely Stunted: 0
+dash:8817 🔍 Mapping 594m-599m_Severely Stunted: 0
+dash:8817 🔍 Mapping 600m-605m_Severely Stunted: 0
+dash:8817 🔍 Mapping 606m-611m_Severely Stunted: 0
+dash:8817 🔍 Mapping 612m-617m_Severely Stunted: 0
+dash:8817 🔍 Mapping 618m-623m_Severely Stunted: 0
+dash:8817 🔍 Mapping 624m-629m_Severely Stunted: 0
+dash:8817 🔍 Mapping 630m-635m_Severely Stunted: 0
+dash:8817 🔍 Mapping 636m-641m_Severely Stunted: 0
+dash:8817 🔍 Mapping 642m-647m_Severely Stunted: 0
+dash:8817 🔍 Mapping 648m-653m_Severely Stunted: 0
+dash:8817 🔍 Mapping 654m-659m_Severely Stunted: 0
+dash:8817 🔍 Mapping 660m-665m_Severely Stunted: 0
+dash:8817 🔍 Mapping 666m-671m_Severely Stunted: 0
+dash:8817 🔍 Mapping 672m-677m_Severely Stunted: 0
+dash:8817 🔍 Mapping 678m-683m_Severely Stunted: 0
+dash:8817 🔍 Mapping 684m-689m_Severely Stunted: 0
+dash:8817 🔍 Mapping 690m-695m_Severely Stunted: 0
+dash:8817 🔍 Mapping 696m-701m_Severely Stunted: 0
+dash:8817 🔍 Mapping 702m-707m_Severely Stunted: 0
+dash:8817 🔍 Mapping 708m-713m_Severely Stunted: 0
+dash:8817 🔍 Mapping 714m-719m_Severely Stunted: 0
+dash:8817 🔍 Mapping 720m-725m_Severely Stunted: 0
+dash:8817 🔍 Mapping 726m-731m_Severely Stunted: 0
+dash:8817 🔍 Mapping 732m-737m_Severely Stunted: 0
+dash:8817 🔍 Mapping 738m-743m_Severely Stunted: 0
+dash:8817 🔍 Mapping 744m-749m_Severely Stunted: 0
+dash:8817 🔍 Mapping 750m-755m_Severely Stunted: 0
+dash:8817 🔍 Mapping 756m-761m_Severely Stunted: 0
+dash:8817 🔍 Mapping 762m-767m_Severely Stunted: 0
+dash:8817 🔍 Mapping 768m-773m_Severely Stunted: 0
+dash:8817 🔍 Mapping 774m-779m_Severely Stunted: 0
+dash:8817 🔍 Mapping 780m-785m_Severely Stunted: 0
+dash:8817 🔍 Mapping 786m-791m_Severely Stunted: 0
+dash:8817 🔍 Mapping 792m-797m_Severely Stunted: 0
+dash:8817 🔍 Mapping 798m-803m_Severely Stunted: 0
+dash:8817 🔍 Mapping 804m-809m_Severely Stunted: 0
+dash:8817 🔍 Mapping 810m-815m_Severely Stunted: 0
+dash:8817 🔍 Mapping 816m-821m_Severely Stunted: 0
+dash:8817 🔍 Mapping 822m-827m_Severely Stunted: 0
+dash:8817 🔍 Mapping 828m-833m_Severely Stunted: 0
+dash:8817 🔍 Mapping 834m-839m_Severely Stunted: 0
+dash:8817 🔍 Mapping 840m-845m_Severely Stunted: 0
+dash:8817 🔍 Mapping 846m-851m_Severely Stunted: 0
+dash:8821 🔍 Severely Stunted data: Array(140)
+dash:8817 🔍 Mapping 12m-17m_Wasted: 0
+dash:8817 🔍 Mapping 18m-23m_Wasted: 0
+dash:8817 🔍 Mapping 24m-29m_Wasted: 0
+dash:8817 🔍 Mapping 30m-35m_Wasted: 0
+dash:8817 🔍 Mapping 36m-41m_Wasted: 0
+dash:8817 🔍 Mapping 42m-47m_Wasted: 0
+dash:8817 🔍 Mapping 48m-53m_Wasted: 0
+dash:8817 🔍 Mapping 54m-59m_Wasted: 0
+dash:8817 🔍 Mapping 60m-65m_Wasted: 0
+dash:8817 🔍 Mapping 66m-71m_Wasted: 0
+dash:8817 🔍 Mapping 72m-77m_Wasted: 0
+dash:8817 🔍 Mapping 78m-83m_Wasted: 0
+dash:8817 🔍 Mapping 84m-89m_Wasted: 0
+dash:8817 🔍 Mapping 90m-95m_Wasted: 0
+dash:8817 🔍 Mapping 96m-101m_Wasted: 0
+dash:8817 🔍 Mapping 102m-107m_Wasted: 0
+dash:8817 🔍 Mapping 108m-113m_Wasted: 0
+dash:8817 🔍 Mapping 114m-119m_Wasted: 0
+dash:8817 🔍 Mapping 120m-125m_Wasted: 0
+dash:8817 🔍 Mapping 126m-131m_Wasted: 0
+dash:8817 🔍 Mapping 132m-137m_Wasted: 0
+dash:8817 🔍 Mapping 138m-143m_Wasted: 0
+dash:8817 🔍 Mapping 144m-149m_Wasted: 0
+dash:8817 🔍 Mapping 150m-155m_Wasted: 0
+dash:8817 🔍 Mapping 156m-161m_Wasted: 0
+dash:8817 🔍 Mapping 162m-167m_Wasted: 0
+dash:8817 🔍 Mapping 168m-173m_Wasted: 0
+dash:8817 🔍 Mapping 174m-179m_Wasted: 0
+dash:8817 🔍 Mapping 180m-185m_Wasted: 0
+dash:8817 🔍 Mapping 186m-191m_Wasted: 0
+dash:8817 🔍 Mapping 192m-197m_Wasted: 0
+dash:8817 🔍 Mapping 198m-203m_Wasted: 0
+dash:8817 🔍 Mapping 204m-209m_Wasted: 0
+dash:8817 🔍 Mapping 210m-215m_Wasted: 0
+dash:8817 🔍 Mapping 216m-221m_Wasted: 0
+dash:8817 🔍 Mapping 222m-227m_Wasted: 0
+dash:8817 🔍 Mapping 228m-233m_Wasted: 0
+dash:8817 🔍 Mapping 234m-239m_Wasted: 0
+dash:8817 🔍 Mapping 240m-245m_Wasted: 0
+dash:8817 🔍 Mapping 246m-251m_Wasted: 0
+dash:8817 🔍 Mapping 252m-257m_Wasted: 0
+dash:8817 🔍 Mapping 258m-263m_Wasted: 0
+dash:8817 🔍 Mapping 264m-269m_Wasted: 0
+dash:8817 🔍 Mapping 270m-275m_Wasted: 0
+dash:8817 🔍 Mapping 276m-281m_Wasted: 0
+dash:8817 🔍 Mapping 282m-287m_Wasted: 0
+dash:8817 🔍 Mapping 288m-293m_Wasted: 0
+dash:8817 🔍 Mapping 294m-299m_Wasted: 0
+dash:8817 🔍 Mapping 300m-305m_Wasted: 0
+dash:8817 🔍 Mapping 306m-311m_Wasted: 0
+dash:8817 🔍 Mapping 312m-317m_Wasted: 0
+dash:8817 🔍 Mapping 318m-323m_Wasted: 0
+dash:8817 🔍 Mapping 324m-329m_Wasted: 0
+dash:8817 🔍 Mapping 330m-335m_Wasted: 0
+dash:8817 🔍 Mapping 336m-341m_Wasted: 0
+dash:8817 🔍 Mapping 342m-347m_Wasted: 0
+dash:8817 🔍 Mapping 348m-353m_Wasted: 0
+dash:8817 🔍 Mapping 354m-359m_Wasted: 0
+dash:8817 🔍 Mapping 360m-365m_Wasted: 0
+dash:8817 🔍 Mapping 366m-371m_Wasted: 0
+dash:8817 🔍 Mapping 372m-377m_Wasted: 0
+dash:8817 🔍 Mapping 378m-383m_Wasted: 0
+dash:8817 🔍 Mapping 384m-389m_Wasted: 0
+dash:8817 🔍 Mapping 390m-395m_Wasted: 0
+dash:8817 🔍 Mapping 396m-401m_Wasted: 0
+dash:8817 🔍 Mapping 402m-407m_Wasted: 0
+dash:8817 🔍 Mapping 408m-413m_Wasted: 0
+dash:8817 🔍 Mapping 414m-419m_Wasted: 0
+dash:8817 🔍 Mapping 420m-425m_Wasted: 0
+dash:8817 🔍 Mapping 426m-431m_Wasted: 0
+dash:8817 🔍 Mapping 432m-437m_Wasted: 0
+dash:8817 🔍 Mapping 438m-443m_Wasted: 0
+dash:8817 🔍 Mapping 444m-449m_Wasted: 0
+dash:8817 🔍 Mapping 450m-455m_Wasted: 0
+dash:8817 🔍 Mapping 456m-461m_Wasted: 0
+dash:8817 🔍 Mapping 462m-467m_Wasted: 0
+dash:8817 🔍 Mapping 468m-473m_Wasted: 0
+dash:8817 🔍 Mapping 474m-479m_Wasted: 0
+dash:8817 🔍 Mapping 480m-485m_Wasted: 0
+dash:8817 🔍 Mapping 486m-491m_Wasted: 0
+dash:8817 🔍 Mapping 492m-497m_Wasted: 0
+dash:8817 🔍 Mapping 498m-503m_Wasted: 0
+dash:8817 🔍 Mapping 504m-509m_Wasted: 0
+dash:8817 🔍 Mapping 510m-515m_Wasted: 0
+dash:8817 🔍 Mapping 516m-521m_Wasted: 0
+dash:8817 🔍 Mapping 522m-527m_Wasted: 0
+dash:8817 🔍 Mapping 528m-533m_Wasted: 0
+dash:8817 🔍 Mapping 534m-539m_Wasted: 0
+dash:8817 🔍 Mapping 540m-545m_Wasted: 0
+dash:8817 🔍 Mapping 546m-551m_Wasted: 0
+dash:8817 🔍 Mapping 552m-557m_Wasted: 0
+dash:8817 🔍 Mapping 558m-563m_Wasted: 0
+dash:8817 🔍 Mapping 564m-569m_Wasted: 0
+dash:8817 🔍 Mapping 570m-575m_Wasted: 0
+dash:8817 🔍 Mapping 576m-581m_Wasted: 0
+dash:8817 🔍 Mapping 582m-587m_Wasted: 0
+dash:8817 🔍 Mapping 588m-593m_Wasted: 0
+dash:8817 🔍 Mapping 594m-599m_Wasted: 0
+dash:8817 🔍 Mapping 600m-605m_Wasted: 0
+dash:8817 🔍 Mapping 606m-611m_Wasted: 0
+dash:8817 🔍 Mapping 612m-617m_Wasted: 0
+dash:8817 🔍 Mapping 618m-623m_Wasted: 0
+dash:8817 🔍 Mapping 624m-629m_Wasted: 0
+dash:8817 🔍 Mapping 630m-635m_Wasted: 0
+dash:8817 🔍 Mapping 636m-641m_Wasted: 0
+dash:8817 🔍 Mapping 642m-647m_Wasted: 0
+dash:8817 🔍 Mapping 648m-653m_Wasted: 0
+dash:8817 🔍 Mapping 654m-659m_Wasted: 0
+dash:8817 🔍 Mapping 660m-665m_Wasted: 0
+dash:8817 🔍 Mapping 666m-671m_Wasted: 0
+dash:8817 🔍 Mapping 672m-677m_Wasted: 0
+dash:8817 🔍 Mapping 678m-683m_Wasted: 0
+dash:8817 🔍 Mapping 684m-689m_Wasted: 0
+dash:8817 🔍 Mapping 690m-695m_Wasted: 0
+dash:8817 🔍 Mapping 696m-701m_Wasted: 0
+dash:8817 🔍 Mapping 702m-707m_Wasted: 0
+dash:8817 🔍 Mapping 708m-713m_Wasted: 0
+dash:8817 🔍 Mapping 714m-719m_Wasted: 0
+dash:8817 🔍 Mapping 720m-725m_Wasted: 0
+dash:8817 🔍 Mapping 726m-731m_Wasted: 0
+dash:8817 🔍 Mapping 732m-737m_Wasted: 0
+dash:8817 🔍 Mapping 738m-743m_Wasted: 0
+dash:8817 🔍 Mapping 744m-749m_Wasted: 0
+dash:8817 🔍 Mapping 750m-755m_Wasted: 0
+dash:8817 🔍 Mapping 756m-761m_Wasted: 0
+dash:8817 🔍 Mapping 762m-767m_Wasted: 0
+dash:8817 🔍 Mapping 768m-773m_Wasted: 0
+dash:8817 🔍 Mapping 774m-779m_Wasted: 0
+dash:8817 🔍 Mapping 780m-785m_Wasted: 0
+dash:8817 🔍 Mapping 786m-791m_Wasted: 0
+dash:8817 🔍 Mapping 792m-797m_Wasted: 0
+dash:8817 🔍 Mapping 798m-803m_Wasted: 0
+dash:8817 🔍 Mapping 804m-809m_Wasted: 0
+dash:8817 🔍 Mapping 810m-815m_Wasted: 0
+dash:8817 🔍 Mapping 816m-821m_Wasted: 0
+dash:8817 🔍 Mapping 822m-827m_Wasted: 0
+dash:8817 🔍 Mapping 828m-833m_Wasted: 0
+dash:8817 🔍 Mapping 834m-839m_Wasted: 0
+dash:8817 🔍 Mapping 840m-845m_Wasted: 0
+dash:8817 🔍 Mapping 846m-851m_Wasted: 0
+dash:8821 🔍 Wasted data: Array(140)
+dash:8817 🔍 Mapping 12m-17m_Severely Wasted: 0
+dash:8817 🔍 Mapping 18m-23m_Severely Wasted: 0
+dash:8817 🔍 Mapping 24m-29m_Severely Wasted: 0
+dash:8817 🔍 Mapping 30m-35m_Severely Wasted: 0
+dash:8817 🔍 Mapping 36m-41m_Severely Wasted: 0
+dash:8817 🔍 Mapping 42m-47m_Severely Wasted: 0
+dash:8817 🔍 Mapping 48m-53m_Severely Wasted: 0
+dash:8817 🔍 Mapping 54m-59m_Severely Wasted: 0
+dash:8817 🔍 Mapping 60m-65m_Severely Wasted: 0
+dash:8817 🔍 Mapping 66m-71m_Severely Wasted: 0
+dash:8817 🔍 Mapping 72m-77m_Severely Wasted: 0
+dash:8817 🔍 Mapping 78m-83m_Severely Wasted: 0
+dash:8817 🔍 Mapping 84m-89m_Severely Wasted: 0
+dash:8817 🔍 Mapping 90m-95m_Severely Wasted: 0
+dash:8817 🔍 Mapping 96m-101m_Severely Wasted: 0
+dash:8817 🔍 Mapping 102m-107m_Severely Wasted: 0
+dash:8817 🔍 Mapping 108m-113m_Severely Wasted: 0
+dash:8817 🔍 Mapping 114m-119m_Severely Wasted: 0
+dash:8817 🔍 Mapping 120m-125m_Severely Wasted: 0
+dash:8817 🔍 Mapping 126m-131m_Severely Wasted: 0
+dash:8817 🔍 Mapping 132m-137m_Severely Wasted: 0
+dash:8817 🔍 Mapping 138m-143m_Severely Wasted: 0
+dash:8817 🔍 Mapping 144m-149m_Severely Wasted: 0
+dash:8817 🔍 Mapping 150m-155m_Severely Wasted: 0
+dash:8817 🔍 Mapping 156m-161m_Severely Wasted: 0
+dash:8817 🔍 Mapping 162m-167m_Severely Wasted: 0
+dash:8817 🔍 Mapping 168m-173m_Severely Wasted: 0
+dash:8817 🔍 Mapping 174m-179m_Severely Wasted: 0
+dash:8817 🔍 Mapping 180m-185m_Severely Wasted: 0
+dash:8817 🔍 Mapping 186m-191m_Severely Wasted: 0
+dash:8817 🔍 Mapping 192m-197m_Severely Wasted: 0
+dash:8817 🔍 Mapping 198m-203m_Severely Wasted: 0
+dash:8817 🔍 Mapping 204m-209m_Severely Wasted: 0
+dash:8817 🔍 Mapping 210m-215m_Severely Wasted: 0
+dash:8817 🔍 Mapping 216m-221m_Severely Wasted: 0
+dash:8817 🔍 Mapping 222m-227m_Severely Wasted: 0
+dash:8817 🔍 Mapping 228m-233m_Severely Wasted: 0
+dash:8817 🔍 Mapping 234m-239m_Severely Wasted: 0
+dash:8817 🔍 Mapping 240m-245m_Severely Wasted: 0
+dash:8817 🔍 Mapping 246m-251m_Severely Wasted: 0
+dash:8817 🔍 Mapping 252m-257m_Severely Wasted: 0
+dash:8817 🔍 Mapping 258m-263m_Severely Wasted: 0
+dash:8817 🔍 Mapping 264m-269m_Severely Wasted: 0
+dash:8817 🔍 Mapping 270m-275m_Severely Wasted: 0
+dash:8817 🔍 Mapping 276m-281m_Severely Wasted: 0
+dash:8817 🔍 Mapping 282m-287m_Severely Wasted: 0
+dash:8817 🔍 Mapping 288m-293m_Severely Wasted: 0
+dash:8817 🔍 Mapping 294m-299m_Severely Wasted: 0
+dash:8817 🔍 Mapping 300m-305m_Severely Wasted: 0
+dash:8817 🔍 Mapping 306m-311m_Severely Wasted: 0
+dash:8817 🔍 Mapping 312m-317m_Severely Wasted: 0
+dash:8817 🔍 Mapping 318m-323m_Severely Wasted: 0
+dash:8817 🔍 Mapping 324m-329m_Severely Wasted: 0
+dash:8817 🔍 Mapping 330m-335m_Severely Wasted: 0
+dash:8817 🔍 Mapping 336m-341m_Severely Wasted: 0
+dash:8817 🔍 Mapping 342m-347m_Severely Wasted: 0
+dash:8817 🔍 Mapping 348m-353m_Severely Wasted: 0
+dash:8817 🔍 Mapping 354m-359m_Severely Wasted: 0
+dash:8817 🔍 Mapping 360m-365m_Severely Wasted: 0
+dash:8817 🔍 Mapping 366m-371m_Severely Wasted: 0
+dash:8817 🔍 Mapping 372m-377m_Severely Wasted: 0
+dash:8817 🔍 Mapping 378m-383m_Severely Wasted: 0
+dash:8817 🔍 Mapping 384m-389m_Severely Wasted: 0
+dash:8817 🔍 Mapping 390m-395m_Severely Wasted: 0
+dash:8817 🔍 Mapping 396m-401m_Severely Wasted: 0
+dash:8817 🔍 Mapping 402m-407m_Severely Wasted: 0
+dash:8817 🔍 Mapping 408m-413m_Severely Wasted: 0
+dash:8817 🔍 Mapping 414m-419m_Severely Wasted: 0
+dash:8817 🔍 Mapping 420m-425m_Severely Wasted: 0
+dash:8817 🔍 Mapping 426m-431m_Severely Wasted: 0
+dash:8817 🔍 Mapping 432m-437m_Severely Wasted: 0
+dash:8817 🔍 Mapping 438m-443m_Severely Wasted: 0
+dash:8817 🔍 Mapping 444m-449m_Severely Wasted: 0
+dash:8817 🔍 Mapping 450m-455m_Severely Wasted: 0
+dash:8817 🔍 Mapping 456m-461m_Severely Wasted: 0
+dash:8817 🔍 Mapping 462m-467m_Severely Wasted: 0
+dash:8817 🔍 Mapping 468m-473m_Severely Wasted: 0
+dash:8817 🔍 Mapping 474m-479m_Severely Wasted: 0
+dash:8817 🔍 Mapping 480m-485m_Severely Wasted: 0
+dash:8817 🔍 Mapping 486m-491m_Severely Wasted: 0
+dash:8817 🔍 Mapping 492m-497m_Severely Wasted: 0
+dash:8817 🔍 Mapping 498m-503m_Severely Wasted: 0
+dash:8817 🔍 Mapping 504m-509m_Severely Wasted: 0
+dash:8817 🔍 Mapping 510m-515m_Severely Wasted: 0
+dash:8817 🔍 Mapping 516m-521m_Severely Wasted: 0
+dash:8817 🔍 Mapping 522m-527m_Severely Wasted: 0
+dash:8817 🔍 Mapping 528m-533m_Severely Wasted: 0
+dash:8817 🔍 Mapping 534m-539m_Severely Wasted: 0
+dash:8817 🔍 Mapping 540m-545m_Severely Wasted: 0
+dash:8817 🔍 Mapping 546m-551m_Severely Wasted: 0
+dash:8817 🔍 Mapping 552m-557m_Severely Wasted: 0
+dash:8817 🔍 Mapping 558m-563m_Severely Wasted: 0
+dash:8817 🔍 Mapping 564m-569m_Severely Wasted: 0
+dash:8817 🔍 Mapping 570m-575m_Severely Wasted: 0
+dash:8817 🔍 Mapping 576m-581m_Severely Wasted: 0
+dash:8817 🔍 Mapping 582m-587m_Severely Wasted: 0
+dash:8817 🔍 Mapping 588m-593m_Severely Wasted: 0
+dash:8817 🔍 Mapping 594m-599m_Severely Wasted: 0
+dash:8817 🔍 Mapping 600m-605m_Severely Wasted: 0
+dash:8817 🔍 Mapping 606m-611m_Severely Wasted: 0
+dash:8817 🔍 Mapping 612m-617m_Severely Wasted: 0
+dash:8817 🔍 Mapping 618m-623m_Severely Wasted: 0
+dash:8817 🔍 Mapping 624m-629m_Severely Wasted: 0
+dash:8817 🔍 Mapping 630m-635m_Severely Wasted: 0
+dash:8817 🔍 Mapping 636m-641m_Severely Wasted: 0
+dash:8817 🔍 Mapping 642m-647m_Severely Wasted: 0
+dash:8817 🔍 Mapping 648m-653m_Severely Wasted: 0
+dash:8817 🔍 Mapping 654m-659m_Severely Wasted: 0
+dash:8817 🔍 Mapping 660m-665m_Severely Wasted: 0
+dash:8817 🔍 Mapping 666m-671m_Severely Wasted: 0
+dash:8817 🔍 Mapping 672m-677m_Severely Wasted: 0
+dash:8817 🔍 Mapping 678m-683m_Severely Wasted: 0
+dash:8817 🔍 Mapping 684m-689m_Severely Wasted: 0
+dash:8817 🔍 Mapping 690m-695m_Severely Wasted: 0
+dash:8817 🔍 Mapping 696m-701m_Severely Wasted: 0
+dash:8817 🔍 Mapping 702m-707m_Severely Wasted: 0
+dash:8817 🔍 Mapping 708m-713m_Severely Wasted: 0
+dash:8817 🔍 Mapping 714m-719m_Severely Wasted: 0
+dash:8817 🔍 Mapping 720m-725m_Severely Wasted: 0
+dash:8817 🔍 Mapping 726m-731m_Severely Wasted: 0
+dash:8817 🔍 Mapping 732m-737m_Severely Wasted: 0
+dash:8817 🔍 Mapping 738m-743m_Severely Wasted: 0
+dash:8817 🔍 Mapping 744m-749m_Severely Wasted: 0
+dash:8817 🔍 Mapping 750m-755m_Severely Wasted: 0
+dash:8817 🔍 Mapping 756m-761m_Severely Wasted: 0
+dash:8817 🔍 Mapping 762m-767m_Severely Wasted: 0
+dash:8817 🔍 Mapping 768m-773m_Severely Wasted: 0
+dash:8817 🔍 Mapping 774m-779m_Severely Wasted: 0
+dash:8817 🔍 Mapping 780m-785m_Severely Wasted: 0
+dash:8817 🔍 Mapping 786m-791m_Severely Wasted: 0
+dash:8817 🔍 Mapping 792m-797m_Severely Wasted: 0
+dash:8817 🔍 Mapping 798m-803m_Severely Wasted: 0
+dash:8817 🔍 Mapping 804m-809m_Severely Wasted: 0
+dash:8817 🔍 Mapping 810m-815m_Severely Wasted: 0
+dash:8817 🔍 Mapping 816m-821m_Severely Wasted: 0
+dash:8817 🔍 Mapping 822m-827m_Severely Wasted: 0
+dash:8817 🔍 Mapping 828m-833m_Severely Wasted: 0
+dash:8817 🔍 Mapping 834m-839m_Severely Wasted: 0
+dash:8817 🔍 Mapping 840m-845m_Severely Wasted: 0
+dash:8817 🔍 Mapping 846m-851m_Severely Wasted: 0
+dash:8821 🔍 Severely Wasted data: Array(140)
+dash:8817 🔍 Mapping 12m-17m_Tall: 0
+dash:8817 🔍 Mapping 18m-23m_Tall: 0
+dash:8817 🔍 Mapping 24m-29m_Tall: 0
+dash:8817 🔍 Mapping 30m-35m_Tall: 0
+dash:8817 🔍 Mapping 36m-41m_Tall: 0
+dash:8817 🔍 Mapping 42m-47m_Tall: 0
+dash:8817 🔍 Mapping 48m-53m_Tall: 0
+dash:8817 🔍 Mapping 54m-59m_Tall: 0
+dash:8817 🔍 Mapping 60m-65m_Tall: 0
+dash:8817 🔍 Mapping 66m-71m_Tall: 0
+dash:8817 🔍 Mapping 72m-77m_Tall: 0
+dash:8817 🔍 Mapping 78m-83m_Tall: 0
+dash:8817 🔍 Mapping 84m-89m_Tall: 0
+dash:8817 🔍 Mapping 90m-95m_Tall: 0
+dash:8817 🔍 Mapping 96m-101m_Tall: 0
+dash:8817 🔍 Mapping 102m-107m_Tall: 0
+dash:8817 🔍 Mapping 108m-113m_Tall: 0
+dash:8817 🔍 Mapping 114m-119m_Tall: 0
+dash:8817 🔍 Mapping 120m-125m_Tall: 0
+dash:8817 🔍 Mapping 126m-131m_Tall: 0
+dash:8817 🔍 Mapping 132m-137m_Tall: 0
+dash:8817 🔍 Mapping 138m-143m_Tall: 0
+dash:8817 🔍 Mapping 144m-149m_Tall: 0
+dash:8817 🔍 Mapping 150m-155m_Tall: 0
+dash:8817 🔍 Mapping 156m-161m_Tall: 0
+dash:8817 🔍 Mapping 162m-167m_Tall: 0
+dash:8817 🔍 Mapping 168m-173m_Tall: 0
+dash:8817 🔍 Mapping 174m-179m_Tall: 0
+dash:8817 🔍 Mapping 180m-185m_Tall: 0
+dash:8817 🔍 Mapping 186m-191m_Tall: 0
+dash:8817 🔍 Mapping 192m-197m_Tall: 0
+dash:8817 🔍 Mapping 198m-203m_Tall: 0
+dash:8817 🔍 Mapping 204m-209m_Tall: 0
+dash:8817 🔍 Mapping 210m-215m_Tall: 0
+dash:8817 🔍 Mapping 216m-221m_Tall: 0
+dash:8817 🔍 Mapping 222m-227m_Tall: 0
+dash:8817 🔍 Mapping 228m-233m_Tall: 0
+dash:8817 🔍 Mapping 234m-239m_Tall: 0
+dash:8817 🔍 Mapping 240m-245m_Tall: 0
+dash:8817 🔍 Mapping 246m-251m_Tall: 0
+dash:8817 🔍 Mapping 252m-257m_Tall: 0
+dash:8817 🔍 Mapping 258m-263m_Tall: 0
+dash:8817 🔍 Mapping 264m-269m_Tall: 0
+dash:8817 🔍 Mapping 270m-275m_Tall: 0
+dash:8817 🔍 Mapping 276m-281m_Tall: 0
+dash:8817 🔍 Mapping 282m-287m_Tall: 0
+dash:8817 🔍 Mapping 288m-293m_Tall: 0
+dash:8817 🔍 Mapping 294m-299m_Tall: 0
+dash:8817 🔍 Mapping 300m-305m_Tall: 0
+dash:8817 🔍 Mapping 306m-311m_Tall: 0
+dash:8817 🔍 Mapping 312m-317m_Tall: 0
+dash:8817 🔍 Mapping 318m-323m_Tall: 0
+dash:8817 🔍 Mapping 324m-329m_Tall: 0
+dash:8817 🔍 Mapping 330m-335m_Tall: 0
+dash:8817 🔍 Mapping 336m-341m_Tall: 0
+dash:8817 🔍 Mapping 342m-347m_Tall: 0
+dash:8817 🔍 Mapping 348m-353m_Tall: 0
+dash:8817 🔍 Mapping 354m-359m_Tall: 0
+dash:8817 🔍 Mapping 360m-365m_Tall: 0
+dash:8817 🔍 Mapping 366m-371m_Tall: 0
+dash:8817 🔍 Mapping 372m-377m_Tall: 0
+dash:8817 🔍 Mapping 378m-383m_Tall: 0
+dash:8817 🔍 Mapping 384m-389m_Tall: 0
+dash:8817 🔍 Mapping 390m-395m_Tall: 0
+dash:8817 🔍 Mapping 396m-401m_Tall: 0
+dash:8817 🔍 Mapping 402m-407m_Tall: 0
+dash:8817 🔍 Mapping 408m-413m_Tall: 0
+dash:8817 🔍 Mapping 414m-419m_Tall: 0
+dash:8817 🔍 Mapping 420m-425m_Tall: 0
+dash:8817 🔍 Mapping 426m-431m_Tall: 0
+dash:8817 🔍 Mapping 432m-437m_Tall: 0
+dash:8817 🔍 Mapping 438m-443m_Tall: 0
+dash:8817 🔍 Mapping 444m-449m_Tall: 0
+dash:8817 🔍 Mapping 450m-455m_Tall: 0
+dash:8817 🔍 Mapping 456m-461m_Tall: 0
+dash:8817 🔍 Mapping 462m-467m_Tall: 0
+dash:8817 🔍 Mapping 468m-473m_Tall: 0
+dash:8817 🔍 Mapping 474m-479m_Tall: 0
+dash:8817 🔍 Mapping 480m-485m_Tall: 0
+dash:8817 🔍 Mapping 486m-491m_Tall: 0
+dash:8817 🔍 Mapping 492m-497m_Tall: 0
+dash:8817 🔍 Mapping 498m-503m_Tall: 0
+dash:8817 🔍 Mapping 504m-509m_Tall: 0
+dash:8817 🔍 Mapping 510m-515m_Tall: 0
+dash:8817 🔍 Mapping 516m-521m_Tall: 0
+dash:8817 🔍 Mapping 522m-527m_Tall: 0
+dash:8817 🔍 Mapping 528m-533m_Tall: 0
+dash:8817 🔍 Mapping 534m-539m_Tall: 0
+dash:8817 🔍 Mapping 540m-545m_Tall: 0
+dash:8817 🔍 Mapping 546m-551m_Tall: 0
+dash:8817 🔍 Mapping 552m-557m_Tall: 0
+dash:8817 🔍 Mapping 558m-563m_Tall: 0
+dash:8817 🔍 Mapping 564m-569m_Tall: 0
+dash:8817 🔍 Mapping 570m-575m_Tall: 0
+dash:8817 🔍 Mapping 576m-581m_Tall: 0
+dash:8817 🔍 Mapping 582m-587m_Tall: 0
+dash:8817 🔍 Mapping 588m-593m_Tall: 0
+dash:8817 🔍 Mapping 594m-599m_Tall: 0
+dash:8817 🔍 Mapping 600m-605m_Tall: 0
+dash:8817 🔍 Mapping 606m-611m_Tall: 0
+dash:8817 🔍 Mapping 612m-617m_Tall: 0
+dash:8817 🔍 Mapping 618m-623m_Tall: 0
+dash:8817 🔍 Mapping 624m-629m_Tall: 0
+dash:8817 🔍 Mapping 630m-635m_Tall: 0
+dash:8817 🔍 Mapping 636m-641m_Tall: 0
+dash:8817 🔍 Mapping 642m-647m_Tall: 0
+dash:8817 🔍 Mapping 648m-653m_Tall: 0
+dash:8817 🔍 Mapping 654m-659m_Tall: 0
+dash:8817 🔍 Mapping 660m-665m_Tall: 0
+dash:8817 🔍 Mapping 666m-671m_Tall: 0
+dash:8817 🔍 Mapping 672m-677m_Tall: 0
+dash:8817 🔍 Mapping 678m-683m_Tall: 0
+dash:8817 🔍 Mapping 684m-689m_Tall: 0
+dash:8817 🔍 Mapping 690m-695m_Tall: 0
+dash:8817 🔍 Mapping 696m-701m_Tall: 0
+dash:8817 🔍 Mapping 702m-707m_Tall: 0
+dash:8817 🔍 Mapping 708m-713m_Tall: 0
+dash:8817 🔍 Mapping 714m-719m_Tall: 0
+dash:8817 🔍 Mapping 720m-725m_Tall: 0
+dash:8817 🔍 Mapping 726m-731m_Tall: 0
+dash:8817 🔍 Mapping 732m-737m_Tall: 0
+dash:8817 🔍 Mapping 738m-743m_Tall: 0
+dash:8817 🔍 Mapping 744m-749m_Tall: 0
+dash:8817 🔍 Mapping 750m-755m_Tall: 0
+dash:8817 🔍 Mapping 756m-761m_Tall: 0
+dash:8817 🔍 Mapping 762m-767m_Tall: 0
+dash:8817 🔍 Mapping 768m-773m_Tall: 0
+dash:8817 🔍 Mapping 774m-779m_Tall: 0
+dash:8817 🔍 Mapping 780m-785m_Tall: 0
+dash:8817 🔍 Mapping 786m-791m_Tall: 0
+dash:8817 🔍 Mapping 792m-797m_Tall: 0
+dash:8817 🔍 Mapping 798m-803m_Tall: 0
+dash:8817 🔍 Mapping 804m-809m_Tall: 0
+dash:8817 🔍 Mapping 810m-815m_Tall: 0
+dash:8817 🔍 Mapping 816m-821m_Tall: 0
+dash:8817 🔍 Mapping 822m-827m_Tall: 0
+dash:8817 🔍 Mapping 828m-833m_Tall: 0
+dash:8817 🔍 Mapping 834m-839m_Tall: 0
+dash:8817 🔍 Mapping 840m-845m_Tall: 0
+dash:8817 🔍 Mapping 846m-851m_Tall: 0
+dash:8821 🔍 Tall data: Array(140)
+dash:8838 🔍 Chart datasets: Array(10)
+dash:8839 🔍 Chart age groups: Array(140)
+dash:8840 🔍 Chart datasets length: 10
+dash:8841 🔍 Chart age groups length: 140
+dash:8848 🔍 Dataset 0 (Normal): Array(140)
+dash:8853 ✅ Non-zero data: Normal at 24m-29m: 2
+dash:8853 ✅ Non-zero data: Normal at 30m-35m: 1
+dash:8853 ✅ Non-zero data: Normal at 36m-41m: 1
+dash:8853 ✅ Non-zero data: Normal at 48m-53m: 1
+dash:8853 ✅ Non-zero data: Normal at 186m-191m: 1
+dash:8853 ✅ Non-zero data: Normal at 192m-197m: 1
+dash:8853 ✅ Non-zero data: Normal at 198m-203m: 1
+dash:8853 ✅ Non-zero data: Normal at 204m-209m: 1
+dash:8853 ✅ Non-zero data: Normal at 216m-221m: 1
+dash:8853 ✅ Non-zero data: Normal at 228m-233m: 1
+dash:8853 ✅ Non-zero data: Normal at 402m-407m: 1
+dash:8853 ✅ Non-zero data: Normal at 408m-413m: 1
+dash:8853 ✅ Non-zero data: Normal at 462m-467m: 1
+dash:8848 🔍 Dataset 1 (Overweight): Array(140)
+dash:8853 ✅ Non-zero data: Overweight at 456m-461m: 1
+dash:8853 ✅ Non-zero data: Overweight at 516m-521m: 1
+dash:8853 ✅ Non-zero data: Overweight at 528m-533m: 1
+dash:8853 ✅ Non-zero data: Overweight at 582m-587m: 1
+dash:8848 🔍 Dataset 2 (Obese): Array(140)
+dash:8853 ✅ Non-zero data: Obese at 18m-23m: 1
+dash:8853 ✅ Non-zero data: Obese at 240m-245m: 1
+dash:8853 ✅ Non-zero data: Obese at 576m-581m: 1
+dash:8853 ✅ Non-zero data: Obese at 636m-641m: 1
+dash:8853 ✅ Non-zero data: Obese at 648m-653m: 1
+dash:8848 🔍 Dataset 3 (Underweight): Array(140)
+dash:8848 🔍 Dataset 4 (Severely Underweight): Array(140)
+dash:8853 ✅ Non-zero data: Severely Underweight at 18m-23m: 2
+dash:8848 🔍 Dataset 5 (Stunted): Array(140)
+dash:8848 🔍 Dataset 6 (Severely Stunted): Array(140)
+dash:8848 🔍 Dataset 7 (Wasted): Array(140)
+dash:8848 🔍 Dataset 8 (Severely Wasted): Array(140)[0 … 99]0: 01: 02: 03: 04: 05: 06: 07: 08: 09: 010: 011: 012: 013: 014: 015: 016: 017: 018: 019: 020: 021: 022: 023: 024: 025: 026: 027: 028: 029: 030: 031: 032: 033: 034: 035: 036: 037: 038: 039: 040: 041: 042: 043: 044: 045: 046: 047: 048: 049: 050: 051: 052: 053: 054: 055: 056: 057: 058: 059: 060: 061: 062: 063: 064: 065: 066: 067: 068: 069: 070: 071: 072: 073: 074: 075: 076: 077: 078: 079: 080: 081: 082: 083: 084: 085: 086: 087: 088: 089: 090: 091: 092: 093: 094: 095: 096: 097: 098: 099: 0[100 … 139]length: 140pop: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}push: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}shift: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}splice: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}unshift: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}_chartjs: {listeners: Array(1)}[[Prototype]]: Array(0)
+dash:8848 🔍 Dataset 9 (Tall): Array(140)[0 … 99][100 … 139]length: 140pop: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}push: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}shift: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}splice: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}unshift: value(...e){const n=s.apply(this,e);return t._chartjs.listeners.forEach((t=> {…}_chartjs: {listeners: Array(1)}[[Prototype]]: Array(0)
+dash:8858 🔍 Data Summary: 23/1400 data points are non-zero
+dash:8879 Creating Chart.js with data: Objectdatasets: Array(10)0: backgroundColor: "#4CAF50"borderColor: "#4CAF50"borderWidth: 2data: (140) [0, 0, 2, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …]fill: falselabel: "Normal"pointHoverRadius: 5pointRadius: 3pointStyle: "circle"tension: 0.1[[Prototype]]: Object1: backgroundColor: "#FF9800"borderColor: "#FF9800"borderWidth: 2data: (140) [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, …]fill: falselabel: "Overweight"pointHoverRadius: 5pointRadius: 3pointStyle: "circle"tension: 0.1[[Prototype]]: Object2: backgroundColor: "#F44336"borderColor: "#F44336"borderWidth: 2data: (140) [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, …]fill: falselabel: "Obese"pointHoverRadius: 5pointRadius: 3pointStyle: "circle"tension: 0.1[[Prototype]]: Object3: {label: 'Underweight', data: Array(140), borderColor: '#FFC107', backgroundColor: '#FFC107', tension: 0.1, …}4: {label: 'Severely Underweight', data: Array(140), borderColor: '#E91E63', backgroundColor: '#E91E63', tension: 0.1, …}5: {label: 'Stunted', data: Array(140), borderColor: '#9C27B0', backgroundColor: '#9C27B0', tension: 0.1, …}6: {label: 'Severely Stunted', data: Array(140), borderColor: '#673AB7', backgroundColor: '#673AB7', tension: 0.1, …}7: {label: 'Wasted', data: Array(140), borderColor: '#3F51B5', backgroundColor: '#3F51B5', tension: 0.1, …}8: {label: 'Severely Wasted', data: Array(140), borderColor: '#2196F3', backgroundColor: '#2196F3', tension: 0.1, …}9: {label: 'Tall', data: Array(140), borderColor: '#00BCD4', backgroundColor: '#00BCD4', tension: 0.1, …}length: 10[[Prototype]]: Array(0)labels: (140) ['12m-17m', '18m-23m', '24m-29m', '30m-35m', '36m-41m', '42m-47m', '48m-53m', '54m-59m', '60m-65m', '66m-71m', '72m-77m', '78m-83m', '84m-89m', '90m-95m', '96m-101m', '102m-107m', '108m-113m', '114m-119m', '120m-125m', '126m-131m', '132m-137m', '138m-143m', '144m-149m', '150m-155m', '156m-161m', '162m-167m', '168m-173m', '174m-179m', '180m-185m', '186m-191m', '192m-197m', '198m-203m', '204m-209m', '210m-215m', '216m-221m', '222m-227m', '228m-233m', '234m-239m', '240m-245m', '246m-251m', '252m-257m', '258m-263m', '264m-269m', '270m-275m', '276m-281m', '282m-287m', '288m-293m', '294m-299m', '300m-305m', '306m-311m', '312m-317m', '318m-323m', '324m-329m', '330m-335m', '336m-341m', '342m-347m', '348m-353m', '354m-359m', '360m-365m', '366m-371m', '372m-377m', '378m-383m', '384m-389m', '390m-395m', '396m-401m', '402m-407m', '408m-413m', '414m-419m', '420m-425m', '426m-431m', '432m-437m', '438m-443m', '444m-449m', '450m-455m', '456m-461m', '462m-467m', '468m-473m', '474m-479m', '480m-485m', '486m-491m', '492m-497m', '498m-503m', '504m-509m', '510m-515m', '516m-521m', '522m-527m', '528m-533m', '534m-539m', '540m-545m', '546m-551m', '552m-557m', '558m-563m', '564m-569m', '570m-575m', '576m-581m', '582m-587m', '588m-593m', '594m-599m', '600m-605m', '606m-611m', …][[Prototype]]: Object
+dash:8965 ✅ Age classification chart updated successfully with custom range
