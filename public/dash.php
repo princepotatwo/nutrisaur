@@ -9290,7 +9290,7 @@ body {
             return unit === 'years' ? Math.floor(months / 12) : months;
         }
 
-        // Use REAL donut chart data to distribute across age groups
+        // Use REAL donut chart data - NO individual user scanning, just batch data
         async function processBulkDataForAgeGroups(bulkData, fromMonths, toMonths) {
             console.log('Processing bulk data for age groups:', fromMonths, 'to', toMonths, 'months');
             
@@ -9307,57 +9307,41 @@ body {
                 });
             });
             
-            // Get user data
-            const userDataResponse = await fetch(`/api/DatabaseAPI.php?action=get_users_for_age_classification&time_frame=1d&barangay=`);
-            const userData = await userDataResponse.json();
+            // Get the REAL classifications from bulkData (donut chart data) - NO user scanning!
+            const realClassifications = {
+                'Severely Underweight': bulkData.weight_for_age?.['Severely Underweight'] || 0,
+                'Underweight': bulkData.weight_for_age?.['Underweight'] || 0,
+                'Normal': bulkData.weight_for_age?.['Normal'] || 0,
+                'Overweight': bulkData.weight_for_age?.['Overweight'] || 0,
+                'Obese': bulkData.weight_for_age?.['Obese'] || 0,
+                'Severely Stunted': bulkData.height_for_age?.['Severely Stunted'] || 0,
+                'Stunted': bulkData.height_for_age?.['Stunted'] || 0,
+                'Tall': bulkData.height_for_age?.['Tall'] || 0,
+                'Severely Wasted': bulkData.weight_for_height?.['Severely Wasted'] || 0,
+                'Wasted': bulkData.weight_for_height?.['Wasted'] || 0
+            };
             
-            if (userData.success && userData.data && userData.data.length > 0) {
-                console.log('Processing', userData.data.length, 'users for age classification');
-                
-                // Get the REAL classifications from bulkData (donut chart data)
-                const realClassifications = {
-                    'Severely Underweight': bulkData.weight_for_age?.['Severely Underweight'] || 0,
-                    'Underweight': bulkData.weight_for_age?.['Underweight'] || 0,
-                    'Normal': bulkData.weight_for_age?.['Normal'] || 0,
-                    'Overweight': bulkData.weight_for_age?.['Overweight'] || 0,
-                    'Obese': bulkData.weight_for_age?.['Obese'] || 0,
-                    'Severely Stunted': bulkData.height_for_age?.['Severely Stunted'] || 0,
-                    'Stunted': bulkData.height_for_age?.['Stunted'] || 0,
-                    'Tall': bulkData.height_for_age?.['Tall'] || 0,
-                    'Severely Wasted': bulkData.weight_for_height?.['Severely Wasted'] || 0,
-                    'Wasted': bulkData.weight_for_height?.['Wasted'] || 0
-                };
-                
-                console.log('Real classifications from donut chart:', realClassifications);
-                
-                // Distribute users across age groups based on their actual age
-                userData.data.forEach((user, index) => {
-                    const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
-                    
-                    // Find which age group this user belongs to
+            console.log('Real classifications from donut chart:', realClassifications);
+            
+            // Distribute the REAL data across age groups proportionally - NO user scanning!
+            Object.keys(realClassifications).forEach(classification => {
+                const totalCount = realClassifications[classification];
+                if (totalCount > 0) {
+                    // Distribute this classification across all age groups proportionally
                     Object.keys(ageGroups).forEach(ageGroup => {
                         const [minAge, maxAge] = ageGroups[ageGroup];
-                        if (ageInMonths >= minAge && ageInMonths < maxAge) {
-                            // Use the REAL classification data from donut chart
-                            Object.keys(realClassifications).forEach(classification => {
-                                const count = realClassifications[classification];
-                                if (count > 0) {
-                                    // Distribute proportionally based on age group size
-                                    const ageGroupSize = maxAge - minAge;
-                                    const totalAgeRange = toMonths - fromMonths;
-                                    const proportion = ageGroupSize / totalAgeRange;
-                                    const distributedCount = Math.round(count * proportion);
-                                    
-                                    if (distributedCount > 0) {
-                                        const key = `${ageGroup}_${classification}`;
-                                        ageClassificationData[key] = distributedCount;
-                                    }
-                                }
-                            });
+                        const ageGroupSize = maxAge - minAge;
+                        const totalAgeRange = toMonths - fromMonths;
+                        const proportion = ageGroupSize / totalAgeRange;
+                        const distributedCount = Math.round(totalCount * proportion);
+                        
+                        if (distributedCount > 0) {
+                            const key = `${ageGroup}_${classification}`;
+                            ageClassificationData[key] = distributedCount;
                         }
                     });
-                });
-            }
+                }
+            });
             
             console.log('Final age classification data:', ageClassificationData);
             return ageClassificationData;
