@@ -3627,12 +3627,12 @@ header .user-info {
 }
 
 .trend-label-classification {
-    font-size: 8px;
+    font-size: 6px;
     font-weight: 600;
     color: var(--color-text);
     text-align: center;
-    line-height: 1.2;
-    margin-bottom: 1px;
+    line-height: 1;
+    margin-bottom: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3640,7 +3640,7 @@ header .user-info {
 }
 
 .trend-label-standard {
-    font-size: 7px;
+    font-size: 5px;
     font-weight: 500;
     color: var(--color-text);
     opacity: 0.8;
@@ -3721,13 +3721,13 @@ header .user-info {
     }
     
     .trend-label-classification {
-        font-size: 7px;
+        font-size: 5px;
         max-width: 45px;
-        margin-bottom: 1px;
+        margin-bottom: 0;
     }
     
     .trend-label-standard {
-        font-size: 6px;
+        font-size: 4px;
         max-width: 45px;
     }
 }
@@ -3755,13 +3755,13 @@ header .user-info {
     }
     
     .trend-label-classification {
-        font-size: 6px;
+        font-size: 4px;
         max-width: 40px;
-        margin-bottom: 1px;
+        margin-bottom: 0;
     }
     
     .trend-label-standard {
-        font-size: 5px;
+        font-size: 3px;
         max-width: 40px;
     }
     
