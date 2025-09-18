@@ -8492,9 +8492,9 @@ body {
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
-                // Fetch all classifications
-                const url = `/api/DatabaseAPI.php?action=get_all_classifications&time_frame=${timeFrame}&barangay=${barangayValue}`;
-                console.log('Fetching all classifications from:', url);
+                // OPTIMIZED: Fetch all classifications using bulk API
+                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangayValue}`;
+                console.log('Fetching all classifications from bulk API:', url);
                 
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -8512,9 +8512,26 @@ body {
                     return;
                 }
 
+                // OPTIMIZED: Process bulk API data format
+                // The bulk API returns: { weight_for_age: {...}, height_for_age: {...}, etc. }
+                // We need to combine all classifications into a single array
+                const allClassifications = {};
+                
+                // Combine all WHO standards into one classification object
+                Object.values(data.data).forEach(standardData => {
+                    if (typeof standardData === 'object') {
+                        Object.entries(standardData).forEach(([classification, count]) => {
+                            if (classification !== 'No Data') {
+                                allClassifications[classification] = (allClassifications[classification] || 0) + count;
+                            }
+                        });
+                    }
+                });
+
                 // Convert to array and sort by count (lowest to highest)
-                const classificationsArray = Object.values(data.data)
-                    .sort((a, b) => a.count - b.count); // Sort from lowest to highest
+                const classificationsArray = Object.entries(allClassifications)
+                    .map(([classification, count]) => ({ classification, count }))
+                    .sort((a, b) => a.count - b.count);
 
                 if (classificationsArray.length === 0) {
                     trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No classifications found</div>';

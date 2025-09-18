@@ -1580,7 +1580,7 @@ class DatabaseAPI {
 
     public function getWHOClassifications($whoStandard, $timeFrame = '1d', $barangay = '') {
         try {
-            // Get all users (same as screening.php)
+            // OPTIMIZED: Get all users in single query with proper filtering
             $users = $this->getDetailedScreeningResponses($timeFrame, $barangay);
             
             if (empty($users)) {
@@ -1612,13 +1612,15 @@ class DatabaseAPI {
             $totalUsers = count($users);
             $eligibleUsers = 0;
             
-            // Process each user with age restrictions (same logic as screening.php)
+            // OPTIMIZED: Bulk process users with single WHO instance
+            $who = new WHOGrowthStandards();
             $debugInfo = [];
+            
+            // Pre-calculate age restrictions to avoid repeated calculations
+            $ageRestrictions = $this->getAgeRestrictions($whoStandard);
+            
             foreach ($users as $user) {
                 try {
-                    require_once __DIR__ . '/../../who_growth_standards.php';
-                    $who = new WHOGrowthStandards();
-                    
                     // Calculate age in months from birthday
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                     
@@ -2687,6 +2689,181 @@ class DatabaseAPI {
     public function close() {
         $this->pdo = null;
         $this->mysqli = null;
+    }
+    
+    /**
+     * Get age restrictions for WHO standard (optimization helper)
+     */
+    private function getAgeRestrictions($whoStandard) {
+        switch ($whoStandard) {
+            case 'weight-for-age':
+            case 'height-for-age':
+                return ['min' => 0, 'max' => 60]; // 0-60 months
+            case 'weight-for-height':
+                return ['min' => 0, 'max' => 60]; // 0-60 months  
+            case 'bmi-for-age':
+                return ['min' => 0, 'max' => 228]; // 0-228 months (0-19 years)
+            case 'bmi-adult':
+                return ['min' => 72, 'max' => 999]; // 72+ months (6+ years)
+            default:
+                return ['min' => 0, 'max' => 999];
+        }
+    }
+    
+    /**
+     * OPTIMIZED: Get all WHO classifications in bulk (professional approach)
+     * This replaces multiple individual API calls with a single bulk operation
+     */
+    public function getAllWHOClassificationsBulk($timeFrame = '1d', $barangay = '') {
+        try {
+            // Single query to get all users
+            $users = $this->getDetailedScreeningResponses($timeFrame, $barangay);
+            
+            if (empty($users)) {
+                return [
+                    'success' => true,
+                    'data' => [
+                        'weight_for_age' => [],
+                        'height_for_age' => [],
+                        'weight_for_height' => [],
+                        'bmi_for_age' => [],
+                        'bmi_adult' => [],
+                        'total_users' => 0
+                    ]
+                ];
+            }
+            
+            // Initialize all classification arrays
+            $allClassifications = [
+                'weight_for_age' => [
+                    'Severely Underweight' => 0, 'Underweight' => 0, 'Normal' => 0, 
+                    'Overweight' => 0, 'Obese' => 0, 'No Data' => 0
+                ],
+                'height_for_age' => [
+                    'Severely Stunted' => 0, 'Stunted' => 0, 'Normal' => 0, 
+                    'Tall' => 0, 'No Data' => 0
+                ],
+                'weight_for_height' => [
+                    'Severely Wasted' => 0, 'Wasted' => 0, 'Normal' => 0, 
+                    'Overweight' => 0, 'Obese' => 0, 'No Data' => 0
+                ],
+                'bmi_for_age' => [
+                    'Severely Underweight' => 0, 'Underweight' => 0, 'Normal' => 0, 
+                    'Overweight' => 0, 'Obese' => 0, 'No Data' => 0
+                ],
+                'bmi_adult' => [
+                    'Underweight' => 0, 'Normal' => 0, 'Overweight' => 0, 
+                    'Obese' => 0, 'No Data' => 0
+                ]
+            ];
+            
+            // Single WHO instance for all calculations
+            require_once __DIR__ . '/../../who_growth_standards.php';
+            $who = new WHOGrowthStandards();
+            
+            $totalProcessed = 0;
+            $totalUsers = count($users);
+            
+            // Process all users in one pass
+            foreach ($users as $user) {
+                try {
+                    // Calculate age once
+                    $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                    
+                    // Get comprehensive assessment once for all standards
+                    $assessment = $who->getComprehensiveAssessment(
+                        floatval($user['weight']),
+                        floatval($user['height']),
+                        $user['birthday'],
+                        $user['sex'],
+                        $user['screening_date'] ?? null
+                    );
+                    
+                    if ($assessment['success'] && isset($assessment['results'])) {
+                        $results = $assessment['results'];
+                        
+                        // Process each WHO standard
+                        $this->processWHOStandard($allClassifications['weight_for_age'], $results, 'weight_for_age', $ageInMonths, $user);
+                        $this->processWHOStandard($allClassifications['height_for_age'], $results, 'height_for_age', $ageInMonths, $user);
+                        $this->processWHOStandard($allClassifications['weight_for_height'], $results, 'weight_for_height', $ageInMonths, $user);
+                        $this->processWHOStandard($allClassifications['bmi_for_age'], $results, 'bmi_for_age', $ageInMonths, $user);
+                        $this->processBMIAdult($allClassifications['bmi_adult'], $user, $ageInMonths);
+                        
+                        $totalProcessed++;
+                    } else {
+                        // Mark all as no data if assessment failed
+                        foreach ($allClassifications as &$classifications) {
+                            $classifications['No Data']++;
+                        }
+                    }
+                } catch (Exception $e) {
+                    error_log("Bulk WHO processing error for user {$user['email']}: " . $e->getMessage());
+                    foreach ($allClassifications as &$classifications) {
+                        $classifications['No Data']++;
+                    }
+                }
+            }
+            
+            return [
+                'success' => true,
+                'data' => $allClassifications,
+                'total_users' => $totalUsers,
+                'processed_users' => $totalProcessed
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Bulk WHO classifications error: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Bulk processing failed: ' . $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Process individual WHO standard classification
+     */
+    private function processWHOStandard(&$classifications, $results, $standard, $ageInMonths, $user) {
+        // Age restrictions
+        $ageRestrictions = $this->getAgeRestrictions($standard);
+        if ($ageInMonths < $ageRestrictions['min'] || $ageInMonths > $ageRestrictions['max']) {
+            $classifications['No Data']++;
+            return;
+        }
+        
+        // Get classification from results
+        $classification = 'No Data';
+        if (isset($results[$standard])) {
+            $classification = $results[$standard]['classification'] ?? 'No Data';
+        }
+        
+        // Count classification
+        if (isset($classifications[$classification])) {
+            $classifications[$classification]++;
+        } else {
+            $classifications['No Data']++;
+        }
+    }
+    
+    /**
+     * Process BMI adult classification
+     */
+    private function processBMIAdult(&$classifications, $user, $ageInMonths) {
+        // BMI adult is for 6+ years (72+ months)
+        if ($ageInMonths < 72) {
+            $classifications['No Data']++;
+            return;
+        }
+        
+        $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+        
+        if ($bmi < 18.5) $classification = 'Underweight';
+        else if ($bmi < 25) $classification = 'Normal';
+        else if ($bmi < 30) $classification = 'Overweight';
+        else $classification = 'Obese';
+        
+        if (isset($classifications[$classification])) {
+            $classifications[$classification]++;
+        } else {
+            $classifications['No Data']++;
+        }
     }
 }
 
@@ -3765,6 +3942,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
             $result = $db->getWHOClassifications($whoStandard, $timeFrame, $barangay);
+            echo json_encode($result);
+            break;
+            
+        case 'get_all_who_classifications_bulk':
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            $result = $db->getAllWHOClassificationsBulk($timeFrame, $barangay);
             echo json_encode($result);
             break;
             
