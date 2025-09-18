@@ -8998,8 +8998,8 @@ body {
             try {
                 console.log('Fetching WHO data for:', { whoStandard, timeFrame, barangay });
                 
-                // OPTIMIZED: Use bulk API and extract specific standard
-                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangay}`;
+                // OPTIMIZED: Use bulk API and extract specific standard with age filtering
+                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangay}&who_standard=${whoStandard}`;
                 console.log('API URL (bulk):', url);
                 
                 const response = await fetch(url);

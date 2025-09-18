@@ -2711,13 +2711,70 @@ class DatabaseAPI {
     }
     
     /**
+     * Filter users by age eligibility for specific WHO standards
+     */
+    private function filterUsersByAgeEligibility($users, $whoStandard) {
+        require_once __DIR__ . '/../../who_growth_standards.php';
+        $who = new WHOGrowthStandards();
+        
+        $filteredUsers = [];
+        
+        foreach ($users as $user) {
+            $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+            $isEligible = false;
+            
+            switch ($whoStandard) {
+                case 'weight-for-age':
+                case 'height-for-age':
+                    // 0-71 months (0-5 years 11 months)
+                    $isEligible = $ageInMonths >= 0 && $ageInMonths <= 71;
+                    break;
+                    
+                case 'weight-for-height':
+                    // 45-120cm height (no age restriction, height-based)
+                    $height = floatval($user['height'] ?? 0);
+                    $isEligible = $height >= 45 && $height <= 120;
+                    break;
+                    
+                case 'bmi-for-age':
+                    // 2-19 years old (24-228 months)
+                    $isEligible = $ageInMonths >= 24 && $ageInMonths <= 228;
+                    break;
+                    
+                case 'bmi-adult':
+                    // 19+ years old (228+ months)
+                    $isEligible = $ageInMonths >= 228;
+                    break;
+                    
+                default:
+                    // No filtering for unknown standards
+                    $isEligible = true;
+                    break;
+            }
+            
+            if ($isEligible) {
+                $filteredUsers[] = $user;
+            }
+        }
+        
+        error_log("WHO Standard '$whoStandard' filtering: " . count($users) . " total users, " . count($filteredUsers) . " eligible users");
+        
+        return $filteredUsers;
+    }
+
+    /**
      * OPTIMIZED: Get all WHO classifications in bulk (professional approach)
      * This replaces multiple individual API calls with a single bulk operation
      */
-    public function getAllWHOClassificationsBulk($timeFrame = '1d', $barangay = '') {
+    public function getAllWHOClassificationsBulk($timeFrame = '1d', $barangay = '', $whoStandard = '') {
         try {
             // Single query to get all users
             $users = $this->getDetailedScreeningResponses($timeFrame, $barangay);
+            
+            // Filter users by age eligibility for the specific WHO standard
+            if (!empty($whoStandard) && !empty($users)) {
+                $users = $this->filterUsersByAgeEligibility($users, $whoStandard);
+            }
             
             if (empty($users)) {
                 return [
@@ -3948,8 +4005,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         case 'get_all_who_classifications_bulk':
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? '';
             
-            $result = $db->getAllWHOClassificationsBulk($timeFrame, $barangay);
+            $result = $db->getAllWHOClassificationsBulk($timeFrame, $barangay, $whoStandard);
             echo json_encode($result);
             break;
             
