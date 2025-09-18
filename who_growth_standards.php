@@ -40,7 +40,7 @@ class DecisionTreeNode {
             return $this->result;
         }
         
-        if ($this->condition($value)) {
+        if (($this->condition)($value)) {
             return $this->trueChild ? $this->trueChild->evaluate($value) : $this->result;
         } else {
             return $this->falseChild ? $this->falseChild->evaluate($value) : $this->result;
