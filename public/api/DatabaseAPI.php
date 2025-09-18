@@ -5066,6 +5066,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Debug: Log the generated age groups
                 error_log("Generated age groups for range $ageFromMonths to $ageToMonths: " . json_encode($ageGroups));
                 
+                // Debug: Log the age group ranges in detail
+                foreach ($ageGroups as $label => $range) {
+                    error_log("Age group '$label': months {$range[0]} to {$range[1]}");
+                }
+                
                 $classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
                 
                 $ageClassificationData = [];
@@ -5127,6 +5132,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Debug: Log first few users' data
                 if ($totalUsers > 0) {
                     error_log("Sample user data: " . json_encode(array_slice($users, 0, 3)));
+                    
+                    // Debug: Calculate age for first few users
+                    for ($i = 0; $i < min(3, count($users)); $i++) {
+                        $user = $users[$i];
+                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                        error_log("User $i: birthday={$user['birthday']}, screening_date={$user['screening_date']}, ageInMonths=$ageInMonths");
+                    }
                 }
                 
                 // Initialize WHO growth standards
