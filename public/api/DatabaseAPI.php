@@ -5063,6 +5063,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Generate age groups based on custom range
                 $ageGroups = generateAgeGroups($ageFromMonths, $ageToMonths);
                 
+                // Debug: Log the generated age groups
+                error_log("Generated age groups for range $ageFromMonths to $ageToMonths: " . json_encode($ageGroups));
+                
                 $classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
                 
                 $ageClassificationData = [];
@@ -5120,6 +5123,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 // Log basic info for debugging
                 error_log("Age Classification API - Total users: $totalUsers");
+                
+                // Debug: Log first few users' data
+                if ($totalUsers > 0) {
+                    error_log("Sample user data: " . json_encode(array_slice($users, 0, 3)));
+                }
                 
                 // Initialize WHO growth standards
                 require_once __DIR__ . '/../../who_growth_standards.php';
@@ -5189,6 +5197,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     
                     // Calculate percentages for this age group
                     $ageGroupTotal = array_sum($ageGroupClassifications);
+                    
+                    // Debug: Log age group classification results
+                    error_log("Age group $ageGroup classifications: " . json_encode($ageGroupClassifications) . " (total: $ageGroupTotal)");
                     
                     foreach ($classifications as $classification) {
                         $count = $ageGroupClassifications[$classification] ?? 0;
