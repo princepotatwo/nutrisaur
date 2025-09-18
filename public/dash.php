@@ -8490,7 +8490,7 @@ body {
                 trendsChart.innerHTML = '';
 
                 // Get current filter values
-                const timeFrame = document.querySelector('.time-btn.active')?.textContent?.trim() || '1d';
+                const timeFrame = document.querySelector('.time-btn.active')?.dataset.timeframe || '1d';
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
@@ -8608,7 +8608,7 @@ body {
                 }
 
                 // Get current filter values
-                const timeFrame = document.querySelector('.time-btn.active')?.textContent?.trim() || '1d';
+                const timeFrame = document.querySelector('.time-btn.active')?.dataset.timeframe || '1d';
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
