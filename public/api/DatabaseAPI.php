@@ -5023,10 +5023,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         // Use screening date for age calculation
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                         
-                        // Debug logging for first few users
-                        if (count($ageGroupUsers) < 3) {
-                            error_log("Age Classification Debug - User: {$user['email']}, Birthday: {$user['birthday']}, Screening Date: " . ($user['screening_date'] ?? 'null') . ", Age in Months: $ageInMonths, Age Group: $ageGroup, Range: {$ageRange[0]}-{$ageRange[1]}");
-                        }
+                        // Debug logging removed to prevent rate limiting
                         
                         if ($ageInMonths >= $ageRange[0] && $ageInMonths < $ageRange[1]) {
                             $ageGroupUsers[] = $user;
