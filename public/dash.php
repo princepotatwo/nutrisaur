@@ -3516,8 +3516,8 @@ header .user-info {
     align-items: flex-end;
     justify-content: center;
     height: 250px;
-    gap: 8px;
-    padding: 15px 10px 10px 10px;
+    gap: 6px;
+    padding: 15px 5px 10px 5px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
@@ -3530,8 +3530,8 @@ header .user-info {
 }
 
 .trend-bar {
-    width: 24px;
-    border-radius: 6px 6px 0 0;
+    width: 21px;
+    border-radius: 5px 5px 0 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3623,7 +3623,7 @@ header .user-info {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 24px;
+    width: 21px;
     position: relative;
     height: 100%;
     flex-shrink: 0;
@@ -3640,7 +3640,7 @@ header .user-info {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 24px;
+    max-width: 21px;
 }
 
 .trend-label-standard {
@@ -3652,7 +3652,7 @@ header .user-info {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 24px;
+    max-width: 21px;
 }
 
 /* Bar colors for different classifications - Enhanced with gradients */
@@ -3710,8 +3710,8 @@ header .user-info {
     
     .trends-chart {
         height: 200px;
-        gap: 6px;
-        padding: 12px 8px 8px 8px;
+        gap: 5px;
+        padding: 12px 4px 8px 4px;
     }
     
     .trends-labels-row {
@@ -3723,24 +3723,24 @@ header .user-info {
     }
     
     .trend-bar {
-        width: 20px;
+        width: 18px;
     }
     
     .trend-label-item {
-        width: 20px;
+        width: 18px;
         flex-shrink: 0;
         text-align: center;
     }
     
     .trend-label-classification {
         font-size: 7px;
-        max-width: 20px;
+        max-width: 18px;
         margin-bottom: 2px;
     }
     
     .trend-label-standard {
         font-size: 6px;
-        max-width: 20px;
+        max-width: 18px;
     }
 }
 
@@ -3752,8 +3752,8 @@ header .user-info {
     
     .trends-chart {
         height: 180px;
-        gap: 4px;
-        padding: 8px 5px 5px 5px;
+        gap: 3px;
+        padding: 8px 2px 5px 2px;
     }
     
     .trends-labels-row {
@@ -3765,24 +3765,24 @@ header .user-info {
     }
     
     .trend-bar {
-        width: 16px;
+        width: 14px;
     }
     
     .trend-label-item {
-        width: 16px;
+        width: 14px;
         flex-shrink: 0;
         text-align: center;
     }
     
     .trend-label-classification {
         font-size: 6px;
-        max-width: 16px;
+        max-width: 14px;
         margin-bottom: 2px;
     }
     
     .trend-label-standard {
         font-size: 5px;
-        max-width: 16px;
+        max-width: 14px;
     }
     
     .trend-bar-value {
