@@ -8724,9 +8724,10 @@ body {
                     };
                 });
 
-                // Create chart
+                // Destroy existing chart and create new one
+                destroyAgeClassificationChart();
                 const ctx = canvas.getContext('2d');
-                new Chart(ctx, {
+                ageClassificationChartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: ageGroups,
@@ -8813,8 +8814,20 @@ body {
             }
         }
 
+        // Global variable to store the age classification chart instance
+        let ageClassificationChartInstance = null;
+
+        // Function to destroy existing age classification chart
+        function destroyAgeClassificationChart() {
+            if (ageClassificationChartInstance) {
+                ageClassificationChartInstance.destroy();
+                ageClassificationChartInstance = null;
+            }
+        }
+
         // Function to create empty age chart
         function createEmptyAgeChart(canvas) {
+            destroyAgeClassificationChart();
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'var(--color-text)';
@@ -8949,9 +8962,10 @@ body {
                     };
                 });
 
-                // Create chart
+                // Destroy existing chart and create new one
+                destroyAgeClassificationChart();
                 const ctx = canvas.getContext('2d');
-                new Chart(ctx, {
+                ageClassificationChartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: ageGroups,
@@ -9493,12 +9507,12 @@ body {
                 console.log('📊 Loading initial trends chart...');
                 await updateTrendsChart();
                 
-                // Load initial age classification chart
-                console.log('📊 Loading initial age classification chart...');
-                await updateAgeClassificationChart();
-                
                 // Set up age range control event listeners
                 setupAgeRangeControls();
+                
+                // Load initial age classification chart with default range
+                console.log('📊 Loading initial age classification chart...');
+                await updateAgeClassificationChartWithRange(0, 71);
                 
                 // Set up time frame button event listeners
                 const timeButtons = document.querySelectorAll('.time-btn');
