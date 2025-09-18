@@ -9034,6 +9034,9 @@ body {
                 const total = Object.values(classifications).reduce((sum, count) => sum + count, 0);
                 
                 console.log(`Mapping ${whoStandard} to ${apiKey}:`, classifications);
+                console.log(`Classification values:`, Object.values(classifications));
+                console.log(`Calculated total:`, total);
+                console.log(`Original total_users:`, result.total_users);
                 
                 console.log(`Extracted ${whoStandard} data:`, { classifications, total });
                 

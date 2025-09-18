@@ -5034,10 +5034,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             $standardKey = str_replace('-', '_', $standard);
                             $standardData = $allClassifications[$standardKey] ?? [];
                             
+                            // Calculate total users for this standard (excluding "No Data")
+                            $standardTotal = 0;
+                            foreach ($standardData as $classification => $count) {
+                                if ($classification !== 'No Data') {
+                                    $standardTotal += $count;
+                                }
+                            }
+                            
                             foreach ($standardData as $classification => $count) {
                                 if (in_array($classification, $classifications)) {
-                                    // Calculate percentage for this age group
-                                    $percentage = $ageGroupCount > 0 ? round(($count / $ageGroupCount) * 100, 1) : 0;
+                                    // Calculate percentage based on total users for this standard
+                                    $percentage = $standardTotal > 0 ? round(($count / $standardTotal) * 100, 1) : 0;
                                     $ageClassificationData["{$ageGroup}_{$classification}"] = $percentage;
                                 }
                             }
