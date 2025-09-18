@@ -3505,11 +3505,10 @@ header .user-info {
 
 /* Classification Trends Chart Styles */
 .trends-chart-container {
-    height: 400px;
+    height: 350px;
     margin-top: 15px;
     padding: 0 10px;
-    display: flex;
-    flex-direction: column;
+    position: relative;
 }
 
 .trends-chart {
@@ -3527,20 +3526,6 @@ header .user-info {
     flex-wrap: nowrap;
     min-width: 0;
     box-sizing: border-box;
-    flex-shrink: 0;
-}
-
-.trends-labels-container {
-    height: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 10px 15px;
-    background: var(--color-bg);
-    border-radius: 0 0 12px 12px;
-    border: 1px solid var(--color-border);
-    border-top: none;
-    overflow: visible;
 }
 
 .trend-bar {
@@ -3616,15 +3601,18 @@ header .user-info {
     z-index: 5;
 }
 
-/* External labels container */
+/* Labels positioned outside chart but within card */
 .trends-labels-row {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
     width: 100%;
-    height: 100%;
-    position: relative;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    padding: 0 15px;
 }
 
 .trend-label-item {
@@ -3633,7 +3621,6 @@ header .user-info {
     align-items: center;
     justify-content: center;
     min-width: 50px;
-    height: 100%;
     position: relative;
 }
 
@@ -3711,7 +3698,7 @@ header .user-info {
 /* Responsive adjustments for Classification Trends Chart */
 @media (max-width: 1200px) {
     .trends-chart-container {
-        height: 350px;
+        height: 320px;
         padding: 0 8px;
     }
     
@@ -3721,9 +3708,9 @@ header .user-info {
         padding: 12px 8px 8px 8px;
     }
     
-    .trends-labels-container {
-        height: 150px;
-        padding: 8px 12px;
+    .trends-labels-row {
+        bottom: 8px;
+        padding: 0 12px;
     }
     
     .trend-bar {
@@ -3743,7 +3730,7 @@ header .user-info {
 
 @media (max-width: 768px) {
     .trends-chart-container {
-        height: 300px;
+        height: 280px;
         padding: 0 5px;
     }
     
@@ -3753,9 +3740,9 @@ header .user-info {
         padding: 8px 5px 5px 5px;
     }
     
-    .trends-labels-container {
-        height: 120px;
-        padding: 5px 8px;
+    .trends-labels-row {
+        bottom: 5px;
+        padding: 0 8px;
     }
     
     .trend-bar {
@@ -6713,10 +6700,8 @@ body {
                     <div class="trends-chart" id="trends-chart">
                         <!-- Bar chart will be generated dynamically -->
                     </div>
-                    <div class="trends-labels-container">
-                        <div class="trends-labels-row" id="trends-labels">
-                            <!-- Labels will be generated dynamically -->
-                        </div>
+                    <div class="trends-labels-row" id="trends-labels">
+                        <!-- Labels will be generated dynamically -->
                     </div>
                 </div>
             </div>
