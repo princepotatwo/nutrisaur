@@ -3515,7 +3515,7 @@ header .user-info {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    height: 200px;
+    height: 300px;
     gap: 2px;
     padding: 15px 10px 10px 10px;
     background: var(--color-bg);
@@ -3664,7 +3664,7 @@ header .user-info {
     }
     
     .trends-chart {
-        height: 160px;
+        height: 240px;
         gap: 1px;
         padding: 12px 8px 8px 8px;
     }
@@ -3693,7 +3693,7 @@ header .user-info {
     }
     
     .trends-chart {
-        height: 140px;
+        height: 210px;
         gap: 1px;
         padding: 8px 5px 5px 5px;
     }
@@ -8516,7 +8516,7 @@ body {
 
                 // Calculate dynamic scaling based on number of bars and available space
                 const numBars = classificationsArray.length;
-                const chartHeight = 250; // Chart area height (no padding needed for labels)
+                const chartHeight = 300; // Chart area height (no padding needed for labels)
                 const maxBarHeight = Math.min(chartHeight * 0.8, Math.max(80, chartHeight - (numBars * 3)));
                 
                 // Function to create abbreviations
