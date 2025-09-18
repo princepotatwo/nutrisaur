@@ -3469,6 +3469,108 @@ header .user-info {
     transform: translateY(-1px);
 }
 
+/* Compact Age Range Controls - Right Side */
+.age-range-controls-compact {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    min-width: 280px;
+    max-width: 320px;
+}
+
+.compact-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.compact-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.compact-label {
+    font-size: 11px;
+    color: var(--text-color-secondary);
+    font-weight: 500;
+    margin: 0;
+    min-width: 30px;
+}
+
+.compact-wrapper {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.form-control-compact, .form-select-compact {
+    padding: 4px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    font-size: 11px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    transition: border-color 0.2s;
+    min-width: 40px;
+}
+
+.form-control-compact {
+    width: 45px;
+}
+
+.form-select-compact {
+    width: 35px;
+}
+
+.form-control-compact:focus, .form-select-compact:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.compact-buttons {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.btn-compact {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 500;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    flex: 1;
+}
+
+.btn-primary-compact {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary-compact:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary-compact {
+    background: var(--text-color-secondary);
+    color: white;
+}
+
+.btn-secondary-compact:hover {
+    background: var(--text-color);
+    transform: translateY(-1px);
+}
+
 /* Responsive adjustments for age classification chart */
 @media (max-width: 768px) {
     .chart-card[style*="grid-column: 1 / -1"] {
@@ -3497,6 +3599,25 @@ header .user-info {
     .input-wrapper {
         gap: 8px;
     }
+    
+    .age-range-controls-compact {
+        min-width: 250px;
+        max-width: 280px;
+    }
+    
+    .compact-group {
+        gap: 6px;
+    }
+    
+    .form-control-compact, .form-select-compact {
+        font-size: 10px;
+        padding: 3px 5px;
+    }
+    
+    .btn-compact {
+        font-size: 9px;
+        padding: 3px 6px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -3520,6 +3641,25 @@ header .user-info {
     .btn {
         font-size: 12px;
         padding: 5px 10px;
+    }
+    
+    .age-range-controls-compact {
+        min-width: 200px;
+        max-width: 250px;
+    }
+    
+    .compact-group {
+        gap: 4px;
+    }
+    
+    .form-control-compact, .form-select-compact {
+        font-size: 9px;
+        padding: 2px 4px;
+    }
+    
+    .btn-compact {
+        font-size: 8px;
+        padding: 2px 4px;
     }
 }
 
@@ -6895,45 +7035,41 @@ body {
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
                 <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <div>
-                            <h3>Classification Trends by Age</h3>
-                            <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
-                        </div>
-                    </div>
-
-                    <!-- Age Range Controls - Moved below title, full width -->
-                    <div class="age-range-controls" style="padding: 12px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px;">
-                        <div class="age-range-header">
-                            <label class="age-range-label">Age Range Filter</label>
-                        </div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                <h3>Classification Trends by Age</h3>
+                <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
+                </div>
                         
-                        <div class="age-range-inputs">
-                            <div class="input-group">
-                                <label class="input-label">From:</label>
-                                <div class="input-wrapper">
-                                    <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control">
-                                    <select id="ageFromUnit" class="form-select">
-                                        <option value="months">Months</option>
-                                        <option value="years">Years</option>
-                                    </select>
+                        <!-- Age Range Controls - Compact version on the right -->
+                        <div class="age-range-controls-compact">
+                            <div class="compact-inputs">
+                                <div class="compact-group">
+                                    <label class="compact-label">From:</label>
+                                    <div class="compact-wrapper">
+                                        <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control-compact">
+                                        <select id="ageFromUnit" class="form-select-compact">
+                                            <option value="months">M</option>
+                                            <option value="years">Y</option>
+                                        </select>
+            </div>
+        </div>
+
+                                <div class="compact-group">
+                                    <label class="compact-label">To:</label>
+                                    <div class="compact-wrapper">
+                                        <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control-compact">
+                                        <select id="ageToUnit" class="form-select-compact">
+                                            <option value="months">M</option>
+                                            <option value="years">Y</option>
+                                        </select>
+                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="input-group">
-                                <label class="input-label">To:</label>
-                                <div class="input-wrapper">
-                                    <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control">
-                                    <select id="ageToUnit" class="form-select">
-                                        <option value="months">Months</option>
-                                        <option value="years">Years</option>
-                                    </select>
+                                
+                                <div class="compact-buttons">
+                                    <button id="applyAgeRange" class="btn-compact btn-primary-compact">Apply</button>
+                                    <button id="resetAgeRange" class="btn-compact btn-secondary-compact">Reset</button>
                                 </div>
-                            </div>
-                            
-                            <div class="button-group">
-                                <button id="applyAgeRange" class="btn btn-primary">Apply</button>
-                                <button id="resetAgeRange" class="btn btn-secondary">Reset</button>
                             </div>
                         </div>
                     </div>
@@ -6942,8 +7078,8 @@ body {
                 <div class="age-classification-chart-container">
                     <canvas id="ageClassificationChart"></canvas>
                 </div>
-            </div>
-        </div>
+                    </div>
+                </div>
                 
 
                 
