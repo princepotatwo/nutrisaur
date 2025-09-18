@@ -4753,6 +4753,114 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // GET AGE CLASSIFICATIONS API
+        // ========================================
+        case 'get_age_classifications':
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            try {
+                // Define age groups
+                $ageGroups = [
+                    '0-6m' => [0, 6],
+                    '7-12m' => [7, 12],
+                    '13-18m' => [13, 18],
+                    '19-24m' => [19, 24],
+                    '25-30m' => [25, 30],
+                    '31-36m' => [31, 36],
+                    '37-42m' => [37, 42],
+                    '43-48m' => [43, 48],
+                    '49-54m' => [49, 54],
+                    '55-60m' => [55, 60],
+                    '6-7y' => [72, 84], // 6-7 years in months
+                    '7-8y' => [84, 96], // 7-8 years in months
+                    '8-9y' => [96, 108], // 8-9 years in months
+                    '9-10y' => [108, 120], // 9-10 years in months
+                    '10-11y' => [120, 132] // 10-11 years in months
+                ];
+                
+                $classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
+                $whoStandards = ['weight-for-age', 'height-for-age', 'weight-for-height', 'bmi-for-age'];
+                
+                $ageClassificationData = [];
+                
+                // Build WHERE clause
+                $whereClause = "1=1";
+                $params = [];
+                
+                // Add barangay filter
+                if (!empty($barangay)) {
+                    $whereClause .= " AND barangay = :barangay";
+                    $params[':barangay'] = $barangay;
+                }
+                
+                // Get all users in the filtered group
+                $userQuery = "SELECT email, birthday, sex FROM community_users WHERE $whereClause";
+                $userResult = $db->query($userQuery, $params);
+                
+                if (!$userResult['success'] || empty($userResult['data'])) {
+                    echo json_encode(['success' => true, 'data' => []]);
+                    break;
+                }
+                
+                $users = $userResult['data'];
+                $totalUsers = count($users);
+                
+                // Process each age group
+                foreach ($ageGroups as $ageGroup => $ageRange) {
+                    $ageGroupUsers = [];
+                    
+                    // Filter users by age group
+                    foreach ($users as $user) {
+                        $birthday = new DateTime($user['birthday']);
+                        $now = new DateTime();
+                        $ageInMonths = $birthday->diff($now)->y * 12 + $birthday->diff($now)->m;
+                        
+                        if ($ageInMonths >= $ageRange[0] && $ageInMonths < $ageRange[1]) {
+                            $ageGroupUsers[] = $user;
+                        }
+                    }
+                    
+                    if (empty($ageGroupUsers)) {
+                        // No users in this age group, set all classifications to 0
+                        foreach ($classifications as $classification) {
+                            $ageClassificationData["{$ageGroup}_{$classification}"] = 0;
+                        }
+                        continue;
+                    }
+                    
+                    $ageGroupCount = count($ageGroupUsers);
+                    
+                    // Get classifications for this age group
+                    foreach ($whoStandards as $standard) {
+                        $result = $db->getWHOClassifications($standard, $timeFrame, $barangay);
+                        
+                        if ($result['success'] && isset($result['data']['classifications'])) {
+                            foreach ($result['data']['classifications'] as $classification => $count) {
+                                if (in_array($classification, $classifications)) {
+                                    // Calculate percentage for this age group
+                                    $percentage = $ageGroupCount > 0 ? round(($count / $ageGroupCount) * 100, 1) : 0;
+                                    $ageClassificationData["{$ageGroup}_{$classification}"] = $percentage;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                echo json_encode([
+                    'success' => true,
+                    'data' => $ageClassificationData
+                ]);
+                
+            } catch (Exception $e) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error getting age classifications: ' . $e->getMessage()
+                ]);
+            }
+            break;
+            
+        // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:
