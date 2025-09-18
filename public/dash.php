@@ -3322,9 +3322,8 @@ header .user-info {
 
 /* Age Classification Chart Styles */
 .age-classification-chart-container {
-    padding: 10px;
-    height: 350px;
-    max-height: 350px;
+    flex: 1;
+    min-height: 0;
     width: 100%;
     max-width: 100%;
     display: flex;
@@ -3333,7 +3332,7 @@ header .user-info {
     overflow: hidden;
     position: relative;
     box-sizing: border-box;
-    margin: 0 auto;
+    padding: 10px;
 }
 
 #ageClassificationChart {
@@ -3348,39 +3347,40 @@ header .user-info {
 
 /* Specific styling for age classification chart card */
 .chart-card[style*="grid-column: 1 / -1"] {
-    max-height: 450px;
+    height: 500px;
+    max-height: 500px;
     width: 100%;
     max-width: 100%;
     overflow: hidden;
     box-sizing: border-box;
     padding: 20px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Responsive adjustments for age classification chart */
 @media (max-width: 768px) {
-    .age-classification-chart-container {
-        height: 300px;
-        max-height: 300px;
-        padding: 8px;
-    }
-    
     .chart-card[style*="grid-column: 1 / -1"] {
+        height: 400px;
         max-height: 400px;
         padding: 15px;
+    }
+    
+    .age-classification-chart-container {
+        padding: 8px;
     }
 }
 
 @media (max-width: 480px) {
-    .age-classification-chart-container {
-        height: 250px;
-        max-height: 250px;
-        padding: 5px;
-    }
-    
     .chart-card[style*="grid-column: 1 / -1"] {
+        height: 350px;
         max-height: 350px;
         padding: 10px;
+    }
+    
+    .age-classification-chart-container {
+        padding: 5px;
     }
 }
 
@@ -8770,13 +8770,10 @@ body {
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
                 
-                // Resize canvas to match container with strict constraints
-                const container = canvas.parentElement;
-                const containerRect = container.getBoundingClientRect();
-                const availableWidth = Math.max(200, containerRect.width - 20); // Minimum 200px width
-                const availableHeight = Math.max(200, containerRect.height - 20); // Minimum 200px height
-                canvas.width = availableWidth;
-                canvas.height = availableHeight;
+                // Let Chart.js handle responsive sizing automatically
+                // Remove any fixed canvas dimensions to let flexbox work
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
                 
                 const ctx = canvas.getContext('2d');
                 ageClassificationChartInstance = new Chart(ctx, {
@@ -9044,13 +9041,10 @@ body {
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
                 
-                // Resize canvas to match container with strict constraints
-                const container = canvas.parentElement;
-                const containerRect = container.getBoundingClientRect();
-                const availableWidth = Math.max(200, containerRect.width - 20); // Minimum 200px width
-                const availableHeight = Math.max(200, containerRect.height - 20); // Minimum 200px height
-                canvas.width = availableWidth;
-                canvas.height = availableHeight;
+                // Let Chart.js handle responsive sizing automatically
+                // Remove any fixed canvas dimensions to let flexbox work
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
                 
                 const ctx = canvas.getContext('2d');
                 ageClassificationChartInstance = new Chart(ctx, {
@@ -9559,16 +9553,8 @@ body {
             // Add window resize listener to resize chart
             window.addEventListener('resize', () => {
                 if (ageClassificationChartInstance) {
-                    const canvas = document.getElementById('ageClassificationChart');
-                    if (canvas) {
-                        const container = canvas.parentElement;
-                        const containerRect = container.getBoundingClientRect();
-                        const availableWidth = Math.max(200, containerRect.width - 20);
-                        const availableHeight = Math.max(200, containerRect.height - 20);
-                        canvas.width = availableWidth;
-                        canvas.height = availableHeight;
-                        ageClassificationChartInstance.resize();
-                    }
+                    // Let Chart.js handle the resize automatically with flexbox
+                    ageClassificationChartInstance.resize();
                 }
             });
         }
