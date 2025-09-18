@@ -3474,10 +3474,10 @@ header .user-info {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    padding: 8px;
+    padding: 10px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    min-width: 280px;
-    max-width: 320px;
+    min-width: 350px;
+    max-width: 400px;
 }
 
 .compact-inputs {
@@ -3489,40 +3489,40 @@ header .user-info {
 .compact-group {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
 }
 
 .compact-label {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-color-secondary);
     font-weight: 500;
     margin: 0;
-    min-width: 30px;
+    min-width: 40px;
 }
 
 .compact-wrapper {
     display: flex;
-    gap: 3px;
+    gap: 6px;
     align-items: center;
 }
 
 .form-control-compact, .form-select-compact {
-    padding: 4px 6px;
+    padding: 6px 8px;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
-    font-size: 11px;
+    border-radius: 4px;
+    font-size: 12px;
     background: var(--input-bg);
     color: var(--text-color);
     transition: border-color 0.2s;
-    min-width: 40px;
+    min-width: 50px;
 }
 
 .form-control-compact {
-    width: 45px;
+    width: 70px;
 }
 
 .form-select-compact {
-    width: 35px;
+    width: 60px;
 }
 
 .form-control-compact:focus, .form-select-compact:focus {
@@ -3533,16 +3533,16 @@ header .user-info {
 
 .compact-buttons {
     display: flex;
-    gap: 4px;
-    margin-top: 4px;
+    gap: 8px;
+    margin-top: 8px;
 }
 
 .btn-compact {
-    padding: 4px 8px;
+    padding: 6px 12px;
     border: none;
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 500;
     transition: all 0.2s;
     text-decoration: none;
@@ -3601,8 +3601,8 @@ header .user-info {
     }
     
     .age-range-controls-compact {
-        min-width: 250px;
-        max-width: 280px;
+        min-width: 300px;
+        max-width: 350px;
     }
     
     .compact-group {
@@ -3610,13 +3610,13 @@ header .user-info {
     }
     
     .form-control-compact, .form-select-compact {
-        font-size: 10px;
-        padding: 3px 5px;
+        font-size: 11px;
+        padding: 5px 6px;
     }
     
     .btn-compact {
-        font-size: 9px;
-        padding: 3px 6px;
+        font-size: 10px;
+        padding: 5px 10px;
     }
 }
 
@@ -3644,22 +3644,22 @@ header .user-info {
     }
     
     .age-range-controls-compact {
-        min-width: 200px;
-        max-width: 250px;
+        min-width: 250px;
+        max-width: 300px;
     }
     
     .compact-group {
-        gap: 4px;
+        gap: 6px;
     }
     
     .form-control-compact, .form-select-compact {
-        font-size: 9px;
-        padding: 2px 4px;
+        font-size: 10px;
+        padding: 4px 6px;
     }
     
     .btn-compact {
-        font-size: 8px;
-        padding: 2px 4px;
+        font-size: 9px;
+        padding: 4px 8px;
     }
 }
 
