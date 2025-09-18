@@ -751,6 +751,14 @@ if (isset($_GET['logout'])) {
     --color-shadow: rgba(0, 0, 0, 0.1);
     --color-hover: rgba(161, 180, 84, 0.08);
     --color-active: rgba(161, 180, 84, 0.15);
+    
+    /* Additional variables for age range controls */
+    --card-bg: var(--color-card);
+    --border-color: var(--color-border);
+    --text-color: var(--color-text);
+    --text-color-secondary: var(--color-accent2);
+    --primary-color: var(--color-highlight);
+    --input-bg: var(--color-card);
 }
 
 /* Light Theme - Light Greenish Colors */
@@ -766,6 +774,14 @@ if (isset($_GET['logout'])) {
     --color-danger: #E57373;
     --color-warning: #FFB74D;
     --color-border: #C8E6C9;
+    
+    /* Additional variables for age range controls */
+    --card-bg: var(--color-card);
+    --border-color: var(--color-border);
+    --text-color: var(--color-text);
+    --text-color-secondary: var(--color-accent3);
+    --primary-color: var(--color-highlight);
+    --input-bg: var(--color-card);
     --color-shadow: rgba(76, 175, 80, 0.1);
     --color-hover: rgba(76, 175, 80, 0.08);
     --color-active: rgba(76, 175, 80, 0.15);
@@ -6220,6 +6236,24 @@ body {
     border: 1px solid rgba(102, 187, 106, 0.15) !important;
 }
 
+/* Age Range Controls Styles */
+.age-range-controls button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.age-range-controls input:hover,
+.age-range-controls select:hover {
+    border-color: var(--primary-color);
+}
+
+.age-range-controls input:focus,
+.age-range-controls select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+}
+
 /* Smooth transitions for theme switching */
 .light-theme,
 .dark-theme {
@@ -6672,54 +6706,50 @@ body {
 
 
         <div class="chart-row">
-            <div class="chart-card geo-distribution-card">
-                <h3>Geographic Distribution</h3>
-                <p class="chart-description">User distribution by barangay showing total user counts per area.</p>
-                <div class="geo-chart-container">
-                    <div class="geo-bars" id="barangay-distribution"></div>
-                </div>
-            </div>
-            
-            <div class="chart-card">
-                <h3>Classification Trends by Age</h3>
-                <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
-                
-                <!-- Age Range Controls -->
-                <div class="age-range-controls" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
-                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                        <label style="font-weight: 600; color: #495057;">Age Range Filter:</label>
-                        
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <label style="font-size: 14px; color: #6c757d;">From:</label>
-                            <input type="number" id="ageFromMonths" min="0" max="1200" value="0" 
-                                   style="width: 80px; padding: 6px 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
-                            <select id="ageFromUnit" style="padding: 6px 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
-                                <option value="months">Months</option>
-                                <option value="years">Years</option>
-                            </select>
-                        </div>
-                        
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <label style="font-size: 14px; color: #6c757d;">To:</label>
-                            <input type="number" id="ageToMonths" min="0" max="1200" value="71" 
-                                   style="width: 80px; padding: 6px 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
-                            <select id="ageToUnit" style="padding: 6px 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 14px;">
-                                <option value="months">Months</option>
-                                <option value="years">Years</option>
-                            </select>
-                        </div>
-                        
-                        <button id="applyAgeRange" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500;">
-                            Apply Range
-                        </button>
-                        
-                        <button id="resetAgeRange" style="padding: 8px 16px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500;">
-                            Reset
-                        </button>
+            <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                    <div>
+                        <h3>Classification Trends by Age</h3>
+                        <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
                     </div>
                     
-                    <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">
-                        <span id="ageRangeDisplay">Current range: 0-71 months (0-5 years 11 months)</span>
+                    <!-- Age Range Controls - Moved to right side -->
+                    <div class="age-range-controls" style="padding: 15px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <label style="font-weight: 600; color: var(--text-color);">Age Range Filter:</label>
+                            
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label style="font-size: 14px; color: var(--text-color-secondary);">From:</label>
+                                <input type="number" id="ageFromMonths" min="0" max="1200" value="0" 
+                                       style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--input-bg); color: var(--text-color);">
+                                <select id="ageFromUnit" style="padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--input-bg); color: var(--text-color);">
+                                    <option value="months">Months</option>
+                                    <option value="years">Years</option>
+                                </select>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label style="font-size: 14px; color: var(--text-color-secondary);">To:</label>
+                                <input type="number" id="ageToMonths" min="0" max="1200" value="71" 
+                                       style="width: 80px; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--input-bg); color: var(--text-color);">
+                                <select id="ageToUnit" style="padding: 6px 8px; border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px; background: var(--input-bg); color: var(--text-color);">
+                                    <option value="months">Months</option>
+                                    <option value="years">Years</option>
+                                </select>
+                            </div>
+                            
+                            <button id="applyAgeRange" style="padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.2s;">
+                                Apply Range
+                            </button>
+                            
+                            <button id="resetAgeRange" style="padding: 8px 16px; background: var(--text-color-secondary); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: background-color 0.2s;">
+                                Reset
+                            </button>
+                        </div>
+                        
+                        <div style="margin-top: 10px; font-size: 12px; color: var(--text-color-secondary);">
+                            <span id="ageRangeDisplay">Current range: 0-71 months (0-5 years 11 months)</span>
+                        </div>
                     </div>
                 </div>
                 
@@ -6733,43 +6763,6 @@ body {
 
 
 
-        <!-- Community Programs Section -->
-        <div class="chart-row" style="margin-bottom: 30px; display: block; gap: 0;">
-            <div class="chart-card" style="grid-column: 1 / -1; margin: 0; width: 100%; min-height: 450px; max-height: none !important; padding: 20px; overflow: visible; box-sizing: border-box;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <div>
-                        <h3>Intelligent Community Programs</h3>
-                        <p class="chart-description">AI-generated nutrition intervention programs based on real-time community data analysis</p>
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button id="generate-programs-btn" class="generate-programs-btn" onclick="generateIntelligentPrograms()">
-                            <span class="btn-text">Generate Programs</span>
-                        </button>
-                        <button id="create-program-btn" class="create-program-btn" onclick="createNewProgram()">
-                            <span class="btn-text">Create Program</span>
-                        </button>
-
-                    </div>
-                </div>
-                
-                <!-- Initial State -->
-                <div id="programs-loading" class="programs-loading" style="display: flex; justify-content: center; align-items: center; height: 150px;">
-                    <div style="text-align: center;">
-                        <div class="loading-spinner"></div>
-                        <p style="margin-top: 10px; color: var(--color-text); opacity: 0.7;">Analyzing community data and generating intelligent programs...</p>
-                    </div>
-                </div>
-                
-
-                
-                <!-- Dynamic Program Cards Container -->
-                <div id="intelligent-program-cards" class="program-cards-container" style="gap: 12px; margin-top: 12px; display: none;">
-                    <!-- Programs will be dynamically generated here -->
-                </div>
-                
-
-            </div>
-        </div>
 
 
 
