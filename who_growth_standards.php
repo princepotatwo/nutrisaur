@@ -352,7 +352,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 8.9, 'max' => 9.6],
                 'obese' => ['min' => 9.7, 'max' => 999]
             ],
-            65.5 => [
+            65 => [
                 'severely_wasted' => ['min' => 0, 'max' => 5.9],
                 'wasted' => ['min' => 6.0, 'max' => 6.3],
                 'normal' => ['min' => 6.4, 'max' => 9.0],
@@ -366,7 +366,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 9.3, 'max' => 10.0],
                 'obese' => ['min' => 10.1, 'max' => 999]
             ],
-            66.5 => [
+            66 => [
                 'severely_wasted' => ['min' => 0, 'max' => 6.1],
                 'wasted' => ['min' => 6.2, 'max' => 6.5],
                 'normal' => ['min' => 6.6, 'max' => 9.4],
@@ -380,7 +380,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 9.7, 'max' => 10.4],
                 'obese' => ['min' => 10.5, 'max' => 999]
             ],
-            67.5 => [
+            67 => [
                 'severely_wasted' => ['min' => 0, 'max' => 6.3],
                 'wasted' => ['min' => 6.4, 'max' => 6.7],
                 'normal' => ['min' => 6.8, 'max' => 9.8],
@@ -394,7 +394,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 10.1, 'max' => 10.8],
                 'obese' => ['min' => 10.9, 'max' => 999]
             ],
-            68.5 => [
+            68 => [
                 'severely_wasted' => ['min' => 0, 'max' => 6.5],
                 'wasted' => ['min' => 6.6, 'max' => 6.9],
                 'normal' => ['min' => 7.0, 'max' => 10.2],
@@ -408,7 +408,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 10.5, 'max' => 11.2],
                 'obese' => ['min' => 11.3, 'max' => 999]
             ],
-            69.5 => [
+            69 => [
                 'severely_wasted' => ['min' => 0, 'max' => 6.7],
                 'wasted' => ['min' => 6.8, 'max' => 7.1],
                 'normal' => ['min' => 7.2, 'max' => 10.6],
@@ -422,7 +422,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 10.9, 'max' => 11.6],
                 'obese' => ['min' => 11.7, 'max' => 999]
             ],
-            70.5 => [
+            70 => [
                 'severely_wasted' => ['min' => 0, 'max' => 6.9],
                 'wasted' => ['min' => 7.0, 'max' => 7.3],
                 'normal' => ['min' => 7.4, 'max' => 11.0],
@@ -436,7 +436,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 11.3, 'max' => 12.0],
                 'obese' => ['min' => 12.1, 'max' => 999]
             ],
-            71.5 => [
+            71 => [
                 'severely_wasted' => ['min' => 0, 'max' => 7.1],
                 'wasted' => ['min' => 7.2, 'max' => 7.5],
                 'normal' => ['min' => 7.6, 'max' => 11.4],
@@ -450,7 +450,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 11.7, 'max' => 12.4],
                 'obese' => ['min' => 12.5, 'max' => 999]
             ],
-            72.5 => [
+            72 => [
                 'severely_wasted' => ['min' => 0, 'max' => 7.3],
                 'wasted' => ['min' => 7.4, 'max' => 7.7],
                 'normal' => ['min' => 7.8, 'max' => 11.8],
@@ -464,7 +464,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 12.1, 'max' => 12.8],
                 'obese' => ['min' => 12.9, 'max' => 999]
             ],
-            73.5 => [
+            73 => [
                 'severely_wasted' => ['min' => 0, 'max' => 7.5],
                 'wasted' => ['min' => 7.6, 'max' => 7.9],
                 'normal' => ['min' => 8.0, 'max' => 12.2],
@@ -478,7 +478,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 12.5, 'max' => 13.2],
                 'obese' => ['min' => 13.3, 'max' => 999]
             ],
-            74.5 => [
+            74 => [
                 'severely_wasted' => ['min' => 0, 'max' => 7.7],
                 'wasted' => ['min' => 7.8, 'max' => 8.1],
                 'normal' => ['min' => 8.2, 'max' => 12.6],
@@ -492,7 +492,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 12.9, 'max' => 13.6],
                 'obese' => ['min' => 13.7, 'max' => 999]
             ],
-            75.5 => [
+            75 => [
                 'severely_wasted' => ['min' => 0, 'max' => 7.9],
                 'wasted' => ['min' => 8.0, 'max' => 8.3],
                 'normal' => ['min' => 8.4, 'max' => 13.0],
@@ -506,7 +506,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 13.3, 'max' => 14.0],
                 'obese' => ['min' => 14.1, 'max' => 999]
             ],
-            76.5 => [
+            76 => [
                 'severely_wasted' => ['min' => 0, 'max' => 8.1],
                 'wasted' => ['min' => 8.2, 'max' => 8.5],
                 'normal' => ['min' => 8.6, 'max' => 13.4],
@@ -520,7 +520,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 13.7, 'max' => 14.4],
                 'obese' => ['min' => 14.5, 'max' => 999]
             ],
-            77.5 => [
+            77 => [
                 'severely_wasted' => ['min' => 0, 'max' => 8.3],
                 'wasted' => ['min' => 8.4, 'max' => 8.7],
                 'normal' => ['min' => 8.8, 'max' => 13.8],
@@ -534,7 +534,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 14.1, 'max' => 14.8],
                 'obese' => ['min' => 14.9, 'max' => 999]
             ],
-            78.5 => [
+            78 => [
                 'severely_wasted' => ['min' => 0, 'max' => 8.5],
                 'wasted' => ['min' => 8.6, 'max' => 8.9],
                 'normal' => ['min' => 9.0, 'max' => 14.2],
@@ -548,7 +548,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 14.5, 'max' => 15.2],
                 'obese' => ['min' => 15.3, 'max' => 999]
             ],
-            79.5 => [
+            79 => [
                 'severely_wasted' => ['min' => 0, 'max' => 8.7],
                 'wasted' => ['min' => 8.8, 'max' => 9.1],
                 'normal' => ['min' => 9.2, 'max' => 14.6],
@@ -562,7 +562,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 14.9, 'max' => 15.6],
                 'obese' => ['min' => 15.7, 'max' => 999]
             ],
-            80.5 => [
+            80 => [
                 'severely_wasted' => ['min' => 0, 'max' => 8.9],
                 'wasted' => ['min' => 9.0, 'max' => 9.3],
                 'normal' => ['min' => 9.4, 'max' => 15.0],
@@ -576,7 +576,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 15.3, 'max' => 16.0],
                 'obese' => ['min' => 16.1, 'max' => 999]
             ],
-            81.5 => [
+            81 => [
                 'severely_wasted' => ['min' => 0, 'max' => 9.1],
                 'wasted' => ['min' => 9.2, 'max' => 9.5],
                 'normal' => ['min' => 9.6, 'max' => 15.4],
@@ -590,7 +590,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 15.7, 'max' => 16.4],
                 'obese' => ['min' => 16.5, 'max' => 999]
             ],
-            82.5 => [
+            82 => [
                 'severely_wasted' => ['min' => 0, 'max' => 9.3],
                 'wasted' => ['min' => 9.4, 'max' => 9.7],
                 'normal' => ['min' => 9.8, 'max' => 15.8],
@@ -604,7 +604,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 16.1, 'max' => 16.8],
                 'obese' => ['min' => 16.9, 'max' => 999]
             ],
-            83.5 => [
+            83 => [
                 'severely_wasted' => ['min' => 0, 'max' => 9.5],
                 'wasted' => ['min' => 9.6, 'max' => 9.9],
                 'normal' => ['min' => 10.0, 'max' => 16.2],
@@ -618,7 +618,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 16.5, 'max' => 17.2],
                 'obese' => ['min' => 17.3, 'max' => 999]
             ],
-            84.5 => [
+            84 => [
                 'severely_wasted' => ['min' => 0, 'max' => 9.7],
                 'wasted' => ['min' => 9.8, 'max' => 10.1],
                 'normal' => ['min' => 10.2, 'max' => 16.6],
@@ -632,7 +632,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 16.9, 'max' => 17.6],
                 'obese' => ['min' => 17.7, 'max' => 999]
             ],
-            85.5 => [
+            85 => [
                 'severely_wasted' => ['min' => 0, 'max' => 9.9],
                 'wasted' => ['min' => 10.0, 'max' => 10.3],
                 'normal' => ['min' => 10.4, 'max' => 17.0],
@@ -646,7 +646,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 17.3, 'max' => 18.0],
                 'obese' => ['min' => 18.1, 'max' => 999]
             ],
-            86.5 => [
+            86 => [
                 'severely_wasted' => ['min' => 0, 'max' => 10.1],
                 'wasted' => ['min' => 10.2, 'max' => 10.5],
                 'normal' => ['min' => 10.6, 'max' => 17.4],
@@ -660,7 +660,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 17.7, 'max' => 18.4],
                 'obese' => ['min' => 18.5, 'max' => 999]
             ],
-            87.5 => [
+            87 => [
                 'severely_wasted' => ['min' => 0, 'max' => 10.3],
                 'wasted' => ['min' => 10.4, 'max' => 10.7],
                 'normal' => ['min' => 10.8, 'max' => 17.8],
@@ -674,7 +674,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 18.1, 'max' => 18.8],
                 'obese' => ['min' => 18.9, 'max' => 999]
             ],
-            88.5 => [
+            88 => [
                 'severely_wasted' => ['min' => 0, 'max' => 10.5],
                 'wasted' => ['min' => 10.6, 'max' => 10.9],
                 'normal' => ['min' => 11.0, 'max' => 18.2],
@@ -688,7 +688,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 18.5, 'max' => 19.2],
                 'obese' => ['min' => 19.3, 'max' => 999]
             ],
-            89.5 => [
+            89 => [
                 'severely_wasted' => ['min' => 0, 'max' => 10.7],
                 'wasted' => ['min' => 10.8, 'max' => 11.1],
                 'normal' => ['min' => 11.2, 'max' => 18.6],
@@ -702,7 +702,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 18.9, 'max' => 19.6],
                 'obese' => ['min' => 19.7, 'max' => 999]
             ],
-            90.5 => [
+            90 => [
                 'severely_wasted' => ['min' => 0, 'max' => 10.9],
                 'wasted' => ['min' => 11.0, 'max' => 11.3],
                 'normal' => ['min' => 11.4, 'max' => 19.0],
@@ -716,7 +716,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 19.3, 'max' => 20.0],
                 'obese' => ['min' => 20.1, 'max' => 999]
             ],
-            91.5 => [
+            91 => [
                 'severely_wasted' => ['min' => 0, 'max' => 11.1],
                 'wasted' => ['min' => 11.2, 'max' => 11.5],
                 'normal' => ['min' => 11.6, 'max' => 19.4],
@@ -730,7 +730,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 19.7, 'max' => 20.4],
                 'obese' => ['min' => 20.5, 'max' => 999]
             ],
-            92.5 => [
+            92 => [
                 'severely_wasted' => ['min' => 0, 'max' => 11.3],
                 'wasted' => ['min' => 11.4, 'max' => 11.7],
                 'normal' => ['min' => 11.8, 'max' => 19.8],
@@ -744,7 +744,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 20.1, 'max' => 20.8],
                 'obese' => ['min' => 20.9, 'max' => 999]
             ],
-            93.5 => [
+            93 => [
                 'severely_wasted' => ['min' => 0, 'max' => 11.5],
                 'wasted' => ['min' => 11.6, 'max' => 11.9],
                 'normal' => ['min' => 12.0, 'max' => 20.2],
@@ -758,7 +758,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 20.5, 'max' => 21.2],
                 'obese' => ['min' => 21.3, 'max' => 999]
             ],
-            94.5 => [
+            94 => [
                 'severely_wasted' => ['min' => 0, 'max' => 11.7],
                 'wasted' => ['min' => 11.8, 'max' => 12.1],
                 'normal' => ['min' => 12.2, 'max' => 20.6],
@@ -772,7 +772,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 20.9, 'max' => 21.6],
                 'obese' => ['min' => 21.7, 'max' => 999]
             ],
-            95.5 => [
+            95 => [
                 'severely_wasted' => ['min' => 0, 'max' => 11.9],
                 'wasted' => ['min' => 12.0, 'max' => 12.3],
                 'normal' => ['min' => 12.4, 'max' => 21.0],
@@ -786,7 +786,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 21.3, 'max' => 22.0],
                 'obese' => ['min' => 22.1, 'max' => 999]
             ],
-            96.5 => [
+            96 => [
                 'severely_wasted' => ['min' => 0, 'max' => 12.1],
                 'wasted' => ['min' => 12.2, 'max' => 12.5],
                 'normal' => ['min' => 12.6, 'max' => 21.4],
@@ -800,7 +800,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 21.7, 'max' => 22.4],
                 'obese' => ['min' => 22.5, 'max' => 999]
             ],
-            97.5 => [
+            97 => [
                 'severely_wasted' => ['min' => 0, 'max' => 12.3],
                 'wasted' => ['min' => 12.4, 'max' => 12.7],
                 'normal' => ['min' => 12.8, 'max' => 21.8],
@@ -814,7 +814,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 22.1, 'max' => 22.8],
                 'obese' => ['min' => 22.9, 'max' => 999]
             ],
-            98.5 => [
+            98 => [
                 'severely_wasted' => ['min' => 0, 'max' => 12.5],
                 'wasted' => ['min' => 12.6, 'max' => 12.9],
                 'normal' => ['min' => 13.0, 'max' => 22.2],
@@ -828,7 +828,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 22.5, 'max' => 23.2],
                 'obese' => ['min' => 23.3, 'max' => 999]
             ],
-            99.5 => [
+            99 => [
                 'severely_wasted' => ['min' => 0, 'max' => 12.7],
                 'wasted' => ['min' => 12.8, 'max' => 13.1],
                 'normal' => ['min' => 13.2, 'max' => 22.6],
@@ -842,7 +842,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 22.9, 'max' => 23.6],
                 'obese' => ['min' => 23.7, 'max' => 999]
             ],
-            100.5 => [
+            100 => [
                 'severely_wasted' => ['min' => 0, 'max' => 12.9],
                 'wasted' => ['min' => 13.0, 'max' => 13.3],
                 'normal' => ['min' => 13.4, 'max' => 23.0],
@@ -856,7 +856,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 23.3, 'max' => 24.0],
                 'obese' => ['min' => 24.1, 'max' => 999]
             ],
-            101.5 => [
+            101 => [
                 'severely_wasted' => ['min' => 0, 'max' => 13.1],
                 'wasted' => ['min' => 13.2, 'max' => 13.5],
                 'normal' => ['min' => 13.6, 'max' => 23.4],
@@ -870,7 +870,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 23.7, 'max' => 24.4],
                 'obese' => ['min' => 24.5, 'max' => 999]
             ],
-            102.5 => [
+            102 => [
                 'severely_wasted' => ['min' => 0, 'max' => 13.3],
                 'wasted' => ['min' => 13.4, 'max' => 13.7],
                 'normal' => ['min' => 13.8, 'max' => 23.8],
@@ -884,7 +884,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 24.1, 'max' => 24.8],
                 'obese' => ['min' => 24.9, 'max' => 999]
             ],
-            103.5 => [
+            103 => [
                 'severely_wasted' => ['min' => 0, 'max' => 13.5],
                 'wasted' => ['min' => 13.6, 'max' => 13.9],
                 'normal' => ['min' => 14.0, 'max' => 24.2],
@@ -898,7 +898,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 24.5, 'max' => 25.2],
                 'obese' => ['min' => 25.3, 'max' => 999]
             ],
-            104.5 => [
+            104 => [
                 'severely_wasted' => ['min' => 0, 'max' => 13.7],
                 'wasted' => ['min' => 13.8, 'max' => 14.1],
                 'normal' => ['min' => 14.2, 'max' => 24.6],
@@ -912,7 +912,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 24.9, 'max' => 25.6],
                 'obese' => ['min' => 25.7, 'max' => 999]
             ],
-            105.5 => [
+            105 => [
                 'severely_wasted' => ['min' => 0, 'max' => 13.9],
                 'wasted' => ['min' => 14.0, 'max' => 14.3],
                 'normal' => ['min' => 14.4, 'max' => 25.0],
@@ -926,7 +926,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 25.3, 'max' => 26.0],
                 'obese' => ['min' => 26.1, 'max' => 999]
             ],
-            106.5 => [
+            106 => [
                 'severely_wasted' => ['min' => 0, 'max' => 14.1],
                 'wasted' => ['min' => 14.2, 'max' => 14.5],
                 'normal' => ['min' => 14.6, 'max' => 25.4],
@@ -940,7 +940,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 25.7, 'max' => 26.4],
                 'obese' => ['min' => 26.5, 'max' => 999]
             ],
-            107.5 => [
+            107 => [
                 'severely_wasted' => ['min' => 0, 'max' => 14.3],
                 'wasted' => ['min' => 14.4, 'max' => 14.7],
                 'normal' => ['min' => 14.8, 'max' => 25.8],
@@ -954,7 +954,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 26.1, 'max' => 26.8],
                 'obese' => ['min' => 26.9, 'max' => 999]
             ],
-            108.5 => [
+            108 => [
                 'severely_wasted' => ['min' => 0, 'max' => 14.5],
                 'wasted' => ['min' => 14.6, 'max' => 14.9],
                 'normal' => ['min' => 15.0, 'max' => 26.2],
@@ -968,7 +968,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 26.5, 'max' => 27.2],
                 'obese' => ['min' => 27.3, 'max' => 999]
             ],
-            109.5 => [
+            109 => [
                 'severely_wasted' => ['min' => 0, 'max' => 14.7],
                 'wasted' => ['min' => 14.8, 'max' => 15.1],
                 'normal' => ['min' => 15.2, 'max' => 26.6],
@@ -982,7 +982,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 26.9, 'max' => 27.6],
                 'obese' => ['min' => 27.7, 'max' => 999]
             ],
-            110.5 => [
+            110 => [
                 'severely_wasted' => ['min' => 0, 'max' => 14.9],
                 'wasted' => ['min' => 15.0, 'max' => 15.3],
                 'normal' => ['min' => 15.4, 'max' => 27.0],
@@ -996,7 +996,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 27.3, 'max' => 28.0],
                 'obese' => ['min' => 28.1, 'max' => 999]
             ],
-            111.5 => [
+            111 => [
                 'severely_wasted' => ['min' => 0, 'max' => 15.1],
                 'wasted' => ['min' => 15.2, 'max' => 15.5],
                 'normal' => ['min' => 15.6, 'max' => 27.4],
@@ -1010,7 +1010,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 27.7, 'max' => 28.4],
                 'obese' => ['min' => 28.5, 'max' => 999]
             ],
-            112.5 => [
+            112 => [
                 'severely_wasted' => ['min' => 0, 'max' => 15.3],
                 'wasted' => ['min' => 15.4, 'max' => 15.7],
                 'normal' => ['min' => 15.8, 'max' => 27.8],
@@ -1024,7 +1024,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 28.1, 'max' => 28.8],
                 'obese' => ['min' => 28.9, 'max' => 999]
             ],
-            113.5 => [
+            113 => [
                 'severely_wasted' => ['min' => 0, 'max' => 15.5],
                 'wasted' => ['min' => 15.6, 'max' => 15.9],
                 'normal' => ['min' => 16.0, 'max' => 28.2],
@@ -1038,7 +1038,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 28.5, 'max' => 29.2],
                 'obese' => ['min' => 29.3, 'max' => 999]
             ],
-            114.5 => [
+            114 => [
                 'severely_wasted' => ['min' => 0, 'max' => 15.7],
                 'wasted' => ['min' => 15.8, 'max' => 16.1],
                 'normal' => ['min' => 16.2, 'max' => 28.6],
@@ -1052,7 +1052,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 28.9, 'max' => 29.6],
                 'obese' => ['min' => 29.7, 'max' => 999]
             ],
-            115.5 => [
+            115 => [
                 'severely_wasted' => ['min' => 0, 'max' => 15.9],
                 'wasted' => ['min' => 16.0, 'max' => 16.3],
                 'normal' => ['min' => 16.4, 'max' => 29.0],
@@ -1066,7 +1066,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 29.3, 'max' => 30.0],
                 'obese' => ['min' => 30.1, 'max' => 999]
             ],
-            116.5 => [
+            116 => [
                 'severely_wasted' => ['min' => 0, 'max' => 16.1],
                 'wasted' => ['min' => 16.2, 'max' => 16.5],
                 'normal' => ['min' => 16.6, 'max' => 29.4],
@@ -1080,7 +1080,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 29.7, 'max' => 30.4],
                 'obese' => ['min' => 30.5, 'max' => 999]
             ],
-            117.5 => [
+            117 => [
                 'severely_wasted' => ['min' => 0, 'max' => 16.3],
                 'wasted' => ['min' => 16.4, 'max' => 16.7],
                 'normal' => ['min' => 16.8, 'max' => 29.8],
@@ -1094,7 +1094,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 30.1, 'max' => 30.8],
                 'obese' => ['min' => 30.9, 'max' => 999]
             ],
-            118.5 => [
+            118 => [
                 'severely_wasted' => ['min' => 0, 'max' => 16.5],
                 'wasted' => ['min' => 16.6, 'max' => 16.9],
                 'normal' => ['min' => 17.0, 'max' => 30.2],
@@ -1108,7 +1108,7 @@ class WHOGrowthStandards {
                 'overweight' => ['min' => 30.5, 'max' => 31.2],
                 'obese' => ['min' => 31.3, 'max' => 999]
             ],
-            119.5 => [
+            119 => [
                 'severely_wasted' => ['min' => 0, 'max' => 16.7],
                 'wasted' => ['min' => 16.8, 'max' => 17.1],
                 'normal' => ['min' => 17.2, 'max' => 30.6],
