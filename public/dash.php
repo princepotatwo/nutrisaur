@@ -3505,7 +3505,7 @@ header .user-info {
 
 /* Classification Trends Chart Styles */
 .trends-chart-container {
-    height: 350px;
+    height: 400px;
     margin-top: 15px;
 }
 
@@ -3515,11 +3515,11 @@ header .user-info {
     justify-content: center;
     height: 100%;
     gap: 8px;
-    padding: 10px 15px 50px 15px;
+    padding: 20px 15px 80px 15px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
-    overflow: visible;
+    overflow: hidden;
     width: 100%;
     flex-wrap: nowrap;
     min-width: 0;
@@ -3546,13 +3546,13 @@ header .user-info {
 
 .trend-bar-value {
     position: absolute;
-    top: -30px;
-    font-size: 12px;
+    top: -25px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--color-text);
     background: var(--color-card);
-    padding: 4px 6px;
-    border-radius: 6px;
+    padding: 3px 5px;
+    border-radius: 4px;
     border: 1px solid var(--color-border);
     white-space: nowrap;
     z-index: 10;
@@ -3561,31 +3561,31 @@ header .user-info {
 
 .trend-bar-label {
     position: absolute;
-    bottom: -35px;
-    font-size: 8px;
+    bottom: -30px;
+    font-size: 7px;
     color: var(--color-text);
     text-align: center;
     font-weight: 600;
     line-height: 1.2;
-    max-width: 50px;
+    max-width: 45px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transform: rotate(-45deg);
     transform-origin: left center;
     left: 50%;
-    margin-left: -25px;
+    margin-left: -22px;
 }
 
 .trend-bar-standard {
     position: absolute;
-    bottom: -50px;
-    font-size: 7px;
+    bottom: -45px;
+    font-size: 6px;
     color: var(--color-text);
     opacity: 0.8;
     font-weight: 500;
     text-align: center;
-    max-width: 50px;
+    max-width: 45px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3640,43 +3640,16 @@ header .user-info {
 /* Responsive adjustments for Classification Trends Chart */
 @media (max-width: 1200px) {
     .trends-chart-container {
-        height: 320px;
+        height: 360px;
     }
     
     .trends-chart {
         gap: 6px;
-        padding: 8px 12px 45px 12px;
+        padding: 15px 12px 70px 12px;
     }
     
     .trend-bar {
         width: 20px;
-    }
-    
-    .trend-bar-label {
-        font-size: 7px;
-        max-width: 45px;
-        bottom: -30px;
-    }
-    
-    .trend-bar-standard {
-        font-size: 6px;
-        max-width: 45px;
-        bottom: -45px;
-    }
-}
-
-@media (max-width: 768px) {
-    .trends-chart-container {
-        height: 280px;
-    }
-    
-    .trends-chart {
-        gap: 4px;
-        padding: 6px 8px 40px 8px;
-    }
-    
-    .trend-bar {
-        width: 16px;
     }
     
     .trend-bar-label {
@@ -3690,10 +3663,38 @@ header .user-info {
         max-width: 40px;
         bottom: -40px;
     }
+}
+
+@media (max-width: 768px) {
+    .trends-chart-container {
+        height: 320px;
+    }
+    
+    .trends-chart {
+        gap: 4px;
+        padding: 10px 8px 60px 8px;
+    }
+    
+    .trend-bar {
+        width: 16px;
+    }
+    
+    .trend-bar-label {
+        font-size: 5px;
+        max-width: 35px;
+        bottom: -20px;
+    }
+    
+    .trend-bar-standard {
+        font-size: 4px;
+        max-width: 35px;
+        bottom: -35px;
+    }
     
     .trend-bar-value {
-        font-size: 10px;
+        font-size: 9px;
         padding: 2px 4px;
+        top: -20px;
     }
 }
 
@@ -8489,10 +8490,10 @@ body {
 
                 // Calculate dynamic scaling based on number of bars and available space
                 const numBars = classificationsArray.length;
-                const containerHeight = 350; // Increased container height
-                const padding = 50; // Reduced padding for more chart space
+                const containerHeight = 400; // Increased container height to accommodate labels
+                const padding = 80; // Bottom padding for labels
                 const availableHeight = containerHeight - padding;
-                const maxBarHeight = Math.min(availableHeight * 0.85, Math.max(100, availableHeight - (numBars * 2)));
+                const maxBarHeight = Math.min(availableHeight * 0.8, Math.max(80, availableHeight - (numBars * 2)));
                 
                 // Create bars
                 classificationsArray.forEach((item, index) => {
