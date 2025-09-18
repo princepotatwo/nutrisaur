@@ -3606,14 +3606,14 @@ header .user-info {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 3px;
+    gap: 8px;
     width: 100%;
     position: absolute;
     bottom: 15px;
     left: 0;
     right: 0;
     padding: 0 20px;
-    height: 80px;
+    height: 40px;
 }
 
 .trend-label-item {
@@ -3621,7 +3621,7 @@ header .user-info {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-width: 45px;
+    width: 24px;
     position: relative;
     height: 100%;
 }
@@ -3636,7 +3636,7 @@ header .user-info {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 50px;
+    max-width: 24px;
 }
 
 .trend-label-standard {
@@ -3648,7 +3648,7 @@ header .user-info {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 50px;
+    max-width: 24px;
 }
 
 /* Bar colors for different classifications - Enhanced with gradients */
@@ -3713,22 +3713,27 @@ header .user-info {
     .trends-labels-row {
         bottom: 10px;
         padding: 0 15px;
-        height: 70px;
+        height: 35px;
+        gap: 6px;
     }
     
     .trend-bar {
         width: 20px;
     }
     
+    .trend-label-item {
+        width: 20px;
+    }
+    
     .trend-label-classification {
         font-size: 5px;
-        max-width: 45px;
+        max-width: 20px;
         margin-bottom: 0;
     }
     
     .trend-label-standard {
         font-size: 4px;
-        max-width: 45px;
+        max-width: 20px;
     }
 }
 
@@ -3747,22 +3752,27 @@ header .user-info {
     .trends-labels-row {
         bottom: 8px;
         padding: 0 10px;
-        height: 60px;
+        height: 30px;
+        gap: 4px;
     }
     
     .trend-bar {
         width: 16px;
     }
     
+    .trend-label-item {
+        width: 16px;
+    }
+    
     .trend-label-classification {
         font-size: 4px;
-        max-width: 40px;
+        max-width: 16px;
         margin-bottom: 0;
     }
     
     .trend-label-standard {
         font-size: 3px;
-        max-width: 40px;
+        max-width: 16px;
     }
     
     .trend-bar-value {
