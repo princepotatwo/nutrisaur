@@ -8835,7 +8835,13 @@ body {
                 const totalUsers = data.total;
                 
                 console.log('Processing classifications:', classifications);
+                console.log('Classifications keys:', Object.keys(classifications));
+                console.log('Classifications values:', Object.values(classifications));
                 console.log('Total users:', totalUsers);
+                
+                // Check if classifications object has any non-zero values
+                const hasData = Object.values(classifications).some(count => count > 0);
+                console.log('Has data (non-zero counts):', hasData);
                 
                 // Define colors for each classification (matching bar graph colors)
                 const colors = {
@@ -8873,6 +8879,8 @@ body {
                 });
                 
                 console.log('Chart segments:', chartSegments);
+                console.log('Chart segments length:', chartSegments.length);
+                console.log('Chart segments details:', chartSegments.map(s => ({ label: s.label, count: s.count, percentage: s.percentage })));
                 
                 // Update center text
                 centerText.textContent = totalUsers;
@@ -8883,9 +8891,13 @@ body {
                     const gradientParts = chartSegments.map(segment => 
                         `${segment.color} ${segment.startAngle}% ${segment.endAngle}%`
                     );
-                    chartBg.style.background = `conic-gradient(${gradientParts.join(', ')})`;
+                    const gradientString = `conic-gradient(${gradientParts.join(', ')})`;
+                    console.log('Creating gradient:', gradientString);
+                    chartBg.style.background = gradientString;
                     chartBg.style.opacity = '1';
+                    console.log('Chart background set to:', chartBg.style.background);
                 } else {
+                    console.log('No chart segments, showing no data state');
                     chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
                     chartBg.style.opacity = '0.3';
                 }
