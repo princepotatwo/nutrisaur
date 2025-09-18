@@ -8750,6 +8750,13 @@ body {
 
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
+                
+                // Resize canvas to match container
+                const container = canvas.parentElement;
+                const containerRect = container.getBoundingClientRect();
+                canvas.width = containerRect.width - 30; // Account for padding
+                canvas.height = containerRect.height - 30; // Account for padding
+                
                 const ctx = canvas.getContext('2d');
                 ageClassificationChartInstance = new Chart(ctx, {
                     type: 'line',
@@ -9015,6 +9022,13 @@ body {
 
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
+                
+                // Resize canvas to match container
+                const container = canvas.parentElement;
+                const containerRect = container.getBoundingClientRect();
+                canvas.width = containerRect.width - 30; // Account for padding
+                canvas.height = containerRect.height - 30; // Account for padding
+                
                 const ctx = canvas.getContext('2d');
                 ageClassificationChartInstance = new Chart(ctx, {
                     type: 'line',
@@ -9518,6 +9532,20 @@ body {
             
             // Initialize display
             updateAgeRangeDisplay();
+            
+            // Add window resize listener to resize chart
+            window.addEventListener('resize', () => {
+                if (ageClassificationChartInstance) {
+                    const canvas = document.getElementById('ageClassificationChart');
+                    if (canvas) {
+                        const container = canvas.parentElement;
+                        const containerRect = container.getBoundingClientRect();
+                        canvas.width = containerRect.width - 30;
+                        canvas.height = containerRect.height - 30;
+                        ageClassificationChartInstance.resize();
+                    }
+                }
+            });
         }
 
         // Initialize WHO dropdown on page load
