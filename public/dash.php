@@ -3637,8 +3637,6 @@ header .user-info {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 50px;
-    transform: rotate(-45deg);
-    transform-origin: center;
 }
 
 .trend-label-standard {
@@ -8593,15 +8591,44 @@ body {
                 if (trendsLabels) {
                     trendsLabels.innerHTML = '';
                     
+                    // Function to create abbreviations
+                    function createAbbreviation(classification) {
+                        const abbreviations = {
+                            'Normal': 'N',
+                            'Overweight': 'OW',
+                            'Obese': 'O',
+                            'Underweight': 'UW',
+                            'Severely Underweight': 'SUW',
+                            'Stunted': 'S',
+                            'Severely Stunted': 'SS',
+                            'Wasted': 'W',
+                            'Severely Wasted': 'SW',
+                            'Tall': 'T'
+                        };
+                        
+                        // Check for exact match first
+                        if (abbreviations[classification]) {
+                            return abbreviations[classification];
+                        }
+                        
+                        // Check for partial matches
+                        for (const [key, value] of Object.entries(abbreviations)) {
+                            if (classification.toLowerCase().includes(key.toLowerCase()) || 
+                                key.toLowerCase().includes(classification.toLowerCase())) {
+                                return value;
+                            }
+                        }
+                        
+                        // Fallback: take first letter of each word
+                        return classification.split(' ').map(word => word.charAt(0).toUpperCase()).join('');
+                    }
+                    
                     classificationsArray.forEach((item, index) => {
                         const labelDiv = document.createElement('div');
                         labelDiv.className = 'trend-label-item';
                         
-                        // Format classification name for display
-                        let displayName = item.classification.replace(/([A-Z])/g, ' $1').trim();
-                        if (displayName.length > 15) {
-                            displayName = displayName.substring(0, 15) + '...';
-                        }
+                        // Create abbreviation for classification
+                        const abbreviation = createAbbreviation(item.classification);
                         
                         // Format standard label
                         let standardLabel = item.standard_label;
@@ -8610,7 +8637,7 @@ body {
                         }
                         
                         labelDiv.innerHTML = `
-                            <div class="trend-label-classification">${displayName}</div>
+                            <div class="trend-label-classification">${abbreviation}</div>
                             <div class="trend-label-standard">${standardLabel}</div>
                         `;
                         
