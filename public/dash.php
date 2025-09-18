@@ -9294,6 +9294,8 @@ body {
             }
             
             console.log('Final age classification data:', ageClassificationData);
+            console.log('Final age classification data keys:', Object.keys(ageClassificationData));
+            console.log('Final age classification data values:', Object.values(ageClassificationData));
             return ageClassificationData;
         }
 
@@ -9470,6 +9472,8 @@ body {
                 // Process the bulk data to create age-based classifications
                 const ageClassificationData = await processBulkDataForAgeGroups(data.data, fromMonths, toMonths);
                 console.log('Processed age classification data:', ageClassificationData);
+                console.log('Processed age classification data keys:', Object.keys(ageClassificationData));
+                console.log('Processed age classification data values:', Object.values(ageClassificationData));
 
                 if (Object.keys(ageClassificationData).length === 0) {
                     console.log('No age classification data available for the specified range');
