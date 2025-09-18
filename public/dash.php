@@ -6897,55 +6897,53 @@ body {
                 <div style="margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <div>
-                <h3>Classification Trends by Age</h3>
-                <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
-            </div>
-        </div>
+                            <h3>Classification Trends by Age</h3>
+                            <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
+                        </div>
+                    </div>
 
                     <!-- Age Range Controls - Moved below title, full width -->
                     <div class="age-range-controls" style="padding: 12px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px;">
-                            <div class="age-range-header">
-                                <label class="age-range-label">Age Range Filter</label>
+                        <div class="age-range-header">
+                            <label class="age-range-label">Age Range Filter</label>
+                        </div>
+                        
+                        <div class="age-range-inputs">
+                            <div class="input-group">
+                                <label class="input-label">From:</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control">
+                                    <select id="ageFromUnit" class="form-select">
+                                        <option value="months">Months</option>
+                                        <option value="years">Years</option>
+                                    </select>
+                                </div>
                             </div>
                             
-                            <div class="age-range-inputs">
-                                <div class="input-group">
-                                    <label class="input-label">From:</label>
-                                    <div class="input-wrapper">
-                                        <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control">
-                                        <select id="ageFromUnit" class="form-select">
-                                            <option value="months">Months</option>
-                                            <option value="years">Years</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="input-group">
-                                    <label class="input-label">To:</label>
-                                    <div class="input-wrapper">
-                                        <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control">
-                                        <select id="ageToUnit" class="form-select">
-                                            <option value="months">Months</option>
-                                            <option value="years">Years</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="button-group">
-                                    <button id="applyAgeRange" class="btn btn-primary">Apply</button>
-                                    <button id="resetAgeRange" class="btn btn-secondary">Reset</button>
+                            <div class="input-group">
+                                <label class="input-label">To:</label>
+                                <div class="input-wrapper">
+                                    <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control">
+                                    <select id="ageToUnit" class="form-select">
+                                        <option value="months">Months</option>
+                                        <option value="years">Years</option>
+                                    </select>
                                 </div>
                             </div>
+                            
+                            <div class="button-group">
+                                <button id="applyAgeRange" class="btn btn-primary">Apply</button>
+                                <button id="resetAgeRange" class="btn btn-secondary">Reset</button>
+                            </div>
                         </div>
-
                     </div>
                 </div>
                 
                 <div class="age-classification-chart-container">
                     <canvas id="ageClassificationChart"></canvas>
                 </div>
-                    </div>
-                </div>
+            </div>
+        </div>
                 
 
                 
