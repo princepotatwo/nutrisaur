@@ -3483,13 +3483,21 @@ header .user-info {
 .compact-inputs {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
+}
+
+.compact-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .compact-group {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    flex: 1;
 }
 
 .compact-label {
@@ -3518,11 +3526,11 @@ header .user-info {
 }
 
 .form-control-compact {
-    width: 70px;
+    width: 60px;
 }
 
 .form-select-compact {
-    width: 60px;
+    width: 50px;
 }
 
 .form-control-compact:focus, .form-select-compact:focus {
@@ -3601,17 +3609,29 @@ header .user-info {
     }
     
     .age-range-controls-compact {
-        min-width: 300px;
-        max-width: 350px;
+        min-width: 320px;
+        max-width: 380px;
+    }
+    
+    .compact-row {
+        gap: 8px;
     }
     
     .compact-group {
-        gap: 6px;
+        gap: 4px;
     }
     
     .form-control-compact, .form-select-compact {
         font-size: 11px;
         padding: 5px 6px;
+    }
+    
+    .form-control-compact {
+        width: 55px;
+    }
+    
+    .form-select-compact {
+        width: 45px;
     }
     
     .btn-compact {
@@ -3644,17 +3664,29 @@ header .user-info {
     }
     
     .age-range-controls-compact {
-        min-width: 250px;
-        max-width: 300px;
+        min-width: 280px;
+        max-width: 320px;
+    }
+    
+    .compact-row {
+        gap: 6px;
     }
     
     .compact-group {
-        gap: 6px;
+        gap: 4px;
     }
     
     .form-control-compact, .form-select-compact {
         font-size: 10px;
         padding: 4px 6px;
+    }
+    
+    .form-control-compact {
+        width: 50px;
+    }
+    
+    .form-select-compact {
+        width: 40px;
     }
     
     .btn-compact {
@@ -7044,26 +7076,28 @@ body {
                         <!-- Age Range Controls - Compact version on the right -->
                         <div class="age-range-controls-compact">
                             <div class="compact-inputs">
-                                <div class="compact-group">
-                                    <label class="compact-label">From:</label>
-                                    <div class="compact-wrapper">
-                                        <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control-compact">
-                                        <select id="ageFromUnit" class="form-select-compact">
-                                            <option value="months">M</option>
-                                            <option value="years">Y</option>
-                                        </select>
+                                <div class="compact-row">
+                                    <div class="compact-group">
+                                        <label class="compact-label">From:</label>
+                                        <div class="compact-wrapper">
+                                            <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control-compact">
+                                            <select id="ageFromUnit" class="form-select-compact">
+                                                <option value="months">M</option>
+                                                <option value="years">Y</option>
+                                            </select>
             </div>
         </div>
 
-                                <div class="compact-group">
-                                    <label class="compact-label">To:</label>
-                                    <div class="compact-wrapper">
-                                        <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control-compact">
-                                        <select id="ageToUnit" class="form-select-compact">
-                                            <option value="months">M</option>
-                                            <option value="years">Y</option>
-                                        </select>
+                                    <div class="compact-group">
+                                        <label class="compact-label">To:</label>
+                                        <div class="compact-wrapper">
+                                            <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control-compact">
+                                            <select id="ageToUnit" class="form-select-compact">
+                                                <option value="months">M</option>
+                                                <option value="years">Y</option>
+                                            </select>
                     </div>
+                                    </div>
                                 </div>
                                 
                                 <div class="compact-buttons">
