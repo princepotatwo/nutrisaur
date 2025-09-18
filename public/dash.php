@@ -3505,8 +3505,9 @@ header .user-info {
 
 /* Classification Trends Chart Styles */
 .trends-chart-container {
-    height: 400px;
+    height: 300px;
     margin-top: 15px;
+    padding: 0 10px;
 }
 
 .trends-chart {
@@ -3514,8 +3515,8 @@ header .user-info {
     align-items: flex-end;
     justify-content: center;
     height: 100%;
-    gap: 8px;
-    padding: 20px 15px 80px 15px;
+    gap: 6px;
+    padding: 15px 10px 60px 10px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
@@ -3523,11 +3524,12 @@ header .user-info {
     width: 100%;
     flex-wrap: nowrap;
     min-width: 0;
+    box-sizing: border-box;
 }
 
 .trend-bar {
-    width: 24px;
-    border-radius: 6px 6px 0 0;
+    width: 20px;
+    border-radius: 4px 4px 0 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3546,46 +3548,46 @@ header .user-info {
 
 .trend-bar-value {
     position: absolute;
-    top: -25px;
-    font-size: 11px;
+    top: -20px;
+    font-size: 10px;
     font-weight: 700;
     color: var(--color-text);
     background: var(--color-card);
-    padding: 3px 5px;
-    border-radius: 4px;
+    padding: 2px 4px;
+    border-radius: 3px;
     border: 1px solid var(--color-border);
     white-space: nowrap;
     z-index: 10;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .trend-bar-label {
     position: absolute;
-    bottom: -30px;
-    font-size: 7px;
+    bottom: -25px;
+    font-size: 6px;
     color: var(--color-text);
     text-align: center;
     font-weight: 600;
     line-height: 1.2;
-    max-width: 45px;
+    max-width: 40px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transform: rotate(-45deg);
     transform-origin: left center;
     left: 50%;
-    margin-left: -22px;
+    margin-left: -20px;
 }
 
 .trend-bar-standard {
     position: absolute;
-    bottom: -45px;
-    font-size: 6px;
+    bottom: -40px;
+    font-size: 5px;
     color: var(--color-text);
     opacity: 0.8;
     font-weight: 500;
     text-align: center;
-    max-width: 45px;
+    max-width: 40px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -3640,43 +3642,17 @@ header .user-info {
 /* Responsive adjustments for Classification Trends Chart */
 @media (max-width: 1200px) {
     .trends-chart-container {
-        height: 360px;
+        height: 280px;
+        padding: 0 8px;
     }
     
     .trends-chart {
-        gap: 6px;
-        padding: 15px 12px 70px 12px;
+        gap: 5px;
+        padding: 12px 8px 50px 8px;
     }
     
     .trend-bar {
-        width: 20px;
-    }
-    
-    .trend-bar-label {
-        font-size: 6px;
-        max-width: 40px;
-        bottom: -25px;
-    }
-    
-    .trend-bar-standard {
-        font-size: 5px;
-        max-width: 40px;
-        bottom: -40px;
-    }
-}
-
-@media (max-width: 768px) {
-    .trends-chart-container {
-        height: 320px;
-    }
-    
-    .trends-chart {
-        gap: 4px;
-        padding: 10px 8px 60px 8px;
-    }
-    
-    .trend-bar {
-        width: 16px;
+        width: 18px;
     }
     
     .trend-bar-label {
@@ -3690,11 +3666,39 @@ header .user-info {
         max-width: 35px;
         bottom: -35px;
     }
+}
+
+@media (max-width: 768px) {
+    .trends-chart-container {
+        height: 250px;
+        padding: 0 5px;
+    }
+    
+    .trends-chart {
+        gap: 3px;
+        padding: 8px 5px 40px 5px;
+    }
+    
+    .trend-bar {
+        width: 14px;
+    }
+    
+    .trend-bar-label {
+        font-size: 4px;
+        max-width: 30px;
+        bottom: -15px;
+    }
+    
+    .trend-bar-standard {
+        font-size: 3px;
+        max-width: 30px;
+        bottom: -30px;
+    }
     
     .trend-bar-value {
-        font-size: 9px;
-        padding: 2px 4px;
-        top: -20px;
+        font-size: 8px;
+        padding: 1px 3px;
+        top: -15px;
     }
 }
 
@@ -8490,10 +8494,10 @@ body {
 
                 // Calculate dynamic scaling based on number of bars and available space
                 const numBars = classificationsArray.length;
-                const containerHeight = 400; // Increased container height to accommodate labels
-                const padding = 80; // Bottom padding for labels
+                const containerHeight = 300; // Container height
+                const padding = 60; // Bottom padding for labels
                 const availableHeight = containerHeight - padding;
-                const maxBarHeight = Math.min(availableHeight * 0.8, Math.max(80, availableHeight - (numBars * 2)));
+                const maxBarHeight = Math.min(availableHeight * 0.75, Math.max(60, availableHeight - (numBars * 2)));
                 
                 // Create bars
                 classificationsArray.forEach((item, index) => {
