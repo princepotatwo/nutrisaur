@@ -9278,21 +9278,18 @@ body {
         }
 
         // Frontend approach: Get all data once, process efficiently
-        // Age classification chart logic - TO BE IMPLEMENTED
+        // Age classification chart logic - REMOVED
         async function processBulkDataForAgeGroups(bulkData, fromMonths, toMonths) {
-            // TODO: Implement new age classification logic
             return {};
         }
 
-        // Age group generation - TO BE IMPLEMENTED
+        // Age group generation - REMOVED
         function generateAgeGroups(fromMonths, toMonths) {
-            // TODO: Implement new age group generation logic
             return {};
         }
 
-        // Age calculation - TO BE IMPLEMENTED
+        // Age calculation - REMOVED
         function calculateAgeInMonths(birthday, screeningDate) {
-            // TODO: Implement age calculation logic
             return 0;
         }
 
