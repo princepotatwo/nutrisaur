@@ -4987,15 +4987,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
                 
                 // Get all users in the filtered group
-                $userQuery = "SELECT email, birthday, sex FROM community_users WHERE $whereClause";
+                $userQuery = "SELECT email, birthday, sex, screening_date FROM community_users WHERE $whereClause";
                 $userResult = $db->executeQuery($userQuery, $params);
                 
-                if (!$userResult['success'] || empty($userResult['data'])) {
+                // Check if executeQuery returned an error
+                if (isset($userResult['error']) || empty($userResult)) {
                     echo json_encode(['success' => true, 'data' => []]);
                     break;
                 }
                 
-                $users = $userResult['data'];
+                $users = $userResult;
                 $totalUsers = count($users);
                 
                 // Log basic info for debugging
@@ -5021,6 +5022,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     foreach ($users as $user) {
                         // Use screening date for age calculation
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                        
+                        // Debug logging for first few users
+                        if (count($ageGroupUsers) < 3) {
+                            error_log("Age Classification Debug - User: {$user['email']}, Birthday: {$user['birthday']}, Screening Date: " . ($user['screening_date'] ?? 'null') . ", Age in Months: $ageInMonths, Age Group: $ageGroup, Range: {$ageRange[0]}-{$ageRange[1]}");
+                        }
                         
                         if ($ageInMonths >= $ageRange[0] && $ageInMonths < $ageRange[1]) {
                             $ageGroupUsers[] = $user;
