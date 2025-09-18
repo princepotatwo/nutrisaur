@@ -9290,7 +9290,7 @@ body {
             return unit === 'years' ? Math.floor(months / 12) : months;
         }
 
-        // Use the SAME API approach as donut chart but with age filtering
+        // Frontend approach: Get all data once, process efficiently
         async function processBulkDataForAgeGroups(bulkData, fromMonths, toMonths) {
             console.log('Processing bulk data for age groups:', fromMonths, 'to', toMonths, 'months');
             
@@ -9312,56 +9312,121 @@ body {
             const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
             const barangayValue = barangay === 'All Barangays' ? '' : barangay;
             
-            // For each age group, fetch data using the SAME API as donut chart
-            for (const ageGroup of Object.keys(ageGroups)) {
-                const [minAge, maxAge] = ageGroups[ageGroup];
-                console.log(`Fetching data for age group ${ageGroup} (${minAge}-${maxAge} months)`);
+            // SINGLE API CALL: Get all user data once
+            const userUrl = `/api/DatabaseAPI.php?action=get_users_for_age_classification&time_frame=${timeFrame}&barangay=${barangayValue}`;
+            console.log('Fetching all user data:', userUrl);
+            
+            try {
+                const userResponse = await fetch(userUrl);
+                const userData = await userResponse.json();
                 
-                // Use the SAME API as donut chart but with age filtering
-                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangayValue}&age_from_months=${minAge}&age_to_months=${maxAge}`;
-                
-                try {
-                    const response = await fetch(url);
-                    const result = await response.json();
+                if (userData.success && userData.data && userData.data.length > 0) {
+                    console.log('Processing', userData.data.length, 'users for age classification');
                     
-                    if (result.success && result.data) {
-                        // Extract classifications from this age group's data
-                        const wfaData = result.data.weight_for_age || {};
-                        const hfaData = result.data.height_for_age || {};
-                        const wfhData = result.data.weight_for_height || {};
+                    // Create age group buckets
+                    const ageGroupBuckets = {};
+                    Object.keys(ageGroups).forEach(ageGroup => {
+                        ageGroupBuckets[ageGroup] = [];
+                    });
+                    
+                    // Distribute users into age groups (efficient grouping)
+                    userData.data.forEach(user => {
+                        const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
                         
-                        // Map the data to our age group
-                        Object.keys(wfaData).forEach(classification => {
-                            const count = wfaData[classification] || 0;
-                            if (count > 0) {
-                                const key = `${ageGroup}_${classification}`;
-                                ageClassificationData[key] = count;
+                        // Find which age group this user belongs to
+                        Object.keys(ageGroups).forEach(ageGroup => {
+                            const [minAge, maxAge] = ageGroups[ageGroup];
+                            if (ageInMonths >= minAge && ageInMonths < maxAge) {
+                                ageGroupBuckets[ageGroup].push(user);
                             }
                         });
-                        
-                        Object.keys(hfaData).forEach(classification => {
-                            const count = hfaData[classification] || 0;
-                            if (count > 0) {
-                                const key = `${ageGroup}_${classification}`;
-                                ageClassificationData[key] = count;
-                            }
-                        });
-                        
-                        Object.keys(wfhData).forEach(classification => {
-                            const count = wfhData[classification] || 0;
-                            if (count > 0) {
-                                const key = `${ageGroup}_${classification}`;
-                                ageClassificationData[key] = count;
-                            }
-                        });
-                    }
-                } catch (error) {
-                    console.error(`Error fetching data for age group ${ageGroup}:`, error);
+                    });
+                    
+                    console.log('Age group distribution:', Object.keys(ageGroupBuckets).map(group => ({
+                        group,
+                        count: ageGroupBuckets[group].length
+                    })));
+                    
+                    // Apply donut chart logic to each age group
+                    Object.keys(ageGroupBuckets).forEach(ageGroup => {
+                        const usersInGroup = ageGroupBuckets[ageGroup];
+                        if (usersInGroup.length > 0) {
+                            console.log(`Processing ${usersInGroup.length} users in age group ${ageGroup}`);
+                            
+                            // Apply the SAME classification logic as donut chart
+                            const classifications = classifyUsersInGroup(usersInGroup);
+                            
+                            // Map to our data structure
+                            Object.keys(classifications).forEach(classification => {
+                                const count = classifications[classification];
+                                if (count > 0) {
+                                    const key = `${ageGroup}_${classification}`;
+                                    ageClassificationData[key] = count;
+                                }
+                            });
+                        }
+                    });
                 }
+            } catch (error) {
+                console.error('Error processing user data:', error);
             }
             
             console.log('Final age classification data:', ageClassificationData);
             return ageClassificationData;
+        }
+        
+        // Apply donut chart classification logic to a group of users
+        function classifyUsersInGroup(users) {
+            const classifications = {
+                'Normal': 0,
+                'Overweight': 0,
+                'Obese': 0,
+                'Underweight': 0,
+                'Severely Underweight': 0,
+                'Stunted': 0,
+                'Severely Stunted': 0,
+                'Wasted': 0,
+                'Severely Wasted': 0,
+                'Tall': 0
+            };
+            
+            // Apply the SAME logic as donut chart for each user
+            users.forEach(user => {
+                const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
+                const weight = parseFloat(user.weight) || 0;
+                const height = parseFloat(user.height) || 0;
+                
+                // Use the SAME classification logic as donut chart
+                if (ageInMonths < 24) {
+                    // Weight-for-Age for children under 2
+                    if (weight < 8) classifications['Severely Underweight']++;
+                    else if (weight < 10) classifications['Underweight']++;
+                    else if (weight < 12) classifications['Normal']++;
+                    else if (weight < 14) classifications['Overweight']++;
+                    else classifications['Obese']++;
+                } else if (ageInMonths < 228) {
+                    // BMI-for-Age for children 2-19
+                    if (height > 0) {
+                        const bmi = weight / Math.pow(height / 100, 2);
+                        if (bmi < 14) classifications['Severely Underweight']++;
+                        else if (bmi < 16) classifications['Underweight']++;
+                        else if (bmi < 25) classifications['Normal']++;
+                        else if (bmi < 30) classifications['Overweight']++;
+                        else classifications['Obese']++;
+                    }
+                } else {
+                    // BMI Adult for adults 19+
+                    if (height > 0) {
+                        const bmi = weight / Math.pow(height / 100, 2);
+                        if (bmi < 18.5) classifications['Underweight']++;
+                        else if (bmi < 25) classifications['Normal']++;
+                        else if (bmi < 30) classifications['Overweight']++;
+                        else classifications['Obese']++;
+                    }
+                }
+            });
+            
+            return classifications;
         }
 
         // Simple age group generation - just create basic groups
