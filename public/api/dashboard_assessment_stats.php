@@ -273,10 +273,10 @@ try {
         // Add to critical alerts if high risk or severe risk
         if (in_array($assessment['risk_level'], ['High', 'Very High'])) {
             $criticalAlerts[] = [
-                'user_id' => $user['user_id'],
-                'name' => $user['first_name'] . ' ' . $user['last_name'],
+                'user_id' => $user['email'], // email is the primary key
+                'name' => $user['name'], // single name column
                 'email' => $user['email'],
-                'fcm_token' => $user['fcm_token'],
+                'fcm_token' => isset($user['fcm_token']) ? $user['fcm_token'] : '',
                 'barangay' => $user['barangay'],
                 'municipality' => $user['municipality'],
                 'age' => round($age, 1),
@@ -287,9 +287,9 @@ try {
                 'alert_type' => $assessment['risk_level'] === 'Very High' ? 'severe' : 'high',
                 'alert_title' => $assessment['risk_level'] === 'Very High' ? 'Severe Risk Case' : 'High Risk Case',
                 'alert_description' => $assessment['nutritional_status'] . ' - ' . $assessment['risk_level'] . ' risk level',
-                'screening_date' => $user['screening_date'],
+                'screening_date' => isset($user['screening_date']) ? $user['screening_date'] : date('Y-m-d'),
                 'bmi' => calculateBMI($user['weight'], $user['height']),
-                'muac' => $user['muac'],
+                'muac' => isset($user['muac']) ? $user['muac'] : 0, // muac column doesn't exist
                 'weight' => $user['weight'],
                 'height' => $user['height']
             ];
