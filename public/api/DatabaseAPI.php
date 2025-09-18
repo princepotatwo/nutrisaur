@@ -5247,6 +5247,39 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // GET USERS FOR AGE CLASSIFICATION API
+        // ========================================
+        case 'get_users_for_age_classification':
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            try {
+                // Get all users with their basic info for age classification
+                $users = $db->getDetailedScreeningResponses($timeFrame, $barangay);
+                
+                if (empty($users)) {
+                    echo json_encode([
+                        'success' => true,
+                        'data' => []
+                    ]);
+                    break;
+                }
+                
+                // Return users with their basic info for frontend processing
+                echo json_encode([
+                    'success' => true,
+                    'data' => $users
+                ]);
+                
+            } catch (Exception $e) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error getting users for age classification: ' . $e->getMessage()
+                ]);
+            }
+            break;
+            
+        // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:

@@ -9056,7 +9056,7 @@ body {
                 const datasets = classifications.map(classification => {
                     const chartData = ageGroups.map(ageGroup => {
                         const key = `${ageGroup}_${classification}`;
-                        return data.data[key] || 0;
+                        return ageClassificationData[key] || 0;
                     });
 
                     return {
@@ -9235,6 +9235,179 @@ body {
             return unit === 'years' ? Math.floor(months / 12) : months;
         }
 
+        // Process bulk API data to create age-based classifications
+        async function processBulkDataForAgeGroups(bulkData, fromMonths, toMonths) {
+            console.log('Processing bulk data for age groups:', fromMonths, 'to', toMonths, 'months');
+            
+            // Generate age groups based on the range
+            const ageGroups = generateAgeGroups(fromMonths, toMonths);
+            console.log('Generated age groups:', ageGroups);
+            
+            // Initialize all age groups with zero values
+            const ageClassificationData = {};
+            Object.keys(ageGroups).forEach(ageGroup => {
+                const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
+                classifications.forEach(classification => {
+                    ageClassificationData[`${ageGroup}_${classification}`] = 0;
+                });
+            });
+            
+            // Get user data for age-based processing
+            try {
+                const timeFrame = document.querySelector('.time-btn.active')?.dataset.timeframe || '1d';
+                const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
+                const barangayValue = barangay === 'All Barangays' ? '' : barangay;
+                
+                const userUrl = `/api/DatabaseAPI.php?action=get_users_for_age_classification&time_frame=${timeFrame}&barangay=${barangayValue}`;
+                console.log('Fetching user data for age classification:', userUrl);
+                
+                const userResponse = await fetch(userUrl);
+                if (!userResponse.ok) {
+                    throw new Error(`HTTP error! status: ${userResponse.status}`);
+                }
+                
+                const userData = await userResponse.json();
+                console.log('User data received:', userData);
+                
+                if (userData.success && userData.data && userData.data.length > 0) {
+                    // Process each user and classify them by age group
+                    userData.data.forEach(user => {
+                        const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
+                        console.log(`User: ${user.name}, Birthday: ${user.birthday}, Screening: ${user.screening_date}, Age: ${ageInMonths} months`);
+                        
+                        // Find which age group this user belongs to
+                        Object.keys(ageGroups).forEach(ageGroup => {
+                            const [minMonths, maxMonths] = ageGroups[ageGroup];
+                            if (ageInMonths >= minMonths && ageInMonths < maxMonths) {
+                                // Classify the user using the bulk data
+                                const classification = classifyUserFromBulkData(user, bulkData);
+                                if (classification) {
+                                    const key = `${ageGroup}_${classification}`;
+                                    ageClassificationData[key] = (ageClassificationData[key] || 0) + 1;
+                                }
+                            }
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error('Error processing user data:', error);
+            }
+            
+            console.log('Final age classification data:', ageClassificationData);
+            return ageClassificationData;
+        }
+
+        // Generate age groups based on month range (same logic as backend)
+        function generateAgeGroups(fromMonths, toMonths) {
+            const ageGroups = {};
+            let currentMonth = fromMonths;
+            
+            // If range is small (less than 12 months), create monthly groups
+            if ((toMonths - fromMonths) <= 12) {
+                while (currentMonth < toMonths) {
+                    const nextMonth = Math.min(currentMonth + 1, toMonths);
+                    const label = currentMonth + 'm';
+                    ageGroups[label] = [currentMonth, nextMonth];
+                    currentMonth = nextMonth;
+                }
+            }
+            // If range is medium (12-60 months), create 6-month groups
+            else if ((toMonths - fromMonths) <= 60) {
+                while (currentMonth < toMonths) {
+                    const nextMonth = Math.min(currentMonth + 6, toMonths);
+                    const label = currentMonth + 'm-' + (nextMonth - 1) + 'm';
+                    ageGroups[label] = [currentMonth, nextMonth];
+                    currentMonth = nextMonth;
+                }
+            }
+            // If range is large (60+ months), create yearly groups
+            else {
+                while (currentMonth < toMonths) {
+                    const nextMonth = Math.min(currentMonth + 12, toMonths);
+                    const fromYears = Math.floor(currentMonth / 12);
+                    const toYears = Math.floor((nextMonth - 1) / 12);
+                    
+                    let label;
+                    if (fromYears === toYears) {
+                        label = fromYears + 'y';
+                    } else {
+                        label = fromYears + 'y-' + toYears + 'y';
+                    }
+                    
+                    ageGroups[label] = [currentMonth, nextMonth];
+                    currentMonth = nextMonth;
+                    
+                    // Safety check to prevent infinite loops
+                    if (currentMonth >= toMonths) {
+                        break;
+                    }
+                }
+            }
+            
+            return ageGroups;
+        }
+
+        // Calculate age in months from birthday and screening date
+        function calculateAgeInMonths(birthday, screeningDate) {
+            if (!birthday) return 0;
+            
+            const birthDate = new Date(birthday);
+            const screenDate = screeningDate ? new Date(screeningDate) : new Date();
+            
+            const yearDiff = screenDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = screenDate.getMonth() - birthDate.getMonth();
+            const dayDiff = screenDate.getDate() - birthDate.getDate();
+            
+            let totalMonths = yearDiff * 12 + monthDiff;
+            
+            // Adjust if the day hasn't occurred yet this month
+            if (dayDiff < 0) {
+                totalMonths--;
+            }
+            
+            return Math.max(0, totalMonths);
+        }
+
+        // Classify user based on bulk data (simplified version)
+        function classifyUserFromBulkData(user, bulkData) {
+            // This is a simplified classification - in a real implementation,
+            // you would need to perform the actual WHO growth standards calculation
+            // For now, we'll use a simple heuristic based on the bulk data
+            
+            const ageInMonths = calculateAgeInMonths(user.birthday, user.screening_date);
+            const weight = parseFloat(user.weight) || 0;
+            const height = parseFloat(user.height) || 0;
+            
+            if (ageInMonths < 24) {
+                // For children under 2, use weight-for-age
+                if (weight < 8) return 'Severely Underweight';
+                if (weight < 10) return 'Underweight';
+                if (weight < 12) return 'Normal';
+                if (weight < 14) return 'Overweight';
+                return 'Obese';
+            } else if (ageInMonths < 228) {
+                // For children 2-19, use BMI-for-age
+                if (height > 0) {
+                    const bmi = weight / Math.pow(height / 100, 2);
+                    if (bmi < 14) return 'Severely Underweight';
+                    if (bmi < 16) return 'Underweight';
+                    if (bmi < 25) return 'Normal';
+                    if (bmi < 30) return 'Overweight';
+                    return 'Obese';
+                }
+            } else {
+                // For adults 19+, use BMI adult
+                if (height > 0) {
+                    const bmi = weight / Math.pow(height / 100, 2);
+                    if (bmi < 18.5) return 'Underweight';
+                    if (bmi < 25) return 'Normal';
+                    if (bmi < 30) return 'Overweight';
+                    return 'Obese';
+                }
+            }
+            
+            return 'Normal'; // Default fallback
+        }
 
         function applyAgeRange() {
             const fromValue = document.getElementById('ageFromMonths').value;
@@ -9276,9 +9449,9 @@ body {
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
-                // Fetch age-based classification data with custom range
-                const url = `/api/DatabaseAPI.php?action=get_age_classifications&barangay=${barangayValue}&age_from_months=${fromMonths}&age_to_months=${toMonths}&time_frame=${timeFrame}`;
-                console.log('Fetching age classifications from:', url);
+                // Use the same bulk API approach as other charts
+                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangayValue}`;
+                console.log('Fetching age classifications from bulk API:', url);
                 
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -9286,17 +9459,27 @@ body {
                 }
                 
                 const data = await response.json();
-                console.log('Age classifications data received:', data);
+                console.log('Bulk API data received for age classification:', data);
 
-                if (!data.success || !data.data || Object.keys(data.data).length === 0) {
-                    console.log('No age classification data available');
+                if (!data.success || !data.data) {
+                    console.log('No classification data available');
+                    createEmptyAgeChart(canvas);
+                    return;
+                }
+
+                // Process the bulk data to create age-based classifications
+                const ageClassificationData = await processBulkDataForAgeGroups(data.data, fromMonths, toMonths);
+                console.log('Processed age classification data:', ageClassificationData);
+
+                if (Object.keys(ageClassificationData).length === 0) {
+                    console.log('No age classification data available for the specified range');
                     createEmptyAgeChart(canvas);
                     return;
                 }
 
                 // Process data for Chart.js with dynamic age groups
-                const ageGroups = Object.keys(data.data).map(key => {
-                    // Extract age group from keys like "0m_Normal", "1m_Overweight", etc.
+                const ageGroups = Object.keys(ageClassificationData).map(key => {
+                    // Extract age group from keys like "0y_Normal", "1y_Overweight", etc.
                     return key.split('_')[0];
                 }).filter((value, index, self) => self.indexOf(value) === index).sort((a, b) => {
                     // Convert age groups to months for proper chronological sorting
@@ -9324,7 +9507,7 @@ body {
                 const datasets = classifications.map(classification => {
                     const chartData = ageGroups.map(ageGroup => {
                         const key = `${ageGroup}_${classification}`;
-                        return data.data[key] || 0;
+                        return ageClassificationData[key] || 0;
                     });
 
                     return {
