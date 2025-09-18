@@ -3514,10 +3514,10 @@ header .user-info {
 .trends-chart {
     display: flex;
     align-items: flex-end;
-    justify-content: center;
+    justify-content: space-between;
     height: 250px;
-    gap: 6px;
-    padding: 15px 5px 10px 5px;
+    gap: 2px;
+    padding: 15px 10px 60px 10px;
     background: var(--color-bg);
     border-radius: 12px;
     border: 1px solid var(--color-border);
@@ -3530,7 +3530,9 @@ header .user-info {
 }
 
 .trend-bar {
-    width: 21px;
+    flex: 1;
+    min-width: 15px;
+    max-width: 30px;
     border-radius: 5px 5px 0 0;
     display: flex;
     flex-direction: column;
@@ -3539,7 +3541,6 @@ header .user-info {
     position: relative;
     transition: all 0.3s ease;
     min-height: 20px;
-    flex-shrink: 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -3563,97 +3564,33 @@ header .user-info {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Labels positioned outside the chart */
 .trend-bar-label {
     position: absolute;
-    bottom: -5px;
-    font-size: 8px;
-    color: var(--color-text);
-    text-align: center;
-    font-weight: 600;
-    line-height: 1.2;
-    max-width: 50px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transform: rotate(-45deg);
-    transform-origin: left center;
+    bottom: -45px;
     left: 50%;
-    margin-left: -25px;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
     z-index: 5;
+}
+
+.trend-bar-classification {
+    font-size: 8px;
+    font-weight: 600;
+    color: inherit;
+    line-height: 1.2;
+    margin-bottom: 2px;
 }
 
 .trend-bar-standard {
-    position: absolute;
-    bottom: -20px;
-    font-size: 7px;
-    color: var(--color-text);
-    opacity: 0.8;
-    font-weight: 500;
-    text-align: center;
-    max-width: 50px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transform: rotate(-45deg);
-    transform-origin: left center;
-    left: 50%;
-    margin-left: -25px;
-    z-index: 5;
-}
-
-/* Labels positioned outside chart but within card */
-.trends-labels-row {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 6px;
-    width: 100%;
-    position: absolute;
-    bottom: 35px;
-    left: 8px;
-    right: 0;
-    padding: 0 10px;
-    height: 50px;
-    margin: 0;
-}
-
-.trend-label-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 21px;
-    position: relative;
-    height: 100%;
-    flex-shrink: 0;
-    text-align: center;
-}
-
-.trend-label-classification {
-    font-size: 8px;
-    font-weight: 600;
-    color: var(--color-text);
-    text-align: center;
-    line-height: 1.2;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 21px;
-}
-
-.trend-label-standard {
     font-size: 7px;
     font-weight: 500;
-    color: var(--color-text);
+    color: inherit;
     opacity: 0.8;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 21px;
+    line-height: 1;
 }
+
+
 
 /* Bar colors for different classifications - Enhanced with gradients */
 .trend-bar.normal { 
@@ -3710,39 +3647,15 @@ header .user-info {
     
     .trends-chart {
         height: 200px;
-        gap: 5px;
-        padding: 12px 4px 8px 4px;
-    }
-    
-    .trends-labels-row {
-        bottom: 30px;
-        padding: 0 8px;
-        height: 45px;
-        gap: 5px;
-        left: 6px;
-        margin: 0;
+        gap: 1px;
+        padding: 12px 8px 50px 8px;
     }
     
     .trend-bar {
-        width: 18px;
+        min-width: 12px;
+        max-width: 25px;
     }
     
-    .trend-label-item {
-        width: 18px;
-        flex-shrink: 0;
-        text-align: center;
-    }
-    
-    .trend-label-classification {
-        font-size: 7px;
-        max-width: 18px;
-        margin-bottom: 2px;
-    }
-    
-    .trend-label-standard {
-        font-size: 6px;
-        max-width: 18px;
-    }
 }
 
 @media (max-width: 768px) {
@@ -3753,39 +3666,15 @@ header .user-info {
     
     .trends-chart {
         height: 180px;
-        gap: 3px;
-        padding: 8px 2px 5px 2px;
-    }
-    
-    .trends-labels-row {
-        bottom: 28px;
-        padding: 0 5px;
-        height: 40px;
-        gap: 3px;
-        left: 4px;
-        margin: 0;
+        gap: 1px;
+        padding: 8px 5px 40px 5px;
     }
     
     .trend-bar {
-        width: 14px;
+        min-width: 10px;
+        max-width: 20px;
     }
     
-    .trend-label-item {
-        width: 14px;
-        flex-shrink: 0;
-        text-align: center;
-    }
-    
-    .trend-label-classification {
-        font-size: 6px;
-        max-width: 14px;
-        margin-bottom: 2px;
-    }
-    
-    .trend-label-standard {
-        font-size: 5px;
-        max-width: 14px;
-    }
     
     .trend-bar-value {
         font-size: 10px;
@@ -6728,9 +6617,6 @@ body {
                     <div class="trends-chart" id="trends-chart">
                         <!-- Bar chart will be generated dynamically -->
                     </div>
-                    <div class="trends-labels-row" id="trends-labels">
-                        <!-- Labels will be generated dynamically -->
-                    </div>
                 </div>
             </div>
         </div>
@@ -8592,80 +8478,45 @@ body {
                 const chartHeight = 250; // Chart area height (no padding needed for labels)
                 const maxBarHeight = Math.min(chartHeight * 0.8, Math.max(80, chartHeight - (numBars * 3)));
                 
-                // Create bars
+                // Function to create abbreviations
+                function createAbbreviation(classification) {
+                    if (classification.includes('Normal')) return 'N';
+                    if (classification.includes('Overweight')) return 'OW';
+                    if (classification.includes('Obese')) return 'O';
+                    if (classification.includes('Underweight')) return 'UW';
+                    if (classification.includes('Stunted')) return 'S';
+                    if (classification.includes('Wasted')) return 'W';
+                    if (classification.includes('Tall')) return 'T';
+                    return classification.charAt(0).toUpperCase();
+                }
+
+                // Create bars with attached labels
                 classificationsArray.forEach((item, index) => {
                     const barHeight = maxCount > 0 ? (item.count / maxCount) * maxBarHeight : 20;
                     
                     const barDiv = document.createElement('div');
                     barDiv.className = `trend-bar ${item.classification.toLowerCase().replace(/\s+/g, '-')}`;
                     barDiv.style.height = `${barHeight}px`;
-                    barDiv.style.flex = '0 0 auto'; // Prevent flex shrinking
+                    
+                    // Create abbreviation for classification
+                    const abbreviation = createAbbreviation(item.classification);
+                    
+                    // Format standard label
+                    let standardLabel = item.standard_label;
+                    if (standardLabel && standardLabel.length > 10) {
+                        standardLabel = standardLabel.substring(0, 10);
+                    }
                     
                     barDiv.innerHTML = `
                         <div class="trend-bar-value">${item.count}</div>
+                        <div class="trend-bar-label">
+                            <div class="trend-bar-classification">${abbreviation}</div>
+                            <div class="trend-bar-standard">${standardLabel}</div>
+                        </div>
                     `;
                     
                     trendsChart.appendChild(barDiv);
                 });
-
-                // Create external labels
-                const trendsLabels = document.getElementById('trends-labels');
-                if (trendsLabels) {
-                    trendsLabels.innerHTML = '';
-                    
-                    // Function to create abbreviations
-                    function createAbbreviation(classification) {
-                        const abbreviations = {
-                            'Normal': 'N',
-                            'Overweight': 'OW',
-                            'Obese': 'O',
-                            'Underweight': 'UW',
-                            'Severely Underweight': 'SUW',
-                            'Stunted': 'S',
-                            'Severely Stunted': 'SS',
-                            'Wasted': 'W',
-                            'Severely Wasted': 'SW',
-                            'Tall': 'T'
-                        };
-                        
-                        // Check for exact match first
-                        if (abbreviations[classification]) {
-                            return abbreviations[classification];
-                        }
-                        
-                        // Check for partial matches
-                        for (const [key, value] of Object.entries(abbreviations)) {
-                            if (classification.toLowerCase().includes(key.toLowerCase()) || 
-                                key.toLowerCase().includes(classification.toLowerCase())) {
-                                return value;
-                            }
-                        }
-                        
-                        // Fallback: take first letter of each word
-                        return classification.split(' ').map(word => word.charAt(0).toUpperCase()).join('');
-                    }
-                    
-                    classificationsArray.forEach((item, index) => {
-                        const labelDiv = document.createElement('div');
-                        labelDiv.className = 'trend-label-item';
-                        
-                        // Create abbreviation for classification
-                        const abbreviation = createAbbreviation(item.classification);
-                        
-                        // Format standard label
-                        let standardLabel = item.standard_label;
-                        if (standardLabel && standardLabel.length > 10) {
-                            standardLabel = standardLabel.substring(0, 10);
-                        }
-                        
-                        labelDiv.innerHTML = `
-                            <div class="trend-label-classification">${abbreviation}</div>
-                            <div class="trend-label-standard">${standardLabel}</div>
-                        `;
-                        
-                        trendsLabels.appendChild(labelDiv);
-                    });
-                }
 
                 console.log('✅ Trends chart updated successfully with all classifications');
 
