@@ -9035,8 +9035,12 @@ body {
                     return;
                 }
 
-                // Process data for Chart.js
-                const ageGroups = ['0-6m', '7-12m', '13-18m', '19-24m', '25-30m', '31-36m', '37-42m', '43-48m', '49-54m', '55-60m', '6-7y', '7-8y', '8-9y', '9-10y', '10-11y'];
+                // Process data for Chart.js - use the same age groups as the data
+                const ageGroups = Object.keys(ageClassificationData).map(key => key.split('_')[0]).filter((value, index, self) => self.indexOf(value) === index).sort((a, b) => {
+                    const aMonths = convertAgeGroupToMonths(a);
+                    const bMonths = convertAgeGroupToMonths(b);
+                    return aMonths - bMonths;
+                });
                 const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
                 
                 // Color mapping (same as bar chart colors)
