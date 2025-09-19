@@ -5304,7 +5304,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 error_log("  - Users found: " . count($users));
                 
                 // Apply the same age filtering as the donut chart (0-71 months for WHO standards)
-                $users = $db->filterUsersByAgeEligibility($users, 'weight-for-age');
+                // Filter users by age eligibility for weight-for-age (0-71 months)
+                require_once __DIR__ . '/../../who_growth_standards.php';
+                $who = new WHOGrowthStandards();
+                $filteredUsers = [];
+                
+                foreach ($users as $user) {
+                    $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                    // Weight-for-age: 0-71 months
+                    if ($ageInMonths >= 0 && $ageInMonths <= 71) {
+                        $filteredUsers[] = $user;
+                    }
+                }
+                $users = $filteredUsers;
                 
                 error_log("  - Users after age filtering: " . count($users));
                 
