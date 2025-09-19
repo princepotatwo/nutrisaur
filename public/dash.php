@@ -9393,16 +9393,10 @@ body {
                 };
 
                 const datasets = classifications.map(classification => {
-                    const chartData = ageGroups.map(ageGroup => {
-                        const key = `${ageGroup}_${classification}`;
-                        const value = ageClassificationData[key] || 0;
-                        return value;
-                    });
-                    
-
+                    const chartDataForClassification = chartData[classification] || [];
                     return {
                         label: classification,
-                        data: chartData,
+                        data: chartDataForClassification,
                         borderColor: colors[classification] || '#666',
                         backgroundColor: colors[classification] || '#666',
                         tension: 0.1,
