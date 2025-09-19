@@ -5390,15 +5390,28 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             continue; // Skip users outside the age range
                         }
                         
-                        // Use WHO classification logic (same as other charts)
+                        // Use WHO classification logic (same as existing WHO functions)
                         $classification = 'Normal'; // Default
                         
                         try {
-                            // Get WHO classification for this user
-                            $results = $this->getWHOClassificationForUser($user);
+                            // Include WHO Growth Standards
+                            require_once __DIR__ . '/../../who_growth_standards.php';
                             
-                            if ($results && $results['success']) {
-                                // Use the most severe classification found
+                            // Use WHO Growth Standards for comprehensive assessment
+                            $who = new WHOGrowthStandards();
+                            
+                            $assessment = $who->getComprehensiveAssessment(
+                                floatval($user['weight_kg']), 
+                                floatval($user['height_cm']), 
+                                $user['birthday'], 
+                                $user['sex'],
+                                $user['screening_date'] ?? null
+                            );
+                            
+                            if ($assessment['success'] && isset($assessment['results'])) {
+                                $results = $assessment['results'];
+                                
+                                // Get the most severe classification from all standards
                                 $classifications = [];
                                 
                                 // Weight-for-Age (WFA)
