@@ -755,6 +755,35 @@ function sendVerificationEmail($email, $username, $verificationCode) {
     
     <!-- Google OAuth Configuration -->
     <script src="google-oauth-config.js"></script>
+    
+    <!-- Immediate styling fix for username field -->
+    <script>
+        // Apply styling immediately before page renders
+        (function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                #username {
+                    background: rgba(255, 255, 255, 0.05) !important;
+                    background-color: rgba(255, 255, 255, 0.05) !important;
+                    color: #E8F0D6 !important;
+                    border: 1px solid rgba(161, 180, 84, 0.3) !important;
+                }
+                #username:focus {
+                    background: rgba(255, 255, 255, 0.08) !important;
+                    background-color: rgba(255, 255, 255, 0.08) !important;
+                    color: #E8F0D6 !important;
+                    border: 1px solid rgba(161, 180, 84, 0.5) !important;
+                }
+                #username:hover {
+                    background: rgba(255, 255, 255, 0.05) !important;
+                    background-color: rgba(255, 255, 255, 0.05) !important;
+                    color: #E8F0D6 !important;
+                    border: 1px solid rgba(161, 180, 84, 0.3) !important;
+                }
+            `;
+            document.head.appendChild(style);
+        })();
+    </script>
 </head>
 <style>
         /* Dark Theme - Aligned with dash.php */
@@ -950,6 +979,19 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             background: rgba(255, 255, 255, 0.05) !important;
             background-color: rgba(255, 255, 255, 0.05) !important;
             color: var(--color-text) !important;
+            border: 1px solid rgba(161, 180, 84, 0.3) !important;
+        }
+
+        /* Specific targeting for username field with maximum specificity */
+        .login-box #username,
+        .login-box #username:focus,
+        .login-box #username:hover,
+        .login-box #username:active,
+        .login-box #username:visited,
+        .login-box #username:link {
+            background: rgba(255, 255, 255, 0.05) !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            color: #E8F0D6 !important;
             border: 1px solid rgba(161, 180, 84, 0.3) !important;
         }
 
@@ -1655,6 +1697,37 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             });
         }
 
+        // Apply styling immediately when script loads
+        (function() {
+            // Apply styling as soon as possible
+            function applyUsernameStyling() {
+                const usernameField = document.getElementById('username');
+                if (usernameField) {
+                    usernameField.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
+                    usernameField.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
+                    usernameField.style.setProperty('color', '#E8F0D6', 'important');
+                    usernameField.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
+                }
+            }
+            
+            // Try to apply immediately
+            applyUsernameStyling();
+            
+            // Apply when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', applyUsernameStyling);
+            } else {
+                applyUsernameStyling();
+            }
+            
+            // Apply multiple times to ensure it sticks
+            setTimeout(applyUsernameStyling, 10);
+            setTimeout(applyUsernameStyling, 50);
+            setTimeout(applyUsernameStyling, 100);
+            setTimeout(applyUsernameStyling, 200);
+            setTimeout(applyUsernameStyling, 500);
+        })();
+
         // Initialize particles when page loads
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
@@ -1679,7 +1752,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     usernameField.style.setProperty('color', '#E8F0D6', 'important');
                     usernameField.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
                 }
-            }, 100);
+            }, 50);
         });
 
         // Authentication related code
