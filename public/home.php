@@ -1496,7 +1496,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     <label for="email_register">Email</label>
                     <input type="email" id="email_register" name="email_register" required>
                 </div>
-                <div class="input-group">
+                <div class="input-group password-field">
                     <label for="password_register">Password</label>
                     <input type="password" id="password_register" name="password_register" required class="password-field">
                     <button type="button" class="password-toggle" id="toggle-password-register">
@@ -1894,41 +1894,39 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             const passwordLogin = document.getElementById('password');
             const passwordRegister = document.getElementById('password_register');
 
-            // Toggle login password visibility
-            toggleLogin.addEventListener('click', function() {
-                const type = passwordLogin.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordLogin.setAttribute('type', type);
-                
-                // Update icon
-                const icon = this.querySelector('.eye-icon');
-                const eyeSlashIcon = this.querySelector('.eye-slash-icon');
-                icon.style.display = type === 'password' ? 'block' : 'none';
-                eyeSlashIcon.style.display = type === 'password' ? 'none' : 'block';
-                
-                // Add subtle animation
-                this.style.transform = 'translateY(-50%) scale(1.1)';
-                setTimeout(() => {
-                    this.style.transform = 'translateY(-50%) scale(1)';
-                }, 150);
-            });
+            if (toggleLogin && passwordLogin) {
+                toggleLogin.addEventListener('click', function() {
+                    const type = passwordLogin.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordLogin.setAttribute('type', type);
+                    const icon = this.querySelector('.eye-icon');
+                    const eyeSlashIcon = this.querySelector('.eye-slash-icon');
+                    if (icon && eyeSlashIcon) {
+                        icon.style.display = type === 'password' ? 'block' : 'none';
+                        eyeSlashIcon.style.display = type === 'password' ? 'none' : 'block';
+                    }
+                    this.style.transform = 'translateY(-50%) scale(1.1)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-50%) scale(1)';
+                    }, 150);
+                });
+            }
 
-            // Toggle register password visibility
-            toggleRegister.addEventListener('click', function() {
-                const type = passwordRegister.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordRegister.setAttribute('type', type);
-                
-                // Update icon
-                const icon = this.querySelector('.eye-icon');
-                const eyeSlashIcon = this.querySelector('.eye-slash-icon');
-                icon.style.display = type === 'password' ? 'block' : 'none';
-                eyeSlashIcon.style.display = type === 'password' ? 'none' : 'block';
-                
-                // Add subtle animation
-                this.style.transform = 'translateY(-50%) scale(1.1)';
-                setTimeout(() => {
-                    this.style.transform = 'translateY(-50%) scale(1)';
-                }, 150);
-            });
+            if (toggleRegister && passwordRegister) {
+                toggleRegister.addEventListener('click', function() {
+                    const type = passwordRegister.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordRegister.setAttribute('type', type);
+                    const icon = this.querySelector('.eye-icon');
+                    const eyeSlashIcon = this.querySelector('.eye-slash-icon');
+                    if (icon && eyeSlashIcon) {
+                        icon.style.display = type === 'password' ? 'block' : 'none';
+                        eyeSlashIcon.style.display = type === 'password' ? 'none' : 'block';
+                    }
+                    this.style.transform = 'translateY(-50%) scale(1.1)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-50%) scale(1)';
+                    }, 150);
+                });
+            }
         }
 
         // Setup verification form event listeners
