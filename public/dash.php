@@ -10031,7 +10031,7 @@ body {
                 
                 // Load initial age classification chart with default range
                 console.log('📊 Loading initial age classification chart...');
-                await updateAgeClassificationChartWithRange(0, 71);
+                await updateAgeClassificationChart();
                 
                 // Set up time frame button event listeners
                 const timeButtons = document.querySelectorAll('.time-btn');
