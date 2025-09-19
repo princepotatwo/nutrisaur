@@ -9333,7 +9333,7 @@ body {
                 return;
             }
             
-            updateAgeClassificationChartWithRange(fromMonths, toMonths);
+            updateAgeClassificationChart();
         }
 
         function resetAgeRange() {
@@ -9341,7 +9341,7 @@ body {
             document.getElementById('ageFromUnit').value = 'months';
             document.getElementById('ageToMonths').value = 71;
             document.getElementById('ageToUnit').value = 'months';
-            updateAgeClassificationChartWithRange(0, 71);
+            updateAgeClassificationChart();
         }
 
         async function updateAgeClassificationChartWithRange(fromMonths, toMonths) {

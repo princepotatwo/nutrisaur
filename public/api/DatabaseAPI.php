@@ -5352,8 +5352,29 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Process each user - use existing BMI and nutritional risk data
                 foreach ($users as $user) {
                     try {
-                        // Use the age from the database (already calculated)
-                        $ageInMonths = intval($user['age'] ?? 0);
+                        // Calculate age in months from birthday (more reliable)
+                        $ageInMonths = 0;
+                        if (isset($user['birthday']) && $user['birthday'] !== null && $user['birthday'] !== '') {
+                            try {
+                                $birthDate = new DateTime($user['birthday']);
+                                $screeningDate = new DateTime($user['screening_date'] ?? date('Y-m-d H:i:s'));
+                                $age = $birthDate->diff($screeningDate);
+                                $ageInMonths = ($age->y * 12) + $age->m;
+                                
+                                // Add partial month if more than half the month has passed
+                                if ($age->d >= 15) {
+                                    $ageInMonths += 1;
+                                }
+                            } catch (Exception $e) {
+                                // Fallback to database age field if birthday calculation fails
+                                $ageInMonths = intval($user['age'] ?? 0);
+                            }
+                        } else {
+                            // Fallback to database age field
+                            $ageInMonths = intval($user['age'] ?? 0);
+                        }
+                        
+                        error_log("  - User age: {$ageInMonths} months (birthday: " . ($user['birthday'] ?? 'none') . ", screening: " . ($user['screening_date'] ?? 'none') . ")");
                         
                         // Determine which age group this user belongs to
                         $userAgeGroup = null;
@@ -5365,6 +5386,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         }
                         
                         if (!$userAgeGroup) {
+                            error_log("  - User age {$ageInMonths} months outside range, skipping");
                             continue; // Skip users outside the age range
                         }
                         
@@ -5414,8 +5436,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         // Map to our chart classifications
                         $mappedClassification = $classification;
                         
+                        error_log("  - User classification: {$mappedClassification} for age group: {$userAgeGroup}");
+                        
                         if ($mappedClassification && isset($chartData[$userAgeGroup][$mappedClassification])) {
                             $chartData[$userAgeGroup][$mappedClassification]++;
+                            error_log("  - Updated count for {$userAgeGroup}_{$mappedClassification}: " . $chartData[$userAgeGroup][$mappedClassification]);
+                        } else {
+                            error_log("  - Classification {$mappedClassification} not found in chart data for age group {$userAgeGroup}");
                         }
                         
                     } catch (Exception $e) {
