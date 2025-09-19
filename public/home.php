@@ -979,6 +979,43 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             caret-color: #E8F0D6 !important;
         }
 
+        /* Force text visibility for all input states */
+        input, input:focus, input:active, input:hover, input:visited {
+            color: #E8F0D6 !important;
+            -webkit-text-fill-color: #E8F0D6 !important;
+        }
+
+        /* Specific autofill text visibility with maximum specificity */
+        .login-box input:-webkit-autofill,
+        .login-box input:-webkit-autofill:hover,
+        .login-box input:-webkit-autofill:focus,
+        .login-box input:-webkit-autofill:active {
+            -webkit-text-fill-color: #E8F0D6 !important;
+            color: #E8F0D6 !important;
+            caret-color: #E8F0D6 !important;
+        }
+
+        /* Firefox autofill text visibility */
+        input:-moz-autofill,
+        input:-moz-autofill:hover,
+        input:-moz-autofill:focus,
+        input:-moz-autofill:active {
+            color: #E8F0D6 !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* Autofill detection animation */
+        @keyframes onAutoFillStart {
+            from { /**/ }
+            to { /**/ }
+        }
+
+        input:-webkit-autofill {
+            animation-name: onAutoFillStart;
+            animation-duration: 0.001s;
+        }
+
         /* Additional autofill prevention */
         input[autocomplete="off"] {
             -webkit-autocomplete: off !important;
@@ -1718,15 +1755,33 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                         // Ensure autofill text is visible
                         field.addEventListener('input', function() {
                             this.style.color = '#E8F0D6';
+                            this.style.setProperty('-webkit-text-fill-color', '#E8F0D6', 'important');
                         });
                         
                         // Handle focus to remove readonly and ensure text visibility
                         field.addEventListener('focus', function() {
                             this.removeAttribute('readonly');
                             this.style.color = '#E8F0D6';
+                            this.style.setProperty('-webkit-text-fill-color', '#E8F0D6', 'important');
                             this.style.background = 'rgba(255, 255, 255, 0.08)';
                             this.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
                         });
+                        
+                        // Handle autofill detection and force text visibility
+                        field.addEventListener('animationstart', function(e) {
+                            if (e.animationName === 'onAutoFillStart') {
+                                this.style.color = '#E8F0D6';
+                                this.style.setProperty('-webkit-text-fill-color', '#E8F0D6', 'important');
+                            }
+                        });
+                        
+                        // Force text visibility periodically
+                        setInterval(() => {
+                            if (field.value && field.value.length > 0) {
+                                field.style.color = '#E8F0D6';
+                                field.style.setProperty('-webkit-text-fill-color', '#E8F0D6', 'important');
+                            }
+                        }, 100);
                     }
                 });
             }
