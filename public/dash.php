@@ -9325,8 +9325,16 @@ body {
             const toValue = document.getElementById('ageToMonths').value;
             const toUnit = document.getElementById('ageToUnit').value;
             
+            console.log('🔍 Age Range Input Values:');
+            console.log('  - From Value:', fromValue, 'Unit:', fromUnit);
+            console.log('  - To Value:', toValue, 'Unit:', toUnit);
+            
             const fromMonths = convertToMonths(parseInt(fromValue), fromUnit);
             const toMonths = convertToMonths(parseInt(toValue), toUnit);
+            
+            console.log('🔍 Converted to Months:');
+            console.log('  - From Months:', fromMonths);
+            console.log('  - To Months:', toMonths);
             
             if (fromMonths >= toMonths) {
                 alert('From age must be less than To age');
