@@ -5412,8 +5412,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             continue; // Skip users outside the age range
                         }
                         
-                        // Determine classification based on age range
-                        $finalClassification = 'Normal';
+                        // Process all WHO standards separately (like donut chart)
+                        $allClassifications = [];
                         
                         if ($ageInMonths >= 0 && $ageInMonths <= 71) {
                             // WHO Growth Standards for 0-71 months (children)
@@ -5427,69 +5427,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             
                             if ($assessment['success'] && isset($assessment['results'])) {
                                 $results = $assessment['results'];
-                                $allClassifications = [];
                                 
-                                // Weight-for-Age (0-71 months)
+                                // Process each WHO standard separately
                                 if (isset($results['weight_for_age']['classification'])) {
-                                    $allClassifications['weight_for_age'] = $results['weight_for_age']['classification'];
+                                    $allClassifications[] = $results['weight_for_age']['classification'];
                                 }
-                                
-                                // Height-for-Age (0-71 months)
                                 if (isset($results['height_for_age']['classification'])) {
-                                    $allClassifications['height_for_age'] = $results['height_for_age']['classification'];
+                                    $allClassifications[] = $results['height_for_age']['classification'];
                                 }
-                                
-                                // Weight-for-Height (0-60 months)
                                 if ($ageInMonths <= 60 && isset($results['weight_for_height']['classification'])) {
-                                    $allClassifications['weight_for_height'] = $results['weight_for_height']['classification'];
+                                    $allClassifications[] = $results['weight_for_height']['classification'];
                                 }
-                                
-                                // BMI-for-Age (2-19 years)
                                 if ($ageInMonths >= 24 && $ageInMonths <= 228 && isset($results['bmi_for_age']['classification'])) {
-                                    $allClassifications['bmi_for_age'] = $results['bmi_for_age']['classification'];
-                                }
-                                
-                                // Determine classification using the same logic as donut chart
-                                // Use the most severe classification from all WHO standards
-                                $finalClassification = 'Normal';
-                                
-                                // Check all classifications and pick the most severe one
-                                $allPossibleClassifications = [];
-                                
-                                // Collect all classifications
-                                if (isset($allClassifications['weight_for_age'])) {
-                                    $allPossibleClassifications[] = $allClassifications['weight_for_age'];
-                                }
-                                if (isset($allClassifications['height_for_age'])) {
-                                    $allPossibleClassifications[] = $allClassifications['height_for_age'];
-                                }
-                                if (isset($allClassifications['weight_for_height'])) {
-                                    $allPossibleClassifications[] = $allClassifications['weight_for_height'];
-                                }
-                                if (isset($allClassifications['bmi_for_age'])) {
-                                    $allPossibleClassifications[] = $allClassifications['bmi_for_age'];
-                                }
-                                
-                                // Priority order (most severe first)
-                                $priorityOrder = [
-                                    'Severely Underweight',
-                                    'Severely Stunted', 
-                                    'Severely Wasted',
-                                    'Underweight',
-                                    'Stunted',
-                                    'Wasted',
-                                    'Overweight',
-                                    'Obese',
-                                    'Tall',
-                                    'Normal'
-                                ];
-                                
-                                // Find the most severe classification
-                                foreach ($priorityOrder as $priority) {
-                                    if (in_array($priority, $allPossibleClassifications)) {
-                                        $finalClassification = $priority;
-                                        break;
-                                    }
+                                    $allClassifications[] = $results['bmi_for_age']['classification'];
                                 }
                             }
                         } elseif ($ageInMonths >= 24 && $ageInMonths <= 228) {
@@ -5504,24 +5454,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             
                             if ($assessment['success'] && isset($assessment['results']['bmi_for_age']['classification'])) {
                                 $bmiClassification = $assessment['results']['bmi_for_age']['classification'];
-                                
-                                // Map BMI-for-age classifications to our standard classifications
-                                switch ($bmiClassification) {
-                                    case 'Severely Underweight':
-                                        $finalClassification = 'Severely Underweight';
-                                        break;
-                                    case 'Underweight':
-                                        $finalClassification = 'Underweight';
-                                        break;
-                                    case 'Overweight':
-                                        $finalClassification = 'Overweight';
-                                        break;
-                                    case 'Obese':
-                                        $finalClassification = 'Obese';
-                                        break;
-                                    default:
-                                        $finalClassification = 'Normal';
-                                }
+                                $allClassifications[] = $bmiClassification;
                             }
                         } else {
                             // Adult BMI for 19+ years (adults)
@@ -5534,21 +5467,23 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 
                                 // Adult BMI categories
                                 if ($bmi < 18.5) {
-                                    $finalClassification = 'Underweight';
+                                    $allClassifications[] = 'Underweight';
                                 } elseif ($bmi >= 18.5 && $bmi < 25) {
-                                    $finalClassification = 'Normal';
+                                    $allClassifications[] = 'Normal';
                                 } elseif ($bmi >= 25 && $bmi < 30) {
-                                    $finalClassification = 'Overweight';
+                                    $allClassifications[] = 'Overweight';
                                 } else {
-                                    $finalClassification = 'Obese';
+                                    $allClassifications[] = 'Obese';
                                 }
                             }
                         }
                         
-                        error_log("  - User classification: {$finalClassification} for age group: {$userAgeGroup} (age: {$ageInMonths} months)");
-
-                        if ($finalClassification && isset($chartData[$userAgeGroup][$finalClassification])) {
-                            $chartData[$userAgeGroup][$finalClassification]++;
+                        // Count each classification separately (like donut chart)
+                        foreach ($allClassifications as $classification) {
+                            if (isset($chartData[$userAgeGroup][$classification])) {
+                                $chartData[$userAgeGroup][$classification]++;
+                                error_log("  - User classification: {$classification} for age group: {$userAgeGroup} (age: {$ageInMonths} months)");
+                            }
                         }
 
                     } catch (Exception $e) {
