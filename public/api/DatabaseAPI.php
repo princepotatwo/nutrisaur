@@ -5293,9 +5293,15 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             
+            error_log("🔍 Age Classification Chart API - Starting");
+            error_log("  - Barangay: " . ($barangay ?: 'empty'));
+            error_log("  - Time Frame: " . $timeFrame);
+            
             try {
                 // Get users data using the same method as other functions
                 $users = $db->getDetailedScreeningResponses($timeFrame, $barangay);
+                
+                error_log("  - Users found: " . count($users));
                 
                 if (empty($users)) {
                     echo json_encode([
