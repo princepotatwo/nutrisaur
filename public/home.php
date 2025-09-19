@@ -1508,18 +1508,6 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                         </svg>
                     </button>
                 </div>
-                <div class="input-group password-field">
-                    <label for="password_confirm">Confirm Password</label>
-                    <input type="password" id="password_confirm" name="password_confirm" required class="password-field">
-                    <button type="button" class="password-toggle" id="toggle-password-confirm">
-                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                        </svg>
-                        <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
-                            <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
-                        </svg>
-                    </button>
-                </div>
                 <button type="submit" class="auth-btn" name="register">Create Account</button>
                 <button type="button" class="google-btn" data-mode="register">
                     <svg width="18" height="18" viewBox="0 0 24 24">
@@ -1663,7 +1651,6 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                 const username = document.getElementById('username_register').value;
                 const email = document.getElementById('email_register').value;
                 const password = document.getElementById('password_register').value;
-                const passwordConfirm = document.getElementById('password_confirm').value;
 
                 if (!username || !email || !password) {
                     showMessage('Please fill in all fields', 'error');
@@ -1680,10 +1667,6 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     return;
                 }
 
-                if (password !== passwordConfirm) {
-                    showMessage('Passwords do not match', 'error');
-                    return;
-                }
 
                 await register(username, email, password);
             });
@@ -1909,10 +1892,10 @@ function sendVerificationEmail($email, $username, $verificationCode) {
         function setupPasswordToggles() {
             const toggleLogin = document.getElementById('toggle-password-login');
             const toggleRegister = document.getElementById('toggle-password-register');
-            const toggleConfirm = document.getElementById('toggle-password-confirm');
+            // confirm toggle removed per request
             const passwordLogin = document.getElementById('password');
             const passwordRegister = document.getElementById('password_register');
-            const passwordConfirm = document.getElementById('password_confirm');
+            // confirm field removed per request
 
             if (toggleLogin && passwordLogin) {
                 toggleLogin.addEventListener('click', function() {
@@ -1948,22 +1931,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                 });
             }
 
-            if (toggleConfirm && passwordConfirm) {
-                toggleConfirm.addEventListener('click', function() {
-                    const type = passwordConfirm.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordConfirm.setAttribute('type', type);
-                    const icon = this.querySelector('.eye-icon');
-                    const eyeSlashIcon = this.querySelector('.eye-slash-icon');
-                    if (icon && eyeSlashIcon) {
-                        icon.style.display = type === 'password' ? 'block' : 'none';
-                        eyeSlashIcon.style.display = type === 'password' ? 'none' : 'block';
-                    }
-                    this.style.transform = 'translateY(-50%) scale(1.1)';
-                    setTimeout(() => {
-                        this.style.transform = 'translateY(-50%) scale(1)';
-                    }, 150);
-                });
-            }
+            // no confirm toggle listener
         }
 
         // Setup verification form event listeners
