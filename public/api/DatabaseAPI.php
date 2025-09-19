@@ -5311,10 +5311,15 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $who = new WHOGrowthStandards();
                 $filteredUsers = [];
                 
+                // Use effective range for user filtering (same as age group logic)
+                $whoMaxMonths = 72;
+                $effectiveFromMonths = max($fromMonths, 0);
+                $effectiveToMonths = min($toMonths, $whoMaxMonths);
+                
                 foreach ($users as $user) {
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
-                    // Filter by the requested age range
-                    if ($ageInMonths >= $fromMonths && $ageInMonths <= $toMonths) {
+                    // Filter by the effective age range
+                    if ($ageInMonths >= $effectiveFromMonths && $ageInMonths <= $effectiveToMonths) {
                         $filteredUsers[] = $user;
                     }
                 }
