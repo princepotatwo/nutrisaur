@@ -9439,7 +9439,9 @@ body {
                 }
 
                 // Destroy existing chart and create new one
+                console.log('🔄 Destroying existing chart...');
                 destroyAgeClassificationChart();
+                console.log('✅ Chart destroyed, creating new one...');
                 
                 // Set fixed canvas size to prevent overflow
                 const container = canvas.parentElement;
@@ -9454,6 +9456,8 @@ body {
                     labels: ageGroups,
                     datasets: datasets
                 });
+                console.log('📊 Chart Labels:', ageGroups);
+                console.log('📊 Chart Datasets Count:', datasets.length);
                 
                 ageClassificationChartInstance = new Chart(ctx, {
                     type: 'line',
