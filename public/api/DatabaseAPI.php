@@ -5343,73 +5343,78 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
-                // Process each user
+                // Process each user - use existing BMI and nutritional risk data
                 foreach ($users as $user) {
-                    // Calculate age in months
-                    $birthday = new DateTime($user['birthday']);
-                    $today = new DateTime();
-                    $ageInMonths = $today->diff($birthday)->y * 12 + $today->diff($birthday)->m;
-                    
-                    // Determine which age group this user belongs to
-                    $userAgeGroup = null;
-                    foreach ($ageGroups as $ageGroup => $range) {
-                        if ($ageInMonths >= $range[0] && $ageInMonths < $range[1]) {
-                            $userAgeGroup = $ageGroup;
-                            break;
-                        }
-                    }
-                    
-                    if (!$userAgeGroup) {
-                        continue; // Skip users outside the age range
-                    }
-                    
-                    // Get WHO classification for this user
-                    require_once __DIR__ . '/who_classification_functions.php';
-                    $whoData = getWHOClassificationForUser($user);
-                    
-                    if ($whoData && isset($whoData['nutritional_status'])) {
-                        $classification = $whoData['nutritional_status'];
+                    try {
+                        // Use the age from the database (already calculated)
+                        $ageInMonths = intval($user['age'] ?? 0);
                         
-                        // Map WHO classifications to our chart classifications
-                        $mappedClassification = null;
-                        switch ($classification) {
-                            case 'Normal':
-                                $mappedClassification = 'Normal';
+                        // Determine which age group this user belongs to
+                        $userAgeGroup = null;
+                        foreach ($ageGroups as $ageGroup => $range) {
+                            if ($ageInMonths >= $range[0] && $ageInMonths < $range[1]) {
+                                $userAgeGroup = $ageGroup;
                                 break;
-                            case 'Underweight':
-                                $mappedClassification = 'Underweight';
-                                break;
-                            case 'Severely Underweight':
-                                $mappedClassification = 'Severely Underweight';
-                                break;
-                            case 'Overweight':
-                                $mappedClassification = 'Overweight';
-                                break;
-                            case 'Obesity Class I':
-                            case 'Obesity Class II':
-                            case 'Obesity Class III (Severe)':
-                                $mappedClassification = 'Obese';
-                                break;
-                            case 'Stunted':
-                                $mappedClassification = 'Stunted';
-                                break;
-                            case 'Severely Stunted':
-                                $mappedClassification = 'Severely Stunted';
-                                break;
-                            case 'Wasted':
-                                $mappedClassification = 'Wasted';
-                                break;
-                            case 'Severely Wasted':
-                                $mappedClassification = 'Severely Wasted';
-                                break;
-                            case 'Tall':
-                                $mappedClassification = 'Tall';
-                                break;
+                            }
                         }
+                        
+                        if (!$userAgeGroup) {
+                            continue; // Skip users outside the age range
+                        }
+                        
+                        // Use existing BMI category if available, otherwise calculate
+                        $classification = 'Normal'; // Default
+                        
+                        if (isset($user['bmi_category']) && !empty($user['bmi_category'])) {
+                            // Use existing BMI category
+                            $bmiCategory = $user['bmi_category'];
+                            switch ($bmiCategory) {
+                                case 'Underweight':
+                                    $classification = 'Underweight';
+                                    break;
+                                case 'Normal':
+                                    $classification = 'Normal';
+                                    break;
+                                case 'Overweight':
+                                    $classification = 'Overweight';
+                                    break;
+                                case 'Obese':
+                                    $classification = 'Obese';
+                                    break;
+                                default:
+                                    $classification = 'Normal';
+                            }
+                        } else {
+                            // Calculate BMI if not available
+                            $weight = floatval($user['weight_kg'] ?? 0);
+                            $height = floatval($user['height_cm'] ?? 0);
+                            
+                            if ($height > 0) {
+                                $heightM = $height / 100;
+                                $bmi = $weight / ($heightM * $heightM);
+                                
+                                if ($bmi < 18.5) {
+                                    $classification = 'Underweight';
+                                } elseif ($bmi < 25) {
+                                    $classification = 'Normal';
+                                } elseif ($bmi < 30) {
+                                    $classification = 'Overweight';
+                                } else {
+                                    $classification = 'Obese';
+                                }
+                            }
+                        }
+                        
+                        // Map to our chart classifications
+                        $mappedClassification = $classification;
                         
                         if ($mappedClassification && isset($chartData[$userAgeGroup][$mappedClassification])) {
                             $chartData[$userAgeGroup][$mappedClassification]++;
                         }
+                        
+                    } catch (Exception $e) {
+                        // Skip this user if there's an error
+                        continue;
                     }
                 }
                 
