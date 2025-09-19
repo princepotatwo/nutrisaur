@@ -9152,11 +9152,15 @@ body {
                             tooltip: {
                                 mode: 'index',
                                 intersect: false,
+                                position: 'nearest',
                                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                                 titleColor: '#fff',
                                 bodyColor: '#fff',
                                 borderColor: '#333',
                                 borderWidth: 1,
+                                padding: 12,
+                                caretSize: 6,
+                                displayColors: true,
                                 callbacks: {
                                     title: function(context) {
                                         return `Age Group: ${context[0].label}`;
@@ -9492,7 +9496,19 @@ body {
                             tooltip: {
                                 mode: 'index',
                                 intersect: false,
+                                position: 'nearest',
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#333',
+                                borderWidth: 1,
+                                padding: 12,
+                                caretSize: 6,
+                                displayColors: true,
                                 callbacks: {
+                                    title: function(context) {
+                                        return `Age Group: ${context[0].label}`;
+                                    },
                                     label: function(context) {
                                         return context.dataset.label + ': ' + context.parsed.y + '%';
                                     }
