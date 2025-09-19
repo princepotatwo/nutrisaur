@@ -1503,7 +1503,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             <form id="auth-form" method="post" action="">
                 <div class="input-group">
                     <label for="username">Username/Email</label>
-                    <input type="text" id="username" name="username_login" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="text" id="username" name="username_login" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05) !important; background-color: rgba(255, 255, 255, 0.05) !important; color: #E8F0D6 !important; border: 1px solid rgba(161, 180, 84, 0.3) !important;">
                 </div>
                 <div class="input-group" id="email-group" style="display: none;">
                     <label for="email">Email</label>
@@ -1614,33 +1614,41 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             inputIds.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
-                    // Force dark styling
-                    el.style.background = 'rgba(255, 255, 255, 0.05)';
-                    el.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                    el.style.color = '#E8F0D6';
-                    el.style.border = '1px solid rgba(161, 180, 84, 0.3)';
+                    // Force dark styling with !important
+                    el.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
+                    el.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
+                    el.style.setProperty('color', '#E8F0D6', 'important');
+                    el.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
+                    
+                    // Special handling for username field
+                    if (id === 'username') {
+                        el.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
+                        el.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
+                        el.style.setProperty('color', '#E8F0D6', 'important');
+                        el.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
+                    }
                     
                     // Add event listeners to maintain styling
                     el.addEventListener('focus', function() {
-                        this.style.background = 'rgba(255, 255, 255, 0.08)';
-                        this.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
-                        this.style.color = '#E8F0D6';
-                        this.style.border = '1px solid rgba(161, 180, 84, 0.5)';
+                        this.style.setProperty('background', 'rgba(255, 255, 255, 0.08)', 'important');
+                        this.style.setProperty('background-color', 'rgba(255, 255, 255, 0.08)', 'important');
+                        this.style.setProperty('color', '#E8F0D6', 'important');
+                        this.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.5)', 'important');
                     });
                     
                     el.addEventListener('blur', function() {
-                        this.style.background = 'rgba(255, 255, 255, 0.05)';
-                        this.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                        this.style.color = '#E8F0D6';
-                        this.style.border = '1px solid rgba(161, 180, 84, 0.3)';
+                        this.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
+                        this.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
+                        this.style.setProperty('color', '#E8F0D6', 'important');
+                        this.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
                     });
                     
                     // Prevent autofill styling
                     el.addEventListener('animationstart', function(e) {
                         if (e.animationName === 'onAutoFillStart') {
-                            this.style.background = 'rgba(255, 255, 255, 0.05)';
-                            this.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                            this.style.color = '#E8F0D6';
+                            this.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
+                            this.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
+                            this.style.setProperty('color', '#E8F0D6', 'important');
                         }
                     });
                 }
@@ -1651,10 +1659,27 @@ function sendVerificationEmail($email, $username, $verificationCode) {
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
             setupPasswordToggles();
+            
+            // Force styling immediately
             forceDarkStyling();
+            
+            // Force styling again after a short delay to ensure it sticks
+            setTimeout(forceDarkStyling, 100);
+            setTimeout(forceDarkStyling, 500);
             
             // Re-apply styling periodically to prevent autofill override
             setInterval(forceDarkStyling, 1000);
+            
+            // Special handling for username field - apply more frequently
+            setInterval(() => {
+                const usernameField = document.getElementById('username');
+                if (usernameField) {
+                    usernameField.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
+                    usernameField.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
+                    usernameField.style.setProperty('color', '#E8F0D6', 'important');
+                    usernameField.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
+                }
+            }, 100);
         });
 
         // Authentication related code
