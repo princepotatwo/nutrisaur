@@ -5289,13 +5289,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // ========================================
         // AGE CLASSIFICATION CHART API
         // ========================================
-        case 'get_age_classification_chart':
-            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
-            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
-            
-            error_log("🔍 Age Classification Chart API - Starting");
-            error_log("  - Barangay: " . ($barangay ?: 'empty'));
-            error_log("  - Time Frame: " . $timeFrame);
+    case 'get_age_classification_chart':
+        $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+        $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+        $fromMonths = isset($_GET['from_months']) ? intval($_GET['from_months']) : 0;
+        $toMonths = isset($_GET['to_months']) ? intval($_GET['to_months']) : 71;
+
+        error_log("🔍 Age Classification Chart API - Starting");
+        error_log("  - Barangay: " . ($barangay ?: 'empty'));
+        error_log("  - Time Frame: " . $timeFrame);
+        error_log("  - Age Range: {$fromMonths} to {$toMonths} months");
             
             try {
                 // Get users data using the same method as other functions
@@ -5303,16 +5306,15 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 error_log("  - Users found: " . count($users));
                 
-                // Apply the same age filtering as the donut chart (0-71 months for WHO standards)
-                // Filter users by age eligibility for weight-for-age (0-71 months)
+                // Apply age filtering based on the requested range
                 require_once __DIR__ . '/../../who_growth_standards.php';
                 $who = new WHOGrowthStandards();
                 $filteredUsers = [];
                 
                 foreach ($users as $user) {
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
-                    // Weight-for-age: 0-71 months
-                    if ($ageInMonths >= 0 && $ageInMonths <= 71) {
+                    // Filter by the requested age range
+                    if ($ageInMonths >= $fromMonths && $ageInMonths <= $toMonths) {
                         $filteredUsers[] = $user;
                     }
                 }
@@ -5332,16 +5334,36 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     break;
                 }
                 
-                // Define age groups for the chart (0-71 months as per WHO standards)
-                $ageGroups = [
-                    '0-6m' => [0, 6],
-                    '6-12m' => [6, 12],
-                    '1-2y' => [12, 24],
-                    '2-3y' => [24, 36],
-                    '3-4y' => [36, 48],
-                    '4-5y' => [48, 60],
-                    '5-6y' => [60, 72]
-                ];
+                // Define age groups for the chart based on the requested range
+                $ageGroups = [];
+                
+                // Create age groups dynamically based on the range
+                if ($fromMonths < 6) {
+                    $ageGroups['0-6m'] = [0, 6];
+                }
+                if ($fromMonths < 12 && $toMonths >= 6) {
+                    $ageGroups['6-12m'] = [6, 12];
+                }
+                if ($fromMonths < 24 && $toMonths >= 12) {
+                    $ageGroups['1-2y'] = [12, 24];
+                }
+                if ($fromMonths < 36 && $toMonths >= 24) {
+                    $ageGroups['2-3y'] = [24, 36];
+                }
+                if ($fromMonths < 48 && $toMonths >= 36) {
+                    $ageGroups['3-4y'] = [36, 48];
+                }
+                if ($fromMonths < 60 && $toMonths >= 48) {
+                    $ageGroups['4-5y'] = [48, 60];
+                }
+                if ($fromMonths < 72 && $toMonths >= 60) {
+                    $ageGroups['5-6y'] = [60, 72];
+                }
+                
+                // If no standard age groups fit, create a custom range
+                if (empty($ageGroups)) {
+                    $ageGroups["{$fromMonths}m-{$toMonths}m"] = [$fromMonths, $toMonths];
+                }
                 
                 // Define classifications
                 $classifications = [

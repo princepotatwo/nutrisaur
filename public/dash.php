@@ -9333,7 +9333,7 @@ body {
                 return;
             }
             
-            updateAgeClassificationChart();
+            updateAgeClassificationChartWithRange(fromMonths, toMonths);
         }
 
         function resetAgeRange() {
@@ -9341,7 +9341,7 @@ body {
             document.getElementById('ageFromUnit').value = 'months';
             document.getElementById('ageToMonths').value = 71;
             document.getElementById('ageToUnit').value = 'months';
-            updateAgeClassificationChart();
+            updateAgeClassificationChartWithRange(0, 71);
         }
 
         async function updateAgeClassificationChartWithRange(fromMonths, toMonths) {
@@ -9359,33 +9359,24 @@ body {
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
-                // Use the new frontend approach - let processBulkDataForAgeGroups handle everything
-                console.log('Using new frontend approach for age classification');
+                // Call the API with age range parameters
+                const url = `/api/DatabaseAPI.php?action=get_age_classification_chart&barangay=${barangayValue}&time_frame=${timeFrame}&from_months=${fromMonths}&to_months=${toMonths}`;
+                console.log('Fetching age classification chart data from:', url);
                 
-                // Process the data using the new frontend approach
-                const ageClassificationData = await processBulkDataForAgeGroups(null, fromMonths, toMonths);
-                console.log('Processed age classification data:', ageClassificationData);
-                console.log('Processed age classification data keys:', Object.keys(ageClassificationData));
-                console.log('Processed age classification data values:', Object.values(ageClassificationData));
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Age classification chart data received:', data);
 
-                if (Object.keys(ageClassificationData).length === 0) {
-                    console.log('No age classification data available for the specified range');
+                if (!data.success || !data.data || !data.data.ageGroups || data.data.ageGroups.length === 0) {
+                    console.log('No age classification chart data available');
                     createEmptyAgeChart(canvas);
                     return;
                 }
 
-                // Process data for Chart.js with dynamic age groups
-                const ageGroups = Object.keys(ageClassificationData).map(key => {
-                    // Extract age group from keys like "0y_Normal", "1y_Overweight", etc.
-                    return key.split('_')[0];
-                }).filter((value, index, self) => self.indexOf(value) === index).sort((a, b) => {
-                    // Convert age groups to months for proper chronological sorting
-                    const aMonths = convertAgeGroupToMonths(a);
-                    const bMonths = convertAgeGroupToMonths(b);
-                    return aMonths - bMonths;
-                });
-
-                const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
+                const { ageGroups, classifications, chartData } = data.data;
                 
                 // Color mapping (same as bar chart colors)
                 const colors = {
