@@ -958,14 +958,25 @@ function sendVerificationEmail($email, $username, $verificationCode) {
         select:-webkit-autofill:hover,
         select:-webkit-autofill:focus,
         select:-webkit-autofill:active {
-            -webkit-text-fill-color: var(--color-text) !important;
-            caret-color: var(--color-text) !important;
+            -webkit-text-fill-color: #E8F0D6 !important;
+            caret-color: #E8F0D6 !important;
             transition: background-color 9999s ease-in-out 0s !important;
             -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
             box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
             border: 1px solid rgba(161, 180, 84, 0.3) !important;
             background: rgba(255, 255, 255, 0.05) !important;
             background-color: rgba(255, 255, 255, 0.05) !important;
+            color: #E8F0D6 !important;
+        }
+
+        /* Additional autofill text visibility fix */
+        input[readonly]:-webkit-autofill,
+        input[readonly]:-webkit-autofill:hover,
+        input[readonly]:-webkit-autofill:focus,
+        input[readonly]:-webkit-autofill:active {
+            -webkit-text-fill-color: #E8F0D6 !important;
+            color: #E8F0D6 !important;
+            caret-color: #E8F0D6 !important;
         }
 
         /* Additional autofill prevention */
@@ -1542,10 +1553,10 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     }
                 ?>
             </div>
-            <form id="auth-form" method="post" action="" style="display: none;">
+            <form id="auth-form" method="post" action="" autocomplete="off" style="display: none;">
                 <div class="input-group">
                     <label for="username">Username/Email</label>
-                    <input type="text" id="username" name="username_login" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="text" id="username" name="username_login" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <div class="input-group" id="email-group" style="display: none;">
                     <label for="email">Email</label>
@@ -1553,7 +1564,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                 </div>
                 <div class="input-group password-field">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password_login" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="password" id="password" name="password_login" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                     <button type="button" class="password-toggle" id="toggle-password-login" data-target="password" aria-label="Toggle password visibility" title="Show/Hide password">
                         <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -1577,18 +1588,18 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             </form>
             
             <!-- Hidden registration form - will be shown via JavaScript -->
-            <form id="register-form" method="post" action="" style="display: none;">
+            <form id="register-form" method="post" action="" autocomplete="off" style="display: none;">
                 <div class="input-group">
                     <label for="username_register">Username</label>
-                    <input type="text" id="username_register" name="username_register" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="text" id="username_register" name="username_register" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <div class="input-group">
                     <label for="email_register">Email</label>
-                    <input type="email" id="email_register" name="email_register" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="email" id="email_register" name="email_register" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <div class="input-group password-field">
                     <label for="password_register">Password</label>
-                    <input type="password" id="password_register" name="password_register" required class="password-field" autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="password" id="password_register" name="password_register" required class="password-field" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                     <button type="button" class="password-toggle" id="toggle-password-register" data-target="password_register" aria-label="Toggle password visibility" title="Show/Hide password">
                         <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -1703,6 +1714,19 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                         field.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
                         field.style.color = '#E8F0D6';
                         field.style.border = '1px solid rgba(161, 180, 84, 0.3)';
+                        
+                        // Ensure autofill text is visible
+                        field.addEventListener('input', function() {
+                            this.style.color = '#E8F0D6';
+                        });
+                        
+                        // Handle focus to remove readonly and ensure text visibility
+                        field.addEventListener('focus', function() {
+                            this.removeAttribute('readonly');
+                            this.style.color = '#E8F0D6';
+                            this.style.background = 'rgba(255, 255, 255, 0.08)';
+                            this.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+                        });
                     }
                 });
             }
