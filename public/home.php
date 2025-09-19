@@ -1940,53 +1940,89 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             }
         }
 
-        // Password visibility toggle functionality (delegated)
+        // Password visibility toggle functionality - simplified approach
         function setupPasswordToggles() {
-            document.addEventListener('click', function(e) {
-                const toggle = e.target.closest('.password-toggle');
-                if (!toggle) return;
-                e.preventDefault();
+            // Setup for login password field
+            const loginPassword = document.getElementById('password');
+            const loginToggle = document.getElementById('toggle-password-login');
+            const loginIconShow = loginToggle?.querySelector('.eye-icon');
+            const loginIconHide = loginToggle?.querySelector('.eye-slash-icon');
 
-                console.log('[eye-toggle] Clicked', { target: e.target, toggle });
+            if (loginPassword && loginToggle) {
+                loginToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Toggle the input type
+                    const isHidden = loginPassword.type === 'password';
+                    loginPassword.type = isHidden ? 'text' : 'password';
 
-                // Resolve input by data-target first, fallback to nearest group
-                let input = null;
-                const targetId = toggle.getAttribute('data-target');
-                if (targetId) {
-                    input = document.getElementById(targetId);
-                    if (!input) console.warn('[eye-toggle] data-target not found', targetId);
-                }
-                if (!input) {
-                    const group = toggle.closest('.password-field');
-                    if (!group) {
-                        console.warn('[eye-toggle] No password-field group found for toggle');
-                        return;
+                    // Update aria attributes
+                    loginToggle.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+                    loginToggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+                    loginToggle.title = isHidden ? 'Hide password' : 'Show password';
+
+                    // Swap icons
+                    if (isHidden) {
+                        if (loginIconShow) loginIconShow.style.display = 'none';
+                        if (loginIconHide) loginIconHide.style.display = 'inline';
+                    } else {
+                        if (loginIconShow) loginIconShow.style.display = 'inline';
+                        if (loginIconHide) loginIconHide.style.display = 'none';
                     }
-                    input = group.querySelector('input[type="password"], input[type="text"]');
-                }
-                if (!input) {
-                    console.warn('[eye-toggle] No input resolved');
-                    return;
-                }
 
-                const makeText = input.type === 'password';
-                try {
-                    input.setAttribute('type', makeText ? 'text' : 'password');
-                } catch (err) {
-                    console.warn('[eye-toggle] setAttribute fallback', err);
-                    input.type = makeText ? 'text' : 'password';
-                }
-                console.log('[eye-toggle] Toggled', { makeText, newType: input.type });
+                    // Keep focus on the input after toggling for better UX
+                    loginPassword.focus();
+                });
 
-                // Swap SVG icons if present
-                const icon = toggle.querySelector('.eye-icon');
-                const eyeSlashIcon = toggle.querySelector('.eye-slash-icon');
-                if (icon && eyeSlashIcon) {
-                    icon.style.display = makeText ? 'none' : 'block';
-                    eyeSlashIcon.style.display = makeText ? 'block' : 'none';
-                    console.log('[eye-toggle] Icon swap', { showSlash: makeText });
-                }
-            });
+                // Allow keyboard activation
+                loginToggle.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        loginToggle.click();
+                    }
+                });
+            }
+
+            // Setup for register password field
+            const registerPassword = document.getElementById('password_register');
+            const registerToggle = document.getElementById('toggle-password-register');
+            const registerIconShow = registerToggle?.querySelector('.eye-icon');
+            const registerIconHide = registerToggle?.querySelector('.eye-slash-icon');
+
+            if (registerPassword && registerToggle) {
+                registerToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Toggle the input type
+                    const isHidden = registerPassword.type === 'password';
+                    registerPassword.type = isHidden ? 'text' : 'password';
+
+                    // Update aria attributes
+                    registerToggle.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+                    registerToggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+                    registerToggle.title = isHidden ? 'Hide password' : 'Show password';
+
+                    // Swap icons
+                    if (isHidden) {
+                        if (registerIconShow) registerIconShow.style.display = 'none';
+                        if (registerIconHide) registerIconHide.style.display = 'inline';
+                    } else {
+                        if (registerIconShow) registerIconShow.style.display = 'inline';
+                        if (registerIconHide) registerIconHide.style.display = 'none';
+                    }
+
+                    // Keep focus on the input after toggling for better UX
+                    registerPassword.focus();
+                });
+
+                // Allow keyboard activation
+                registerToggle.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        registerToggle.click();
+                    }
+                });
+            }
         }
 
         // Setup verification form event listeners
