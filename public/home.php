@@ -887,29 +887,29 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             opacity: 0.9;
         }
 
-        .input-group input {
+        .login-box .input-group input {
             width: 100%;
             padding: 15px;
-            border: 1px solid rgba(161, 180, 84, 0.3);
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--color-text);
-            box-sizing: border-box;
-            appearance: none;
-            -webkit-appearance: none;
+            border: 1px solid rgba(161, 180, 84, 0.3) !important;
+            border-radius: 12px !important;
+            font-size: 16px !important;
+            transition: all 0.3s ease !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: var(--color-text) !important;
+            box-sizing: border-box !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
         }
 
-        .input-group input:focus {
+        .login-box .input-group input:focus {
             outline: none;
-            border-color: var(--color-highlight);
-            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
-            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--color-highlight) !important;
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1) !important;
+            background: rgba(255, 255, 255, 0.08) !important;
         }
 
-        .input-group input::placeholder {
-            color: rgba(232, 240, 214, 0.5);
+        .login-box .input-group input::placeholder {
+            color: rgba(232, 240, 214, 0.5) !important;
         }
 
         /* Ensure consistent dark styling for browser autofill */
@@ -1913,44 +1913,30 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             }
         }
 
-        // Password visibility toggle functionality
+        // Password visibility toggle functionality (delegated)
         function setupPasswordToggles() {
-            const toggleLogin = document.getElementById('toggle-password-login');
-            const toggleRegister = document.getElementById('toggle-password-register');
-            // confirm toggle removed per request
-            const passwordLogin = document.getElementById('password');
-            const passwordRegister = document.getElementById('password_register');
-            // confirm field removed per request
+            document.addEventListener('click', function(e) {
+                const toggle = e.target.closest('.password-toggle');
+                if (!toggle) return;
+                e.preventDefault();
 
-            if (toggleLogin && passwordLogin) {
-                toggleLogin.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const isPassword = passwordLogin.type === 'password';
-                    passwordLogin.type = isPassword ? 'text' : 'password';
-                    const icon = this.querySelector('.eye-icon');
-                    const eyeSlashIcon = this.querySelector('.eye-slash-icon');
-                    if (icon && eyeSlashIcon) {
-                        icon.style.display = isPassword ? 'none' : 'block';
-                        eyeSlashIcon.style.display = isPassword ? 'block' : 'none';
-                    }
-                });
-            }
+                // Find the input inside the same password-field group
+                const group = toggle.closest('.password-field');
+                if (!group) return;
+                const input = group.querySelector('input[type="password"], input[type="text"]');
+                if (!input) return;
 
-            if (toggleRegister && passwordRegister) {
-                toggleRegister.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const isPassword = passwordRegister.type === 'password';
-                    passwordRegister.type = isPassword ? 'text' : 'password';
-                    const icon = this.querySelector('.eye-icon');
-                    const eyeSlashIcon = this.querySelector('.eye-slash-icon');
-                    if (icon && eyeSlashIcon) {
-                        icon.style.display = isPassword ? 'none' : 'block';
-                        eyeSlashIcon.style.display = isPassword ? 'block' : 'none';
-                    }
-                });
-            }
+                const makeText = input.type === 'password';
+                input.type = makeText ? 'text' : 'password';
 
-            // no confirm toggle listener
+                // Swap icons
+                const icon = toggle.querySelector('.eye-icon');
+                const eyeSlashIcon = toggle.querySelector('.eye-slash-icon');
+                if (icon && eyeSlashIcon) {
+                    icon.style.display = makeText ? 'none' : 'block';
+                    eyeSlashIcon.style.display = makeText ? 'block' : 'none';
+                }
+            });
         }
 
         // Setup verification form event listeners
