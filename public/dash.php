@@ -3325,8 +3325,8 @@ header .user-info {
 
 /* Age Classification Chart Styles */
 .age-classification-chart-container {
-    height: 300px;
-    max-height: 300px;
+    height: 400px;
+    max-height: 400px;
     width: 100%;
     max-width: 100%;
     display: flex;
@@ -3591,8 +3591,8 @@ header .user-info {
     }
     
     .age-classification-chart-container {
-        height: 250px;
-        max-height: 250px;
+        height: 350px;
+        max-height: 350px;
         padding: 8px;
     }
     
@@ -3651,8 +3651,8 @@ header .user-info {
     }
     
     .age-classification-chart-container {
-        height: 200px;
-        max-height: 200px;
+        height: 300px;
+        max-height: 300px;
         padding: 5px;
     }
     
