@@ -9153,11 +9153,16 @@ body {
                                 mode: 'index',
                                 intersect: false,
                                 position: function(context) {
-                                    // Force tooltip to appear above the data point
-                                    return 'nearest';
+                                    // Position tooltip so arrow points directly at the data point
+                                    const point = context[0];
+                                    const chart = context.chart;
+                                    const canvasPosition = Chart.helpers.getRelativePosition(point.element, chart);
+                                    
+                                    return {
+                                        x: canvasPosition.x,
+                                        y: canvasPosition.y
+                                    };
                                 },
-                                xAlign: 'center',
-                                yAlign: 'top',
                                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                                 titleColor: '#fff',
                                 bodyColor: '#fff',
@@ -9502,11 +9507,16 @@ body {
                                 mode: 'index',
                                 intersect: false,
                                 position: function(context) {
-                                    // Force tooltip to appear above the data point
-                                    return 'nearest';
+                                    // Position tooltip so arrow points directly at the data point
+                                    const point = context[0];
+                                    const chart = context.chart;
+                                    const canvasPosition = Chart.helpers.getRelativePosition(point.element, chart);
+                                    
+                                    return {
+                                        x: canvasPosition.x,
+                                        y: canvasPosition.y
+                                    };
                                 },
-                                xAlign: 'center',
-                                yAlign: 'top',
                                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                                 titleColor: '#fff',
                                 bodyColor: '#fff',
