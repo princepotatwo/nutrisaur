@@ -5431,15 +5431,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 // Process each WHO standard separately
                                 if (isset($results['weight_for_age']['classification'])) {
                                     $allClassifications[] = $results['weight_for_age']['classification'];
+                                    error_log("  - Added WFA classification: " . $results['weight_for_age']['classification']);
                                 }
                                 if (isset($results['height_for_age']['classification'])) {
                                     $allClassifications[] = $results['height_for_age']['classification'];
+                                    error_log("  - Added HFA classification: " . $results['height_for_age']['classification']);
                                 }
                                 if ($ageInMonths <= 60 && isset($results['weight_for_height']['classification'])) {
                                     $allClassifications[] = $results['weight_for_height']['classification'];
+                                    error_log("  - Added WFH classification: " . $results['weight_for_height']['classification']);
                                 }
                                 if ($ageInMonths >= 24 && $ageInMonths <= 228 && isset($results['bmi_for_age']['classification'])) {
                                     $allClassifications[] = $results['bmi_for_age']['classification'];
+                                    error_log("  - Added BFA classification: " . $results['bmi_for_age']['classification']);
                                 }
                             }
                         } elseif ($ageInMonths >= 24 && $ageInMonths <= 228) {
@@ -5479,10 +5483,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         }
                         
                         // Count each classification separately (like donut chart)
+                        error_log("  - Processing " . count($allClassifications) . " classifications for user age {$ageInMonths} months in group {$userAgeGroup}");
                         foreach ($allClassifications as $classification) {
                             if (isset($chartData[$userAgeGroup][$classification])) {
                                 $chartData[$userAgeGroup][$classification]++;
                                 error_log("  - User classification: {$classification} for age group: {$userAgeGroup} (age: {$ageInMonths} months)");
+                            } else {
+                                error_log("  - Classification {$classification} not found in chart data for group {$userAgeGroup}");
                             }
                         }
 
