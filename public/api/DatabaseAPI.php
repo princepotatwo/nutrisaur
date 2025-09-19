@@ -5337,27 +5337,26 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Define age groups for the chart based on the requested range
                 $ageGroups = [];
                 
-                // Create age groups dynamically based on the range
-                if ($fromMonths < 6) {
-                    $ageGroups['0-6m'] = [0, 6];
-                }
-                if ($fromMonths < 12 && $toMonths >= 6) {
-                    $ageGroups['6-12m'] = [6, 12];
-                }
-                if ($fromMonths < 24 && $toMonths >= 12) {
-                    $ageGroups['1-2y'] = [12, 24];
-                }
-                if ($fromMonths < 36 && $toMonths >= 24) {
-                    $ageGroups['2-3y'] = [24, 36];
-                }
-                if ($fromMonths < 48 && $toMonths >= 36) {
-                    $ageGroups['3-4y'] = [36, 48];
-                }
-                if ($fromMonths < 60 && $toMonths >= 48) {
-                    $ageGroups['4-5y'] = [48, 60];
-                }
-                if ($fromMonths < 72 && $toMonths >= 60) {
-                    $ageGroups['5-6y'] = [60, 72];
+                // Standard age groups with their ranges
+                $standardAgeGroups = [
+                    '0-6m' => [0, 6],
+                    '6-12m' => [6, 12],
+                    '1-2y' => [12, 24],
+                    '2-3y' => [24, 36],
+                    '3-4y' => [36, 48],
+                    '4-5y' => [48, 60],
+                    '5-6y' => [60, 72]
+                ];
+                
+                // Only include age groups that overlap with the requested range
+                foreach ($standardAgeGroups as $label => $range) {
+                    $groupStart = $range[0];
+                    $groupEnd = $range[1];
+                    
+                    // Check if the age group overlaps with the requested range
+                    if ($groupStart < $toMonths && $groupEnd > $fromMonths) {
+                        $ageGroups[$label] = $range;
+                    }
                 }
                 
                 // If no standard age groups fit, create a custom range
