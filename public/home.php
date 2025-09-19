@@ -897,6 +897,8 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             background: rgba(255, 255, 255, 0.05);
             color: var(--color-text);
             box-sizing: border-box;
+            appearance: none;
+            -webkit-appearance: none;
         }
 
         .input-group input:focus {
@@ -908,6 +910,29 @@ function sendVerificationEmail($email, $username, $verificationCode) {
 
         .input-group input::placeholder {
             color: rgba(232, 240, 214, 0.5);
+        }
+
+        /* Ensure consistent dark styling for browser autofill */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover,
+        textarea:-webkit-autofill:focus,
+        select:-webkit-autofill,
+        select:-webkit-autofill:hover,
+        select:-webkit-autofill:focus {
+            -webkit-text-fill-color: var(--color-text) !important;
+            caret-color: var(--color-text) !important;
+            transition: background-color 9999s ease-in-out 0s !important;
+            -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
+            box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
+            border: 1px solid rgba(161, 180, 84, 0.3) !important;
+        }
+
+        /* Firefox and general fallback */
+        .input-group input:-moz-ui-invalid {
+            box-shadow: none;
         }
 
         /* Password reveal toggle styles */
@@ -1898,36 +1923,30 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             // confirm field removed per request
 
             if (toggleLogin && passwordLogin) {
-                toggleLogin.addEventListener('click', function() {
-                    const type = passwordLogin.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordLogin.setAttribute('type', type);
+                toggleLogin.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const isPassword = passwordLogin.type === 'password';
+                    passwordLogin.type = isPassword ? 'text' : 'password';
                     const icon = this.querySelector('.eye-icon');
                     const eyeSlashIcon = this.querySelector('.eye-slash-icon');
                     if (icon && eyeSlashIcon) {
-                        icon.style.display = type === 'password' ? 'block' : 'none';
-                        eyeSlashIcon.style.display = type === 'password' ? 'none' : 'block';
+                        icon.style.display = isPassword ? 'none' : 'block';
+                        eyeSlashIcon.style.display = isPassword ? 'block' : 'none';
                     }
-                    this.style.transform = 'translateY(-50%) scale(1.1)';
-                    setTimeout(() => {
-                        this.style.transform = 'translateY(-50%) scale(1)';
-                    }, 150);
                 });
             }
 
             if (toggleRegister && passwordRegister) {
-                toggleRegister.addEventListener('click', function() {
-                    const type = passwordRegister.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordRegister.setAttribute('type', type);
+                toggleRegister.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const isPassword = passwordRegister.type === 'password';
+                    passwordRegister.type = isPassword ? 'text' : 'password';
                     const icon = this.querySelector('.eye-icon');
                     const eyeSlashIcon = this.querySelector('.eye-slash-icon');
                     if (icon && eyeSlashIcon) {
-                        icon.style.display = type === 'password' ? 'block' : 'none';
-                        eyeSlashIcon.style.display = type === 'password' ? 'none' : 'block';
+                        icon.style.display = isPassword ? 'none' : 'block';
+                        eyeSlashIcon.style.display = isPassword ? 'block' : 'none';
                     }
-                    this.style.transform = 'translateY(-50%) scale(1.1)';
-                    setTimeout(() => {
-                        this.style.transform = 'translateY(-50%) scale(1)';
-                    }, 150);
                 });
             }
 
