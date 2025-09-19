@@ -1542,7 +1542,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     }
                 ?>
             </div>
-            <form id="auth-form" method="post" action="">
+            <form id="auth-form" method="post" action="" style="display: none;">
                 <div class="input-group">
                     <label for="username">Username/Email</label>
                     <input type="text" id="username" name="username_login" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
@@ -1733,6 +1733,14 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             // Force styling again after a short delay to ensure it sticks
             setTimeout(forceDarkStyling, 100);
             setTimeout(forceDarkStyling, 500);
+            
+            // Show the login form after styling is applied
+            setTimeout(() => {
+                const authForm = document.getElementById('auth-form');
+                if (authForm) {
+                    authForm.style.display = 'block';
+                }
+            }, 600);
             
             // Apply styling periodically to prevent any override
             setInterval(forceDarkStyling, 2000);
