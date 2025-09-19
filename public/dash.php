@@ -7072,8 +7072,8 @@ body {
                 <div style="margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                         <div style="flex: 1;">
-                <h3>Classification Trends by Age</h3>
-                <p class="chart-description">Distribution of nutritional classifications across different age groups. Shows which ages have highest rates of each classification type.</p>
+                <h3>Age Classification Chart</h3>
+                <p class="chart-description">Nutritional trends across different age groups. Shows how nutritional classifications (Normal, Underweight, Obese, etc.) vary by age. Each line represents a different classification, helping identify patterns like "more underweight in younger ages" or "obesity increases with age".</p>
                 </div>
                         
                         <!-- Age Range Controls - Compact version on the right -->
@@ -9005,7 +9005,7 @@ body {
 
         // Function to update age classification chart
         async function updateAgeClassificationChart() {
-            console.log('📊 Updating age classification chart...');
+            console.log('📊 Updating Age Classification Chart...');
             
             try {
                 const canvas = document.getElementById('ageClassificationChart');
@@ -9019,9 +9019,9 @@ body {
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
-                // Fetch age-based classification data
-                const url = `/api/DatabaseAPI.php?action=get_age_classifications&barangay=${barangayValue}`;
-                console.log('Fetching age classifications from:', url);
+                // Fetch age classification chart data from our new API endpoint
+                const url = `/api/DatabaseAPI.php?action=get_age_classification_chart&barangay=${barangayValue}&time_frame=${timeFrame}`;
+                console.log('Fetching age classification chart data from:', url);
                 
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -9029,36 +9029,24 @@ body {
                 }
                 
                 const data = await response.json();
-                console.log('Age classifications data received:', data);
+                console.log('Age classification chart data received:', data);
 
-                if (!data.success || !data.data || Object.keys(data.data).length === 0) {
-                    console.log('No age classification data available');
-                    // Show empty chart
+                if (!data.success || !data.data || !data.data.ageGroups || data.data.ageGroups.length === 0) {
+                    console.log('No age classification chart data available');
                     createEmptyAgeChart(canvas);
                     return;
                 }
 
-                // Process data for Chart.js - use intelligent mathematical mapping
+                // Extract data from API response
+                const { ageGroups, classifications, chartData } = data.data;
                 
-                // Extract all unique age groups from the data
-                const allAgeGroups = Object.keys(ageClassificationData).map(key => key.split('_')[0]).filter((value, index, self) => self.indexOf(value) === index);
-                
-                // Sort age groups chronologically
-                const ageGroups = allAgeGroups.sort((a, b) => {
-                    const aMonths = convertAgeGroupToMonths(a);
-                    const bMonths = convertAgeGroupToMonths(b);
-                    return aMonths - bMonths;
-                });
-                
-                const classifications = ['Normal', 'Overweight', 'Obese', 'Underweight', 'Severely Underweight', 'Stunted', 'Severely Stunted', 'Wasted', 'Severely Wasted', 'Tall'];
-                
-                // Color mapping (same as bar chart colors)
+                // Color mapping for nutritional classifications
                 const colors = {
                     'Normal': '#4CAF50',
-                    'Overweight': '#FF9800', 
-                    'Obese': '#F44336',
                     'Underweight': '#FFC107',
                     'Severely Underweight': '#E91E63',
+                    'Overweight': '#FF9800',
+                    'Obese': '#F44336',
                     'Stunted': '#9C27B0',
                     'Severely Stunted': '#673AB7',
                     'Wasted': '#3F51B5',
@@ -9066,31 +9054,26 @@ body {
                     'Tall': '#00BCD4'
                 };
 
+                // Create datasets for Chart.js line chart
                 const datasets = classifications.map(classification => {
-                    const chartData = ageGroups.map(ageGroup => {
-                        const key = `${ageGroup}_${classification}`;
-                        const value = ageClassificationData[key] || 0;
-                        return value;
-                    });
+                    const chartDataForClassification = chartData[classification] || [];
                     
-
                     return {
                         label: classification,
-                        data: chartData,
+                        data: chartDataForClassification,
                         borderColor: colors[classification] || '#666',
                         backgroundColor: colors[classification] || '#666',
                         tension: 0.1,
                         pointStyle: 'circle',
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
                         borderWidth: 2,
-                        fill: false
+                        fill: false,
+                        spanGaps: false
                     };
                 });
 
-                // Comprehensive data validation and mathematical mapping
-                
-                // Validate that we have real data
+                // Validate data
                 let totalDataPoints = 0;
                 let nonZeroDataPoints = 0;
                 
@@ -9099,11 +9082,12 @@ body {
                         totalDataPoints++;
                         if (value > 0) {
                             nonZeroDataPoints++;
-                            console.log(`✅ Non-zero data: ${dataset.label} at ${ageGroups[dataIndex]}: ${value}`);
+                            console.log(`✅ Data point: ${dataset.label} at ${ageGroups[dataIndex]}: ${value} users`);
                         }
                     });
                 });
                 
+                console.log(`📊 Chart data summary: ${nonZeroDataPoints}/${totalDataPoints} non-zero data points`);
                 
                 // If no data, show warning
                 if (nonZeroDataPoints === 0) {
@@ -9113,19 +9097,15 @@ body {
                 // Destroy existing chart and create new one
                 destroyAgeClassificationChart();
                 
-                // Set fixed canvas size to prevent overflow
+                // Set canvas size
                 const container = canvas.parentElement;
                 const containerRect = container.getBoundingClientRect();
-                const availableWidth = Math.max(300, containerRect.width - 20);
-                const availableHeight = Math.max(250, containerRect.height - 20);
+                const availableWidth = Math.max(400, containerRect.width - 40);
+                const availableHeight = Math.max(300, containerRect.height - 40);
                 canvas.width = availableWidth;
                 canvas.height = availableHeight;
                 
                 const ctx = canvas.getContext('2d');
-                console.log('Creating Chart.js with data:', {
-                    labels: ageGroups,
-                    datasets: datasets
-                });
                 
                 ageClassificationChartInstance = new Chart(ctx, {
                     type: 'line',
@@ -9138,10 +9118,10 @@ body {
                         maintainAspectRatio: false,
                         layout: {
                             padding: {
-                                top: 10,
-                                bottom: 10,
-                                left: 10,
-                                right: 10
+                                top: 20,
+                                bottom: 20,
+                                left: 20,
+                                right: 20
                             }
                         },
                         plugins: {
@@ -9151,18 +9131,43 @@ body {
                                 labels: {
                                     usePointStyle: true,
                                     pointStyle: 'line',
-                                    padding: 8,
+                                    padding: 12,
                                     font: {
-                                        size: 9
+                                        size: 11,
+                                        weight: '500'
+                                    },
+                                    generateLabels: function(chart) {
+                                        const original = Chart.defaults.plugins.legend.labels.generateLabels;
+                                        const labels = original.call(this, chart);
+                                        
+                                        // Only show labels for classifications that have data
+                                        return labels.filter(label => {
+                                            const dataset = chart.data.datasets[label.datasetIndex];
+                                            const hasData = dataset.data.some(value => value > 0);
+                                            return hasData;
+                                        });
                                     }
                                 }
                             },
                             tooltip: {
                                 mode: 'index',
                                 intersect: false,
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#333',
+                                borderWidth: 1,
                                 callbacks: {
+                                    title: function(context) {
+                                        return `Age Group: ${context[0].label}`;
+                                    },
                                     label: function(context) {
-                                        return context.dataset.label + ': ' + context.parsed.y + '%';
+                                        const value = context.parsed.y;
+                                        return `${context.dataset.label}: ${value} user${value !== 1 ? 's' : ''}`;
+                                    },
+                                    afterBody: function(context) {
+                                        const total = context.reduce((sum, item) => sum + item.parsed.y, 0);
+                                        return `Total: ${total} user${total !== 1 ? 's' : ''}`;
                                     }
                                 }
                             }
@@ -9173,35 +9178,48 @@ body {
                                     display: true,
                                     text: 'Age Groups',
                                     font: {
-                                        size: 10
-                                    }
+                                        size: 12,
+                                        weight: 'bold'
+                                    },
+                                    color: '#333'
                                 },
                                 ticks: {
                                     font: {
-                                        size: 8
+                                        size: 10
                                     },
+                                    color: '#666',
                                     maxRotation: 45,
                                     minRotation: 0
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)',
+                                    drawBorder: false
                                 }
                             },
                             y: {
-                                min: 0,
-                                max: 100,
+                                beginAtZero: true,
                                 ticks: {
-                                    stepSize: 20,
-                                    callback: function(value) {
-                                        return value + '%';
-                                    },
+                                    stepSize: 1,
                                     font: {
-                                        size: 8
+                                        size: 10
+                                    },
+                                    color: '#666',
+                                    callback: function(value) {
+                                        return value + ' user' + (value !== 1 ? 's' : '');
                                     }
                                 },
                                 title: {
                                     display: true,
-                                    text: 'Population %',
+                                    text: 'Number of Users',
                                     font: {
-                                        size: 10
-                                    }
+                                        size: 12,
+                                        weight: 'bold'
+                                    },
+                                    color: '#333'
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)',
+                                    drawBorder: false
                                 }
                             }
                         },
@@ -9209,12 +9227,18 @@ body {
                             mode: 'nearest',
                             axis: 'x',
                             intersect: false
+                        },
+                        elements: {
+                            point: {
+                                hoverBackgroundColor: '#fff',
+                                hoverBorderWidth: 3
+                            }
                         }
                     }
                 });
 
-                console.log('✅ Age classification chart updated successfully');
-
+                console.log('✅ Age Classification Chart created successfully');
+                
             } catch (error) {
                 console.error('❌ Error updating age classification chart:', error);
                 const canvas = document.getElementById('ageClassificationChart');

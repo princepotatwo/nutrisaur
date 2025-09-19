@@ -5287,6 +5287,160 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // AGE CLASSIFICATION CHART API
+        // ========================================
+        case 'get_age_classification_chart':
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            
+            try {
+                // Get users data using the same method as other functions
+                $users = $db->getDetailedScreeningResponses($timeFrame, $barangay);
+                
+                if (empty($users)) {
+                    echo json_encode([
+                        'success' => true,
+                        'data' => [
+                            'ageGroups' => [],
+                            'classifications' => [],
+                            'chartData' => []
+                        ]
+                    ]);
+                    break;
+                }
+                
+                // Define age groups for the chart (0-71 months as per WHO standards)
+                $ageGroups = [
+                    '0-6m' => [0, 6],
+                    '6-12m' => [6, 12],
+                    '1-2y' => [12, 24],
+                    '2-3y' => [24, 36],
+                    '3-4y' => [36, 48],
+                    '4-5y' => [48, 60],
+                    '5-6y' => [60, 72]
+                ];
+                
+                // Define classifications
+                $classifications = [
+                    'Normal',
+                    'Underweight', 
+                    'Severely Underweight',
+                    'Overweight',
+                    'Obese',
+                    'Stunted',
+                    'Severely Stunted',
+                    'Wasted',
+                    'Severely Wasted',
+                    'Tall'
+                ];
+                
+                // Initialize chart data structure
+                $chartData = [];
+                foreach ($ageGroups as $ageGroup => $range) {
+                    $chartData[$ageGroup] = [];
+                    foreach ($classifications as $classification) {
+                        $chartData[$ageGroup][$classification] = 0;
+                    }
+                }
+                
+                // Process each user
+                foreach ($users as $user) {
+                    // Calculate age in months
+                    $birthday = new DateTime($user['birthday']);
+                    $today = new DateTime();
+                    $ageInMonths = $today->diff($birthday)->y * 12 + $today->diff($birthday)->m;
+                    
+                    // Determine which age group this user belongs to
+                    $userAgeGroup = null;
+                    foreach ($ageGroups as $ageGroup => $range) {
+                        if ($ageInMonths >= $range[0] && $ageInMonths < $range[1]) {
+                            $userAgeGroup = $ageGroup;
+                            break;
+                        }
+                    }
+                    
+                    if (!$userAgeGroup) {
+                        continue; // Skip users outside the age range
+                    }
+                    
+                    // Get WHO classification for this user
+                    require_once __DIR__ . '/who_classification_functions.php';
+                    $whoData = getWHOClassificationForUser($user);
+                    
+                    if ($whoData && isset($whoData['nutritional_status'])) {
+                        $classification = $whoData['nutritional_status'];
+                        
+                        // Map WHO classifications to our chart classifications
+                        $mappedClassification = null;
+                        switch ($classification) {
+                            case 'Normal':
+                                $mappedClassification = 'Normal';
+                                break;
+                            case 'Underweight':
+                                $mappedClassification = 'Underweight';
+                                break;
+                            case 'Severely Underweight':
+                                $mappedClassification = 'Severely Underweight';
+                                break;
+                            case 'Overweight':
+                                $mappedClassification = 'Overweight';
+                                break;
+                            case 'Obesity Class I':
+                            case 'Obesity Class II':
+                            case 'Obesity Class III (Severe)':
+                                $mappedClassification = 'Obese';
+                                break;
+                            case 'Stunted':
+                                $mappedClassification = 'Stunted';
+                                break;
+                            case 'Severely Stunted':
+                                $mappedClassification = 'Severely Stunted';
+                                break;
+                            case 'Wasted':
+                                $mappedClassification = 'Wasted';
+                                break;
+                            case 'Severely Wasted':
+                                $mappedClassification = 'Severely Wasted';
+                                break;
+                            case 'Tall':
+                                $mappedClassification = 'Tall';
+                                break;
+                        }
+                        
+                        if ($mappedClassification && isset($chartData[$userAgeGroup][$mappedClassification])) {
+                            $chartData[$userAgeGroup][$mappedClassification]++;
+                        }
+                    }
+                }
+                
+                // Prepare data for Chart.js line chart
+                $lineChartData = [];
+                foreach ($classifications as $classification) {
+                    $lineChartData[$classification] = [];
+                    foreach ($ageGroups as $ageGroup => $range) {
+                        $lineChartData[$classification][] = $chartData[$ageGroup][$classification] ?? 0;
+                    }
+                }
+                
+                echo json_encode([
+                    'success' => true,
+                    'data' => [
+                        'ageGroups' => array_keys($ageGroups),
+                        'classifications' => $classifications,
+                        'chartData' => $lineChartData,
+                        'rawData' => $chartData
+                    ]
+                ]);
+                
+            } catch (Exception $e) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error getting age classification chart data: ' . $e->getMessage()
+                ]);
+            }
+            break;
+            
+        // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:
