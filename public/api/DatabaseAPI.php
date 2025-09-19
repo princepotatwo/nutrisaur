@@ -5390,30 +5390,80 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             continue; // Skip users outside the age range
                         }
                         
-                        // Use existing BMI category if available, otherwise calculate
+                        // Use WHO classification logic (same as other charts)
                         $classification = 'Normal'; // Default
                         
-                        if (isset($user['bmi_category']) && !empty($user['bmi_category'])) {
-                            // Use existing BMI category
-                            $bmiCategory = $user['bmi_category'];
-                            switch ($bmiCategory) {
-                                case 'Underweight':
+                        try {
+                            // Get WHO classification for this user
+                            $results = $this->getWHOClassificationForUser($user);
+                            
+                            if ($results && $results['success']) {
+                                // Use the most severe classification found
+                                $classifications = [];
+                                
+                                // Weight-for-Age (WFA)
+                                if (isset($results['weight_for_age']['classification'])) {
+                                    $wfa = $results['weight_for_age']['classification'];
+                                    if ($wfa === 'Severely Underweight') {
+                                        $classifications[] = 'Severely Underweight';
+                                    } elseif ($wfa === 'Underweight') {
+                                        $classifications[] = 'Underweight';
+                                    } elseif ($wfa === 'Overweight') {
+                                        $classifications[] = 'Overweight';
+                                    } elseif ($wfa === 'Obese') {
+                                        $classifications[] = 'Obese';
+                                    } else {
+                                        $classifications[] = 'Normal';
+                                    }
+                                }
+                                
+                                // Height-for-Age (HFA)
+                                if (isset($results['height_for_age']['classification'])) {
+                                    $hfa = $results['height_for_age']['classification'];
+                                    if ($hfa === 'Severely Stunted') {
+                                        $classifications[] = 'Severely Stunted';
+                                    } elseif ($hfa === 'Stunted') {
+                                        $classifications[] = 'Stunted';
+                                    } elseif ($hfa === 'Tall') {
+                                        $classifications[] = 'Tall';
+                                    }
+                                }
+                                
+                                // Weight-for-Height (WFH)
+                                if (isset($results['weight_for_height']['classification'])) {
+                                    $wfh = $results['weight_for_height']['classification'];
+                                    if ($wfh === 'Severely Wasted') {
+                                        $classifications[] = 'Severely Wasted';
+                                    } elseif ($wfh === 'Wasted') {
+                                        $classifications[] = 'Wasted';
+                                    }
+                                }
+                                
+                                // Use the most severe classification
+                                if (in_array('Severely Underweight', $classifications)) {
+                                    $classification = 'Severely Underweight';
+                                } elseif (in_array('Severely Stunted', $classifications)) {
+                                    $classification = 'Severely Stunted';
+                                } elseif (in_array('Severely Wasted', $classifications)) {
+                                    $classification = 'Severely Wasted';
+                                } elseif (in_array('Underweight', $classifications)) {
                                     $classification = 'Underweight';
-                                    break;
-                                case 'Normal':
-                                    $classification = 'Normal';
-                                    break;
-                                case 'Overweight':
+                                } elseif (in_array('Stunted', $classifications)) {
+                                    $classification = 'Stunted';
+                                } elseif (in_array('Wasted', $classifications)) {
+                                    $classification = 'Wasted';
+                                } elseif (in_array('Overweight', $classifications)) {
                                     $classification = 'Overweight';
-                                    break;
-                                case 'Obese':
+                                } elseif (in_array('Obese', $classifications)) {
                                     $classification = 'Obese';
-                                    break;
-                                default:
+                                } elseif (in_array('Tall', $classifications)) {
+                                    $classification = 'Tall';
+                                } else {
                                     $classification = 'Normal';
+                                }
                             }
-                        } else {
-                            // Calculate BMI if not available
+                        } catch (Exception $e) {
+                            // Fallback to basic BMI calculation
                             $weight = floatval($user['weight_kg'] ?? 0);
                             $height = floatval($user['height_cm'] ?? 0);
                             
