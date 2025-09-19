@@ -5366,32 +5366,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
-                // Process each user - use existing BMI and nutritional risk data
+                // Process each user using the EXACT same logic as getAllWHOClassificationsBulk
                 foreach ($users as $user) {
                     try {
-                        // Calculate age in months from birthday (more reliable)
-                        $ageInMonths = 0;
-                        if (isset($user['birthday']) && $user['birthday'] !== null && $user['birthday'] !== '') {
-                            try {
-                                $birthDate = new DateTime($user['birthday']);
-                                $screeningDate = new DateTime($user['screening_date'] ?? date('Y-m-d H:i:s'));
-                                $age = $birthDate->diff($screeningDate);
-                                $ageInMonths = ($age->y * 12) + $age->m;
-                                
-                                // Add partial month if more than half the month has passed
-                                if ($age->d >= 15) {
-                                    $ageInMonths += 1;
-                                }
-                            } catch (Exception $e) {
-                                // Fallback to database age field if birthday calculation fails
-                                $ageInMonths = intval($user['age'] ?? 0);
-                            }
-                        } else {
-                            // Fallback to database age field
-                            $ageInMonths = intval($user['age'] ?? 0);
-                        }
-                        
-                        error_log("  - User age: {$ageInMonths} months (birthday: " . ($user['birthday'] ?? 'none') . ", screening: " . ($user['screening_date'] ?? 'none') . ")");
+                        // Calculate age in months (same as donut chart)
+                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                         
                         // Determine which age group this user belongs to
                         $userAgeGroup = null;
@@ -5403,123 +5382,120 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         }
                         
                         if (!$userAgeGroup) {
-                            error_log("  - User age {$ageInMonths} months outside range, skipping");
                             continue; // Skip users outside the age range
                         }
                         
-                        // Use the EXACT same logic as getAllWHOClassificationsBulk (donut chart)
-                        $classification = 'Normal'; // Default
+                        // Get comprehensive assessment (same as donut chart)
+                        $assessment = $who->getComprehensiveAssessment(
+                            floatval($user['weight']),
+                            floatval($user['height']),
+                            $user['birthday'],
+                            $user['sex'],
+                            $user['screening_date'] ?? null
+                        );
                         
-                        try {
-                            // Include WHO Growth Standards
-                            require_once __DIR__ . '/../../who_growth_standards.php';
-                            $who = new WHOGrowthStandards();
+                        if ($assessment['success'] && isset($assessment['results'])) {
+                            $results = $assessment['results'];
                             
-                            // Calculate age in months (same as donut chart)
-                            $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                            // Process each WHO standard using the same logic as donut chart
+                            $allClassifications = [];
                             
-                            // Get comprehensive assessment (same as donut chart)
-                            $assessment = $who->getComprehensiveAssessment(
-                                floatval($user['weight']),  // Note: use 'weight' not 'weight_kg'
-                                floatval($user['height']), // Note: use 'height' not 'height_cm'
-                                $user['birthday'], 
-                                $user['sex'],
-                                $user['screening_date'] ?? null
-                            );
-                            
-                            if ($assessment['success'] && isset($assessment['results'])) {
-                                $results = $assessment['results'];
-                                
-                                // Use the EXACT same logic as getAllWHOClassificationsBulk
-                                // Process each WHO standard with proper age restrictions
-                                
-                                // Weight-for-Age (0-71 months) - this is the main one for our age range
-                                if ($ageInMonths >= 0 && $ageInMonths <= 71) {
-                                    if (isset($results['weight_for_age']['classification'])) {
-                                        $wfa = $results['weight_for_age']['classification'];
-                                        switch ($wfa) {
-                                            case 'Severely Underweight':
-                                                $classification = 'Severely Underweight';
-                                                break;
-                                            case 'Underweight':
-                                                $classification = 'Underweight';
-                                                break;
-                                            case 'Normal':
-                                                $classification = 'Normal';
-                                                break;
-                                            case 'Overweight':
-                                                $classification = 'Overweight';
-                                                break;
-                                            case 'Obese':
-                                                $classification = 'Obese';
-                                                break;
-                                            default:
-                                                $classification = 'Normal';
-                                        }
-                                    }
-                                }
-                                
-                                // Height-for-Age (0-71 months) - check if more severe
-                                if ($ageInMonths >= 0 && $ageInMonths <= 71) {
-                                    if (isset($results['height_for_age']['classification'])) {
-                                        $hfa = $results['height_for_age']['classification'];
-                                        if ($hfa === 'Severely Stunted' && $classification !== 'Severely Underweight') {
-                                            $classification = 'Severely Stunted';
-                                        } elseif ($hfa === 'Stunted' && !in_array($classification, ['Severely Underweight', 'Severely Stunted'])) {
-                                            $classification = 'Stunted';
-                                        } elseif ($hfa === 'Tall' && $classification === 'Normal') {
-                                            $classification = 'Tall';
-                                        }
-                                    }
-                                }
-                                
-                                // Weight-for-Height (0-60 months) - check if more severe
-                                if ($ageInMonths >= 0 && $ageInMonths <= 60) {
-                                    if (isset($results['weight_for_height']['classification'])) {
-                                        $wfh = $results['weight_for_height']['classification'];
-                                        if ($wfh === 'Severely Wasted' && !in_array($classification, ['Severely Underweight', 'Severely Stunted'])) {
-                                            $classification = 'Severely Wasted';
-                                        } elseif ($wfh === 'Wasted' && !in_array($classification, ['Severely Underweight', 'Severely Stunted', 'Severely Wasted'])) {
-                                            $classification = 'Wasted';
-                                        }
-                                    }
+                            // Weight-for-Age (0-71 months)
+                            if ($ageInMonths >= 0 && $ageInMonths <= 71) {
+                                if (isset($results['weight_for_age']['classification'])) {
+                                    $allClassifications['weight_for_age'] = $results['weight_for_age']['classification'];
                                 }
                             }
-                        } catch (Exception $e) {
-                            // Fallback to basic BMI calculation
-                            $weight = floatval($user['weight'] ?? 0);
-                            $height = floatval($user['height'] ?? 0);
                             
-                            if ($height > 0) {
-                                $heightM = $height / 100;
-                                $bmi = $weight / ($heightM * $heightM);
-                                
-                                if ($bmi < 18.5) {
-                                    $classification = 'Underweight';
-                                } elseif ($bmi < 25) {
-                                    $classification = 'Normal';
-                                } elseif ($bmi < 30) {
-                                    $classification = 'Overweight';
-                                } else {
-                                    $classification = 'Obese';
+                            // Height-for-Age (0-71 months)
+                            if ($ageInMonths >= 0 && $ageInMonths <= 71) {
+                                if (isset($results['height_for_age']['classification'])) {
+                                    $allClassifications['height_for_age'] = $results['height_for_age']['classification'];
                                 }
                             }
+                            
+                            // Weight-for-Height (0-60 months)
+                            if ($ageInMonths >= 0 && $ageInMonths <= 60) {
+                                if (isset($results['weight_for_height']['classification'])) {
+                                    $allClassifications['weight_for_height'] = $results['weight_for_height']['classification'];
+                                }
+                            }
+                            
+                            // BMI-for-Age (2-19 years)
+                            if ($ageInMonths >= 24 && $ageInMonths <= 228) {
+                                if (isset($results['bmi_for_age']['classification'])) {
+                                    $allClassifications['bmi_for_age'] = $results['bmi_for_age']['classification'];
+                                }
+                            }
+                            
+                            // Determine the most severe classification (same priority as donut chart)
+                            $finalClassification = 'Normal';
+                            
+                            // Priority 1: Severely Underweight (from WFA or BFA)
+                            if (isset($allClassifications['weight_for_age']) && $allClassifications['weight_for_age'] === 'Severely Underweight') {
+                                $finalClassification = 'Severely Underweight';
+                            } elseif (isset($allClassifications['bmi_for_age']) && $allClassifications['bmi_for_age'] === 'Severely Underweight') {
+                                $finalClassification = 'Severely Underweight';
+                            }
+                            
+                            // Priority 2: Severely Stunted (from HFA)
+                            if ($finalClassification === 'Normal' && isset($allClassifications['height_for_age']) && $allClassifications['height_for_age'] === 'Severely Stunted') {
+                                $finalClassification = 'Severely Stunted';
+                            }
+                            
+                            // Priority 3: Severely Wasted (from WFH)
+                            if ($finalClassification === 'Normal' && isset($allClassifications['weight_for_height']) && $allClassifications['weight_for_height'] === 'Severely Wasted') {
+                                $finalClassification = 'Severely Wasted';
+                            }
+                            
+                            // Priority 4: Other classifications
+                            if ($finalClassification === 'Normal') {
+                                // Check for Underweight
+                                if (isset($allClassifications['weight_for_age']) && $allClassifications['weight_for_age'] === 'Underweight') {
+                                    $finalClassification = 'Underweight';
+                                } elseif (isset($allClassifications['bmi_for_age']) && $allClassifications['bmi_for_age'] === 'Underweight') {
+                                    $finalClassification = 'Underweight';
+                                }
+                                
+                                // Check for Stunted
+                                if ($finalClassification === 'Normal' && isset($allClassifications['height_for_age']) && $allClassifications['height_for_age'] === 'Stunted') {
+                                    $finalClassification = 'Stunted';
+                                }
+                                
+                                // Check for Wasted
+                                if ($finalClassification === 'Normal' && isset($allClassifications['weight_for_height']) && $allClassifications['weight_for_height'] === 'Wasted') {
+                                    $finalClassification = 'Wasted';
+                                }
+                                
+                                // Check for Overweight
+                                if ($finalClassification === 'Normal' && isset($allClassifications['weight_for_age']) && $allClassifications['weight_for_age'] === 'Overweight') {
+                                    $finalClassification = 'Overweight';
+                                } elseif ($finalClassification === 'Normal' && isset($allClassifications['bmi_for_age']) && $allClassifications['bmi_for_age'] === 'Overweight') {
+                                    $finalClassification = 'Overweight';
+                                }
+                                
+                                // Check for Obese
+                                if ($finalClassification === 'Normal' && isset($allClassifications['weight_for_age']) && $allClassifications['weight_for_age'] === 'Obese') {
+                                    $finalClassification = 'Obese';
+                                } elseif ($finalClassification === 'Normal' && isset($allClassifications['bmi_for_age']) && $allClassifications['bmi_for_age'] === 'Obese') {
+                                    $finalClassification = 'Obese';
+                                }
+                                
+                                // Check for Tall
+                                if ($finalClassification === 'Normal' && isset($allClassifications['height_for_age']) && $allClassifications['height_for_age'] === 'Tall') {
+                                    $finalClassification = 'Tall';
+                                }
+                            }
+                            
+                            error_log("  - User classification: {$finalClassification} for age group: {$userAgeGroup}");
+
+                            if ($finalClassification && isset($chartData[$userAgeGroup][$finalClassification])) {
+                                $chartData[$userAgeGroup][$finalClassification]++;
+                            }
                         }
-                        
-                        // Map to our chart classifications
-                        $mappedClassification = $classification;
-                        
-                        error_log("  - User classification: {$mappedClassification} for age group: {$userAgeGroup}");
-                        
-                        if ($mappedClassification && isset($chartData[$userAgeGroup][$mappedClassification])) {
-                            $chartData[$userAgeGroup][$mappedClassification]++;
-                            error_log("  - Updated count for {$userAgeGroup}_{$mappedClassification}: " . $chartData[$userAgeGroup][$mappedClassification]);
-                        } else {
-                            error_log("  - Classification {$mappedClassification} not found in chart data for age group {$userAgeGroup}");
-                        }
-                        
+
                     } catch (Exception $e) {
-                        // Skip this user if there's an error
+                        error_log("  - Error processing user: " . $e->getMessage());
                         continue;
                     }
                 }
