@@ -1545,7 +1545,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             <form id="auth-form" method="post" action="">
                 <div class="input-group">
                     <label for="username">Username/Email</label>
-                    <input type="text" id="username" name="username_login" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05) !important; background-color: rgba(255, 255, 255, 0.05) !important; color: #E8F0D6 !important; border: 1px solid rgba(161, 180, 84, 0.3) !important;">
+                    <input type="text" id="username" name="username_login" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <div class="input-group" id="email-group" style="display: none;">
                     <label for="email">Email</label>
@@ -1649,83 +1649,77 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             }
         }
 
-        // Force dark styling on inputs to prevent autofill white backgrounds
+        // Force dark styling on inputs - using same approach as working email field
         function forceDarkStyling() {
             const inputIds = ['username', 'email', 'password', 'username_register', 'email_register', 'password_register', 'verification_email', 'verification_code'];
             
             inputIds.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) {
-                    // Force dark styling with !important
-                    el.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
-                    el.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
-                    el.style.setProperty('color', '#E8F0D6', 'important');
-                    el.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
-                    
-                    // Special handling for username field
-                    if (id === 'username') {
-                        el.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
-                        el.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
-                        el.style.setProperty('color', '#E8F0D6', 'important');
-                        el.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
-                    }
+                    // Use same approach as working email field - no !important
+                    el.style.background = 'rgba(255, 255, 255, 0.05)';
+                    el.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                    el.style.color = '#E8F0D6';
+                    el.style.border = '1px solid rgba(161, 180, 84, 0.3)';
                     
                     // Add event listeners to maintain styling
                     el.addEventListener('focus', function() {
-                        this.style.setProperty('background', 'rgba(255, 255, 255, 0.08)', 'important');
-                        this.style.setProperty('background-color', 'rgba(255, 255, 255, 0.08)', 'important');
-                        this.style.setProperty('color', '#E8F0D6', 'important');
-                        this.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.5)', 'important');
+                        this.style.background = 'rgba(255, 255, 255, 0.08)';
+                        this.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+                        this.style.color = '#E8F0D6';
+                        this.style.border = '1px solid rgba(161, 180, 84, 0.5)';
                     });
                     
                     el.addEventListener('blur', function() {
-                        this.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
-                        this.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
-                        this.style.setProperty('color', '#E8F0D6', 'important');
-                        this.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
+                        this.style.background = 'rgba(255, 255, 255, 0.05)';
+                        this.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                        this.style.color = '#E8F0D6';
+                        this.style.border = '1px solid rgba(161, 180, 84, 0.3)';
                     });
                     
                     // Prevent autofill styling
                     el.addEventListener('animationstart', function(e) {
                         if (e.animationName === 'onAutoFillStart') {
-                            this.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
-                            this.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
-                            this.style.setProperty('color', '#E8F0D6', 'important');
+                            this.style.background = 'rgba(255, 255, 255, 0.05)';
+                            this.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                            this.style.color = '#E8F0D6';
                         }
                     });
                 }
             });
         }
 
-        // Apply styling immediately when script loads
+        // Apply styling immediately when script loads - simplified approach like email field
         (function() {
-            // Apply styling as soon as possible
-            function applyUsernameStyling() {
-                const usernameField = document.getElementById('username');
-                if (usernameField) {
-                    usernameField.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
-                    usernameField.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
-                    usernameField.style.setProperty('color', '#E8F0D6', 'important');
-                    usernameField.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
-                }
+            // Apply styling as soon as possible - using same approach as working email field
+            function applyInputStyling() {
+                const inputIds = ['username', 'password', 'username_register', 'email_register', 'password_register', 'verification_email', 'verification_code'];
+                
+                inputIds.forEach(id => {
+                    const field = document.getElementById(id);
+                    if (field) {
+                        // Use same approach as working email field - no !important
+                        field.style.background = 'rgba(255, 255, 255, 0.05)';
+                        field.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                        field.style.color = '#E8F0D6';
+                        field.style.border = '1px solid rgba(161, 180, 84, 0.3)';
+                    }
+                });
             }
             
             // Try to apply immediately
-            applyUsernameStyling();
+            applyInputStyling();
             
             // Apply when DOM is ready
             if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', applyUsernameStyling);
+                document.addEventListener('DOMContentLoaded', applyInputStyling);
             } else {
-                applyUsernameStyling();
+                applyInputStyling();
             }
             
-            // Apply multiple times to ensure it sticks
-            setTimeout(applyUsernameStyling, 10);
-            setTimeout(applyUsernameStyling, 50);
-            setTimeout(applyUsernameStyling, 100);
-            setTimeout(applyUsernameStyling, 200);
-            setTimeout(applyUsernameStyling, 500);
+            // Apply a couple of times to ensure it sticks
+            setTimeout(applyInputStyling, 50);
+            setTimeout(applyInputStyling, 200);
         })();
 
         // Initialize particles when page loads
@@ -1740,19 +1734,8 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             setTimeout(forceDarkStyling, 100);
             setTimeout(forceDarkStyling, 500);
             
-            // Re-apply styling periodically to prevent autofill override
-            setInterval(forceDarkStyling, 1000);
-            
-            // Special handling for username field - apply more frequently
-            setInterval(() => {
-                const usernameField = document.getElementById('username');
-                if (usernameField) {
-                    usernameField.style.setProperty('background', 'rgba(255, 255, 255, 0.05)', 'important');
-                    usernameField.style.setProperty('background-color', 'rgba(255, 255, 255, 0.05)', 'important');
-                    usernameField.style.setProperty('color', '#E8F0D6', 'important');
-                    usernameField.style.setProperty('border', '1px solid rgba(161, 180, 84, 0.3)', 'important');
-                }
-            }, 50);
+            // Apply styling periodically to prevent any override
+            setInterval(forceDarkStyling, 2000);
         });
 
         // Authentication related code
