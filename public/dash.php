@@ -9152,7 +9152,12 @@ body {
                             tooltip: {
                                 mode: 'index',
                                 intersect: false,
-                                position: 'nearest',
+                                position: function(context) {
+                                    // Force tooltip to appear above the data point
+                                    return 'nearest';
+                                },
+                                xAlign: 'center',
+                                yAlign: 'top',
                                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                                 titleColor: '#fff',
                                 bodyColor: '#fff',
@@ -9496,7 +9501,12 @@ body {
                             tooltip: {
                                 mode: 'index',
                                 intersect: false,
-                                position: 'nearest',
+                                position: function(context) {
+                                    // Force tooltip to appear above the data point
+                                    return 'nearest';
+                                },
+                                xAlign: 'center',
+                                yAlign: 'top',
                                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                                 titleColor: '#fff',
                                 bodyColor: '#fff',
