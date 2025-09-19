@@ -5350,7 +5350,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 // Only include age groups that overlap with the requested range
                 // But also respect WHO standards limit (0-71 months)
-                $whoMaxMonths = 71;
+                $whoMaxMonths = 72; // Use 72 to include the 5-6y group (60-72 months)
                 $effectiveFromMonths = max($fromMonths, 0);
                 $effectiveToMonths = min($toMonths, $whoMaxMonths);
                 
@@ -5359,6 +5359,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $groupEnd = $range[1];
                     
                     // Check if the age group overlaps with the effective range
+                    // Use <= for the end boundary to include groups that end exactly at the boundary
                     if ($groupStart < $effectiveToMonths && $groupEnd > $effectiveFromMonths) {
                         $ageGroups[$label] = $range;
                     }
