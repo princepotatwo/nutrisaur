@@ -9152,17 +9152,7 @@ body {
                             tooltip: {
                                 mode: 'index',
                                 intersect: false,
-                                position: function(context) {
-                                    // Position tooltip so arrow points directly at the data point
-                                    const point = context[0];
-                                    const chart = context.chart;
-                                    const canvasPosition = Chart.helpers.getRelativePosition(point.element, chart);
-                                    
-                                    return {
-                                        x: canvasPosition.x,
-                                        y: canvasPosition.y
-                                    };
-                                },
+                                position: 'nearest',
                                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                                 titleColor: '#fff',
                                 bodyColor: '#fff',
@@ -9506,17 +9496,7 @@ body {
                             tooltip: {
                                 mode: 'index',
                                 intersect: false,
-                                position: function(context) {
-                                    // Position tooltip so arrow points directly at the data point
-                                    const point = context[0];
-                                    const chart = context.chart;
-                                    const canvasPosition = Chart.helpers.getRelativePosition(point.element, chart);
-                                    
-                                    return {
-                                        x: canvasPosition.x,
-                                        y: canvasPosition.y
-                                    };
-                                },
+                                position: 'nearest',
                                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                                 titleColor: '#fff',
                                 bodyColor: '#fff',
