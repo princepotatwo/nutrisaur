@@ -1493,7 +1493,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                 <div class="input-group password-field">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password_login" required>
-                    <button type="button" class="password-toggle" id="toggle-password-login" aria-label="Toggle password visibility" title="Show/Hide password">
+                    <button type="button" class="password-toggle" id="toggle-password-login" data-target="password" aria-label="Toggle password visibility" title="Show/Hide password">
                         <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
                         </svg>
@@ -1528,7 +1528,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                 <div class="input-group password-field">
                     <label for="password_register">Password</label>
                     <input type="password" id="password_register" name="password_register" required class="password-field">
-                    <button type="button" class="password-toggle" id="toggle-password-register" aria-label="Toggle password visibility" title="Show/Hide password">
+                    <button type="button" class="password-toggle" id="toggle-password-register" data-target="password_register" aria-label="Toggle password visibility" title="Show/Hide password">
                         <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
                         </svg>
@@ -1598,6 +1598,11 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                 ids.forEach(id => {
                     const el = document.getElementById(id);
                     if (el) {
+                        // Force inline dark style to override external CSS on load
+                        el.style.background = 'rgba(255, 255, 255, 0.05)';
+                        el.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                        el.style.color = '#E8F0D6';
+                        el.style.border = '1px solid rgba(161, 180, 84, 0.3)';
                         const cs = getComputedStyle(el);
                         console.log('[input-debug]', id, {
                             backgroundColor: cs.backgroundColor,
@@ -1944,15 +1949,23 @@ function sendVerificationEmail($email, $username, $verificationCode) {
 
                 console.log('[eye-toggle] Clicked', { target: e.target, toggle });
 
-                // Find the input inside the same password-field group
-                const group = toggle.closest('.password-field');
-                if (!group) {
-                    console.warn('[eye-toggle] No password-field group found for toggle');
-                    return;
+                // Resolve input by data-target first, fallback to nearest group
+                let input = null;
+                const targetId = toggle.getAttribute('data-target');
+                if (targetId) {
+                    input = document.getElementById(targetId);
+                    if (!input) console.warn('[eye-toggle] data-target not found', targetId);
                 }
-                const input = group.querySelector('input[type="password"], input[type="text"]');
                 if (!input) {
-                    console.warn('[eye-toggle] No input found inside password-field');
+                    const group = toggle.closest('.password-field');
+                    if (!group) {
+                        console.warn('[eye-toggle] No password-field group found for toggle');
+                        return;
+                    }
+                    input = group.querySelector('input[type="password"], input[type="text"]');
+                }
+                if (!input) {
+                    console.warn('[eye-toggle] No input resolved');
                     return;
                 }
 
