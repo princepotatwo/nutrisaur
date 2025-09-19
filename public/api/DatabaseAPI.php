@@ -5311,10 +5311,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $who = new WHOGrowthStandards();
                 $filteredUsers = [];
                 
-                // Use effective range for user filtering (same as age group logic)
-                $whoMaxMonths = 72;
+                // Use the requested range directly for user filtering
                 $effectiveFromMonths = max($fromMonths, 0);
-                $effectiveToMonths = min($toMonths, $whoMaxMonths);
+                $effectiveToMonths = $toMonths;
                 
                 foreach ($users as $user) {
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
@@ -5339,40 +5338,36 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     break;
                 }
                 
-                // Define age groups for the chart based on the requested range
+                // Create dynamic age groups - always 10 equal columns for any range
                 $ageGroups = [];
+                $numGroups = 10; // Always create 10 age groups
                 
-                // Standard age groups with their ranges
-                $standardAgeGroups = [
-                    '0-6m' => [0, 6],
-                    '6-12m' => [6, 12],
-                    '1-2y' => [12, 24],
-                    '2-3y' => [24, 36],
-                    '3-4y' => [36, 48],
-                    '4-5y' => [48, 60],
-                    '5-6y' => [60, 72]
-                ];
+                // Calculate the range span
+                $rangeSpan = $toMonths - $fromMonths;
+                $groupSize = $rangeSpan / $numGroups;
                 
-                // Only include age groups that overlap with the requested range
-                // But also respect WHO standards limit (0-71 months)
-                $whoMaxMonths = 72; // Use 72 to include the 5-6y group (60-72 months)
-                $effectiveFromMonths = max($fromMonths, 0);
-                $effectiveToMonths = min($toMonths, $whoMaxMonths);
-                
-                foreach ($standardAgeGroups as $label => $range) {
-                    $groupStart = $range[0];
-                    $groupEnd = $range[1];
+                // Create 10 equal age groups
+                for ($i = 0; $i < $numGroups; $i++) {
+                    $groupStart = $fromMonths + ($i * $groupSize);
+                    $groupEnd = $fromMonths + (($i + 1) * $groupSize);
                     
-                    // Check if the age group overlaps with the effective range
-                    // Use <= for the end boundary to include groups that end exactly at the boundary
-                    if ($groupStart < $effectiveToMonths && $groupEnd > $effectiveFromMonths) {
-                        $ageGroups[$label] = $range;
+                    // Format the label based on the range
+                    if ($rangeSpan <= 12) {
+                        // For small ranges (≤12 months), show in months
+                        $label = round($groupStart) . '-' . round($groupEnd) . 'm';
+                    } elseif ($rangeSpan <= 120) {
+                        // For medium ranges (≤10 years), show in years with decimals
+                        $startYears = round($groupStart / 12, 1);
+                        $endYears = round($groupEnd / 12, 1);
+                        $label = $startYears . '-' . $endYears . 'y';
+                    } else {
+                        // For large ranges (>10 years), show in years as integers
+                        $startYears = round($groupStart / 12);
+                        $endYears = round($groupEnd / 12);
+                        $label = $startYears . '-' . $endYears . 'y';
                     }
-                }
-                
-                // If no standard age groups fit, create a custom range
-                if (empty($ageGroups)) {
-                    $ageGroups["{$fromMonths}m-{$toMonths}m"] = [$fromMonths, $toMonths];
+                    
+                    $ageGroups[$label] = [round($groupStart), round($groupEnd)];
                 }
                 
                 // Define classifications
