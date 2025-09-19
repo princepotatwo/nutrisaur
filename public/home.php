@@ -1940,7 +1940,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             }
         }
 
-        // Password visibility toggle functionality - simplified approach
+        // Password visibility toggle functionality - robust approach
         function setupPasswordToggles() {
             // Setup for login password field
             const loginPassword = document.getElementById('password');
@@ -1949,20 +1949,24 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             const loginIconHide = loginToggle?.querySelector('.eye-slash-icon');
 
             if (loginPassword && loginToggle) {
+                // Store the current state to prevent auto-hide
+                let isPasswordVisible = false;
+                
                 loginToggle.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     
                     // Toggle the input type
-                    const isHidden = loginPassword.type === 'password';
-                    loginPassword.type = isHidden ? 'text' : 'password';
+                    isPasswordVisible = !isPasswordVisible;
+                    loginPassword.type = isPasswordVisible ? 'text' : 'password';
 
                     // Update aria attributes
-                    loginToggle.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
-                    loginToggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
-                    loginToggle.title = isHidden ? 'Hide password' : 'Show password';
+                    loginToggle.setAttribute('aria-pressed', isPasswordVisible ? 'true' : 'false');
+                    loginToggle.setAttribute('aria-label', isPasswordVisible ? 'Hide password' : 'Show password');
+                    loginToggle.title = isPasswordVisible ? 'Hide password' : 'Show password';
 
                     // Swap icons
-                    if (isHidden) {
+                    if (isPasswordVisible) {
                         if (loginIconShow) loginIconShow.style.display = 'none';
                         if (loginIconHide) loginIconHide.style.display = 'inline';
                     } else {
@@ -1971,16 +1975,33 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     }
 
                     // Keep focus on the input after toggling for better UX
-                    loginPassword.focus();
+                    setTimeout(() => loginPassword.focus(), 10);
                 });
 
                 // Allow keyboard activation
                 loginToggle.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
+                        e.stopPropagation();
                         loginToggle.click();
                     }
                 });
+
+                // Prevent form reset from affecting password visibility
+                const originalReset = loginPassword.form.reset;
+                if (originalReset) {
+                    loginPassword.form.reset = function() {
+                        originalReset.call(this);
+                        // Restore password visibility state after reset
+                        setTimeout(() => {
+                            if (isPasswordVisible) {
+                                loginPassword.type = 'text';
+                                if (loginIconShow) loginIconShow.style.display = 'none';
+                                if (loginIconHide) loginIconHide.style.display = 'inline';
+                            }
+                        }, 10);
+                    };
+                }
             }
 
             // Setup for register password field
@@ -1990,20 +2011,24 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             const registerIconHide = registerToggle?.querySelector('.eye-slash-icon');
 
             if (registerPassword && registerToggle) {
+                // Store the current state to prevent auto-hide
+                let isPasswordVisible = false;
+                
                 registerToggle.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     
                     // Toggle the input type
-                    const isHidden = registerPassword.type === 'password';
-                    registerPassword.type = isHidden ? 'text' : 'password';
+                    isPasswordVisible = !isPasswordVisible;
+                    registerPassword.type = isPasswordVisible ? 'text' : 'password';
 
                     // Update aria attributes
-                    registerToggle.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
-                    registerToggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
-                    registerToggle.title = isHidden ? 'Hide password' : 'Show password';
+                    registerToggle.setAttribute('aria-pressed', isPasswordVisible ? 'true' : 'false');
+                    registerToggle.setAttribute('aria-label', isPasswordVisible ? 'Hide password' : 'Show password');
+                    registerToggle.title = isPasswordVisible ? 'Hide password' : 'Show password';
 
                     // Swap icons
-                    if (isHidden) {
+                    if (isPasswordVisible) {
                         if (registerIconShow) registerIconShow.style.display = 'none';
                         if (registerIconHide) registerIconHide.style.display = 'inline';
                     } else {
@@ -2012,16 +2037,33 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     }
 
                     // Keep focus on the input after toggling for better UX
-                    registerPassword.focus();
+                    setTimeout(() => registerPassword.focus(), 10);
                 });
 
                 // Allow keyboard activation
                 registerToggle.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
+                        e.stopPropagation();
                         registerToggle.click();
                     }
                 });
+
+                // Prevent form reset from affecting password visibility
+                const originalReset = registerPassword.form.reset;
+                if (originalReset) {
+                    registerPassword.form.reset = function() {
+                        originalReset.call(this);
+                        // Restore password visibility state after reset
+                        setTimeout(() => {
+                            if (isPasswordVisible) {
+                                registerPassword.type = 'text';
+                                if (registerIconShow) registerIconShow.style.display = 'none';
+                                if (registerIconHide) registerIconHide.style.display = 'inline';
+                            }
+                        }, 10);
+                    };
+                }
             }
         }
 
