@@ -7022,51 +7022,7 @@ body {
             </div>
         </div>
 
-
-
-        <div class="chart-row">
-            <div class="chart-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3>WHO Growth Standards Classification</h3>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
-                            <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
-                            <option value="height-for-age">Height-for-Age (0-71 months)</option>
-                            <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
-                            <option value="bmi-for-age">BMI-for-Age (2-19 years)</option>
-                            <option value="bmi-adult">BMI Adult (≥19 years)</option>
-                        </select>
-                    </div>
-                </div>
-                <p class="chart-description" id="who-chart-description">Distribution of children by Weight-for-Age classification. Shows nutritional status based on weight relative to age (0-71 months).</p>
-                <div class="donut-chart-container">
-                    <div class="donut-chart">
-                        <div class="donut-chart-bg" id="risk-chart-bg"></div>
-                        <div class="donut-center-text" id="risk-center-text">0%</div>
-                        <div class="percentage-labels" id="percentage-labels"></div>
-                    </div>
-                </div>
-                <div class="segments" id="risk-segments"></div>
-            </div>
-            
-
-            
-            <div class="chart-card">
-                <h3>Classification Trends</h3>
-                <p class="chart-description">Distribution of nutritional classifications across different WHO standards. Shows trends and patterns in screening data.</p>
-                <div class="trends-chart-container">
-                    <div class="trends-chart" id="trends-chart">
-                        <!-- Bar chart will be generated dynamically -->
-                    </div>
-                    <div class="trends-labels-container" id="trends-labels">
-                        <!-- Labels will be generated dynamically -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
+        <!-- Age Classification Chart -->
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
                 <div style="margin-bottom: 20px;">
@@ -7117,6 +7073,50 @@ body {
                 </div>
                     </div>
                 </div>
+
+        <div class="chart-row">
+            <div class="chart-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3>WHO Growth Standards Classification</h3>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
+                            <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
+                            <option value="height-for-age">Height-for-Age (0-71 months)</option>
+                            <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
+                            <option value="bmi-for-age">BMI-for-Age (2-19 years)</option>
+                            <option value="bmi-adult">BMI Adult (≥19 years)</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="chart-description" id="who-chart-description">Distribution of children by Weight-for-Age classification. Shows nutritional status based on weight relative to age (0-71 months).</p>
+                <div class="donut-chart-container">
+                    <div class="donut-chart">
+                        <div class="donut-chart-bg" id="risk-chart-bg"></div>
+                        <div class="donut-center-text" id="risk-center-text">0%</div>
+                        <div class="percentage-labels" id="percentage-labels"></div>
+                    </div>
+                </div>
+                <div class="segments" id="risk-segments"></div>
+            </div>
+            
+
+            
+            <div class="chart-card">
+                <h3>Classification Trends</h3>
+                <p class="chart-description">Distribution of nutritional classifications across different WHO standards. Shows trends and patterns in screening data.</p>
+                <div class="trends-chart-container">
+                    <div class="trends-chart" id="trends-chart">
+                        <!-- Bar chart will be generated dynamically -->
+                    </div>
+                    <div class="trends-labels-container" id="trends-labels">
+                        <!-- Labels will be generated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
                 
 
                 
