@@ -3325,8 +3325,8 @@ header .user-info {
 
 /* Age Classification Chart Styles */
 .age-classification-chart-container {
-    height: 400px;
-    max-height: 400px;
+    height: 450px;
+    max-height: 450px;
     width: 100%;
     max-width: 100%;
     display: flex;
@@ -3335,7 +3335,10 @@ header .user-info {
     overflow: hidden;
     position: relative;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 15px 20px 25px 20px; /* More padding for labels */
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
 }
 
 #ageClassificationChart {
@@ -3346,6 +3349,30 @@ header .user-info {
     display: block !important;
     box-sizing: border-box !important;
     object-fit: contain !important;
+}
+
+/* Ensure chart doesn't overflow */
+.age-classification-chart-container canvas {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Bootstrap responsive adjustments for Age Classification Chart */
+@media (max-width: 768px) {
+    .age-classification-chart-container {
+        height: 400px !important;
+        max-height: 400px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .age-classification-chart-container {
+        height: 350px !important;
+        max-height: 350px !important;
+        padding: 8px 10px 12px 10px !important;
+    }
 }
 
 /* Specific styling for age classification chart card */
@@ -3591,9 +3618,9 @@ header .user-info {
     }
     
     .age-classification-chart-container {
-        height: 350px;
-        max-height: 350px;
-        padding: 8px;
+        height: 400px;
+        max-height: 400px;
+        padding: 12px 15px 20px 15px;
     }
     
     .age-range-inputs {
@@ -3651,9 +3678,9 @@ header .user-info {
     }
     
     .age-classification-chart-container {
-        height: 300px;
-        max-height: 300px;
-        padding: 5px;
+        height: 350px;
+        max-height: 350px;
+        padding: 10px 12px 15px 12px;
     }
     
     .form-control, .form-select {
@@ -7069,54 +7096,59 @@ body {
 
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
-                        <div style="flex: 1;">
-                <h3>Age Classification Chart</h3>
-                <p class="chart-description">Nutritional trends across different age groups. Shows how nutritional classifications (Normal, Underweight, Obese, etc.) vary by age. Each line represents a different classification, helping identify patterns like "more underweight in younger ages" or "obesity increases with age".</p>
-                </div>
-                        
-                        <!-- Age Range Controls - Compact version on the right -->
-                        <div class="age-range-controls-compact">
-                            <div class="compact-inputs">
-                                <div class="compact-row">
-                                    <div class="compact-group">
-                                        <label class="compact-label">From:</label>
-                                        <div class="compact-wrapper">
-                                            <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control-compact">
-                                            <select id="ageFromUnit" class="form-select-compact">
+                <!-- Bootstrap Card Structure -->
+                <div class="container-fluid p-0">
+                    <!-- Header Section -->
+                    <div class="row mb-3">
+                        <div class="col-12 col-lg-8">
+                            <h3 class="mb-2">Age Classification Chart</h3>
+                            <p class="chart-description mb-0">Nutritional trends across different age groups. Shows how nutritional classifications (Normal, Underweight, Obese, etc.) vary by age. Each line represents a different classification, helping identify patterns like "more underweight in younger ages" or "obesity increases with age".</p>
+                        </div>
+                        <div class="col-12 col-lg-4">
+                            <!-- Age Range Controls -->
+                            <div class="card border-0 bg-light p-3">
+                                <h6 class="card-title mb-3">Age Range Filter</h6>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label small">From:</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control">
+                                            <select id="ageFromUnit" class="form-select">
                                                 <option value="months">M</option>
                                                 <option value="years">Y</option>
                                             </select>
-            </div>
-        </div>
-
-                                    <div class="compact-group">
-                                        <label class="compact-label">To:</label>
-                                        <div class="compact-wrapper">
-                                            <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control-compact">
-                                            <select id="ageToUnit" class="form-select-compact">
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">To:</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control">
+                                            <select id="ageToUnit" class="form-select">
                                                 <option value="months">M</option>
                                                 <option value="years">Y</option>
                                             </select>
-                    </div>
+                                        </div>
                                     </div>
                                 </div>
-                                
-                                <div class="compact-buttons">
-                                    <button id="applyAgeRange" class="btn-compact btn-primary-compact">Apply</button>
-                                    <button id="resetAgeRange" class="btn-compact btn-secondary-compact">Reset</button>
+                                <div class="d-flex gap-2">
+                                    <button id="applyAgeRange" class="btn btn-primary btn-sm flex-fill">Apply</button>
+                                    <button id="resetAgeRange" class="btn btn-outline-secondary btn-sm flex-fill">Reset</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="age-classification-chart-container">
-                    <canvas id="ageClassificationChart"></canvas>
-                </div>
+                    
+                    <!-- Chart Section with proper spacing for labels -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="age-classification-chart-container">
+                                <canvas id="ageClassificationChart"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
                 
 
                 
