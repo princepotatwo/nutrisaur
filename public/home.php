@@ -920,17 +920,36 @@ function sendVerificationEmail($email, $username, $verificationCode) {
         input:-webkit-autofill,
         input:-webkit-autofill:hover,
         input:-webkit-autofill:focus,
+        input:-webkit-autofill:active,
         textarea:-webkit-autofill,
         textarea:-webkit-autofill:hover,
         textarea:-webkit-autofill:focus,
+        textarea:-webkit-autofill:active,
         select:-webkit-autofill,
         select:-webkit-autofill:hover,
-        select:-webkit-autofill:focus {
+        select:-webkit-autofill:focus,
+        select:-webkit-autofill:active {
             -webkit-text-fill-color: var(--color-text) !important;
             caret-color: var(--color-text) !important;
             transition: background-color 9999s ease-in-out 0s !important;
             -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
             box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.05) inset !important;
+            border: 1px solid rgba(161, 180, 84, 0.3) !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* Additional autofill prevention */
+        input[autocomplete="off"] {
+            -webkit-autocomplete: off !important;
+            -moz-autocomplete: off !important;
+        }
+
+        /* Force dark styling on all input states */
+        input, input:focus, input:active, input:hover {
+            background: rgba(255, 255, 255, 0.05) !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+            color: var(--color-text) !important;
             border: 1px solid rgba(161, 180, 84, 0.3) !important;
         }
 
@@ -1484,15 +1503,15 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             <form id="auth-form" method="post" action="">
                 <div class="input-group">
                     <label for="username">Username/Email</label>
-                    <input type="text" id="username" name="username_login" required autocomplete="username email" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="text" id="username" name="username_login" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <div class="input-group" id="email-group" style="display: none;">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email_register" autocomplete="email" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="email" id="email" name="email_register" autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <div class="input-group password-field">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password_login" required autocomplete="current-password" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="password" id="password" name="password_login" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                     <button type="button" class="password-toggle" id="toggle-password-login" data-target="password" aria-label="Toggle password visibility" title="Show/Hide password">
                         <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -1519,15 +1538,15 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             <form id="register-form" method="post" action="" style="display: none;">
                 <div class="input-group">
                     <label for="username_register">Username</label>
-                    <input type="text" id="username_register" name="username_register" required autocomplete="username" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="text" id="username_register" name="username_register" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <div class="input-group">
                     <label for="email_register">Email</label>
-                    <input type="email" id="email_register" name="email_register" required autocomplete="email" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="email" id="email_register" name="email_register" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <div class="input-group password-field">
                     <label for="password_register">Password</label>
-                    <input type="password" id="password_register" name="password_register" required class="password-field" autocomplete="new-password" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <input type="password" id="password_register" name="password_register" required class="password-field" autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                     <button type="button" class="password-toggle" id="toggle-password-register" data-target="password_register" aria-label="Toggle password visibility" title="Show/Hide password">
                         <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
@@ -1554,11 +1573,11 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             <form id="verification-form" method="post" action="" style="display: none;">
                 <div class="input-group">
                     <label for="verification_email">Email</label>
-                    <input type="email" id="verification_email" name="verification_email" readonly>
+                    <input type="email" id="verification_email" name="verification_email" readonly autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <div class="input-group">
                     <label for="verification_code">Verification Code</label>
-                    <input type="text" id="verification_code" name="verification_code" placeholder="Enter 4-digit code" maxlength="4" pattern="[0-9]{4}" required>
+                    <input type="text" id="verification_code" name="verification_code" placeholder="Enter 4-digit code" maxlength="4" pattern="[0-9]{4}" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <button type="submit" class="auth-btn" id="verify-btn">Verify Email</button>
                 <button type="button" class="google-btn" id="resend-btn">Resend Code</button>
@@ -1588,33 +1607,54 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             }
         }
 
+        // Force dark styling on inputs to prevent autofill white backgrounds
+        function forceDarkStyling() {
+            const inputIds = ['username', 'email', 'password', 'username_register', 'email_register', 'password_register', 'verification_email', 'verification_code'];
+            
+            inputIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    // Force dark styling
+                    el.style.background = 'rgba(255, 255, 255, 0.05)';
+                    el.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                    el.style.color = '#E8F0D6';
+                    el.style.border = '1px solid rgba(161, 180, 84, 0.3)';
+                    
+                    // Add event listeners to maintain styling
+                    el.addEventListener('focus', function() {
+                        this.style.background = 'rgba(255, 255, 255, 0.08)';
+                        this.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+                        this.style.color = '#E8F0D6';
+                        this.style.border = '1px solid rgba(161, 180, 84, 0.5)';
+                    });
+                    
+                    el.addEventListener('blur', function() {
+                        this.style.background = 'rgba(255, 255, 255, 0.05)';
+                        this.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                        this.style.color = '#E8F0D6';
+                        this.style.border = '1px solid rgba(161, 180, 84, 0.3)';
+                    });
+                    
+                    // Prevent autofill styling
+                    el.addEventListener('animationstart', function(e) {
+                        if (e.animationName === 'onAutoFillStart') {
+                            this.style.background = 'rgba(255, 255, 255, 0.05)';
+                            this.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                            this.style.color = '#E8F0D6';
+                        }
+                    });
+                }
+            });
+        }
+
         // Initialize particles when page loads
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
             setupPasswordToggles();
-            // Debug input computed styles
-            try {
-                const ids = ['username', 'email', 'password', 'username_register', 'email_register', 'password_register'];
-                ids.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) {
-                        // Force inline dark style to override external CSS on load
-                        el.style.background = 'rgba(255, 255, 255, 0.05)';
-                        el.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                        el.style.color = '#E8F0D6';
-                        el.style.border = '1px solid rgba(161, 180, 84, 0.3)';
-                        const cs = getComputedStyle(el);
-                        console.log('[input-debug]', id, {
-                            backgroundColor: cs.backgroundColor,
-                            color: cs.color,
-                            border: cs.border,
-                            boxShadow: cs.boxShadow
-                        });
-                    }
-                });
-            } catch (err) {
-                console.warn('[input-debug] failed', err);
-            }
+            forceDarkStyling();
+            
+            // Re-apply styling periodically to prevent autofill override
+            setInterval(forceDarkStyling, 1000);
         });
 
         // Authentication related code
