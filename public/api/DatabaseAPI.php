@@ -5303,6 +5303,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 error_log("  - Users found: " . count($users));
                 
+                // Apply the same age filtering as the donut chart (0-71 months for WHO standards)
+                $users = $db->filterUsersByAgeEligibility($users, 'weight-for-age');
+                
+                error_log("  - Users after age filtering: " . count($users));
+                
                 if (empty($users)) {
                     echo json_encode([
                         'success' => true,
@@ -5401,89 +5406,80 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             // Calculate age in months (same as other WHO functions)
                             $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                             
-                            // Apply age restrictions (same as other WHO functions)
-                            $shouldProcess = false;
-                            $whoStandard = 'weight-for-age'; // Default to WFA for age classification
+                            // Users are already filtered by age eligibility, so process all
+                            $assessment = $who->getComprehensiveAssessment(
+                                floatval($user['weight_kg']), 
+                                floatval($user['height_cm']), 
+                                $user['birthday'], 
+                                $user['sex'],
+                                $user['screening_date'] ?? null
+                            );
                             
-                            if ($ageInMonths >= 0 && $ageInMonths <= 71) {
-                                $shouldProcess = true;
-                            }
-                            
-                            if ($shouldProcess) {
-                                $assessment = $who->getComprehensiveAssessment(
-                                    floatval($user['weight_kg']), 
-                                    floatval($user['height_cm']), 
-                                    $user['birthday'], 
-                                    $user['sex'],
-                                    $user['screening_date'] ?? null
-                                );
+                            if ($assessment['success'] && isset($assessment['results'])) {
+                                $results = $assessment['results'];
                                 
-                                if ($assessment['success'] && isset($assessment['results'])) {
-                                    $results = $assessment['results'];
-                                    
-                                    // Get the most severe classification from all standards
-                                    $classifications = [];
-                                    
-                                    // Weight-for-Age (WFA)
-                                    if (isset($results['weight_for_age']['classification'])) {
-                                        $wfa = $results['weight_for_age']['classification'];
-                                        if ($wfa === 'Severely Underweight') {
-                                            $classifications[] = 'Severely Underweight';
-                                        } elseif ($wfa === 'Underweight') {
-                                            $classifications[] = 'Underweight';
-                                        } elseif ($wfa === 'Overweight') {
-                                            $classifications[] = 'Overweight';
-                                        } elseif ($wfa === 'Obese') {
-                                            $classifications[] = 'Obese';
-                                        } else {
-                                            $classifications[] = 'Normal';
-                                        }
-                                    }
-                                    
-                                    // Height-for-Age (HFA)
-                                    if (isset($results['height_for_age']['classification'])) {
-                                        $hfa = $results['height_for_age']['classification'];
-                                        if ($hfa === 'Severely Stunted') {
-                                            $classifications[] = 'Severely Stunted';
-                                        } elseif ($hfa === 'Stunted') {
-                                            $classifications[] = 'Stunted';
-                                        } elseif ($hfa === 'Tall') {
-                                            $classifications[] = 'Tall';
-                                        }
-                                    }
-                                    
-                                    // Weight-for-Height (WFH)
-                                    if (isset($results['weight_for_height']['classification'])) {
-                                        $wfh = $results['weight_for_height']['classification'];
-                                        if ($wfh === 'Severely Wasted') {
-                                            $classifications[] = 'Severely Wasted';
-                                        } elseif ($wfh === 'Wasted') {
-                                            $classifications[] = 'Wasted';
-                                        }
-                                    }
-                                    
-                                    // Use the most severe classification
-                                    if (in_array('Severely Underweight', $classifications)) {
-                                        $classification = 'Severely Underweight';
-                                    } elseif (in_array('Severely Stunted', $classifications)) {
-                                        $classification = 'Severely Stunted';
-                                    } elseif (in_array('Severely Wasted', $classifications)) {
-                                        $classification = 'Severely Wasted';
-                                    } elseif (in_array('Underweight', $classifications)) {
-                                        $classification = 'Underweight';
-                                    } elseif (in_array('Stunted', $classifications)) {
-                                        $classification = 'Stunted';
-                                    } elseif (in_array('Wasted', $classifications)) {
-                                        $classification = 'Wasted';
-                                    } elseif (in_array('Overweight', $classifications)) {
-                                        $classification = 'Overweight';
-                                    } elseif (in_array('Obese', $classifications)) {
-                                        $classification = 'Obese';
-                                    } elseif (in_array('Tall', $classifications)) {
-                                        $classification = 'Tall';
+                                // Get the most severe classification from all standards
+                                $classifications = [];
+                                
+                                // Weight-for-Age (WFA)
+                                if (isset($results['weight_for_age']['classification'])) {
+                                    $wfa = $results['weight_for_age']['classification'];
+                                    if ($wfa === 'Severely Underweight') {
+                                        $classifications[] = 'Severely Underweight';
+                                    } elseif ($wfa === 'Underweight') {
+                                        $classifications[] = 'Underweight';
+                                    } elseif ($wfa === 'Overweight') {
+                                        $classifications[] = 'Overweight';
+                                    } elseif ($wfa === 'Obese') {
+                                        $classifications[] = 'Obese';
                                     } else {
-                                        $classification = 'Normal';
+                                        $classifications[] = 'Normal';
                                     }
+                                }
+                                
+                                // Height-for-Age (HFA)
+                                if (isset($results['height_for_age']['classification'])) {
+                                    $hfa = $results['height_for_age']['classification'];
+                                    if ($hfa === 'Severely Stunted') {
+                                        $classifications[] = 'Severely Stunted';
+                                    } elseif ($hfa === 'Stunted') {
+                                        $classifications[] = 'Stunted';
+                                    } elseif ($hfa === 'Tall') {
+                                        $classifications[] = 'Tall';
+                                    }
+                                }
+                                
+                                // Weight-for-Height (WFH)
+                                if (isset($results['weight_for_height']['classification'])) {
+                                    $wfh = $results['weight_for_height']['classification'];
+                                    if ($wfh === 'Severely Wasted') {
+                                        $classifications[] = 'Severely Wasted';
+                                    } elseif ($wfh === 'Wasted') {
+                                        $classifications[] = 'Wasted';
+                                    }
+                                }
+                                
+                                // Use the most severe classification
+                                if (in_array('Severely Underweight', $classifications)) {
+                                    $classification = 'Severely Underweight';
+                                } elseif (in_array('Severely Stunted', $classifications)) {
+                                    $classification = 'Severely Stunted';
+                                } elseif (in_array('Severely Wasted', $classifications)) {
+                                    $classification = 'Severely Wasted';
+                                } elseif (in_array('Underweight', $classifications)) {
+                                    $classification = 'Underweight';
+                                } elseif (in_array('Stunted', $classifications)) {
+                                    $classification = 'Stunted';
+                                } elseif (in_array('Wasted', $classifications)) {
+                                    $classification = 'Wasted';
+                                } elseif (in_array('Overweight', $classifications)) {
+                                    $classification = 'Overweight';
+                                } elseif (in_array('Obese', $classifications)) {
+                                    $classification = 'Obese';
+                                } elseif (in_array('Tall', $classifications)) {
+                                    $classification = 'Tall';
+                                } else {
+                                    $classification = 'Normal';
                                 }
                             }
                         } catch (Exception $e) {
