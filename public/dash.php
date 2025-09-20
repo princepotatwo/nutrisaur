@@ -9054,7 +9054,9 @@ body {
                 }
 
                 // Extract data from API response
-                const { ageGroups, classifications, chartData } = data.data;
+                const { ageGroups, classifications, chartData, totalUsers, populationIncrement } = data.data;
+                
+                console.log('📊 Population data:', { totalUsers, populationIncrement });
                 
                 // Color mapping for nutritional classifications
                 const colors = {
@@ -9098,7 +9100,8 @@ body {
                         totalDataPoints++;
                         if (value > 0) {
                             nonZeroDataPoints++;
-                            console.log(`✅ Data point: ${dataset.label} at ${ageGroups[dataIndex]}: ${value} users`);
+                            const actualUsers = value * populationIncrement;
+                            console.log(`✅ Data point: ${dataset.label} at ${ageGroups[dataIndex]}: ${actualUsers} users (${value} increment${value !== 1 ? 's' : ''})`);
                         }
                     });
                 });
@@ -9182,12 +9185,14 @@ body {
                                         return `Age Group: ${context[0].label}`;
                                     },
                                     label: function(context) {
-                                        const value = context.parsed.y;
-                                        return `${context.dataset.label}: ${value} user${value !== 1 ? 's' : ''}`;
+                                        const populationValue = context.parsed.y;
+                                        const actualUsers = populationValue * populationIncrement;
+                                        return `${context.dataset.label}: ${actualUsers} user${actualUsers !== 1 ? 's' : ''} (${populationValue} increment${populationValue !== 1 ? 's' : ''})`;
                                     },
                                     afterBody: function(context) {
-                                        const total = context.reduce((sum, item) => sum + item.parsed.y, 0);
-                                        return `Total: ${total} user${total !== 1 ? 's' : ''}`;
+                                        const totalPopulation = context.reduce((sum, item) => sum + item.parsed.y, 0);
+                                        const totalActualUsers = totalPopulation * populationIncrement;
+                                        return `Total: ${totalActualUsers} user${totalActualUsers !== 1 ? 's' : ''} (${totalPopulation} increment${totalPopulation !== 1 ? 's' : ''})`;
                                     }
                                 }
                             }
@@ -9218,6 +9223,7 @@ body {
                             },
                             y: {
                                 beginAtZero: true,
+                                max: 10,
                                 ticks: {
                                     stepSize: 1,
                                     font: {
@@ -9225,12 +9231,13 @@ body {
                                     },
                                     color: '#666',
                                     callback: function(value) {
-                                        return value + ' user' + (value !== 1 ? 's' : '');
+                                        // Show population increment values (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+                                        return value;
                                     }
                                 },
                                 title: {
                                     display: true,
-                                    text: 'Number of Users',
+                                    text: `Population (${populationIncrement} users per increment)`,
                                     font: {
                                         size: 12,
                                         weight: 'bold'

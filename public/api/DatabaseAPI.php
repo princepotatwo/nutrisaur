@@ -5645,12 +5645,21 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
-                // Prepare data for Chart.js line chart
+                // Calculate total users for population increment calculation
+                $totalUsers = count($users);
+                
+                // Calculate population increment (10 rows max)
+                $populationIncrement = max(1, ceil($totalUsers / 10));
+                
+                // Prepare data for Chart.js line chart with population increments
                 $lineChartData = [];
                 foreach ($classifications as $classification) {
                     $lineChartData[$classification] = [];
                     foreach ($ageGroups as $ageGroup => $range) {
-                        $lineChartData[$classification][] = $chartData[$ageGroup][$classification] ?? 0;
+                        $rawCount = $chartData[$ageGroup][$classification] ?? 0;
+                        // Convert to population increment (1, 2, 3, 4, 5, 6, 7, 8, 9, 10 or 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, etc.)
+                        $populationValue = min(10, ceil($rawCount / $populationIncrement));
+                        $lineChartData[$classification][] = $populationValue;
                     }
                 }
                 
@@ -5660,7 +5669,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'ageGroups' => array_keys($ageGroups),
                         'classifications' => $classifications,
                         'chartData' => $lineChartData,
-                        'rawData' => $chartData
+                        'rawData' => $chartData,
+                        'totalUsers' => $totalUsers,
+                        'populationIncrement' => $populationIncrement
                     ]
                 ]);
                 
