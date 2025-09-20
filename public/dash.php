@@ -85,14 +85,13 @@ function getNutritionalAssessment($user) {
 }
 
 // Function to get nutritional statistics based on actual data
-function getNutritionalStatistics($db, $timeFrame, $barangay = null) {
+function getNutritionalStatistics($db, $barangay = null) {
     try {
         error_log("🔍 Nutritional Statistics Debug - Starting");
-        error_log("  - Time Frame: $timeFrame");
         error_log("  - Barangay: " . ($barangay ?: 'null'));
         
         // Get users data using the same method as other functions
-        $users = getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay);
+        $users = getScreeningResponsesByTimeFrame($db, $barangay);
         error_log("  - Total users found: " . count($users));
         
         $stats = [
@@ -205,7 +204,6 @@ function getNutritionalStatistics($db, $timeFrame, $barangay = null) {
         return [
             'success' => true,
             'statistics' => $stats,
-            'time_frame' => $timeFrame,
             'barangay' => $barangay
         ];
         
@@ -215,22 +213,20 @@ function getNutritionalStatistics($db, $timeFrame, $barangay = null) {
             'success' => false,
             'statistics' => [],
             'total_users' => 0,
-            'time_frame' => $timeFrame,
             'barangay' => $barangay
         ];
     }
 }
 
 // NEW: Function to get WHO classification data for donut chart using decision tree
-function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandard = 'weight-for-age') {
+function getWHOClassificationData($db, $barangay = null, $whoStandard = 'weight-for-age') {
     try {
         error_log("🔍 WHO Classification Debug - Starting");
-        error_log("  - Time Frame: $timeFrame");
         error_log("  - Barangay: " . ($barangay ?: 'null'));
         error_log("  - WHO Standard: $whoStandard");
         
         // Get users data using the same method as other functions
-        $users = getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay);
+        $users = getScreeningResponsesByTimeFrame($db, $barangay);
         error_log("  - Total users found: " . count($users));
         
         // Count classifications for the selected WHO standard
@@ -444,10 +440,9 @@ function formatDatePHP($dateString, $format = 'relative') {
     }
 }
 
-// NEW: Function to get time frame data from community_users table with nutritional assessments
-function getTimeFrameData($db, $timeFrame, $barangay = null, $dbAPI = null) {
+// NEW: Function to get data from community_users table with nutritional assessments
+function getTimeFrameData($db, $barangay = null, $dbAPI = null) {
     error_log("🔍 getTimeFrameData Debug - Starting");
-    error_log("  - Time frame: $timeFrame (ignored - getting all users)");
     error_log("  - Barangay: " . ($barangay ?: 'null'));
     
     try {
@@ -572,38 +567,15 @@ function getTimeFrameData($db, $timeFrame, $barangay = null, $dbAPI = null) {
 }
 
 // NEW: Function to get screening responses by time frame using community_users with assessments
-function getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay = null) {
+function getScreeningResponsesByTimeFrame($db, $barangay = null) {
     $now = new DateTime();
-    $startDate = new DateTime();
-    
-    // Calculate start date based on time frame
-    switch($timeFrame) {
-        case '1d':
-            $startDate->modify('-1 day');
-            break;
-        case '1w':
-            $startDate->modify('-1 week');
-            break;
-        case '1m':
-            $startDate->modify('-1 month');
-            break;
-        case '3m':
-            $startDate->modify('-3 months');
-            break;
-        case '1y':
-            $startDate->modify('-1 year');
-            break;
-        default:
-            $startDate->modify('-1 day');
-    }
-    
-    $startDateStr = $startDate->format('Y-m-d H:i:s');
+    $startDateStr = 'All Time';
     $endDateStr = $now->format('Y-m-d H:i:s');
     
     try {
-        // Build the WHERE clause for DatabaseHelper
-        $whereClause = "screening_date BETWEEN ? AND ?";
-        $params = [$startDateStr, $endDateStr];
+        // Build the WHERE clause for DatabaseHelper - get all data
+        $whereClause = "1=1";
+        $params = [];
         
         if ($barangay && $barangay !== '') {
             $whereClause .= " AND barangay = ?";
@@ -726,7 +698,6 @@ function getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay = null) {
             'age_groups' => $ageGroupsFormatted,
             'risk_levels' => $riskLevelsFormatted,
             'nutritional_status' => $nutritionalStatusFormatted,
-            'time_frame' => $timeFrame,
             'start_date' => $startDateStr,
             'end_date' => $endDateStr
         ];
@@ -737,7 +708,6 @@ function getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay = null) {
             'age_groups' => [],
             'risk_levels' => [],
             'nutritional_status' => [],
-            'time_frame' => $timeFrame,
             'start_date' => $startDateStr,
             'end_date' => $endDateStr
         ];
@@ -774,11 +744,10 @@ try {
             $goals = $goalsResult['data'][0];
         }
         
-        $currentTimeFrame = '1d';
         $currentBarangay = '';
-        $timeFrameData = getTimeFrameData($db, $currentTimeFrame, $currentBarangay, $dbAPI);
-        $screeningResponsesData = getScreeningResponsesByTimeFrame($db, $currentTimeFrame, $currentBarangay);
-        $nutritionalStatistics = getNutritionalStatistics($db, $currentTimeFrame, $currentBarangay);
+        $timeFrameData = getTimeFrameData($db, $currentBarangay, $dbAPI);
+        $screeningResponsesData = getScreeningResponsesByTimeFrame($db, $currentBarangay);
+        $nutritionalStatistics = getNutritionalStatistics($db, $currentBarangay);
         
         // Get geographic distribution data using the same strategy as settings.php
         $geographicDistributionData = getGeographicDistributionData($db, $municipalities);
@@ -1650,26 +1619,6 @@ header .user-info {
     box-shadow: 0 0 0 2px rgba(102, 187, 106, 0.1);
 }
 
-.light-theme .time-btn {
-    background-color: white;
-    color: var(--color-text);
-    border-color: var(--color-border);
-    transition: all 0.3s ease;
-}
-
-.light-theme .time-btn.active {
-    background-color: var(--color-highlight);
-    color: white;
-    border-color: var(--color-highlight);
-}
-
-.light-theme .time-btn:hover {
-    background-color: var(--color-accent1);
-    color: white;
-    border-color: var(--color-accent1);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.2);
-}
 
 .light-theme .card {
     background-color: var(--color-card);
@@ -5185,14 +5134,6 @@ header .user-info {
     color: #1B3A1B !important;
 }
 
-.light-theme .time-btn {
-    color: #1B3A1B !important;
-}
-
-.light-theme .time-btn.active {
-    background-color: var(--color-highlight) !important;
-    color: #1B3A1B !important;
-}
 
 .light-theme .custom-select-container .select-header {
     color: #1B3A1B !important;
@@ -5593,31 +5534,6 @@ header .user-info {
     min-width: 200px;
 }
 
-.time-frame-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.time-btn {
-    background-color: var(--color-accent3);
-    color: var(--color-text);
-    border: 1px solid var(--color-accent3);
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.time-btn.active {
-    background-color: var(--color-highlight);
-    color: var(--color-bg);
-    border-color: var(--color-highlight);
-    font-weight: bold;
-}
-
-.time-btn:hover {
-    background-color: var(--color-accent2);
-}
 
 .card-container {
     display: grid;
@@ -7109,16 +7025,6 @@ body {
                     </div>
                 </div>
             </div>
-            <div class="filter-group">
-                <label>Time Frame:</label>
-                <div class="time-frame-buttons">
-                    <button class="time-btn active" data-timeframe="1d">1 Day</button>
-                    <button class="time-btn" data-timeframe="1w">1 Week</button>
-                    <button class="time-btn" data-timeframe="1m">1 Month</button>
-                    <button class="time-btn" data-timeframe="3m">3 Months</button>
-                    <button class="time-btn" data-timeframe="1y">1 Year</button>
-                </div>
-            </div>
         </div>
 
 
@@ -7129,7 +7035,7 @@ body {
                 <h2>Total Screened</h2>
                 <div class="metric-value" id="community-total-screened"><?php echo $timeFrameData['total_screened']; ?></div>
                 <div class="metric-change" id="community-screened-change">
-                    <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
+                    All Time Data
                 </div>
                 <div class="metric-note">Children & adults screened in selected time frame</div>
             </div>
@@ -7137,7 +7043,7 @@ body {
                 <h2>Severely Underweight</h2>
                 <div class="metric-value" id="community-high-risk"><?php echo $timeFrameData['high_risk_cases']; ?></div>
                 <div class="metric-change" id="community-risk-change">
-                    <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
+                    All Time Data
                 </div>
                 <div class="metric-note">Children with severely underweight status (Weight-for-Age)</div>
             </div>
@@ -7145,7 +7051,7 @@ body {
                 <h2>Severely Stunted</h2>
                 <div class="metric-value" id="community-sam-cases"><?php echo $timeFrameData['sam_cases']; ?></div>
                 <div class="metric-change" id="community-sam-change">
-                    <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
+                    All Time Data
                 </div>
                 <div class="metric-note">Children with severely stunted status (Height-for-Age)</div>
             </div>
@@ -7153,7 +7059,7 @@ body {
                 <h2>Severely Wasted</h2>
                 <div class="metric-value" id="community-critical-muac"><?php echo $timeFrameData['critical_muac']; ?></div>
                 <div class="metric-change" id="community-muac-change">
-                    <?php echo $timeFrameData['start_date_formatted']; ?> - <?php echo $timeFrameData['end_date_formatted']; ?>
+                    All Time Data
                 </div>
                 <div class="metric-note">Children with severely wasted status (Weight-for-Height)</div>
             </div>
@@ -9015,12 +8921,11 @@ body {
                 trendsChart.innerHTML = '';
 
                 // Get current filter values
-                const timeFrame = document.querySelector('.time-btn.active')?.dataset.timeframe || '1d';
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
                 // OPTIMIZED: Fetch all classifications using bulk API
-                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangayValue}`;
+                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=${barangayValue}`;
                 console.log('Fetching all classifications from bulk API:', url);
                 
                 const response = await fetch(url);
@@ -9150,12 +9055,11 @@ body {
                 }
 
                 // Get current filter values
-                const timeFrame = document.querySelector('.time-btn.active')?.dataset.timeframe || '1d';
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
                 // Fetch age classification chart data from our new API endpoint
-                const url = `/api/DatabaseAPI.php?action=get_age_classification_chart&barangay=${barangayValue}&time_frame=${timeFrame}`;
+                const url = `/api/DatabaseAPI.php?action=get_age_classification_chart&barangay=${barangayValue}`;
                 console.log('Fetching age classification chart data from:', url);
                 
                 const response = await fetch(url);
@@ -9502,12 +9406,11 @@ body {
                 }
 
                 // Get current filter values
-                const timeFrame = document.querySelector('.time-btn.active')?.dataset.timeframe || '1d';
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
                 // Call the API with age range parameters
-                const url = `/api/DatabaseAPI.php?action=get_age_classification_chart&barangay=${barangayValue}&time_frame=${timeFrame}&from_months=${fromMonths}&to_months=${toMonths}`;
+                const url = `/api/DatabaseAPI.php?action=get_age_classification_chart&barangay=${barangayValue}&from_months=${fromMonths}&to_months=${toMonths}`;
                 console.log('Fetching age classification chart data from:', url);
                 
                 const response = await fetch(url);
@@ -9889,13 +9792,12 @@ body {
             console.log('📊 Dropdown value:', select ? select.value : 'N/A');
             
             try {
-                // Get current time frame and barangay
-                const timeFrame = '1d';
+                // Get current barangay
                 const barangay = '';
                 
                 console.log('📡 Fetching WHO data...');
                 // Fetch WHO classification data
-                const response = await fetchWHOClassificationData(selectedStandard, timeFrame, barangay);
+                const response = await fetchWHOClassificationData(selectedStandard, barangay);
                 console.log('📊 Data received for chart update:', response);
                 
                 // Update the chart with the correct data structure
@@ -9913,12 +9815,12 @@ body {
         }
 
         // Function to fetch WHO classification data
-        async function fetchWHOClassificationData(whoStandard, timeFrame, barangay) {
+        async function fetchWHOClassificationData(whoStandard, barangay) {
             try {
-                console.log('Fetching WHO data for:', { whoStandard, timeFrame, barangay });
+                console.log('Fetching WHO data for:', { whoStandard, barangay });
                 
                 // OPTIMIZED: Use bulk API and extract specific standard with age filtering
-                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&time_frame=${timeFrame}&barangay=${barangay}&who_standard=${whoStandard}`;
+                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=${barangay}&who_standard=${whoStandard}`;
                 console.log('API URL (bulk):', url);
                 
                 const response = await fetch(url);
@@ -10181,28 +10083,6 @@ body {
                 console.log('📊 Loading initial age classification chart...');
                 await updateAgeClassificationChart();
                 
-                // Set up time frame button event listeners
-                const timeButtons = document.querySelectorAll('.time-btn');
-                timeButtons.forEach(button => {
-                    button.addEventListener('click', async function() {
-                        // Remove active class from all buttons
-                        timeButtons.forEach(btn => btn.classList.remove('active'));
-                        // Add active class to clicked button
-                        this.classList.add('active');
-                        
-                        console.log('Time frame changed to:', this.textContent.trim());
-                        
-                        // Update trends chart with new time frame
-                        await updateTrendsChart();
-                        
-                        // Update age classification chart with new time frame
-                        await updateAgeClassificationChart();
-                        
-                        // Update other charts and metrics
-                        await handleWHOStandardChange();
-                        await updateCommunityMetrics('');
-                    });
-                });
                 
                 // Load initial dashboard metrics and geographic distribution
                 console.log('🔄 Loading initial dashboard metrics and geographic distribution...');
