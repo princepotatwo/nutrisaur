@@ -84,6 +84,128 @@ function getNutritionalAssessment($user) {
     }
 }
 
+// Function to get nutritional statistics based on actual data
+function getNutritionalStatistics($db, $timeFrame, $barangay = null) {
+    try {
+        error_log("🔍 Nutritional Statistics Debug - Starting");
+        error_log("  - Time Frame: $timeFrame");
+        error_log("  - Barangay: " . ($barangay ?: 'null'));
+        
+        // Get users data using the same method as other functions
+        $users = getScreeningResponsesByTimeFrame($db, $timeFrame, $barangay);
+        error_log("  - Total users found: " . count($users));
+        
+        $stats = [
+            'bmi_categories' => [
+                'Underweight' => 0,
+                'Normal' => 0,
+                'Overweight' => 0,
+                'Obese' => 0,
+                'No Data' => 0
+            ],
+            'sex_distribution' => [
+                'Male' => 0,
+                'Female' => 0,
+                'Other' => 0
+            ],
+            'weight_ranges' => [
+                'Under 10kg' => 0,
+                '10-20kg' => 0,
+                '20-40kg' => 0,
+                '40-60kg' => 0,
+                '60kg+' => 0,
+                'No Data' => 0
+            ],
+            'height_ranges' => [
+                'Under 100cm' => 0,
+                '100-120cm' => 0,
+                '120-150cm' => 0,
+                '150-170cm' => 0,
+                '170cm+' => 0,
+                'No Data' => 0
+            ],
+            'municipality_distribution' => [],
+            'total_users' => count($users)
+        ];
+        
+        foreach ($users as $user) {
+            // BMI Categories
+            if (!empty($user['bmi_category'])) {
+                $stats['bmi_categories'][$user['bmi_category']]++;
+            } else {
+                $stats['bmi_categories']['No Data']++;
+            }
+            
+            // Sex Distribution
+            if (!empty($user['sex'])) {
+                $stats['sex_distribution'][$user['sex']]++;
+            }
+            
+            // Weight Ranges (using 'weight' column, not 'weight_kg')
+            if (!empty($user['weight'])) {
+                $weight = floatval($user['weight']);
+                if ($weight < 10) {
+                    $stats['weight_ranges']['Under 10kg']++;
+                } elseif ($weight < 20) {
+                    $stats['weight_ranges']['10-20kg']++;
+                } elseif ($weight < 40) {
+                    $stats['weight_ranges']['20-40kg']++;
+                } elseif ($weight < 60) {
+                    $stats['weight_ranges']['40-60kg']++;
+                } else {
+                    $stats['weight_ranges']['60kg+']++;
+                }
+            } else {
+                $stats['weight_ranges']['No Data']++;
+            }
+            
+            // Height Ranges (using 'height' column, not 'height_cm')
+            if (!empty($user['height'])) {
+                $height = floatval($user['height']);
+                if ($height < 100) {
+                    $stats['height_ranges']['Under 100cm']++;
+                } elseif ($height < 120) {
+                    $stats['height_ranges']['100-120cm']++;
+                } elseif ($height < 150) {
+                    $stats['height_ranges']['120-150cm']++;
+                } elseif ($height < 170) {
+                    $stats['height_ranges']['150-170cm']++;
+                } else {
+                    $stats['height_ranges']['170cm+']++;
+                }
+            } else {
+                $stats['height_ranges']['No Data']++;
+            }
+            
+            // Municipality Distribution
+            if (!empty($user['municipality'])) {
+                if (!isset($stats['municipality_distribution'][$user['municipality']])) {
+                    $stats['municipality_distribution'][$user['municipality']] = 0;
+                }
+                $stats['municipality_distribution'][$user['municipality']]++;
+            }
+        }
+        
+        error_log("🔍 Nutritional Statistics generated successfully");
+        return [
+            'success' => true,
+            'statistics' => $stats,
+            'time_frame' => $timeFrame,
+            'barangay' => $barangay
+        ];
+        
+    } catch (Exception $e) {
+        error_log("Error getting nutritional statistics: " . $e->getMessage());
+        return [
+            'success' => false,
+            'statistics' => [],
+            'total_users' => 0,
+            'time_frame' => $timeFrame,
+            'barangay' => $barangay
+        ];
+    }
+}
+
 // NEW: Function to get WHO classification data for donut chart using decision tree
 function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandard = 'weight-for-age') {
     try {
@@ -641,6 +763,7 @@ try {
         $currentBarangay = '';
         $timeFrameData = getTimeFrameData($db, $currentTimeFrame, $currentBarangay, $dbAPI);
         $screeningResponsesData = getScreeningResponsesByTimeFrame($db, $currentTimeFrame, $currentBarangay);
+        $nutritionalStatistics = getNutritionalStatistics($db, $currentTimeFrame, $currentBarangay);
         
         // Get geographic distribution data using the same strategy as settings.php
         $geographicDistributionData = getGeographicDistributionData($db, $municipalities);
@@ -1544,7 +1667,6 @@ header .user-info {
 }
 
 /* Old theme toggle styles removed */
-}
 
 /* User avatar styles removed */
 
@@ -7130,26 +7252,26 @@ body {
             <div style="grid-column: 1 / -1; margin-bottom: 30px;">
 
                 
-                <!-- Unified Screening Responses Grid -->
+                <!-- Nutritional Assessment Statistics Grid -->
                     <div class="response-grid">
                         <div class="response-item">
-                            <div class="response-question">Age Group Distribution</div>
-                            <div class="response-answers" id="age-group-responses">
+                            <div class="response-question">BMI Categories</div>
+                            <div class="response-answers" id="bmi-categories-responses">
                             <div class="column-headers">
-                                <span class="header-label">Age Group</span>
+                                <span class="header-label">BMI Category</span>
                                 <span class="header-count">Count</span>
                                 <span class="header-percent">Percentage</span>
                             </div>
                             <div class="response-data-container">
-                                <?php if (!empty($screeningResponsesData['age_groups'])): ?>
-                                    <?php foreach ($screeningResponsesData['age_groups'] as $ageGroup): ?>
+                                <?php if (!empty($nutritionalStatistics['statistics']['bmi_categories'])): ?>
+                                    <?php foreach ($nutritionalStatistics['statistics']['bmi_categories'] as $category => $count): ?>
                                         <div class="response-answer-item">
-                                            <span class="answer-label"><?php echo htmlspecialchars($ageGroup['age_group'] ?? ''); ?></span>
-                                            <span class="answer-count"><?php echo $ageGroup['count'] ?? 0; ?></span>
+                                            <span class="answer-label"><?php echo htmlspecialchars($category); ?></span>
+                                            <span class="answer-count"><?php echo $count; ?></span>
                                             <span class="answer-percentage"><?php 
-                                                $totalScreened = $timeFrameData['total_screened'] ?? 0;
-                                                if ($totalScreened > 0) {
-                                                    echo round(($ageGroup['count'] / $totalScreened) * 100, 1);
+                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
+                                                if ($totalUsers > 0) {
+                                                    echo round(($count / $totalUsers) * 100, 1);
                                                 } else {
                                                     echo '0';
                                                 }
@@ -7157,30 +7279,31 @@ body {
                                         </div>
                                     <?php endforeach; ?>
                                 <?php else: ?>
-                                    <div class="no-data-message">No age data available for selected time frame</div>
+                                    <div class="no-data-message">No BMI data available for selected time frame</div>
                                 <?php endif; ?>
                             </div>
                             </div>
                         </div>
                         
+                        
                         <div class="response-item">
                             <div class="response-question">Gender Distribution</div>
-                            <div class="response-answers" id="gender-responses">
+                            <div class="response-answers" id="gender-distribution-responses">
                             <div class="column-headers">
                                 <span class="header-label">Gender</span>
                                 <span class="header-count">Count</span>
                                 <span class="header-percent">Percentage</span>
                             </div>
                             <div class="response-data-container">
-                                <?php if (!empty($screeningResponsesData['gender_distribution'])): ?>
-                                    <?php foreach ($screeningResponsesData['gender_distribution'] as $gender): ?>
+                                <?php if (!empty($nutritionalStatistics['statistics']['sex_distribution'])): ?>
+                                    <?php foreach ($nutritionalStatistics['statistics']['sex_distribution'] as $gender => $count): ?>
                                         <div class="response-answer-item">
-                                            <span class="answer-label"><?php echo htmlspecialchars($gender['gender']); ?></span>
-                                            <span class="answer-count"><?php echo $gender['count']; ?></span>
+                                            <span class="answer-label"><?php echo htmlspecialchars($gender); ?></span>
+                                            <span class="answer-count"><?php echo $count; ?></span>
                                             <span class="answer-percentage"><?php 
-                                                $totalScreened = $timeFrameData['total_screened'] ?? 0;
-                                                if ($totalScreened > 0) {
-                                                    echo round(($gender['count'] / $totalScreened) * 100, 1);
+                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
+                                                if ($totalUsers > 0) {
+                                                    echo round(($count / $totalUsers) * 100, 1);
                                                 } else {
                                                     echo '0';
                                                 }
@@ -7195,137 +7318,98 @@ body {
                         </div>
                         
                         <div class="response-item">
-                            <div class="response-question">Income Level Distribution</div>
-                            <div class="response-answers" id="income-responses">
+                            <div class="response-question">Weight Ranges</div>
+                            <div class="response-answers" id="weight-ranges-responses">
                             <div class="column-headers">
-                                <span class="header-label">Income Level</span>
+                                <span class="header-label">Weight Range</span>
                                 <span class="header-count">Count</span>
                                 <span class="header-percent">Percentage</span>
                             </div>
-                                                    <div class="response-data-container">
-                            <?php if (!empty($screeningResponsesData['income_levels'])): ?>
-                                <?php foreach ($screeningResponsesData['income_levels'] as $income): ?>
-                                    <div class="response-answer-item">
-                                        <span class="answer-label"><?php echo htmlspecialchars($income['income']); ?></span>
-                                        <span class="answer-count"><?php echo $income['count']; ?></span>
-                                        <span class="answer-percentage"><?php 
-                                            $totalScreened = $timeFrameData['total_screened'] ?? 0;
-                                            if ($totalScreened > 0) {
-                                                echo round(($income['count'] / $totalScreened) * 100, 1);
-                                            } else {
-                                                echo '0';
-                                            }
-                                        ?>%</span>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <div class="no-data-message">No income data available for selected time frame</div>
-                            <?php endif; ?>
-                        </div>
+                            <div class="response-data-container">
+                                <?php if (!empty($nutritionalStatistics['statistics']['weight_ranges'])): ?>
+                                    <?php foreach ($nutritionalStatistics['statistics']['weight_ranges'] as $range => $count): ?>
+                                        <div class="response-answer-item">
+                                            <span class="answer-label"><?php echo htmlspecialchars($range); ?></span>
+                                            <span class="answer-count"><?php echo $count; ?></span>
+                                            <span class="answer-percentage"><?php 
+                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
+                                                if ($totalUsers > 0) {
+                                                    echo round(($count / $totalUsers) * 100, 1);
+                                                } else {
+                                                    echo '0';
+                                                }
+                                            ?>%</span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="no-data-message">No weight data available for selected time frame</div>
+                                <?php endif; ?>
+                            </div>
                             </div>
                         </div>
                         
                         <div class="response-item">
-                            <div class="response-question">Height Distribution</div>
-                            <div class="response-answers" id="height-responses">
+                            <div class="response-question">Height Ranges</div>
+                            <div class="response-answers" id="height-ranges-responses">
                             <div class="column-headers">
                                 <span class="header-label">Height Range</span>
                                 <span class="header-count">Count</span>
                                 <span class="header-percent">Percentage</span>
                             </div>
                             <div class="response-data-container">
-                            <?php if (!empty($screeningResponsesData['height_distribution'])): ?>
-                                <?php foreach ($screeningResponsesData['height_distribution'] as $height): ?>
-                                    <div class="response-answer-item">
-                                        <span class="answer-label"><?php echo htmlspecialchars($height['height_range']); ?></span>
-                                        <span class="answer-count"><?php echo $height['count']; ?></span>
-                                        <span class="answer-percentage"><?php 
-                                            $totalScreened = $timeFrameData['total_screened'] ?? 0;
-                                            if ($totalScreened > 0) {
-                                                echo round(($height['count'] / $totalScreened) * 100, 1);
-                                            } else {
-                                                echo '0';
-                                            }
-                                        ?>%</span>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <div class="no-data-message">No height data available for selected time frame</div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-
-                        <div class="response-item">
-                            <div class="response-question">Swelling (Edema)</div>
-                            <div class="response-answers" id="swelling-responses">
-                            <div class="column-headers">
-                                <span class="header-label">Swelling Status</span>
-                                <span class="header-count">Count</span>
-                                <span class="header-percent">Percentage</span>
-                            </div>
-                            <div class="response-data-container">
-                                <div class="loading-placeholder">Loading swelling data...</div>
+                                <?php if (!empty($nutritionalStatistics['statistics']['height_ranges'])): ?>
+                                    <?php foreach ($nutritionalStatistics['statistics']['height_ranges'] as $range => $count): ?>
+                                        <div class="response-answer-item">
+                                            <span class="answer-label"><?php echo htmlspecialchars($range); ?></span>
+                                            <span class="answer-count"><?php echo $count; ?></span>
+                                            <span class="answer-percentage"><?php 
+                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
+                                                if ($totalUsers > 0) {
+                                                    echo round(($count / $totalUsers) * 100, 1);
+                                                } else {
+                                                    echo '0';
+                                                }
+                                            ?>%</span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="no-data-message">No height data available for selected time frame</div>
+                                <?php endif; ?>
                             </div>
                             </div>
                         </div>
                         
+                        
                         <div class="response-item">
-                            <div class="response-question">Weight Loss Status</div>
-                            <div class="response-answers" id="weight-loss-responses">
+                            <div class="response-question">Municipality Distribution</div>
+                            <div class="response-answers" id="municipality-distribution-responses">
                             <div class="column-headers">
-                                <span class="header-label">Weight Loss</span>
+                                <span class="header-label">Municipality</span>
                                 <span class="header-count">Count</span>
                                 <span class="header-percent">Percentage</span>
                             </div>
                             <div class="response-data-container">
-                                <div class="loading-placeholder">Loading weight loss data...</div>
+                                <?php if (!empty($nutritionalStatistics['statistics']['municipality_distribution'])): ?>
+                                    <?php foreach ($nutritionalStatistics['statistics']['municipality_distribution'] as $municipality => $count): ?>
+                                        <div class="response-answer-item">
+                                            <span class="answer-label"><?php echo htmlspecialchars($municipality); ?></span>
+                                            <span class="answer-count"><?php echo $count; ?></span>
+                                            <span class="answer-percentage"><?php 
+                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
+                                                if ($totalUsers > 0) {
+                                                    echo round(($count / $totalUsers) * 100, 1);
+                                                } else {
+                                                    echo '0';
+                                                }
+                                            ?>%</span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="no-data-message">No municipality data available for selected time frame</div>
+                                <?php endif; ?>
                             </div>
                             </div>
                         </div>
-                        
-                        <div class="response-item">
-                            <div class="response-question">Feeding Behavior</div>
-                            <div class="response-answers" id="feeding-behavior-responses">
-                            <div class="column-headers">
-                                <span class="header-label">Feeding Status</span>
-                                <span class="header-count">Count</span>
-                                <span class="header-percent">Percentage</span>
-                            </div>
-                            <div class="response-data-container">
-                                <div class="loading-placeholder">Loading feeding behavior data...</div>
-                            </div>
-                            </div>
-                        </div>
-                        
-                        <div class="response-item">
-                            <div class="response-question">Physical Signs Assessment</div>
-                            <div class="response-answers" id="physical-signs-responses">
-                            <div class="column-headers">
-                                <span class="header-label">Physical Signs</span>
-                                <span class="header-count">Count</span>
-                                <span class="header-percent">Percentage</span>
-                            </div>
-                            <div class="response-data-container">
-                                <div class="loading-placeholder">Loading physical signs data...</div>
-                            </div>
-                            </div>
-                        </div>
-                        
-                        <div class="response-item">
-                            <div class="response-question">Dietary Diversity Score</div>
-                            <div class="response-answers" id="dietary-diversity-responses">
-                            <div class="column-headers">
-                                <span class="header-label">Dietary Score</span>
-                                <span class="header-count">Count</span>
-                                <span class="header-percent">Percentage</span>
-                            </div>
-                            <div class="response-data-container">
-                                <div class="loading-placeholder">Loading dietary diversity data...</div>
-                            </div>
-                            </div>
-                        </div>
-                        
 
                     </div>
                 </div>
@@ -7334,6 +7418,10 @@ body {
     </div>
 
     <script>
+        // Make nutritional statistics available to JavaScript
+        window.nutritionalStatistics = <?php echo json_encode($nutritionalStatistics); ?>;
+        console.log('📊 Nutritional Statistics loaded:', window.nutritionalStatistics);
+        
         // Custom Dropdown Functions
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-content');
@@ -7906,11 +7994,12 @@ body {
                     }
                 }
 
-                // Update Screening Responses (Age, Gender, Income, Height, Swelling, Weight Loss, Feeding, Physical Signs, Dietary, Clinical)
-                const screeningData = await fetchDataFromAPI('detailed_screening_responses', params);
-                console.log('🔄 Screening Data received:', screeningData);
-                if (screeningData && typeof screeningData === 'object') {
-                    updateScreeningResponsesDisplay(screeningData);
+                // Update Nutritional Statistics using the new function
+                console.log('🔄 Updating Nutritional Statistics...');
+                if (window.nutritionalStatistics) {
+                    updateNutritionalStatisticsDisplay(window.nutritionalStatistics);
+                } else {
+                    console.log('❌ No nutritional statistics data available');
                 }
 
                 // Update Geographic Distribution Chart using pre-loaded data
@@ -10131,6 +10220,73 @@ body {
                 themeToggleBtn.addEventListener('click', newToggleTheme);
             }
         });
+
+        // Function to update nutritional statistics display
+        function updateNutritionalStatisticsDisplay(statistics) {
+            console.log('🔄 Updating Nutritional Statistics Display:', statistics);
+            
+            if (!statistics || !statistics.statistics) {
+                console.log('❌ No statistics data available');
+                return;
+            }
+            
+            const stats = statistics.statistics;
+            const totalUsers = stats.total_users || 0;
+            
+            // Update BMI Categories
+            updateStatisticDisplay('bmi-categories-responses', stats.bmi_categories, totalUsers);
+            
+            // Update Gender Distribution
+            updateStatisticDisplay('gender-distribution-responses', stats.sex_distribution, totalUsers);
+            
+            // Update Weight Ranges
+            updateStatisticDisplay('weight-ranges-responses', stats.weight_ranges, totalUsers);
+            
+            // Update Height Ranges
+            updateStatisticDisplay('height-ranges-responses', stats.height_ranges, totalUsers);
+            
+            // Update Municipality Distribution
+            updateStatisticDisplay('municipality-distribution-responses', stats.municipality_distribution, totalUsers);
+        }
+        
+        // Helper function to update individual statistic displays
+        function updateStatisticDisplay(containerId, data, totalUsers) {
+            const container = document.getElementById(containerId);
+            if (!container) {
+                console.log(`❌ Container not found: ${containerId}`);
+                return;
+            }
+            
+            const dataContainer = container.querySelector('.response-data-container');
+            if (!dataContainer) {
+                console.log(`❌ Data container not found in: ${containerId}`);
+                return;
+            }
+            
+            if (!data || Object.keys(data).length === 0) {
+                dataContainer.innerHTML = '<div class="no-data-message">No data available for selected time frame</div>';
+                return;
+            }
+            
+            let html = '';
+            for (const [key, count] of Object.entries(data)) {
+                const percentage = totalUsers > 0 ? round((count / totalUsers) * 100, 1) : 0;
+                html += `
+                    <div class="response-answer-item">
+                        <span class="answer-label">${key}</span>
+                        <span class="answer-count">${count}</span>
+                        <span class="answer-percentage">${percentage}%</span>
+                    </div>
+                `;
+            }
+            
+            dataContainer.innerHTML = html;
+        }
+        
+        // Helper function to round numbers
+        function round(number, decimals) {
+            return Math.round(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
+        }
     </script>
 </body>
 </html>
