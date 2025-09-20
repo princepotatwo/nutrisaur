@@ -1,0 +1,531 @@
+2025-09-20T10:33:56.000000000Z [inf]  Starting Container
+2025-09-20T10:33:56.774763252Z [err]  [Sat Sep 20 10:33:56 2025] PHP 8.1.33 Development Server (http://0.0.0.0:8080) started
+2025-09-20T10:33:57.449907158Z [err]  [Sat Sep 20 10:33:57 2025] 100.64.0.2:40297 Accepted
+2025-09-20T10:33:57.450074060Z [err]  [Sat Sep 20 10:33:57 2025] === ROUTER DEBUG ===
+2025-09-20T10:33:57.450084709Z [err]  [Sat Sep 20 10:33:57 2025] Requested path: health
+2025-09-20T10:33:57.450091513Z [err]  [Sat Sep 20 10:33:57 2025] Public path: /var/www/html/public/
+2025-09-20T10:33:57.450096817Z [err]  [Sat Sep 20 10:33:57 2025] Public API path: /var/www/html/public/api/
+2025-09-20T10:33:57.450102349Z [err]  [Sat Sep 20 10:33:57 2025] Request URI: /health
+2025-09-20T10:33:57.450108584Z [err]  [Sat Sep 20 10:33:57 2025] Script Name: /index.php
+2025-09-20T10:33:57.453714835Z [err]  [Sat Sep 20 10:33:57 2025] 100.64.0.2:40297 [200]: GET /health
+2025-09-20T10:33:57.453723643Z [err]  [Sat Sep 20 10:33:57 2025] 100.64.0.2:40297 Closing
+2025-09-20T10:34:03.102345667Z [err]  [Sat Sep 20 10:34:03 2025] 100.64.0.3:29076 Accepted
+2025-09-20T10:34:03.102361677Z [err]  [Sat Sep 20 10:34:03 2025] === ROUTER DEBUG ===
+2025-09-20T10:34:03.102366922Z [err]  [Sat Sep 20 10:34:03 2025] Requested path: 
+2025-09-20T10:34:03.102372195Z [err]  [Sat Sep 20 10:34:03 2025] Public path: /var/www/html/public/
+2025-09-20T10:34:03.102377532Z [err]  [Sat Sep 20 10:34:03 2025] Public API path: /var/www/html/public/api/
+2025-09-20T10:34:03.102381979Z [err]  [Sat Sep 20 10:34:03 2025] Request URI: /
+2025-09-20T10:34:03.102386346Z [err]  [Sat Sep 20 10:34:03 2025] Script Name: /index.php
+2025-09-20T10:34:03.115168275Z [err]  [Sat Sep 20 10:34:03 2025] 100.64.0.3:29076 [200]: GET /
+2025-09-20T10:34:03.115175013Z [err]  [Sat Sep 20 10:34:03 2025] 100.64.0.3:29076 Closing
+2025-09-20T10:34:03.179560036Z [err]  [Sat Sep 20 10:34:03 2025] 100.64.0.3:29092 Accepted
+2025-09-20T10:34:03.179566496Z [err]  [Sat Sep 20 10:34:03 2025] 100.64.0.3:29092 [200]: GET /google-oauth-config.js
+2025-09-20T10:34:03.179573704Z [err]  [Sat Sep 20 10:34:03 2025] 100.64.0.3:29092 Closing
+2025-09-20T10:34:03.278799410Z [err]  [Sat Sep 20 10:34:03 2025] 100.64.0.3:29102 Accepted
+2025-09-20T10:34:03.287610808Z [err]  [Sat Sep 20 10:34:03 2025] 100.64.0.3:29102 [200]: POST /home.php
+2025-09-20T10:34:03.287616145Z [err]  [Sat Sep 20 10:34:03 2025] 100.64.0.3:29102 Closing
+2025-09-20T10:34:23.288558675Z [err]  [Sat Sep 20 10:34:15 2025] 100.64.0.4:15914 Accepted
+2025-09-20T10:34:23.288567307Z [err]  [Sat Sep 20 10:34:16 2025] 100.64.0.4:15914 [200]: POST /home.php
+2025-09-20T10:34:23.288572434Z [err]  [Sat Sep 20 10:34:16 2025] 100.64.0.4:15914 Closing
+2025-09-20T10:34:23.288577411Z [err]  [Sat Sep 20 10:34:17 2025] 100.64.0.4:15930 Accepted
+2025-09-20T10:34:23.288583988Z [err]  [Sat Sep 20 10:34:17 2025] === ROUTER DEBUG ===
+2025-09-20T10:34:23.288593579Z [err]  [Sat Sep 20 10:34:17 2025] Requested path: dash
+2025-09-20T10:34:23.288599002Z [err]  [Sat Sep 20 10:34:17 2025] Public path: /var/www/html/public/
+2025-09-20T10:34:23.288605278Z [err]  [Sat Sep 20 10:34:17 2025] Public API path: /var/www/html/public/api/
+2025-09-20T10:34:23.288611432Z [err]  [Sat Sep 20 10:34:17 2025] Request URI: /dash
+2025-09-20T10:34:23.288616277Z [err]  [Sat Sep 20 10:34:17 2025] Script Name: /index.php
+2025-09-20T10:34:23.288620620Z [err]  [Sat Sep 20 10:34:17 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-20T10:34:23.288624809Z [err]  [Sat Sep 20 10:34:17 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-20T10:34:23.288630051Z [err]  [Sat Sep 20 10:34:17 2025] 🔍 getTimeFrameData Debug - Starting
+2025-09-20T10:34:23.288635017Z [err]  [Sat Sep 20 10:34:17 2025]   - Barangay: null
+2025-09-20T10:34:23.288639828Z [err]  [Sat Sep 20 10:34:17 2025] 🔍 getTimeFrameData Debug - Querying database
+2025-09-20T10:34:23.288644211Z [err]  [Sat Sep 20 10:34:17 2025]   - Total users in database: 89
+2025-09-20T10:34:23.288645178Z [err]  [Sat Sep 20 10:34:17 2025]   - WHERE clause: 1=1
+2025-09-20T10:34:23.288651287Z [err]  [Sat Sep 20 10:34:17 2025]   - Params: []
+2025-09-20T10:34:23.288655323Z [err]  [Sat Sep 20 10:34:17 2025]   - Users eligible for standard: 72
+2025-09-20T10:34:23.288656904Z [err]  [Sat Sep 20 10:34:17 2025]   - Query result success: YES
+2025-09-20T10:34:23.288663544Z [err]  [Sat Sep 20 10:34:17 2025]   - Users processed (with classifications): 72
+2025-09-20T10:34:23.288668435Z [err]  [Sat Sep 20 10:34:17 2025]   - Query result message: No message
+2025-09-20T10:34:23.288669300Z [err]  [Sat Sep 20 10:34:17 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":53,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":1,"Stunted":9,"Tall":9,"No Data":0}
+2025-09-20T10:34:23.288675800Z [err]  [Sat Sep 20 10:34:17 2025]   - Number of users found: 89
+2025-09-20T10:34:23.288680002Z [err]  [Sat Sep 20 10:34:17 2025] 📊 WHO Classification Summary for weight-for-age:
+2025-09-20T10:34:23.288684101Z [err]  [Sat Sep 20 10:34:17 2025]   - Total users in database: 89
+2025-09-20T10:34:23.288688674Z [err]  [Sat Sep 20 10:34:17 2025]   - Users eligible for standard: 72
+2025-09-20T10:34:23.288695749Z [err]  [Sat Sep 20 10:34:17 2025]   - Users processed (with classifications): 72
+2025-09-20T10:34:23.288701485Z [err]  [Sat Sep 20 10:34:17 2025]   - Classifications: {"Severely Underweight":21,"Underweight":12,"Normal":22,"Overweight":17,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
+2025-09-20T10:34:23.288705173Z [err]  [Sat Sep 20 10:34:18 2025] 100.64.0.4:15946 Closing
+2025-09-20T10:34:23.288706316Z [err]  [Sat Sep 20 10:34:17 2025] 📊 WHO Classification Summary for height-for-age:
+2025-09-20T10:34:23.288715579Z [err]  [Sat Sep 20 10:34:18 2025] 100.64.0.4:15962 Accepted
+2025-09-20T10:34:23.288721404Z [err]  [Sat Sep 20 10:34:19 2025] 100.64.0.4:15966 Closing
+2025-09-20T10:34:23.288724274Z [err]  [Sat Sep 20 10:34:18 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-20T10:34:23.288729179Z [err]  [Sat Sep 20 10:34:19 2025] 100.64.0.4:15982 Accepted
+2025-09-20T10:34:23.288731326Z [err]  [Sat Sep 20 10:34:18 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-20T10:34:23.288737460Z [err]  [Sat Sep 20 10:34:19 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-20T10:34:23.288739612Z [err]  [Sat Sep 20 10:34:18 2025] WHO Standard 'weight-for-age' filtering: 89 total users, 72 eligible users
+2025-09-20T10:34:23.288744997Z [err]  [Sat Sep 20 10:34:19 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-20T10:34:23.288756285Z [err]  [Sat Sep 20 10:34:18 2025] 100.64.0.4:15962 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
+2025-09-20T10:34:23.288756670Z [err]  [Sat Sep 20 10:34:17 2025] 📊 WHO Classification Summary for weight-for-height:
+2025-09-20T10:34:23.288764175Z [err]  [Sat Sep 20 10:34:18 2025] 100.64.0.4:15962 Closing
+2025-09-20T10:34:23.288766384Z [err]  [Sat Sep 20 10:34:17 2025]   - Total users in database: 89
+2025-09-20T10:34:23.288775464Z [err]  [Sat Sep 20 10:34:17 2025]   - Users eligible for standard: 72
+2025-09-20T10:34:23.288775771Z [err]  [Sat Sep 20 10:34:19 2025] 100.64.0.4:15966 Accepted
+2025-09-20T10:34:23.288778974Z [err]  [Sat Sep 20 10:34:19 2025] 🔍 Age Classification Chart API - Starting
+2025-09-20T10:34:23.288786409Z [err]  [Sat Sep 20 10:34:18 2025]   - Distribution entries created: 3
+2025-09-20T10:34:23.288786672Z [err]  [Sat Sep 20 10:34:19 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-20T10:34:23.288787352Z [err]  [Sat Sep 20 10:34:17 2025]   - Users processed (with classifications): 72
+2025-09-20T10:34:23.288796426Z [err]  [Sat Sep 20 10:34:17 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":10,"Overweight":0,"Obese":1,"Severely Wasted":57,"Wasted":4,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
+2025-09-20T10:34:23.288801350Z [err]  [Sat Sep 20 10:34:19 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-20T10:34:23.288803097Z [err]  [Sat Sep 20 10:34:18 2025]   - Final distribution: [{"barangay":"Bagumbayan","municipality":"CITY OF BALANGA","count":55},{"barangay":"Alion","municipality":"MARIVELES","count":33},{"barangay":"Calutit","municipality":"ORANI","count":1}]
+2025-09-20T10:34:23.288803261Z [err]  [Sat Sep 20 10:34:19 2025]   - Barangay: empty
+2025-09-20T10:34:23.288808043Z [err]  [Sat Sep 20 10:34:17 2025] 🔍 Nutritional Statistics Debug - Starting
+2025-09-20T10:34:23.288815143Z [err]  [Sat Sep 20 10:34:19 2025] 100.64.0.4:15966 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
+2025-09-20T10:34:23.288817353Z [err]  [Sat Sep 20 10:34:19 2025]   - Time Frame: 1d
+2025-09-20T10:34:23.288819248Z [err]  [Sat Sep 20 10:34:18 2025] 100.64.0.4:15930 [200]: GET /dash
+2025-09-20T10:34:23.288820599Z [err]  [Sat Sep 20 10:34:17 2025]   - Barangay: null
+2025-09-20T10:34:23.288828240Z [err]  [Sat Sep 20 10:34:18 2025]   - Total users found: 5
+2025-09-20T10:34:23.288828469Z [err]  [Sat Sep 20 10:34:18 2025] 100.64.0.4:15930 Closing
+2025-09-20T10:34:23.288835830Z [err]  [Sat Sep 20 10:34:18 2025] 100.64.0.4:15946 Accepted
+2025-09-20T10:34:23.288841327Z [err]  [Sat Sep 20 10:34:18 2025] 🔍 Nutritional Statistics generated successfully
+2025-09-20T10:34:23.288848270Z [err]  [Sat Sep 20 10:34:18 2025] 100.64.0.4:15946 [200]: GET /logo.png
+2025-09-20T10:34:23.288851061Z [err]  [Sat Sep 20 10:34:18 2025] PHP Warning:  Undefined variable $municipalities in /var/www/html/public/dash.php on line 753
+2025-09-20T10:34:23.288858859Z [err]  [Sat Sep 20 10:34:19 2025]   - Age Range: 0 to 71 months
+2025-09-20T10:34:23.288859172Z [err]  [Sat Sep 20 10:34:18 2025] 🔍 Geographic Distribution Debug:
+2025-09-20T10:34:23.288868390Z [err]  [Sat Sep 20 10:34:18 2025]   - Total users found: 89
+2025-09-20T10:34:23.288880088Z [err]  [Sat Sep 20 10:34:18 2025]   - Barangays with users: {"Bagumbayan":{"count":55,"municipality":"CITY OF BALANGA"},"Alion":{"count":33,"municipality":"MARIVELES"},"Calutit":{"count":1,"municipality":"ORANI"}}
+2025-09-20T10:34:23.288881957Z [err]  [Sat Sep 20 10:34:19 2025]   - Users found: 89
+2025-09-20T10:34:23.288893523Z [err]  [Sat Sep 20 10:34:19 2025]   - Users after age filtering: 72
+2025-09-20T10:34:23.288903314Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.288912198Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Tall
+2025-09-20T10:34:23.288920436Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.288930000Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 22 months in group 1.8-2.4y
+2025-09-20T10:34:23.289050238Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 1.8-2.4y (age: 22 months)
+2025-09-20T10:34:23.289059255Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Tall for age group: 1.8-2.4y (age: 22 months)
+2025-09-20T10:34:23.289064912Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 1.8-2.4y (age: 22 months)
+2025-09-20T10:34:23.289069365Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.289073992Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Tall
+2025-09-20T10:34:23.289078540Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.289082558Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 22 months in group 1.8-2.4y
+2025-09-20T10:34:23.289086603Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 1.8-2.4y (age: 22 months)
+2025-09-20T10:34:23.289090760Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Tall for age group: 1.8-2.4y (age: 22 months)
+2025-09-20T10:34:23.289095950Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 1.8-2.4y (age: 22 months)
+2025-09-20T10:34:23.289099846Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.289103897Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Tall
+2025-09-20T10:34:23.289108279Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.289113682Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 21 months in group 1.8-2.4y
+2025-09-20T10:34:23.289118877Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 1.8-2.4y (age: 21 months)
+2025-09-20T10:34:23.289123580Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Tall for age group: 1.8-2.4y (age: 21 months)
+2025-09-20T10:34:23.289134349Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 1.8-2.4y (age: 21 months)
+2025-09-20T10:34:23.289143278Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.289147723Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Severely Stunted
+2025-09-20T10:34:23.289151409Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.289155525Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 21 months in group 1.8-2.4y
+2025-09-20T10:34:23.289160840Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 1.8-2.4y (age: 21 months)
+2025-09-20T10:34:23.289164883Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Stunted for age group: 1.8-2.4y (age: 21 months)
+2025-09-20T10:34:23.289169602Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 1.8-2.4y (age: 21 months)
+2025-09-20T10:34:23.289174542Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.291663946Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291670933Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.291675308Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.291680001Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.291684588Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.291690220Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.291694932Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.291699255Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Stunted
+2025-09-20T10:34:23.291704324Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.291708533Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.291712814Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291716786Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Stunted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291722444Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291726370Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.291730600Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Stunted
+2025-09-20T10:34:23.291735201Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.291739192Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.291743589Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291749904Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Stunted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291755135Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291760890Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.291765134Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291769400Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.291773729Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.291778060Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.291782342Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.291788587Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.291794317Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.291800248Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Stunted
+2025-09-20T10:34:23.291807259Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291807712Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.291810950Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.291814691Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.291821223Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.291822339Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291827377Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291830278Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Stunted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291834246Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291840050Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291840698Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291843143Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291849228Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.291850009Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291856534Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291857095Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.291858100Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.291863352Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Wasted
+2025-09-20T10:34:23.291865199Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291867189Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.291869614Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.291872509Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.291877046Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291877368Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291882413Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.291885260Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291892263Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291892865Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Normal
+2025-09-20T10:34:23.291893500Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291897877Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291903178Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291904748Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.291905833Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.291914137Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291914385Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291914576Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291914775Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291923167Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Wasted
+2025-09-20T10:34:23.291924684Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291926076Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.291928864Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291929053Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291935681Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.291936756Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.291939185Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.291940499Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.291942511Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291943550Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291948349Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291952468Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291957033Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291957477Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291957819Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.291961003Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291966359Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291966960Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.291969948Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.291971222Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291971562Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.291981029Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.291981550Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291982391Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Wasted
+2025-09-20T10:34:23.291983051Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.291989287Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291991277Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291994514Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.291994594Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.291998108Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291998181Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.291998387Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.291998713Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292006645Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292006694Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Normal
+2025-09-20T10:34:23.292007299Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Normal
+2025-09-20T10:34:23.292011338Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.292013619Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292013989Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292014851Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292015226Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292018932Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.292021207Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292027037Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292027471Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292027975Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292029778Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292030013Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292038703Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Wasted
+2025-09-20T10:34:23.292039256Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292039439Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292043322Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292046441Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292048831Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.292052921Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292054725Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292055031Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.292058792Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292060692Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.292061636Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292062313Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292063759Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292068919Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292069227Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.292069773Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292070539Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292071890Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292074570Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292077913Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292078018Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292079699Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292086832Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292088292Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292089790Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.292090321Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292091351Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292092452Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292099290Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.292100531Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292105739Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.292110773Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.292116210Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.292120889Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.292126595Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.292132383Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292137372Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292142408Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.292149430Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292149823Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292155978Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292157944Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292162066Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.292165409Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292169318Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.292173351Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.292180479Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.292181621Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Stunted
+2025-09-20T10:34:23.292187822Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292194231Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292202788Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292213954Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.292215600Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Stunted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292220669Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292226705Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292237679Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.292240397Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292246729Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292255726Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292267933Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292268362Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.292280568Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292282264Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292290441Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292296524Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292304440Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.292310172Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292318460Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292323791Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292328097Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.292336540Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292337339Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292344255Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292351140Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.292355639Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292361460Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.292366293Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292370799Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292375516Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.292380750Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292387219Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292393125Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.292397985Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.292402058Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.292407146Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292413884Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.292415550Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292423567Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292435531Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292439775Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292447846Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292452840Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.292461312Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292464746Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292469687Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292474582Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292479249Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292482979Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292487718Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.292492199Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292496021Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292501506Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292506290Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.292510662Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.292515416Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.292519886Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.292525201Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.292531174Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.292535921Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.292540569Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.292545756Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.292552582Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295606326Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295614718Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295620679Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.295626592Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Stunted
+2025-09-20T10:34:23.295631497Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Normal
+2025-09-20T10:34:23.295637358Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.295642710Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295647824Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Stunted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295653089Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295659358Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295665110Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295671969Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295678780Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.295683765Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295689983Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295695283Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295702333Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295706203Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.295711215Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Stunted
+2025-09-20T10:34:23.295718575Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Normal
+2025-09-20T10:34:23.295720059Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295723405Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295728930Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.295735563Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295738311Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.295740315Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295740585Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295749798Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295751668Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295754195Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Stunted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295754472Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.295761705Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295765699Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295766352Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295770144Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295773566Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295777221Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295777889Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295782065Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295783189Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295784574Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295792575Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295795584Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295796529Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Stunted
+2025-09-20T10:34:23.295797586Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295797957Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295798458Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.295801314Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295805484Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295809611Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295811185Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295812541Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.295812551Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295817519Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295821991Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.295823260Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295824319Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.295824752Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.295827136Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295828459Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295830499Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295837797Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295838932Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295839040Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295840921Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295842763Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295845447Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295852315Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295854562Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295856876Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295857759Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Stunted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295858690Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.295864626Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295868588Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.295870371Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295870710Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295872065Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295875080Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295880360Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295882867Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295884252Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295887662Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.295888865Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295891612Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.295895698Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295895976Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295898206Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Stunted
+2025-09-20T10:34:23.295899293Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295902978Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.295903037Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295905205Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295912757Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.295912890Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295914417Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295916388Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.295920484Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295921564Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295928746Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.295929463Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295930917Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295933845Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295936803Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.295942507Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295942925Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295947258Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295953201Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Stunted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295954249Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.295959266Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295966173Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.295967444Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.295970890Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.295979259Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Normal
+2025-09-20T10:34:23.295982039Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 1 months in group 0-0.6y
+2025-09-20T10:34:23.295987912Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Stunted
+2025-09-20T10:34:23.295993561Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 1 months)
+2025-09-20T10:34:23.295996108Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.296002227Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 2 months in group 0-0.6y
+2025-09-20T10:34:23.296008361Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.296013832Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Stunted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.296020333Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 2 months)
+2025-09-20T10:34:23.296026075Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.296031390Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.296037125Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.296041997Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.296047734Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296053019Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296057450Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296062311Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.296067859Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.296073783Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.296080538Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.296086434Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296092190Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296098708Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296103964Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.296108743Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.296113944Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.296119463Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.296126582Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296133288Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296138165Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296143368Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Overweight
+2025-09-20T10:34:23.296150222Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.296155355Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.296160537Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.296166443Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Overweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296170648Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296176148Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296181001Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.296187107Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.296192589Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.296196997Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.296202068Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296207539Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296212560Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296220467Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.296227147Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.296232056Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.296236157Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.296241167Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296247646Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296252805Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296257882Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Severely Underweight
+2025-09-20T10:34:23.296262911Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.296267954Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.296341765Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.296347594Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296353496Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296359466Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296366166Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFA classification: Underweight
+2025-09-20T10:34:23.296371630Z [err]  [Sat Sep 20 10:34:19 2025]   - Added HFA classification: Normal
+2025-09-20T10:34:23.296376239Z [err]  [Sat Sep 20 10:34:19 2025]   - Added WFH classification: Severely Wasted
+2025-09-20T10:34:23.296380696Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:23.296388147Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Underweight for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296393971Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Normal for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.296399289Z [err]  [Sat Sep 20 10:34:19 2025]   - User classification: Severely Wasted for age group: 0-0.6y (age: 0 months)
+2025-09-20T10:34:23.298103330Z [err]  [Sat Sep 20 10:34:19 2025]   - Processing 3 classifications for user age 0 months in group 0-0.6y
+2025-09-20T10:34:37.833655688Z [err]  Railway rate limit of 500 logs/sec reached for replica, update your application to reduce the logging rate. Messages dropped: 87

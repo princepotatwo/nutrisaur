@@ -749,9 +749,6 @@ try {
         $screeningResponsesData = getScreeningResponsesByTimeFrame($db, $currentBarangay);
         $nutritionalStatistics = getNutritionalStatistics($db, $currentBarangay);
         
-        // Get geographic distribution data using the same strategy as settings.php
-        $geographicDistributionData = getGeographicDistributionData($db, $municipalities);
-        
         // Get barangay list for dropdown using DatabaseHelper
         $barangayResult = $db->select('community_users', 'DISTINCT barangay', "barangay IS NOT NULL AND barangay != ''", [], 'barangay');
         $barangays = $barangayResult['success'] ? array_column($barangayResult['data'], 'barangay') : [];
@@ -771,6 +768,9 @@ try {
             'PILAR' => ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Burgos', 'Del Rosario (Pob.)', 'Diwa', 'Landing', 'Liyang', 'Nagwaling', 'Panilao', 'Pantingan', 'Poblacion', 'Rizal (Pob.)', 'Santa Rosa', 'Wakas North', 'Wakas South', 'Wawa'],
             'SAMAL' => ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan (Pob.)', 'San Roque (Pob.)', 'Santa Lucia', 'Sapa', 'Tabing Ilog', 'Gugo', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
         ];
+
+        // Get geographic distribution data using the same strategy as settings.php
+        $geographicDistributionData = getGeographicDistributionData($db, $municipalities);
 
         // Function to get geographic distribution - show ALL barangays from database
         function getGeographicDistributionData($db, $municipalities) {
