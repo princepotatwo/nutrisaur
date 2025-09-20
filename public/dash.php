@@ -125,6 +125,7 @@ function getNutritionalStatistics($db, $timeFrame, $barangay = null) {
                 'No Data' => 0
             ],
             'municipality_distribution' => [],
+            'barangay_distribution' => [],
             'total_users' => count($users)
         ];
         
@@ -184,7 +185,21 @@ function getNutritionalStatistics($db, $timeFrame, $barangay = null) {
                 }
                 $stats['municipality_distribution'][$user['municipality']]++;
             }
+            
+            // Barangay Distribution
+            if (!empty($user['barangay'])) {
+                if (!isset($stats['barangay_distribution'][$user['barangay']])) {
+                    $stats['barangay_distribution'][$user['barangay']] = 0;
+                }
+                $stats['barangay_distribution'][$user['barangay']]++;
+            }
         }
+        
+        // Sort municipality distribution by count (descending)
+        arsort($stats['municipality_distribution']);
+        
+        // Sort barangay distribution by count (descending)
+        arsort($stats['barangay_distribution']);
         
         error_log("🔍 Nutritional Statistics generated successfully");
         return [
@@ -7410,6 +7425,37 @@ body {
                             </div>
                             </div>
                         </div>
+                        
+                        <div class="response-item">
+                            <div class="response-question">Barangay Distribution</div>
+                            <div class="response-answers" id="barangay-distribution-responses">
+                            <div class="column-headers">
+                                <span class="header-label">Barangay</span>
+                                <span class="header-count">Count</span>
+                                <span class="header-percent">Percentage</span>
+                            </div>
+                            <div class="response-data-container">
+                                <?php if (!empty($nutritionalStatistics['statistics']['barangay_distribution'])): ?>
+                                    <?php foreach ($nutritionalStatistics['statistics']['barangay_distribution'] as $barangay => $count): ?>
+                                        <div class="response-answer-item">
+                                            <span class="answer-label"><?php echo htmlspecialchars($barangay); ?></span>
+                                            <span class="answer-count"><?php echo $count; ?></span>
+                                            <span class="answer-percentage"><?php 
+                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
+                                                if ($totalUsers > 0) {
+                                                    echo round(($count / $totalUsers) * 100, 1);
+                                                } else {
+                                                    echo '0';
+                                                }
+                                            ?>%</span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="no-data-message">No barangay data available for selected time frame</div>
+                                <?php endif; ?>
+                            </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -10247,6 +10293,9 @@ body {
             
             // Update Municipality Distribution
             updateStatisticDisplay('municipality-distribution-responses', stats.municipality_distribution, totalUsers);
+            
+            // Update Barangay Distribution
+            updateStatisticDisplay('barangay-distribution-responses', stats.barangay_distribution, totalUsers);
         }
         
         // Helper function to update individual statistic displays
