@@ -2986,9 +2986,7 @@ class DatabaseAPI {
             // Initialize gender distribution array
             $genderDistribution = [
                 'Male' => 0,
-                'Female' => 0,
-                'Other' => 0,
-                'No Data' => 0
+                'Female' => 0
             ];
             
             // Process all users in one pass
@@ -2996,7 +2994,7 @@ class DatabaseAPI {
                 if (!empty($user['sex'])) {
                     $sex = ucfirst(strtolower(trim($user['sex'])));
                     
-                    // Map common variations to standard values
+                    // Map common variations to standard values - only count Male/Female
                     switch ($sex) {
                         case 'M':
                         case 'Male':
@@ -3008,18 +3006,12 @@ class DatabaseAPI {
                         case 'FEMALE':
                             $genderDistribution['Female']++;
                             break;
-                        case 'Other':
-                        case 'OTHER':
-                        case 'O':
-                            $genderDistribution['Other']++;
-                            break;
+                        // Skip all other values (Other, No Data, etc.)
                         default:
-                            $genderDistribution['No Data']++;
                             break;
                     }
-                } else {
-                    $genderDistribution['No Data']++;
                 }
+                // Skip users with empty sex field
             }
             
             return [
