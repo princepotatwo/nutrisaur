@@ -2965,6 +2965,81 @@ class DatabaseAPI {
     }
 
     /**
+     * OPTIMIZED: Get gender distribution data in bulk (no time frame)
+     * This follows the same efficient pattern as getAllWHOClassificationsBulk
+     */
+    public function getGenderDistributionBulk($barangay = '') {
+        try {
+            // Use the same method as other bulk APIs - get all users (no time filtering)
+            $users = $this->getDetailedScreeningResponses('1d', $barangay);
+            
+            if (empty($users)) {
+                return [
+                    'success' => true,
+                    'data' => [
+                        'gender_distribution' => [],
+                        'total_users' => 0
+                    ]
+                ];
+            }
+            
+            // Initialize gender distribution array
+            $genderDistribution = [
+                'Male' => 0,
+                'Female' => 0,
+                'Other' => 0,
+                'No Data' => 0
+            ];
+            
+            // Process all users in one pass
+            foreach ($users as $user) {
+                if (!empty($user['sex'])) {
+                    $sex = ucfirst(strtolower(trim($user['sex'])));
+                    
+                    // Map common variations to standard values
+                    switch ($sex) {
+                        case 'M':
+                        case 'Male':
+                        case 'MALE':
+                            $genderDistribution['Male']++;
+                            break;
+                        case 'F':
+                        case 'Female':
+                        case 'FEMALE':
+                            $genderDistribution['Female']++;
+                            break;
+                        case 'Other':
+                        case 'OTHER':
+                        case 'O':
+                            $genderDistribution['Other']++;
+                            break;
+                        default:
+                            $genderDistribution['No Data']++;
+                            break;
+                    }
+                } else {
+                    $genderDistribution['No Data']++;
+                }
+            }
+            
+            return [
+                'success' => true,
+                'data' => [
+                    'gender_distribution' => $genderDistribution,
+                    'total_users' => count($users)
+                ]
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Gender distribution bulk error: " . $e->getMessage());
+            return [
+                'success' => false, 
+                'message' => 'Bulk processing failed: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * Process BMI adult classification
      */
     private function processBMIAdult(&$classifications, $user, $ageInMonths) {
@@ -4080,6 +4155,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
             $result = $db->getBarangayDistributionBulk($barangay);
+            echo json_encode($result);
+            break;
+            
+        case 'get_gender_distribution_bulk':
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            $result = $db->getGenderDistributionBulk($barangay);
             echo json_encode($result);
             break;
             

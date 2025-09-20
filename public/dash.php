@@ -102,11 +102,6 @@ function getNutritionalStatistics($db, $barangay = null) {
                 'Obese' => 0,
                 'No Data' => 0
             ],
-            'sex_distribution' => [
-                'Male' => 0,
-                'Female' => 0,
-                'Other' => 0
-            ],
             'weight_ranges' => [
                 'Under 10kg' => 0,
                 '10-20kg' => 0,
@@ -136,10 +131,6 @@ function getNutritionalStatistics($db, $barangay = null) {
                 $stats['bmi_categories']['No Data']++;
             }
             
-            // Sex Distribution
-            if (!empty($user['sex'])) {
-                $stats['sex_distribution'][$user['sex']]++;
-            }
             
             // Weight Ranges (using 'weight' column, not 'weight_kg')
             if (!empty($user['weight'])) {
@@ -7210,31 +7201,7 @@ body {
                         <div class="response-item">
                             <div class="response-question">Gender Distribution</div>
                             <div class="response-answers" id="gender-distribution-responses">
-                            <div class="column-headers">
-                                <span class="header-label">Gender</span>
-                                <span class="header-count">Count</span>
-                                <span class="header-percent">Percentage</span>
-                            </div>
-                            <div class="response-data-container">
-                                <?php if (!empty($nutritionalStatistics['statistics']['sex_distribution'])): ?>
-                                    <?php foreach ($nutritionalStatistics['statistics']['sex_distribution'] as $gender => $count): ?>
-                                        <div class="response-answer-item">
-                                            <span class="answer-label"><?php echo htmlspecialchars($gender); ?></span>
-                                            <span class="answer-count"><?php echo $count; ?></span>
-                                            <span class="answer-percentage"><?php 
-                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
-                                                if ($totalUsers > 0) {
-                                                    echo round(($count / $totalUsers) * 100, 1);
-                                                } else {
-                                                    echo '0';
-                                                }
-                                            ?>%</span>
-                                        </div>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <div class="no-data-message">No gender data available for selected time frame</div>
-                                <?php endif; ?>
-                            </div>
+                                <div class="no-data-message">Loading gender data...</div>
                             </div>
                         </div>
                         
@@ -7593,6 +7560,11 @@ body {
             console.log('🔄 Updating barangay distribution for:', barangay);
             const barangayData = await fetchBarangayDistributionData(barangay);
             updateBarangayDistributionDisplay(barangayData);
+            
+            // Update gender distribution data using new bulk API
+            console.log('🔄 Updating gender distribution for:', barangay);
+            const genderData = await fetchGenderDistributionData(barangay);
+            updateGenderDistributionDisplay(genderData);
             
             // Update critical alerts - Now handled by assessment data
             // updateCriticalAlerts(barangay); // Deprecated - using assessment data instead
@@ -9928,6 +9900,89 @@ body {
             }
         }
 
+        // Function to fetch gender distribution data using bulk API (no time frame)
+        async function fetchGenderDistributionData(barangay = '') {
+            try {
+                console.log('Fetching gender distribution data for:', { barangay });
+                
+                const url = `/api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=${barangay}`;
+                console.log('Gender API URL:', url);
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('Gender API Response:', result);
+                
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to fetch gender distribution data');
+                }
+                
+                return result.data;
+                
+            } catch (error) {
+                console.error('Error fetching gender distribution data:', error);
+                return {
+                    gender_distribution: {},
+                    total_users: 0,
+                    error: error.message
+                };
+            }
+        }
+
+        // Function to update gender distribution display
+        function updateGenderDistributionDisplay(data) {
+            console.log('Updating gender distribution display:', data);
+            
+            const genderContainer = document.getElementById('gender-distribution-responses');
+            if (genderContainer) {
+                const genderData = data.gender_distribution || {};
+                const totalUsers = data.total_users || 0;
+                
+                // Clear existing content
+                genderContainer.innerHTML = '';
+                
+                // Add headers
+                const headers = document.createElement('div');
+                headers.className = 'column-headers';
+                headers.innerHTML = `
+                    <span class="header-label">Gender</span>
+                    <span class="header-count">Count</span>
+                    <span class="header-percent">Percentage</span>
+                `;
+                genderContainer.appendChild(headers);
+                
+                // Add data container
+                const dataContainer = document.createElement('div');
+                dataContainer.className = 'response-data-container';
+                
+                if (Object.keys(genderData).length > 0) {
+                    Object.entries(genderData).forEach(([gender, count]) => {
+                        const percentage = totalUsers > 0 ? ((count / totalUsers) * 100).toFixed(1) : 0;
+                        
+                        const item = document.createElement('div');
+                        item.className = 'response-answer-item';
+                        item.innerHTML = `
+                            <span class="answer-label">${gender}</span>
+                            <span class="answer-count">${count}</span>
+                            <span class="answer-percentage">${percentage}%</span>
+                        `;
+                        dataContainer.appendChild(item);
+                    });
+                } else {
+                    const noData = document.createElement('div');
+                    noData.className = 'no-data-message';
+                    noData.textContent = 'No gender data available';
+                    dataContainer.appendChild(noData);
+                }
+                
+                genderContainer.appendChild(dataContainer);
+            }
+        }
+
         // Function to update barangay and municipality distribution displays
         function updateBarangayDistributionDisplay(data) {
             console.log('Updating barangay distribution display:', data);
@@ -10229,6 +10284,11 @@ body {
                 const barangayData = await fetchBarangayDistributionData('');
                 updateBarangayDistributionDisplay(barangayData);
                 
+                // Load gender distribution data using new bulk API
+                console.log('🔄 Loading gender distribution data...');
+                const genderData = await fetchGenderDistributionData('');
+                updateGenderDistributionDisplay(genderData);
+                
                 // Load geographic distribution immediately with pre-loaded data
                 console.log('🌍 Loading geographic distribution with pre-loaded data...');
                 if (geographicDistributionData && geographicDistributionData.length > 0) {
@@ -10303,8 +10363,6 @@ body {
             // Update BMI Categories
             updateStatisticDisplay('bmi-categories-responses', stats.bmi_categories, totalUsers);
             
-            // Update Gender Distribution
-            updateStatisticDisplay('gender-distribution-responses', stats.sex_distribution, totalUsers);
             
             // Update Weight Ranges
             updateStatisticDisplay('weight-ranges-responses', stats.weight_ranges, totalUsers);
