@@ -5645,11 +5645,24 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
-                // Calculate total users for population increment calculation
-                $totalUsers = count($users);
+                // Get total users from community_users table (like Total Screened card)
+                $totalUsersQuery = "SELECT COUNT(*) as total FROM community_users";
+                if (!empty($barangay)) {
+                    $totalUsersQuery .= " WHERE barangay = ?";
+                    $totalUsersResult = $db->dbHelper->select($totalUsersQuery, [$barangay]);
+                } else {
+                    $totalUsersResult = $db->dbHelper->select($totalUsersQuery);
+                }
+                $totalUsers = $totalUsersResult[0]['total'] ?? 0;
                 
-                // Calculate population increment (10 rows max)
+                // Calculate population increment for 10 rows
                 $populationIncrement = max(1, ceil($totalUsers / 10));
+                
+                // Create 10-row scale: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                $populationScale = [];
+                for ($i = 1; $i <= 10; $i++) {
+                    $populationScale[] = $i * $populationIncrement;
+                }
                 
                 // Prepare data for Chart.js line chart with population increments
                 $lineChartData = [];
@@ -5657,7 +5670,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $lineChartData[$classification] = [];
                     foreach ($ageGroups as $ageGroup => $range) {
                         $rawCount = $chartData[$ageGroup][$classification] ?? 0;
-                        // Convert to population increment (1, 2, 3, 4, 5, 6, 7, 8, 9, 10 or 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, etc.)
+                        // Convert to population increment (1-10 scale)
                         $populationValue = min(10, ceil($rawCount / $populationIncrement));
                         $lineChartData[$classification][] = $populationValue;
                     }
@@ -5671,7 +5684,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'chartData' => $lineChartData,
                         'rawData' => $chartData,
                         'totalUsers' => $totalUsers,
-                        'populationIncrement' => $populationIncrement
+                        'populationIncrement' => $populationIncrement,
+                        'populationScale' => $populationScale
                     ]
                 ]);
                 

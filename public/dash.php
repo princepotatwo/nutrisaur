@@ -9054,9 +9054,9 @@ body {
                 }
 
                 // Extract data from API response
-                const { ageGroups, classifications, chartData, totalUsers, populationIncrement } = data.data;
+                const { ageGroups, classifications, chartData, totalUsers, populationIncrement, populationScale } = data.data;
                 
-                console.log('📊 Population data:', { totalUsers, populationIncrement });
+                console.log('📊 Population data:', { totalUsers, populationIncrement, populationScale });
                 
                 // Color mapping for nutritional classifications
                 const colors = {
@@ -9100,8 +9100,8 @@ body {
                         totalDataPoints++;
                         if (value > 0) {
                             nonZeroDataPoints++;
-                            const actualUsers = value * populationIncrement;
-                            console.log(`✅ Data point: ${dataset.label} at ${ageGroups[dataIndex]}: ${actualUsers} users (${value} increment${value !== 1 ? 's' : ''})`);
+                            const actualUsers = populationScale && populationScale[value - 1] ? populationScale[value - 1] : value * populationIncrement;
+                            console.log(`✅ Data point: ${dataset.label} at ${ageGroups[dataIndex]}: ${actualUsers} users`);
                         }
                     });
                 });
@@ -9186,13 +9186,13 @@ body {
                                     },
                                     label: function(context) {
                                         const populationValue = context.parsed.y;
-                                        const actualUsers = populationValue * populationIncrement;
-                                        return `${context.dataset.label}: ${actualUsers} user${actualUsers !== 1 ? 's' : ''} (${populationValue} increment${populationValue !== 1 ? 's' : ''})`;
+                                        const actualUsers = populationScale && populationScale[populationValue - 1] ? populationScale[populationValue - 1] : populationValue * populationIncrement;
+                                        return `${context.dataset.label}: ${actualUsers} user${actualUsers !== 1 ? 's' : ''}`;
                                     },
                                     afterBody: function(context) {
                                         const totalPopulation = context.reduce((sum, item) => sum + item.parsed.y, 0);
                                         const totalActualUsers = totalPopulation * populationIncrement;
-                                        return `Total: ${totalActualUsers} user${totalActualUsers !== 1 ? 's' : ''} (${totalPopulation} increment${totalPopulation !== 1 ? 's' : ''})`;
+                                        return `Total: ${totalActualUsers} user${totalActualUsers !== 1 ? 's' : ''}`;
                                     }
                                 }
                             }
@@ -9231,13 +9231,16 @@ body {
                                     },
                                     color: '#666',
                                     callback: function(value) {
-                                        // Show population increment values (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-                                        return value;
+                                        // Show actual population values from the scale
+                                        if (populationScale && populationScale[value - 1]) {
+                                            return populationScale[value - 1];
+                                        }
+                                        return value * populationIncrement;
                                     }
                                 },
                                 title: {
                                     display: true,
-                                    text: `Population (${populationIncrement} users per increment)`,
+                                    text: `Population (Total: ${totalUsers} users)`,
                                     font: {
                                         size: 12,
                                         weight: 'bold'
