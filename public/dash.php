@@ -769,8 +769,8 @@ try {
             'SAMAL' => ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan (Pob.)', 'San Roque (Pob.)', 'Santa Lucia', 'Sapa', 'Tabing Ilog', 'Gugo', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
         ];
 
-        // Get geographic distribution data using the same strategy as settings.php
-        $geographicDistributionData = getGeographicDistributionData($db, $municipalities);
+        // Geographic distribution will be loaded via JavaScript API call
+        $geographicDistributionData = [];
 
         // Function to get geographic distribution - show ALL barangays from database
         function getGeographicDistributionData($db, $municipalities) {
@@ -7589,6 +7589,11 @@ body {
             // Update geographic distribution chart
             await updateGeographicChart(barangay);
             
+            // Update barangay distribution data using new bulk API
+            console.log('🔄 Updating barangay distribution for:', barangay);
+            const barangayData = await fetchBarangayDistributionData(barangay);
+            updateBarangayDistributionDisplay(barangayData);
+            
             // Update critical alerts - Now handled by assessment data
             // updateCriticalAlerts(barangay); // Deprecated - using assessment data instead
             
@@ -9889,6 +9894,137 @@ body {
         }
 
 
+        // Function to fetch barangay distribution data using bulk API (no time frame)
+        async function fetchBarangayDistributionData(barangay = '') {
+            try {
+                console.log('Fetching barangay distribution data for:', { barangay });
+                
+                const url = `/api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=${barangay}`;
+                console.log('Barangay API URL:', url);
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('Barangay API Response:', result);
+                
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to fetch barangay distribution data');
+                }
+                
+                return result.data;
+                
+            } catch (error) {
+                console.error('Error fetching barangay distribution data:', error);
+                return {
+                    barangay_distribution: {},
+                    municipality_distribution: {},
+                    total_users: 0,
+                    error: error.message
+                };
+            }
+        }
+
+        // Function to update barangay and municipality distribution displays
+        function updateBarangayDistributionDisplay(data) {
+            console.log('Updating barangay distribution display:', data);
+            
+            // Update barangay distribution
+            const barangayContainer = document.getElementById('barangay-distribution-responses');
+            if (barangayContainer) {
+                const barangayData = data.barangay_distribution || {};
+                const totalUsers = data.total_users || 0;
+                
+                // Clear existing content
+                barangayContainer.innerHTML = '';
+                
+                // Add headers
+                const headers = document.createElement('div');
+                headers.className = 'column-headers';
+                headers.innerHTML = `
+                    <span class="header-label">Barangay</span>
+                    <span class="header-count">Count</span>
+                    <span class="header-percent">Percentage</span>
+                `;
+                barangayContainer.appendChild(headers);
+                
+                // Add data container
+                const dataContainer = document.createElement('div');
+                dataContainer.className = 'response-data-container';
+                
+                if (Object.keys(barangayData).length > 0) {
+                    Object.entries(barangayData).forEach(([barangay, count]) => {
+                        const percentage = totalUsers > 0 ? ((count / totalUsers) * 100).toFixed(1) : 0;
+                        
+                        const item = document.createElement('div');
+                        item.className = 'response-answer-item';
+                        item.innerHTML = `
+                            <span class="answer-label">${barangay}</span>
+                            <span class="answer-count">${count}</span>
+                            <span class="answer-percentage">${percentage}%</span>
+                        `;
+                        dataContainer.appendChild(item);
+                    });
+                } else {
+                    const noData = document.createElement('div');
+                    noData.className = 'no-data-message';
+                    noData.textContent = 'No barangay data available';
+                    dataContainer.appendChild(noData);
+                }
+                
+                barangayContainer.appendChild(dataContainer);
+            }
+            
+            // Update municipality distribution
+            const municipalityContainer = document.getElementById('municipality-distribution-responses');
+            if (municipalityContainer) {
+                const municipalityData = data.municipality_distribution || {};
+                const totalUsers = data.total_users || 0;
+                
+                // Clear existing content
+                municipalityContainer.innerHTML = '';
+                
+                // Add headers
+                const headers = document.createElement('div');
+                headers.className = 'column-headers';
+                headers.innerHTML = `
+                    <span class="header-label">Municipality</span>
+                    <span class="header-count">Count</span>
+                    <span class="header-percent">Percentage</span>
+                `;
+                municipalityContainer.appendChild(headers);
+                
+                // Add data container
+                const dataContainer = document.createElement('div');
+                dataContainer.className = 'response-data-container';
+                
+                if (Object.keys(municipalityData).length > 0) {
+                    Object.entries(municipalityData).forEach(([municipality, count]) => {
+                        const percentage = totalUsers > 0 ? ((count / totalUsers) * 100).toFixed(1) : 0;
+                        
+                        const item = document.createElement('div');
+                        item.className = 'response-answer-item';
+                        item.innerHTML = `
+                            <span class="answer-label">${municipality}</span>
+                            <span class="answer-count">${count}</span>
+                            <span class="answer-percentage">${percentage}%</span>
+                        `;
+                        dataContainer.appendChild(item);
+                    });
+                } else {
+                    const noData = document.createElement('div');
+                    noData.className = 'no-data-message';
+                    noData.textContent = 'No municipality data available';
+                    dataContainer.appendChild(noData);
+                }
+                
+                municipalityContainer.appendChild(dataContainer);
+            }
+        }
+
         // Function to update Nutritional Status Overview Card
         function updateNutritionalStatusCard(whzData, muacData) {
             
@@ -10087,6 +10223,11 @@ body {
                 // Load initial dashboard metrics and geographic distribution
                 console.log('🔄 Loading initial dashboard metrics and geographic distribution...');
                 await updateCommunityMetrics('');
+                
+                // Load barangay distribution data using new bulk API
+                console.log('🔄 Loading barangay distribution data...');
+                const barangayData = await fetchBarangayDistributionData('');
+                updateBarangayDistributionDisplay(barangayData);
                 
                 // Load geographic distribution immediately with pre-loaded data
                 console.log('🌍 Loading geographic distribution with pre-loaded data...');

@@ -2900,6 +2900,71 @@ class DatabaseAPI {
     }
     
     /**
+     * OPTIMIZED: Get barangay distribution data in bulk (no time frame)
+     * This follows the same efficient pattern as getAllWHOClassificationsBulk
+     */
+    public function getBarangayDistributionBulk($barangay = '') {
+        try {
+            // Use the same method as other bulk APIs - get all users (no time filtering)
+            $users = $this->getDetailedScreeningResponses('1d', $barangay);
+            
+            if (empty($users)) {
+                return [
+                    'success' => true,
+                    'data' => [
+                        'barangay_distribution' => [],
+                        'municipality_distribution' => [],
+                        'total_users' => 0
+                    ]
+                ];
+            }
+            
+            // Initialize distribution arrays
+            $barangayDistribution = [];
+            $municipalityDistribution = [];
+            
+            // Process all users in one pass
+            foreach ($users as $user) {
+                // Barangay distribution
+                if (!empty($user['barangay'])) {
+                    if (!isset($barangayDistribution[$user['barangay']])) {
+                        $barangayDistribution[$user['barangay']] = 0;
+                    }
+                    $barangayDistribution[$user['barangay']]++;
+                }
+                
+                // Municipality distribution
+                if (!empty($user['municipality'])) {
+                    if (!isset($municipalityDistribution[$user['municipality']])) {
+                        $municipalityDistribution[$user['municipality']] = 0;
+                    }
+                    $municipalityDistribution[$user['municipality']]++;
+                }
+            }
+            
+            // Sort distributions by count (descending)
+            arsort($barangayDistribution);
+            arsort($municipalityDistribution);
+            
+            return [
+                'success' => true,
+                'data' => [
+                    'barangay_distribution' => $barangayDistribution,
+                    'municipality_distribution' => $municipalityDistribution,
+                    'total_users' => count($users)
+                ]
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Barangay distribution bulk error: " . $e->getMessage());
+            return [
+                'success' => false, 
+                'message' => 'Bulk processing failed: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * Process BMI adult classification
      */
     private function processBMIAdult(&$classifications, $user, $ageInMonths) {
@@ -4008,6 +4073,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? '';
             
             $result = $db->getAllWHOClassificationsBulk($timeFrame, $barangay, $whoStandard);
+            echo json_encode($result);
+            break;
+            
+        case 'get_barangay_distribution_bulk':
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            $result = $db->getBarangayDistributionBulk($barangay);
             echo json_encode($result);
             break;
             
