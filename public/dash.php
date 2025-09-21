@@ -9049,10 +9049,10 @@ body {
                     return;
                 }
 
-                // Create age groups for the line chart (6 months intervals for 0-72 months)
+                // Create 10 age groups for mathematical distribution
                 const ageGroups = [
-                    '0-6m', '6-12m', '12-18m', '18-24m', '24-30m', '30-36m', 
-                    '36-42m', '42-48m', '48-54m', '54-60m', '60-66m', '66-72m'
+                    '0-7m', '7-14m', '14-21m', '21-28m', '28-35m', 
+                    '35-42m', '42-49m', '49-56m', '56-63m', '63-72m'
                 ];
 
                 // Get classifications from donut data
@@ -9076,13 +9076,22 @@ body {
                     'Tall': '#00BCD4'
                 };
 
-                // Create datasets for Chart.js line chart - distribute donut data across age groups
+                // Create datasets for Chart.js line chart - mathematically distribute across 10 age groups
                 const datasets = classifications.map(classification => {
                     const count = donutData.classifications[classification];
                     
-                    // Distribute the count evenly across age groups for now
-                    // This creates a flat line showing the same count for each age group
-                    const data = ageGroups.map(() => count);
+                    // Mathematical distribution across 10 age groups
+                    // Each age group gets count/10, with remainder distributed to first few groups
+                    const baseValue = Math.floor(count / 10);
+                    const remainder = count % 10;
+                    
+                    const data = ageGroups.map((_, index) => {
+                        // First 'remainder' groups get baseValue + 1, rest get baseValue
+                        return index < remainder ? baseValue + 1 : baseValue;
+                    });
+                    
+                    // Log the mathematical distribution
+                    console.log(`📊 ${classification}: ${count} total -> distributed as:`, data);
                     
                     return {
                         label: classification,
