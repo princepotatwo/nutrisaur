@@ -5436,12 +5436,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // AGE CLASSIFICATION CHART API
         // ========================================
     case 'get_age_classification_chart':
-        $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
-        $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
-        $fromMonths = isset($_GET['from_months']) ? intval($_GET['from_months']) : 0;
-        $toMonths = isset($_GET['to_months']) ? intval($_GET['to_months']) : 71;
+        try {
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
+            $fromMonths = isset($_GET['from_months']) ? intval($_GET['from_months']) : 0;
+            $toMonths = isset($_GET['to_months']) ? intval($_GET['to_months']) : 71;
 
-        error_log("🔍 Age Classification Chart API - Starting");
+            error_log("🔍 Age Classification Chart API - Starting");
         error_log("  - Barangay: " . ($barangay ?: 'empty'));
         error_log("  - Time Frame: " . $timeFrame);
         error_log("  - Age Range: {$fromMonths} to {$toMonths} months");
@@ -5649,9 +5650,15 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $totalUsersQuery = "SELECT COUNT(*) as total FROM community_users";
                 if (!empty($barangay)) {
                     $totalUsersQuery .= " WHERE barangay = ?";
-                    $totalUsersResult = $db->dbHelper->select($totalUsersQuery, [$barangay]);
+                    $pdo = $db->getPDO();
+                    $stmt = $pdo->prepare($totalUsersQuery);
+                    $stmt->execute([$barangay]);
+                    $totalUsersResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 } else {
-                    $totalUsersResult = $db->dbHelper->select($totalUsersQuery);
+                    $pdo = $db->getPDO();
+                    $stmt = $pdo->prepare($totalUsersQuery);
+                    $stmt->execute();
+                    $totalUsersResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 }
                 $totalUsers = $totalUsersResult[0]['total'] ?? 0;
                 
@@ -5676,6 +5683,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
+                // Debug: Log the response data
+                error_log("🔍 Age Classification Chart API - Response Data:");
+                error_log("  - Age Groups: " . json_encode(array_keys($ageGroups)));
+                error_log("  - Classifications: " . json_encode($classifications));
+                error_log("  - Total Users: " . $totalUsers);
+                error_log("  - Population Increment: " . $populationIncrement);
+                
                 echo json_encode([
                     'success' => true,
                     'data' => [
@@ -5695,7 +5709,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'message' => 'Error getting age classification chart data: ' . $e->getMessage()
                 ]);
             }
-            break;
+        } catch (Exception $e) {
+            error_log("🔍 Age Classification Chart API - Fatal Error: " . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Fatal error in age classification chart API: ' . $e->getMessage()
+            ]);
+        }
+        break;
             
         // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors

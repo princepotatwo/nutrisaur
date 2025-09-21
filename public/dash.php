@@ -9046,9 +9046,19 @@ body {
                 
                 const data = await response.json();
                 console.log('Age classification chart data received:', data);
+                console.log('Data success:', data.success);
+                console.log('Data.data exists:', !!data.data);
+                console.log('Age groups:', data.data?.ageGroups);
+                console.log('Age groups length:', data.data?.ageGroups?.length);
 
                 if (!data.success || !data.data || !data.data.ageGroups || data.data.ageGroups.length === 0) {
-                    console.log('No age classification chart data available');
+                    console.log('No age classification chart data available - showing empty chart');
+                    console.log('Debug info:', {
+                        success: data.success,
+                        hasData: !!data.data,
+                        hasAgeGroups: !!data.data?.ageGroups,
+                        ageGroupsLength: data.data?.ageGroups?.length
+                    });
                     createEmptyAgeChart(canvas);
                     return;
                 }
