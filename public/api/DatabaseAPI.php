@@ -5498,8 +5498,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $groupStart = $fromMonths + ($i * $groupSize);
                     $groupEnd = $fromMonths + (($i + 1) * $groupSize);
                     
-                    // Format the label based on the range
-                    if ($rangeSpan <= 12) {
+                    // Format the label based on the range and values
+                    // Always show months for ranges that include 0-2 years (0-24 months)
+                    if ($fromMonths < 24 && $toMonths <= 24) {
+                        // For ranges within 0-24 months, always show in months
+                        $label = round($groupStart) . '-' . round($groupEnd) . 'm';
+                    } elseif ($rangeSpan <= 12) {
                         // For small ranges (≤12 months), show in months
                         $label = round($groupStart) . '-' . round($groupEnd) . 'm';
                     } elseif ($rangeSpan <= 120) {
@@ -5512,6 +5516,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         $startYears = round($groupStart / 12);
                         $endYears = round($groupEnd / 12);
                         $label = $startYears . '-' . $endYears . 'y';
+                    }
+                    
+                    // Ensure labels are unique and properly formatted
+                    if ($groupStart == $groupEnd) {
+                        $label = round($groupStart) . 'm';
                     }
                     
                     $ageGroups[$label] = [round($groupStart), round($groupEnd)];
@@ -5646,24 +5655,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
-                // Get total users from community_users table (like Total Screened card)
-                $totalUsersQuery = "SELECT COUNT(*) as total FROM community_users";
-                if (!empty($barangay)) {
-                    $totalUsersQuery .= " WHERE barangay = ?";
-                    $pdo = $db->getPDO();
-                    $stmt = $pdo->prepare($totalUsersQuery);
-                    $stmt->execute([$barangay]);
-                    $totalUsersResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                } else {
-                    $pdo = $db->getPDO();
-                    $stmt = $pdo->prepare($totalUsersQuery);
-                    $stmt->execute();
-                    $totalUsersResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                }
-                $totalUsers = $totalUsersResult[0]['total'] ?? 0;
+                // Use the actual filtered users count instead of total users
+                $filteredUsersCount = count($users);
                 
-                // Calculate population increment for 10 rows
-                $populationIncrement = max(1, ceil($totalUsers / 10));
+                // Calculate population increment based on filtered users
+                $populationIncrement = max(1, ceil($filteredUsersCount / 10));
+                
+                // Debug: Log the population calculation
+                error_log("🔍 Population Calculation:");
+                error_log("  - Filtered users count: " . $filteredUsersCount);
+                error_log("  - Population increment: " . $populationIncrement);
                 
                 // Create 10-row scale: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
                 $populationScale = [];
@@ -5687,7 +5688,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 error_log("🔍 Age Classification Chart API - Response Data:");
                 error_log("  - Age Groups: " . json_encode(array_keys($ageGroups)));
                 error_log("  - Classifications: " . json_encode($classifications));
-                error_log("  - Total Users: " . $totalUsers);
+                error_log("  - Filtered Users: " . $filteredUsersCount);
                 error_log("  - Population Increment: " . $populationIncrement);
                 
                 echo json_encode([
@@ -5697,7 +5698,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'classifications' => $classifications,
                         'chartData' => $lineChartData,
                         'rawData' => $chartData,
-                        'totalUsers' => $totalUsers,
+                        'totalUsers' => $filteredUsersCount,
                         'populationIncrement' => $populationIncrement,
                         'populationScale' => $populationScale
                     ]
