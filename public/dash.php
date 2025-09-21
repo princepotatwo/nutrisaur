@@ -9136,6 +9136,8 @@ body {
                 // Generate age groups based on the range
                 const ageGroups = generateAgeGroups(fromMonths, toMonths);
                 console.log('📊 Generated age groups:', ageGroups);
+                console.log('📊 Generated age groups type:', typeof ageGroups);
+                console.log('📊 Generated age groups length:', ageGroups ? ageGroups.length : 'undefined');
                 
                 // Color mapping for nutritional classifications
                 const colors = {
@@ -9177,6 +9179,9 @@ body {
 
                 // Destroy existing chart
                 destroyAgeClassificationChart();
+                
+                // Wait a moment to ensure destruction is complete
+                await new Promise(resolve => setTimeout(resolve, 100));
 
                 // Create new chart
                 const ctx = canvas.getContext('2d');
@@ -9386,9 +9391,6 @@ body {
         }
 
         // Age group generation - REMOVED
-        function generateAgeGroups(fromMonths, toMonths) {
-            return {};
-        }
 
         // Age calculation - REMOVED
         function calculateAgeInMonths(birthday, screeningDate) {
