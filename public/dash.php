@@ -9049,10 +9049,9 @@ body {
                     return;
                 }
 
-                // Create 10 age groups for mathematical distribution
+                // Create 10 age groups (1-10)
                 const ageGroups = [
-                    '0-7m', '7-14m', '14-21m', '21-28m', '28-35m', 
-                    '35-42m', '42-49m', '49-56m', '56-63m', '63-72m'
+                    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
                 ];
 
                 // Get classifications from donut data
@@ -9076,22 +9075,20 @@ body {
                     'Tall': '#00BCD4'
                 };
 
-                // Create datasets for Chart.js line chart - mathematically distribute across 10 age groups
+                // Create datasets for Chart.js line chart - show population scale across 10 age groups
                 const datasets = classifications.map(classification => {
                     const count = donutData.classifications[classification];
                     
-                    // Mathematical distribution across 10 age groups
-                    // Each age group gets count/10, with remainder distributed to first few groups
-                    const baseValue = Math.floor(count / 10);
-                    const remainder = count % 10;
-                    
+                    // Create data that shows the population scale (0 to totalUsers)
+                    // Each age group shows a portion of the population scale
                     const data = ageGroups.map((_, index) => {
-                        // First 'remainder' groups get baseValue + 1, rest get baseValue
-                        return index < remainder ? baseValue + 1 : baseValue;
+                        // Calculate the population value for this age group
+                        // Age group 1 = count/10, Age group 2 = 2*count/10, etc.
+                        return Math.round((index + 1) * count / 10);
                     });
                     
-                    // Log the mathematical distribution
-                    console.log(`📊 ${classification}: ${count} total -> distributed as:`, data);
+                    // Log the population scale distribution
+                    console.log(`📊 ${classification}: ${count} total -> population scale:`, data);
                     
                     return {
                         label: classification,
@@ -9209,9 +9206,9 @@ body {
                             },
                             y: {
                                 beginAtZero: true,
-                                max: 10,
+                                max: totalUsers,
                                 ticks: {
-                                    stepSize: 1,
+                                    stepSize: Math.ceil(totalUsers / 10),
                                     font: {
                                         size: 10
                                     },
