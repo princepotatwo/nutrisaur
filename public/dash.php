@@ -9118,14 +9118,16 @@ body {
                 }
                 
                 // Check if classifications exist and have data
-                if (!data.classifications || Object.keys(data.classifications).length === 0) {
-                    console.log('No donut chart data available - no classifications found');
+                const whoStandardKey = whoStandard.replace(/-/g, '_');
+                const classifications = data.data[whoStandardKey] || {};
+                
+                if (!classifications || Object.keys(classifications).length === 0) {
+                    console.log('No donut chart data available - no classifications found for', whoStandardKey);
                     createEmptyAgeChart(canvas);
                     return;
                 }
 
-                // Extract data from donut chart API response
-                const classifications = data.classifications;
+                // Extract total users from API response
                 const totalUsers = data.total_users;
                 
                 console.log('📊 Classifications from donut chart:', classifications);
