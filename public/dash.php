@@ -9106,10 +9106,20 @@ body {
                 
                 const data = await response.json();
                 console.log('📊 Donut chart data received:', data);
+                console.log('📊 Data success:', data.success);
+                console.log('📊 Data keys:', Object.keys(data));
+                console.log('📊 Classifications:', data.classifications);
 
                 // Check if we have valid data
-                if (!data.success || !data.classifications) {
-                    console.log('No donut chart data available - showing empty chart');
+                if (!data.success) {
+                    console.log('No donut chart data available - API returned success: false');
+                    createEmptyAgeChart(canvas);
+                    return;
+                }
+                
+                // Check if classifications exist and have data
+                if (!data.classifications || Object.keys(data.classifications).length === 0) {
+                    console.log('No donut chart data available - no classifications found');
                     createEmptyAgeChart(canvas);
                     return;
                 }
