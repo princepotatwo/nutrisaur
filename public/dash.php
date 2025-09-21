@@ -9067,6 +9067,8 @@ body {
                 const { ageGroups, classifications, chartData, totalUsers, populationIncrement, populationScale } = data.data;
                 
                 console.log('📊 Population data:', { totalUsers, populationIncrement, populationScale });
+                console.log('📊 Population Scale Array:', populationScale);
+                console.log('📊 Population Increment:', populationIncrement);
                 
                 // Color mapping for nutritional classifications
                 const colors = {
@@ -9497,6 +9499,8 @@ body {
                 });
                 console.log('📊 Chart Labels:', ageGroups);
                 console.log('📊 Chart Datasets Count:', datasets.length);
+                console.log('📊 Using Population Scale:', populationScale);
+                console.log('📊 Using Population Increment:', populationIncrement);
                 
                 ageClassificationChartInstance = new Chart(ctx, {
                     type: 'line',
@@ -9545,7 +9549,9 @@ body {
                                         return `Age Group: ${context[0].label}`;
                                     },
                                     label: function(context) {
-                                        return context.dataset.label + ': ' + context.parsed.y + '%';
+                                        const populationValue = context.parsed.y;
+                                        const actualUsers = populationScale && populationScale[populationValue - 1] ? populationScale[populationValue - 1] : populationValue * populationIncrement;
+                                        return `${context.dataset.label}: ${actualUsers} user${actualUsers !== 1 ? 's' : ''}`;
                                     }
                                 }
                             }
@@ -9569,15 +9575,22 @@ body {
                             },
                             y: {
                                 min: 0,
-                                max: 100,
+                                max: 10,
                                 ticks: {
                                     font: {
                                         size: 8
+                                    },
+                                    callback: function(value) {
+                                        // Show actual population values from the scale
+                                        if (populationScale && populationScale[value - 1]) {
+                                            return populationScale[value - 1];
+                                        }
+                                        return value * populationIncrement;
                                     }
                                 },
                                 title: {
                                     display: true,
-                                    text: 'Percentage (%)',
+                                    text: `Population (Total: ${totalUsers} users)`,
                                     font: {
                                         size: 10
                                     }
