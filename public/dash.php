@@ -9164,14 +9164,12 @@ body {
                                         return `Age Group: ${context[0].label}`;
                                     },
                                     label: function(context) {
-                                        const populationValue = context.parsed.y;
-                                        const actualUsers = populationScale && populationScale[populationValue - 1] ? populationScale[populationValue - 1] : populationValue * populationIncrement;
-                                        return `${context.dataset.label}: ${actualUsers} user${actualUsers !== 1 ? 's' : ''}`;
+                                        const value = context.raw;
+                                        return `${context.dataset.label}: ${value} user${value !== 1 ? 's' : ''}`;
                                     },
                                     afterBody: function(context) {
                                         const totalPopulation = context.reduce((sum, item) => sum + item.parsed.y, 0);
-                                        const totalActualUsers = totalPopulation * populationIncrement;
-                                        return `Total: ${totalActualUsers} user${totalActualUsers !== 1 ? 's' : ''}`;
+                                        return `Total: ${totalPopulation} user${totalPopulation !== 1 ? 's' : ''}`;
                                     }
                                 }
                             }
@@ -9210,11 +9208,8 @@ body {
                                     },
                                     color: '#666',
                                     callback: function(value) {
-                                        // Show actual population values from the scale
-                                        if (populationScale && populationScale[value - 1]) {
-                                            return populationScale[value - 1];
-                                        }
-                                        return value * populationIncrement;
+                                        // Show actual population values
+                                        return value;
                                     }
                                 },
                                 title: {
@@ -9513,9 +9508,8 @@ body {
                                         return `Age Group: ${context[0].label}`;
                                     },
                                     label: function(context) {
-                                        const populationValue = context.parsed.y;
-                                        const actualUsers = populationScale && populationScale[populationValue - 1] ? populationScale[populationValue - 1] : populationValue * populationIncrement;
-                                        return `${context.dataset.label}: ${actualUsers} user${actualUsers !== 1 ? 's' : ''}`;
+                                        const value = context.raw;
+                                        return `${context.dataset.label}: ${value} user${value !== 1 ? 's' : ''}`;
                                     }
                                 }
                             }
@@ -9545,11 +9539,8 @@ body {
                                         size: 8
                                     },
                                     callback: function(value) {
-                                        // Show actual population values from the scale
-                                        if (populationScale && populationScale[value - 1]) {
-                                            return populationScale[value - 1];
-                                        }
-                                        return value * populationIncrement;
+                                        // Show actual population values
+                                        return value;
                                     }
                                 },
                                 title: {
