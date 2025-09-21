@@ -7369,7 +7369,7 @@ body {
                 await updateTrendsChart();
                 
                 // Update age classification chart with new barangay selection
-                await updateAgeClassificationChart();
+                await updateAgeClassificationChart(0, 71);
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
@@ -9020,7 +9020,7 @@ body {
         }
 
         // Function to update age classification chart using donut chart data
-        async function updateAgeClassificationChart() {
+        async function updateAgeClassificationChart(fromMonths = 0, toMonths = 71) {
             console.log('📊 Updating Age Classification Chart using donut chart data...');
             
             try {
@@ -9049,10 +9049,18 @@ body {
                     return;
                 }
 
-                // Create 10 age groups (1-10)
-                const ageGroups = [
-                    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
-                ];
+                // Create age groups based on the age range
+                const ageRangeMonths = toMonths - fromMonths;
+                const ageGroups = [];
+                
+                // Generate 10 age groups within the specified range
+                for (let i = 0; i < 10; i++) {
+                    const startAge = fromMonths + Math.floor((ageRangeMonths * i) / 10);
+                    const endAge = fromMonths + Math.floor((ageRangeMonths * (i + 1)) / 10) - 1;
+                    ageGroups.push(`${startAge}-${endAge}m`);
+                }
+                
+                console.log('📊 Generated age groups for range', fromMonths, 'to', toMonths, ':', ageGroups);
 
                 // Get classifications from donut data
                 const classifications = Object.keys(donutData.classifications);
@@ -9365,8 +9373,8 @@ body {
         async function updateAgeClassificationChartWithRange(fromMonths, toMonths) {
             console.log('📊 Age range changed:', fromMonths, 'to', toMonths, 'months - updating chart with donut data');
             
-            // Simply call the main function since we're using donut chart data
-            await updateAgeClassificationChart();
+            // Call the main function with age range parameters
+            await updateAgeClassificationChart(fromMonths, toMonths);
         }
 
         // ORPHANED CODE - TO BE REMOVED
@@ -10267,7 +10275,7 @@ body {
                 
                 // Load initial age classification chart with default range
                 console.log('📊 Loading initial age classification chart...');
-                await updateAgeClassificationChart();
+                await updateAgeClassificationChart(0, 71);
                 
                 
                 // Load initial dashboard metrics and geographic distribution
