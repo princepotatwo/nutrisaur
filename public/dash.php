@@ -9425,7 +9425,9 @@ body {
                     return;
                 }
 
-                const { ageGroups, classifications, chartData } = data.data;
+                const { ageGroups, classifications, chartData, totalUsers, populationIncrement, populationScale } = data.data;
+                
+                console.log('📊 Population data for range:', { totalUsers, populationIncrement, populationScale });
                 
                 // Color mapping (same as bar chart colors)
                 const colors = {
@@ -9441,8 +9443,10 @@ body {
                     'Tall': '#00BCD4'
                 };
 
+                // Create datasets for Chart.js line chart (same as main function)
                 const datasets = classifications.map(classification => {
                     const chartDataForClassification = chartData[classification] || [];
+                    
                     return {
                         label: classification,
                         data: chartDataForClassification,
@@ -9450,10 +9454,11 @@ body {
                         backgroundColor: colors[classification] || '#666',
                         tension: 0.1,
                         pointStyle: 'circle',
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
                         borderWidth: 2,
-                        fill: false
+                        fill: false,
+                        spanGaps: false
                     };
                 });
 
@@ -9468,7 +9473,8 @@ body {
                         totalDataPoints++;
                         if (value > 0) {
                             nonZeroDataPoints++;
-                            console.log(`✅ Non-zero data: ${dataset.label} at ${ageGroups[dataIndex]}: ${value}`);
+                            const actualUsers = populationScale && populationScale[value - 1] ? populationScale[value - 1] : value * populationIncrement;
+                            console.log(`✅ Data point: ${dataset.label} at ${ageGroups[dataIndex]}: ${actualUsers} users`);
                         }
                     });
                 });
