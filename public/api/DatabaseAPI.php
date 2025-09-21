@@ -5441,11 +5441,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             $fromMonths = isset($_GET['from_months']) ? intval($_GET['from_months']) : 0;
             $toMonths = isset($_GET['to_months']) ? intval($_GET['to_months']) : 71;
+            $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
 
             error_log("🔍 Age Classification Chart API - Starting");
         error_log("  - Barangay: " . ($barangay ?: 'empty'));
         error_log("  - Time Frame: " . $timeFrame);
         error_log("  - Age Range: {$fromMonths} to {$toMonths} months");
+        error_log("  - WHO Standard: " . $whoStandard);
             
             try {
                 // Get users data using the same method as other functions
@@ -5526,19 +5528,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $ageGroups[$label] = [round($groupStart), round($groupEnd)];
                 }
                 
-                // Define classifications
-                $classifications = [
-                    'Normal',
-                    'Underweight', 
-                    'Severely Underweight',
-                    'Overweight',
-                    'Obese',
-                    'Stunted',
-                    'Severely Stunted',
-                    'Wasted',
-                    'Severely Wasted',
-                    'Tall'
+                // Define classifications based on WHO standard
+                $allClassifications = [
+                    'weight-for-age' => ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese'],
+                    'height-for-age' => ['Severely Stunted', 'Stunted', 'Normal', 'Tall'],
+                    'weight-for-height' => ['Severely Wasted', 'Wasted', 'Normal', 'Overweight', 'Obese'],
+                    'bmi-for-age' => ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese'],
+                    'bmi-adult' => ['Underweight', 'Normal', 'Overweight', 'Obese']
                 ];
+                
+                $classifications = $allClassifications[$whoStandard] ?? $allClassifications['weight-for-age'];
+                error_log("  - Using classifications for $whoStandard: " . json_encode($classifications));
                 
                 // Initialize chart data structure
                 $chartData = [];
@@ -5568,11 +5568,29 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             continue; // Skip users outside the age range
                         }
                         
-                        // Process all WHO standards separately (like donut chart)
-                        $allClassifications = [];
+                        // Process only the specific WHO standard
+                        $classification = null;
                         
-                        if ($ageInMonths >= 0 && $ageInMonths <= 71) {
-                            // WHO Growth Standards for 0-71 months (children)
+                        // Check age eligibility for the specific WHO standard
+                        $isEligible = false;
+                        switch ($whoStandard) {
+                            case 'weight-for-age':
+                            case 'height-for-age':
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71);
+                                break;
+                            case 'weight-for-height':
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 60);
+                                break;
+                            case 'bmi-for-age':
+                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 228);
+                                break;
+                            case 'bmi-adult':
+                                $isEligible = ($ageInMonths >= 228);
+                                break;
+                        }
+                        
+                        if ($isEligible) {
+                            // Get assessment for the specific WHO standard
                             $assessment = $who->getComprehensiveAssessment(
                                 floatval($user['weight']),
                                 floatval($user['height']),
@@ -5583,70 +5601,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             
                             if ($assessment['success'] && isset($assessment['results'])) {
                                 $results = $assessment['results'];
+                                $standardKey = str_replace('-', '_', $whoStandard);
                                 
-                                // Process each WHO standard separately
-                                if (isset($results['weight_for_age']['classification'])) {
-                                    $allClassifications[] = $results['weight_for_age']['classification'];
-                                    error_log("  - Added WFA classification: " . $results['weight_for_age']['classification']);
-                                }
-                                if (isset($results['height_for_age']['classification'])) {
-                                    $allClassifications[] = $results['height_for_age']['classification'];
-                                    error_log("  - Added HFA classification: " . $results['height_for_age']['classification']);
-                                }
-                                if ($ageInMonths <= 60 && isset($results['weight_for_height']['classification'])) {
-                                    $allClassifications[] = $results['weight_for_height']['classification'];
-                                    error_log("  - Added WFH classification: " . $results['weight_for_height']['classification']);
-                                }
-                                if ($ageInMonths >= 24 && $ageInMonths <= 228 && isset($results['bmi_for_age']['classification'])) {
-                                    $allClassifications[] = $results['bmi_for_age']['classification'];
-                                    error_log("  - Added BFA classification: " . $results['bmi_for_age']['classification']);
-                                }
-                            }
-                        } elseif ($ageInMonths >= 24 && $ageInMonths <= 228) {
-                            // BMI-for-Age for 2-19 years (adolescents)
-                            $assessment = $who->getComprehensiveAssessment(
-                                floatval($user['weight']),
-                                floatval($user['height']),
-                                $user['birthday'],
-                                $user['sex'],
-                                $user['screening_date'] ?? null
-                            );
-                            
-                            if ($assessment['success'] && isset($assessment['results']['bmi_for_age']['classification'])) {
-                                $bmiClassification = $assessment['results']['bmi_for_age']['classification'];
-                                $allClassifications[] = $bmiClassification;
-                            }
-                        } else {
-                            // Adult BMI for 19+ years (adults)
-                            $weight = floatval($user['weight']);
-                            $height = floatval($user['height']);
-                            
-                            if ($weight > 0 && $height > 0) {
-                                $heightInMeters = $height / 100; // Convert cm to meters
-                                $bmi = $weight / ($heightInMeters * $heightInMeters);
-                                
-                                // Adult BMI categories
-                                if ($bmi < 18.5) {
-                                    $allClassifications[] = 'Underweight';
-                                } elseif ($bmi >= 18.5 && $bmi < 25) {
-                                    $allClassifications[] = 'Normal';
-                                } elseif ($bmi >= 25 && $bmi < 30) {
-                                    $allClassifications[] = 'Overweight';
-                                } else {
-                                    $allClassifications[] = 'Obese';
+                                if (isset($results[$standardKey]['classification'])) {
+                                    $classification = $results[$standardKey]['classification'];
                                 }
                             }
                         }
                         
-                        // Count each classification separately (like donut chart)
-                        error_log("  - Processing " . count($allClassifications) . " classifications for user age {$ageInMonths} months in group {$userAgeGroup}");
-                        foreach ($allClassifications as $classification) {
-                            if (isset($chartData[$userAgeGroup][$classification])) {
-                                $chartData[$userAgeGroup][$classification]++;
-                                error_log("  - User classification: {$classification} for age group: {$userAgeGroup} (age: {$ageInMonths} months)");
-                            } else {
-                                error_log("  - Classification {$classification} not found in chart data for group {$userAgeGroup}");
-                            }
+                        if ($classification && in_array($classification, $classifications)) {
+                            $chartData[$userAgeGroup][$classification]++;
                         }
 
                     } catch (Exception $e) {

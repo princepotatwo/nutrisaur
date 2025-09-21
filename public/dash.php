@@ -9038,36 +9038,31 @@ body {
                 console.log('📊 Using WHO Standard:', whoStandard);
                 console.log('📊 Using Barangay:', barangayValue);
 
-                // Use the same data fetching logic as the donut chart
-                const donutData = await fetchWHOClassificationData(whoStandard, barangayValue);
-                console.log('📊 Donut chart data for line chart:', donutData);
+                // Use age-specific API for line chart (different from donut chart)
+                const url = `/api/DatabaseAPI.php?action=get_age_classification_chart&barangay=${barangayValue}&from_months=${fromMonths}&to_months=${toMonths}&who_standard=${whoStandard}`;
+                console.log('📊 Fetching age-specific data for line chart:', url);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📊 Age-specific data received:', data);
 
-                // Check if we have valid donut chart data
-                if (!donutData || !donutData.classifications || donutData.total === 0) {
-                    console.log('No donut chart data available - showing empty chart');
+                // Check if we have valid age-specific data
+                if (!data.success || !data.data || !data.data.ageGroups || data.data.ageGroups.length === 0) {
+                    console.log('No age-specific data available - showing empty chart');
                     createEmptyAgeChart(canvas);
                     return;
                 }
 
-                // Create age groups based on the age range
-                const ageRangeMonths = toMonths - fromMonths;
-                const ageGroups = [];
+                // Extract data from age-specific API response
+                const { ageGroups, classifications, chartData, totalUsers } = data.data;
                 
-                // Generate 10 age groups within the specified range
-                for (let i = 0; i < 10; i++) {
-                    const startAge = fromMonths + Math.floor((ageRangeMonths * i) / 10);
-                    const endAge = fromMonths + Math.floor((ageRangeMonths * (i + 1)) / 10) - 1;
-                    ageGroups.push(`${startAge}-${endAge}m`);
-                }
-                
-                console.log('📊 Generated age groups for range', fromMonths, 'to', toMonths, ':', ageGroups);
-
-                // Get classifications from donut data
-                const classifications = Object.keys(donutData.classifications);
-                const totalUsers = donutData.total;
-                
-                console.log('📊 Classifications from donut chart:', classifications);
-                console.log('📊 Total users from donut chart:', totalUsers);
+                console.log('📊 Age groups from API:', ageGroups);
+                console.log('📊 Classifications from API:', classifications);
+                console.log('📊 Total users from API:', totalUsers);
                 
                 // Color mapping for nutritional classifications
                 const colors = {
@@ -9083,20 +9078,15 @@ body {
                     'Tall': '#00BCD4'
                 };
 
-                // Create datasets for Chart.js line chart - show population scale across 10 age groups
+                // Create datasets for Chart.js line chart using real age-specific data
                 const datasets = classifications.map(classification => {
-                    const count = donutData.classifications[classification];
+                    const chartDataForClassification = chartData[classification] || [];
                     
-                    // Create data that shows the population scale (0 to totalUsers)
-                    // Each age group shows a portion of the population scale
-                    const data = ageGroups.map((_, index) => {
-                        // Calculate the population value for this age group
-                        // Age group 1 = count/10, Age group 2 = 2*count/10, etc.
-                        return Math.round((index + 1) * count / 10);
-                    });
+                    // Use real age-specific data from the API
+                    const data = chartDataForClassification;
                     
-                    // Log the population scale distribution
-                    console.log(`📊 ${classification}: ${count} total -> population scale:`, data);
+                    // Log the real age-specific distribution
+                    console.log(`📊 ${classification}: real age-specific data:`, data);
                     
                     return {
                         label: classification,
@@ -9214,9 +9204,7 @@ body {
                             },
                             y: {
                                 beginAtZero: true,
-                                max: totalUsers,
                                 ticks: {
-                                    stepSize: Math.ceil(totalUsers / 10),
                                     font: {
                                         size: 10
                                     },
@@ -9784,6 +9772,10 @@ body {
                 console.log('🎨 Updating chart...');
                 updateWHOClassificationChart(response);
                 updateWHOChartDescription(selectedStandard);
+                
+                // Also update the age classification chart with the new WHO standard
+                console.log('🎨 Updating age classification chart...');
+                await updateAgeClassificationChart(0, 71);
                 console.log('✅ Chart update completed');
                 
             } catch (error) {
