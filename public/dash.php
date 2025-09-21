@@ -9019,9 +9019,9 @@ body {
             }
         }
 
-        // Function to update age classification chart
+        // Function to update age classification chart using donut chart data
         async function updateAgeClassificationChart() {
-            console.log('📊 Updating Age Classification Chart...');
+            console.log('📊 Updating Age Classification Chart using donut chart data...');
             
             try {
                 const canvas = document.getElementById('ageClassificationChart');
@@ -9030,44 +9030,37 @@ body {
                     return;
                 }
 
-                // Get current filter values
+                // Get current WHO standard and barangay values
+                const whoStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
 
-                // Fetch age classification chart data from our new API endpoint
-                const url = `/api/DatabaseAPI.php?action=get_age_classification_chart&barangay=${barangayValue}`;
-                console.log('Fetching age classification chart data from:', url);
-                
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('Age classification chart data received:', data);
-                console.log('Data success:', data.success);
-                console.log('Data.data exists:', !!data.data);
-                console.log('Age groups:', data.data?.ageGroups);
-                console.log('Age groups length:', data.data?.ageGroups?.length);
+                console.log('📊 Using WHO Standard:', whoStandard);
+                console.log('📊 Using Barangay:', barangayValue);
 
-                if (!data.success || !data.data || !data.data.ageGroups || data.data.ageGroups.length === 0) {
-                    console.log('No age classification chart data available - showing empty chart');
-                    console.log('Debug info:', {
-                        success: data.success,
-                        hasData: !!data.data,
-                        hasAgeGroups: !!data.data?.ageGroups,
-                        ageGroupsLength: data.data?.ageGroups?.length
-                    });
+                // Use the same data fetching logic as the donut chart
+                const donutData = await fetchWHOClassificationData(whoStandard, barangayValue);
+                console.log('📊 Donut chart data for line chart:', donutData);
+
+                // Check if we have valid donut chart data
+                if (!donutData || !donutData.classifications || donutData.total === 0) {
+                    console.log('No donut chart data available - showing empty chart');
                     createEmptyAgeChart(canvas);
                     return;
                 }
 
-                // Extract data from API response
-                const { ageGroups, classifications, chartData, totalUsers, populationIncrement, populationScale } = data.data;
+                // Create age groups for the line chart (6 months intervals for 0-72 months)
+                const ageGroups = [
+                    '0-6m', '6-12m', '12-18m', '18-24m', '24-30m', '30-36m', 
+                    '36-42m', '42-48m', '48-54m', '54-60m', '60-66m', '66-72m'
+                ];
+
+                // Get classifications from donut data
+                const classifications = Object.keys(donutData.classifications);
+                const totalUsers = donutData.total;
                 
-                console.log('📊 Population data:', { totalUsers, populationIncrement, populationScale });
-                console.log('📊 Population Scale Array:', populationScale);
-                console.log('📊 Population Increment:', populationIncrement);
+                console.log('📊 Classifications from donut chart:', classifications);
+                console.log('📊 Total users from donut chart:', totalUsers);
                 
                 // Color mapping for nutritional classifications
                 const colors = {
@@ -9083,13 +9076,17 @@ body {
                     'Tall': '#00BCD4'
                 };
 
-                // Create datasets for Chart.js line chart
+                // Create datasets for Chart.js line chart - distribute donut data across age groups
                 const datasets = classifications.map(classification => {
-                    const chartDataForClassification = chartData[classification] || [];
+                    const count = donutData.classifications[classification];
+                    
+                    // Distribute the count evenly across age groups for now
+                    // This creates a flat line showing the same count for each age group
+                    const data = ageGroups.map(() => count);
                     
                     return {
                         label: classification,
-                        data: chartDataForClassification,
+                        data: data,
                         borderColor: colors[classification] || '#666',
                         backgroundColor: colors[classification] || '#666',
                         tension: 0.1,
@@ -9102,39 +9099,10 @@ body {
                     };
                 });
 
-                // Validate data
-                let totalDataPoints = 0;
-                let nonZeroDataPoints = 0;
-                
-                datasets.forEach((dataset, index) => {
-                    dataset.data.forEach((value, dataIndex) => {
-                        totalDataPoints++;
-                        if (value > 0) {
-                            nonZeroDataPoints++;
-                            const actualUsers = populationScale && populationScale[value - 1] ? populationScale[value - 1] : value * populationIncrement;
-                            console.log(`✅ Data point: ${dataset.label} at ${ageGroups[dataIndex]}: ${actualUsers} users`);
-                        }
-                    });
-                });
-                
-                console.log(`📊 Chart data summary: ${nonZeroDataPoints}/${totalDataPoints} non-zero data points`);
-                
-                // If no data, show warning
-                if (nonZeroDataPoints === 0) {
-                    console.warn('⚠️ WARNING: No data found in chart datasets!');
-                }
-
-                // Destroy existing chart and create new one
+                // Destroy existing chart
                 destroyAgeClassificationChart();
-                
-                // Set canvas size
-                const container = canvas.parentElement;
-                const containerRect = container.getBoundingClientRect();
-                const availableWidth = Math.max(400, containerRect.width - 40);
-                const availableHeight = Math.max(300, containerRect.height - 40);
-                canvas.width = availableWidth;
-                canvas.height = availableHeight;
-                
+
+                // Create new chart
                 const ctx = canvas.getContext('2d');
                 
                 ageClassificationChartInstance = new Chart(ctx, {
@@ -9278,7 +9246,7 @@ body {
                     }
                 });
 
-                console.log('✅ Age Classification Chart created successfully');
+                console.log('✅ Age Classification Chart created successfully using donut chart data');
                 
             } catch (error) {
                 console.error('❌ Error updating age classification chart:', error);
@@ -9394,23 +9362,14 @@ body {
         }
 
         async function updateAgeClassificationChartWithRange(fromMonths, toMonths) {
-            console.log('📊 Updating age classification chart with range:', fromMonths, 'to', toMonths, 'months');
+            console.log('📊 Age range changed:', fromMonths, 'to', toMonths, 'months - updating chart with donut data');
             
-            try {
-                const canvas = document.getElementById('ageClassificationChart');
-                if (!canvas) {
-                    console.error('Age classification chart canvas not found');
-                    return;
-                }
+            // Simply call the main function since we're using donut chart data
+            await updateAgeClassificationChart();
+        }
 
-                // Get current filter values
-                const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
-                const barangayValue = barangay === 'All Barangays' ? '' : barangay;
-
-                // Call the API with age range parameters
-                const url = `/api/DatabaseAPI.php?action=get_age_classification_chart&barangay=${barangayValue}&from_months=${fromMonths}&to_months=${toMonths}`;
-                console.log('Fetching age classification chart data from:', url);
-                
+        // ORPHANED CODE - TO BE REMOVED
+        /*
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -9619,6 +9578,7 @@ body {
                 }
             }
         }
+        */
 
         // Function to update chart description based on WHO standard
         function updateWHOChartDescription(whoStandard) {
