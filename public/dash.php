@@ -7846,18 +7846,6 @@ body {
                         console.log('❌ Skipping highRisk update - no change');
                     }
                     
-                    if (dashboardState.isFirstLoad || dashboardState.moderateRisk === null || dashboardState.moderateRisk !== moderateValue) {
-                        console.log('✅ Updating riskChange.textContent to:', moderateValue);
-                        console.log('Before update - riskChange.textContent:', riskChange.textContent);
-                        riskChange.textContent = moderateValue;
-                        console.log('After update - riskChange.textContent:', riskChange.textContent);
-                        dashboardState.moderateRisk = moderateValue;
-                        if (dashboardState.isFirstLoad) {
-                            console.log('🎯 First load completed for moderateRisk');
-                        }
-                    } else {
-                        console.log('❌ Skipping moderateRisk update - no change');
-                    }
                 } else {
                     console.log('❌ HTML elements not found for High Risk Cases');
                 }
