@@ -7049,6 +7049,14 @@ body {
                 <div class="metric-note">Children with severely underweight status (Weight-for-Age)</div>
             </div>
             <div class="card">
+                <h2>Severely Stunted</h2>
+                <div class="metric-value" id="community-sam-cases"><?php echo $timeFrameData['sam_cases']; ?></div>
+                <div class="metric-change" id="community-sam-change">
+                    All Time Data
+                </div>
+                <div class="metric-note">Children with severely stunted status (Height-for-Age)</div>
+            </div>
+            <div class="card">
                 <h2>Severely Wasted</h2>
                 <div class="metric-value" id="community-critical-muac"><?php echo $timeFrameData['critical_muac']; ?></div>
                 <div class="metric-change" id="community-muac-change">
@@ -7824,13 +7832,17 @@ body {
                 console.log('High Risk Element:', highRisk);
                 console.log('Risk Change Element:', riskChange);
                 console.log('High Risk Data:', riskData.data?.high_risk_cases);
+                console.log('SAM Cases Data:', riskData.data?.sam_cases);
                 console.log('Critical MUAC Data:', riskData.data?.critical_muac);
                 
                 if (highRisk && riskChange) {
                     const highRiskValue = riskData.data?.high_risk_cases || 0;
+                    const moderateValue = riskData.data?.sam_cases || 0;
                     
                     console.log('Current dashboardState.highRisk:', dashboardState.highRisk);
                     console.log('New highRiskValue:', highRiskValue);
+                    console.log('Current dashboardState.moderateRisk:', dashboardState.moderateRisk);
+                    console.log('New moderateValue:', moderateValue);
                     
                     // Force update on first load or if data has changed
                     if (dashboardState.isFirstLoad || dashboardState.highRisk === null || dashboardState.highRisk !== highRiskValue) {
@@ -7846,8 +7858,68 @@ body {
                         console.log('❌ Skipping highRisk update - no change');
                     }
                     
+                    if (dashboardState.isFirstLoad || dashboardState.moderateRisk === null || dashboardState.moderateRisk !== moderateValue) {
+                        console.log('✅ Updating riskChange.textContent to:', moderateValue);
+                        console.log('Before update - riskChange.textContent:', riskChange.textContent);
+                        riskChange.textContent = moderateValue;
+                        console.log('After update - riskChange.textContent:', riskChange.textContent);
+                        dashboardState.moderateRisk = moderateValue;
+                        if (dashboardState.isFirstLoad) {
+                            console.log('🎯 First load completed for moderateRisk');
+                        }
+                    } else {
+                        console.log('❌ Skipping moderateRisk update - no change');
+                    }
                 } else {
                     console.log('❌ HTML elements not found for High Risk Cases');
+                }
+
+                    const samCases = document.getElementById('community-sam-cases');
+                    const samChange = document.getElementById('community-sam-change');
+                    
+                    console.log('SAM Cases Element:', samCases);
+                    console.log('SAM Change Element:', samChange);
+                    console.log('SAM Cases Data (severe):', riskData.data?.sam_cases);
+                    console.log('SAM Change Data (high):', riskData.data?.critical_muac);
+                    
+                    if (samCases && samChange) {
+                        const samCasesValue = riskData.data?.sam_cases || 0;
+                        const samChangeValue = riskData.data?.critical_muac || 0;
+                        
+                        console.log('Current dashboardState.samCases:', dashboardState.samCases);
+                        console.log('New samCasesValue:', samCasesValue);
+                        console.log('Current dashboardState.samChange:', dashboardState.samChange);
+                        console.log('New samChangeValue:', samChangeValue);
+                        
+                        // Force update on first load or if data has changed
+                        if (dashboardState.isFirstLoad || dashboardState.samCases === null || dashboardState.samCases !== samCasesValue) {
+                            console.log('✅ Updating samCases.textContent to:', samCasesValue);
+                            console.log('Before update - samCases.textContent:', samCases.textContent);
+                            samCases.textContent = samCasesValue;
+                            console.log('After update - samCases.textContent:', samCases.textContent);
+                            dashboardState.samCases = samCasesValue;
+                            if (dashboardState.isFirstLoad) {
+                                console.log('🎯 First load completed for samCases');
+                            }
+                        } else {
+                            console.log('❌ Skipping samCases update - no change');
+                        }
+                        
+                        if (dashboardState.isFirstLoad || dashboardState.samChange === null || dashboardState.samChange !== samChangeValue) {
+                            console.log('✅ Updating samChange.textContent to:', samChangeValue);
+                            console.log('Before update - samChange.textContent:', samChange.textContent);
+                            samChange.textContent = samChangeValue;
+                            console.log('After update - samChange.textContent:', samChange.textContent);
+                            dashboardState.samChange = samChangeValue;
+                            if (dashboardState.isFirstLoad) {
+                                console.log('🎯 First load completed for samChange');
+                            }
+                        } else {
+                            console.log('❌ Skipping samChange update - no change');
+                        }
+                    } else {
+                        console.log('❌ HTML elements not found for SAM Cases');
+                    }
                 }
 
                 // Update Nutritional Statistics using the new function
@@ -7915,7 +7987,7 @@ body {
             console.log('🌍 updateGeographicChartDisplay called with data:', data);
             const container = document.getElementById('barangay-distribution');
             if (!container) {
-                console.log('🌍 Geographic chart container not found - skipping display');
+                console.error('❌ Geographic chart container not found!');
                 return;
             }
             console.log('🌍 Geographic chart container found, updating display...');
@@ -9004,19 +9076,20 @@ body {
                     'Tall': '#00BCD4'
                 };
 
-                // Create datasets for Chart.js line chart - distribute donut data realistically across age groups
+                // Create datasets for Chart.js line chart - distribute donut data across age groups
                 const datasets = classifications.map(classification => {
-                    const totalCount = donutData.classifications[classification];
+                    const count = donutData.classifications[classification];
                     
-                    // Create realistic age distribution pattern for each classification
-                    const data = createRealisticAgeDistribution(classification, totalCount, ageGroups.length);
+                    // Distribute the count evenly across age groups for now
+                    // This creates a flat line showing the same count for each age group
+                    const data = ageGroups.map(() => count);
                     
                     return {
                         label: classification,
                         data: data,
                         borderColor: colors[classification] || '#666',
                         backgroundColor: colors[classification] || '#666',
-                        tension: 0.3,
+                        tension: 0.1,
                         pointStyle: 'circle',
                         pointRadius: 4,
                         pointHoverRadius: 6,
@@ -9025,43 +9098,6 @@ body {
                         spanGaps: false
                     };
                 });
-
-                // Helper function to create realistic age distribution
-                function createRealisticAgeDistribution(classification, totalCount, numAgeGroups) {
-                    // Define realistic distribution patterns for different classifications
-                    const patterns = {
-                        'Normal': [0.12, 0.15, 0.18, 0.15, 0.12, 0.10, 0.08, 0.06, 0.04, 0.03, 0.02, 0.02], // Peak in middle ages
-                        'Underweight': [0.08, 0.12, 0.15, 0.18, 0.15, 0.12, 0.10, 0.08, 0.06, 0.04, 0.02, 0.01], // Slightly younger peak
-                        'Severely Underweight': [0.15, 0.20, 0.18, 0.15, 0.12, 0.10, 0.06, 0.04, 0.02, 0.01, 0.01, 0.01], // Early childhood peak
-                        'Overweight': [0.05, 0.06, 0.08, 0.10, 0.12, 0.15, 0.18, 0.15, 0.12, 0.08, 0.06, 0.05], // Later peak
-                        'Obese': [0.03, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15, 0.18, 0.15, 0.12, 0.08, 0.06], // Even later peak
-                        'Stunted': [0.10, 0.15, 0.18, 0.16, 0.14, 0.12, 0.10, 0.08, 0.06, 0.04, 0.03, 0.02], // Early peak
-                        'Severely Stunted': [0.20, 0.25, 0.20, 0.15, 0.10, 0.06, 0.04, 0.02, 0.01, 0.01, 0.01, 0.01], // Very early peak
-                        'Wasted': [0.08, 0.12, 0.15, 0.18, 0.16, 0.14, 0.10, 0.08, 0.06, 0.04, 0.03, 0.02], // Middle-late peak
-                        'Severely Wasted': [0.15, 0.20, 0.18, 0.15, 0.12, 0.10, 0.06, 0.04, 0.02, 0.01, 0.01, 0.01], // Early peak
-                        'Tall': [0.05, 0.06, 0.08, 0.10, 0.12, 0.14, 0.16, 0.18, 0.15, 0.12, 0.08, 0.06] // Later peak
-                    };
-
-                    // Get the pattern for this classification, default to normal if not found
-                    const pattern = patterns[classification] || patterns['Normal'];
-                    
-                    // Distribute the total count according to the pattern
-                    const distribution = pattern.slice(0, numAgeGroups).map(percentage => {
-                        return Math.round(totalCount * percentage);
-                    });
-
-                    // Adjust for rounding errors to ensure total matches
-                    const currentTotal = distribution.reduce((sum, count) => sum + count, 0);
-                    const difference = totalCount - currentTotal;
-                    
-                    if (difference !== 0) {
-                        // Find the largest group and adjust it
-                        const maxIndex = distribution.indexOf(Math.max(...distribution));
-                        distribution[maxIndex] += difference;
-                    }
-
-                    return distribution;
-                }
 
                 // Destroy existing chart
                 destroyAgeClassificationChart();
