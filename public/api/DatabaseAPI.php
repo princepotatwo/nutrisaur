@@ -4190,6 +4190,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Debug: Log user count
                 error_log("DEBUG: Fetched " . count($users) . " users for age classification line chart");
                 error_log("DEBUG: WHO Standard: " . $whoStandard);
+                error_log("DEBUG: First user sample: " . json_encode($users[0] ?? 'No users'));
                 
                 if (empty($users)) {
                     echo json_encode([
@@ -4244,6 +4245,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 // Process real user data from the batch system
                 $debugCount = 0;
+                $processedCount = 0;
                 foreach ($users as $user) {
                     try {
                         // Calculate age in months
@@ -4332,6 +4334,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         $classificationCounts[$classification][$ageRangeIndex]++;
                         $totalUsers++;
+                        $processedCount++;
                         
                         // Debug: Log first few users
                         if ($debugCount < 5) {
@@ -4370,6 +4373,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'tension' => 0.1
                     ];
                 }
+                
+                error_log("DEBUG: Age classification summary - Total users: " . count($users) . ", Processed: $processedCount, Total in chart: $totalUsers");
+                error_log("DEBUG: Classification counts: " . json_encode($classificationCounts));
                 
                 echo json_encode([
                     'success' => true,
