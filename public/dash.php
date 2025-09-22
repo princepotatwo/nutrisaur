@@ -7106,7 +7106,7 @@ body {
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                         <div style="flex: 1;">
                 <h3>Age Classification Chart</h3>
-                <p class="chart-description">Nutritional classifications by age groups. Shows the actual distribution of nutritional classifications (Normal, Underweight, Obese, etc.) from the same data source as the donut chart. Each line represents a different classification with exact counts matching the donut chart totals.</p>
+                <p class="chart-description">Nutritional classifications by age groups. Shows the actual distribution of nutritional classifications (Normal, Underweight, Obese, etc.) from the same data source as the donut chart. The age range automatically adjusts based on the selected WHO standard. Each line represents a different classification with exact counts matching the donut chart totals.</p>
                 </div>
                         
                     </div>
@@ -8986,6 +8986,23 @@ body {
             }
         }
 
+        // Helper function to get age range for WHO standard
+        function getAgeRangeForWHOStandard(whoStandard) {
+            switch (whoStandard) {
+                case 'weight-for-age':
+                case 'height-for-age':
+                    return { fromMonths: 0, toMonths: 71 }; // 0-5.9 years
+                case 'weight-for-height':
+                    return { fromMonths: 0, toMonths: 60 }; // 0-5 years
+                case 'bmi-for-age':
+                    return { fromMonths: 24, toMonths: 228 }; // 2-19 years
+                case 'bmi-adult':
+                    return { fromMonths: 228, toMonths: 600 }; // 19-50 years (extended for display)
+                default:
+                    return { fromMonths: 0, toMonths: 71 }; // default
+            }
+        }
+
         // Helper function to generate age groups based on range
         function generateAgeGroups(fromMonths, toMonths) {
             const numGroups = 10;
@@ -9109,8 +9126,9 @@ body {
                 console.log('📊 Classifications from donut chart:', classifications);
                 console.log('📊 Total users from donut chart:', totalUsers);
 
-                // Generate age groups based on default range (0-71 months)
-                const ageGroups = generateAgeGroups(0, 71);
+                // Generate age groups based on WHO standard
+                const ageRange = getAgeRangeForWHOStandard(whoStandard);
+                const ageGroups = generateAgeGroups(ageRange.fromMonths, ageRange.toMonths);
                 console.log('📊 Generated age groups:', ageGroups);
                 console.log('📊 Generated age groups type:', typeof ageGroups);
                 console.log('📊 Generated age groups length:', ageGroups ? ageGroups.length : 'undefined');
@@ -9273,7 +9291,7 @@ body {
                                 },
                                 title: {
                                     display: true,
-                                    text: `Population (Total: ${totalUsers} users)`,
+                                    text: `Population (Total: ${totalUsers} users) - Age Range: ${ageRange.fromMonths}-${ageRange.toMonths} months`,
                                     font: {
                                         size: 12,
                                         weight: 'bold'
