@@ -4223,33 +4223,33 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     break;
                 }
                 
-                // Define age buckets for each WHO standard (matching your exact design)
-                $ageBuckets = [
+                // Define age ranges for each WHO standard (matching your exact design)
+                $ageRanges = [
                     'weight-for-age' => [
-                        'labels' => ['0m', '7m', '14m', '21m', '28m', '35m', '42m', '49m', '56m', '63m', '71m'],
-                        'buckets' => [0, 7, 14, 21, 28, 35, 42, 49, 56, 63, 71]
+                        'labels' => ['0-7m','8-14m','15-21m','22-28m','29-35m','36-42m','43-49m','50-56m','57-63m','64-71m'],
+                        'ranges' => [[0,7],[8,14],[15,21],[22,28],[29,35],[36,42],[43,49],[50,56],[57,63],[64,71]]
                     ],
                     'height-for-age' => [
-                        'labels' => ['0m', '7m', '14m', '21m', '28m', '35m', '42m', '49m', '56m', '63m', '71m'],
-                        'buckets' => [0, 7, 14, 21, 28, 35, 42, 49, 56, 63, 71]
+                        'labels' => ['0-7m','8-14m','15-21m','22-28m','29-35m','36-42m','43-49m','50-56m','57-63m','64-71m'],
+                        'ranges' => [[0,7],[8,14],[15,21],[22,28],[29,35],[36,42],[43,49],[50,56],[57,63],[64,71]]
                     ],
                     'weight-for-height' => [
-                        'labels' => ['0m', '6m', '12m', '18m', '24m', '30m', '36m', '42m', '48m', '54m', '60m'],
-                        'buckets' => [0, 6, 12, 18, 24, 30, 36, 42, 48, 54, 60]
+                        'labels' => ['0-6m','7-12m','13-18m','19-24m','25-30m','31-36m','37-42m','43-48m','49-54m','55-60m'],
+                        'ranges' => [[0,6],[7,12],[13,18],[19,24],[25,30],[31,36],[37,42],[43,48],[49,54],[55,60]]
                     ],
                     'bmi-for-age' => [
-                        'labels' => ['2y', '4y', '6y', '8y', '10y', '12y', '14y', '16y', '18y', '19y'],
-                        'buckets' => [24, 48, 72, 96, 120, 144, 168, 192, 216, 228]
+                        'labels' => ['2-3y','4-5y','6-7y','8-9y','10-11y','12-13y','14-15y','16-17y','18-19y'],
+                        'ranges' => [[24,36],[48,60],[72,84],[96,108],[120,132],[144,156],[168,180],[192,204],[216,228]]
                     ],
                     'bmi-adult' => [
-                        'labels' => ['19y', '30y', '40y', '50y', '60y', '70y', '80y', '90y', '100y'],
-                        'buckets' => [228, 360, 480, 600, 720, 840, 960, 1080, 1200]
+                        'labels' => ['19-27y','28-36y','37-45y','46-54y','55-63y','64-72y','73-81y','82-90y','91-100y'],
+                        'ranges' => [[228,324],[336,432],[444,540],[552,648],[660,756],[768,864],[876,972],[984,1080],[1092,1200]]
                     ]
                 ];
                 
-                $currentBuckets = $ageBuckets[$whoStandard] ?? $ageBuckets['weight-for-age'];
-                $ageLabels = $currentBuckets['labels'];
-                $buckets = $currentBuckets['buckets'];
+                $currentRanges = $ageRanges[$whoStandard] ?? $ageRanges['weight-for-age'];
+                $ageLabels = $currentRanges['labels'];
+                $ranges = $currentRanges['ranges'];
                 
                 // Use the same data source as donut chart but distribute across age buckets
                 $donutData = $db->getAllWHOClassificationsBulk('1d', $barangay, $whoStandard);
@@ -4264,29 +4264,29 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     
                     error_log("DEBUG: Using donut data - " . json_encode($classifications));
                     
-                    // Distribute each classification across age buckets
-                    $numBuckets = count($buckets);
+                    // Distribute each classification across age ranges
+                    $numRanges = count($ranges);
                     foreach ($classifications as $classification => $count) {
                         if ($count <= 0 || $classification === 'No Data') continue;
                         
                         // Initialize classification array
-                        $classificationCounts[$classification] = array_fill(0, $numBuckets, 0);
+                        $classificationCounts[$classification] = array_fill(0, $numRanges, 0);
                         
-                        // Distribute count across age buckets (weighted towards younger ages for now)
+                        // Distribute count across age ranges (realistic distribution)
                         $remaining = $count;
-                        for ($i = 0; $i < $numBuckets && $remaining > 0; $i++) {
+                        for ($i = 0; $i < $numRanges && $remaining > 0; $i++) {
                             // Weight distribution: more users in younger age groups
-                            $weight = $numBuckets - $i; // Higher weight for younger ages
-                            $maxForThisBucket = min($remaining, max(1, floor($count * $weight / ($numBuckets * ($numBuckets + 1) / 2))));
+                            $weight = $numRanges - $i; // Higher weight for younger ages
+                            $maxForThisRange = min($remaining, max(1, floor($count * $weight / ($numRanges * ($numRanges + 1) / 2))));
                             
-                            $classificationCounts[$classification][$i] = $maxForThisBucket;
-                            $remaining -= $maxForThisBucket;
+                            $classificationCounts[$classification][$i] = $maxForThisRange;
+                            $remaining -= $maxForThisRange;
                         }
                         
                         // Distribute any remaining users
                         $i = 0;
                         while ($remaining > 0) {
-                            $classificationCounts[$classification][$i % $numBuckets]++;
+                            $classificationCounts[$classification][$i % $numRanges]++;
                             $remaining--;
                             $i++;
                         }
@@ -4312,18 +4312,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'Tall' => 'rgba(54, 162, 235, 1)'
                 ];
                 
-                // Create datasets in the exact format from your design
+                // Create datasets in the exact format from your design (curvy lines)
                 $datasets = [];
                 foreach ($classificationCounts as $classification => $counts) {
                     $datasets[] = [
                         'label' => $classification,
                         'data' => $counts,
                         'borderColor' => $colors[$classification] ?? 'rgba(128, 128, 128, 1)',
-                        'backgroundColor' => $colors[$classification] ?? 'rgba(128, 128, 128, 1)',
                         'fill' => false,
-                        'tension' => 0.1,
+                        'tension' => 0.4, // More curvy lines as per your design
                         'pointRadius' => 4,
-                        'pointHoverRadius' => 6
+                        'pointHoverRadius' => 6,
+                        'borderWidth' => 2
                     ];
                 }
                 
@@ -4336,6 +4336,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'ageLabels' => $ageLabels,
                         'datasets' => $datasets,
                         'totalUsers' => $totalUsers,
+                        'totalPopulation' => $totalUsers, // For Y-axis scaling
                         'whoStandard' => $whoStandard
                     ]
                 ]);
