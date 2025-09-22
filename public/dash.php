@@ -5575,6 +5575,7 @@ header .user-info {
     gap: 20px;
     margin-bottom: 20px;
     align-items: stretch;
+    min-height: 200px; /* Ensure container has minimum height */
 }
 
 .card {
@@ -5590,6 +5591,8 @@ header .user-info {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    min-height: 150px; /* Ensure cards have minimum height */
+    border: 2px solid var(--color-highlight); /* Add visible border for debugging */
 }
 
 .card:hover {
@@ -7075,7 +7078,7 @@ body {
 
         <!-- Community Metrics Cards - Moved to Top -->
         <div class="card-container" style="gap: 20px;">
-            <div class="card">
+            <div class="card" id="card-total-screened">
                 <h2>Total Screened</h2>
                 <div class="metric-value" id="community-total-screened"><?php echo $timeFrameData['total_screened']; ?></div>
                 <div class="metric-change" id="community-screened-change">
@@ -7083,7 +7086,7 @@ body {
                 </div>
                 <div class="metric-note">Children & adults screened in selected time frame</div>
             </div>
-            <div class="card">
+            <div class="card" id="card-high-risk">
                 <h2>Severely Underweight</h2>
                 <div class="metric-value" id="community-high-risk"><?php echo $timeFrameData['high_risk_cases']; ?></div>
                 <div class="metric-change" id="community-risk-change">
@@ -7091,7 +7094,7 @@ body {
                 </div>
                 <div class="metric-note">Children with severely underweight status (Weight-for-Age)</div>
             </div>
-            <div class="card">
+            <div class="card" id="card-sam-cases">
                 <h2>Severely Stunted</h2>
                 <div class="metric-value" id="community-sam-cases"><?php echo $timeFrameData['sam_cases']; ?></div>
                 <div class="metric-change" id="community-sam-change">
@@ -7099,7 +7102,7 @@ body {
                 </div>
                 <div class="metric-note">Children with severely stunted status (Height-for-Age)</div>
             </div>
-            <div class="card">
+            <div class="card" id="card-critical-muac">
                 <h2>Severely Wasted</h2>
                 <div class="metric-value" id="community-critical-muac"><?php echo $timeFrameData['critical_muac']; ?></div>
                 <div class="metric-change" id="community-muac-change">
@@ -9975,12 +9978,25 @@ body {
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM Content Loaded - Initializing WHO dropdown');
             
-            // Debug: Check initial metric values on page load
-            setTimeout(() => {
-                const totalScreened = document.getElementById('community-total-screened');
-                const highRisk = document.getElementById('community-high-risk');
-                const samCases = document.getElementById('community-sam-cases');
-                const criticalMuac = document.getElementById('community-critical-muac');
+        // Debug: Check initial metric values on page load
+        setTimeout(() => {
+            // Debug card visibility
+            console.log('🔍 Card Debug - Checking card elements:');
+            const cardContainer = document.querySelector('.card-container');
+            const cards = document.querySelectorAll('.card');
+            console.log('Card Container:', cardContainer);
+            console.log('Number of cards found:', cards.length);
+            cards.forEach((card, index) => {
+                console.log(`Card ${index + 1}:`, card);
+                console.log(`Card ${index + 1} display:`, window.getComputedStyle(card).display);
+                console.log(`Card ${index + 1} visibility:`, window.getComputedStyle(card).visibility);
+                console.log(`Card ${index + 1} opacity:`, window.getComputedStyle(card).opacity);
+            });
+            
+            const totalScreened = document.getElementById('community-total-screened');
+            const highRisk = document.getElementById('community-high-risk');
+            const samCases = document.getElementById('community-sam-cases');
+            const criticalMuac = document.getElementById('community-critical-muac');
                 
                 console.log('🔍 Initial Dashboard Metrics (Page Load):');
                 console.log('  - Total Screened:', totalScreened ? totalScreened.textContent : 'NOT FOUND');
