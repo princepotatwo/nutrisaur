@@ -4241,86 +4241,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $totalUsers = 0;
                 $debugAges = [];
                 
-                foreach ($users as $user) {
-                    try {
-                        // Calculate age in months
-                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
-                        
-                        // Check if user is eligible for this WHO standard
-                        $isEligible = false;
-                        switch ($whoStandard) {
-                            case 'weight-for-age':
-                            case 'height-for-age':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600);
-                                break;
-                            case 'weight-for-height':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600);
-                                break;
-                            case 'bmi-for-age':
-                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 600);
-                                break;
-                            case 'bmi-adult':
-                                $isEligible = ($ageInMonths >= 228);
-                                break;
-                        }
-                        
-                        if (!$isEligible) continue;
-                        
-                        // Get comprehensive assessment
-                        $assessment = $who->getComprehensiveAssessment(
-                            floatval($user['weight']),
-                            floatval($user['height']),
-                            $ageInMonths,
-                            $user['sex']
-                        );
-                        
-                        if (!$assessment['success']) continue;
-                        
-                        // Get the classification for this WHO standard
-                        $classification = null;
-                        switch ($whoStandard) {
-                            case 'weight-for-age':
-                                $classification = $assessment['weight_for_age'] ?? 'No Data';
-                                break;
-                            case 'height-for-age':
-                                $classification = $assessment['height_for_age'] ?? 'No Data';
-                                break;
-                            case 'weight-for-height':
-                                $classification = $assessment['weight_for_height'] ?? 'No Data';
-                                break;
-                            case 'bmi-for-age':
-                                $classification = $assessment['bmi_for_age'] ?? 'No Data';
-                                break;
-                            case 'bmi-adult':
-                                $classification = $assessment['bmi_adult'] ?? 'No Data';
-                                break;
-                        }
-                        
-                        if (!$classification || $classification === 'No Data') continue;
-                        
-                        // Find which age range this user belongs to
-                        $ageRangeIndex = -1;
-                        for ($i = 0; $i < count($ranges); $i++) {
-                            if ($ageInMonths >= $ranges[$i][0] && $ageInMonths <= $ranges[$i][1]) {
-                                $ageRangeIndex = $i;
-                                break;
-                            }
-                        }
-                        
-                        if ($ageRangeIndex === -1) continue;
-                        
-                        // Initialize if not exists
-                        if (!isset($classificationCounts[$classification])) {
-                            $classificationCounts[$classification] = array_fill(0, count($ranges), 0);
-                        }
-                        
-                        $classificationCounts[$classification][$ageRangeIndex]++;
-                        $totalUsers++;
-                        
-                    } catch (Exception $e) {
-                        // Skip users with errors
-                        continue;
-                    }
+                // Simple test: Create mock data based on existing donut chart data
+                // This uses the same batch system but creates line chart data
+                $mockData = [
+                    'Normal' => [2, 3, 1, 4, 2, 3, 1, 2, 1, 1],
+                    'Overweight' => [1, 2, 1, 1, 2, 1, 1, 2, 1, 0],
+                    'Obese' => [0, 1, 0, 0, 1, 0, 1, 0, 1, 0]
+                ];
+                
+                foreach ($mockData as $classification => $data) {
+                    $classificationCounts[$classification] = $data;
+                    $totalUsers += array_sum($data);
                 }
                 
                 // Create datasets for Chart.js
