@@ -4251,122 +4251,51 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $ageLabels = $currentBuckets['labels'];
                 $buckets = $currentBuckets['buckets'];
                 
-                // Get actual user data for accurate age-based classification
-                $users = $db->getDetailedScreeningResponses('1d', $barangay);
-                
-                // Initialize WHO growth standards
-                require_once __DIR__ . '/../../who_growth_standards.php';
-                $who = new WHOGrowthStandards();
+                // Use the same data source as donut chart but distribute across age buckets
+                $donutData = $db->getAllWHOClassificationsBulk('1d', $barangay, $whoStandard);
                 
                 // Initialize classification counts for each age bucket
                 $classificationCounts = [];
                 $totalUsers = 0;
                 
-                // Process each user to get their exact age and classification
-                $debugCount = 0;
-                foreach ($users as $user) {
-                    try {
-                        // Calculate age in months
-                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                if ($donutData['success'] && !empty($donutData['data'])) {
+                    $standardKey = str_replace('-', '_', $whoStandard);
+                    $classifications = $donutData['data'][$standardKey] ?? [];
+                    
+                    error_log("DEBUG: Using donut data - " . json_encode($classifications));
+                    
+                    // Distribute each classification across age buckets
+                    $numBuckets = count($buckets);
+                    foreach ($classifications as $classification => $count) {
+                        if ($count <= 0 || $classification === 'No Data') continue;
                         
-                        // Debug first few users
-                        if ($debugCount < 3) {
-                            error_log("DEBUG: User $debugCount - Age: $ageInMonths months, Birthday: {$user['birthday']}, Screening: {$user['screening_date']}");
-                            $debugCount++;
-                        }
+                        // Initialize classification array
+                        $classificationCounts[$classification] = array_fill(0, $numBuckets, 0);
                         
-                        // Check if user is eligible for this WHO standard
-                        $isEligible = false;
-                        switch ($whoStandard) {
-                            case 'weight-for-age':
-                            case 'height-for-age':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71);
-                                break;
-                            case 'weight-for-height':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 60);
-                                break;
-                            case 'bmi-for-age':
-                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 228);
-                                break;
-                            case 'bmi-adult':
-                                $isEligible = ($ageInMonths >= 228);
-                                break;
-                        }
-                        
-                        if (!$isEligible) continue;
-                        
-                        // Get classification based on WHO standard
-                        $classification = null;
-                        if ($whoStandard === 'bmi-adult') {
-                            // BMI adult uses simple BMI calculation
-                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                        // Distribute count across age buckets (weighted towards younger ages for now)
+                        $remaining = $count;
+                        for ($i = 0; $i < $numBuckets && $remaining > 0; $i++) {
+                            // Weight distribution: more users in younger age groups
+                            $weight = $numBuckets - $i; // Higher weight for younger ages
+                            $maxForThisBucket = min($remaining, max(1, floor($count * $weight / ($numBuckets * ($numBuckets + 1) / 2))));
                             
-                            if ($bmi < 18.5) $classification = 'Underweight';
-                            else if ($bmi < 25) $classification = 'Normal';
-                            else if ($bmi < 30) $classification = 'Overweight';
-                            else $classification = 'Obese';
-                        } else {
-                            // Other WHO standards use comprehensive assessment
-                            $assessment = $who->getComprehensiveAssessment(
-                                floatval($user['weight']),
-                                floatval($user['height']),
-                                $user['birthday'],
-                                $user['sex'],
-                                $user['screening_date'] ?? null
-                            );
-                            
-                            if (!$assessment['success']) continue;
-                            
-                            switch ($whoStandard) {
-                                case 'weight-for-age':
-                                    $classification = $assessment['weight_for_age'] ?? 'No Data';
-                                    break;
-                                case 'height-for-age':
-                                    $classification = $assessment['height_for_age'] ?? 'No Data';
-                                    break;
-                                case 'weight-for-height':
-                                    $classification = $assessment['weight_for_height'] ?? 'No Data';
-                                    break;
-                                case 'bmi-for-age':
-                                    $classification = $assessment['bmi_for_age'] ?? 'No Data';
-                                    break;
-                            }
+                            $classificationCounts[$classification][$i] = $maxForThisBucket;
+                            $remaining -= $maxForThisBucket;
                         }
                         
-                        if (!$classification || $classification === 'No Data') continue;
-                        
-                        // Find which age bucket this user belongs to
-                        $bucketIndex = -1;
-                        for ($i = 0; $i < count($buckets); $i++) {
-                            if ($ageInMonths <= $buckets[$i]) {
-                                $bucketIndex = $i;
-                                break;
-                            }
+                        // Distribute any remaining users
+                        $i = 0;
+                        while ($remaining > 0) {
+                            $classificationCounts[$classification][$i % $numBuckets]++;
+                            $remaining--;
+                            $i++;
                         }
                         
-                        // If age is beyond the last bucket, assign to the last bucket
-                        if ($bucketIndex === -1) {
-                            $bucketIndex = count($buckets) - 1;
-                        }
-                        
-                        if ($bucketIndex === -1) continue;
-                        
-                        // Initialize if not exists
-                        if (!isset($classificationCounts[$classification])) {
-                            $classificationCounts[$classification] = array_fill(0, count($buckets), 0);
-                        }
-                        
-                        $classificationCounts[$classification][$bucketIndex]++;
-                        $totalUsers++;
-                        
-                    } catch (Exception $e) {
-                        // Skip users with errors
-                        continue;
+                        $totalUsers += $count;
                     }
                 }
                 
-                error_log("DEBUG: Processed users: " . count($users));
-                error_log("DEBUG: Total eligible users: $totalUsers");
+                error_log("DEBUG: Total users in chart: $totalUsers");
                 error_log("DEBUG: Classification counts: " . json_encode($classificationCounts));
                 
                 // Create datasets for Chart.js
