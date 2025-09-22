@@ -9115,18 +9115,19 @@ body {
                 console.log('📊 Generated age groups type:', typeof ageGroups);
                 console.log('📊 Generated age groups length:', ageGroups ? ageGroups.length : 'undefined');
                 
-                // Color mapping for nutritional classifications
+                // Color mapping for nutritional classifications (matching donut chart colors)
                 const colors = {
-                    'Normal': '#4CAF50',
-                    'Underweight': '#FFC107',
                     'Severely Underweight': '#E91E63',
+                    'Underweight': '#FFC107',
+                    'Normal': '#4CAF50',
                     'Overweight': '#FF9800',
                     'Obese': '#F44336',
-                    'Stunted': '#9C27B0',
+                    'Severely Wasted': '#D32F2F',
+                    'Wasted': '#FF5722',
                     'Severely Stunted': '#673AB7',
-                    'Wasted': '#3F51B5',
-                    'Severely Wasted': '#2196F3',
-                    'Tall': '#00BCD4'
+                    'Stunted': '#9C27B0',
+                    'Tall': '#00BCD4',
+                    'No Data': '#9E9E9E'
                 };
 
                 // Use actual donut chart data instead of artificial distributions
