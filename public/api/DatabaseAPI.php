@@ -4258,6 +4258,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 break;
                         }
                         
+                        // For debugging, let's be more inclusive and log the ages
+                        if ($totalUsers < 5) {
+                            error_log("User age: $ageInMonths months, eligible for $whoStandard: " . ($isEligible ? 'YES' : 'NO'));
+                        }
+                        
                         if (!$isEligible) continue;
                         
                         // Get comprehensive assessment
@@ -4299,6 +4304,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 $ageRangeIndex = $i;
                                 break;
                             }
+                        }
+                        
+                        // For debugging, log if user doesn't fit in any range
+                        if ($ageRangeIndex === -1 && $totalUsers < 5) {
+                            error_log("User age $ageInMonths months doesn't fit in any range for $whoStandard");
+                            error_log("Available ranges: " . json_encode($ranges));
                         }
                         
                         if ($ageRangeIndex === -1) continue;
