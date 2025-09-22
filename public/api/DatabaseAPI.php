@@ -4305,7 +4305,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 break;
                         }
                         
-                        if (!$classification || $classification === 'No Data') continue;
+                        if (!$classification || $classification === 'No Data') {
+                            if ($totalUsers < 5) {
+                                error_log("User has no classification or 'No Data' for $whoStandard");
+                            }
+                            continue;
+                        }
+                        
+                        // For debugging, log successful classifications
+                        if ($totalUsers < 5) {
+                            error_log("User has classification: $classification for $whoStandard");
+                        }
                         
                         // Find which age range this user belongs to
                         $ageRangeIndex = -1;
@@ -4320,6 +4330,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         if ($ageRangeIndex === -1 && $totalUsers < 5) {
                             error_log("User age $ageInMonths months doesn't fit in any range for $whoStandard");
                             error_log("Available ranges: " . json_encode($ranges));
+                        }
+                        
+                        // For debugging, log successful matches too
+                        if ($ageRangeIndex !== -1 && $totalUsers < 5) {
+                            error_log("User age $ageInMonths months fits in range $ageRangeIndex: " . $ranges[$ageRangeIndex][0] . "-" . $ranges[$ageRangeIndex][1]);
                         }
                         
                         if ($ageRangeIndex === -1) continue;
