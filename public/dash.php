@@ -123,61 +123,61 @@ function getNutritionalStatistics($db, $barangay = null) {
             'total_users' => count($users)
         ];
         
-        foreach ($users as $user) {
-            // BMI Categories
-            if (!empty($user['bmi_category'])) {
+            foreach ($users as $user) {
+    // BMI Categories
+    if (!empty($user['bmi_category'])) {
                 $stats['bmi_categories'][$user['bmi_category']]++;
-            } else {
+    } else {
                 $stats['bmi_categories']['No Data']++;
-            }
-            
+    }
+    
             
             // Weight Ranges (using 'weight' column, not 'weight_kg')
-            if (!empty($user['weight'])) {
-                $weight = floatval($user['weight']);
-                if ($weight < 10) {
+    if (!empty($user['weight'])) {
+        $weight = floatval($user['weight']);
+        if ($weight < 10) {
                     $stats['weight_ranges']['Under 10kg']++;
-                } elseif ($weight < 20) {
+        } elseif ($weight < 20) {
                     $stats['weight_ranges']['10-20kg']++;
-                } elseif ($weight < 40) {
+        } elseif ($weight < 40) {
                     $stats['weight_ranges']['20-40kg']++;
-                } elseif ($weight < 60) {
+        } elseif ($weight < 60) {
                     $stats['weight_ranges']['40-60kg']++;
-                } else {
+        } else {
                     $stats['weight_ranges']['60kg+']++;
-                }
-            } else {
+        }
+    } else {
                 $stats['weight_ranges']['No Data']++;
-            }
-            
+    }
+    
             // Height Ranges (using 'height' column, not 'height_cm')
-            if (!empty($user['height'])) {
-                $height = floatval($user['height']);
-                if ($height < 100) {
+    if (!empty($user['height'])) {
+        $height = floatval($user['height']);
+        if ($height < 100) {
                     $stats['height_ranges']['Under 100cm']++;
-                } elseif ($height < 120) {
+        } elseif ($height < 120) {
                     $stats['height_ranges']['100-120cm']++;
-                } elseif ($height < 150) {
+        } elseif ($height < 150) {
                     $stats['height_ranges']['120-150cm']++;
-                } elseif ($height < 170) {
+        } elseif ($height < 170) {
                     $stats['height_ranges']['150-170cm']++;
-                } else {
+        } else {
                     $stats['height_ranges']['170cm+']++;
-                }
-            } else {
+        }
+    } else {
                 $stats['height_ranges']['No Data']++;
-            }
-            
-            // Municipality Distribution
-            if (!empty($user['municipality'])) {
+    }
+    
+    // Municipality Distribution
+    if (!empty($user['municipality'])) {
                 if (!isset($stats['municipality_distribution'][$user['municipality']])) {
                     $stats['municipality_distribution'][$user['municipality']] = 0;
-                }
+        }
                 $stats['municipality_distribution'][$user['municipality']]++;
-            }
-            
-            // Barangay Distribution
-            if (!empty($user['barangay'])) {
+    }
+    
+    // Barangay Distribution
+    if (!empty($user['barangay'])) {
                 if (!isset($stats['barangay_distribution'][$user['barangay']])) {
                     $stats['barangay_distribution'][$user['barangay']] = 0;
                 }
@@ -7156,9 +7156,7 @@ body {
                 </div>
                 
                 <div class="age-classification-chart-container">
-                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 16px;">
-                        Age Classification Chart - Removed
-                    </div>
+                    <canvas id="ageClassificationLineChart"></canvas>
                 </div>
                     </div>
                 </div>
@@ -7380,8 +7378,8 @@ body {
                 // Update trends chart with new barangay selection
                 await updateTrendsChart();
                 
-                // Update age classification chart with new barangay selection - REMOVED
-                // await updateAgeClassificationChart();
+                // Update age classification chart with new barangay selection
+                await updateAgeClassificationChart();
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
@@ -9172,11 +9170,156 @@ body {
         }
 
         // Function to update age classification chart using donut chart data
+        // Age Classification Line Chart - NEW FEATURE
+        let ageClassificationLineChart = null;
+        
         async function updateAgeClassificationChart() {
-            console.log('📊 Age Classification Chart - Removed');
-            // Function body removed as requested
-            return;
-        }
+            console.log('📊 Updating Age Classification Line Chart...');
+            
+            try {
+                const canvas = document.getElementById('ageClassificationLineChart');
+                if (!canvas) {
+                    console.error('Age classification line chart canvas not found');
+                    return;
+                }
+
+                // Get current WHO standard and barangay values
+                const whoStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
+                const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
+                const barangayValue = barangay === 'All Barangays' ? '' : barangay;
+
+                console.log('📊 Using WHO Standard:', whoStandard);
+                console.log('📊 Using Barangay:', barangayValue);
+
+                // Fetch data from the new API endpoint
+                const response = await fetch(`/api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=${whoStandard}&barangay=${encodeURIComponent(barangayValue)}`);
+                const data = await response.json();
+                
+                if (!data.success) {
+                    console.error('Failed to fetch age classification line chart data:', data.message);
+                    return;
+                }
+                
+                const { ageLabels, datasets, totalUsers, whoStandard: returnedStandard } = data.data;
+                
+                if (!ageLabels || ageLabels.length === 0 || !datasets || datasets.length === 0) {
+                    console.log('No age classification line chart data available');
+                    return;
+                }
+
+                console.log('📊 Age Classification Line Chart Data:', { ageLabels, datasets, totalUsers });
+
+                // Destroy existing chart
+                if (ageClassificationLineChart) {
+                    ageClassificationLineChart.destroy();
+                }
+                
+                // Create new line chart
+                const ctx = canvas.getContext('2d');
+                ageClassificationLineChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ageLabels,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: `User Classification by Age (${whoStandard})`,
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    title: function(context) {
+                                        return `Age Group: ${context[0].label}`;
+                                    },
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.parsed.y;
+                                        return `${label}: ${value} user${value !== 1 ? 's' : ''}`;
+                                    },
+                                    afterBody: function(tooltipItems) {
+                                        const total = tooltipItems.reduce((sum, item) => sum + item.parsed.y, 0);
+                                        return `Total: ${total} user${total !== 1 ? 's' : ''}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Age Groups',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Population',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                },
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest',
+                            axis: 'x',
+                            intersect: false
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeInOutQuart'
+                        }
+                    }
+                });
+
+                console.log('✅ Age Classification Line Chart created successfully');
+
+            } catch (error) {
+                console.error('❌ Error updating age classification line chart:', error);
+                }
+            }
         function updateWHOChartDescription(whoStandard) {
             const descriptions = {
                 'weight-for-age': 'Distribution of children by Weight-for-Age classification. Shows nutritional status based on weight relative to age (0-71 months).',
@@ -9375,9 +9518,9 @@ body {
                 updateWHOClassificationChart(response);
                 updateWHOChartDescription(selectedStandard);
                 
-                // Also update the age classification chart with the new WHO standard - REMOVED
-                console.log('🎨 Age classification chart - Removed');
-                // await updateAgeClassificationChart();
+                // Also update the age classification chart with the new WHO standard
+                console.log('🎨 Updating age classification chart...');
+                await updateAgeClassificationChart();
                 console.log('✅ Chart update completed');
                 
             } catch (error) {
@@ -9867,9 +10010,9 @@ body {
                 await updateTrendsChart();
                 
                 
-                // Load initial age classification chart with default range - REMOVED
-                console.log('📊 Age classification chart - Removed');
-                // await updateAgeClassificationChart();
+                // Load initial age classification chart with default range
+                console.log('📊 Loading initial age classification chart...');
+                await updateAgeClassificationChart();
                 
                 
                 // Load initial dashboard metrics and geographic distribution

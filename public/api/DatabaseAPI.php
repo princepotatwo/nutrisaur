@@ -4179,6 +4179,192 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             echo json_encode(['success' => true, 'data' => $allClassifications]);
             break;
             
+        case 'get_age_classification_line_chart':
+            $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            try {
+                // Get all users data using the same batch system
+                $users = $db->getDetailedScreeningResponses('1d', $barangay);
+                
+                if (empty($users)) {
+                    echo json_encode([
+                        'success' => true,
+                        'data' => [
+                            'ageLabels' => [],
+                            'datasets' => [],
+                            'totalUsers' => 0
+                        ]
+                    ]);
+                    break;
+                }
+                
+                // Initialize WHO growth standards
+                require_once __DIR__ . '/../../who_growth_standards.php';
+                $who = new WHOGrowthStandards();
+                
+                // Define age ranges for each WHO standard
+                $ageRanges = [
+                    'weight-for-age' => [
+                        'labels' => ['0-7m','8-14m','15-21m','22-28m','29-35m','36-42m','43-49m','50-56m','57-63m','64-71m'],
+                        'ranges' => [[0,7],[8,14],[15,21],[22,28],[29,35],[36,42],[43,49],[50,56],[57,63],[64,71]]
+                    ],
+                    'height-for-age' => [
+                        'labels' => ['0-7m','8-14m','15-21m','22-28m','29-35m','36-42m','43-49m','50-56m','57-63m','64-71m'],
+                        'ranges' => [[0,7],[8,14],[15,21],[22,28],[29,35],[36,42],[43,49],[50,56],[57,63],[64,71]]
+                    ],
+                    'weight-for-height' => [
+                        'labels' => ['0-6m','7-12m','13-18m','19-24m','25-30m','31-36m','37-42m','43-48m','49-54m','55-60m'],
+                        'ranges' => [[0,6],[7,12],[13,18],[19,24],[25,30],[31,36],[37,42],[43,48],[49,54],[55,60]]
+                    ],
+                    'bmi-for-age' => [
+                        'labels' => ['2-3y','4-5y','6-7y','8-9y','10-11y','12-13y','14-15y','16-17y','18-19y'],
+                        'ranges' => [[24,36],[48,60],[72,84],[96,108],[120,132],[144,156],[168,180],[192,204],[216,228]]
+                    ],
+                    'bmi-adult' => [
+                        'labels' => ['19-27y','28-36y','37-45y','46-54y','55-63y','64-72y','73-81y','82-90y','91-100y'],
+                        'ranges' => [[228,324],[336,432],[444,540],[552,648],[660,756],[768,864],[876,972],[984,1080],[1092,1200]]
+                    ]
+                ];
+                
+                $currentRanges = $ageRanges[$whoStandard] ?? $ageRanges['weight-for-age'];
+                $ageLabels = $currentRanges['labels'];
+                $ranges = $currentRanges['ranges'];
+                
+                // Initialize classification counts for each age range
+                $classificationCounts = [];
+                $totalUsers = 0;
+                
+                foreach ($users as $user) {
+                    try {
+                        // Calculate age in months
+                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                        
+                        // Check if user is eligible for this WHO standard
+                        $isEligible = false;
+                        switch ($whoStandard) {
+                            case 'weight-for-age':
+                            case 'height-for-age':
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71);
+                                break;
+                            case 'weight-for-height':
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 60);
+                                break;
+                            case 'bmi-for-age':
+                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 228);
+                                break;
+                            case 'bmi-adult':
+                                $isEligible = ($ageInMonths >= 228);
+                                break;
+                        }
+                        
+                        if (!$isEligible) continue;
+                        
+                        // Get comprehensive assessment
+                        $assessment = $who->getComprehensiveAssessment(
+                            floatval($user['weight']),
+                            floatval($user['height']),
+                            $ageInMonths,
+                            $user['sex']
+                        );
+                        
+                        if (!$assessment['success']) continue;
+                        
+                        // Get the classification for this WHO standard
+                        $classification = null;
+                        switch ($whoStandard) {
+                            case 'weight-for-age':
+                                $classification = $assessment['weight_for_age'] ?? 'No Data';
+                                break;
+                            case 'height-for-age':
+                                $classification = $assessment['height_for_age'] ?? 'No Data';
+                                break;
+                            case 'weight-for-height':
+                                $classification = $assessment['weight_for_height'] ?? 'No Data';
+                                break;
+                            case 'bmi-for-age':
+                                $classification = $assessment['bmi_for_age'] ?? 'No Data';
+                                break;
+                            case 'bmi-adult':
+                                $classification = $assessment['bmi_adult'] ?? 'No Data';
+                                break;
+                        }
+                        
+                        if (!$classification || $classification === 'No Data') continue;
+                        
+                        // Find which age range this user belongs to
+                        $ageRangeIndex = -1;
+                        for ($i = 0; $i < count($ranges); $i++) {
+                            if ($ageInMonths >= $ranges[$i][0] && $ageInMonths <= $ranges[$i][1]) {
+                                $ageRangeIndex = $i;
+                                break;
+                            }
+                        }
+                        
+                        if ($ageRangeIndex === -1) continue;
+                        
+                        // Initialize if not exists
+                        if (!isset($classificationCounts[$classification])) {
+                            $classificationCounts[$classification] = array_fill(0, count($ranges), 0);
+                        }
+                        
+                        $classificationCounts[$classification][$ageRangeIndex]++;
+                        $totalUsers++;
+                        
+                    } catch (Exception $e) {
+                        // Skip users with errors
+                        continue;
+                    }
+                }
+                
+                // Create datasets for Chart.js
+                $colors = [
+                    'Severely Underweight' => 'rgba(255, 99, 132, 1)',
+                    'Underweight' => 'rgba(255, 159, 64, 1)',
+                    'Normal' => 'rgba(75, 192, 192, 1)',
+                    'Overweight' => 'rgba(54, 162, 235, 1)',
+                    'Obese' => 'rgba(153, 102, 255, 1)',
+                    'Severely Wasted' => 'rgba(255, 99, 132, 1)',
+                    'Wasted' => 'rgba(255, 159, 64, 1)',
+                    'Severely Stunted' => 'rgba(153, 102, 255, 1)',
+                    'Stunted' => 'rgba(255, 206, 86, 1)',
+                    'Tall' => 'rgba(54, 162, 235, 1)'
+                ];
+                
+                $datasets = [];
+                foreach ($classificationCounts as $classification => $counts) {
+                    $datasets[] = [
+                        'label' => $classification,
+                        'data' => $counts,
+                        'borderColor' => $colors[$classification] ?? 'rgba(128, 128, 128, 1)',
+                        'fill' => false,
+                        'tension' => 0.1
+                    ];
+                }
+                
+                echo json_encode([
+                    'success' => true,
+                    'data' => [
+                        'ageLabels' => $ageLabels,
+                        'datasets' => $datasets,
+                        'totalUsers' => $totalUsers,
+                        'whoStandard' => $whoStandard
+                    ]
+                ]);
+                
+            } catch (Exception $e) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error fetching age classification line chart data: ' . $e->getMessage(),
+                    'data' => [
+                        'ageLabels' => [],
+                        'datasets' => [],
+                        'totalUsers' => 0
+                    ]
+                ]);
+            }
+            break;
+            
         case 'critical_alerts':
             $alerts = $db->getCriticalAlerts();
             echo json_encode(['success' => true, 'data' => $alerts]);
