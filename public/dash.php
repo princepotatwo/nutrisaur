@@ -9187,9 +9187,9 @@ body {
                 }
                 
                 // Show loading state
-                const container = document.querySelector('.age-classification-chart-container');
-                if (container) {
-                    container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading age classification chart...</div>';
+                const chartContainer = document.querySelector('.age-classification-chart-container');
+                if (chartContainer) {
+                    chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading age classification chart...</div>';
                 }
 
                 // Get current WHO standard and barangay values
@@ -9219,9 +9219,8 @@ body {
                 if (!ageLabels || ageLabels.length === 0 || !datasets || datasets.length === 0) {
                     console.log('No age classification line chart data available');
                     // Show a message in the chart container
-                    const container = document.querySelector('.age-classification-chart-container');
-                    if (container) {
-                        container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">No data available for age classification chart</div>';
+                    if (chartContainer) {
+                        chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">No data available for age classification chart</div>';
                     }
                     return;
                 }
@@ -9234,9 +9233,8 @@ body {
                 }
                 
                 // Restore canvas element
-                const container = document.querySelector('.age-classification-chart-container');
-                if (container) {
-                    container.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
+                if (chartContainer) {
+                    chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
                     const newCanvas = document.getElementById('ageClassificationLineChart');
                     const newCtx = newCanvas.getContext('2d');
                     
