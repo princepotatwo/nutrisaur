@@ -9900,8 +9900,10 @@ body {
                 const apiKey = standardMapping[whoStandard] || whoStandard;
                 const classifications = data[apiKey] || {};
                 
-                // Calculate total for this specific WHO standard (sum of all classifications)
-                const total = Object.values(classifications).reduce((sum, count) => sum + count, 0);
+                // Calculate total for this specific WHO standard (sum of all classifications EXCEPT "No Data")
+                const total = Object.entries(classifications).reduce((sum, [classification, count]) => {
+                    return classification === 'No Data' ? sum : sum + count;
+                }, 0);
                 
                 console.log(`Mapping ${whoStandard} to ${apiKey}:`, classifications);
                 console.log(`Classification values:`, Object.values(classifications));

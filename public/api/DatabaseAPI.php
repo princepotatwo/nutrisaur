@@ -2842,11 +2842,24 @@ class DatabaseAPI {
                 }
             }
             
+            // Calculate actual totals for each WHO standard (excluding "No Data")
+            $actualTotals = [];
+            foreach ($allClassifications as $standard => $classifications) {
+                $total = 0;
+                foreach ($classifications as $classification => $count) {
+                    if ($classification !== 'No Data') {
+                        $total += $count;
+                    }
+                }
+                $actualTotals[$standard] = $total;
+            }
+            
             return [
                 'success' => true,
                 'data' => $allClassifications,
                 'total_users' => $totalUsers,
-                'processed_users' => $totalProcessed
+                'processed_users' => $totalProcessed,
+                'actual_totals' => $actualTotals
             ];
             
         } catch (Exception $e) {
