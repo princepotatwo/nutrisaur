@@ -4242,6 +4242,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $debugAges = [];
                 
                 // Process real user data from the batch system
+                $debugCount = 0;
                 foreach ($users as $user) {
                     try {
                         // Calculate age in months
@@ -4265,7 +4266,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 break;
                         }
                         
-                        if (!$isEligible) continue;
+                        if (!$isEligible) {
+                            if ($debugCount < 5) {
+                                error_log("DEBUG: User age $ageInMonths months not eligible for $whoStandard");
+                            }
+                            continue;
+                        }
                         
                         // Get comprehensive assessment
                         $assessment = $who->getComprehensiveAssessment(
@@ -4318,10 +4324,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         $classificationCounts[$classification][$ageRangeIndex]++;
                         $totalUsers++;
                         
+                        if ($debugCount < 5) {
+                            error_log("DEBUG: User age $ageInMonths months, classification: $classification, range: $ageRangeIndex");
+                        }
+                        
                     } catch (Exception $e) {
                         // Skip users with errors
+                        if ($debugCount < 5) {
+                            error_log("DEBUG: Error processing user: " . $e->getMessage());
+                        }
                         continue;
                     }
+                    
+                    $debugCount++;
                 }
                 
                 // Create datasets for Chart.js
