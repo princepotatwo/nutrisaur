@@ -18,7 +18,7 @@ require_once __DIR__ . '/../who_growth_standards.php';
 // This is only used as fallback for children over 71 months when WHO standards don't apply
 function getAdultBMIClassification($bmi) {
     if ($bmi < 18.5) return ['z_score' => -1.0, 'classification' => 'Underweight'];
-    if ($bmi < 25) return ['z_score' => 0.0, 'classification' => 'Normal weight'];
+    if ($bmi < 25) return ['z_score' => 0.0, 'classification' => 'Normal'];
     if ($bmi < 30) return ['z_score' => 1.0, 'classification' => 'Overweight'];
     return ['z_score' => 2.0, 'classification' => 'Obese'];
 }
@@ -74,7 +74,7 @@ function getAccurateZScoreRange($classification, $standard) {
         ],
         'bmi-adult' => [
             'Underweight' => '< 18.5 kg/m²',
-            'Normal weight' => '18.5-24.9 kg/m²',
+            'Normal' => '18.5-24.9 kg/m²',
             'Overweight' => '25.0-29.9 kg/m²',
             'Obese' => '≥ 30.0 kg/m²'
         ]
@@ -3837,8 +3837,12 @@ header {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             }
                                             
-                                            // BMI column is hidden for BMI standards since BMI is shown in main value column
-                                            echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
+                                            // Show BMI column for BMI standards, hide for others
+                                            if ($standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
+                                                echo '<td class="text-center conditional-column">' . $bmi . '</td>';
+                                            } else {
+                                                echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
+                                            }
                                             
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($standardData['classification'] ?? 'N/A') . '</td>';
@@ -4900,10 +4904,10 @@ header {
                             break;
                         case 'bmi-for-age':
                         case 'bmi-adult':
-                            // Show weight column only (BMI shown in main value column)
+                            // Show weight and BMI columns for BMI standards
                             weightHeader.style.display = '';
                             heightHeader.style.display = 'none';
-                            bmiHeader.style.display = 'none';
+                            bmiHeader.style.display = '';
                             break;
                         case 'height-for-age':
                             // Show height column only
@@ -4935,7 +4939,7 @@ header {
                     if (!noDataMessage) {
                         const message = document.createElement('tr');
                         message.className = 'no-data-message';
-                        message.innerHTML = '<td colspan="8"><div>No assessments found matching your criteria.</div></td>';
+                        message.innerHTML = '<td colspan="10"><div>No assessments found matching your criteria.</div></td>';
                         tbody.appendChild(message);
                     }
                 } else if (noDataMessage) {
