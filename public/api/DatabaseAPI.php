@@ -4208,27 +4208,27 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 require_once __DIR__ . '/../../who_growth_standards.php';
                 $who = new WHOGrowthStandards();
                 
-                // Define age ranges for each WHO standard - Updated for actual user data
+                // Define age ranges for each WHO standard - Corrected to match WHO eligibility criteria
                 $ageRanges = [
                     'weight-for-age' => [
-                        'labels' => ['0-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
-                        'ranges' => [[0,60],[61,120],[121,180],[181,240],[241,300],[301,360],[361,420],[421,480],[481,540],[541,600]]
+                        'labels' => ['0-6m','6-12m','12-18m','18-24m','24-30m','30-36m','36-42m','42-48m','48-54m','54-60m','60-66m','66-71m'],
+                        'ranges' => [[0,6],[6,12],[12,18],[18,24],[24,30],[30,36],[36,42],[42,48],[48,54],[54,60],[60,66],[66,71]]
                     ],
                     'height-for-age' => [
-                        'labels' => ['0-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
-                        'ranges' => [[0,60],[61,120],[121,180],[181,240],[241,300],[301,360],[361,420],[421,480],[481,540],[541,600]]
+                        'labels' => ['0-6m','6-12m','12-18m','18-24m','24-30m','30-36m','36-42m','42-48m','48-54m','54-60m','60-66m','66-71m'],
+                        'ranges' => [[0,6],[6,12],[12,18],[18,24],[24,30],[30,36],[36,42],[42,48],[48,54],[54,60],[60,66],[66,71]]
                     ],
                     'weight-for-height' => [
-                        'labels' => ['0-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
-                        'ranges' => [[0,60],[61,120],[121,180],[181,240],[241,300],[301,360],[361,420],[421,480],[481,540],[541,600]]
+                        'labels' => ['0-6m','6-12m','12-18m','18-24m','24-30m','30-36m','36-42m','42-48m','48-54m','54-60m'],
+                        'ranges' => [[0,6],[6,12],[12,18],[18,24],[24,30],[30,36],[36,42],[42,48],[48,54],[54,60]]
                     ],
                     'bmi-for-age' => [
-                        'labels' => ['2-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
-                        'ranges' => [[24,60],[61,120],[121,180],[181,240],[241,300],[301,360],[361,420],[421,480],[481,540],[541,600]]
+                        'labels' => ['2-3y','3-4y','4-5y','5-6y','6-7y','7-8y','8-9y','9-10y','10-11y','11-12y','12-13y','13-14y','14-15y','15-16y','16-17y','17-18y','18-19y'],
+                        'ranges' => [[24,36],[36,48],[48,60],[60,72],[72,84],[84,96],[96,108],[108,120],[120,132],[132,144],[144,156],[156,168],[168,180],[180,192],[192,204],[204,216],[216,228]]
                     ],
                     'bmi-adult' => [
-                        'labels' => ['19-30y','31-40y','41-50y','51-60y','61-70y','71-80y','81-90y','91-100y','101-110y','111-120y'],
-                        'ranges' => [[228,360],[361,480],[481,600],[601,720],[721,840],[841,960],[961,1080],[1081,1200],[1201,1320],[1321,1440]]
+                        'labels' => ['19-25y','25-30y','30-35y','35-40y','40-45y','45-50y','50-55y','55-60y','60-65y','65-70y'],
+                        'ranges' => [[228,300],[300,360],[360,420],[420,480],[480,540],[540,600],[600,660],[660,720],[720,780],[780,840]]
                     ]
                 ];
                 
@@ -4267,7 +4267,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 break;
                         }
                         
-                        if (!$isEligible) continue;
+                        if (!$isEligible) {
+                            if ($debugCount < 5) {
+                                error_log("DEBUG: User $debugCount - NOT ELIGIBLE - Age: $ageInMonths months, Standard: $whoStandard");
+                            }
+                            continue;
+                        }
                         
                         // Get classification based on WHO standard
                         $classification = null;
@@ -4331,6 +4336,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         // Debug: Log first few users
                         if ($debugCount < 5) {
                             error_log("DEBUG: User $debugCount - Age: $ageInMonths months, Range: $ageRangeIndex, Classification: $classification");
+                            error_log("DEBUG: User $debugCount - Birthday: {$user['birthday']}, Screening: {$user['screening_date']}");
                             $debugCount++;
                         }
                         
