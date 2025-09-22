@@ -9041,7 +9041,7 @@ body {
                 case 'bmi-for-age':
                     return { fromMonths: 24, toMonths: 228 }; // 2-19 years
                 case 'bmi-adult':
-                    return { fromMonths: 228, toMonths: 600 }; // 19-50 years (extended for display)
+                    return { fromMonths: 228, toMonths: 300 }; // 19-25 years (realistic range for current data)
                 default:
                     return { fromMonths: 0, toMonths: 71 }; // default
             }
