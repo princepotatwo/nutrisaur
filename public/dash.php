@@ -9233,25 +9233,27 @@ body {
                     'Tall': '#00BCD4',
                 };
 
-                // Use actual donut chart data with appropriate age distribution
-                const datasets = Object.keys(classifications).map(classification => {
-                    const totalCount = classifications[classification];
-                    
-                    // Create realistic age distribution based on WHO standard and classification
-                    const ageDistribution = createRealisticAgeDistributionForWHOStandard(totalCount, whoStandard, classification);
-                    
-                    console.log(`📊 ${classification}: ${totalCount} total users (realistic distribution for ${whoStandard}):`, ageDistribution);
-                    console.log(`📊 ${classification} distribution details:`, {
-                        total: totalCount,
-                        sum: ageDistribution.reduce((a, b) => a + b, 0),
-                        pattern: ageDistribution.map((val, i) => `${i}: ${val}`).join(', ')
-                    });
-                    
-                    return {
-                        label: classification,
-                        data: ageDistribution,
-                        borderColor: colors[classification] || '#666',
-                        backgroundColor: colors[classification] || '#666',
+                // Use actual donut chart data with appropriate age distribution (exclude "No Data")
+                const datasets = Object.keys(classifications)
+                    .filter(classification => classification !== 'No Data' && classifications[classification] > 0)
+                    .map(classification => {
+                        const totalCount = classifications[classification];
+                        
+                        // Create realistic age distribution based on WHO standard and classification
+                        const ageDistribution = createRealisticAgeDistributionForWHOStandard(totalCount, whoStandard, classification);
+                        
+                        console.log(`📊 ${classification}: ${totalCount} total users (realistic distribution for ${whoStandard}):`, ageDistribution);
+                        console.log(`📊 ${classification} distribution details:`, {
+                            total: totalCount,
+                            sum: ageDistribution.reduce((a, b) => a + b, 0),
+                            pattern: ageDistribution.map((val, i) => `${i}: ${val}`).join(', ')
+                        });
+                        
+                        return {
+                            label: classification,
+                            data: ageDistribution,
+                            borderColor: colors[classification] || '#666',
+                            backgroundColor: colors[classification] || '#666',
                         tension: 0.1,
                         pointStyle: 'circle',
                         pointRadius: 4,
@@ -9778,7 +9780,7 @@ body {
                 
                 Object.keys(classifications).forEach(classification => {
                     const count = classifications[classification];
-                    if (count > 0) {
+                    if (count > 0 && classification !== 'No Data') {
                         const percentage = (count / totalUsers) * 100;
                         chartSegments.push({
                             label: classification,
