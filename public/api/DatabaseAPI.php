@@ -4203,6 +4203,20 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     break;
                 }
                 
+                // Simple test - just return basic data without complex processing
+                echo json_encode([
+                    'success' => true,
+                    'data' => [
+                        'ageLabels' => ['0-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
+                        'datasets' => [['label' => 'Test Data', 'data' => [1,2,3,4,5,6,7,8,9,10]]],
+                        'totalUsers' => count($users),
+                        'whoStandard' => $whoStandard,
+                        'debugMessage' => 'Simple test working',
+                        'userCount' => count($users)
+                    ]
+                ]);
+                break;
+                
                 // Initialize WHO growth standards
                 require_once __DIR__ . '/../../who_growth_standards.php';
                 $who = new WHOGrowthStandards();
