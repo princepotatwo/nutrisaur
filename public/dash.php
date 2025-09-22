@@ -9185,6 +9185,12 @@ body {
                     console.error('Age classification line chart canvas not found');
                     return;
                 }
+                
+                // Show loading state
+                const container = document.querySelector('.age-classification-chart-container');
+                if (container) {
+                    container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading age classification chart...</div>';
+                }
 
                 // Get current WHO standard and barangay values
                 const whoStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
@@ -9195,8 +9201,13 @@ body {
                 console.log('📊 Using Barangay:', barangayValue);
 
                 // Fetch data from the new API endpoint
-                const response = await fetch(`/api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=${whoStandard}&barangay=${encodeURIComponent(barangayValue)}`);
+                const apiUrl = `/api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=${whoStandard}&barangay=${encodeURIComponent(barangayValue)}`;
+                console.log('📊 Fetching age classification data from:', apiUrl);
+                
+                const response = await fetch(apiUrl);
                 const data = await response.json();
+                
+                console.log('📊 Age classification API response:', data);
                 
                 if (!data.success) {
                     console.error('Failed to fetch age classification line chart data:', data.message);
@@ -9207,6 +9218,11 @@ body {
                 
                 if (!ageLabels || ageLabels.length === 0 || !datasets || datasets.length === 0) {
                     console.log('No age classification line chart data available');
+                    // Show a message in the chart container
+                    const container = document.querySelector('.age-classification-chart-container');
+                    if (container) {
+                        container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">No data available for age classification chart</div>';
+                    }
                     return;
                 }
 
@@ -9217,9 +9233,15 @@ body {
                     ageClassificationLineChart.destroy();
                 }
                 
-                // Create new line chart
-                const ctx = canvas.getContext('2d');
-                ageClassificationLineChart = new Chart(ctx, {
+                // Restore canvas element
+                const container = document.querySelector('.age-classification-chart-container');
+                if (container) {
+                    container.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
+                    const newCanvas = document.getElementById('ageClassificationLineChart');
+                    const newCtx = newCanvas.getContext('2d');
+                    
+                    console.log('📊 Creating Chart.js line chart with data:', { ageLabels, datasets, totalUsers });
+                    ageClassificationLineChart = new Chart(newCtx, {
                     type: 'line',
                     data: {
                         labels: ageLabels,
@@ -9315,9 +9337,10 @@ body {
                             easing: 'easeInOutQuart'
                         }
                     }
-                });
-
-                console.log('✅ Age Classification Line Chart created successfully');
+                    });
+                    
+                    console.log('✅ Age Classification Line Chart created successfully');
+                }
 
             } catch (error) {
                 console.error('❌ Error updating age classification line chart:', error);
