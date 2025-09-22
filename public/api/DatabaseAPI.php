@@ -4252,13 +4252,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         switch ($whoStandard) {
                             case 'weight-for-age':
                             case 'height-for-age':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600);
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71); // 0-71 months
                                 break;
                             case 'weight-for-height':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600);
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 60); // 0-60 months
                                 break;
                             case 'bmi-for-age':
-                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 600);
+                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 228); // 2-19 years
                                 break;
                             case 'bmi-adult':
                                 $isEligible = ($ageInMonths >= 228); // 19+ years
