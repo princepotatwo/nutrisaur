@@ -3029,8 +3029,8 @@ class DatabaseAPI {
      * Process BMI adult classification
      */
     private function processBMIAdult(&$classifications, $user, $ageInMonths) {
-        // BMI adult is for 6+ years (72+ months)
-        if ($ageInMonths < 72) {
+        // BMI adult is for 19+ years (228+ months)
+        if ($ageInMonths < 228) {
             $classifications['No Data']++;
             return;
         }
