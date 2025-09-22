@@ -2771,25 +2771,6 @@ class DatabaseAPI {
             // Single query to get all users
             $users = $this->getDetailedScreeningResponses($timeFrame, $barangay);
             
-            // Filter users by age eligibility for the specific WHO standard
-            if (!empty($whoStandard) && !empty($users)) {
-                $users = $this->filterUsersByAgeEligibility($users, $whoStandard);
-            }
-            
-            if (empty($users)) {
-                return [
-                    'success' => true,
-                    'data' => [
-                        'weight_for_age' => [],
-                        'height_for_age' => [],
-                        'weight_for_height' => [],
-                        'bmi_for_age' => [],
-                        'bmi_adult' => [],
-                        'total_users' => 0
-                    ]
-                ];
-            }
-            
             // Initialize all classification arrays
             $allClassifications = [
                 'weight_for_age' => [
@@ -2839,7 +2820,7 @@ class DatabaseAPI {
                     if ($assessment['success'] && isset($assessment['results'])) {
                         $results = $assessment['results'];
                         
-                        // Process each WHO standard
+                        // Process each WHO standard with proper age filtering
                         $this->processWHOStandard($allClassifications['weight_for_age'], $results, 'weight_for_age', $ageInMonths, $user);
                         $this->processWHOStandard($allClassifications['height_for_age'], $results, 'height_for_age', $ageInMonths, $user);
                         $this->processWHOStandard($allClassifications['weight_for_height'], $results, 'weight_for_height', $ageInMonths, $user);
