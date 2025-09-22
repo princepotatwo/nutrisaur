@@ -9180,10 +9180,19 @@ body {
             console.log('📊 Updating Age Classification Line Chart...');
             
             try {
-                const canvas = document.getElementById('ageClassificationLineChart');
+                // Check if canvas exists, if not, restore it
+                let canvas = document.getElementById('ageClassificationLineChart');
                 if (!canvas) {
-                    console.error('Age classification line chart canvas not found');
-                    return;
+                    console.log('Canvas not found, restoring...');
+                    const chartContainer = document.querySelector('.age-classification-chart-container');
+                    if (chartContainer) {
+                        chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
+                        canvas = document.getElementById('ageClassificationLineChart');
+                    }
+                    if (!canvas) {
+                        console.error('Age classification line chart canvas not found and could not be restored');
+                        return;
+                    }
                 }
                 
                 // Show loading state

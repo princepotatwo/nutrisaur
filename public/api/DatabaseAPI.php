@@ -4189,6 +4189,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 // Debug: Log user count
                 error_log("DEBUG: Fetched " . count($users) . " users for age classification line chart");
+                error_log("DEBUG: WHO Standard: " . $whoStandard);
                 
                 if (empty($users)) {
                     echo json_encode([
@@ -4283,8 +4284,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             $assessment = $who->getComprehensiveAssessment(
                                 floatval($user['weight']),
                                 floatval($user['height']),
-                                $ageInMonths,
-                                $user['sex']
+                                $user['birthday'],
+                                $user['sex'],
+                                $user['screening_date'] ?? null
                             );
                             
                             if (!$assessment['success']) continue;
@@ -4325,6 +4327,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         $classificationCounts[$classification][$ageRangeIndex]++;
                         $totalUsers++;
+                        
+                        // Debug: Log first few users
+                        if ($debugCount < 5) {
+                            error_log("DEBUG: User $debugCount - Age: $ageInMonths months, Range: $ageRangeIndex, Classification: $classification");
+                            $debugCount++;
+                        }
                         
                     } catch (Exception $e) {
                         // Skip users with errors
