@@ -9035,11 +9035,13 @@ body {
             if (whoStandard === 'bmi-adult') {
                 // BMI-Adult: Distribute across adult ages (19+ years)
                 // Most adults are in middle age groups, fewer in very young adult or very old
-                pattern = [0.05, 0.10, 0.15, 0.20, 0.20, 0.15, 0.10, 0.05, 0.00, 0.00];
+                // Age groups: 19-24, 25-30, 31-36, 37-42, 43-48, 49-54, 55-60, 61-66, 67-72, 73+
+                pattern = [0.08, 0.12, 0.18, 0.22, 0.20, 0.12, 0.06, 0.02, 0.00, 0.00];
             } else if (whoStandard === 'bmi-for-age') {
                 // BMI-for-Age: Distribute across 2-19 years
-                // More evenly distributed across age groups
-                pattern = [0.08, 0.10, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12, 0.10, 0.00];
+                // Age groups: 2-4, 5-7, 8-10, 11-13, 14-16, 17-19, 20-22, 23-25, 26-28, 29+
+                // More distributed across age groups, peak in middle childhood/adolescence
+                pattern = [0.10, 0.12, 0.14, 0.16, 0.16, 0.14, 0.10, 0.06, 0.02, 0.00];
             } else if (whoStandard === 'weight-for-height') {
                 // Weight-for-Height: Distribute across 0-5 years
                 // More common in younger ages
@@ -9210,6 +9212,11 @@ body {
                     const ageDistribution = createRealisticAgeDistributionForWHOStandard(totalCount, whoStandard, classification);
                     
                     console.log(`📊 ${classification}: ${totalCount} total users (realistic distribution for ${whoStandard}):`, ageDistribution);
+                    console.log(`📊 ${classification} distribution details:`, {
+                        total: totalCount,
+                        sum: ageDistribution.reduce((a, b) => a + b, 0),
+                        pattern: ageDistribution.map((val, i) => `${i}: ${val}`).join(', ')
+                    });
                     
                     return {
                         label: classification,
