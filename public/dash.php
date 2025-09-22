@@ -7156,7 +7156,9 @@ body {
                 </div>
                 
                 <div class="age-classification-chart-container">
-                    <canvas id="ageClassificationChart"></canvas>
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666; font-size: 16px;">
+                        Age Classification Chart - Removed
+                    </div>
                 </div>
                     </div>
                 </div>
@@ -7378,8 +7380,8 @@ body {
                 // Update trends chart with new barangay selection
                 await updateTrendsChart();
                 
-                // Update age classification chart with new barangay selection
-                await updateAgeClassificationChart();
+                // Update age classification chart with new barangay selection - REMOVED
+                // await updateAgeClassificationChart();
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
@@ -9171,7 +9173,7 @@ body {
 
         // Function to update age classification chart using donut chart data
         async function updateAgeClassificationChart() {
-            console.log('📊 Updating Age Classification Chart using donut chart data...');
+            console.log('📊 Age Classification Chart - Removed');
             
             try {
                 const canvas = document.getElementById('ageClassificationChart');
@@ -9264,8 +9266,8 @@ body {
                     };
                 });
 
-                // Destroy existing chart
-                destroyAgeClassificationChart();
+                // Destroy existing chart - REMOVED
+                // destroyAgeClassificationChart();
                 
                 // Wait a moment to ensure destruction is complete
                 await new Promise(resolve => setTimeout(resolve, 100));
@@ -9433,7 +9435,7 @@ body {
 
         // Function to create empty age chart
         function createEmptyAgeChart(canvas) {
-            destroyAgeClassificationChart();
+            // destroyAgeClassificationChart(); // REMOVED
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'var(--color-text)';
@@ -9564,7 +9566,7 @@ body {
 
                 // Destroy existing chart and create new one
                 console.log('🔄 Destroying existing chart...');
-                destroyAgeClassificationChart();
+                // destroyAgeClassificationChart(); // REMOVED
                 console.log('✅ Chart destroyed, creating new one...');
                 
                 // Set fixed canvas size to prevent overflow
@@ -9894,9 +9896,9 @@ body {
                 updateWHOClassificationChart(response);
                 updateWHOChartDescription(selectedStandard);
                 
-                // Also update the age classification chart with the new WHO standard
-                console.log('🎨 Updating age classification chart...');
-                await updateAgeClassificationChart();
+                // Also update the age classification chart with the new WHO standard - REMOVED
+                console.log('🎨 Age classification chart - Removed');
+                // await updateAgeClassificationChart();
                 console.log('✅ Chart update completed');
                 
             } catch (error) {
@@ -10386,9 +10388,9 @@ body {
                 await updateTrendsChart();
                 
                 
-                // Load initial age classification chart with default range
-                console.log('📊 Loading initial age classification chart...');
-                await updateAgeClassificationChart();
+                // Load initial age classification chart with default range - REMOVED
+                console.log('📊 Age classification chart - Removed');
+                // await updateAgeClassificationChart();
                 
                 
                 // Load initial dashboard metrics and geographic distribution
