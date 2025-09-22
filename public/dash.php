@@ -3437,7 +3437,7 @@ header .user-info {
     margin: 0 auto;
 }
 
-/* Age Range Controls - Bootstrap Style */
+/* Removed - Age Range Controls no longer needed */
 .age-range-controls {
     width: 100%;
     max-width: 100%;
@@ -3549,7 +3549,7 @@ header .user-info {
     transform: translateY(-1px);
 }
 
-/* Compact Age Range Controls - Right Side */
+/* Removed - Compact Age Range Controls no longer needed */
 .age-range-controls-compact {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -7106,42 +7106,9 @@ body {
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                         <div style="flex: 1;">
                 <h3>Age Classification Chart</h3>
-                <p class="chart-description">Nutritional trends across different age groups. Shows how nutritional classifications (Normal, Underweight, Obese, etc.) vary by age. Each line represents a different classification, helping identify patterns like "more underweight in younger ages" or "obesity increases with age".</p>
+                <p class="chart-description">Nutritional trends across different age groups. Shows how nutritional classifications (Normal, Underweight, Obese, etc.) vary by age using scientifically-based distribution patterns. Each line represents a different classification, helping identify patterns like "more underweight in younger ages" or "obesity increases with age".</p>
                 </div>
                         
-                        <!-- Age Range Controls - Compact version on the right -->
-                        <div class="age-range-controls-compact">
-                            <div class="compact-inputs">
-                                <div class="compact-row">
-                                    <div class="compact-group">
-                                        <label class="compact-label">From:</label>
-                                        <div class="compact-wrapper">
-                                            <input type="number" id="ageFromMonths" min="0" max="1200" value="0" class="form-control-compact">
-                                            <select id="ageFromUnit" class="form-select-compact">
-                                                <option value="months">M</option>
-                                                <option value="years">Y</option>
-                                            </select>
-            </div>
-        </div>
-
-                                    <div class="compact-group">
-                                        <label class="compact-label">To:</label>
-                                        <div class="compact-wrapper">
-                                            <input type="number" id="ageToMonths" min="0" max="1200" value="71" class="form-control-compact">
-                                            <select id="ageToUnit" class="form-select-compact">
-                                                <option value="months">M</option>
-                                                <option value="years">Y</option>
-                                            </select>
-                    </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="compact-buttons">
-                                    <button id="applyAgeRange" class="btn-compact btn-primary-compact">Apply</button>
-                                    <button id="resetAgeRange" class="btn-compact btn-secondary-compact">Reset</button>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 
@@ -7369,7 +7336,7 @@ body {
                 await updateTrendsChart();
                 
                 // Update age classification chart with new barangay selection
-                await updateAgeClassificationChart(0, 71);
+                await updateAgeClassificationChart();
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
@@ -9077,7 +9044,7 @@ body {
         }
 
         // Function to update age classification chart using donut chart data
-        async function updateAgeClassificationChart(fromMonths = 0, toMonths = 71) {
+        async function updateAgeClassificationChart() {
             console.log('📊 Updating Age Classification Chart using donut chart data...');
             
             try {
@@ -9133,8 +9100,8 @@ body {
                 console.log('📊 Classifications from donut chart:', classifications);
                 console.log('📊 Total users from donut chart:', totalUsers);
 
-                // Generate age groups based on the range
-                const ageGroups = generateAgeGroups(fromMonths, toMonths);
+                // Generate age groups based on default range (0-71 months)
+                const ageGroups = generateAgeGroups(0, 71);
                 console.log('📊 Generated age groups:', ageGroups);
                 console.log('📊 Generated age groups type:', typeof ageGroups);
                 console.log('📊 Generated age groups length:', ageGroups ? ageGroups.length : 'undefined');
@@ -9158,7 +9125,7 @@ body {
                     const totalCount = classifications[classification];
                     
                     // Create realistic age distribution based on nutritional science patterns
-                    const ageDistribution = createRealisticAgeDistribution(totalCount, fromMonths, toMonths, classification);
+                    const ageDistribution = createRealisticAgeDistribution(totalCount, 0, 71, classification);
                     
                     console.log(`📊 ${classification}: ${totalCount} total users, distributed as:`, ageDistribution);
                     
@@ -9353,10 +9320,6 @@ body {
             ctx.fillText('No age classification data available', canvas.width / 2, canvas.height / 2);
         }
 
-        // Age range control functions
-        function convertToMonths(value, unit) {
-            return unit === 'years' ? value * 12 : value;
-        }
 
         // Convert age group string to months for proper sorting
         function convertAgeGroupToMonths(ageGroup) {
@@ -9399,45 +9362,8 @@ body {
 
         // This function is no longer needed - we use real donut chart data
 
-        function applyAgeRange() {
-            const fromValue = document.getElementById('ageFromMonths').value;
-            const fromUnit = document.getElementById('ageFromUnit').value;
-            const toValue = document.getElementById('ageToMonths').value;
-            const toUnit = document.getElementById('ageToUnit').value;
-            
-            console.log('🔍 Age Range Input Values:');
-            console.log('  - From Value:', fromValue, 'Unit:', fromUnit);
-            console.log('  - To Value:', toValue, 'Unit:', toUnit);
-            
-            const fromMonths = convertToMonths(parseInt(fromValue), fromUnit);
-            const toMonths = convertToMonths(parseInt(toValue), toUnit);
-            
-            console.log('🔍 Converted to Months:');
-            console.log('  - From Months:', fromMonths);
-            console.log('  - To Months:', toMonths);
-            
-            if (fromMonths >= toMonths) {
-                alert('From age must be less than To age');
-                return;
-            }
-            
-            updateAgeClassificationChartWithRange(fromMonths, toMonths);
-        }
 
-        function resetAgeRange() {
-            document.getElementById('ageFromMonths').value = 0;
-            document.getElementById('ageFromUnit').value = 'months';
-            document.getElementById('ageToMonths').value = 71;
-            document.getElementById('ageToUnit').value = 'months';
-            updateAgeClassificationChartWithRange(0, 71);
-        }
 
-        async function updateAgeClassificationChartWithRange(fromMonths, toMonths) {
-            console.log('📊 Age range changed:', fromMonths, 'to', toMonths, 'months - updating chart with donut data');
-            
-            // Call the main function with age range parameters
-            await updateAgeClassificationChart(fromMonths, toMonths);
-        }
 
         // ORPHANED CODE - TO BE REMOVED
         /*
@@ -9849,7 +9775,7 @@ body {
                 
                 // Also update the age classification chart with the new WHO standard
                 console.log('🎨 Updating age classification chart...');
-                await updateAgeClassificationChart(0, 71);
+                await updateAgeClassificationChart();
                 console.log('✅ Chart update completed');
                 
             } catch (error) {
@@ -10336,12 +10262,10 @@ body {
                 console.log('📊 Loading initial trends chart...');
                 await updateTrendsChart();
                 
-                // Set up age range control event listeners
-                setupAgeRangeControls();
                 
                 // Load initial age classification chart with default range
                 console.log('📊 Loading initial age classification chart...');
-                await updateAgeClassificationChart(0, 71);
+                await updateAgeClassificationChart();
                 
                 
                 // Load initial dashboard metrics and geographic distribution
