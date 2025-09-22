@@ -4183,6 +4183,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
+            // Simple test first
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    'ageLabels' => ['test1', 'test2'],
+                    'datasets' => [['label' => 'Test', 'data' => [1, 2]]],
+                    'totalUsers' => 999,
+                    'whoStandard' => $whoStandard,
+                    'debugMessage' => 'API is working'
+                ]
+            ]);
+            break;
+            
             try {
                 // Get all users data using the same batch system
                 $users = $db->getDetailedScreeningResponses('1d', $barangay);
