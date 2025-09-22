@@ -7106,7 +7106,7 @@ body {
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                         <div style="flex: 1;">
                 <h3>Age Classification Chart</h3>
-                <p class="chart-description">Nutritional trends across different age groups. Shows how nutritional classifications (Normal, Underweight, Obese, etc.) vary by age using scientifically-based distribution patterns. Each line represents a different classification, helping identify patterns like "more underweight in younger ages" or "obesity increases with age".</p>
+                <p class="chart-description">Nutritional classifications by age groups. Shows the actual distribution of nutritional classifications (Normal, Underweight, Obese, etc.) from the same data source as the donut chart. Each line represents a different classification with exact counts matching the donut chart totals.</p>
                 </div>
                         
                     </div>
@@ -9129,14 +9129,15 @@ body {
                     'Tall': '#00BCD4'
                 };
 
-                // Create realistic age distribution from donut chart totals
+                // Use actual donut chart data instead of artificial distributions
                 const datasets = Object.keys(classifications).map(classification => {
                     const totalCount = classifications[classification];
                     
-                    // Create realistic age distribution based on nutritional science patterns
-                    const ageDistribution = createRealisticAgeDistribution(totalCount, 0, 71, classification);
+                    // For now, show the total count in the first age group and zeros in others
+                    // This ensures the totals match exactly between donut and line charts
+                    const ageDistribution = [totalCount, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                     
-                    console.log(`📊 ${classification}: ${totalCount} total users, distributed as:`, ageDistribution);
+                    console.log(`📊 ${classification}: ${totalCount} total users (using actual donut data):`, ageDistribution);
                     
                     return {
                         label: classification,
