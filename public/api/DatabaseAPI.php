@@ -4203,20 +4203,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     break;
                 }
                 
-                // Simple test - just return basic data without complex processing
-                echo json_encode([
-                    'success' => true,
-                    'data' => [
-                        'ageLabels' => ['0-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
-                        'datasets' => [['label' => 'Test Data', 'data' => [1,2,3,4,5,6,7,8,9,10]]],
-                        'totalUsers' => count($users),
-                        'whoStandard' => $whoStandard,
-                        'debugMessage' => 'Simple test working',
-                        'userCount' => count($users)
-                    ]
-                ]);
-                break;
-                
                 // Initialize WHO growth standards
                 require_once __DIR__ . '/../../who_growth_standards.php';
                 $who = new WHOGrowthStandards();
@@ -4249,18 +4235,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $ageLabels = $currentRanges['labels'];
                 $ranges = $currentRanges['ranges'];
                 
-                // Debug: Test age range matching with first user age
-                if (!empty($users)) {
-                    $testAge = $who->calculateAgeInMonths($users[0]['birthday'], $users[0]['screening_date'] ?? null);
-                    $testRangeIndex = -1;
-                    for ($i = 0; $i < count($ranges); $i++) {
-                        if ($testAge >= $ranges[$i][0] && $testAge <= $ranges[$i][1]) {
-                            $testRangeIndex = $i;
-                            break;
-                        }
-                    }
-                    error_log("DEBUG: Test age $testAge months, range index: $testRangeIndex, ranges: " . json_encode($ranges));
-                }
                 
                 // Initialize classification counts for each age range
                 $classificationCounts = [];
@@ -4272,32 +4246,22 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         // Calculate age in months
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                         
-                        // Collect some debug ages
-                        if (count($debugAges) < 10) {
-                            $debugAges[] = $ageInMonths;
-                        }
-                        
-                        // Check if user is eligible for this WHO standard - Updated for broader age ranges
+                        // Check if user is eligible for this WHO standard
                         $isEligible = false;
                         switch ($whoStandard) {
                             case 'weight-for-age':
                             case 'height-for-age':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600); // 0-50 years
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600);
                                 break;
                             case 'weight-for-height':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600); // 0-50 years
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600);
                                 break;
                             case 'bmi-for-age':
-                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 600); // 2-50 years
+                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 600);
                                 break;
                             case 'bmi-adult':
-                                $isEligible = ($ageInMonths >= 228); // 19+ years
+                                $isEligible = ($ageInMonths >= 228);
                                 break;
-                        }
-                        
-                        // For debugging, let's be more inclusive and log the ages
-                        if ($totalUsers < 5) {
-                            error_log("User age: $ageInMonths months, eligible for $whoStandard: " . ($isEligible ? 'YES' : 'NO'));
                         }
                         
                         if (!$isEligible) continue;
@@ -4332,17 +4296,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 break;
                         }
                         
-                        if (!$classification || $classification === 'No Data') {
-                            if ($totalUsers < 5) {
-                                error_log("User has no classification or 'No Data' for $whoStandard");
-                            }
-                            continue;
-                        }
-                        
-                        // For debugging, log successful classifications
-                        if ($totalUsers < 5) {
-                            error_log("User has classification: $classification for $whoStandard");
-                        }
+                        if (!$classification || $classification === 'No Data') continue;
                         
                         // Find which age range this user belongs to
                         $ageRangeIndex = -1;
@@ -4351,17 +4305,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 $ageRangeIndex = $i;
                                 break;
                             }
-                        }
-                        
-                        // For debugging, log if user doesn't fit in any range
-                        if ($ageRangeIndex === -1 && $totalUsers < 5) {
-                            error_log("User age $ageInMonths months doesn't fit in any range for $whoStandard");
-                            error_log("Available ranges: " . json_encode($ranges));
-                        }
-                        
-                        // For debugging, log successful matches too
-                        if ($ageRangeIndex !== -1 && $totalUsers < 5) {
-                            error_log("User age $ageInMonths months fits in range $ageRangeIndex: " . $ranges[$ageRangeIndex][0] . "-" . $ranges[$ageRangeIndex][1]);
                         }
                         
                         if ($ageRangeIndex === -1) continue;
@@ -4405,20 +4348,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     ];
                 }
                 
-                // Debug: Log final results
-                error_log("DEBUG: Final results - totalUsers: $totalUsers, datasets: " . count($datasets) . ", debugAges: " . json_encode($debugAges));
-                
                 echo json_encode([
                     'success' => true,
                     'data' => [
                         'ageLabels' => $ageLabels,
                         'datasets' => $datasets,
                         'totalUsers' => $totalUsers,
-                        'whoStandard' => $whoStandard,
-                        'debugAges' => $debugAges,
-                        'totalUsersProcessed' => count($users),
-                        'debugRanges' => $ranges,
-                        'debugClassifications' => array_keys($classificationCounts)
+                        'whoStandard' => $whoStandard
                     ]
                 ]);
                 
