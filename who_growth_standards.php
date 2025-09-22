@@ -1440,19 +1440,18 @@ class WHOGrowthStandards {
     public function calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate = null) {
         $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
         
-        // BMI-for-Age only applies to children 2+ years (24+ months)
+        // BMI-for-Age only applies to children 2-19 years (24-228 months)
         if ($ageInMonths < 24) {
             return ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only applies to children 2+ years (24+ months)'];
+        }
+        
+        if ($ageInMonths > 228) {
+            return ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only applies to children under 19 years (228 months)'];
         }
         
         // Calculate BMI: weight(kg) / height(m)²
         $heightInMeters = $height / 100;
         $bmi = $weight / ($heightInMeters * $heightInMeters);
-        
-        // For adults 20+ years (240+ months), use adult BMI classification
-        if ($ageInMonths >= 240) {
-            return $this->getAdultBMIClassification($bmi);
-        }
         
         // For children 2-19 years (24-228 months), use WHO BMI-for-Age standards
         $standards = ($sex === 'Male') ? $this->getBMIForAgeBoys() : $this->getBMIForAgeGirls();
