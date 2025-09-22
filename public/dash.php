@@ -9270,12 +9270,7 @@ body {
                                 }
                             },
                             title: {
-                                display: true,
-                                text: `User Classification by Age (${whoStandard})`,
-                                font: {
-                                    size: 16,
-                                    weight: 'bold'
-                                }
+                                display: false
                             },
                             tooltip: {
                                 mode: 'index',
