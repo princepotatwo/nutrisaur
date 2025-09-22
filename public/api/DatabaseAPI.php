@@ -4183,19 +4183,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
-            // Simple test first
-            echo json_encode([
-                'success' => true,
-                'data' => [
-                    'ageLabels' => ['test1', 'test2'],
-                    'datasets' => [['label' => 'Test', 'data' => [1, 2]]],
-                    'totalUsers' => 999,
-                    'whoStandard' => $whoStandard,
-                    'debugMessage' => 'API is working'
-                ]
-            ]);
-            break;
-            
             try {
                 // Get all users data using the same batch system
                 $users = $db->getDetailedScreeningResponses('1d', $barangay);
@@ -4220,27 +4207,27 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 require_once __DIR__ . '/../../who_growth_standards.php';
                 $who = new WHOGrowthStandards();
                 
-                // Define age ranges for each WHO standard
+                // Define age ranges for each WHO standard - Updated for actual user data
                 $ageRanges = [
                     'weight-for-age' => [
-                        'labels' => ['0-7m','8-14m','15-21m','22-28m','29-35m','36-42m','43-49m','50-56m','57-63m','64-71m'],
-                        'ranges' => [[0,7],[8,14],[15,21],[22,28],[29,35],[36,42],[43,49],[50,56],[57,63],[64,71]]
+                        'labels' => ['0-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
+                        'ranges' => [[0,60],[61,120],[121,180],[181,240],[241,300],[301,360],[361,420],[421,480],[481,540],[541,600]]
                     ],
                     'height-for-age' => [
-                        'labels' => ['0-7m','8-14m','15-21m','22-28m','29-35m','36-42m','43-49m','50-56m','57-63m','64-71m'],
-                        'ranges' => [[0,7],[8,14],[15,21],[22,28],[29,35],[36,42],[43,49],[50,56],[57,63],[64,71]]
+                        'labels' => ['0-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
+                        'ranges' => [[0,60],[61,120],[121,180],[181,240],[241,300],[301,360],[361,420],[421,480],[481,540],[541,600]]
                     ],
                     'weight-for-height' => [
-                        'labels' => ['0-6m','7-12m','13-18m','19-24m','25-30m','31-36m','37-42m','43-48m','49-54m','55-60m'],
-                        'ranges' => [[0,6],[7,12],[13,18],[19,24],[25,30],[31,36],[37,42],[43,48],[49,54],[55,60]]
+                        'labels' => ['0-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
+                        'ranges' => [[0,60],[61,120],[121,180],[181,240],[241,300],[301,360],[361,420],[421,480],[481,540],[541,600]]
                     ],
                     'bmi-for-age' => [
-                        'labels' => ['2-3y','4-5y','6-7y','8-9y','10-11y','12-13y','14-15y','16-17y','18-19y'],
-                        'ranges' => [[24,36],[48,60],[72,84],[96,108],[120,132],[144,156],[168,180],[192,204],[216,228]]
+                        'labels' => ['2-5y','6-10y','11-15y','16-20y','21-25y','26-30y','31-35y','36-40y','41-45y','46-50y'],
+                        'ranges' => [[24,60],[61,120],[121,180],[181,240],[241,300],[301,360],[361,420],[421,480],[481,540],[541,600]]
                     ],
                     'bmi-adult' => [
-                        'labels' => ['19-27y','28-36y','37-45y','46-54y','55-63y','64-72y','73-81y','82-90y','91-100y'],
-                        'ranges' => [[228,324],[336,432],[444,540],[552,648],[660,756],[768,864],[876,972],[984,1080],[1092,1200]]
+                        'labels' => ['19-25y','26-30y','31-35y','36-40y','41-45y','46-50y','51-55y','56-60y','61-65y','66-70y'],
+                        'ranges' => [[228,300],[301,360],[361,420],[421,480],[481,540],[541,600],[601,660],[661,720],[721,780],[781,840]]
                     ]
                 ];
                 
@@ -4263,21 +4250,21 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             $debugAges[] = $ageInMonths;
                         }
                         
-                        // Check if user is eligible for this WHO standard
+                        // Check if user is eligible for this WHO standard - Updated for broader age ranges
                         $isEligible = false;
                         switch ($whoStandard) {
                             case 'weight-for-age':
                             case 'height-for-age':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71);
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600); // 0-50 years
                                 break;
                             case 'weight-for-height':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 60);
+                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 600); // 0-50 years
                                 break;
                             case 'bmi-for-age':
-                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 228);
+                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 600); // 2-50 years
                                 break;
                             case 'bmi-adult':
-                                $isEligible = ($ageInMonths >= 228);
+                                $isEligible = ($ageInMonths >= 228); // 19+ years
                                 break;
                         }
                         
