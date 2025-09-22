@@ -9248,11 +9248,13 @@ body {
                             },
                             y: {
                                 beginAtZero: true,
+                                max: totalUsers,
                                 ticks: {
                                     font: {
                                         size: 10
                                     },
                                     color: '#666',
+                                    stepSize: Math.ceil(totalUsers / 10),
                                     callback: function(value) {
                                         // Show actual population values
                                         return value;
