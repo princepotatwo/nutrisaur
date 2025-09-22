@@ -4234,11 +4234,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Initialize classification counts for each age range
                 $classificationCounts = [];
                 $totalUsers = 0;
+                $debugAges = [];
                 
                 foreach ($users as $user) {
                     try {
                         // Calculate age in months
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                        
+                        // Collect some debug ages
+                        if (count($debugAges) < 10) {
+                            $debugAges[] = $ageInMonths;
+                        }
                         
                         // Check if user is eligible for this WHO standard
                         $isEligible = false;
@@ -4359,7 +4365,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'ageLabels' => $ageLabels,
                         'datasets' => $datasets,
                         'totalUsers' => $totalUsers,
-                        'whoStandard' => $whoStandard
+                        'whoStandard' => $whoStandard,
+                        'debugAges' => $debugAges,
+                        'totalUsersProcessed' => count($users)
                     ]
                 ]);
                 
