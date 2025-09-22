@@ -9014,16 +9014,25 @@ body {
             
             // Define age distribution patterns based on nutritional science
             const patterns = {
+                // Weight-for-Age patterns
                 'Severely Underweight': [0.25, 0.20, 0.15, 0.12, 0.10, 0.08, 0.05, 0.03, 0.02, 0.00], // More common in younger ages
                 'Underweight': [0.20, 0.18, 0.15, 0.12, 0.10, 0.08, 0.07, 0.05, 0.03, 0.02],
                 'Normal': [0.15, 0.12, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.08, 0.05],
                 'Overweight': [0.05, 0.08, 0.10, 0.12, 0.12, 0.12, 0.12, 0.12, 0.10, 0.07], // Increases with age
                 'Obese': [0.02, 0.03, 0.05, 0.08, 0.10, 0.12, 0.12, 0.15, 0.18, 0.15], // More common in older ages
-                'Severely Stunted': [0.30, 0.25, 0.20, 0.12, 0.08, 0.03, 0.02, 0.00, 0.00, 0.00],
-                'Stunted': [0.20, 0.18, 0.15, 0.12, 0.10, 0.08, 0.07, 0.05, 0.03, 0.02],
-                'Severely Wasted': [0.25, 0.20, 0.15, 0.12, 0.10, 0.08, 0.05, 0.03, 0.02, 0.00],
-                'Wasted': [0.18, 0.15, 0.12, 0.10, 0.08, 0.08, 0.07, 0.06, 0.08, 0.08],
-                'Tall': [0.02, 0.03, 0.05, 0.08, 0.10, 0.12, 0.12, 0.15, 0.18, 0.15]
+                
+                // Height-for-Age patterns (stunting more common in younger ages)
+                'Severely Stunted': [0.40, 0.30, 0.20, 0.07, 0.03, 0.00, 0.00, 0.00, 0.00, 0.00], // Very high in youngest ages
+                'Stunted': [0.25, 0.20, 0.15, 0.12, 0.10, 0.08, 0.05, 0.03, 0.02, 0.00], // Higher in younger ages
+                'Tall': [0.00, 0.02, 0.05, 0.08, 0.12, 0.15, 0.18, 0.20, 0.15, 0.05], // Increases with age
+                
+                // Weight-for-Height patterns (wasting more common in younger ages)
+                'Severely Wasted': [0.30, 0.25, 0.20, 0.12, 0.08, 0.03, 0.02, 0.00, 0.00, 0.00], // High in youngest ages
+                'Wasted': [0.20, 0.18, 0.15, 0.12, 0.10, 0.08, 0.07, 0.06, 0.03, 0.01], // Higher in younger ages
+                
+                // BMI-for-Age patterns (same as weight-for-height)
+                'Overweight': [0.05, 0.08, 0.10, 0.12, 0.12, 0.12, 0.12, 0.12, 0.10, 0.07],
+                'Obese': [0.02, 0.03, 0.05, 0.08, 0.10, 0.12, 0.12, 0.15, 0.18, 0.15]
             };
             
             const pattern = patterns[classification] || patterns['Normal'];
