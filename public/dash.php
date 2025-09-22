@@ -9166,18 +9166,17 @@ body {
                     return;
                 }
                 
-                // Check if classifications exist and have data
-                const whoStandardKey = whoStandard.replace(/-/g, '_');
-                const classifications = data.data[whoStandardKey] || {};
+                // Extract classifications directly from the bulk API response (same as donut chart)
+                const classifications = data.classifications || {};
                 
                 if (!classifications || Object.keys(classifications).length === 0) {
-                    console.log('No donut chart data available - no classifications found for', whoStandardKey);
+                    console.log('No donut chart data available - no classifications found for', whoStandard);
                     createEmptyAgeChart(canvas);
                     return;
                 }
 
                 // Extract total users from API response
-                const totalUsers = data.total_users;
+                const totalUsers = data.total_users || Object.values(classifications).reduce((sum, count) => sum + count, 0);
                 
                 console.log('📊 Classifications from donut chart:', classifications);
                 console.log('📊 Total users from donut chart:', totalUsers);
