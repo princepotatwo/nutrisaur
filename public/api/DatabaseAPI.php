@@ -4187,13 +4187,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 // Get all users data using the same batch system
                 $users = $db->getDetailedScreeningResponses('1d', $barangay);
                 
+                // Debug: Log user count
+                error_log("DEBUG: Fetched " . count($users) . " users for age classification line chart");
+                
                 if (empty($users)) {
                     echo json_encode([
                         'success' => true,
                         'data' => [
                             'ageLabels' => [],
                             'datasets' => [],
-                            'totalUsers' => 0
+                            'totalUsers' => 0,
+                            'debugMessage' => 'No users found'
                         ]
                     ]);
                     break;
@@ -4358,6 +4362,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'tension' => 0.1
                     ];
                 }
+                
+                // Debug: Log final results
+                error_log("DEBUG: Final results - totalUsers: $totalUsers, datasets: " . count($datasets) . ", debugAges: " . json_encode($debugAges));
                 
                 echo json_encode([
                     'success' => true,
