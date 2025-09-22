@@ -253,16 +253,14 @@ function getInitialClassifications($whoStandard) {
                 'Underweight' => 0,
                 'Normal' => 0,
                 'Overweight' => 0,
-                'Obese' => 0,
-                'No Data' => 0
+                'Obese' => 0
             ];
         case 'height-for-age':
             return [
                 'Severely Stunted' => 0,
                 'Stunted' => 0,
                 'Normal' => 0,
-                'Tall' => 0,
-                'No Data' => 0
+                'Tall' => 0
             ];
         case 'weight-for-height':
             return [
@@ -270,24 +268,21 @@ function getInitialClassifications($whoStandard) {
                 'Wasted' => 0,
                 'Normal' => 0,
                 'Overweight' => 0,
-                'Obese' => 0,
-                'No Data' => 0
+                'Obese' => 0
             ];
         case 'bmi-adult':
             return [
                 'Underweight' => 0,
                 'Normal' => 0,
                 'Overweight' => 0,
-                'Obese' => 0,
-                'No Data' => 0
+                'Obese' => 0
             ];
         default:
             return [
                 'Underweight' => 0,
                 'Normal' => 0,
                 'Overweight' => 0,
-                'Obese' => 0,
-                'No Data' => 0
+                'Obese' => 0
             ];
     }
 }
@@ -312,7 +307,7 @@ function getAgeRestrictions($whoStandard) {
 function processWHOStandardForDash(&$classifications, $results, $whoStandard, $ageInMonths, $user, $ageRestrictions) {
     // Age restrictions (matching API logic)
     if ($ageInMonths < $ageRestrictions['min'] || $ageInMonths > $ageRestrictions['max']) {
-        $classifications['No Data']++;
+        // Skip users outside age range - don't add to classifications
         return;
     }
     
@@ -324,12 +319,11 @@ function processWHOStandardForDash(&$classifications, $results, $whoStandard, $a
         $classification = $results[$standardKey]['classification'] ?? 'No Data';
     }
     
-    // Count classification (matching API logic)
-    if (isset($classifications[$classification])) {
+    // Count classification (matching API logic) - only if valid classification
+    if (isset($classifications[$classification]) && $classification !== 'No Data') {
         $classifications[$classification]++;
-    } else {
-        $classifications['No Data']++;
     }
+    // Skip "No Data" classifications - don't add them
 }
 
 // UPDATED: Function to get WHO classification data using API logic
@@ -379,12 +373,11 @@ function getWHOClassificationData($db, $barangay = null, $whoStandard = 'weight-
                     
                     $totalProcessed++;
                 } else {
-                    // Mark as no data if assessment failed (matching API logic)
-                    $classifications['No Data']++;
+                    // Skip users with failed assessment - don't add to classifications
                 }
             } catch (Exception $e) {
                 error_log("WHO processing error for user {$user['email']}: " . $e->getMessage());
-                $classifications['No Data']++;
+                // Skip users with processing errors - don't add to classifications
             }
         }
         
@@ -393,7 +386,6 @@ function getWHOClassificationData($db, $barangay = null, $whoStandard = 'weight-
         error_log("  - Normal: " . $classifications['Normal']);
         error_log("  - Overweight: " . $classifications['Overweight']);
         error_log("  - Obese: " . $classifications['Obese']);
-        error_log("  - No Data: " . $classifications['No Data']);
         error_log("  - Total Users: " . count($users));
         
         return [
@@ -411,8 +403,7 @@ function getWHOClassificationData($db, $barangay = null, $whoStandard = 'weight-
                 'Underweight' => 0,
                 'Normal' => 0,
                 'Overweight' => 0,
-                'Obese' => 0,
-                'No Data' => 0
+                'Obese' => 0
             ],
             'total_users' => 0,
             'who_standard' => $whoStandard
@@ -8948,7 +8939,8 @@ body {
                 Object.values(data.data).forEach(standardData => {
                     if (typeof standardData === 'object') {
                         Object.entries(standardData).forEach(([classification, count]) => {
-                            if (classification !== 'No Data') {
+                            // Only include valid classifications, exclude "No Data"
+                            if (classification !== 'No Data' && count > 0) {
                                 allClassifications[classification] = (allClassifications[classification] || 0) + count;
                             }
                         });
@@ -9239,7 +9231,6 @@ body {
                     'Severely Stunted': '#673AB7',
                     'Stunted': '#9C27B0',
                     'Tall': '#00BCD4',
-                    'No Data': '#9E9E9E'
                 };
 
                 // Use actual donut chart data with appropriate age distribution
@@ -9779,7 +9770,6 @@ body {
                     'Severely Stunted': '#673AB7',
                     'Stunted': '#9C27B0',
                     'Tall': '#00BCD4',
-                    'No Data': '#9E9E9E'
                 };
                 
                 // Create segments array with only classifications that have data
@@ -9952,7 +9942,7 @@ body {
                 const apiKey = standardMapping[whoStandard] || whoStandard;
                 const classifications = data[apiKey] || {};
                 
-                // Calculate total for this specific WHO standard (sum of all classifications EXCEPT "No Data")
+                // Calculate total for this specific WHO standard (sum of all valid classifications)
                 const total = Object.entries(classifications).reduce((sum, [classification, count]) => {
                     return classification === 'No Data' ? sum : sum + count;
                 }, 0);
