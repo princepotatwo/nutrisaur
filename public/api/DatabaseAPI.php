@@ -4243,11 +4243,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 // Simple test: Create mock data based on existing donut chart data
                 // This uses the same batch system but creates line chart data
+                $numRanges = count($ranges);
                 $mockData = [
-                    'Normal' => [2, 3, 1, 4, 2, 3, 1, 2, 1, 1],
-                    'Overweight' => [1, 2, 1, 1, 2, 1, 1, 2, 1, 0],
-                    'Obese' => [0, 1, 0, 0, 1, 0, 1, 0, 1, 0]
+                    'Normal' => array_fill(0, $numRanges, 0),
+                    'Overweight' => array_fill(0, $numRanges, 0),
+                    'Obese' => array_fill(0, $numRanges, 0)
                 ];
+                
+                // Add some sample data
+                for ($i = 0; $i < $numRanges; $i++) {
+                    $mockData['Normal'][$i] = rand(1, 5);
+                    $mockData['Overweight'][$i] = rand(0, 3);
+                    $mockData['Obese'][$i] = rand(0, 2);
+                }
                 
                 foreach ($mockData as $classification => $data) {
                     $classificationCounts[$classification] = $data;
