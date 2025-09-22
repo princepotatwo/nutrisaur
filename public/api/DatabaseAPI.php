@@ -4266,12 +4266,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 break;
                         }
                         
-                        if (!$isEligible) {
-                            if ($debugCount < 5) {
-                                error_log("DEBUG: User age $ageInMonths months not eligible for $whoStandard");
-                            }
-                            continue;
-                        }
+                        if (!$isEligible) continue;
                         
                         // Get classification based on WHO standard
                         $classification = null;
@@ -4331,19 +4326,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         $classificationCounts[$classification][$ageRangeIndex]++;
                         $totalUsers++;
                         
-                        if ($debugCount < 5) {
-                            error_log("DEBUG: User age $ageInMonths months, classification: $classification, range: $ageRangeIndex");
-                        }
-                        
                     } catch (Exception $e) {
                         // Skip users with errors
-                        if ($debugCount < 5) {
-                            error_log("DEBUG: Error processing user: " . $e->getMessage());
-                        }
                         continue;
                     }
-                    
-                    $debugCount++;
                 }
                 
                 // Create datasets for Chart.js
