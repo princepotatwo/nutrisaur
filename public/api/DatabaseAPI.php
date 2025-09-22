@@ -4273,34 +4273,41 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             continue;
                         }
                         
-                        // Get comprehensive assessment
-                        $assessment = $who->getComprehensiveAssessment(
-                            floatval($user['weight']),
-                            floatval($user['height']),
-                            $ageInMonths,
-                            $user['sex']
-                        );
-                        
-                        if (!$assessment['success']) continue;
-                        
-                        // Get the classification for this WHO standard
+                        // Get classification based on WHO standard
                         $classification = null;
-                        switch ($whoStandard) {
-                            case 'weight-for-age':
-                                $classification = $assessment['weight_for_age'] ?? 'No Data';
-                                break;
-                            case 'height-for-age':
-                                $classification = $assessment['height_for_age'] ?? 'No Data';
-                                break;
-                            case 'weight-for-height':
-                                $classification = $assessment['weight_for_height'] ?? 'No Data';
-                                break;
-                            case 'bmi-for-age':
-                                $classification = $assessment['bmi_for_age'] ?? 'No Data';
-                                break;
-                            case 'bmi-adult':
-                                $classification = $assessment['bmi_adult'] ?? 'No Data';
-                                break;
+                        if ($whoStandard === 'bmi-adult') {
+                            // BMI adult uses simple BMI calculation, not WHO growth standards
+                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                            
+                            if ($bmi < 18.5) $classification = 'Underweight';
+                            else if ($bmi < 25) $classification = 'Normal';
+                            else if ($bmi < 30) $classification = 'Overweight';
+                            else $classification = 'Obese';
+                        } else {
+                            // Other WHO standards use comprehensive assessment
+                            $assessment = $who->getComprehensiveAssessment(
+                                floatval($user['weight']),
+                                floatval($user['height']),
+                                $ageInMonths,
+                                $user['sex']
+                            );
+                            
+                            if (!$assessment['success']) continue;
+                            
+                            switch ($whoStandard) {
+                                case 'weight-for-age':
+                                    $classification = $assessment['weight_for_age'] ?? 'No Data';
+                                    break;
+                                case 'height-for-age':
+                                    $classification = $assessment['height_for_age'] ?? 'No Data';
+                                    break;
+                                case 'weight-for-height':
+                                    $classification = $assessment['weight_for_height'] ?? 'No Data';
+                                    break;
+                                case 'bmi-for-age':
+                                    $classification = $assessment['bmi_for_age'] ?? 'No Data';
+                                    break;
+                            }
                         }
                         
                         if (!$classification || $classification === 'No Data') continue;
