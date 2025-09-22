@@ -2702,7 +2702,7 @@ class DatabaseAPI {
             case 'weight-for-height':
                 return ['min' => 0, 'max' => 60]; // 0-60 months (0-5 years)
             case 'bmi-for-age':
-                return ['min' => 24, 'max' => 228]; // 24-228 months (2-19 years)
+                return ['min' => 24, 'max' => 1200]; // 24-1200 months (2-100 years)
             case 'bmi-adult':
                 return ['min' => 228, 'max' => 999]; // 228+ months (19+ years)
             default:
@@ -2737,8 +2737,8 @@ class DatabaseAPI {
                     break;
                     
                 case 'bmi-for-age':
-                    // 2-19 years old (24-228 months)
-                    $isEligible = $ageInMonths >= 24 && $ageInMonths <= 228;
+                    // 2-100 years old (24-1200 months)
+                    $isEligible = $ageInMonths >= 24 && $ageInMonths <= 1200;
                     break;
                     
                 case 'bmi-adult':
@@ -5576,7 +5576,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 60);
                                 break;
                             case 'bmi-for-age':
-                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 228);
+                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 1200);
                                 break;
                             case 'bmi-adult':
                                 $isEligible = ($ageInMonths >= 228);

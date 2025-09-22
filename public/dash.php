@@ -296,7 +296,7 @@ function getAgeRestrictions($whoStandard) {
         case 'weight-for-height':
             return ['min' => 0, 'max' => 60]; // 0-60 months (0-5 years)
         case 'bmi-for-age':
-            return ['min' => 24, 'max' => 228]; // 24-228 months (2-19 years)
+            return ['min' => 24, 'max' => 1200]; // 24-1200 months (2-100 years)
         case 'bmi-adult':
             return ['min' => 228, 'max' => 999]; // 228+ months (19+ years)
         default:
@@ -9039,7 +9039,7 @@ body {
                 case 'weight-for-height':
                     return { fromMonths: 0, toMonths: 60 }; // 0-5 years
                 case 'bmi-for-age':
-                    return { fromMonths: 24, toMonths: 228 }; // 2-19 years
+                    return { fromMonths: 24, toMonths: 1200 }; // 2-100 years
                 case 'bmi-adult':
                     return { fromMonths: 228, toMonths: 300 }; // 19-25 years (realistic range for current data)
                 default:
