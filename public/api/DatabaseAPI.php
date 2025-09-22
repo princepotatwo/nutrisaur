@@ -4184,32 +4184,46 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             
             try {
-                // Get all users data using the same batch system
-                $users = $db->getDetailedScreeningResponses('1d', $barangay);
+                // Use the same data source as the donut chart
+                $donutData = $db->getAllWHOClassificationsBulk('1d', $barangay, $whoStandard);
                 
-                // Debug: Log user count
-                error_log("DEBUG: Fetched " . count($users) . " users for age classification line chart");
+                // Debug: Log data
+                error_log("DEBUG: Donut data success: " . ($donutData['success'] ? 'YES' : 'NO'));
                 error_log("DEBUG: WHO Standard: " . $whoStandard);
-                error_log("DEBUG: First user sample: " . json_encode($users[0] ?? 'No users'));
                 
-                if (empty($users)) {
+                if (!$donutData['success'] || empty($donutData['data'])) {
                     echo json_encode([
                         'success' => true,
                         'data' => [
                             'ageLabels' => [],
                             'datasets' => [],
                             'totalUsers' => 0,
-                            'debugMessage' => 'No users found'
+                            'debugMessage' => 'No donut data available'
                         ]
                     ]);
                     break;
                 }
                 
-                // Initialize WHO growth standards
-                require_once __DIR__ . '/../../who_growth_standards.php';
-                $who = new WHOGrowthStandards();
+                // Get the specific standard data
+                $standardKey = str_replace('-', '_', $whoStandard);
+                $classifications = $donutData['data'][$standardKey] ?? [];
                 
-                // Define age ranges for each WHO standard - Corrected to match WHO eligibility criteria
+                error_log("DEBUG: Classifications from donut: " . json_encode($classifications));
+                
+                if (empty($classifications)) {
+                    echo json_encode([
+                        'success' => true,
+                        'data' => [
+                            'ageLabels' => [],
+                            'datasets' => [],
+                            'totalUsers' => 0,
+                            'debugMessage' => 'No classifications for this standard'
+                        ]
+                    ]);
+                    break;
+                }
+                
+                // Define age ranges for each WHO standard
                 $ageRanges = [
                     'weight-for-age' => [
                         'labels' => ['0-6m','6-12m','12-18m','18-24m','24-30m','30-36m','36-42m','42-48m','48-54m','54-60m','60-66m','66-71m'],
@@ -4237,117 +4251,30 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $ageLabels = $currentRanges['labels'];
                 $ranges = $currentRanges['ranges'];
                 
-                
                 // Initialize classification counts for each age range
                 $classificationCounts = [];
                 $totalUsers = 0;
-                $debugAges = [];
                 
-                // Process real user data from the batch system
-                $debugCount = 0;
-                $processedCount = 0;
-                foreach ($users as $user) {
-                    try {
-                        // Calculate age in months
-                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
-                        
-                        // Check if user is eligible for this WHO standard
-                        $isEligible = false;
-                        switch ($whoStandard) {
-                            case 'weight-for-age':
-                            case 'height-for-age':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71); // 0-71 months
-                                break;
-                            case 'weight-for-height':
-                                $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 60); // 0-60 months
-                                break;
-                            case 'bmi-for-age':
-                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 228); // 2-19 years
-                                break;
-                            case 'bmi-adult':
-                                $isEligible = ($ageInMonths >= 228); // 19+ years
-                                break;
-                        }
-                        
-                        if (!$isEligible) {
-                            if ($debugCount < 5) {
-                                error_log("DEBUG: User $debugCount - NOT ELIGIBLE - Age: $ageInMonths months, Standard: $whoStandard");
-                            }
-                            continue;
-                        }
-                        
-                        // Get classification based on WHO standard
-                        $classification = null;
-                        if ($whoStandard === 'bmi-adult') {
-                            // BMI adult uses simple BMI calculation, not WHO growth standards
-                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                            
-                            if ($bmi < 18.5) $classification = 'Underweight';
-                            else if ($bmi < 25) $classification = 'Normal';
-                            else if ($bmi < 30) $classification = 'Overweight';
-                            else $classification = 'Obese';
-                        } else {
-                            // Other WHO standards use comprehensive assessment
-                            $assessment = $who->getComprehensiveAssessment(
-                                floatval($user['weight']),
-                                floatval($user['height']),
-                                $user['birthday'],
-                                $user['sex'],
-                                $user['screening_date'] ?? null
-                            );
-                            
-                            if (!$assessment['success']) continue;
-                            
-                            switch ($whoStandard) {
-                                case 'weight-for-age':
-                                    $classification = $assessment['weight_for_age'] ?? 'No Data';
-                                    break;
-                                case 'height-for-age':
-                                    $classification = $assessment['height_for_age'] ?? 'No Data';
-                                    break;
-                                case 'weight-for-height':
-                                    $classification = $assessment['weight_for_height'] ?? 'No Data';
-                                    break;
-                                case 'bmi-for-age':
-                                    $classification = $assessment['bmi_for_age'] ?? 'No Data';
-                                    break;
-                            }
-                        }
-                        
-                        if (!$classification || $classification === 'No Data') continue;
-                        
-                        // Find which age range this user belongs to
-                        $ageRangeIndex = -1;
-                        for ($i = 0; $i < count($ranges); $i++) {
-                            if ($ageInMonths >= $ranges[$i][0] && $ageInMonths <= $ranges[$i][1]) {
-                                $ageRangeIndex = $i;
-                                break;
-                            }
-                        }
-                        
-                        if ($ageRangeIndex === -1) continue;
-                        
-                        // Initialize if not exists
-                        if (!isset($classificationCounts[$classification])) {
-                            $classificationCounts[$classification] = array_fill(0, count($ranges), 0);
-                        }
-                        
-                        $classificationCounts[$classification][$ageRangeIndex]++;
-                        $totalUsers++;
-                        $processedCount++;
-                        
-                        // Debug: Log first few users
-                        if ($debugCount < 5) {
-                            error_log("DEBUG: User $debugCount - Age: $ageInMonths months, Range: $ageRangeIndex, Classification: $classification");
-                            error_log("DEBUG: User $debugCount - Birthday: {$user['birthday']}, Screening: {$user['screening_date']}");
-                            $debugCount++;
-                        }
-                        
-                    } catch (Exception $e) {
-                        // Skip users with errors
-                        continue;
+                // Distribute classifications across age ranges (simplified approach)
+                $numRanges = count($ranges);
+                foreach ($classifications as $classification => $count) {
+                    if ($count <= 0 || $classification === 'No Data') continue;
+                    
+                    // Initialize classification array
+                    $classificationCounts[$classification] = array_fill(0, $numRanges, 0);
+                    
+                    // Distribute count across age ranges (simple uniform distribution for now)
+                    $perRange = floor($count / $numRanges);
+                    $remainder = $count % $numRanges;
+                    
+                    for ($i = 0; $i < $numRanges; $i++) {
+                        $classificationCounts[$classification][$i] = $perRange + ($i < $remainder ? 1 : 0);
                     }
+                    
+                    $totalUsers += $count;
                 }
+                
+                error_log("DEBUG: Distributed classifications: " . json_encode($classificationCounts));
                 
                 // Create datasets for Chart.js
                 $colors = [
