@@ -2822,7 +2822,13 @@ class WHOGrowthStandards {
      * Calculate Weight-for-Height z-score and classification
      * Now uses lookup tables for more accurate results
      */
-    public function calculateWeightForHeight($weight, $height, $sex) {
+    public function calculateWeightForHeight($weight, $height, $sex, $ageInMonths = null) {
+        // FIXED: Use age-based filtering instead of height-based filtering
+        // Weight-for-Height should only be calculated for children aged 0-60 months
+        if ($ageInMonths !== null && ($ageInMonths < 0 || $ageInMonths > 60)) {
+            return ['z_score' => null, 'classification' => 'No Data', 'error' => 'Weight-for-Height only applicable for children aged 0-60 months'];
+        }
+        
         // Use hardcoded lookup tables for both boys and girls
         if ($sex === 'Male') {
             $lookup = $this->getWeightForHeightBoysLookup();
@@ -2987,7 +2993,7 @@ class WHOGrowthStandards {
             'bmi' => round($bmi, 1),
             'weight_for_age' => $this->calculateWeightForAge($weight, $ageInMonths, $sex),
             'height_for_age' => $this->calculateHeightForAge($height, $ageInMonths, $sex),
-            'weight_for_height' => $this->calculateWeightForHeight($weight, $height, $sex),
+            'weight_for_height' => $this->calculateWeightForHeight($weight, $height, $sex, $ageInMonths),
             'weight_for_length' => $this->calculateWeightForLength($weight, $height, $sex),
             'bmi_for_age' => $this->calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate)
         ];
