@@ -4301,7 +4301,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     ];
                 }
                 
-                error_log("DEBUG: Age classification summary - Total users: " . count($users) . ", Processed: $processedCount, Total in chart: $totalUsers");
+                error_log("DEBUG: Age classification summary - Total users: $totalUsers");
                 error_log("DEBUG: Classification counts: " . json_encode($classificationCounts));
                 
                 echo json_encode([
