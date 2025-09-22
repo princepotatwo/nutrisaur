@@ -9174,15 +9174,9 @@ body {
         // Function to update age classification chart using donut chart data
         async function updateAgeClassificationChart() {
             console.log('📊 Age Classification Chart - Removed');
-            
-            try {
-                const canvas = document.getElementById('ageClassificationChart');
-                if (!canvas) {
-                    console.error('Age classification chart canvas not found');
-                    return;
-                }
-
-                // Get current WHO standard and barangay values
+            // Function body removed as requested
+            return;
+        }
                 const whoStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
                 const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
                 const barangayValue = barangay === 'All Barangays' ? '' : barangay;
@@ -9422,67 +9416,16 @@ body {
             }
         }
 
-        // Global variable to store the age classification chart instance
-        let ageClassificationChartInstance = null;
+        // ageClassificationChartInstance variable - REMOVED
 
         // Function to destroy existing age classification chart
-        function destroyAgeClassificationChart() {
-            if (ageClassificationChartInstance) {
-                ageClassificationChartInstance.destroy();
-                ageClassificationChartInstance = null;
-            }
-        }
+        // destroyAgeClassificationChart function - REMOVED
 
         // Function to create empty age chart
-        function createEmptyAgeChart(canvas) {
-            // destroyAgeClassificationChart(); // REMOVED
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'var(--color-text)';
-            ctx.font = '14px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('No age classification data available', canvas.width / 2, canvas.height / 2);
-        }
+        // createEmptyAgeChart function - REMOVED
 
 
-        // Convert age group string to months for proper sorting
-        function convertAgeGroupToMonths(ageGroup) {
-            if (ageGroup.includes('y')) {
-                // Handle year format like "1y", "2y", etc.
-                const years = parseInt(ageGroup.replace('y', ''));
-                return years * 12;
-            } else if (ageGroup.includes('m')) {
-                // Handle month format like "0m", "1m", etc.
-                return parseInt(ageGroup.replace('m', ''));
-            } else if (ageGroup.includes('-')) {
-                // Handle range format like "0-5m", "1-2y", etc.
-                const parts = ageGroup.split('-');
-                const start = parts[0];
-                if (start.includes('y')) {
-                    return parseInt(start.replace('y', '')) * 12;
-                } else {
-                    return parseInt(start.replace('m', ''));
-                }
-            }
-            return 0; // Default fallback
-        }
-
-        function convertFromMonths(months, unit) {
-            return unit === 'years' ? Math.floor(months / 12) : months;
-        }
-
-        // Frontend approach: Get all data once, process efficiently
-        // Age classification chart logic - REMOVED
-        async function processBulkDataForAgeGroups(bulkData, fromMonths, toMonths) {
-            return {};
-        }
-
-        // Age group generation - REMOVED
-
-        // Age calculation - REMOVED
-        function calculateAgeInMonths(birthday, screeningDate) {
-            return 0;
-        }
+        // Age classification helper functions - REMOVED
 
         // This function is no longer needed - we use real donut chart data
 
