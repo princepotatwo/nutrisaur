@@ -2698,13 +2698,13 @@ class DatabaseAPI {
         switch ($whoStandard) {
             case 'weight-for-age':
             case 'height-for-age':
-                return ['min' => 0, 'max' => 60]; // 0-60 months
+                return ['min' => 0, 'max' => 71]; // 0-71 months (0-5.9 years)
             case 'weight-for-height':
-                return ['min' => 0, 'max' => 60]; // 0-60 months  
+                return ['min' => 0, 'max' => 60]; // 0-60 months (0-5 years)
             case 'bmi-for-age':
-                return ['min' => 0, 'max' => 228]; // 0-228 months (0-19 years)
+                return ['min' => 24, 'max' => 228]; // 24-228 months (2-19 years)
             case 'bmi-adult':
-                return ['min' => 72, 'max' => 999]; // 72+ months (6+ years)
+                return ['min' => 228, 'max' => 999]; // 228+ months (19+ years)
             default:
                 return ['min' => 0, 'max' => 999];
         }
