@@ -4235,6 +4235,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $ageLabels = $currentRanges['labels'];
                 $ranges = $currentRanges['ranges'];
                 
+                // Debug: Test age range matching with first user age
+                if (!empty($users)) {
+                    $testAge = $who->calculateAgeInMonths($users[0]['birthday'], $users[0]['screening_date'] ?? null);
+                    $testRangeIndex = -1;
+                    for ($i = 0; $i < count($ranges); $i++) {
+                        if ($testAge >= $ranges[$i][0] && $testAge <= $ranges[$i][1]) {
+                            $testRangeIndex = $i;
+                            break;
+                        }
+                    }
+                    error_log("DEBUG: Test age $testAge months, range index: $testRangeIndex, ranges: " . json_encode($ranges));
+                }
+                
                 // Initialize classification counts for each age range
                 $classificationCounts = [];
                 $totalUsers = 0;
@@ -4389,7 +4402,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'totalUsers' => $totalUsers,
                         'whoStandard' => $whoStandard,
                         'debugAges' => $debugAges,
-                        'totalUsersProcessed' => count($users)
+                        'totalUsersProcessed' => count($users),
+                        'debugRanges' => $ranges,
+                        'debugClassifications' => array_keys($classificationCounts)
                     ]
                 ]);
                 
