@@ -7070,7 +7070,7 @@ body {
 
         <div class="chart-row">
             <div class="chart-card">
-                <h3>WHO Growth Standards Classification</h3>
+                    <h3>WHO Growth Standards Classification</h3>
                 <p class="chart-description" id="who-chart-description">Distribution of children by Weight-for-Age classification. Shows nutritional status based on weight relative to age (0-71 months).</p>
                 <div class="donut-chart-container">
                     <div class="donut-chart">
@@ -9144,40 +9144,27 @@ body {
                 console.log('📊 Using WHO Standard:', whoStandard);
                 console.log('📊 Using Barangay:', barangayValue);
 
-                // Use the same bulk API as donut chart to get accurate totals
-                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=${barangayValue}&who_standard=${whoStandard}`;
-                console.log('📊 Fetching donut chart data for line chart:', url);
+                // Use the same data fetching logic as the donut chart for consistency
+                console.log('📊 Fetching WHO data using same logic as donut chart...');
+                const response = await fetchWHOClassificationData(whoStandard, barangayValue);
+                console.log('📊 WHO data received:', response);
                 
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('📊 Donut chart data received:', data);
-                console.log('📊 Data success:', data.success);
-                console.log('📊 Data keys:', Object.keys(data));
-                console.log('📊 Classifications:', data.classifications);
-
                 // Check if we have valid data
-                if (!data.success) {
-                    console.log('No donut chart data available - API returned success: false');
+                if (!response || !response.classifications) {
+                    console.log('No WHO data available - response invalid');
                     createEmptyAgeChart(canvas);
                     return;
                 }
                 
-                // Extract classifications directly from the bulk API response (same as donut chart)
-                const classifications = data.classifications || {};
+                const classifications = response.classifications;
+                const totalUsers = response.total;
                 
                 if (!classifications || Object.keys(classifications).length === 0) {
-                    console.log('No donut chart data available - no classifications found for', whoStandard);
+                    console.log('No classifications found for', whoStandard);
                     createEmptyAgeChart(canvas);
                     return;
                 }
 
-                // Extract total users from API response
-                const totalUsers = data.total_users || Object.values(classifications).reduce((sum, count) => sum + count, 0);
-                
                 console.log('📊 Classifications from donut chart:', classifications);
                 console.log('📊 Total users from donut chart:', totalUsers);
 
