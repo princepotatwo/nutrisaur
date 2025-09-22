@@ -4263,10 +4263,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $totalUsers = 0;
                 
                 // Process each user to get their exact age and classification
+                $debugCount = 0;
                 foreach ($users as $user) {
                     try {
                         // Calculate age in months
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                        
+                        // Debug first few users
+                        if ($debugCount < 3) {
+                            error_log("DEBUG: User $debugCount - Age: $ageInMonths months, Birthday: {$user['birthday']}, Screening: {$user['screening_date']}");
+                            $debugCount++;
+                        }
                         
                         // Check if user is eligible for this WHO standard
                         $isEligible = false;
@@ -4337,6 +4344,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             }
                         }
                         
+                        // If age is beyond the last bucket, assign to the last bucket
+                        if ($bucketIndex === -1) {
+                            $bucketIndex = count($buckets) - 1;
+                        }
+                        
                         if ($bucketIndex === -1) continue;
                         
                         // Initialize if not exists
@@ -4353,7 +4365,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
-                error_log("DEBUG: Distributed classifications: " . json_encode($classificationCounts));
+                error_log("DEBUG: Processed users: " . count($users));
+                error_log("DEBUG: Total eligible users: $totalUsers");
+                error_log("DEBUG: Classification counts: " . json_encode($classificationCounts));
                 
                 // Create datasets for Chart.js
                 $colors = [
