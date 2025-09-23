@@ -4322,7 +4322,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';
                         } else {
-                            // For other WHO standards, use the same direct calculation approach
+                            // For other WHO standards, use the same approach as working donut chart
                             $assessment = $who->getComprehensiveAssessment(
                                 floatval($user['weight']),
                                 floatval($user['height']),
@@ -4331,24 +4331,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 $user['screening_date'] ?? null
                             );
                             
-                            // If assessment fails, skip this user but don't stop processing
-                            if (!$assessment['success']) {
-                                continue;
-                            }
-                            
-                            switch ($whoStandard) {
-                                case 'weight-for-age':
-                                    $classification = $assessment['weight_for_age'] ?? 'No Data';
-                                    break;
-                                case 'height-for-age':
-                                    $classification = $assessment['height_for_age'] ?? 'No Data';
-                                    break;
-                                case 'weight-for-height':
-                                    $classification = $assessment['weight_for_height'] ?? 'No Data';
-                                    break;
-                                case 'bmi-for-age':
-                                    $classification = $assessment['bmi_for_age'] ?? 'No Data';
-                                    break;
+                            // Use the same logic as the working donut chart
+                            if ($assessment['success'] && isset($assessment['results'])) {
+                                $results = $assessment['results'];
+                                $standardKey = str_replace('-', '_', $whoStandard);
+                                
+                                if (isset($results[$standardKey])) {
+                                    $classification = $results[$standardKey];
+                                } else {
+                                    $classification = 'No Data';
+                                }
+                            } else {
+                                $classification = 'No Data';
                             }
                         }
                         
