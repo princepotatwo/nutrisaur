@@ -4280,8 +4280,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                     
                     try {
-                        // Calculate age in months
-                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? date('Y-m-d'));
+                        // Calculate age in months - use null fallback like the working donut chart
+                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                         
                         // Check if user is eligible for this WHO standard
                         $isEligible = false;
@@ -4328,7 +4328,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 floatval($user['height']),
                                 $user['birthday'],
                                 $user['sex'],
-                                $user['screening_date'] ?? date('Y-m-d')
+                                $user['screening_date'] ?? null
                             );
                             
                             // If assessment fails, skip this user but don't stop processing
