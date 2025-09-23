@@ -9234,7 +9234,7 @@ body {
                     return;
                 }
 
-                console.log('📊 Age Classification Line Chart Data:', { ageLabels, datasets, totalUsers });
+                console.log('📊 Age Classification Line Chart Data:', { ageLabels, datasets, totalUsers, maxPopulation: data.maxPopulation });
 
                 // Destroy existing chart
                 if (ageClassificationLineChart) {
@@ -9321,6 +9321,7 @@ body {
                                     }
                                 },
                                 beginAtZero: true,
+                                suggestedMax: data.maxPopulation || totalUsers,
                                 ticks: {
                                     stepSize: 1,
                                     font: {
