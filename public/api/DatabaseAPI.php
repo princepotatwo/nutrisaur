@@ -4379,18 +4379,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 error_log("DEBUG: Processed $processedCount users, skipped $skippedCount, eligible $eligibleCount, charted $totalUsers");
                 error_log("DEBUG: Classification counts: " . json_encode($classificationCounts));
                 
-                // Create datasets for Chart.js
+                // Create datasets for Chart.js - Colors matching donut chart
                 $colors = [
-                    'Severely Underweight' => 'rgba(255, 99, 132, 1)',
-                    'Underweight' => 'rgba(255, 159, 64, 1)',
-                    'Normal' => 'rgba(75, 192, 192, 1)',
-                    'Overweight' => 'rgba(54, 162, 235, 1)',
-                    'Obese' => 'rgba(153, 102, 255, 1)',
-                    'Severely Wasted' => 'rgba(255, 99, 132, 1)',
-                    'Wasted' => 'rgba(255, 159, 64, 1)',
-                    'Severely Stunted' => 'rgba(153, 102, 255, 1)',
-                    'Stunted' => 'rgba(255, 206, 86, 1)',
-                    'Tall' => 'rgba(54, 162, 235, 1)'
+                    'Severely Underweight' => '#E91E63',
+                    'Underweight' => '#FFC107',
+                    'Normal' => '#4CAF50',
+                    'Overweight' => '#FF9800',
+                    'Obese' => '#F44336',
+                    'Severely Wasted' => '#D32F2F',
+                    'Wasted' => '#FF5722',
+                    'Severely Stunted' => '#673AB7',
+                    'Stunted' => '#9C27B0',
+                    'Tall' => '#00BCD4'
                 ];
                 
                 // Create datasets in the exact format from your design (curvy lines)
