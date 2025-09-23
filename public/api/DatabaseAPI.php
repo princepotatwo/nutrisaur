@@ -4251,39 +4251,42 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $ageLabels = $currentRanges['labels'];
                 $ranges = $currentRanges['ranges'];
                 
-                // Get actual user data for accurate age-based classification
-                $users = $db->getDetailedScreeningResponses('1d', $barangay);
+                // Step 1: Get reliable donut chart data (which works)
+                $donutData = $db->getAllWHOClassificationsBulk('1d', $barangay, $whoStandard);
                 
-                // Initialize WHO growth standards
+                if (!$donutData['success'] || empty($donutData['data'])) {
+                    echo json_encode([
+                        'success' => true,
+                        'data' => [
+                            'ageLabels' => $ageLabels,
+                            'datasets' => [],
+                            'totalUsers' => 0,
+                            'totalPopulation' => 0,
+                            'whoStandard' => $whoStandard
+                        ]
+                    ]);
+                    break;
+                }
+                
+                $standardKey = str_replace('-', '_', $whoStandard);
+                $classifications = $donutData['data'][$standardKey] ?? [];
+                
+                error_log("DEBUG: Using reliable donut data - " . json_encode($classifications));
+                
+                // Step 2: Get user ages for accurate placement
+                $users = $db->getDetailedScreeningResponses('1d', $barangay);
+                $userAges = [];
+                
+                // Initialize WHO growth standards for age calculation
                 require_once __DIR__ . '/../../who_growth_standards.php';
                 $who = new WHOGrowthStandards();
                 
-                // Initialize classification counts for each age range
-                $classificationCounts = [];
-                $totalUsers = 0;
-                $debugUserCount = 0;
-                
-                error_log("DEBUG: Processing " . count($users) . " users for $whoStandard");
-                
-                // Process each user to get their exact age and classification
+                // Collect ages of eligible users
                 foreach ($users as $user) {
+                    if (empty($user['birthday'])) continue;
+                    
                     try {
-                        $debugUserCount++;
-                        
-                        // Check if user has required fields
-                        if (empty($user['birthday']) || empty($user['weight']) || empty($user['height']) || empty($user['sex'])) {
-                            if ($debugUserCount <= 3) {
-                                error_log("DEBUG: User {$debugUserCount} missing required fields - Birthday: {$user['birthday']}, Weight: {$user['weight']}, Height: {$user['height']}, Sex: {$user['sex']}");
-                            }
-                            continue;
-                        }
-                        
-                        // Calculate age in months
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? date('Y-m-d'));
-                        
-                        if ($debugUserCount <= 5) {
-                            error_log("DEBUG: User {$debugUserCount} ({$user['name']}) - Birthday: {$user['birthday']}, Age: " . round($ageInMonths/12, 1) . " years ($ageInMonths months)");
-                        }
                         
                         // Check if user is eligible for this WHO standard
                         $isEligible = false;
@@ -4303,100 +4306,67 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 break;
                         }
                         
-                        if (!$isEligible) {
-                            if ($debugUserCount <= 5) {
-                                error_log("DEBUG: User {$debugUserCount} NOT ELIGIBLE for $whoStandard (Age: $ageInMonths months)");
-                            }
-                            continue;
+                        if ($isEligible) {
+                            $userAges[] = $ageInMonths;
                         }
-                        
-                        if ($debugUserCount <= 5) {
-                            error_log("DEBUG: User {$debugUserCount} IS ELIGIBLE for $whoStandard");
-                        }
-                        
-                        // Get classification based on WHO standard
-                        $classification = null;
-                        if ($whoStandard === 'bmi-adult') {
-                            // BMI adult uses simple BMI calculation
-                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                            
-                            if ($bmi < 18.5) $classification = 'Underweight';
-                            else if ($bmi < 25) $classification = 'Normal';
-                            else if ($bmi < 30) $classification = 'Overweight';
-                            else $classification = 'Obese';
-                        } else {
-                            // Other WHO standards use comprehensive assessment
-                            $assessment = $who->getComprehensiveAssessment(
-                                floatval($user['weight']),
-                                floatval($user['height']),
-                                $user['birthday'],
-                                $user['sex'],
-                                $user['screening_date'] ?? date('Y-m-d')
-                            );
-                            
-                            if (!$assessment['success']) {
-                                if ($debugUserCount <= 5) {
-                                    error_log("DEBUG: User {$debugUserCount} assessment FAILED: " . ($assessment['message'] ?? 'Unknown error'));
-                                }
-                                continue;
-                            }
-                            
-                            switch ($whoStandard) {
-                                case 'weight-for-age':
-                                    $classification = $assessment['weight_for_age'] ?? 'No Data';
-                                    break;
-                                case 'height-for-age':
-                                    $classification = $assessment['height_for_age'] ?? 'No Data';
-                                    break;
-                                case 'weight-for-height':
-                                    $classification = $assessment['weight_for_height'] ?? 'No Data';
-                                    break;
-                                case 'bmi-for-age':
-                                    $classification = $assessment['bmi_for_age'] ?? 'No Data';
-                                    break;
-                            }
-                        }
-                        
-                        if (!$classification || $classification === 'No Data') {
-                            if ($debugUserCount <= 5) {
-                                error_log("DEBUG: User {$debugUserCount} has no valid classification: $classification");
-                            }
-                            continue;
-                        }
-                        
-                        // Find which age range this user belongs to
-                        $rangeIndex = -1;
-                        for ($i = 0; $i < count($ranges); $i++) {
-                            if ($ageInMonths >= $ranges[$i][0] && $ageInMonths <= $ranges[$i][1]) {
-                                $rangeIndex = $i;
-                                break;
-                            }
-                        }
-                        
-                        if ($rangeIndex === -1) {
-                            if ($debugUserCount <= 5) {
-                                error_log("DEBUG: User {$debugUserCount} age $ageInMonths months doesn't fit any range");
-                            }
-                            continue;
-                        }
-                        
-                        // Initialize if not exists
-                        if (!isset($classificationCounts[$classification])) {
-                            $classificationCounts[$classification] = array_fill(0, count($ranges), 0);
-                        }
-                        
-                        $classificationCounts[$classification][$rangeIndex]++;
-                        $totalUsers++;
-                        
-                        // Debug: Log user placement
-                        if ($debugUserCount <= 5) {
-                            error_log("DEBUG: User {$debugUserCount} ({$user['name']}) - Age: " . round($ageInMonths/12, 1) . " years, Range $rangeIndex: {$ageLabels[$rangeIndex]}, Classification: $classification");
-                        }
-                        
                     } catch (Exception $e) {
-                        error_log("DEBUG: User {$debugUserCount} ERROR: " . $e->getMessage());
                         continue;
                     }
+                }
+                
+                error_log("DEBUG: Found " . count($userAges) . " eligible user ages");
+                
+                // Step 3: Distribute donut data based on actual age distribution
+                $classificationCounts = [];
+                $totalUsers = 0;
+                $numRanges = count($ranges);
+                
+                // Create age distribution weights based on actual user ages
+                $ageWeights = array_fill(0, $numRanges, 0);
+                foreach ($userAges as $ageInMonths) {
+                    for ($i = 0; $i < $numRanges; $i++) {
+                        if ($ageInMonths >= $ranges[$i][0] && $ageInMonths <= $ranges[$i][1]) {
+                            $ageWeights[$i]++;
+                            break;
+                        }
+                    }
+                }
+                
+                error_log("DEBUG: Age distribution weights: " . json_encode($ageWeights));
+                
+                // Distribute each classification based on actual age weights
+                foreach ($classifications as $classification => $count) {
+                    if ($count <= 0 || $classification === 'No Data') continue;
+                    
+                    $classificationCounts[$classification] = array_fill(0, $numRanges, 0);
+                    
+                    $totalWeight = array_sum($ageWeights);
+                    if ($totalWeight > 0) {
+                        $remaining = $count;
+                        
+                        // Distribute based on actual age distribution
+                        for ($i = 0; $i < $numRanges; $i++) {
+                            if ($ageWeights[$i] > 0) {
+                                $proportion = $ageWeights[$i] / $totalWeight;
+                                $allocation = round($count * $proportion);
+                                $allocation = min($allocation, $remaining);
+                                $classificationCounts[$classification][$i] = $allocation;
+                                $remaining -= $allocation;
+                            }
+                        }
+                        
+                        // Distribute any remaining users to ranges with existing users
+                        $rangeIndex = 0;
+                        while ($remaining > 0 && $rangeIndex < $numRanges) {
+                            if ($ageWeights[$rangeIndex] > 0) {
+                                $classificationCounts[$classification][$rangeIndex]++;
+                                $remaining--;
+                            }
+                            $rangeIndex++;
+                        }
+                    }
+                    
+                    $totalUsers += $count;
                 }
                 
                 error_log("DEBUG: Total users in chart: $totalUsers");
