@@ -4336,8 +4336,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 $results = $assessment['results'];
                                 $standardKey = str_replace('-', '_', $whoStandard);
                                 
-                                if (isset($results[$standardKey])) {
-                                    $classification = $results[$standardKey];
+                                if (isset($results[$standardKey]['classification'])) {
+                                    $classification = $results[$standardKey]['classification'];
                                 } else {
                                     $classification = 'No Data';
                                 }
