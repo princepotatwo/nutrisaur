@@ -4264,8 +4264,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $numRanges = count($ranges);
                 
                 // Process each user to get their exact age and classification
+                $processedCount = 0;
+                $skippedCount = 0;
+                $eligibleCount = 0;
+                
                 foreach ($users as $user) {
+                    $processedCount++;
+                    
                     if (empty($user['birthday']) || empty($user['weight']) || empty($user['height']) || empty($user['sex'])) {
+                        $skippedCount++;
+                        if ($processedCount <= 3) {
+                            error_log("DEBUG: User $processedCount skipped - missing fields - Birthday: {$user['birthday']}, Weight: {$user['weight']}, Height: {$user['height']}, Sex: {$user['sex']}");
+                        }
                         continue;
                     }
                     
@@ -4291,7 +4301,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 break;
                         }
                         
-                        if (!$isEligible) continue;
+                        if (!$isEligible) {
+                            if ($processedCount <= 5) {
+                                error_log("DEBUG: User $processedCount NOT ELIGIBLE for $whoStandard - Age: " . round($ageInMonths/12, 1) . " years ($ageInMonths months)");
+                            }
+                            continue;
+                        }
+                        
+                        $eligibleCount++;
                         
                         // Get classification based on WHO standard
                         $classification = null;
@@ -4360,7 +4377,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
-                error_log("DEBUG: Total users in chart: $totalUsers");
+                error_log("DEBUG: WHO Standard: $whoStandard");
+                error_log("DEBUG: Processed $processedCount users, skipped $skippedCount, eligible $eligibleCount, charted $totalUsers");
                 error_log("DEBUG: Classification counts: " . json_encode($classificationCounts));
                 
                 // Create datasets for Chart.js
