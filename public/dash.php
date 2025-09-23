@@ -3456,7 +3456,7 @@ header .user-info {
     position: relative;
     box-sizing: border-box;
     padding: 10px;
-    margin-top: -35px; /* Move container up more */
+    margin-top: -40px; /* Move container up a little more */
 }
 
 #ageClassificationChart {
