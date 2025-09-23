@@ -4243,7 +4243,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     ],
                     'bmi-adult' => [
                         'labels' => ['19-27y','28-36y','37-45y','46-54y','55-63y','64-72y','73-81y','82-90y','91-100y'],
-                        'ranges' => [[228,324],[336,432],[444,540],[552,648],[660,756],[768,864],[876,972],[984,1080],[1092,1200]]
+                        'ranges' => [[228,324],[325,432],[433,540],[541,648],[649,756],[757,864],[865,972],[973,1080],[1081,1200]]
                     ]
                 ];
                 
@@ -4308,6 +4308,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         if ($isEligible) {
                             $userAges[] = $ageInMonths;
+                            // Debug first few users
+                            if (count($userAges) <= 5) {
+                                error_log("DEBUG: User age " . count($userAges) . " - Birthday: {$user['birthday']}, Age: " . round($ageInMonths/12, 1) . " years ($ageInMonths months)");
+                            }
                         }
                     } catch (Exception $e) {
                         continue;
