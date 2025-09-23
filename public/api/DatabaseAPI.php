@@ -4283,7 +4283,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         // Calculate age in months - use null fallback like the working donut chart
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
                         
-                        // Check if user is eligible for this WHO standard
+                        // Check if user is eligible for this WHO standard - use same logic as donut chart
                         $isEligible = false;
                         switch ($whoStandard) {
                             case 'weight-for-age':
@@ -4294,7 +4294,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 60);
                                 break;
                             case 'bmi-for-age':
-                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 228);
+                                $isEligible = ($ageInMonths >= 24 && $ageInMonths <= 1200); // Same as donut chart
                                 break;
                             case 'bmi-adult':
                                 $isEligible = ($ageInMonths >= 228);
