@@ -3456,7 +3456,7 @@ header .user-info {
     position: relative;
     box-sizing: border-box;
     padding: 10px;
-    margin-top: -40px; /* Move container up a little more */
+    margin-top: -30px; /* Move container up */
 }
 
 #ageClassificationChart {
@@ -7186,7 +7186,7 @@ body {
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                         <div style="flex: 1;">
                 <h3>Age Classification Chart</h3>
-                <p class="chart-description">Nutritional classifications by age groups. Shows the actual distribution of nutritional classifications (Normal, Underweight, Obese, etc.) from the same data source as the donut chart. The age range automatically adjusts based on the selected WHO standard. Each line represents a different classification with exact counts matching the donut chart totals.</p>
+                <p class="chart-description">Nutritional classifications by age groups. Age range adjusts based on selected WHO standard.</p>
                 </div>
                         
                     </div>
