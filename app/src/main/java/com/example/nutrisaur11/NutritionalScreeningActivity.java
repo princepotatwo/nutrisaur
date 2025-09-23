@@ -733,50 +733,43 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
     
     private boolean validateWeight() {
         String weightText = weightInput.getText().toString().trim();
-            if (weightText.isEmpty()) {
-                showValidationError("Please enter your weight");
+        if (weightText.isEmpty()) {
+            showValidationError("Please enter your weight");
             resetWeightInputAppearance();
             return false;
+        }
+        
+        try {
+            double weight = Double.parseDouble(weightText);
+            
+            // Get age from birthday for comprehensive validation
+            String birthday = answers.get("question_3");
+            int age = 0;
+            if (birthday != null) {
+                age = calculateAgeFromBirthday(birthday);
             }
             
-            try {
-                double weight = Double.parseDouble(weightText);
-                if (weight <= 0 || weight > 1000) {
-                    showValidationError("Weight must be between 0.1 and 1000 kg");
+            // Use quick validation for real-time input checking
+            NutritionDataValidator.ValidationResult validationResult = 
+                NutritionDataValidator.quickValidateWeight(weight, age);
+            
+            if (!validationResult.isValid) {
+                showValidationError(validationResult.errorMessage);
                 setWeightInputError();
                 return false;
             }
             
-            // Additional age-based validation
-            String birthday = answers.get("question_3");
-            if (birthday != null) {
-                int age = calculateAgeFromBirthday(birthday);
-                boolean isWeightValidForAge = true;
-                
-                if (age < 2 && weight < 3) {
-                    isWeightValidForAge = false;
-                } else if (age >= 2 && age < 5 && weight < 8) {
-                    isWeightValidForAge = false;
-                } else if (age >= 5 && age < 10 && weight < 15) {
-                    isWeightValidForAge = false;
-                } else if (age >= 10 && age < 15 && weight < 25) {
-                    isWeightValidForAge = false;
-                } else if (age >= 15 && weight < 30) {
-                    isWeightValidForAge = false;
-                }
-                
-                if (!isWeightValidForAge) {
-                    showValidationError("Weight seems impossible for this age. Please check your input.");
-                    setWeightInputError();
-                    return false;
-                }
+            // Show warning if there is one
+            if (validationResult.warningMessage != null) {
+                showValidationError(validationResult.warningMessage);
             }
             
             // If we reach here, weight is valid
             resetWeightInputAppearance();
             return true;
-            } catch (NumberFormatException e) {
-                showValidationError("Please enter a valid weight number");
+            
+        } catch (NumberFormatException e) {
+            showValidationError("Please enter a valid weight number");
             setWeightInputError();
             return false;
         }
@@ -797,51 +790,44 @@ public class NutritionalScreeningActivity extends AppCompatActivity {
     }
         
     private boolean validateHeight() {
-            String heightText = heightInput.getText().toString().trim();
-            if (heightText.isEmpty()) {
-                showValidationError("Please enter your height");
+        String heightText = heightInput.getText().toString().trim();
+        if (heightText.isEmpty()) {
+            showValidationError("Please enter your height");
             resetHeightInputAppearance();
             return false;
+        }
+        
+        try {
+            double height = Double.parseDouble(heightText);
+            
+            // Get age from birthday for comprehensive validation
+            String birthday = answers.get("question_3");
+            int age = 0;
+            if (birthday != null) {
+                age = calculateAgeFromBirthday(birthday);
             }
             
-            try {
-                double height = Double.parseDouble(heightText);
-                if (height <= 0 || height > 300) {
-                showValidationError("Height must be between 1 and 300 cm");
+            // Use quick validation for real-time input checking
+            NutritionDataValidator.ValidationResult validationResult = 
+                NutritionDataValidator.quickValidateHeight(height, age);
+            
+            if (!validationResult.isValid) {
+                showValidationError(validationResult.errorMessage);
                 setHeightInputError();
                 return false;
             }
             
-            // Additional age-based validation
-            String birthday = answers.get("question_3");
-            if (birthday != null) {
-                int age = calculateAgeFromBirthday(birthday);
-                boolean isHeightValidForAge = true;
-                
-                if (age < 2 && height < 30) {
-                    isHeightValidForAge = false;
-                } else if (age >= 2 && age < 5 && height < 50) {
-                    isHeightValidForAge = false;
-                } else if (age >= 5 && age < 10 && height < 80) {
-                    isHeightValidForAge = false;
-                } else if (age >= 10 && age < 15 && height < 120) {
-                    isHeightValidForAge = false;
-                } else if (age >= 15 && height < 140) {
-                    isHeightValidForAge = false;
-                }
-                
-                if (!isHeightValidForAge) {
-                    showValidationError("Height seems impossible for this age. Please check your input.");
-                    setHeightInputError();
-                    return false;
-                }
+            // Show warning if there is one
+            if (validationResult.warningMessage != null) {
+                showValidationError(validationResult.warningMessage);
             }
             
             // If we reach here, height is valid
             resetHeightInputAppearance();
             return true;
-            } catch (NumberFormatException e) {
-                showValidationError("Please enter a valid height number");
+            
+        } catch (NumberFormatException e) {
+            showValidationError("Please enter a valid height number");
             setHeightInputError();
             return false;
         }

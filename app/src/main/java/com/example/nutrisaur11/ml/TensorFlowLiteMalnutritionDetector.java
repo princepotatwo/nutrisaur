@@ -3,44 +3,33 @@ package com.example.nutrisaur11.ml;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
-
 import org.tensorflow.lite.Interpreter;
-import org.tensorflow.lite.support.common.FileUtil;
-import org.tensorflow.lite.support.common.ops.NormalizeOp;
-import org.tensorflow.lite.support.image.ImageProcessor;
-import org.tensorflow.lite.support.image.TensorImage;
-import org.tensorflow.lite.support.image.ops.ResizeOp;
-
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 /**
- * TensorFlow Lite Malnutrition Detection
- * Uses CNN model for analyzing malnutrition signs in images
- * Classes: moderate_acute_malnutrition, normal, stunting
+ * TensorFlow Lite Malnutrition Detector
+ * Uses the trained .tflite model for malnutrition detection
  */
 public class TensorFlowLiteMalnutritionDetector {
     private static final String TAG = "TFLiteMalnutritionDetector";
+    private static final String MODEL_FILENAME = "malnutrition_model.tflite";
     
-    // Model configuration
-    private static final String MODEL_FILE = "malnutrition_model.tflite";
+    // Model input/output specifications
     private static final int INPUT_SIZE = 224;
     private static final int NUM_CLASSES = 3;
+    private static final float IMAGE_MEAN = 127.5f;
+    private static final float IMAGE_STD = 127.5f;
     
-    // Class names matching our model
-    private static final String[] CLASS_NAMES = {
-        "moderate_acute_malnutrition", // Index 0
-        "normal",                      // Index 1
-        "stunting"                     // Index 2
-    };
+    // Class indices
+    public static final int MODERATE_ACUTE_MALNUTRITION = 0; // Malnutrition
+    public static final int NORMAL = 1;                       // Healthy
+    public static final int STUNTING = 2;                     // Stunting
     
     private Interpreter tflite;
     private Context context;
@@ -52,57 +41,16 @@ public class TensorFlowLiteMalnutritionDetector {
     }
     
     /**
-     * Initialize TensorFlow Lite model
+     * Initialize the TensorFlow Lite model
      */
     private void initializeModel() {
-        Log.d(TAG, "🔧 Starting TensorFlow Lite model initialization...");
-        
         try {
-            // Step 1: Load model from assets
-            Log.d(TAG, "📂 Loading model from assets...");
-            MappedByteBuffer modelBuffer = loadModelFile();
-            Log.d(TAG, "✅ Model loaded from assets");
-            Log.d(TAG, "📊 Model size: " + modelBuffer.capacity() + " bytes");
-            
-            // Step 2: Create interpreter
-            Log.d(TAG, "🤖 Creating TensorFlow Lite interpreter...");
-            Interpreter.Options options = new Interpreter.Options();
-            options.setNumThreads(4); // Use 4 threads for better performance
-            tflite = new Interpreter(modelBuffer, options);
-            Log.d(TAG, "✅ TensorFlow Lite interpreter created");
-            
-            // Step 3: Get model info
-            Log.d(TAG, "📊 Model input details:");
-            Log.d(TAG, "   Shape: " + Arrays.toString(tflite.getInputTensor(0).shape()));
-            Log.d(TAG, "   Data type: " + tflite.getInputTensor(0).dataType());
-            
-            Log.d(TAG, "📊 Model output details:");
-            Log.d(TAG, "   Shape: " + Arrays.toString(tflite.getOutputTensor(0).shape()));
-            Log.d(TAG, "   Data type: " + tflite.getOutputTensor(0).dataType());
-            
-            // Step 4: Test model with dummy input
-            Log.d(TAG, "🧪 Testing model with dummy input...");
-            float[][][][] dummyInput = new float[1][INPUT_SIZE][INPUT_SIZE][3];
-            float[][] dummyOutput = new float[1][NUM_CLASSES];
-            
-            tflite.run(dummyInput, dummyOutput);
-            Log.d(TAG, "✅ Model test successful");
-            Log.d(TAG, "📊 Test output: " + Arrays.toString(dummyOutput[0]));
-            
+            tflite = new Interpreter(loadModelFile());
             isInitialized = true;
-            Log.d(TAG, "🎯 TensorFlow Lite model initialization COMPLETE");
-            
+            Log.d(TAG, "TensorFlow Lite malnutrition detection model loaded successfully");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Model initialization FAILED");
-            Log.e(TAG, "🔍 Error type: " + e.getClass().getSimpleName());
-            Log.e(TAG, "🔍 Error message: " + e.getMessage());
-            Log.e(TAG, "🔍 Stack trace:");
-            for (StackTraceElement element : e.getStackTrace()) {
-                Log.e(TAG, "   " + element.toString());
-            }
-            
+            Log.e(TAG, "Error loading TensorFlow Lite model: " + e.getMessage());
             isInitialized = false;
-            tflite = null;
         }
     }
     
@@ -110,126 +58,110 @@ public class TensorFlowLiteMalnutritionDetector {
      * Load model file from assets
      */
     private MappedByteBuffer loadModelFile() throws IOException {
-        // Copy model from assets to internal storage
-        File modelFile = new File(context.getFilesDir(), MODEL_FILE);
-        
-        if (!modelFile.exists() || modelFile.length() == 0) {
-            Log.d(TAG, "📂 Copying model from assets to internal storage...");
-            try (InputStream is = context.getAssets().open(MODEL_FILE)) {
-                try (FileOutputStream fos = new FileOutputStream(modelFile)) {
-                    byte[] buffer = new byte[8192];
-                    int bytesRead;
-                    while ((bytesRead = is.read(buffer)) != -1) {
-                        fos.write(buffer, 0, bytesRead);
-                    }
-                }
-            }
-            Log.d(TAG, "✅ Model copied successfully");
-        } else {
-            Log.d(TAG, "✅ Model already exists in internal storage");
-        }
-        
-        // Load model as MappedByteBuffer
-        try (FileInputStream fis = new FileInputStream(modelFile)) {
-            FileChannel fileChannel = fis.getChannel();
-            long startOffset = 0;
-            long declaredLength = fileChannel.size();
-            return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
-        }
+        FileInputStream inputStream = new FileInputStream(context.getAssets().openFd(MODEL_FILENAME).getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffset = context.getAssets().openFd(MODEL_FILENAME).getStartOffset();
+        long declaredLength = context.getAssets().openFd(MODEL_FILENAME).getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
     
     /**
      * Analyze image for malnutrition signs
+     * @param bitmap Input image
+     * @return Analysis result
      */
     public MalnutritionAnalysisResult analyzeImage(Bitmap bitmap) {
-        Log.d(TAG, "🔍 Starting TensorFlow Lite analysis...");
-        Log.d(TAG, "📊 Model initialized: " + isInitialized);
-        Log.d(TAG, "📊 Input bitmap: " + (bitmap != null ? bitmap.getWidth() + "x" + bitmap.getHeight() : "NULL"));
-        
         if (!isInitialized || tflite == null) {
-            Log.e(TAG, "❌ TensorFlow Lite model not available");
-            return new MalnutritionAnalysisResult(false, "TensorFlow Lite model not available. Please ensure the model is properly installed.", 0.0f, "error");
+            return new MalnutritionAnalysisResult(false, "Model not available", 0.0f, "normal");
         }
         
         try {
-            // Step 1: Preprocess image
-            Log.d(TAG, "🖼️ Step 1: Preprocessing image...");
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
-            Log.d(TAG, "📊 Resized bitmap: " + resizedBitmap.getWidth() + "x" + resizedBitmap.getHeight());
+            // Preprocess image
+            ByteBuffer inputBuffer = preprocessImage(bitmap);
             
-            // Convert bitmap to float array
-            float[][][][] inputArray = new float[1][INPUT_SIZE][INPUT_SIZE][3];
-            convertBitmapToFloatArray(resizedBitmap, inputArray[0]);
-            Log.d(TAG, "✅ Image preprocessing complete");
-            
-            // Step 2: Run inference
-            Log.d(TAG, "🤖 Step 2: Running TensorFlow Lite inference...");
+            // Prepare output array
             float[][] outputArray = new float[1][NUM_CLASSES];
-            tflite.run(inputArray, outputArray);
-            Log.d(TAG, "✅ TensorFlow Lite inference complete");
             
-            // Step 3: Process results
-            Log.d(TAG, "📊 Step 3: Processing results...");
+            // Run inference
+            tflite.run(inputBuffer, outputArray);
+            
+            // Get predictions
             float[] scores = outputArray[0];
-            Log.d(TAG, "📊 Raw scores: " + Arrays.toString(scores));
+            int predictedClass = getPredictedClass(scores);
+            float confidence = scores[predictedClass];
+            String className = getClassName(predictedClass);
             
-            // Find predicted class
-            int predictedClass = 0;
-            float maxScore = scores[0];
-            for (int i = 1; i < scores.length; i++) {
-                if (scores[i] > maxScore) {
-                    maxScore = scores[i];
-                    predictedClass = i;
-                }
-            }
-            
-            String className = CLASS_NAMES[predictedClass];
-            float confidence = maxScore;
-            
-            Log.d(TAG, "🎯 Predicted class: " + predictedClass + " (" + className + ")");
-            Log.d(TAG, "📊 Confidence: " + confidence + " (" + (confidence * 100) + "%)");
-            Log.d(TAG, "✅ TensorFlow Lite Analysis Complete: " + className + " (" + String.format("%.2f%%", confidence * 100) + " confidence)");
+            Log.d(TAG, String.format("Analysis: %s (%.2f%% confidence)", className, confidence * 100));
+            Log.d(TAG, "Raw scores: " + Arrays.toString(scores));
             
             return new MalnutritionAnalysisResult(true, getDescription(className, confidence), confidence, className);
             
         } catch (Exception e) {
-            Log.e(TAG, "❌ Error during TensorFlow Lite analysis");
-            Log.e(TAG, "🔍 Error type: " + e.getClass().getSimpleName());
-            Log.e(TAG, "🔍 Error message: " + e.getMessage());
-            Log.e(TAG, "🔍 Stack trace:");
-            for (StackTraceElement element : e.getStackTrace()) {
-                Log.e(TAG, "   " + element.toString());
-            }
-            return new MalnutritionAnalysisResult(false, "TensorFlow Lite analysis failed: " + e.getMessage(), 0.0f, "error");
+            Log.e(TAG, "Error during analysis: " + e.getMessage());
+            return new MalnutritionAnalysisResult(false, "Analysis failed: " + e.getMessage(), 0.0f, "error");
         }
     }
     
     /**
-     * Convert bitmap to float array for TensorFlow Lite
+     * Preprocess image for TensorFlow Lite model
      */
-    private void convertBitmapToFloatArray(Bitmap bitmap, float[][][] array) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+    private ByteBuffer preprocessImage(Bitmap bitmap) {
+        // Resize bitmap to model input size
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, INPUT_SIZE, INPUT_SIZE, true);
         
-        // Get pixel data
-        int[] pixels = new int[width * height];
-        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        // Create ByteBuffer for input
+        ByteBuffer inputBuffer = ByteBuffer.allocateDirect(4 * INPUT_SIZE * INPUT_SIZE * 3);
+        inputBuffer.order(ByteOrder.nativeOrder());
         
-        // Convert to float array (normalize to 0-1 range)
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixel = pixels[y * width + x];
-                
-                // Extract RGB values
-                int r = (pixel >> 16) & 0xFF;
-                int g = (pixel >> 8) & 0xFF;
-                int b = pixel & 0xFF;
-                
-                // Normalize to 0-1 range (assuming model expects this)
-                array[y][x][0] = r / 255.0f; // Red
-                array[y][x][1] = g / 255.0f; // Green
-                array[y][x][2] = b / 255.0f; // Blue
+        // Convert bitmap to ByteBuffer with normalization
+        int[] pixels = new int[INPUT_SIZE * INPUT_SIZE];
+        resizedBitmap.getPixels(pixels, 0, INPUT_SIZE, 0, 0, INPUT_SIZE, INPUT_SIZE);
+        
+        for (int pixel : pixels) {
+            // Extract RGB values and normalize to [-1, 1]
+            float r = ((pixel >> 16) & 0xFF) / 255.0f;
+            float g = ((pixel >> 8) & 0xFF) / 255.0f;
+            float b = (pixel & 0xFF) / 255.0f;
+            
+            // Normalize to [-1, 1] range
+            r = (r - 0.5f) / 0.5f;
+            g = (g - 0.5f) / 0.5f;
+            b = (b - 0.5f) / 0.5f;
+            
+            inputBuffer.putFloat(r);
+            inputBuffer.putFloat(g);
+            inputBuffer.putFloat(b);
+        }
+        
+        return inputBuffer;
+    }
+    
+    /**
+     * Get predicted class from scores
+     */
+    private int getPredictedClass(float[] scores) {
+        int maxIndex = 0;
+        for (int i = 1; i < scores.length; i++) {
+            if (scores[i] > scores[maxIndex]) {
+                maxIndex = i;
             }
+        }
+        return maxIndex;
+    }
+    
+    /**
+     * Get class name from index
+     */
+    private String getClassName(int classIndex) {
+        switch (classIndex) {
+            case MODERATE_ACUTE_MALNUTRITION:
+                return "moderate_acute_malnutrition";
+            case NORMAL:
+                return "normal";
+            case STUNTING:
+                return "stunting";
+            default:
+                return "unknown";
         }
     }
     
@@ -260,6 +192,46 @@ public class TensorFlowLiteMalnutritionDetector {
             return baseDescription + " (Medium confidence)";
         } else {
             return baseDescription + " (Low confidence - recommend professional assessment)";
+        }
+    }
+    
+    /**
+     * Get recommendations based on analysis
+     */
+    public String getRecommendations(String className, float confidence) {
+        if (confidence < 0.6) {
+            return "Low confidence result. Please consult with a healthcare professional for accurate assessment.";
+        }
+        
+        switch (className) {
+            case "normal":
+                return "✅ Continue maintaining healthy nutrition. Regular monitoring recommended.";
+            case "moderate_acute_malnutrition":
+                return "⚠️ Moderate malnutrition signs detected. Consider:\n• Nutrition counseling\n• Dietary assessment\n• Regular monitoring\n• Professional consultation";
+            case "stunting":
+                return "📏 Chronic malnutrition signs detected. Consider:\n• Long-term nutrition intervention\n• Growth monitoring\n• Address underlying causes\n• Professional medical consultation";
+            default:
+                return "Please consult with a healthcare professional for proper assessment.";
+        }
+    }
+    
+    /**
+     * Get WHO severity level
+     */
+    public String getWHOSeverityLevel(String className, float confidence) {
+        if (confidence < 0.6) {
+            return "UNCERTAIN";
+        }
+        
+        switch (className) {
+            case "normal":
+                return "NORMAL";
+            case "moderate_acute_malnutrition":
+                return "MODERATE";
+            case "stunting":
+                return "CHRONIC";
+            default:
+                return "UNKNOWN";
         }
     }
     

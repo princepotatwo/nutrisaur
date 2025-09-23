@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
-import com.example.nutrisaur11.ml.SimpleMalnutritionDetector.MalnutritionAnalysisResult;
+import com.example.nutrisaur11.ml.TensorFlowLiteMalnutritionDetector.MalnutritionAnalysisResult;
 
 public class AnalysisResultsActivity extends AppCompatActivity {
     private static final String TAG = "AnalysisResults";
@@ -87,7 +87,7 @@ public class AnalysisResultsActivity extends AppCompatActivity {
             float confidence = intent.getFloatExtra(EXTRA_CONFIDENCE, 0.0f);
             String recommendation = intent.getStringExtra(EXTRA_RECOMMENDATION);
             
-            // Create analysis result object with correct constructor
+            // Create analysis result object with TensorFlow Lite format
             analysisResult = new MalnutritionAnalysisResult(true, classification, confidence, classification);
             
             // Load captured image if available
@@ -116,11 +116,12 @@ public class AnalysisResultsActivity extends AppCompatActivity {
         }
         
         // Display classification result
-        String classification = analysisResult.description;
-        classificationResult.setText(classification);
+        String className = analysisResult.className;
+        String description = analysisResult.description;
+        classificationResult.setText(description);
         
         // Set appropriate color based on classification
-        int textColor = getClassificationColor(classification);
+        int textColor = getClassificationColor(className);
         classificationResult.setTextColor(textColor);
         
         // Display confidence score
@@ -133,14 +134,46 @@ public class AnalysisResultsActivity extends AppCompatActivity {
         int progressColor = getConfidenceColor(confidence);
         confidenceProgress.setProgressTintList(android.content.res.ColorStateList.valueOf(progressColor));
         
-        // Display recommendation - get from intent extras
-        String recommendation = getIntent().getStringExtra(EXTRA_RECOMMENDATION);
+        // Display recommendation based on classification
+        String recommendation = getRecommendation(className, confidence);
         recommendationText.setText(recommendation);
         
         // Update analysis status
         analysisStatus.setText("Analysis Complete");
         
         Log.d(TAG, "Results displayed successfully");
+    }
+    
+    private int getRiskLevelColor(String riskLevel) {
+        if (riskLevel == null) return getResources().getColor(R.color.text_primary);
+        
+        String lowerRiskLevel = riskLevel.toLowerCase();
+        if (lowerRiskLevel.contains("normal")) {
+            return getResources().getColor(R.color.success_green);
+        } else if (lowerRiskLevel.contains("low")) {
+            return getResources().getColor(R.color.warning_orange);
+        } else if (lowerRiskLevel.contains("moderate")) {
+            return getResources().getColor(R.color.warning_orange);
+        } else if (lowerRiskLevel.contains("high")) {
+            return getResources().getColor(R.color.error_red);
+        }
+        
+        return getResources().getColor(R.color.text_primary);
+    }
+    
+    private static int getConfidencePercent(String confidenceText) {
+        if (confidenceText == null) return 50;
+        
+        String lowerConfidence = confidenceText.toLowerCase();
+        if (lowerConfidence.contains("high")) {
+            return 85;
+        } else if (lowerConfidence.contains("medium")) {
+            return 65;
+        } else if (lowerConfidence.contains("low")) {
+            return 35;
+        }
+        
+        return 50; // Default
     }
     
     private int getClassificationColor(String classification) {
@@ -173,11 +206,9 @@ public class AnalysisResultsActivity extends AppCompatActivity {
      */
     public static Intent createIntent(Activity context, MalnutritionAnalysisResult result, Bitmap image) {
         Intent intent = new Intent(context, AnalysisResultsActivity.class);
-        intent.putExtra(EXTRA_CLASSIFICATION, result.description);
+        intent.putExtra(EXTRA_CLASSIFICATION, result.className);
         intent.putExtra(EXTRA_CONFIDENCE, result.confidence);
-        // Generate recommendation based on classification
-        String recommendation = getRecommendation(result.description, result.confidence);
-        intent.putExtra(EXTRA_RECOMMENDATION, recommendation);
+        intent.putExtra(EXTRA_RECOMMENDATION, result.description);
         if (image != null) {
             intent.putExtra(EXTRA_CAPTURED_IMAGE, image);
         }

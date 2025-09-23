@@ -44,6 +44,9 @@ public class FoodLoggingActivity extends BaseActivity {
     private List<FoodItem> recommendedFoods = new ArrayList<>(); // Cache for recommended foods
     private FoodItemAdapter foodAdapter;
     
+    // Tab state tracking
+    private String currentActiveTab = "recent"; // Track current active tab
+    
     // Services
     private FatSecretService fatSecretService;
     private FavoritesManager favoritesManager;
@@ -256,6 +259,9 @@ public class FoodLoggingActivity extends BaseActivity {
     }
     
     private void setActiveTab(String tab) {
+        // Update current active tab
+        currentActiveTab = tab;
+        
         // Reset all tabs
         if (recentTab != null) recentTab.setBackgroundResource(android.R.color.transparent);
         if (favoritesTab != null) favoritesTab.setBackgroundResource(android.R.color.transparent);
@@ -638,13 +644,6 @@ public class FoodLoggingActivity extends BaseActivity {
      * Get the currently active tab
      */
     private String getCurrentActiveTab() {
-        if (recentTab != null && recentTab.getBackground() != null) {
-            return "recent";
-        } else if (favoritesTab != null && favoritesTab.getBackground() != null) {
-            return "favorites";
-        } else if (addedFoodTab != null && addedFoodTab.getBackground() != null) {
-            return "added_food";
-        }
-        return "recent"; // Default to recent tab
+        return currentActiveTab;
     }
 }

@@ -28,8 +28,8 @@ import android.widget.TextView;
 import android.widget.Button;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import com.example.nutrisaur11.ml.SimpleMalnutritionDetector;
-import com.example.nutrisaur11.ml.SimpleMalnutritionDetector.MalnutritionAnalysisResult;
+import com.example.nutrisaur11.ml.TensorFlowLiteMalnutritionDetector;
+import com.example.nutrisaur11.ml.TensorFlowLiteMalnutritionDetector.MalnutritionAnalysisResult;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -75,8 +75,8 @@ public class FullScreenCameraActivity extends AppCompatActivity {
     private int currentCameraIndex = 0;
     private boolean isFrontCamera = false;
     
-    // CNN Malnutrition Detection
-    private SimpleMalnutritionDetector malnutritionDetector;
+    // TensorFlow Lite Malnutrition Detection
+    private TensorFlowLiteMalnutritionDetector malnutritionDetector;
     private boolean isAnalyzing = false;
 
     @Override
@@ -89,7 +89,7 @@ public class FullScreenCameraActivity extends AppCompatActivity {
         
         initializeViews();
         setupClickListeners();
-        initializeMalnutritionDetection();
+        initializeTensorFlowLiteDetector();
         checkCameraPermission();
     }
     
@@ -662,14 +662,14 @@ public class FullScreenCameraActivity extends AppCompatActivity {
     }
     
     /**
-     * Initialize CNN malnutrition detection
+     * Initialize TensorFlow Lite malnutrition detector
      */
-    private void initializeMalnutritionDetection() {
+    private void initializeTensorFlowLiteDetector() {
         try {
-            malnutritionDetector = new SimpleMalnutritionDetector(this);
-            Log.d(TAG, "CNN malnutrition detector initialized successfully");
+            malnutritionDetector = new TensorFlowLiteMalnutritionDetector(this);
+            Log.d(TAG, "TensorFlow Lite malnutrition detector initialized successfully");
         } catch (Exception e) {
-            Log.e(TAG, "Failed to initialize CNN detector: " + e.getMessage());
+            Log.e(TAG, "Failed to initialize TensorFlow Lite detector: " + e.getMessage());
             runOnUiThread(() -> {
                 aiStatusText.setText("AI analysis unavailable");
                 cnnCaptureButton.setEnabled(false);
@@ -679,7 +679,7 @@ public class FullScreenCameraActivity extends AppCompatActivity {
     }
     
     /**
-     * Capture current camera frame for CNN analysis
+     * Capture current camera frame for TensorFlow Lite analysis
      */
     private void captureImageForAnalysis() {
         if (isAnalyzing) {
@@ -687,7 +687,7 @@ public class FullScreenCameraActivity extends AppCompatActivity {
             return;
         }
         
-        if (malnutritionDetector == null) {
+        if (malnutritionDetector == null || !malnutritionDetector.isAvailable()) {
             Toast.makeText(this, "AI analysis not available", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -701,7 +701,7 @@ public class FullScreenCameraActivity extends AppCompatActivity {
             // Capture the current frame from TextureView
             Bitmap bitmap = textureView.getBitmap();
             if (bitmap != null) {
-                analyzeImageWithCNN(bitmap);
+                analyzeImageWithTensorFlowLite(bitmap);
             } else {
                 Toast.makeText(this, "Failed to capture image", Toast.LENGTH_SHORT).show();
             }
@@ -712,31 +712,28 @@ public class FullScreenCameraActivity extends AppCompatActivity {
     }
     
     /**
-     * Analyze captured image with CNN
+     * Analyze captured image with TensorFlow Lite
      */
-    private void analyzeImageWithCNN(Bitmap bitmap) {
+    private void analyzeImageWithTensorFlowLite(Bitmap bitmap) {
         isAnalyzing = true;
         
         // Update UI to show analysis in progress
         runOnUiThread(() -> {
-            aiStatusText.setText("🔍 Analyzing...");
+            aiStatusText.setText("🔍 Analyzing with AI...");
             cnnCaptureButton.setEnabled(false);
             holdStillText.setText("AI Analysis in Progress");
             instructionText.setText("Processing image for malnutrition detection...");
         });
         
-        // Run analysis in background thread
+        // Run analysis on background thread
         new Thread(() -> {
             try {
                 MalnutritionAnalysisResult result = malnutritionDetector.analyzeImage(bitmap);
-                
-                // Show results on main thread
                 runOnUiThread(() -> showAnalysisResults(result));
-                
             } catch (Exception e) {
-                Log.e(TAG, "CNN analysis error: " + e.getMessage());
+                Log.e(TAG, "TensorFlow Lite analysis error: " + e.getMessage());
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Analysis failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(FullScreenCameraActivity.this, "Analysis failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     resetAnalysisUI();
                 });
             }
@@ -744,7 +741,7 @@ public class FullScreenCameraActivity extends AppCompatActivity {
     }
     
     /**
-     * Show CNN analysis results
+     * Show TensorFlow Lite analysis results
      */
     private void showAnalysisResults(MalnutritionAnalysisResult result) {
         resetAnalysisUI();
@@ -777,8 +774,9 @@ public class FullScreenCameraActivity extends AppCompatActivity {
         closeCamera();
         closeBackgroundThread();
         
-        // Clean up CNN detector
+        // Clean up TensorFlow Lite malnutrition detector
         if (malnutritionDetector != null) {
+            malnutritionDetector.cleanup();
             malnutritionDetector = null;
         }
     }
