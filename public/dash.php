@@ -95,78 +95,12 @@ function getNutritionalStatistics($db, $barangay = null) {
         error_log("  - Total users found: " . count($users));
         
         $stats = [
-            'bmi_categories' => [
-                'Underweight' => 0,
-                'Normal' => 0,
-                'Overweight' => 0,
-                'Obese' => 0,
-                'No Data' => 0
-            ],
-            'weight_ranges' => [
-                'Under 10kg' => 0,
-                '10-20kg' => 0,
-                '20-40kg' => 0,
-                '40-60kg' => 0,
-                '60kg+' => 0,
-                'No Data' => 0
-            ],
-            'height_ranges' => [
-                'Under 100cm' => 0,
-                '100-120cm' => 0,
-                '120-150cm' => 0,
-                '150-170cm' => 0,
-                '170cm+' => 0,
-                'No Data' => 0
-            ],
             'municipality_distribution' => [],
             'barangay_distribution' => [],
             'total_users' => count($users)
         ];
         
             foreach ($users as $user) {
-    // BMI Categories
-    if (!empty($user['bmi_category'])) {
-                $stats['bmi_categories'][$user['bmi_category']]++;
-    } else {
-                $stats['bmi_categories']['No Data']++;
-    }
-    
-            
-            // Weight Ranges (using 'weight' column, not 'weight_kg')
-    if (!empty($user['weight'])) {
-        $weight = floatval($user['weight']);
-        if ($weight < 10) {
-                    $stats['weight_ranges']['Under 10kg']++;
-        } elseif ($weight < 20) {
-                    $stats['weight_ranges']['10-20kg']++;
-        } elseif ($weight < 40) {
-                    $stats['weight_ranges']['20-40kg']++;
-        } elseif ($weight < 60) {
-                    $stats['weight_ranges']['40-60kg']++;
-        } else {
-                    $stats['weight_ranges']['60kg+']++;
-        }
-    } else {
-                $stats['weight_ranges']['No Data']++;
-    }
-    
-            // Height Ranges (using 'height' column, not 'height_cm')
-    if (!empty($user['height'])) {
-        $height = floatval($user['height']);
-        if ($height < 100) {
-                    $stats['height_ranges']['Under 100cm']++;
-        } elseif ($height < 120) {
-                    $stats['height_ranges']['100-120cm']++;
-        } elseif ($height < 150) {
-                    $stats['height_ranges']['120-150cm']++;
-        } elseif ($height < 170) {
-                    $stats['height_ranges']['150-170cm']++;
-        } else {
-                    $stats['height_ranges']['170cm+']++;
-        }
-    } else {
-                $stats['height_ranges']['No Data']++;
-    }
     
     // Municipality Distribution
     if (!empty($user['municipality'])) {
@@ -7213,106 +7147,11 @@ body {
                 <!-- Nutritional Assessment Statistics Grid -->
                     <div class="response-grid">
                         <div class="response-item">
-                            <div class="response-question">BMI Categories</div>
-                            <div class="response-answers" id="bmi-categories-responses">
-                            <div class="column-headers">
-                                <span class="header-label">BMI Category</span>
-                                <span class="header-count">Count</span>
-                                <span class="header-percent">Percentage</span>
-                            </div>
-                            <div class="response-data-container">
-                                <?php if (!empty($nutritionalStatistics['statistics']['bmi_categories'])): ?>
-                                    <?php foreach ($nutritionalStatistics['statistics']['bmi_categories'] as $category => $count): ?>
-                                        <div class="response-answer-item">
-                                            <span class="answer-label"><?php echo htmlspecialchars($category); ?></span>
-                                            <span class="answer-count"><?php echo $count; ?></span>
-                                            <span class="answer-percentage"><?php 
-                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
-                                                if ($totalUsers > 0) {
-                                                    echo round(($count / $totalUsers) * 100, 1);
-                                                } else {
-                                                    echo '0';
-                                                }
-                                            ?>%</span>
-                                        </div>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <div class="no-data-message">No BMI data available for selected time frame</div>
-                                <?php endif; ?>
-                            </div>
-                            </div>
-                        </div>
-                        
-                        
-                        <div class="response-item">
                             <div class="response-question">Gender Distribution</div>
                             <div class="response-answers" id="gender-distribution-responses">
                                 <div class="no-data-message">Loading gender data...</div>
                             </div>
                         </div>
-                        
-                        <div class="response-item">
-                            <div class="response-question">Weight Ranges</div>
-                            <div class="response-answers" id="weight-ranges-responses">
-                            <div class="column-headers">
-                                <span class="header-label">Weight Range</span>
-                                <span class="header-count">Count</span>
-                                <span class="header-percent">Percentage</span>
-                            </div>
-                            <div class="response-data-container">
-                                <?php if (!empty($nutritionalStatistics['statistics']['weight_ranges'])): ?>
-                                    <?php foreach ($nutritionalStatistics['statistics']['weight_ranges'] as $range => $count): ?>
-                                        <div class="response-answer-item">
-                                            <span class="answer-label"><?php echo htmlspecialchars($range); ?></span>
-                                            <span class="answer-count"><?php echo $count; ?></span>
-                                            <span class="answer-percentage"><?php 
-                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
-                                                if ($totalUsers > 0) {
-                                                    echo round(($count / $totalUsers) * 100, 1);
-                                                } else {
-                                                    echo '0';
-                                                }
-                                            ?>%</span>
-                                        </div>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <div class="no-data-message">No weight data available for selected time frame</div>
-                                <?php endif; ?>
-                            </div>
-                            </div>
-                        </div>
-                        
-                        <div class="response-item">
-                            <div class="response-question">Height Ranges</div>
-                            <div class="response-answers" id="height-ranges-responses">
-                            <div class="column-headers">
-                                <span class="header-label">Height Range</span>
-                                <span class="header-count">Count</span>
-                                <span class="header-percent">Percentage</span>
-                            </div>
-                            <div class="response-data-container">
-                                <?php if (!empty($nutritionalStatistics['statistics']['height_ranges'])): ?>
-                                    <?php foreach ($nutritionalStatistics['statistics']['height_ranges'] as $range => $count): ?>
-                                        <div class="response-answer-item">
-                                            <span class="answer-label"><?php echo htmlspecialchars($range); ?></span>
-                                            <span class="answer-count"><?php echo $count; ?></span>
-                                            <span class="answer-percentage"><?php 
-                                                $totalUsers = $nutritionalStatistics['statistics']['total_users'] ?? 0;
-                                                if ($totalUsers > 0) {
-                                                    echo round(($count / $totalUsers) * 100, 1);
-                                                } else {
-                                                    echo '0';
-                                                }
-                                            ?>%</span>
-                                        </div>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <div class="no-data-message">No height data available for selected time frame</div>
-                                <?php endif; ?>
-                            </div>
-                            </div>
-                        </div>
-                        
                         
                         <div class="response-item">
                             <div class="response-question">Municipality Distribution</div>
@@ -10192,15 +10031,6 @@ body {
             const stats = statistics.statistics;
             const totalUsers = stats.total_users || 0;
             
-            // Update BMI Categories
-            updateStatisticDisplay('bmi-categories-responses', stats.bmi_categories, totalUsers);
-            
-            
-            // Update Weight Ranges
-            updateStatisticDisplay('weight-ranges-responses', stats.weight_ranges, totalUsers);
-            
-            // Update Height Ranges
-            updateStatisticDisplay('height-ranges-responses', stats.height_ranges, totalUsers);
             
             // Update Municipality Distribution
             updateStatisticDisplay('municipality-distribution-responses', stats.municipality_distribution, totalUsers);
