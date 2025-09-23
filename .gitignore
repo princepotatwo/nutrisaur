@@ -76,6 +76,19 @@ node_modules/
 *.cache
 fcm_token_cache.json
 
+# Training and ML files (too large for git)
+TRAINING_PACKAGE_FOR_HIGH_SPEC_PC/
+TRAINING_PACKAGE_FOR_HIGH_SPEC_PC copy/
+TRAINING_PACKAGE_FOR_HIGH_SPEC_PC.zip
+TRAINING_SETUP_GUIDE.md
+QUICK_TRANSFER_COMMANDS.md
+dashboard_optimization_summary.md
+collected_datasets/
+malnutrition_dataset/
+runs/
+ml/
+ml_env/
+
 # Keep web backend files for Railway deployment
 !sss/
 !public/
