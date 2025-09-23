@@ -3452,7 +3452,7 @@ header .user-info {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible; /* Allow tooltips to appear outside */
     position: relative;
     box-sizing: border-box;
     padding: 10px;
@@ -3466,6 +3466,26 @@ header .user-info {
     display: block !important;
     box-sizing: border-box !important;
     object-fit: contain !important;
+}
+
+/* Custom tooltip styles for floating modal */
+.chartjs-tooltip {
+    position: fixed !important;
+    z-index: 9999 !important;
+    pointer-events: none !important;
+    opacity: 0;
+    animation: tooltipFadeIn 0.2s ease-out forwards;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Specific styling for age classification chart card */
@@ -9273,21 +9293,103 @@ body {
                                 display: false
                             },
                             tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                callbacks: {
-                                    title: function(context) {
-                                        return `Age Group: ${context[0].label}`;
-                                    },
-                                    label: function(context) {
-                                        const label = context.dataset.label || '';
-                                        const value = context.parsed.y;
-                                        return `${label}: ${value} user${value !== 1 ? 's' : ''}`;
-                                    },
-                                    afterBody: function(tooltipItems) {
-                                        const total = tooltipItems.reduce((sum, item) => sum + item.parsed.y, 0);
-                                        return `Total: ${total} user${total !== 1 ? 's' : ''}`;
+                                enabled: false, // Disable default tooltip
+                                external: function(context) {
+                                    // Custom floating tooltip
+                                    const {chart, tooltip} = context;
+                                    
+                                    // Remove existing custom tooltip
+                                    let tooltipEl = chart.canvas.parentNode.querySelector('.chartjs-tooltip');
+                                    if (tooltipEl) {
+                                        tooltipEl.remove();
                                     }
+                                    
+                                    // Hide tooltip if no data
+                                    if (tooltip.opacity === 0) {
+                                        return;
+                                    }
+                                    
+                                    // Create custom tooltip element
+                                    tooltipEl = document.createElement('div');
+                                    tooltipEl.className = 'chartjs-tooltip';
+                                    tooltipEl.style.cssText = `
+                                        position: absolute;
+                                        background: rgba(0, 0, 0, 0.9);
+                                        color: white;
+                                        border-radius: 8px;
+                                        padding: 12px 16px;
+                                        font-size: 13px;
+                                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                                        border: 1px solid rgba(255, 255, 255, 0.1);
+                                        backdrop-filter: blur(10px);
+                                        z-index: 9999;
+                                        pointer-events: none;
+                                        max-width: 250px;
+                                        line-height: 1.4;
+                                    `;
+                                    
+                                    // Get tooltip data
+                                    const title = tooltip.title[0] || '';
+                                    const body = tooltip.body || [];
+                                    
+                                    // Build tooltip content
+                                    let tooltipContent = `<div style="font-weight: 600; margin-bottom: 8px; color: #fff;">${title}</div>`;
+                                    
+                                    body.forEach((item, index) => {
+                                        const color = item.color || '#fff';
+                                        const label = item.lines[0] || '';
+                                        tooltipContent += `
+                                            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                                                <div style="width: 12px; height: 12px; background: ${color}; border-radius: 2px; margin-right: 8px; flex-shrink: 0;"></div>
+                                                <span style="color: #fff;">${label}</span>
+                                            </div>
+                                        `;
+                                    });
+                                    
+                                    // Add total if multiple items
+                                    if (body.length > 1) {
+                                        const total = body.reduce((sum, item) => {
+                                            const match = item.lines[0].match(/(\d+)/);
+                                            return sum + (match ? parseInt(match[1]) : 0);
+                                        }, 0);
+                                        tooltipContent += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.2); font-weight: 600; color: #fff;">Total: ${total} user${total !== 1 ? 's' : ''}</div>`;
+                                    }
+                                    
+                                    tooltipEl.innerHTML = tooltipContent;
+                                    
+                                    // Position tooltip
+                                    const position = chart.canvas.getBoundingClientRect();
+                                    const left = position.left + tooltip.caretX;
+                                    const top = position.top + tooltip.caretY;
+                                    
+                                    // Adjust position to keep tooltip in viewport
+                                    const tooltipWidth = 250;
+                                    const tooltipHeight = 150;
+                                    const viewportWidth = window.innerWidth;
+                                    const viewportHeight = window.innerHeight;
+                                    
+                                    let finalLeft = left;
+                                    let finalTop = top - tooltipHeight - 10;
+                                    
+                                    // Adjust horizontal position
+                                    if (finalLeft + tooltipWidth > viewportWidth) {
+                                        finalLeft = viewportWidth - tooltipWidth - 10;
+                                    }
+                                    if (finalLeft < 10) {
+                                        finalLeft = 10;
+                                    }
+                                    
+                                    // Adjust vertical position
+                                    if (finalTop < 10) {
+                                        finalTop = top + 20;
+                                    }
+                                    
+                                    tooltipEl.style.left = finalLeft + 'px';
+                                    tooltipEl.style.top = finalTop + 'px';
+                                    
+                                    // Add to page
+                                    chart.canvas.parentNode.appendChild(tooltipEl);
                                 }
                             }
                         },
