@@ -94,4 +94,11 @@
     <color name="blue_primary">#3B82F6</color>
     <color name="divider_color">#E5E7EB</color>
     <color name="light_green">#D1FAE5</color>
+    
+    <!-- Analysis Results Page Colors -->
+    <color name="primary_blue">#2196F3</color>
+    <color name="success_green">#4CAF50</color>
+    <color name="warning_orange">#FF9800</color>
+    <color name="error_red">#F44336</color>
+    <color name="image_background">#F5F5F5</color>
 </resources>

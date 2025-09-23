@@ -1,7 +1,9 @@
 package com.example.nutrisaur11;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -24,6 +26,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Button;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import com.example.nutrisaur11.ml.SimpleMalnutritionDetector;
+import com.example.nutrisaur11.ml.SimpleMalnutritionDetector.MalnutritionAnalysisResult;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -44,6 +50,8 @@ public class FullScreenCameraActivity extends AppCompatActivity {
     private TextView holdStillText;
     private TextView instructionText;
     private ProgressBar progressBar;
+    private FloatingActionButton cnnCaptureButton;
+    private TextView aiStatusText;
     
     private CameraDevice cameraDevice;
     private CameraCaptureSession captureSession;
@@ -66,6 +74,10 @@ public class FullScreenCameraActivity extends AppCompatActivity {
     private String[] availableCameraIds;
     private int currentCameraIndex = 0;
     private boolean isFrontCamera = false;
+    
+    // CNN Malnutrition Detection
+    private SimpleMalnutritionDetector malnutritionDetector;
+    private boolean isAnalyzing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +89,7 @@ public class FullScreenCameraActivity extends AppCompatActivity {
         
         initializeViews();
         setupClickListeners();
+        initializeMalnutritionDetection();
         checkCameraPermission();
     }
     
@@ -102,6 +115,8 @@ public class FullScreenCameraActivity extends AppCompatActivity {
         holdStillText = findViewById(R.id.hold_still_text);
         instructionText = findViewById(R.id.instruction_text);
         progressBar = findViewById(R.id.progress_bar);
+        cnnCaptureButton = findViewById(R.id.cnn_capture_button);
+        aiStatusText = findViewById(R.id.ai_status_text);
         
         mainHandler = new Handler(Looper.getMainLooper());
         
@@ -117,6 +132,10 @@ public class FullScreenCameraActivity extends AppCompatActivity {
         
         cameraSwitchButton.setOnClickListener(v -> {
             switchCamera();
+        });
+        
+        cnnCaptureButton.setOnClickListener(v -> {
+            captureImageForAnalysis();
         });
     }
     
@@ -642,11 +661,126 @@ public class FullScreenCameraActivity extends AppCompatActivity {
         }
     }
     
+    /**
+     * Initialize CNN malnutrition detection
+     */
+    private void initializeMalnutritionDetection() {
+        try {
+            malnutritionDetector = new SimpleMalnutritionDetector(this);
+            Log.d(TAG, "CNN malnutrition detector initialized successfully");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to initialize CNN detector: " + e.getMessage());
+            runOnUiThread(() -> {
+                aiStatusText.setText("AI analysis unavailable");
+                cnnCaptureButton.setEnabled(false);
+                Toast.makeText(this, "AI analysis not available", Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+    
+    /**
+     * Capture current camera frame for CNN analysis
+     */
+    private void captureImageForAnalysis() {
+        if (isAnalyzing) {
+            Toast.makeText(this, "Analysis in progress...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        if (malnutritionDetector == null) {
+            Toast.makeText(this, "AI analysis not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        if (!textureView.isAvailable()) {
+            Toast.makeText(this, "Camera not ready", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        try {
+            // Capture the current frame from TextureView
+            Bitmap bitmap = textureView.getBitmap();
+            if (bitmap != null) {
+                analyzeImageWithCNN(bitmap);
+            } else {
+                Toast.makeText(this, "Failed to capture image", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error capturing image: " + e.getMessage());
+            Toast.makeText(this, "Error capturing image", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    /**
+     * Analyze captured image with CNN
+     */
+    private void analyzeImageWithCNN(Bitmap bitmap) {
+        isAnalyzing = true;
+        
+        // Update UI to show analysis in progress
+        runOnUiThread(() -> {
+            aiStatusText.setText("🔍 Analyzing...");
+            cnnCaptureButton.setEnabled(false);
+            holdStillText.setText("AI Analysis in Progress");
+            instructionText.setText("Processing image for malnutrition detection...");
+        });
+        
+        // Run analysis in background thread
+        new Thread(() -> {
+            try {
+                MalnutritionAnalysisResult result = malnutritionDetector.analyzeImage(bitmap);
+                
+                // Show results on main thread
+                runOnUiThread(() -> showAnalysisResults(result));
+                
+            } catch (Exception e) {
+                Log.e(TAG, "CNN analysis error: " + e.getMessage());
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Analysis failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    resetAnalysisUI();
+                });
+            }
+        }).start();
+    }
+    
+    /**
+     * Show CNN analysis results
+     */
+    private void showAnalysisResults(MalnutritionAnalysisResult result) {
+        resetAnalysisUI();
+        
+        // Navigate to dedicated results page
+        Intent intent = AnalysisResultsActivity.createIntent(this, result, null);
+        startActivity(intent);
+        
+        // Finish this activity to prevent back navigation to camera
+        finish();
+    }
+    
+    /**
+     * Reset analysis UI to ready state
+     */
+    private void resetAnalysisUI() {
+        isAnalyzing = false;
+        aiStatusText.setText("Tap to analyze with AI");
+        cnnCaptureButton.setEnabled(true);
+        
+        if (holdStillText.getText().toString().contains("Analysis Complete")) {
+            holdStillText.setText("Hold still");
+            instructionText.setText("Position your face in the frame for analysis");
+        }
+    }
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
         closeCamera();
         closeBackgroundThread();
+        
+        // Clean up CNN detector
+        if (malnutritionDetector != null) {
+            malnutritionDetector = null;
+        }
     }
     
     @Override

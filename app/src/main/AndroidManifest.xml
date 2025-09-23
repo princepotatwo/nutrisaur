@@ -151,6 +151,14 @@
             android:theme="@style/Theme.Nutrisaur11"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop" />
+
+        <activity
+            android:name=".AnalysisResultsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Nutrisaur11"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:parentActivityName=".FavoritesActivity" />
             
     </application>
 

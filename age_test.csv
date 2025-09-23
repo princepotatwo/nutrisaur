@@ -1,4 +1,0 @@
-"name","email","password","municipality","barangay","sex","birthday","is_pregnant","weight","height","screening_date"
-"Test_Male_0m","test0@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2024-01-15","No","2.5","50.0","2024-01-15 10:30:00"
-"Test_Male_1m","test1@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2023-12-15","No","3.5","52.0","2024-01-15 10:30:00"
-"Test_Male_2m","test2@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2023-11-15","No","4.5","54.0","2024-01-15 10:30:00"

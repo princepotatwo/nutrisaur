@@ -70,4 +70,12 @@ dependencies {
 
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
+    
+    // TensorFlow Lite for CNN malnutrition detection
+    implementation("org.tensorflow:tensorflow-lite:2.14.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+    
+    // PyTorch Mobile for CNN malnutrition detection (backup)
+    implementation("org.pytorch:pytorch_android:1.12.2")
+    implementation("org.pytorch:pytorch_android_torchvision:1.12.2")
 }
