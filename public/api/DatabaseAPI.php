@@ -4310,8 +4310,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         
                         $eligibleCount++;
                         
-                        // Get classification based on WHO standard
+                        // Get classification based on WHO standard - use simple direct calculation like BMI-adult
                         $classification = null;
+                        
                         if ($whoStandard === 'bmi-adult') {
                             // BMI adult uses simple BMI calculation
                             $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
@@ -4321,7 +4322,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';
                         } else {
-                            // Other WHO standards use comprehensive assessment
+                            // For other WHO standards, use the same direct calculation approach
                             $assessment = $who->getComprehensiveAssessment(
                                 floatval($user['weight']),
                                 floatval($user['height']),
@@ -4330,10 +4331,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 $user['screening_date'] ?? date('Y-m-d')
                             );
                             
+                            // If assessment fails, skip this user but don't stop processing
                             if (!$assessment['success']) {
-                                if ($processedCount <= 3) {
-                                    error_log("DEBUG: User $processedCount assessment FAILED for $whoStandard: " . ($assessment['message'] ?? 'Unknown error'));
-                                }
                                 continue;
                             }
                             
