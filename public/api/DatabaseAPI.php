@@ -4330,7 +4330,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 $user['screening_date'] ?? date('Y-m-d')
                             );
                             
-                            if (!$assessment['success']) continue;
+                            if (!$assessment['success']) {
+                                if ($processedCount <= 3) {
+                                    error_log("DEBUG: User $processedCount assessment FAILED for $whoStandard: " . ($assessment['message'] ?? 'Unknown error'));
+                                }
+                                continue;
+                            }
                             
                             switch ($whoStandard) {
                                 case 'weight-for-age':
