@@ -4263,10 +4263,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $totalUsers = 0;
                 
                 // Process each user to get their exact age and classification
+                $debugCount = 0;
+                $eligibleCount = 0;
                 foreach ($users as $user) {
                     try {
                         // Calculate age in months
                         $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                        
+                        // Debug first few users
+                        if ($debugCount < 3) {
+                            error_log("DEBUG: User $debugCount - Age: $ageInMonths months, Birthday: {$user['birthday']}, Screening: {$user['screening_date']}, Weight: {$user['weight']}, Height: {$user['height']}, Sex: {$user['sex']}");
+                            $debugCount++;
+                        }
                         
                         // Check if user is eligible for this WHO standard
                         $isEligible = false;
@@ -4286,7 +4294,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 break;
                         }
                         
-                        if (!$isEligible) continue;
+                        if (!$isEligible) {
+                            if ($debugCount < 3) {
+                                error_log("DEBUG: User $debugCount - NOT ELIGIBLE for $whoStandard (Age: $ageInMonths months)");
+                            }
+                            continue;
+                        }
+                        
+                        $eligibleCount++;
                         
                         // Get classification based on WHO standard
                         $classification = null;
@@ -4353,6 +4368,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                 }
                 
+                error_log("DEBUG: Total users processed: " . count($users));
+                error_log("DEBUG: Eligible users: $eligibleCount");
                 error_log("DEBUG: Total users in chart: $totalUsers");
                 error_log("DEBUG: Classification counts: " . json_encode($classificationCounts));
                 
