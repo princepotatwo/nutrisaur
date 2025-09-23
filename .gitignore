@@ -13,13 +13,19 @@ config_production.php
 # Firebase Admin SDK (contains private keys)
 **/nutrisaur-ebf29-firebase-adminsdk-*.json
 
-# Android build files
-app/build/
-app/release/
-app/debug/
+# Android app - exclude entire app directory
+app/
 .gradle/
 build/
+gradle/
+gradlew
+gradlew.bat
+gradle.properties
+settings.gradle.kts
+build.gradle.kts
 local.properties
+google-services.json
+proguard-rules.pro
 
 # IDE files
 .idea/
