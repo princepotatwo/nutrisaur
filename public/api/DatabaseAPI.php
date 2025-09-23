@@ -4330,19 +4330,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 error_log("DEBUG: Age classification summary - Total users: $totalUsers");
                 error_log("DEBUG: Classification counts: " . json_encode($classificationCounts));
                 
-                // Calculate the maximum value across all datasets for Y-axis scaling
-                $maxValue = 0;
-                foreach ($classificationCounts as $classification => $counts) {
-                    $maxValue = max($maxValue, max($counts));
-                }
-                
                 echo json_encode([
                     'success' => true,
                     'data' => [
                         'ageLabels' => $ageLabels,
                         'datasets' => $datasets,
                         'totalUsers' => $totalUsers,
-                        'maxPopulation' => $maxValue, // For Y-axis scaling - use peak value
+                        'totalPopulation' => $totalUsers, // For Y-axis scaling - use total users like donut chart
                         'whoStandard' => $whoStandard
                     ]
                 ]);
