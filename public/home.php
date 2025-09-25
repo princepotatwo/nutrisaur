@@ -577,8 +577,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
  * Exchange Google OAuth authorization code for access token
  */
 function exchangeGoogleCodeForToken($code) {
-    $clientId = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
-    $clientSecret = 'YOUR_GOOGLE_CLIENT_SECRET';
+    $clientId = '43537903747-ppt6bbcnfa60p0hchanl32equ9c3b0ao.apps.googleusercontent.com';
+    $clientSecret = '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';
     $redirectUri = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/home.php';
     
     $tokenUrl = 'https://oauth2.googleapis.com/token';

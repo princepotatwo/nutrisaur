@@ -3,7 +3,7 @@
 
 const GOOGLE_OAUTH_CONFIG = {
     // You'll need to get these from Google Cloud Console
-    clientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+    clientId: '43537903747-ppt6bbcnfa60p0hchanl32equ9c3b0ao.apps.googleusercontent.com',
     redirectUri: window.location.origin + '/home.php',
     scope: 'openid email profile',
     responseType: 'code',
