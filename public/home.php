@@ -208,8 +208,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                     $counter++;
                 }
                 
-                $stmt = $pdo->prepare("INSERT INTO users (username, email, google_id, google_name, google_picture, google_given_name, google_family_name, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-                $result = $stmt->execute([$username, $email, $googleId, $name, $picture, $givenName, $familyName, $emailVerified ? 1 : 0]);
+                // Generate a random password for Google OAuth users (they won't use it)
+                $randomPassword = password_hash(uniqid('google_', true), PASSWORD_DEFAULT);
+                
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, google_id, google_name, google_picture, google_given_name, google_family_name, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                $result = $stmt->execute([$username, $email, $randomPassword, $googleId, $name, $picture, $givenName, $familyName, $emailVerified ? 1 : 0]);
                 
                 if ($result) {
                     $userId = $pdo->lastInsertId();
@@ -324,8 +327,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                     $counter++;
                 }
                 
-                $stmt = $pdo->prepare("INSERT INTO users (username, email, google_id, google_name, google_picture, google_given_name, google_family_name, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-                $result = $stmt->execute([$username, $email, $googleId, $name, $picture, $givenName, $familyName, $emailVerified ? 1 : 0]);
+                // Generate a random password for Google OAuth users (they won't use it)
+                $randomPassword = password_hash(uniqid('google_', true), PASSWORD_DEFAULT);
+                
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, google_id, google_name, google_picture, google_given_name, google_family_name, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                $result = $stmt->execute([$username, $email, $randomPassword, $googleId, $name, $picture, $givenName, $familyName, $emailVerified ? 1 : 0]);
                 
                 if ($result) {
                     $userId = $pdo->lastInsertId();
