@@ -1261,7 +1261,7 @@ h1 {
             </ul>
         </div>
         <div class="navbar-footer">
-            <div>NutriSaur v1.0 • © 2023</div>
+            <div>NutriSaur v2.0 • © 2025</div>
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($username); ?></div>
         </div>
     </div>

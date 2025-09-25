@@ -6702,6 +6702,10 @@ body {
                 <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
             </ul>
         </div>
+        <div class="navbar-footer">
+            <div>NutriSaur v2.0 • © 2025</div>
+            <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
+        </div>
     </div>
     
     <div class="dashboard">

@@ -220,11 +220,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 }
                 
                 if (!empty($fcmTokens)) {
-                    // Simple notification data
+                    // Enhanced notification data with event_id
                 $notificationData = [
                     'title' => "🎯 Event: $title",
                     'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
-                    'target_user' => 'all'
+                    'target_user' => 'all',
+                    'event_id' => $eventId,
+                    'event_type' => $type,
+                    'event_location' => $location,
+                    'event_date' => date('M j, Y g:i A', strtotime($date_time))
                 ];
                 
                 // Call the notification API
@@ -840,7 +844,11 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
                 'body' => $notificationBody,
                 'target_user' => $userEmail,
                 'user_name' => $userEmail,
-                'alert_type' => 'event_notification'
+                'alert_type' => 'event_notification',
+                'event_id' => $eventId,
+                'event_type' => $type,
+                'event_location' => $location,
+                'event_date' => date('M j, Y g:i A', strtotime($date_time))
             ];
             
             // Send via the working notification API (same as dash.php)
@@ -1083,9 +1091,19 @@ function getFCMTokensByLocation($targetLocation = null) {
         error_log("getFCMTokensByLocation called with targetLocation: '$targetLocation' (type: " . gettype($targetLocation) . ", length: " . strlen($targetLocation ?? '') . ")");
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '') {
-            error_log("Processing 'all locations' case - getting all FCM tokens");
-            // Use DatabaseAPI method to get all active FCM tokens
-            $tokens = $db->getActiveFCMTokens();
+            error_log("Processing 'all locations' case - getting all ACTIVE FCM tokens only");
+            // Get only active users' FCM tokens
+            $stmt = $db->getPDO()->prepare("
+                SELECT fcm_token, email as user_email, barangay as user_barangay
+                FROM community_users
+                WHERE status = 'active'
+                AND fcm_token IS NOT NULL 
+                AND fcm_token != ''
+                AND barangay IS NOT NULL 
+                AND barangay != ''
+            ");
+            $stmt->execute();
+            $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             // Check if it's a municipality (starts with MUNICIPALITY_)
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
@@ -1095,7 +1113,8 @@ function getFCMTokensByLocation($targetLocation = null) {
                 $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, email as user_email, barangay as user_barangay
                     FROM community_users
-                    WHERE fcm_token IS NOT NULL 
+                    WHERE status = 'active'
+                    AND fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND barangay IS NOT NULL 
                     AND barangay != ''
@@ -1106,9 +1125,19 @@ function getFCMTokensByLocation($targetLocation = null) {
                 $stmt->execute();
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
             } else {
-                error_log("Processing barangay case: $targetLocation");
-                // Use DatabaseAPI method to get FCM tokens by barangay
-                $tokens = $db->getFCMTokensByBarangay($targetLocation);
+                error_log("Processing barangay case: $targetLocation - getting ACTIVE tokens only");
+                // Get FCM tokens by barangay for active users only
+                $stmt = $db->getPDO()->prepare("
+                    SELECT fcm_token, email as user_email, barangay as user_barangay
+                    FROM community_users
+                    WHERE status = 'active'
+                    AND fcm_token IS NOT NULL 
+                    AND fcm_token != ''
+                    AND barangay = :targetLocation
+                ");
+                $stmt->bindParam(':targetLocation', $targetLocation);
+                $stmt->execute();
+                $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
         
@@ -4876,7 +4905,7 @@ header:hover {
             </ul>
         </div>
         <div class="navbar-footer">
-            <div>NutriSaur v1.0 • © 2023</div>
+            <div>NutriSaur v2.0 • © 2025</div>
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($username); ?></div>
         </div>
     </div>
