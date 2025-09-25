@@ -3807,7 +3807,7 @@ header {
                                             
                                             // Display appropriate value based on standard type
                                             if ($standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                // For BMI standards, show BMI value instead of z-score
+                                                // For BMI standards, show BMI value in Z-score column
                                                 $zScoreDisplay = $bmi;
                                             } else {
                                                 // For other standards, show accurate z-score range
@@ -3845,7 +3845,18 @@ header {
                                             }
                                             
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
-                                            echo '<td class="text-center">' . htmlspecialchars($standardData['classification'] ?? 'N/A') . '</td>';
+                                            
+                                            // Ensure classification column shows proper classification name
+                                            $classificationDisplay = 'N/A';
+                                            if ($standardName === 'bmi-for-age') {
+                                                $classificationDisplay = $bmi_classification ?? 'N/A';
+                                            } elseif ($standardName === 'bmi-adult') {
+                                                $classificationDisplay = $adultBmiClassification['classification'] ?? 'N/A';
+                                            } else {
+                                                $classificationDisplay = $standardData['classification'] ?? 'N/A';
+                                            }
+                                            
+                                            echo '<td class="text-center">' . htmlspecialchars($classificationDisplay) . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                             echo '</tr>';
                                         }
