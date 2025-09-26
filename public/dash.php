@@ -10881,7 +10881,7 @@ body {
                             let totalUsers = data.data?.total_screened || data.data?.total_users || data.total_users || data.processed_users || 0;
                             console.log('📊 Final total users value:', totalUsers);
                             
-                            if (totalScreened && totalUsers > 0) {
+                            if (totalScreened && totalUsers >= 0) {
                                 console.log('📊 Setting total screened to:', totalUsers);
                                 totalScreened.textContent = totalUsers;
                             } else {
