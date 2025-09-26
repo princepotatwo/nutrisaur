@@ -666,10 +666,10 @@ function getGoogleUserInfo($accessToken) {
  * Send verification email using Gmail API
  */
 function sendVerificationEmail($email, $username, $verificationCode) {
-    // Gmail API credentials (use your existing OAuth credentials)
+    // Gmail API credentials for noreply.nutrisaur@gmail.com
     $clientId = '43537903747-ppt6bbcnfa60p0hchanl32equ9c3b0ao.apps.googleusercontent.com';
     $clientSecret = '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';
-    $refreshToken = 'YOUR_REFRESH_TOKEN_HERE'; // You need to get this once
+    $refreshToken = '1//04your_refresh_token_here'; // Replace with actual refresh token for noreply.nutrisaur@gmail.com
     
     // Get access token
     $accessToken = getGmailAccessToken($clientId, $clientSecret, $refreshToken);
@@ -777,7 +777,7 @@ function createGmailMessage($to, $username, $verificationCode) {
     
     // Create MIME message
     $boundary = uniqid(rand(), true);
-    $rawMessage = "From: NUTRISAUR <noreply@nutrisaur.app>\r\n";
+    $rawMessage = "From: NUTRISAUR <noreply.nutrisaur@gmail.com>\r\n";
     $rawMessage .= "To: $to\r\n";
     $rawMessage .= "Subject: $subject\r\n";
     $rawMessage .= "MIME-Version: 1.0\r\n";
