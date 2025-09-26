@@ -3725,6 +3725,10 @@ header {
                                     // Also check what columns actually exist in the table
                                     $tableInfo = $db->select('community_users', '*', 'LIMIT 1', []);
                                     error_log("DEBUG: Table structure check: " . json_encode($tableInfo));
+                                    
+                                    // Check specific height values from database
+                                    $heightData = $db->select('community_users', 'name, height, weight', '', []);
+                                    error_log("DEBUG: Height data from database: " . json_encode($heightData));
                                 }
                                 
                                 if (!empty($users)) {
