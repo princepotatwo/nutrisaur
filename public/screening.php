@@ -3867,11 +3867,12 @@ header {
                                                 $heightValue = $user['height'] ?? $user['height_cm'] ?? $user['HEIGHT'] ?? 'N/A';
                                                 
                                                 // Debug output to see what's in the user data
+                                                error_log("DEBUG: User " . ($user['name'] ?? 'unknown') . " - Height value: " . var_export($heightValue, true));
+                                                error_log("DEBUG: User " . ($user['name'] ?? 'unknown') . " - Weight: " . var_export($user['weight'], true));
+                                                error_log("DEBUG: User " . ($user['name'] ?? 'unknown') . " - BMI: " . var_export($bmi, true));
+                                                
                                                 if ($heightValue === 'N/A' || empty($heightValue)) {
                                                     error_log("DEBUG: Height data not found for user " . ($user['name'] ?? 'unknown') . ". Available keys: " . implode(', ', array_keys($user)));
-                                                    error_log("DEBUG: Height value: " . var_export($user['height'], true));
-                                                    error_log("DEBUG: Height_cm value: " . var_export($user['height_cm'], true));
-                                                    error_log("DEBUG: HEIGHT value: " . var_export($user['HEIGHT'], true));
                                                     
                                                     // Try to calculate height from BMI and weight if height is missing
                                                     if (!empty($user['weight']) && !empty($bmi) && $bmi !== 'N/A' && is_numeric($bmi) && is_numeric($user['weight'])) {
