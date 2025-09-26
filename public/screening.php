@@ -3849,15 +3849,16 @@ header {
                                             }
                                             
                                             if ($standardName === 'height-for-age' || $standardName === 'weight-for-height' || $standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                // Debug: Check what height data is available
-                                                $heightValue = $user['height'] ?? $user['height_cm'] ?? 'N/A';
+                                                // Get height value from database
+                                                $heightValue = $user['height'] ?? 'N/A';
                                                 // Debug output to see what's in the user data
-                                                if ($heightValue === 'N/A') {
+                                                if ($heightValue === 'N/A' || empty($heightValue)) {
                                                     error_log("DEBUG: Height data not found for user " . ($user['name'] ?? 'unknown') . ". Available keys: " . implode(', ', array_keys($user)));
+                                                    error_log("DEBUG: Height value: " . var_export($user['height'], true));
                                                 }
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($heightValue) . '</td>';
                                             } else {
-                                                $heightValue = $user['height'] ?? $user['height_cm'] ?? 'N/A';
+                                                $heightValue = $user['height'] ?? 'N/A';
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($heightValue) . '</td>';
                                             }
                                             
