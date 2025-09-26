@@ -3855,7 +3855,12 @@ header {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
                                             }
                                             
-                                            echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
+                                            // Show Z-Score column for non-BMI standards, hide for BMI standards
+                                            if ($standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
+                                                echo '<td class="text-center standard-value" style="display:none;">' . htmlspecialchars($zScoreDisplay) . '</td>';
+                                            } else {
+                                                echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
+                                            }
                                             
                                             // Ensure classification column shows proper classification name
                                             $classificationDisplay = 'N/A';
@@ -4973,8 +4978,10 @@ header {
                 // Update standard header based on selected standard
                 if (selectedStandard === 'bmi-for-age' || selectedStandard === 'bmi-adult') {
                     standardHeader.textContent = 'BMI';
+                    standardHeader.style.display = 'none'; // Hide Z-Score column for BMI standards
                 } else {
                     standardHeader.textContent = 'Z-SCORE';
+                    standardHeader.style.display = ''; // Show Z-Score column for other standards
                 }
                 
                 // Show/hide conditional columns based on selected standard
