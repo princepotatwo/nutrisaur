@@ -6753,6 +6753,150 @@ body {
 .dark-theme {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* ===== BARANGAY DROPDOWN FUNCTIONALITY CSS ===== */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--color-card);
+    min-width: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+.custom-select-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.select-header {
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    color: var(--color-text);
+}
+
+.select-header:hover {
+    border-color: var(--color-highlight);
+    background-color: var(--color-hover);
+}
+
+.dropdown-arrow {
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+    color: var(--color-text);
+}
+
+.dropdown-content.show + .select-header .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.option-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border);
+    transition: all 0.3s ease;
+    color: var(--color-text);
+}
+
+.option-item:hover {
+    background-color: var(--color-hover);
+    color: var(--color-highlight);
+}
+
+.option-item:last-child {
+    border-bottom: none;
+}
+
+.option-group {
+    margin-bottom: 10px;
+}
+
+.option-header {
+    padding: 8px 15px;
+    background-color: var(--color-highlight);
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.search-container {
+    padding: 10px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.search-container input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: var(--color-highlight);
+}
+
+.small-width {
+    max-width: 200px;
+}
+
+/* Dark theme dropdown styles */
+.dark-theme .dropdown-content {
+    background-color: var(--color-card);
+    border-color: var(--color-border);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .select-header {
+    background-color: var(--color-card);
+    border-color: var(--color-border);
+    color: var(--color-text);
+}
+
+.dark-theme .option-item {
+    color: var(--color-text);
+}
+
+/* Light theme dropdown styles */
+.light-theme .dropdown-content {
+    background-color: var(--color-card);
+    border-color: var(--color-border);
+    box-shadow: 0 8px 16px var(--color-shadow);
+}
+
+.light-theme .select-header {
+    background-color: var(--color-card);
+    border-color: var(--color-border);
+    color: var(--color-text);
+}
+
+.light-theme .option-item {
+    color: var(--color-text);
+}
 </style>
 <body class="light-theme">
 
@@ -10296,6 +10440,407 @@ body {
         function round(number, decimals) {
             return Math.round(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
         }
+
+        // ==============================================
+        // BARANGAY DROPDOWN FUNCTIONALITY - FIXED
+        // Based on screening.php pattern
+        // ==============================================
+
+        // Municipality and Barangay data (same as screening.php)
+        const municipalitiesData = {
+            'ABUCAY': ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Poblacion', 'Saguing', 'Salapungan', 'Tala'],
+            'BAGAC': ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibayo', 'Paysawan', 'Quinaoayanan', 'San Antonio', 'Saysain', 'Sibucao', 'Tabing-Ilog', 'Tipo', 'Tugatog', 'Wawa'],
+            'CITY OF BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Cupang Proper', 'Cupang West', 'Dangcol (Bernabe)', 'Ibayo', 'Malabia', 'Poblacion', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Jose', 'Sibacan', 'Camacho', 'Talisay', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo', 'Bagong Silang', 'Cupang North', 'Doña Francisca', 'Lote'],
+            'DINALUPIHAN': ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar', 'General Luna', 'Governor Generoso', 'Hacienda', 'Jose Abad Santos (Pob.)', 'Kataasan', 'Layac', 'Lourdes', 'Mabini', 'Maligaya', 'Naparing', 'Paco', 'Pag-asa', 'Pagalanggang', 'Panggalan', 'Pinulot', 'Poblacion', 'Rizal', 'Saguing', 'San Benito', 'San Isidro', 'San Ramon', 'Santo Cristo', 'Sapang Balas', 'Sumalo', 'Tipo', 'Tuklasan', 'Turac', 'Zamora'],
+            'HERMOSA': ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culong', 'Daungan (Pob.)', 'Judicial (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Palihan', 'Pandatung', 'Pulong Gubat', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo'],
+            'LIMAY': ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reforma', 'San Francisco de Asis', 'Townsite'],
+            'MARIVELES': ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Mabayo', 'Malaya', 'Maligaya', 'Mountain View', 'Poblacion', 'San Carlos', 'San Isidro', 'San Nicolas', 'San Pedro', 'Saysain', 'Sisiman', 'Tukuran'],
+            'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang', 'San Pedro', 'Sitio Liyang'],
+            'ORANI': ['Apolinario (Pob.)', 'Bagong Paraiso', 'Balut', 'Bayan (Pob.)', 'Calero (Pob.)', 'Calutit', 'Camachile', 'Del Pilar', 'Kaparangan', 'Mabatang', 'Maria Fe', 'Pagtakhan', 'Paking-Carbonero (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang', 'Poblacion', 'Rizal (Pob.)', 'Sagrada', 'San Jose', 'Sibul', 'Sili', 'Sulong', 'Tagumpay', 'Tala', 'Talimundoc', 'Tugatog', 'Wawa'],
+            'ORION': ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daan Bago', 'Daan Bilolo', 'Daan Pare', 'General Lim (Kaput)', 'Kaput', 'Lati', 'Lusung', 'Puting Buhangin', 'Sabatan', 'San Vicente', 'Santa Elena', 'Santo Domingo', 'Villa Angeles', 'Wakas'],
+            'PILAR': ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Bantan', 'Burgos', 'Del Rosario', 'Diwa', 'Landing', 'Liwa', 'Nueva Vida', 'Panghulo', 'Pantingan', 'Poblacion', 'Rizal', 'Sagrada', 'San Nicolas', 'San Pedro', 'Santo Niño', 'Wakas'],
+            'SAMAL': ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan', 'San Roque', 'Santa Lucia', 'Santo Niño', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
+        };
+
+        // Global variable to track current selected barangay
+        let currentSelectedBarangay = '';
+
+        // Fixed API URL construction function
+        function constructAPIURL(endpoint, params = {}) {
+            let url = endpoint;
+            const paramKeys = Object.keys(params);
+            
+            if (paramKeys.length > 0) {
+                // Use ? for first parameter, & for subsequent ones
+                url += '?';
+                const paramStrings = paramKeys.map(key => {
+                    return `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`;
+                });
+                url += paramStrings.join('&');
+            }
+            
+            console.log('🔧 Constructed URL:', url);
+            return url;
+        }
+
+        // Fixed fetchDataFromAPI function with proper URL construction
+        async function fetchDataFromAPI(endpoint, params = {}) {
+            try {
+                const url = constructAPIURL(endpoint, params);
+                console.log('🌐 Fetching from API:', url);
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    console.error('❌ API Response not OK:', response.status, response.statusText);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ API Response received:', data);
+                return data;
+                
+            } catch (error) {
+                console.error('❌ API Fetch Error:', error);
+                throw error;
+            }
+        }
+
+        // Dropdown toggle functions
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-content');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+                console.log('🔽 Barangay dropdown toggled');
+            }
+        }
+
+        function toggleMunicipalityDropdown() {
+            const dropdown = document.getElementById('municipality-dropdown-content');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+                console.log('🔽 Municipality dropdown toggled');
+            }
+        }
+
+        // Filter options function for search
+        function filterOptions() {
+            const input = document.getElementById('search-input');
+            const dropdown = document.getElementById('dropdown-content');
+            
+            if (!input || !dropdown) return;
+            
+            const filter = input.value.toLowerCase();
+            const options = dropdown.querySelectorAll('.option-item');
+            
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+            
+            console.log('🔍 Filtered options with:', filter);
+        }
+
+        // Select option function
+        function selectOption(value, text) {
+            const selectedSpan = document.getElementById('selected-option');
+            if (selectedSpan) {
+                selectedSpan.textContent = text;
+            }
+            
+            currentSelectedBarangay = value;
+            console.log('✅ Selected barangay:', value);
+            
+            // Close dropdown
+            const dropdown = document.getElementById('dropdown-content');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+            
+            // Update dashboard for selected barangay
+            updateDashboardForBarangay(value);
+        }
+
+        // Main function to update dashboard based on barangay selection
+        async function updateDashboardForBarangay(barangay) {
+            console.log('🔄 updateDashboardForBarangay called with barangay:', barangay);
+            
+            try {
+                // Update community metrics
+                await updateCommunityMetrics(barangay);
+                
+                // Update charts
+                await updateCharts(barangay);
+                
+                // Update geographic data
+                await updateGeographicChart(barangay);
+                
+                // Update barangay distribution
+                await updateBarangayDistribution(barangay);
+                
+                // Update gender distribution
+                await updateGenderDistribution(barangay);
+                
+                // Load screening responses
+                await loadScreeningResponses(barangay);
+                
+                console.log('✅ Dashboard updated successfully for barangay:', barangay);
+                
+            } catch (error) {
+                console.error('❌ Error updating dashboard:', error);
+            }
+        }
+
+        // Community metrics update function
+        async function updateCommunityMetrics(barangay) {
+            console.log('🔄 updateCommunityMetrics called with barangay:', barangay);
+            
+            try {
+                // Try multiple endpoints to get community metrics
+                const endpoints = [
+                    '/api/DatabaseAPI.php',
+                    '/api/dashboard_assessment_stats.php',
+                    '/api/community_metrics.php'
+                ];
+                
+                const params = {
+                    action: 'dashboard_assessment_stats',
+                    barangay: barangay || ''
+                };
+                
+                let data = null;
+                
+                for (const endpoint of endpoints) {
+                    try {
+                        data = await fetchDataFromAPI(endpoint, params);
+                        if (data && data.success) {
+                            break;
+                        }
+                    } catch (error) {
+                        console.warn(`⚠️ Endpoint ${endpoint} failed:`, error.message);
+                        continue;
+                    }
+                }
+                
+                console.log('📊 Community Metrics Data:', data);
+                
+                if (data && data.success) {
+                    updateCommunityMetricsDisplay(data);
+                } else {
+                    console.warn('⚠️ No valid community metrics data found');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error in updateCommunityMetrics:', error);
+            }
+        }
+
+        // Charts update function
+        async function updateCharts(barangay) {
+            console.log('🔄 updateCharts called with barangay:', barangay);
+            
+            try {
+                const params = {
+                    action: 'dashboard_assessment_stats',
+                    barangay: barangay || ''
+                };
+                
+                const data = await fetchDataFromAPI('/api/DatabaseAPI.php', params);
+                console.log('📈 Risk Distribution Data (RAW):', data);
+                
+                if (data && data.success) {
+                    updateChartsDisplay(data);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error in updateCharts:', error);
+            }
+        }
+
+        // Geographic chart update function
+        async function updateGeographicChart(barangay) {
+            console.log('🌍 updateGeographicChart called with barangay:', barangay);
+            
+            try {
+                const params = {
+                    action: 'geographic_data',
+                    barangay: barangay || ''
+                };
+                
+                const data = await fetchDataFromAPI('/api/DatabaseAPI.php', params);
+                console.log('🌍 Geographic Data:', data);
+                
+                if (data && data.success) {
+                    updateGeographicChartDisplay(data.data || []);
+                } else {
+                    console.log('🌍 No geographic data available');
+                    updateGeographicChartDisplay([]);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error in updateGeographicChart:', error);
+                updateGeographicChartDisplay([]);
+            }
+        }
+
+        // Barangay distribution update function
+        async function updateBarangayDistribution(barangay) {
+            console.log('🔄 Updating barangay distribution for:', barangay);
+            
+            try {
+                const params = { barangay: barangay || '' };
+                const url = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'get_barangay_distribution_bulk',
+                    barangay: barangay || ''
+                });
+                
+                console.log('🌐 Barangay API URL:', url);
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                console.log('📊 Barangay API Response:', data);
+                
+                if (data && data.success) {
+                    updateBarangayDistributionDisplay(data.data);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error in updateBarangayDistribution:', error);
+            }
+        }
+
+        // Gender distribution update function
+        async function updateGenderDistribution(barangay) {
+            console.log('🔄 Updating gender distribution for:', barangay);
+            
+            try {
+                const url = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'get_gender_distribution_bulk',
+                    barangay: barangay || ''
+                });
+                
+                console.log('🌐 Gender API URL:', url);
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                console.log('📊 Gender API Response:', data);
+                
+                if (data && data.success) {
+                    updateGenderDistributionDisplay(data.data);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error in updateGenderDistribution:', error);
+            }
+        }
+
+        // Load screening responses function
+        async function loadScreeningResponses(barangay) {
+            console.log('📋 loadScreeningResponses called with barangay:', barangay);
+            
+            try {
+                const params = {
+                    action: 'get_screening_responses',
+                    barangay: barangay || ''
+                };
+                
+                const data = await fetchDataFromAPI('/api/DatabaseAPI.php', params);
+                console.log('📋 Screening Responses Data:', data);
+                
+                if (data && data.success) {
+                    updateScreeningResponsesDisplay(data.data || []);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error in loadScreeningResponses:', error);
+            }
+        }
+
+        // Display update functions (placeholders - implement based on your UI structure)
+        function updateCommunityMetricsDisplay(data) {
+            console.log('📊 Updating community metrics display:', data);
+            // Implement based on your dashboard structure
+        }
+
+        function updateChartsDisplay(data) {
+            console.log('📈 Updating charts display:', data);
+            // Implement based on your dashboard structure
+        }
+
+        function updateGeographicChartDisplay(data) {
+            console.log('🌍 updateGeographicChartDisplay called with data:', data);
+            
+            const container = document.querySelector('#geographic-chart-container');
+            if (!container) {
+                console.log('❌ Geographic chart container not found!');
+                return;
+            }
+            
+            // Clear existing content
+            container.innerHTML = '';
+            
+            if (data && data.length > 0) {
+                // Display geographic data
+                data.forEach(item => {
+                    const element = document.createElement('div');
+                    element.className = 'geographic-item';
+                    element.innerHTML = `
+                        <span class="location">${item.barangay || 'Unknown'}</span>
+                        <span class="count">${item.count || 0}</span>
+                    `;
+                    container.appendChild(element);
+                });
+            } else {
+                container.innerHTML = '<div class="no-data">No geographic data available</div>';
+            }
+        }
+
+        function updateBarangayDistributionDisplay(data) {
+            console.log('📊 Updating barangay distribution display:', data);
+            // Implement based on your dashboard structure
+        }
+
+        function updateGenderDistributionDisplay(data) {
+            console.log('📊 Updating gender distribution display:', data);
+            // Implement based on your dashboard structure
+        }
+
+        function updateScreeningResponsesDisplay(data) {
+            console.log('📋 Updating screening responses display:', data);
+            // Implement based on your dashboard structure
+        }
+
+        // Initialize dropdown event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing barangay dropdown functionality...');
+            
+            // Add click listeners to option items
+            const optionItems = document.querySelectorAll('.option-item');
+            optionItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent;
+                    selectOption(value, text);
+                });
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const dropdown = document.getElementById('dropdown-content');
+                const selectHeader = document.querySelector('.select-header');
+                
+                if (dropdown && !dropdown.contains(event.target) && !selectHeader.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+            
+            console.log('✅ Barangay dropdown functionality initialized');
+        });
+
     </script>
 </body>
 </html>
