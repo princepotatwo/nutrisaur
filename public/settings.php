@@ -667,6 +667,288 @@ header {
     border-color: var(--color-highlight);
 }
 
+/* New Control Grid Layout */
+.control-grid {
+    background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.1) 100%);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(161, 180, 84, 0.3);
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 15px;
+}
+
+/* Row 1: Action Buttons and Search */
+.control-row-1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.action-section {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-add, .btn-secondary, .btn-delete-all {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-add {
+    background: linear-gradient(135deg, var(--color-highlight) 0%, rgba(161, 180, 84, 0.8) 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.3);
+}
+
+.btn-add:hover {
+    background: linear-gradient(135deg, rgba(161, 180, 84, 0.9) 0%, var(--color-highlight) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--color-accent1) 0%, rgba(161, 180, 84, 0.8) 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.3);
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, rgba(161, 180, 84, 0.9) 0%, var(--color-accent1) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.4);
+}
+
+.btn-delete-all {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+}
+
+.btn-delete-all:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+.btn-icon {
+    font-size: 16px;
+}
+
+.btn-text {
+    font-weight: 500;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 4px;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    padding: 8px 12px;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: var(--color-text-secondary);
+}
+
+.search-btn {
+    background: var(--color-highlight);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.search-btn:hover {
+    background: rgba(161, 180, 84, 0.8);
+    transform: scale(1.05);
+}
+
+/* Row 2: Filter Controls */
+.control-row-2 {
+    background: linear-gradient(135deg, rgba(161, 180, 84, 0.15) 0%, rgba(161, 180, 84, 0.05) 100%);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid rgba(161, 180, 84, 0.2);
+}
+
+.filter-section {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    align-items: end;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filter-item label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.filter-item select, .filter-item input {
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-card);
+    color: var(--color-text);
+    font-size: 13px;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.filter-item select:focus, .filter-item input:focus {
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+}
+
+/* Age input group styling */
+.age-input-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.age-input {
+    flex: 1;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.age-separator {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Light theme adjustments */
+.light-theme .control-grid {
+    background: linear-gradient(135deg, var(--color-card) 0%, rgba(102, 187, 106, 0.1) 100%);
+    border-color: rgba(102, 187, 106, 0.3);
+}
+
+.light-theme .control-row-2 {
+    background: linear-gradient(135deg, rgba(102, 187, 106, 0.15) 0%, rgba(102, 187, 106, 0.05) 100%);
+    border-color: rgba(102, 187, 106, 0.2);
+}
+
+.light-theme .filter-item label {
+    color: var(--color-text);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .filter-section {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .control-grid {
+        gap: 12px;
+    }
+
+    .control-row-1 {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .control-row-2 {
+        padding: 10px;
+    }
+
+    .filter-section {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .action-section {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-add, .btn-secondary, .btn-delete-all {
+        flex: 0 0 auto;
+        min-width: 120px;
+    }
+
+    .search-container {
+        min-width: 250px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .control-grid {
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .control-row-2 {
+        padding: 8px;
+    }
+
+    .filter-section {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .action-section {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn-add, .btn-secondary, .btn-delete-all {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .search-container {
+        min-width: 200px;
+    }
+}
+
 .deck-card.hidden {
     display: none !important;
 }
@@ -3074,40 +3356,98 @@ header {
 
         <div class="screening-container">
             <div class="user-management-container">
-        <div class="table-header">
-            <div class="header-controls">
-                <div class="search-row" style="justify-content: center; gap: 20px;">
-                    <div class="search-container" style="width: 300px;">
-                                <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input">
-                                <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
+                <!-- New Organized Grid Layout -->
+                <div class="control-grid">
+                    <!-- Row 1: Action Buttons and Search -->
+                    <div class="control-row-1">
+                        <div class="action-section">
+                            <button class="btn-add" onclick="downloadCSVTemplate()">
+                                <span class="btn-icon">📥</span>
+                                <span class="btn-text">Download Template</span>
+                            </button>
+                            <button class="btn-secondary" onclick="showCSVImportModal()">
+                                <span class="btn-icon">📁</span>
+                                <span class="btn-text">Import CSV</span>
+                            </button>
+                            <button class="btn-delete-all" onclick="deleteAllUsers()">
+                                <span class="btn-icon">🗑️</span>
+                                <span class="btn-text">Delete All Users</span>
+                            </button>
+                        </div>
+                        <div class="search-container">
+                            <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input">
+                            <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
+                        </div>
                     </div>
-                    <div class="location-filter-container" style="width: 300px;">
-                                <select id="sexFilter" onchange="filterBySex()" class="location-select">
-                                    <option value="">All Genders</option>
+
+                    <!-- Row 2: Filter Controls -->
+                    <div class="control-row-2">
+                        <div class="filter-section">
+                            <div class="filter-item">
+                                <label>MUNICIPALITY</label>
+                                <select id="municipalityFilter" onchange="filterByMunicipality()">
+                                    <option value="">All</option>
+                                    <option value="ABUCAY">ABUCAY</option>
+                                    <option value="BAGAC">BAGAC</option>
+                                    <option value="CITY OF BALANGA">CITY OF BALANGA</option>
+                                    <option value="DINALUPIHAN">DINALUPIHAN</option>
+                                    <option value="HERMOSA">HERMOSA</option>
+                                    <option value="LIMAY">LIMAY</option>
+                                    <option value="MARIVELES">MARIVELES</option>
+                                    <option value="MORONG">MORONG</option>
+                                    <option value="ORANI">ORANI</option>
+                                    <option value="ORION">ORION</option>
+                                    <option value="PILAR">PILAR</option>
+                                    <option value="SAMAL">SAMAL</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label>BARANGAY</label>
+                                <select id="barangayFilter" onchange="filterByBarangay()">
+                                    <option value="">All</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label>AGE RANGE</label>
+                                <div class="age-input-group">
+                                    <input type="number" id="minAge" placeholder="Min" class="age-input" onchange="filterByAgeRange()">
+                                    <span class="age-separator">-</span>
+                                    <input type="number" id="maxAge" placeholder="Max" class="age-input" onchange="filterByAgeRange()">
+                                </div>
+                            </div>
+
+                            <div class="filter-item">
+                                <label>GENDER</label>
+                                <select id="sexFilter" onchange="filterBySex()">
+                                    <option value="">All</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
-                            </select>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label>RISK LEVEL</label>
+                                <select id="riskFilter" onchange="filterByRisk()">
+                                    <option value="">All</option>
+                                    <option value="Low">Low Risk</option>
+                                    <option value="Medium">Medium Risk</option>
+                                    <option value="High">High Risk</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label>LOCATION</label>
+                                <select id="locationFilter" onchange="filterByLocation()">
+                                    <option value="">All</option>
+                                    <option value="Urban">Urban</option>
+                                    <option value="Rural">Rural</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-
-                        <!-- CSV Action Buttons -->
-                        <div class="action-buttons" style="margin-top: 15px; text-align: center;">
-                        <button class="btn btn-add" onclick="downloadCSVTemplate()">
-                            <span class="btn-icon">📥</span>
-                            <span class="btn-text">Download Template</span>
-                        </button>
-                        <button class="btn btn-add" onclick="showCSVImportModal()">
-                            <span class="btn-icon">📁</span>
-                            <span class="btn-text">Import CSV</span>
-                        </button>
-                        <button class="btn-delete-all" onclick="deleteAllUsers()" style="margin-left: 10px;">
-                            <span class="btn-icon">🗑️</span>
-                            <span class="btn-text">Delete All Users</span>
-                        </button>
-                        </div>
-
                 </div>
-            </div>
             
             <div id="no-users-message" style="display:none;" class="no-data-message">
                 No users found in the database. Add your first user!
@@ -4537,6 +4877,184 @@ header {
             
             return true;
         }
+
+        // New filter functions for the control grid
+        function filterByMunicipality() {
+            applyAllFilters();
+        }
+
+        function filterByBarangay() {
+            applyAllFilters();
+        }
+
+        function filterByAgeRange() {
+            applyAllFilters();
+        }
+
+        function filterByRisk() {
+            applyAllFilters();
+        }
+
+        function filterByLocation() {
+            applyAllFilters();
+        }
+
+        function applyAllFilters() {
+            const municipalityFilter = document.getElementById('municipalityFilter').value;
+            const barangayFilter = document.getElementById('barangayFilter').value;
+            const minAge = document.getElementById('minAge').value;
+            const maxAge = document.getElementById('maxAge').value;
+            const sexFilter = document.getElementById('sexFilter').value;
+            const riskFilter = document.getElementById('riskFilter').value;
+            const locationFilter = document.getElementById('locationFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
+            let visibleCount = 0;
+            
+            tableRows.forEach(row => {
+                let showRow = true;
+                
+                // Search filter
+                if (searchTerm) {
+                    const name = row.cells[0].textContent.toLowerCase();
+                    const email = row.cells[1].textContent.toLowerCase();
+                    const municipality = row.cells[2].textContent.toLowerCase();
+                    const barangay = row.cells[3].textContent.toLowerCase();
+                    const sex = row.cells[4].textContent.toLowerCase();
+                    
+                    if (!name.includes(searchTerm) && 
+                        !email.includes(searchTerm) && 
+                        !municipality.includes(searchTerm) && 
+                        !barangay.includes(searchTerm) && 
+                        !sex.includes(searchTerm)) {
+                        showRow = false;
+                    }
+                }
+                
+                // Municipality filter
+                if (municipalityFilter && row.cells[2].textContent !== municipalityFilter) {
+                    showRow = false;
+                }
+                
+                // Barangay filter
+                if (barangayFilter && row.cells[3].textContent !== barangayFilter) {
+                    showRow = false;
+                }
+                
+                // Age range filter
+                if (minAge || maxAge) {
+                    const ageText = row.cells[5].textContent;
+                    const age = parseInt(ageText);
+                    
+                    if (!isNaN(age)) {
+                        if (minAge && age < parseInt(minAge)) {
+                            showRow = false;
+                        }
+                        if (maxAge && age > parseInt(maxAge)) {
+                            showRow = false;
+                        }
+                    }
+                }
+                
+                // Sex filter
+                if (sexFilter && row.cells[4].textContent !== sexFilter) {
+                    showRow = false;
+                }
+                
+                // Risk filter (assuming risk is in a specific column - adjust as needed)
+                if (riskFilter) {
+                    // You may need to adjust this based on your table structure
+                    const riskText = row.cells[6] ? row.cells[6].textContent.toLowerCase() : '';
+                    if (riskText) {
+                        if (riskFilter === 'Low' && !riskText.includes('low')) showRow = false;
+                        if (riskFilter === 'Medium' && !riskText.includes('medium')) showRow = false;
+                        if (riskFilter === 'High' && !riskText.includes('high')) showRow = false;
+                    }
+                }
+                
+                // Location filter (assuming location is in a specific column - adjust as needed)
+                if (locationFilter) {
+                    // You may need to adjust this based on your table structure
+                    const locationText = row.cells[7] ? row.cells[7].textContent.toLowerCase() : '';
+                    if (locationText) {
+                        if (locationFilter === 'Urban' && !locationText.includes('urban')) showRow = false;
+                        if (locationFilter === 'Rural' && !locationText.includes('rural')) showRow = false;
+                    }
+                }
+                
+                if (showRow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Update visible count display
+            updateVisibleCount(visibleCount);
+        }
+
+        function updateVisibleCount(count) {
+            // You can add a count display element if needed
+            console.log(`Showing ${count} users`);
+        }
+
+        // Update barangay options when municipality changes
+        function updateBarangayOptions() {
+            const municipalityFilter = document.getElementById('municipalityFilter');
+            const barangayFilter = document.getElementById('barangayFilter');
+            
+            // Clear existing options
+            barangayFilter.innerHTML = '<option value="">All</option>';
+            
+            // Add barangay options based on selected municipality
+            // This is a simplified version - you may want to fetch from your database
+            const barangays = {
+                'ABUCAY': ['ABUCAY POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
+                'BAGAC': ['BAGAC POBLACION', 'BANAYBANAY', 'BINUANGAN', 'BINUKAWAN', 'BORLONG', 'BULACAN', 'BULIG', 'CALUMPANG', 'IBABA', 'IBIS', 'KAPARANGAN', 'KAYANAPAN', 'LAWAIN', 'PAG-ASA', 'PALIKPIK', 'PARANG', 'QUINABALAN', 'SAYSAYAN', 'SAN ANTONIO', 'SANTA ELENA', 'TABING-ILOG', 'TALISAY', 'TIGBIGA', 'TINIGTIGAN', 'TUMAO', 'WAWA'],
+                'CITY OF BALANGA': ['BALANGA POBLACION', 'BAGONG SILANG', 'BAGUMBAYAN', 'BALUT', 'BANTAYAN', 'BATANGAS', 'BINUANGAN', 'BULACAN', 'BULIG', 'BURGOS', 'CALUMPANG', 'CAPITANGAN', 'DONA FRANCISCA', 'DUHAT', 'IBABA', 'IBIS', 'KAPARANGAN', 'KAYANAPAN', 'LAWAIN', 'MABALACAT', 'MALABO', 'PAG-ASA', 'PALIKPIK', 'PARANG', 'POBLACION', 'QUINABALAN', 'SAYSAYAN', 'SAN ANTONIO', 'SANTA ELENA', 'TABING-ILOG', 'TALISAY', 'TIGBIGA', 'TINIGTIGAN', 'TUMAO', 'WAWA'],
+                'DINALUPIHAN': ['DINALUPIHAN POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
+                'HERMOSA': ['HERMOSA POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
+                'LIMAY': ['LIMAY POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
+                'MARIVELES': ['MARIVELES POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
+                'MORONG': ['MORONG POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
+                'ORANI': ['ORANI POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
+                'ORION': ['ORION POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
+                'PILAR': ['PILAR POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
+                'SAMAL': ['SAMAL POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA']
+            };
+            
+            const selectedMunicipality = municipalityFilter.value;
+            if (selectedMunicipality && barangays[selectedMunicipality]) {
+                barangays[selectedMunicipality].forEach(barangay => {
+                    const option = document.createElement('option');
+                    option.value = barangay;
+                    option.textContent = barangay;
+                    barangayFilter.appendChild(option);
+                });
+            }
+        }
+
+        // Initialize barangay options on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBarangayOptions();
+            
+            // Add event listener for municipality changes
+            const municipalityFilter = document.getElementById('municipalityFilter');
+            if (municipalityFilter) {
+                municipalityFilter.addEventListener('change', function() {
+                    updateBarangayOptions();
+                    applyAllFilters();
+                });
+            }
+            
+            // Add event listener for search input
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', applyAllFilters);
+            }
+        });
 
     </script>
 
