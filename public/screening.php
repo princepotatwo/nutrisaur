@@ -3711,25 +3711,6 @@ header {
                                 
                                 $users = $result['success'] ? $result['data'] : [];
                                 
-                                // Debug: Log the first user's data to see what columns are available
-                                if (!empty($users)) {
-                                    error_log("DEBUG: First user data keys: " . implode(', ', array_keys($users[0])));
-                                    error_log("DEBUG: First user height data: " . ($users[0]['height'] ?? 'NOT_FOUND') . " | height_cm: " . ($users[0]['height_cm'] ?? 'NOT_FOUND'));
-                                    error_log("DEBUG: First user weight data: " . ($users[0]['weight'] ?? 'NOT_FOUND'));
-                                    error_log("DEBUG: First user name: " . ($users[0]['name'] ?? 'NOT_FOUND'));
-                                    
-                                    // Check if height column exists in database
-                                    $heightCheck = $db->select('community_users', 'height', 'email = ?', [$users[0]['email'] ?? '']);
-                                    error_log("DEBUG: Height column check result: " . json_encode($heightCheck));
-                                    
-                                    // Also check what columns actually exist in the table
-                                    $tableInfo = $db->select('community_users', '*', 'LIMIT 1', []);
-                                    error_log("DEBUG: Table structure check: " . json_encode($tableInfo));
-                                    
-                                    // Check specific height values from database
-                                    $heightData = $db->select('community_users', 'name, height, weight', '', []);
-                                    error_log("DEBUG: Height data from database: " . json_encode($heightData));
-                                }
                                 
                                 if (!empty($users)) {
                                     foreach ($users as $user) {
@@ -3863,27 +3844,19 @@ header {
                                             }
                                             
                                             if ($standardName === 'height-for-age' || $standardName === 'weight-for-height' || $standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                // Get height value from database - try multiple possible column names
-                                                $heightValue = $user['height'] ?? $user['height_cm'] ?? $user['HEIGHT'] ?? 'N/A';
+                                                // Get height value from database
+                                                $heightValue = $user['height'] ?? 'N/A';
                                                 
-                                                // Debug output to see what's in the user data
-                                                error_log("DEBUG: User " . ($user['name'] ?? 'unknown') . " - Height value: " . var_export($heightValue, true));
-                                                error_log("DEBUG: User " . ($user['name'] ?? 'unknown') . " - Weight: " . var_export($user['weight'], true));
-                                                error_log("DEBUG: User " . ($user['name'] ?? 'unknown') . " - BMI: " . var_export($bmi, true));
-                                                
+                                                // If height is missing, calculate from BMI and weight
                                                 if ($heightValue === 'N/A' || empty($heightValue)) {
-                                                    error_log("DEBUG: Height data not found for user " . ($user['name'] ?? 'unknown') . ". Available keys: " . implode(', ', array_keys($user)));
-                                                    
-                                                    // Try to calculate height from BMI and weight if height is missing
                                                     if (!empty($user['weight']) && !empty($bmi) && $bmi !== 'N/A' && is_numeric($bmi) && is_numeric($user['weight'])) {
                                                         $calculatedHeight = sqrt($user['weight'] / $bmi) * 100;
                                                         $heightValue = round($calculatedHeight, 1);
-                                                        error_log("DEBUG: Calculated height from BMI: " . $heightValue);
                                                     }
                                                 }
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($heightValue) . '</td>';
                                             } else {
-                                                $heightValue = $user['height'] ?? $user['height_cm'] ?? $user['HEIGHT'] ?? 'N/A';
+                                                $heightValue = $user['height'] ?? 'N/A';
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($heightValue) . '</td>';
                                             }
                                             
