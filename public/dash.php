@@ -7995,38 +7995,55 @@ body {
                         const totalUsersValue = data.data.total_screened || 0;
                         const recentRegValue = data.data.total_screened || 0;
                         
-                        // Only update if data has changed
-                        if (dashboardState.totalScreened !== totalUsersValue) {
-                            console.log('Setting totalScreened.textContent to:', totalUsersValue);
-                            totalScreened.textContent = totalUsersValue;
-                            dashboardState.totalScreened = totalUsersValue;
-                        }
+                        console.log('📊 Total screened element:', totalScreened);
+                        console.log('📊 Total screened from API (data.data.total_screened):', data.data.total_screened);
+                        console.log('📊 Total users from API (data.data.total_users):', data.data.total_users);
+                        console.log('📊 Total users from API (data.total_users):', data.total_users);
+                        console.log('📊 Total users from API (data.processed_users):', data.processed_users);
+                        console.log('📊 Final total users value:', totalUsersValue);
                         
-                        if (dashboardState.recentRegistrations !== recentRegValue) {
-                            console.log('Setting screenedChange.textContent to:', recentRegValue);
-                            screenedChange.textContent = recentRegValue;
-                            dashboardState.recentRegistrations = recentRegValue;
-                        }
+                        // Force update the total screened card
+                        console.log('📊 Setting total screened to:', totalUsersValue);
+                        totalScreened.textContent = totalUsersValue;
+                        dashboardState.totalScreened = totalUsersValue;
+                        
+                        console.log('📊 Setting screened change to:', recentRegValue);
+                        screenedChange.textContent = recentRegValue;
+                        dashboardState.recentRegistrations = recentRegValue;
                     } else {
                         console.log('❌ HTML elements not found for Total Screened');
                     }
 
-                    // Update High Risk Cases (will be updated by risk_distribution API call)
+                    // Update High Risk Cases directly from community metrics data
                     const highRisk = document.getElementById('community-high-risk');
                     const riskChange = document.getElementById('community-risk-change');
                     if (highRisk && riskChange) {
-                        // Don't reset to 0 - keep existing values until risk_distribution data loads
-                        console.log('High Risk and Risk Change elements found, keeping existing values');
+                        const highRiskValue = data.data.high_risk_cases || 0;
+                        console.log('📊 Setting high risk to:', highRiskValue);
+                        highRisk.textContent = highRiskValue;
+                        dashboardState.highRisk = highRiskValue;
+                        
+                        console.log('📊 Setting risk change to:', highRiskValue);
+                        riskChange.textContent = highRiskValue;
+                        dashboardState.moderateRisk = highRiskValue;
                     } else {
                         console.log('❌ HTML elements not found for High Risk Cases');
                     }
 
-                    // Update SAM Cases (will be updated by risk_distribution API call)
+                    // Update SAM Cases directly from community metrics data
                     const samCases = document.getElementById('community-sam-cases');
                     const samChange = document.getElementById('community-sam-change');
                     if (samCases && samChange) {
-                        // Don't reset to 0 - keep existing values until risk_distribution data loads
-                        console.log('SAM Cases and SAM Change elements found, keeping existing values');
+                        const samCasesValue = data.data.sam_cases || 0;
+                        const criticalMuacValue = data.data.critical_muac || 0;
+                        
+                        console.log('📊 Setting SAM cases to:', samCasesValue);
+                        samCases.textContent = samCasesValue;
+                        dashboardState.samCases = samCasesValue;
+                        
+                        console.log('📊 Setting critical MUAC to:', criticalMuacValue);
+                        samChange.textContent = criticalMuacValue;
+                        dashboardState.samChange = criticalMuacValue;
                     } else {
                         console.log('❌ HTML elements not found for SAM Cases');
                     }
