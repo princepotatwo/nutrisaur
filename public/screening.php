@@ -4037,6 +4037,9 @@ header {
             const ageToMonths = document.getElementById('ageToMonths').value;
             const sex = document.getElementById('sexFilter').value;
             const standard = document.getElementById('standardFilter').value;
+            const classification = document.getElementById('classificationFilter').value;
+            const risk = document.getElementById('riskFilter') ? document.getElementById('riskFilter').value : '';
+            const location = document.getElementById('locationFilter') ? document.getElementById('locationFilter').value : '';
             
             console.log('Applying filters:', { municipality, barangay, ageFromYears, ageFromMonths, ageToYears, ageToMonths, sex, standard });
             
@@ -4168,6 +4171,60 @@ header {
                                 showRow = false;
                             }
                         }
+                    }
+                }
+                
+                // Classification filter
+                if (classification && showRow) {
+                    const rowStandard = row.dataset.standard;
+                    const ageMonths = parseInt(row.dataset.ageMonths);
+                    
+                    // Get the classification from the appropriate column based on the standard
+                    let rowClassification = '';
+                    if (rowStandard === 'weight-for-age') {
+                        rowClassification = row.cells[2].textContent.trim();
+                    } else if (rowStandard === 'height-for-age') {
+                        rowClassification = row.cells[3].textContent.trim();
+                    } else if (rowStandard === 'weight-for-height') {
+                        rowClassification = row.cells[4].textContent.trim();
+                    } else if (rowStandard === 'bmi-for-age' || rowStandard === 'bmi-adult') {
+                        rowClassification = row.cells[6].textContent.trim();
+                    }
+                    
+                    if (rowClassification !== classification) {
+                        showRow = false;
+                    }
+                }
+                
+                // Risk filter (check if any WHO Growth Standard column contains the risk term)
+                if (risk && showRow) {
+                    const wfa = row.cells[2].textContent.trim();
+                    const hfa = row.cells[3].textContent.trim();
+                    const wfh = row.cells[4].textContent.trim();
+                    const wfl = row.cells[5].textContent.trim();
+                    const bmi = row.cells[6].textContent.trim();
+                    
+                    const matchesRisk = wfa.includes(risk) || 
+                                      hfa.includes(risk) || 
+                                      wfh.includes(risk) || 
+                                      wfl.includes(risk) || 
+                                      bmi.includes(risk);
+                    
+                    if (!matchesRisk) {
+                        showRow = false;
+                    }
+                }
+                
+                // Location filter (check municipality or barangay)
+                if (location && showRow) {
+                    const rowMunicipality = row.dataset.municipality || '';
+                    const rowBarangay = row.dataset.barangay || '';
+                    
+                    const matchesLocation = rowMunicipality.toLowerCase().includes(location.toLowerCase()) ||
+                                          rowBarangay.toLowerCase().includes(location.toLowerCase());
+                    
+                    if (!matchesLocation) {
+                        showRow = false;
                     }
                 }
                 
@@ -4731,96 +4788,18 @@ header {
 
         // New classification filtering function
         function filterByClassification() {
-            const classificationFilter = document.getElementById('classificationFilter').value;
-            const tableRows = document.querySelectorAll('.user-table tbody tr');
-            
-            // Get the currently selected standard
-            const standardFilter = document.getElementById('standardFilter');
-            const currentStandard = standardFilter ? standardFilter.value : 'weight-for-age';
-            
-            let visibleCount = 0;
-            
-            tableRows.forEach(row => {
-                const classification = row.cells[8].textContent.trim();
-                const rowStandard = row.dataset.standard;
-                
-                // First check if row matches the current standard filter
-                let matchesStandard = true;
-                if (currentStandard && currentStandard !== 'all-ages') {
-                    matchesStandard = (rowStandard === currentStandard);
-                }
-                
-                // Then check if classification matches
-                let matchesClassification = true;
-                if (classificationFilter) {
-                    matchesClassification = (classification === classificationFilter);
-                }
-                
-                // Row must match BOTH standard AND classification
-                if (matchesStandard && matchesClassification) {
-                    row.style.display = '';
-                    visibleCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            
-            updateNoDataMessage(visibleCount);
+            // Use the unified filter system
+            applyAllFilters();
         }
 
         function filterByRisk() {
-            const classificationFilter = document.getElementById('riskFilter').value;
-            const tableRows = document.querySelectorAll('.user-table tbody tr');
-            
-            let visibleCount = 0;
-            
-            tableRows.forEach(row => {
-                const wfa = row.cells[2].textContent.trim();
-                const hfa = row.cells[3].textContent.trim();
-                const wfh = row.cells[4].textContent.trim();
-                const wfl = row.cells[5].textContent.trim();
-                const bmi = row.cells[6].textContent.trim();
-                
-                let matchesFilter = true;
-                
-                if (classificationFilter) {
-                    // Check if any of the WHO Growth Standards columns contain the filter term
-                    matchesFilter = wfa.includes(classificationFilter) || 
-                                  hfa.includes(classificationFilter) || 
-                                  wfh.includes(classificationFilter) || 
-                                  wfl.includes(classificationFilter) || 
-                                  bmi.includes(classificationFilter);
-                }
-                
-                if (matchesFilter) {
-                    row.style.display = '';
-                    visibleCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            
-            updateNoDataMessage(visibleCount);
+            // Use the unified filter system
+            applyAllFilters();
         }
 
         function filterByLocation() {
-            const locationFilter = document.getElementById('locationFilter').value;
-            const tableRows = document.querySelectorAll('.user-table tbody tr');
-            
-            let visibleCount = 0;
-            
-            tableRows.forEach(row => {
-                const location = row.cells[3].textContent.toLowerCase();
-                
-                if (!locationFilter || location.includes(locationFilter.toLowerCase())) {
-                    row.style.display = '';
-                    visibleCount++;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            
-            updateNoDataMessage(visibleCount);
+            // Use the unified filter system
+            applyAllFilters();
         }
 
         function filterByStandard() {
