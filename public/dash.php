@@ -7490,14 +7490,8 @@ body {
                 dropdownContent.classList.remove('active');
                 dropdownArrow.classList.remove('active');
                 
-                // Update dashboard data based on selected barangay or municipality
-                await updateDashboardForBarangay(value);
-                
-                // Update trends chart with new barangay selection
-                await updateTrendsChart(value);
-                
-                // Update age classification chart with new barangay selection
-                await updateAgeClassificationChart(value);
+                // Update dashboard with all active filters (barangay + municipality + WHO standard)
+                await updateDashboardWithAllFilters();
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
@@ -7948,6 +7942,40 @@ body {
         // Geographic distribution data from PHP
         const geographicDistributionData = <?php echo json_encode($geographicDistributionData); ?>;
         console.log('🌍 Pre-loaded Geographic Distribution Data:', geographicDistributionData);
+
+        // Function to get all active filters
+        function getAllActiveFilters() {
+            const municipality = document.getElementById('selected-municipality-option')?.textContent || '';
+            const barangay = document.getElementById('selected-option')?.textContent || '';
+            const whoStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
+            
+            // Determine the final filter value
+            let finalFilter = '';
+            if (barangay && barangay !== 'All Barangays') {
+                finalFilter = barangay;
+            } else if (municipality && municipality !== 'All Municipalities') {
+                finalFilter = municipality;
+            }
+            
+            return {
+                municipality: municipality,
+                barangay: barangay,
+                whoStandard: whoStandard,
+                finalFilter: finalFilter
+            };
+        }
+
+        // Function to update dashboard with all active filters
+        async function updateDashboardWithAllFilters() {
+            const filters = getAllActiveFilters();
+            console.log('🔄 Updating dashboard with all filters:', filters);
+            
+            // Update dashboard with the final filter
+            await updateDashboardForBarangay(filters.finalFilter);
+            
+            // Update WHO chart with current WHO standard
+            await handleWHOStandardChange();
+        }
 
         // Function to update severely cases cards with WHO classification data
         function updateSeverelyCasesCards(whoData) {
@@ -9846,10 +9874,13 @@ body {
             console.log('📊 Dropdown value:', select ? select.value : 'N/A');
             
             try {
-                // Get current barangay
-                const barangay = '';
+                // Get current active filters
+                const filters = getAllActiveFilters();
+                const barangay = filters.finalFilter;
                 
-                console.log('📡 Fetching WHO data...');
+                console.log('📡 Fetching WHO data with active filters...');
+                console.log('📊 Active filters:', filters);
+                
                 // Fetch WHO classification data
                 const response = await fetchWHOClassificationData(selectedStandard, barangay);
                 console.log('📊 Data received for chart update:', response);
@@ -10605,8 +10636,10 @@ body {
                 // Update barangay dropdown with barangays from selected municipality
                 updateBarangayDropdown(municipalityValue);
                 
-                // Don't trigger dashboard update yet - wait for barangay selection
-                console.log('✅ Municipality selection complete, barangay dropdown updated');
+                // Update dashboard with all active filters (municipality + WHO standard)
+                updateDashboardWithAllFilters();
+                
+                console.log('✅ Municipality selection complete, dashboard updated with all filters');
             } catch (error) {
                 console.error('❌ Error in municipality selection:', error);
             }
