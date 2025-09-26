@@ -7494,10 +7494,10 @@ body {
                 await updateDashboardForBarangay(value);
                 
                 // Update trends chart with new barangay selection
-                await updateTrendsChart();
+                await updateTrendsChart(value);
                 
                 // Update age classification chart with new barangay selection
-                await updateAgeClassificationChart();
+                await updateAgeClassificationChart(value);
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
@@ -9143,7 +9143,7 @@ body {
         }
 
         // Function to update trends chart with all classifications
-        async function updateTrendsChart() {
+        async function updateTrendsChart(barangay = '') {
             console.log('📊 Updating trends chart with all classifications...');
             
             try {
@@ -9157,8 +9157,7 @@ body {
                 trendsChart.innerHTML = '';
 
                 // Get current filter values
-                const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
-                const barangayValue = barangay === 'All Barangays' ? '' : barangay;
+                const barangayValue = barangay || '';
 
                 // OPTIMIZED: Fetch all classifications using bulk API
                 const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=${barangayValue}`;
@@ -9423,7 +9422,7 @@ body {
         // Age Classification Line Chart - NEW FEATURE
         let ageClassificationLineChart = null;
         
-        async function updateAgeClassificationChart() {
+        async function updateAgeClassificationChart(barangay = '') {
             console.log('📊 Updating Age Classification Line Chart...');
             
             try {
@@ -9450,8 +9449,7 @@ body {
 
                 // Get current WHO standard and barangay values
                 const whoStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
-                const barangay = document.getElementById('selected-option')?.textContent || 'All Barangays';
-                const barangayValue = barangay === 'All Barangays' ? '' : barangay;
+                const barangayValue = barangay || '';
 
                 console.log('📊 Using WHO Standard:', whoStandard);
                 console.log('📊 Using Barangay:', barangayValue);
@@ -9812,7 +9810,7 @@ body {
                 
                 // Also update the age classification chart with the new WHO standard
                 console.log('🎨 Updating age classification chart...');
-                await updateAgeClassificationChart();
+                await updateAgeClassificationChart(barangay);
                 console.log('✅ Chart update completed');
                 
             } catch (error) {
@@ -10316,12 +10314,12 @@ body {
                 
                 // Load initial trends chart with all classifications
                 console.log('📊 Loading initial trends chart...');
-                await updateTrendsChart();
+                await updateTrendsChart('');
                 
                 
                 // Load initial age classification chart with default range
                 console.log('📊 Loading initial age classification chart...');
-                await updateAgeClassificationChart();
+                await updateAgeClassificationChart('');
                 
                 
                 // Load initial dashboard metrics and geographic distribution
