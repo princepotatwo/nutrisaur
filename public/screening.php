@@ -3872,6 +3872,13 @@ header {
                                                     error_log("DEBUG: Height value: " . var_export($user['height'], true));
                                                     error_log("DEBUG: Height_cm value: " . var_export($user['height_cm'], true));
                                                     error_log("DEBUG: HEIGHT value: " . var_export($user['HEIGHT'], true));
+                                                    
+                                                    // Try to calculate height from BMI and weight if height is missing
+                                                    if (!empty($user['weight']) && !empty($bmi) && $bmi !== 'N/A' && is_numeric($bmi) && is_numeric($user['weight'])) {
+                                                        $calculatedHeight = sqrt($user['weight'] / $bmi) * 100;
+                                                        $heightValue = round($calculatedHeight, 1);
+                                                        error_log("DEBUG: Calculated height from BMI: " . $heightValue);
+                                                    }
                                                 }
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($heightValue) . '</td>';
                                             } else {
