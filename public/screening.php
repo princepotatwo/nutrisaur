@@ -3715,6 +3715,12 @@ header {
                                 if (!empty($users)) {
                                     error_log("DEBUG: First user data keys: " . implode(', ', array_keys($users[0])));
                                     error_log("DEBUG: First user height data: " . ($users[0]['height'] ?? 'NOT_FOUND') . " | height_cm: " . ($users[0]['height_cm'] ?? 'NOT_FOUND'));
+                                    error_log("DEBUG: First user weight data: " . ($users[0]['weight'] ?? 'NOT_FOUND'));
+                                    error_log("DEBUG: First user name: " . ($users[0]['name'] ?? 'NOT_FOUND'));
+                                    
+                                    // Check if height column exists in database
+                                    $heightCheck = $db->select('community_users', 'height', 'email = ?', [$users[0]['email'] ?? '']);
+                                    error_log("DEBUG: Height column check result: " . json_encode($heightCheck));
                                 }
                                 
                                 if (!empty($users)) {
