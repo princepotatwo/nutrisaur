@@ -10675,13 +10675,12 @@ body {
                             console.log('📊 WHO data for standard', currentStandard, ':', data.data);
                             
                             // Debug: Check if we have data for the current standard
-                            const standardKey = currentStandard.replace('-', '_');
+                            const standardKey = currentStandard.replace(/-/g, '_'); // Use global replace
                             const standardData = data.data[standardKey];
-                            console.log('📊 Standard key:', standardKey);
+                            console.log('📊 DEBUG: currentStandard before replace:', currentStandard);
+                            console.log('📊 DEBUG: standardKey after replace:', standardKey);
                             console.log('📊 Standard data:', standardData);
                             console.log('📊 Available keys in data.data:', Object.keys(data.data));
-                            console.log('📊 Current standard:', currentStandard);
-                            console.log('📊 Looking for key:', standardKey);
                             console.log('📊 Data has this key:', data.data.hasOwnProperty(standardKey));
                             
                             if (standardData) {
@@ -10802,12 +10801,13 @@ body {
                             // Update total screened - try different data paths
                             const totalScreened = document.getElementById('community-total-screened');
                             console.log('📊 Total screened element:', totalScreened);
-                            console.log('📊 Total users from API (data.data):', data.data?.total_users);
+                            console.log('📊 Total screened from API (data.data.total_screened):', data.data?.total_screened);
+                            console.log('📊 Total users from API (data.data.total_users):', data.data?.total_users);
                             console.log('📊 Total users from API (data.total_users):', data.total_users);
                             console.log('📊 Total users from API (data.processed_users):', data.processed_users);
                             
-                            // Try multiple data paths for total users
-                            let totalUsers = data.data?.total_users || data.total_users || data.processed_users || 0;
+                            // Try multiple data paths for total users - prioritize total_screened
+                            let totalUsers = data.data?.total_screened || data.data?.total_users || data.total_users || data.processed_users || 0;
                             console.log('📊 Final total users value:', totalUsers);
                             
                             if (totalScreened && totalUsers > 0) {
@@ -10966,10 +10966,10 @@ body {
             
             try {
                 // Get the current WHO standard data from the bulk response
-                const standardKey = whoStandard.replace('-', '_');
-                console.log('📊 Looking for standard key:', standardKey);
+                const standardKey = whoStandard.replace(/-/g, '_'); // Use global replace
+                console.log('📊 DEBUG: whoStandard before replace:', whoStandard);
+                console.log('📊 DEBUG: standardKey after replace:', standardKey);
                 console.log('📊 Available data keys:', Object.keys(data?.data || {}));
-                console.log('📊 WHO standard:', whoStandard);
                 console.log('📊 Data has this key:', data?.data?.hasOwnProperty(standardKey));
                 
                 const standardData = data.data[standardKey];
