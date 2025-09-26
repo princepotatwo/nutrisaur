@@ -1153,10 +1153,14 @@ header {
     left: 0;
     right: 0;
     max-width: 100%;
-    max-height: 200px;
+    max-height: 250px;
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 1003;
+    background-color: var(--color-card);
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .filter-container .search-container {
@@ -1167,9 +1171,10 @@ header {
 }
 
 .filter-container .options-container {
-    max-height: 150px;
+    max-height: 180px;
     overflow-y: auto;
     overflow-x: hidden;
+    padding: 8px 0;
 }
 
 .filter-container .option-group {
@@ -5563,15 +5568,16 @@ header .user-info {
 .filter-section {
     display: flex;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     gap: 20px;
     margin-bottom: 20px;
     background-color: var(--color-card);
     padding: 15px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    overflow: hidden;
+    overflow: visible;
     position: relative;
+    min-height: 60px;
 }
 
 .filter-container {
@@ -5579,7 +5585,7 @@ header .user-info {
     gap: 20px;
     align-items: center;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     z-index: 10;
     width: 100%;
 }
