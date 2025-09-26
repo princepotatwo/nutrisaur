@@ -7284,30 +7284,7 @@ body {
                 </div>
                 <div class="metric-note">Children & adults screened in selected time frame</div>
             </div>
-            <div class="card" id="card-high-risk">
-                <h2>Severely Underweight</h2>
-                <div class="metric-value" id="community-high-risk"><?php echo $timeFrameData['high_risk_cases']; ?></div>
-                <div class="metric-change" id="community-risk-change">
-                    All Time Data
-                </div>
-                <div class="metric-note">Children with severely underweight status (Weight-for-Age)</div>
-            </div>
-            <div class="card" id="card-sam-cases">
-                <h2>Severely Stunted</h2>
-                <div class="metric-value" id="community-sam-cases"><?php echo $timeFrameData['sam_cases']; ?></div>
-                <div class="metric-change" id="community-sam-change">
-                    All Time Data
-                </div>
-                <div class="metric-note">Children with severely stunted status (Height-for-Age)</div>
-            </div>
-            <div class="card" id="card-critical-muac">
-                <h2>Severely Wasted</h2>
-                <div class="metric-value" id="community-critical-muac"><?php echo $timeFrameData['critical_muac']; ?></div>
-                <div class="metric-change" id="community-muac-change">
-                    All Time Data
-                </div>
-                <div class="metric-note">Children with severely wasted status (Weight-for-Height)</div>
-            </div>
+            <!-- Removed old SAM/Risk cards - using community_users table only -->
         </div>
 
 
@@ -10632,32 +10609,31 @@ body {
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Initializing municipality and barangay dropdown functionality...');
             
-            // Add click listeners to municipality option items
-            const municipalityOptions = document.querySelectorAll('#municipality-dropdown-content .option-item');
-            municipalityOptions.forEach(item => {
-                item.addEventListener('click', function() {
-                    const value = this.getAttribute('data-value');
-                    const text = this.textContent;
-                    selectMunicipality(value, text);
-                });
-            });
-            
-            // Add click listeners to barangay option items (for initial static options)
-            const barangayOptions = document.querySelectorAll('#dropdown-content .option-item');
-            barangayOptions.forEach(item => {
-                item.addEventListener('click', function() {
-                    const value = this.getAttribute('data-value');
-                    const text = this.textContent;
-                    selectOption(value, text);
-                });
-            });
-            
-            // Close dropdowns when clicking outside
+            // Use event delegation for dynamic content
             document.addEventListener('click', function(event) {
+                // Handle municipality dropdown clicks
+                if (event.target.closest('#municipality-dropdown-content .option-item')) {
+                    const item = event.target.closest('.option-item');
+                    const value = item.getAttribute('data-value');
+                    const text = item.textContent;
+                    console.log('🏛️ Municipality option clicked:', value, text);
+                    selectMunicipality(value, text);
+                }
+                
+                // Handle barangay dropdown clicks
+                if (event.target.closest('#dropdown-content .option-item')) {
+                    const item = event.target.closest('.option-item');
+                    const value = item.getAttribute('data-value');
+                    const text = item.textContent;
+                    console.log('🏘️ Barangay option clicked:', value, text);
+                    selectOption(value, text);
+                }
+                
+                // Close dropdowns when clicking outside
                 const barangayDropdown = document.getElementById('dropdown-content');
                 const municipalityDropdown = document.getElementById('municipality-dropdown-content');
-                const barangaySelectHeader = document.querySelector('#barangay-select .select-header');
-                const municipalitySelectHeader = document.querySelector('#municipality-select .select-header');
+                const barangaySelectHeader = document.querySelector('.custom-select-container .select-header');
+                const municipalitySelectHeader = document.querySelector('.custom-select-container .select-header');
                 
                 // Close barangay dropdown
                 if (barangayDropdown && !barangayDropdown.contains(event.target) && 
@@ -10672,7 +10648,7 @@ body {
                 }
             });
             
-            console.log('✅ Municipality and barangay dropdown functionality initialized');
+            console.log('✅ Municipality and barangay dropdown functionality initialized with event delegation');
         });
 
     </script>
