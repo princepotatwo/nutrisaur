@@ -10674,14 +10674,36 @@ body {
                             console.log('🔄 Updating WHO chart with barangay filter:', value, 'standard:', currentStandard);
                             console.log('📊 WHO data for standard', currentStandard, ':', data.data);
                             
-                            // Debug: Check if we have data for the current standard
-                            const standardKey = currentStandard.replace(/-/g, '_'); // Use global replace
-                            const standardData = data.data[standardKey];
-                            console.log('📊 DEBUG: currentStandard before replace:', currentStandard);
-                            console.log('📊 DEBUG: standardKey after replace:', standardKey);
-                            console.log('📊 Standard data:', standardData);
-                            console.log('📊 Available keys in data.data:', Object.keys(data.data));
-                            console.log('📊 Data has this key:', data.data.hasOwnProperty(standardKey));
+                            // Debug: Check what keys are actually available in the API response
+                            console.log('📊 DEBUG: currentStandard from dropdown:', currentStandard);
+                            console.log('📊 DEBUG: Available keys in API response:', Object.keys(data.data));
+                            
+                            // The API returns keys with underscores, so we need to convert the dropdown value
+                            const standardKey = currentStandard.replace(/-/g, '_');
+                            let standardData = data.data[standardKey];
+                            
+                            console.log('📊 DEBUG: Converted standardKey:', standardKey);
+                            console.log('📊 DEBUG: Found data for key:', !!standardData);
+                            
+                            // If not found, try alternative key formats
+                            if (!standardData) {
+                                console.log('📊 DEBUG: Trying alternative key formats...');
+                                const alternativeKeys = [
+                                    currentStandard, // Original format
+                                    currentStandard.replace(/-/g, '_'), // Underscore format
+                                    currentStandard.replace(/-/g, ''), // No separator format
+                                ];
+                                
+                                for (const altKey of alternativeKeys) {
+                                    if (data.data[altKey]) {
+                                        console.log('📊 DEBUG: Found data with alternative key:', altKey);
+                                        standardData = data.data[altKey];
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            console.log('📊 DEBUG: Final standard data:', standardData);
                             
                             if (standardData) {
                                 console.log('📊 Standard classifications:', standardData.classifications);
@@ -10966,11 +10988,13 @@ body {
             
             try {
                 // Get the current WHO standard data from the bulk response
-                const standardKey = whoStandard.replace(/-/g, '_'); // Use global replace
-                console.log('📊 DEBUG: whoStandard before replace:', whoStandard);
-                console.log('📊 DEBUG: standardKey after replace:', standardKey);
-                console.log('📊 Available data keys:', Object.keys(data?.data || {}));
-                console.log('📊 Data has this key:', data?.data?.hasOwnProperty(standardKey));
+                console.log('📊 DEBUG: whoStandard from parameter:', whoStandard);
+                console.log('📊 DEBUG: Available keys in API response:', Object.keys(data?.data || {}));
+                
+                // Convert the standard name to match API response format
+                const standardKey = whoStandard.replace(/-/g, '_');
+                console.log('📊 DEBUG: Converted standardKey:', standardKey);
+                console.log('📊 DEBUG: Key exists in API data:', data?.data?.hasOwnProperty(standardKey));
                 
                 const standardData = data.data[standardKey];
                 console.log('📊 Standard data found:', standardData);
