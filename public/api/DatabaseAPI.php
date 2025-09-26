@@ -1551,10 +1551,24 @@ class DatabaseAPI {
             //         break;
             // }
             
-            // Add barangay filter
+            // Add location filter (municipality or barangay)
             if (!empty($barangay)) {
-                $whereClause .= " AND barangay = :barangay";
-                $params[':barangay'] = $barangay;
+                // Check if it's a municipality or barangay
+                // If it's a municipality, filter by municipality column
+                // If it's a barangay, filter by barangay column
+                $municipalityCheck = $this->pdo->prepare("SELECT COUNT(*) as count FROM community_users WHERE municipality = :location");
+                $municipalityCheck->execute([':location' => $barangay]);
+                $isMunicipality = $municipalityCheck->fetch(PDO::FETCH_ASSOC)['count'] > 0;
+                
+                if ($isMunicipality) {
+                    // It's a municipality, filter by municipality
+                    $whereClause .= " AND municipality = :location";
+                    $params[':location'] = $barangay;
+                } else {
+                    // It's a barangay, filter by barangay
+                    $whereClause .= " AND barangay = :location";
+                    $params[':location'] = $barangay;
+                }
             }
             
             $stmt = $this->pdo->prepare("
@@ -1982,10 +1996,24 @@ class DatabaseAPI {
             //         break;
             // }
             
-            // Add barangay filter
+            // Add location filter (municipality or barangay)
             if (!empty($barangay)) {
-                $whereClause .= " AND barangay = :barangay";
-                $params[':barangay'] = $barangay;
+                // Check if it's a municipality or barangay
+                // If it's a municipality, filter by municipality column
+                // If it's a barangay, filter by barangay column
+                $municipalityCheck = $this->pdo->prepare("SELECT COUNT(*) as count FROM community_users WHERE municipality = :location");
+                $municipalityCheck->execute([':location' => $barangay]);
+                $isMunicipality = $municipalityCheck->fetch(PDO::FETCH_ASSOC)['count'] > 0;
+                
+                if ($isMunicipality) {
+                    // It's a municipality, filter by municipality
+                    $whereClause .= " AND municipality = :location";
+                    $params[':location'] = $barangay;
+                } else {
+                    // It's a barangay, filter by barangay
+                    $whereClause .= " AND barangay = :location";
+                    $params[':location'] = $barangay;
+                }
             }
             
             $analysis = [];
@@ -2321,10 +2349,24 @@ class DatabaseAPI {
             //         break;
             // }
             
-            // Add barangay filter
+            // Add location filter (municipality or barangay)
             if (!empty($barangay)) {
-                $whereClause .= " AND barangay = :barangay";
-                $params[':barangay'] = $barangay;
+                // Check if it's a municipality or barangay
+                // If it's a municipality, filter by municipality column
+                // If it's a barangay, filter by barangay column
+                $municipalityCheck = $this->pdo->prepare("SELECT COUNT(*) as count FROM community_users WHERE municipality = :location");
+                $municipalityCheck->execute([':location' => $barangay]);
+                $isMunicipality = $municipalityCheck->fetch(PDO::FETCH_ASSOC)['count'] > 0;
+                
+                if ($isMunicipality) {
+                    // It's a municipality, filter by municipality
+                    $whereClause .= " AND municipality = :location";
+                    $params[':location'] = $barangay;
+                } else {
+                    // It's a barangay, filter by barangay
+                    $whereClause .= " AND barangay = :location";
+                    $params[':location'] = $barangay;
+                }
             }
             
             $data = [];
