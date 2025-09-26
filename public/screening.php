@@ -3848,11 +3848,11 @@ header {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             }
                                             
-                                            // Hide BMI column for BMI standards (since we show height instead), show for others
+                                            // Show BMI column for BMI standards, hide for others
                                             if ($standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
-                                            } else {
                                                 echo '<td class="text-center conditional-column">' . $bmi . '</td>';
+                                            } else {
+                                                echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
                                             }
                                             
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
@@ -4994,10 +4994,10 @@ header {
                             break;
                         case 'bmi-for-age':
                         case 'bmi-adult':
-                            // Show weight and height columns for BMI standards (hide BMI column since we show height instead)
+                            // Show weight, height, and BMI columns for BMI standards
                             weightHeader.style.display = '';
                             heightHeader.style.display = '';
-                            bmiHeader.style.display = 'none';
+                            bmiHeader.style.display = '';
                             break;
                         case 'height-for-age':
                             // Show height column only
