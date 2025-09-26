@@ -8081,6 +8081,9 @@ body {
                 console.log('📈 Risk Data Keys:', Object.keys(riskData || {}));
                 console.log('📈 Risk Data Success:', riskData?.success);
                 console.log('📈 Risk Data Data:', riskData?.data);
+                console.log('📈 High Risk Cases:', riskData?.data?.high_risk_cases);
+                console.log('📈 SAM Cases:', riskData?.data?.sam_cases);
+                console.log('📈 Critical MUAC:', riskData?.data?.critical_muac);
                 
                 if (riskData && riskData.success && riskData.data) {
                     // WHO classification data will be loaded by the DOMContentLoaded event handler
@@ -8094,6 +8097,10 @@ body {
                 console.log('High Risk Data:', riskData.data?.high_risk_cases);
                 console.log('SAM Cases Data:', riskData.data?.sam_cases);
                 console.log('Critical MUAC Data:', riskData.data?.critical_muac);
+                console.log('🔍 Checking HTML elements...');
+                console.log('🔍 community-high-risk element:', document.getElementById('community-high-risk'));
+                console.log('🔍 community-sam-cases element:', document.getElementById('community-sam-cases'));
+                console.log('🔍 community-critical-muac element:', document.getElementById('community-critical-muac'));
                 
                 if (highRisk && riskChange) {
                     const highRiskValue = riskData.data?.high_risk_cases || 0;
