@@ -6805,9 +6805,6 @@ body {
                             <span class="dropdown-arrow">▼</span>
                         </div>
                         <div class="dropdown-content" id="municipality-dropdown-content">
-                            <div class="search-container">
-                                <input type="text" id="municipality-search-input" placeholder="Search municipality..." onkeyup="filterMunicipalityOptions()">
-                            </div>
                             <div class="options-container">
                                 <div class="option-item" data-value="">All Municipalities</div>
                                 <div class="option-item" data-value="ABUCAY">ABUCAY</div>
@@ -7338,20 +7335,6 @@ body {
             }
         }
 
-        function filterMunicipalityOptions() {
-            const input = document.getElementById('municipality-search-input');
-            const filter = input.value.toUpperCase();
-            const options = document.querySelectorAll('#municipality-dropdown-content .option-item');
-            
-            options.forEach(option => {
-                const text = option.textContent || option.innerText;
-                if (text.toUpperCase().indexOf(filter) > -1) {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
-        }
 
         async function selectOption(value, text) {
             const selectedOption = document.getElementById('selected-option');
@@ -7485,8 +7468,95 @@ body {
                 dropdownContent.classList.remove('active');
                 dropdownArrow.classList.remove('active');
                 
-                // TODO: Add municipality filtering logic here
+                // Update barangay dropdown based on selected municipality
+                updateBarangayOptions(value);
                 console.log('Municipality selected:', value, text);
+            }
+        }
+
+        // Function to update barangay options based on selected municipality
+        function updateBarangayOptions(municipality) {
+            const barangayDropdown = document.getElementById('dropdown-content');
+            const barangayOptionsContainer = barangayDropdown.querySelector('.options-container');
+            
+            // Clear existing options except the first "All Barangays" option
+            const existingOptions = barangayOptionsContainer.querySelectorAll('.option-group');
+            existingOptions.forEach(group => group.remove());
+            
+            // Reset barangay selection
+            const selectedBarangayOption = document.getElementById('selected-option');
+            if (selectedBarangayOption) {
+                selectedBarangayOption.textContent = 'All Barangays';
+            }
+            
+            if (municipality) {
+                // Get barangays for the selected municipality
+                const barangays = getBarangayOptions(municipality);
+                
+                if (barangays.length > 0) {
+                    // Create a new option group for the municipality
+                    const optionGroup = document.createElement('div');
+                    optionGroup.className = 'option-group';
+                    
+                    const header = document.createElement('div');
+                    header.className = 'option-header';
+                    header.textContent = municipality;
+                    optionGroup.appendChild(header);
+                    
+                    // Add individual barangay options
+                    barangays.forEach(barangay => {
+                        const optionItem = document.createElement('div');
+                        optionItem.className = 'option-item';
+                        optionItem.setAttribute('data-value', barangay);
+                        optionItem.textContent = barangay;
+                        optionItem.addEventListener('click', function() {
+                            selectBarangayOption(barangay, barangay);
+                        });
+                        optionGroup.appendChild(optionItem);
+                    });
+                    
+                    // Insert after the municipality options
+                    const municipalityGroup = barangayOptionsContainer.querySelector('.option-group');
+                    if (municipalityGroup) {
+                        municipalityGroup.insertAdjacentElement('afterend', optionGroup);
+                    } else {
+                        barangayOptionsContainer.appendChild(optionGroup);
+                    }
+                }
+            }
+        }
+
+        // Function to get barangay options for a municipality (same as screening.php)
+        function getBarangayOptions(municipality) {
+            const barangayData = {
+                'ABUCAY': ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Poblacion', 'Saguing', 'Salapungan', 'Tala'],
+                'BAGAC': ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibayo', 'Paysawan', 'Quinaoayanan', 'San Antonio', 'Saysain', 'Sibucao', 'Tabing-Ilog', 'Tipo', 'Tugatog', 'Wawa'],
+                'CITY OF BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Cupang Proper', 'Cupang West', 'Dangcol (Bernabe)', 'Ibayo', 'Malabia', 'Poblacion', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Jose', 'Sibacan', 'Camacho', 'Talisay', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo', 'Bagong Silang', 'Cupang North', 'Doña Francisca', 'Lote'],
+                'DINALUPIHAN': ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar', 'General Luna', 'Governor Generoso', 'Hacienda', 'Jose Abad Santos (Pob.)', 'Kataasan', 'Layac', 'Lourdes', 'Mabini', 'Maligaya', 'Naparing', 'Paco', 'Pag-asa', 'Pagalanggang', 'Panggalan', 'Pinulot', 'Poblacion', 'Rizal', 'Saguing', 'San Benito', 'San Isidro', 'San Ramon', 'Santo Cristo', 'Sapang Balas', 'Sumalo', 'Tipo', 'Tuklasan', 'Turac', 'Zamora'],
+                'HERMOSA': ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culong', 'Daungan (Pob.)', 'Judicial (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Palihan', 'Pandatung', 'Pulong Gubat', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo'],
+                'LIMAY': ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reforma', 'San Francisco de Asis', 'Townsite'],
+                'MARIVELES': ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Baseco Country (Nassco)', 'Poblacion', 'San Carlos', 'San Isidro', 'Sisiman', 'Balon-Anito', 'Biaan', 'Camaya', 'Ipag', 'Malaya', 'Maligaya', 'Mt. View', 'Townsite'],
+                'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang'],
+                'ORANI': ['Apolinario (Pob.)', 'Bagong Paraiso', 'Balut', 'Bayan (Pob.)', 'Calero (Pob.)', 'Calutit', 'Camachile', 'Del Pilar', 'Kaparangan', 'Mabatang', 'Maria Fe', 'Pagtakhan', 'Paking-Carbonero (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang', 'Poblacion', 'Rizal (Pob.)', 'Sagrada', 'San Jose', 'Sibul', 'Sili', 'Sulong', 'Tagumpay', 'Tala', 'Talimundoc', 'Tugatog', 'Wawa'],
+                'ORION': ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daan Bago', 'Daan Bilolo', 'Daan Pare', 'General Lim (Kaput)', 'Kaput', 'Lati', 'Lusung', 'Puting Buhangin', 'Sabatan', 'San Vicente', 'Santa Elena', 'Santo Domingo', 'Villa Angeles', 'Wakas'],
+                'PILAR': ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Bantan', 'Burgos', 'Del Rosario', 'Diwa', 'Landing', 'Liwa', 'Nueva Vida', 'Panghulo', 'Pantingan', 'Poblacion', 'Rizal', 'Sagrada', 'San Nicolas', 'San Pedro', 'Santo Niño', 'Wakas'],
+                'SAMAL': ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan', 'San Roque', 'Santa Lucia', 'Santo Niño', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
+            };
+            
+            return barangayData[municipality] || [];
+        }
+
+        // Function to handle barangay selection
+        function selectBarangayOption(value, text) {
+            const selectedOption = document.getElementById('selected-option');
+            const dropdownContent = document.getElementById('dropdown-content');
+            const dropdownArrow = document.querySelector('#dropdown-content').parentElement.querySelector('.dropdown-arrow');
+            
+            if (selectedOption && dropdownContent && dropdownArrow) {
+                selectedOption.textContent = text;
+                dropdownContent.classList.remove('active');
+                dropdownArrow.classList.remove('active');
+                console.log('Barangay selected:', value, text);
             }
         }
 
