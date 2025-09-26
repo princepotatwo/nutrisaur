@@ -7284,7 +7284,30 @@ body {
                 </div>
                 <div class="metric-note">Children & adults screened in selected time frame</div>
             </div>
-            <!-- Removed old SAM/Risk cards - using community_users table only -->
+            <div class="card" id="card-high-risk">
+                <h2>Severely Underweight</h2>
+                <div class="metric-value" id="community-high-risk"><?php echo $timeFrameData['high_risk_cases']; ?></div>
+                <div class="metric-change" id="community-risk-change">
+                    All Time Data
+                </div>
+                <div class="metric-note">Children with severely underweight status (Weight-for-Age)</div>
+            </div>
+            <div class="card" id="card-sam-cases">
+                <h2>Severely Stunted</h2>
+                <div class="metric-value" id="community-sam-cases"><?php echo $timeFrameData['sam_cases']; ?></div>
+                <div class="metric-change" id="community-sam-change">
+                    All Time Data
+                </div>
+                <div class="metric-note">Children with severely stunted status (Height-for-Age)</div>
+            </div>
+            <div class="card" id="card-critical-muac">
+                <h2>Severely Wasted</h2>
+                <div class="metric-value" id="community-critical-muac"><?php echo $timeFrameData['critical_muac']; ?></div>
+                <div class="metric-change" id="community-muac-change">
+                    All Time Data
+                </div>
+                <div class="metric-note">Children with severely wasted status (Weight-for-Height)</div>
+            </div>
         </div>
 
 
@@ -8019,11 +8042,17 @@ body {
                 try {
                     console.log('🔄 updateCharts called with barangay:', barangay);
                     
-                    // Debug: Check current metric values (community_users table only)
+                    // Debug: Check current metric values
                     const totalScreened = document.getElementById('community-total-screened');
+                    const highRisk = document.getElementById('community-high-risk');
+                    const samCases = document.getElementById('community-sam-cases');
+                    const criticalMuac = document.getElementById('community-critical-muac');
                     
-                    console.log('🔍 Current Dashboard Metrics (community_users table):');
+                    console.log('🔍 Current Dashboard Metrics:');
                     console.log('  - Total Screened:', totalScreened ? totalScreened.textContent : 'NOT FOUND');
+                    console.log('  - High Risk (Severely Underweight):', highRisk ? highRisk.textContent : 'NOT FOUND');
+                    console.log('  - SAM Cases (Severely Stunted):', samCases ? samCases.textContent : 'NOT FOUND');
+                    console.log('  - Critical MUAC (Severely Wasted):', criticalMuac ? criticalMuac.textContent : 'NOT FOUND');
                 
                 const params = {};
                 if (barangay && barangay !== '') {
@@ -10595,8 +10624,29 @@ body {
             
             // Call existing functions that already exist in the dashboard
             try {
-                updateCommunityMetrics(value);
+                // Use correct API endpoints instead of broken existing functions
+                console.log('🔄 Updating dashboard for barangay:', value);
+                
+                // Update community metrics using correct API
+                const apiUrl = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'get_community_metrics',
+                    barangay: value
+                });
+                
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('📊 Community metrics data:', data);
+                        // Update UI elements here if needed
+                    })
+                    .catch(error => {
+                        console.error('❌ Error fetching community metrics:', error);
+                    });
+
+                // Call updateCharts function (fix API endpoint issue)
                 updateCharts(value);
+                
+                // Call loadScreeningResponses if it exists
                 if (typeof loadScreeningResponses === 'function') {
                     loadScreeningResponses(value);
                 }
@@ -10609,47 +10659,61 @@ body {
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Initializing municipality and barangay dropdown functionality...');
             
-            // Use event delegation for dynamic content
-            document.addEventListener('click', function(event) {
-                // Handle municipality dropdown clicks
-                if (event.target.closest('#municipality-dropdown-content .option-item')) {
-                    const item = event.target.closest('.option-item');
-                    const value = item.getAttribute('data-value');
-                    const text = item.textContent;
-                    console.log('🏛️ Municipality option clicked:', value, text);
-                    selectMunicipality(value, text);
+            // Wait a bit for the DOM to fully render
+            setTimeout(() => {
+                try {
+                    // Add click listeners to municipality option items
+                    const municipalityDropdown = document.getElementById('municipality-dropdown-content');
+                    if (municipalityDropdown) {
+                        const municipalityOptions = municipalityDropdown.querySelectorAll('.option-item');
+                        console.log('📍 Found', municipalityOptions.length, 'municipality options');
+                        
+                        municipalityOptions.forEach(item => {
+                            // Remove existing listeners to avoid duplicates
+                            item.removeEventListener('click', handleMunicipalityClick);
+                            item.addEventListener('click', handleMunicipalityClick);
+                        });
+                    } else {
+                        console.error('❌ Municipality dropdown not found');
+                    }
+                    
+                    // Add click listeners to barangay option items (for initial static options)
+                    const barangayDropdown = document.getElementById('dropdown-content');
+                    if (barangayDropdown) {
+                        const barangayOptions = barangayDropdown.querySelectorAll('.option-item');
+                        console.log('📍 Found', barangayOptions.length, 'barangay options');
+                        
+                        barangayOptions.forEach(item => {
+                            // Remove existing listeners to avoid duplicates
+                            item.removeEventListener('click', handleBarangayClick);
+                            item.addEventListener('click', handleBarangayClick);
+                        });
+                    } else {
+                        console.error('❌ Barangay dropdown not found');
+                    }
+                    
+                    console.log('✅ Municipality and barangay dropdown functionality initialized');
+                    
+                } catch (error) {
+                    console.error('❌ Error initializing dropdown functionality:', error);
                 }
-                
-                // Handle barangay dropdown clicks
-                if (event.target.closest('#dropdown-content .option-item')) {
-                    const item = event.target.closest('.option-item');
-                    const value = item.getAttribute('data-value');
-                    const text = item.textContent;
-                    console.log('🏘️ Barangay option clicked:', value, text);
-                    selectOption(value, text);
-                }
-                
-                // Close dropdowns when clicking outside
-                const barangayDropdown = document.getElementById('dropdown-content');
-                const municipalityDropdown = document.getElementById('municipality-dropdown-content');
-                const barangaySelectHeader = document.querySelector('.custom-select-container .select-header');
-                const municipalitySelectHeader = document.querySelector('.custom-select-container .select-header');
-                
-                // Close barangay dropdown
-                if (barangayDropdown && !barangayDropdown.contains(event.target) && 
-                    (!barangaySelectHeader || !barangaySelectHeader.contains(event.target))) {
-                    barangayDropdown.classList.remove('show');
-                }
-                
-                // Close municipality dropdown
-                if (municipalityDropdown && !municipalityDropdown.contains(event.target) && 
-                    (!municipalitySelectHeader || !municipalitySelectHeader.contains(event.target))) {
-                    municipalityDropdown.classList.remove('show');
-                }
-            });
-            
-            console.log('✅ Municipality and barangay dropdown functionality initialized with event delegation');
+            }, 100); // Small delay to ensure DOM is ready
         });
+
+        // Separate event handler functions to avoid conflicts
+        function handleMunicipalityClick(event) {
+            const value = this.getAttribute('data-value');
+            const text = this.textContent;
+            console.log('🏛️ Municipality option clicked:', value, text);
+            selectMunicipality(value, text);
+        }
+
+        function handleBarangayClick(event) {
+            const value = this.getAttribute('data-value');
+            const text = this.textContent;
+            console.log('🏘️ Barangay option clicked:', value, text);
+            selectOption(value, text);
+        }
 
     </script>
 </body>
