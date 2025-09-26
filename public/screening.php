@@ -3816,8 +3816,10 @@ header {
                                             
                                             // Display appropriate value based on standard type
                                             if ($standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                // For BMI standards, show BMI value in Z-score column
-                                                $zScoreDisplay = $bmi;
+                                                // For BMI standards, show accurate z-score range (not BMI value)
+                                                $classification = $standardData['classification'] ?? 'N/A';
+                                                $accurateRange = getAccurateZScoreRange($classification, $standardName);
+                                                $zScoreDisplay = $accurateRange;
                                             } else {
                                                 // For other standards, show accurate z-score range
                                                 $classification = $standardData['classification'] ?? 'N/A';
@@ -3846,11 +3848,11 @@ header {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             }
                                             
-                                            // Show BMI column for BMI standards, hide for others
+                                            // Hide BMI column for BMI standards (since we show height instead), show for others
                                             if ($standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                echo '<td class="text-center conditional-column">' . $bmi . '</td>';
-                                            } else {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . $bmi . '</td>';
+                                            } else {
+                                                echo '<td class="text-center conditional-column">' . $bmi . '</td>';
                                             }
                                             
                                             echo '<td class="text-center standard-value">' . htmlspecialchars($zScoreDisplay) . '</td>';
@@ -4992,10 +4994,10 @@ header {
                             break;
                         case 'bmi-for-age':
                         case 'bmi-adult':
-                            // Show weight and height columns for BMI standards (height instead of first BMI column)
+                            // Show weight and height columns for BMI standards (hide BMI column since we show height instead)
                             weightHeader.style.display = '';
                             heightHeader.style.display = '';
-                            bmiHeader.style.display = '';
+                            bmiHeader.style.display = 'none';
                             break;
                         case 'height-for-age':
                             // Show height column only
