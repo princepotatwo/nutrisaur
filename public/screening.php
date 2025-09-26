@@ -3840,7 +3840,7 @@ header {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['weight'] ?? 'N/A') . '</td>';
                                             }
                                             
-                                            if ($standardName === 'height-for-age' || $standardName === 'weight-for-height') {
+                                            if ($standardName === 'height-for-age' || $standardName === 'weight-for-height' || $standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
                                             } else {
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
@@ -4992,9 +4992,9 @@ header {
                             break;
                         case 'bmi-for-age':
                         case 'bmi-adult':
-                            // Show weight and BMI columns for BMI standards
+                            // Show weight and height columns for BMI standards (height instead of first BMI column)
                             weightHeader.style.display = '';
-                            heightHeader.style.display = 'none';
+                            heightHeader.style.display = '';
                             bmiHeader.style.display = '';
                             break;
                         case 'height-for-age':
