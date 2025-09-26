@@ -1732,7 +1732,7 @@ body {
     color: var(--color-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
-    padding-left: 340px;
+    padding-left: 320px;
     line-height: 1.6;
     letter-spacing: 0.2px;
 }
