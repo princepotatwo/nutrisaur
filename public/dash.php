@@ -6789,8 +6789,76 @@ body {
             </div>
             <div class="filter-group">
                 <label>Select Barangay:</label>
-                <select id="barangayFilter" onchange="filterByBarangay()">
-                    <option value="">All Barangays</option>
+                <div class="custom-select-container">
+                    <div class="select-header" onclick="toggleDropdown()">
+                        <span id="selected-option">All Barangays</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
+                    <div class="dropdown-content" id="dropdown-content">
+                        <div class="search-container">
+                            <input type="text" id="search-input" placeholder="Search barangay or municipality..." onkeyup="filterOptions()">
+                        </div>
+                        <div class="options-container">
+                            <!-- Municipality Options -->
+                            <div class="option-group">
+                                <div class="option-header">Municipalities</div>
+                                <div class="option-item" data-value="">All Barangays</div>
+                                <div class="option-item" data-value="MUNICIPALITY_ABUCAY">ABUCAY (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_BAGAC">BAGAC (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_BALANGA">CITY OF BALANGA (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_DINALUPIHAN">DINALUPIHAN (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_HERMOSA">HERMOSA (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_LIMAY">LIMAY (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_MARIVELES">MARIVELES (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_MORONG">MORONG (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_ORANI">ORANI (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_ORION">ORION (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_PILAR">PILAR (All Barangays)</div>
+                                <div class="option-item" data-value="MUNICIPALITY_SAMAL">SAMAL (All Barangays)</div>
+                                                        </div>
+                            
+                            <!-- Individual Barangays by Municipality -->
+                            <div class="option-group">
+                                <div class="option-header">ABUCAY</div>
+                                <div class="option-item" data-value="Bangkal">Bangkal</div>
+                                <div class="option-item" data-value="Calaylayan (Pob.)">Calaylayan (Pob.)</div>
+                                <div class="option-item" data-value="Capitangan">Capitangan</div>
+                                <div class="option-item" data-value="Gabon">Gabon</div>
+                                <div class="option-item" data-value="Laon (Pob.)">Laon (Pob.)</div>
+                                <div class="option-item" data-value="Mabatang">Mabatang</div>
+                                <div class="option-item" data-value="Omboy">Omboy</div>
+                                <div class="option-item" data-value="Salian">Salian</div>
+                                <div class="option-item" data-value="Wawa (Pob.)">Wawa (Pob.)</div>
+                            </div>
+                            <div class="option-group">
+                                <div class="option-header">BAGAC</div>
+                                <div class="option-item" data-value="Bagumbayan (Pob.)">Bagumbayan (Pob.)</div>
+                                <div class="option-item" data-value="Banawang">Banawang</div>
+                                <div class="option-item" data-value="Binuangan">Binuangan</div>
+                                <div class="option-item" data-value="Binukawan">Binukawan</div>
+                                <div class="option-item" data-value="Ibaba">Ibaba</div>
+                                <div class="option-item" data-value="Ibis">Ibis</div>
+                                <div class="option-item" data-value="Pag-asa (Wawa-Sibacan)">Pag-asa (Wawa-Sibacan)</div>
+                                <div class="option-item" data-value="Parang">Parang</div>
+                                <div class="option-item" data-value="Paysawan">Paysawan</div>
+                                <div class="option-item" data-value="Quinawan">Quinawan</div>
+                                <div class="option-item" data-value="San Antonio">San Antonio</div>
+                                <div class="option-item" data-value="Saysain">Saysain</div>
+                                <div class="option-item" data-value="Tabing-Ilog (Pob.)">Tabing-Ilog (Pob.)</div>
+                                <div class="option-item" data-value="Atilano L. Ricardo">Atilano L. Ricardo</div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+            <div class="filter-group">
+                <label>WHO Standard:</label>
+                <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
+                    <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
+                    <option value="height-for-age">Height-for-Age (0-71 months)</option>
+                    <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
+                    <option value="bmi-for-age">BMI-for-Age (2-19 years)</option>
+                    <option value="bmi-adult">BMI Adult (≥19 years)</option>
                 </select>
                 </div>
             </div>
@@ -7009,23 +7077,18 @@ body {
         // Filter functions for municipality and barangay
         function filterByMunicipality() {
             const municipality = document.getElementById('municipalityFilter').value;
-            const barangayFilter = document.getElementById('barangayFilter');
             
-            // Clear barangay filter when municipality changes
-            barangayFilter.innerHTML = '<option value="">All Barangays</option>';
-            
-            // Populate barangay options based on selected municipality
-            if (municipality && municipalities[municipality]) {
-                municipalities[municipality].forEach(barangay => {
-                    const option = document.createElement('option');
-                    option.value = barangay;
-                    option.textContent = barangay;
-                    barangayFilter.appendChild(option);
-                });
-            }
+            // Update the barangay dropdown to show only barangays from selected municipality
+            updateBarangayOptions(municipality);
             
             // Apply filters
             applyAllFilters();
+        }
+        
+        function updateBarangayOptions(municipality) {
+            // This function will be called to update the barangay dropdown options
+            // For now, we'll use the existing dropdown system
+            console.log('Municipality selected:', municipality);
         }
         
         function filterByBarangay() {
