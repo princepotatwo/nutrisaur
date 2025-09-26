@@ -7590,27 +7590,11 @@ body {
                 item.addEventListener('click', function() {
                     const value = this.getAttribute('data-value');
                     const text = this.textContent;
-                    selectMunicipalityOption(value, text);
+                    selectMunicipality(value, text);
                 });
             });
         }
 
-        // Function to handle municipality selection
-        function selectMunicipalityOption(value, text) {
-            const selectedOption = document.getElementById('selected-municipality-option');
-            const dropdownContent = document.getElementById('municipality-dropdown-content');
-            const dropdownArrow = document.querySelector('#municipality-dropdown-content').parentElement.querySelector('.dropdown-arrow');
-            
-            if (selectedOption && dropdownContent && dropdownArrow) {
-                selectedOption.textContent = text;
-                dropdownContent.classList.remove('active');
-                dropdownArrow.classList.remove('active');
-                
-                // Update barangay dropdown based on selected municipality
-                updateBarangayOptions(value);
-                console.log('Municipality selected:', value, text);
-            }
-        }
 
         // Function to update barangay options based on selected municipality
         function updateBarangayOptions(municipality) {
@@ -7949,13 +7933,23 @@ body {
             const barangay = document.getElementById('selected-option')?.textContent || '';
             const whoStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
             
+            console.log('🔍 getAllActiveFilters - Raw values:', {
+                municipality: municipality,
+                barangay: barangay,
+                whoStandard: whoStandard
+            });
+            
             // Determine the final filter value
             let finalFilter = '';
-            if (barangay && barangay !== 'All Barangays') {
+            if (barangay && barangay !== 'All Barangays' && barangay !== 'Select Barangay') {
                 finalFilter = barangay;
-            } else if (municipality && municipality !== 'All Municipalities') {
+                console.log('🔍 Using barangay as filter:', barangay);
+            } else if (municipality && municipality !== 'All Municipalities' && municipality !== 'Select Municipality') {
                 finalFilter = municipality;
+                console.log('🔍 Using municipality as filter:', municipality);
             }
+            
+            console.log('🔍 Final filter value:', finalFilter);
             
             return {
                 municipality: municipality,
