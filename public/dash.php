@@ -8042,25 +8042,25 @@ body {
                 try {
                     console.log('🔄 updateCharts called with barangay:', barangay);
                     
-                    // Debug: Check current metric values
+                    // Debug: Check current metric values (community_users table only)
                     const totalScreened = document.getElementById('community-total-screened');
-                    const highRisk = document.getElementById('community-high-risk');
-                    const samCases = document.getElementById('community-sam-cases');
-                    const criticalMuac = document.getElementById('community-critical-muac');
                     
-                    console.log('🔍 Current Dashboard Metrics:');
+                    console.log('🔍 Current Dashboard Metrics (community_users table):');
                     console.log('  - Total Screened:', totalScreened ? totalScreened.textContent : 'NOT FOUND');
-                    console.log('  - High Risk (Severely Underweight):', highRisk ? highRisk.textContent : 'NOT FOUND');
-                    console.log('  - SAM Cases (Severely Stunted):', samCases ? samCases.textContent : 'NOT FOUND');
-                    console.log('  - Critical MUAC (Severely Wasted):', criticalMuac ? criticalMuac.textContent : 'NOT FOUND');
                 
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
                 }
 
-                // Update Risk Distribution Chart - Use new assessment API
-                const riskData = await fetchDataFromAPI('dashboard_assessment_stats', params);
+                // Update Risk Distribution Chart - Use correct DatabaseAPI with proper URL construction
+                const apiParams = { action: 'analysis_data' };
+                if (barangay && barangay !== '') {
+                    apiParams.barangay = barangay;
+                }
+                const apiUrl = constructAPIURL('/api/DatabaseAPI.php', apiParams);
+                const response = await fetch(apiUrl);
+                const riskData = await response.json();
                 console.log('📈 Risk Distribution Data (RAW):', riskData);
                 console.log('📈 Risk Data Type:', typeof riskData);
                 console.log('📈 Risk Data Keys:', Object.keys(riskData || {}));
@@ -10449,6 +10449,97 @@ body {
         // Global variable to track current selected barangay
         var dashboardSelectedBarangay = '';
 
+        // Municipality and Barangay data (same as screening.php)
+        const municipalitiesData = {
+            'ABUCAY': ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Poblacion', 'Saguing', 'Salapungan', 'Tala'],
+            'BAGAC': ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibayo', 'Paysawan', 'Quinaoayanan', 'San Antonio', 'Saysain', 'Sibucao', 'Tabing-Ilog', 'Tipo', 'Tugatog', 'Wawa'],
+            'CITY OF BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Cupang Proper', 'Cupang West', 'Dangcol (Bernabe)', 'Ibayo', 'Malabia', 'Poblacion', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Jose', 'Sibacan', 'Camacho', 'Talisay', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo', 'Bagong Silang', 'Cupang North', 'Doña Francisca', 'Lote'],
+            'DINALUPIHAN': ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar', 'General Luna', 'Governor Generoso', 'Hacienda', 'Jose Abad Santos (Pob.)', 'Kataasan', 'Layac', 'Lourdes', 'Mabini', 'Maligaya', 'Naparing', 'Paco', 'Pag-asa', 'Pagalanggang', 'Panggalan', 'Pinulot', 'Poblacion', 'Rizal', 'Saguing', 'San Benito', 'San Isidro', 'San Ramon', 'Santo Cristo', 'Sapang Balas', 'Sumalo', 'Tipo', 'Tuklasan', 'Turac', 'Zamora'],
+            'HERMOSA': ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culong', 'Daungan (Pob.)', 'Judicial (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Palihan', 'Pandatung', 'Pulong Gubat', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo'],
+            'LIMAY': ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reforma', 'San Francisco de Asis', 'Townsite'],
+            'MARIVELES': ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Mabayo', 'Malaya', 'Maligaya', 'Mountain View', 'Poblacion', 'San Carlos', 'San Isidro', 'San Nicolas', 'San Pedro', 'Saysain', 'Sisiman', 'Tukuran'],
+            'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang', 'San Pedro', 'Sitio Liyang'],
+            'ORANI': ['Apolinario (Pob.)', 'Bagong Paraiso', 'Balut', 'Bayan (Pob.)', 'Calero (Pob.)', 'Calutit', 'Camachile', 'Del Pilar', 'Kaparangan', 'Mabatang', 'Maria Fe', 'Pagtakhan', 'Paking-Carbonero (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang', 'Poblacion', 'Rizal (Pob.)', 'Sagrada', 'San Jose', 'Sibul', 'Sili', 'Sulong', 'Tagumpay', 'Tala', 'Talimundoc', 'Tugatog', 'Wawa'],
+            'ORION': ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daan Bago', 'Daan Bilolo', 'Daan Pare', 'General Lim (Kaput)', 'Kaput', 'Lati', 'Lusung', 'Puting Buhangin', 'Sabatan', 'San Vicente', 'Santa Elena', 'Santo Domingo', 'Villa Angeles', 'Wakas'],
+            'PILAR': ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Bantan', 'Burgos', 'Del Rosario', 'Diwa', 'Landing', 'Liwa', 'Nueva Vida', 'Panghulo', 'Pantingan', 'Poblacion', 'Rizal', 'Sagrada', 'San Nicolas', 'San Pedro', 'Santo Niño', 'Wakas'],
+            'SAMAL': ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan', 'San Roque', 'Santa Lucia', 'Santo Niño', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
+        };
+
+        // Function to update barangay dropdown based on selected municipality
+        function updateBarangayDropdown(municipality) {
+            console.log('🏘️ Updating barangay dropdown for municipality:', municipality);
+            
+            const barangayDropdown = document.getElementById('dropdown-content');
+            const selectedSpan = document.getElementById('selected-option');
+            
+            if (!barangayDropdown) {
+                console.error('❌ Barangay dropdown not found');
+                return;
+            }
+
+            // Clear existing barangay options
+            barangayDropdown.innerHTML = '';
+
+            // Reset selected option text
+            if (selectedSpan) {
+                selectedSpan.textContent = 'Select Barangay';
+            }
+
+            // Get barangays for the selected municipality
+            const barangays = municipalitiesData[municipality];
+            
+            if (barangays && barangays.length > 0) {
+                // Add barangays to dropdown
+                barangays.forEach(barangay => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option-item';
+                    optionDiv.setAttribute('data-value', barangay);
+                    optionDiv.textContent = barangay;
+                    
+                    // Add click event
+                    optionDiv.addEventListener('click', function() {
+                        selectOption(barangay, barangay);
+                    });
+                    
+                    barangayDropdown.appendChild(optionDiv);
+                });
+                
+                console.log(`✅ Added ${barangays.length} barangays for ${municipality}`);
+            } else {
+                // No barangays found
+                const noDataDiv = document.createElement('div');
+                noDataDiv.className = 'option-item';
+                noDataDiv.textContent = 'No barangays available';
+                noDataDiv.style.opacity = '0.5';
+                barangayDropdown.appendChild(noDataDiv);
+                
+                console.log('⚠️ No barangays found for municipality:', municipality);
+            }
+        }
+
+        // Function to handle municipality selection  
+        function selectMunicipality(municipalityValue, municipalityText) {
+            console.log('🏛️ Municipality selected:', municipalityValue, municipalityText);
+            
+            // Update municipality display
+            const municipalitySpan = document.getElementById('selected-municipality-option');
+            if (municipalitySpan) {
+                municipalitySpan.textContent = municipalityText;
+            }
+            
+            // Close municipality dropdown
+            const municipalityDropdown = document.getElementById('municipality-dropdown-content');
+            if (municipalityDropdown) {
+                municipalityDropdown.classList.remove('show');
+            }
+            
+            // Update barangay dropdown with barangays from selected municipality
+            updateBarangayDropdown(municipalityValue);
+            
+            // Don't trigger dashboard update yet - wait for barangay selection
+            console.log('✅ Municipality selection complete, barangay dropdown updated');
+        }
+
         // Fixed API URL construction function
         function constructAPIURL(endpoint, params = {}) {
             let url = endpoint;
@@ -10539,11 +10630,21 @@ body {
 
         // Initialize dropdown event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initializing barangay dropdown functionality...');
+            console.log('🚀 Initializing municipality and barangay dropdown functionality...');
             
-            // Add click listeners to option items
-            const optionItems = document.querySelectorAll('.option-item');
-            optionItems.forEach(item => {
+            // Add click listeners to municipality option items
+            const municipalityOptions = document.querySelectorAll('#municipality-dropdown-content .option-item');
+            municipalityOptions.forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.textContent;
+                    selectMunicipality(value, text);
+                });
+            });
+            
+            // Add click listeners to barangay option items (for initial static options)
+            const barangayOptions = document.querySelectorAll('#dropdown-content .option-item');
+            barangayOptions.forEach(item => {
                 item.addEventListener('click', function() {
                     const value = this.getAttribute('data-value');
                     const text = this.textContent;
@@ -10551,17 +10652,27 @@ body {
                 });
             });
             
-            // Close dropdown when clicking outside
+            // Close dropdowns when clicking outside
             document.addEventListener('click', function(event) {
-                const dropdown = document.getElementById('dropdown-content');
-                const selectHeader = document.querySelector('.select-header');
+                const barangayDropdown = document.getElementById('dropdown-content');
+                const municipalityDropdown = document.getElementById('municipality-dropdown-content');
+                const barangaySelectHeader = document.querySelector('#barangay-select .select-header');
+                const municipalitySelectHeader = document.querySelector('#municipality-select .select-header');
                 
-                if (dropdown && !dropdown.contains(event.target) && !selectHeader.contains(event.target)) {
-                    dropdown.classList.remove('show');
+                // Close barangay dropdown
+                if (barangayDropdown && !barangayDropdown.contains(event.target) && 
+                    (!barangaySelectHeader || !barangaySelectHeader.contains(event.target))) {
+                    barangayDropdown.classList.remove('show');
+                }
+                
+                // Close municipality dropdown
+                if (municipalityDropdown && !municipalityDropdown.contains(event.target) && 
+                    (!municipalitySelectHeader || !municipalitySelectHeader.contains(event.target))) {
+                    municipalityDropdown.classList.remove('show');
                 }
             });
             
-            console.log('✅ Barangay dropdown functionality initialized');
+            console.log('✅ Municipality and barangay dropdown functionality initialized');
         });
 
     </script>
