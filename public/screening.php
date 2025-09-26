@@ -3843,9 +3843,12 @@ header {
                                             }
                                             
                                             if ($standardName === 'height-for-age' || $standardName === 'weight-for-height' || $standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                echo '<td class="text-center conditional-column">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                                // Try different possible column names for height
+                                                $heightValue = $user['height'] ?? $user['height_cm'] ?? 'N/A';
+                                                echo '<td class="text-center conditional-column">' . htmlspecialchars($heightValue) . '</td>';
                                             } else {
-                                                echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($user['height'] ?? 'N/A') . '</td>';
+                                                $heightValue = $user['height'] ?? $user['height_cm'] ?? 'N/A';
+                                                echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($heightValue) . '</td>';
                                             }
                                             
                                             // Show BMI column for BMI standards, hide for others
