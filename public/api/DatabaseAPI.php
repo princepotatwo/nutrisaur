@@ -1553,19 +1553,18 @@ class DatabaseAPI {
             
             // Add location filter (municipality or barangay)
             if (!empty($barangay)) {
-                // Check if it's a municipality or barangay
-                // If it's a municipality, filter by municipality column
-                // If it's a barangay, filter by barangay column
-                $municipalityCheck = $this->pdo->prepare("SELECT COUNT(*) as count FROM community_users WHERE municipality = :location");
-                $municipalityCheck->execute([':location' => $barangay]);
-                $isMunicipality = $municipalityCheck->fetch(PDO::FETCH_ASSOC)['count'] > 0;
+                // Known municipalities from the system
+                $knownMunicipalities = [
+                    'ABUCAY', 'BAGAC', 'CITY OF BALANGA', 'DINALUPIHAN', 'HERMOSA', 'LIMAY', 
+                    'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'
+                ];
                 
-                if ($isMunicipality) {
-                    // It's a municipality, filter by municipality
+                if (in_array($barangay, $knownMunicipalities)) {
+                    // It's a municipality, filter by municipality column
                     $whereClause .= " AND municipality = :location";
                     $params[':location'] = $barangay;
                 } else {
-                    // It's a barangay, filter by barangay
+                    // It's a barangay, filter by barangay column
                     $whereClause .= " AND barangay = :location";
                     $params[':location'] = $barangay;
                 }
@@ -1998,19 +1997,18 @@ class DatabaseAPI {
             
             // Add location filter (municipality or barangay)
             if (!empty($barangay)) {
-                // Check if it's a municipality or barangay
-                // If it's a municipality, filter by municipality column
-                // If it's a barangay, filter by barangay column
-                $municipalityCheck = $this->pdo->prepare("SELECT COUNT(*) as count FROM community_users WHERE municipality = :location");
-                $municipalityCheck->execute([':location' => $barangay]);
-                $isMunicipality = $municipalityCheck->fetch(PDO::FETCH_ASSOC)['count'] > 0;
+                // Known municipalities from the system
+                $knownMunicipalities = [
+                    'ABUCAY', 'BAGAC', 'CITY OF BALANGA', 'DINALUPIHAN', 'HERMOSA', 'LIMAY', 
+                    'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'
+                ];
                 
-                if ($isMunicipality) {
-                    // It's a municipality, filter by municipality
+                if (in_array($barangay, $knownMunicipalities)) {
+                    // It's a municipality, filter by municipality column
                     $whereClause .= " AND municipality = :location";
                     $params[':location'] = $barangay;
                 } else {
-                    // It's a barangay, filter by barangay
+                    // It's a barangay, filter by barangay column
                     $whereClause .= " AND barangay = :location";
                     $params[':location'] = $barangay;
                 }
@@ -2351,19 +2349,18 @@ class DatabaseAPI {
             
             // Add location filter (municipality or barangay)
             if (!empty($barangay)) {
-                // Check if it's a municipality or barangay
-                // If it's a municipality, filter by municipality column
-                // If it's a barangay, filter by barangay column
-                $municipalityCheck = $this->pdo->prepare("SELECT COUNT(*) as count FROM community_users WHERE municipality = :location");
-                $municipalityCheck->execute([':location' => $barangay]);
-                $isMunicipality = $municipalityCheck->fetch(PDO::FETCH_ASSOC)['count'] > 0;
+                // Known municipalities from the system
+                $knownMunicipalities = [
+                    'ABUCAY', 'BAGAC', 'CITY OF BALANGA', 'DINALUPIHAN', 'HERMOSA', 'LIMAY', 
+                    'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'
+                ];
                 
-                if ($isMunicipality) {
-                    // It's a municipality, filter by municipality
+                if (in_array($barangay, $knownMunicipalities)) {
+                    // It's a municipality, filter by municipality column
                     $whereClause .= " AND municipality = :location";
                     $params[':location'] = $barangay;
                 } else {
-                    // It's a barangay, filter by barangay
+                    // It's a barangay, filter by barangay column
                     $whereClause .= " AND barangay = :location";
                     $params[':location'] = $barangay;
                 }
