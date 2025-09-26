@@ -1092,6 +1092,11 @@ header {
     min-width: 200px;
 }
 
+.custom-select-container.small-width {
+    min-width: 180px;
+    max-width: 200px;
+}
+
 .select-header {
     background-color: var(--color-card);
     border: 2px solid var(--color-border);
@@ -1126,6 +1131,12 @@ header {
     overflow-y: auto;
     z-index: 1000;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.filter-container .dropdown-content {
+    z-index: 1002;
+    position: absolute;
+    max-width: 250px;
 }
 
 /* Stats grid styles */
@@ -5515,6 +5526,17 @@ header .user-info {
     padding: 15px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.filter-container {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    position: relative;
+    overflow: visible;
+    z-index: 10;
 }
 
 .filter-group {
@@ -6723,42 +6745,43 @@ body {
 
         <!-- Community Filter Section - Moved to Top -->
         <div class="filter-section">
-            <div class="filter-group">
-                <label>Select Municipality:</label>
-                <div class="custom-select-container">
-                    <div class="select-header" onclick="toggleMunicipalityDropdown()">
-                        <span id="selected-municipality-option">All Municipalities</span>
-                        <span class="dropdown-arrow">▼</span>
-                    </div>
-                    <div class="dropdown-content" id="municipality-dropdown-content">
-                        <div class="search-container">
-                            <input type="text" id="municipality-search-input" placeholder="Search municipality..." onkeyup="filterMunicipalityOptions()">
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label>Select Municipality:</label>
+                    <div class="custom-select-container small-width">
+                        <div class="select-header" onclick="toggleMunicipalityDropdown()">
+                            <span id="selected-municipality-option">All Municipalities</span>
+                            <span class="dropdown-arrow">▼</span>
                         </div>
-                        <div class="options-container">
-                            <div class="option-item" data-value="">All Municipalities</div>
-                            <div class="option-item" data-value="ABUCAY">ABUCAY</div>
-                            <div class="option-item" data-value="BAGAC">BAGAC</div>
-                            <div class="option-item" data-value="CITY OF BALANGA (Capital)">CITY OF BALANGA (Capital)</div>
-                            <div class="option-item" data-value="DINALUPIHAN">DINALUPIHAN</div>
-                            <div class="option-item" data-value="HERMOSA">HERMOSA</div>
-                            <div class="option-item" data-value="LIMAY">LIMAY</div>
-                            <div class="option-item" data-value="MARIVELES">MARIVELES</div>
-                            <div class="option-item" data-value="MORONG">MORONG</div>
-                            <div class="option-item" data-value="ORANI">ORANI</div>
-                            <div class="option-item" data-value="ORION">ORION</div>
-                            <div class="option-item" data-value="PILAR">PILAR</div>
-                            <div class="option-item" data-value="SAMAL">SAMAL</div>
+                        <div class="dropdown-content" id="municipality-dropdown-content">
+                            <div class="search-container">
+                                <input type="text" id="municipality-search-input" placeholder="Search municipality..." onkeyup="filterMunicipalityOptions()">
+                            </div>
+                            <div class="options-container">
+                                <div class="option-item" data-value="">All Municipalities</div>
+                                <div class="option-item" data-value="ABUCAY">ABUCAY</div>
+                                <div class="option-item" data-value="BAGAC">BAGAC</div>
+                                <div class="option-item" data-value="CITY OF BALANGA (Capital)">CITY OF BALANGA (Capital)</div>
+                                <div class="option-item" data-value="DINALUPIHAN">DINALUPIHAN</div>
+                                <div class="option-item" data-value="HERMOSA">HERMOSA</div>
+                                <div class="option-item" data-value="LIMAY">LIMAY</div>
+                                <div class="option-item" data-value="MARIVELES">MARIVELES</div>
+                                <div class="option-item" data-value="MORONG">MORONG</div>
+                                <div class="option-item" data-value="ORANI">ORANI</div>
+                                <div class="option-item" data-value="ORION">ORION</div>
+                                <div class="option-item" data-value="PILAR">PILAR</div>
+                                <div class="option-item" data-value="SAMAL">SAMAL</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="filter-group">
-                <label>Select Barangay:</label>
-                <div class="custom-select-container">
-                    <div class="select-header" onclick="toggleDropdown()">
-                        <span id="selected-option">All Barangays</span>
-                        <span class="dropdown-arrow">▼</span>
-                    </div>
+                <div class="filter-group">
+                    <label>Select Barangay:</label>
+                    <div class="custom-select-container small-width">
+                        <div class="select-header" onclick="toggleDropdown()">
+                            <span id="selected-option">All Barangays</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
                     <div class="dropdown-content" id="dropdown-content">
                         <div class="search-container">
                             <input type="text" id="search-input" placeholder="Search barangay or municipality..." onkeyup="filterOptions()">
@@ -7059,6 +7082,7 @@ body {
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
             <div class="filter-group">
                 <label>WHO Standard:</label>
