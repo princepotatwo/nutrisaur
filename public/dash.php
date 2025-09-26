@@ -10624,32 +10624,105 @@ body {
             
             // Call existing functions that already exist in the dashboard
             try {
-                // Use correct API endpoints instead of broken existing functions
                 console.log('🔄 Updating dashboard for barangay:', value);
                 
-                // Update community metrics using correct API
-                const apiUrl = constructAPIURL('/api/DatabaseAPI.php', {
-                    action: 'get_community_metrics',
+                // Force refresh all dashboard components with barangay filter
+                // This will trigger the existing functions to re-fetch data with the barangay parameter
+                
+                // 1. Update WHO classifications
+                console.log('🔄 Updating WHO classifications for barangay:', value);
+                const whoApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'get_all_who_classifications_bulk',
                     barangay: value
                 });
-                
-                fetch(apiUrl)
+                fetch(whoApiUrl)
                     .then(response => response.json())
                     .then(data => {
-                        console.log('📊 Community metrics data:', data);
-                        // Update UI elements here if needed
+                        console.log('📊 WHO classifications data:', data);
+                        // Trigger existing WHO chart update
+                        if (typeof updateWHOChart === 'function') {
+                            updateWHOChart(data);
+                        }
                     })
-                    .catch(error => {
-                        console.error('❌ Error fetching community metrics:', error);
-                    });
-
-                // Call updateCharts function (fix API endpoint issue)
+                    .catch(error => console.error('❌ Error fetching WHO data:', error));
+                
+                // 2. Update trends chart
+                console.log('🔄 Updating trends chart for barangay:', value);
+                const trendsApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'get_all_who_classifications_bulk',
+                    barangay: value
+                });
+                fetch(trendsApiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('📊 Trends chart data:', data);
+                        // Trigger existing trends chart update
+                        if (typeof updateTrendsChart === 'function') {
+                            updateTrendsChart(data);
+                        }
+                    })
+                    .catch(error => console.error('❌ Error fetching trends data:', error));
+                
+                // 3. Update age classification chart
+                console.log('🔄 Updating age classification chart for barangay:', value);
+                const ageApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'get_age_classification_line_chart',
+                    who_standard: 'weight-for-age',
+                    barangay: value
+                });
+                fetch(ageApiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('📊 Age classification data:', data);
+                        // Trigger existing age chart update
+                        if (typeof updateAgeClassificationChart === 'function') {
+                            updateAgeClassificationChart(data);
+                        }
+                    })
+                    .catch(error => console.error('❌ Error fetching age data:', error));
+                
+                // 4. Update barangay distribution
+                console.log('🔄 Updating barangay distribution for barangay:', value);
+                const barangayApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'get_barangay_distribution_bulk',
+                    barangay: value
+                });
+                fetch(barangayApiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('📊 Barangay distribution data:', data);
+                        // Trigger existing barangay distribution update
+                        if (typeof updateBarangayDistributionDisplay === 'function') {
+                            updateBarangayDistributionDisplay(data);
+                        }
+                    })
+                    .catch(error => console.error('❌ Error fetching barangay data:', error));
+                
+                // 5. Update gender distribution
+                console.log('🔄 Updating gender distribution for barangay:', value);
+                const genderApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'get_gender_distribution_bulk',
+                    barangay: value
+                });
+                fetch(genderApiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('📊 Gender distribution data:', data);
+                        // Trigger existing gender distribution update
+                        if (typeof updateGenderDistributionDisplay === 'function') {
+                            updateGenderDistributionDisplay(data);
+                        }
+                    })
+                    .catch(error => console.error('❌ Error fetching gender data:', error));
+                
+                // 6. Update community metrics (use existing function)
+                updateCommunityMetrics(value);
+                
+                // 7. Update charts (use existing function)
                 updateCharts(value);
                 
-                // Call loadScreeningResponses if it exists
-                if (typeof loadScreeningResponses === 'function') {
-                    loadScreeningResponses(value);
-                }
+                console.log('✅ Dashboard update initiated for barangay:', value);
+                
             } catch (error) {
                 console.error('❌ Error updating dashboard:', error);
             }
