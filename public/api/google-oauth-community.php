@@ -86,7 +86,7 @@ try {
     $existingUser = $db->select('community_users', '*', 'email = ?', [$userEmail]);
     
     if (empty($existingUser)) {
-        // Create new user in community_users table
+        // Create new user in community_users table (NEW USER - needs screening)
         $userData = [
             'email' => $userEmail,
             'name' => $userName,
@@ -94,8 +94,11 @@ try {
             'municipality' => 'Unknown',
             'barangay' => 'Unknown',
             'sex' => 'Unknown',
-            'google_oauth' => 1,
-            'created_at' => date('Y-m-d H:i:s')
+            'birthday' => '1900-01-01',  // Default values for required fields
+            'is_pregnant' => 'No',
+            'weight' => '0',
+            'height' => '0',
+            'screening_date' => date('Y-m-d H:i:s')
         ];
         
         $result = $db->insert('community_users', $userData);
@@ -104,13 +107,10 @@ try {
             throw new Exception('Failed to create user account');
         }
         
-        $message = 'Account created successfully with Google Sign-In';
+        $message = 'NEW_USER:Account created successfully with Google Sign-In';
     } else {
-        // User exists, update Google OAuth flag if needed
-        if (!$existingUser[0]['google_oauth']) {
-            $db->update('community_users', ['google_oauth' => 1], 'email = ?', [$userEmail]);
-        }
-        $message = 'Signed in successfully with Google';
+        // User exists (EXISTING USER - go to dashboard)
+        $message = 'EXISTING_USER:Signed in successfully with Google';
     }
     
     // Start session
