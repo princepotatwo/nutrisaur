@@ -2652,6 +2652,15 @@ header {
             max-width: none;
         }
 
+        /* Ensure email column shows full email address */
+        .user-table th:nth-child(2),
+        .user-table td:nth-child(2) {
+            min-width: 200px;
+            max-width: none;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
         .user-table thead { 
             background-color: var(--color-card);
         }
@@ -3681,7 +3690,7 @@ header {
                             <th id="weightHeader" class="conditional-column">WEIGHT (kg)</th>
                             <th id="heightHeader" class="conditional-column">HEIGHT (cm)</th>
                             <th id="bmiHeader" class="conditional-column">BMI</th>
-                            <th id="standardHeader">Z-SCORE (SD RANGE)</th>
+                            <th id="standardHeader">Z-SCORE</th>
                             <th>CLASSIFICATION</th>
                             <th>SCREENING DATE</th>
                         </tr>
@@ -4963,7 +4972,7 @@ header {
                 if (selectedStandard === 'bmi-for-age' || selectedStandard === 'bmi-adult') {
                     standardHeader.textContent = 'BMI';
                 } else {
-                    standardHeader.textContent = 'Z-SCORE (SD RANGE)';
+                    standardHeader.textContent = 'Z-SCORE';
                 }
                 
                 // Show/hide conditional columns based on selected standard
