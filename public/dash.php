@@ -10475,51 +10475,55 @@ body {
         function updateBarangayDropdown(municipality) {
             console.log('🏘️ Updating barangay dropdown for municipality:', municipality);
             
-            const barangayDropdown = document.getElementById('dropdown-content');
-            const selectedSpan = document.getElementById('selected-option');
-            
-            if (!barangayDropdown) {
-                console.error('❌ Barangay dropdown not found');
-                return;
-            }
+            try {
+                const barangayDropdown = document.getElementById('dropdown-content');
+                const selectedSpan = document.getElementById('selected-option');
+                
+                if (!barangayDropdown) {
+                    console.error('❌ Barangay dropdown not found');
+                    return;
+                }
 
-            // Clear existing barangay options
-            barangayDropdown.innerHTML = '';
+                // Clear existing barangay options
+                barangayDropdown.innerHTML = '';
 
-            // Reset selected option text
-            if (selectedSpan) {
-                selectedSpan.textContent = 'Select Barangay';
-            }
+                // Reset selected option text
+                if (selectedSpan) {
+                    selectedSpan.textContent = 'Select Barangay';
+                }
 
-            // Get barangays for the selected municipality
-            const barangays = municipalitiesData[municipality];
-            
-            if (barangays && barangays.length > 0) {
-                // Add barangays to dropdown
-                barangays.forEach(barangay => {
-                    const optionDiv = document.createElement('div');
-                    optionDiv.className = 'option-item';
-                    optionDiv.setAttribute('data-value', barangay);
-                    optionDiv.textContent = barangay;
-                    
-                    // Add click event
-                    optionDiv.addEventListener('click', function() {
-                        selectOption(barangay, barangay);
+                // Get barangays for the selected municipality
+                const barangays = municipalitiesData[municipality];
+                
+                if (barangays && barangays.length > 0) {
+                    // Add barangays to dropdown
+                    barangays.forEach(barangay => {
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'option-item';
+                        optionDiv.setAttribute('data-value', barangay);
+                        optionDiv.textContent = barangay;
+                        
+                        // Add click event
+                        optionDiv.addEventListener('click', function() {
+                            selectOption(barangay, barangay);
+                        });
+                        
+                        barangayDropdown.appendChild(optionDiv);
                     });
                     
-                    barangayDropdown.appendChild(optionDiv);
-                });
-                
-                console.log(`✅ Added ${barangays.length} barangays for ${municipality}`);
-            } else {
-                // No barangays found
-                const noDataDiv = document.createElement('div');
-                noDataDiv.className = 'option-item';
-                noDataDiv.textContent = 'No barangays available';
-                noDataDiv.style.opacity = '0.5';
-                barangayDropdown.appendChild(noDataDiv);
-                
-                console.log('⚠️ No barangays found for municipality:', municipality);
+                    console.log(`✅ Added ${barangays.length} barangays for ${municipality}`);
+                } else {
+                    // No barangays found
+                    const noDataDiv = document.createElement('div');
+                    noDataDiv.className = 'option-item';
+                    noDataDiv.textContent = 'No barangays available';
+                    noDataDiv.style.opacity = '0.5';
+                    barangayDropdown.appendChild(noDataDiv);
+                    
+                    console.log('⚠️ No barangays found for municipality:', municipality);
+                }
+            } catch (error) {
+                console.error('❌ Error updating barangay dropdown:', error);
             }
         }
 
@@ -10527,23 +10531,27 @@ body {
         function selectMunicipality(municipalityValue, municipalityText) {
             console.log('🏛️ Municipality selected:', municipalityValue, municipalityText);
             
-            // Update municipality display
-            const municipalitySpan = document.getElementById('selected-municipality-option');
-            if (municipalitySpan) {
-                municipalitySpan.textContent = municipalityText;
+            try {
+                // Update municipality display
+                const municipalitySpan = document.getElementById('selected-municipality-option');
+                if (municipalitySpan) {
+                    municipalitySpan.textContent = municipalityText;
+                }
+                
+                // Close municipality dropdown
+                const municipalityDropdown = document.getElementById('municipality-dropdown-content');
+                if (municipalityDropdown) {
+                    municipalityDropdown.classList.remove('show');
+                }
+                
+                // Update barangay dropdown with barangays from selected municipality
+                updateBarangayDropdown(municipalityValue);
+                
+                // Don't trigger dashboard update yet - wait for barangay selection
+                console.log('✅ Municipality selection complete, barangay dropdown updated');
+            } catch (error) {
+                console.error('❌ Error in municipality selection:', error);
             }
-            
-            // Close municipality dropdown
-            const municipalityDropdown = document.getElementById('municipality-dropdown-content');
-            if (municipalityDropdown) {
-                municipalityDropdown.classList.remove('show');
-            }
-            
-            // Update barangay dropdown with barangays from selected municipality
-            updateBarangayDropdown(municipalityValue);
-            
-            // Don't trigger dashboard update yet - wait for barangay selection
-            console.log('✅ Municipality selection complete, barangay dropdown updated');
         }
 
         // Fixed API URL construction function
@@ -10715,11 +10723,40 @@ body {
                     })
                     .catch(error => console.error('❌ Error fetching gender data:', error));
                 
-                // 6. Update community metrics (use existing function)
-                updateCommunityMetrics(value);
+                // 6. Update community metrics with correct API
+                console.log('🔄 Updating community metrics for barangay:', value);
+                const communityApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'get_community_metrics',
+                    barangay: value
+                });
+                fetch(communityApiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('📊 Community metrics data:', data);
+                        // Update UI elements here if needed
+                        if (data && data.success) {
+                            // Update total screened
+                            const totalScreened = document.getElementById('community-total-screened');
+                            if (totalScreened && data.data && data.data.total_users) {
+                                totalScreened.textContent = data.data.total_users;
+                            }
+                        }
+                    })
+                    .catch(error => console.error('❌ Error fetching community metrics:', error));
                 
-                // 7. Update charts (use existing function)
-                updateCharts(value);
+                // 7. Update charts with correct API
+                console.log('🔄 Updating charts for barangay:', value);
+                const chartsApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
+                    action: 'analysis_data',
+                    barangay: value
+                });
+                fetch(chartsApiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('📊 Charts data:', data);
+                        // Update chart elements here if needed
+                    })
+                    .catch(error => console.error('❌ Error fetching charts data:', error));
                 
                 console.log('✅ Dashboard update initiated for barangay:', value);
                 
