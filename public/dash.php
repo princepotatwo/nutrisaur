@@ -10680,6 +10680,9 @@ body {
                             console.log('📊 Standard key:', standardKey);
                             console.log('📊 Standard data:', standardData);
                             console.log('📊 Available keys in data.data:', Object.keys(data.data));
+                            console.log('📊 Current standard:', currentStandard);
+                            console.log('📊 Looking for key:', standardKey);
+                            console.log('📊 Data has this key:', data.data.hasOwnProperty(standardKey));
                             
                             if (standardData) {
                                 console.log('📊 Standard classifications:', standardData.classifications);
@@ -10775,11 +10778,10 @@ body {
                 
                 // 6. Update community metrics with correct API
                 console.log('🔄 Updating community metrics for barangay:', value);
-                const communityApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
-                    action: 'get_community_metrics',
-                    barangay: value
-                });
-                console.log('🌐 Community API URL:', communityApiUrl);
+                
+                // Try the legacy API first (which we know works)
+                const communityApiUrl = `https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php?barangay=${encodeURIComponent(value)}`;
+                console.log('🌐 Community API URL (legacy):', communityApiUrl);
                 
                 fetch(communityApiUrl)
                     .then(response => {
@@ -10843,6 +10845,24 @@ body {
                             }
                         } else {
                             console.log('⚠️ Community metrics API returned unsuccessful response');
+                            console.log('🔄 Trying fallback API...');
+                            
+                            // Fallback to DatabaseAPI.php
+                            const fallbackApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
+                                action: 'get_community_metrics',
+                                barangay: value
+                            });
+                            console.log('🌐 Fallback API URL:', fallbackApiUrl);
+                            
+                            fetch(fallbackApiUrl)
+                                .then(response => response.json())
+                                .then(fallbackData => {
+                                    console.log('📊 Fallback API response:', fallbackData);
+                                    // Handle fallback response here if needed
+                                })
+                                .catch(fallbackError => {
+                                    console.error('❌ Fallback API also failed:', fallbackError);
+                                });
                         }
                     })
                     .catch(error => {
@@ -10949,6 +10969,8 @@ body {
                 const standardKey = whoStandard.replace('-', '_');
                 console.log('📊 Looking for standard key:', standardKey);
                 console.log('📊 Available data keys:', Object.keys(data?.data || {}));
+                console.log('📊 WHO standard:', whoStandard);
+                console.log('📊 Data has this key:', data?.data?.hasOwnProperty(standardKey));
                 
                 const standardData = data.data[standardKey];
                 console.log('📊 Standard data found:', standardData);
