@@ -1563,10 +1563,12 @@ class DatabaseAPI {
                     // It's a municipality, filter by municipality column
                     $whereClause .= " AND municipality = :location";
                     $params[':location'] = $barangay;
+                    error_log("🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: $barangay");
                 } else {
                     // It's a barangay, filter by barangay column
                     $whereClause .= " AND barangay = :location";
                     $params[':location'] = $barangay;
+                    error_log("🔍 getDetailedScreeningResponses: FILTERING BY BARANGAY: $barangay");
                 }
             }
             
@@ -1582,6 +1584,12 @@ class DatabaseAPI {
             ");
             $stmt->execute($params);
             $rawData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            error_log("🔍 getDetailedScreeningResponses: Found " . count($rawData) . " users for location: $barangay");
+            if (!empty($rawData)) {
+                error_log("🔍 getDetailedScreeningResponses: First user municipality: " . ($rawData[0]['municipality'] ?? 'NULL'));
+                error_log("🔍 getDetailedScreeningResponses: First user barangay: " . ($rawData[0]['barangay'] ?? 'NULL'));
+            }
             
             // Return raw data for dashboard, processed data for other uses
             return $rawData;
