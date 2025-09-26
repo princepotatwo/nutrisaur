@@ -7953,49 +7953,53 @@ body {
         function updateSeverelyCasesCards(whoData) {
             console.log('📊 Updating severely cases cards with WHO data:', whoData);
             
-            if (!whoData || !whoData.data) {
-                console.log('❌ No WHO data available for severely cases');
-                return;
-            }
-            
-            // Get severely cases from WHO classifications
-            const severelyUnderweight = whoData.data.weight_for_age?.['Severely Underweight'] || 0;
-            const severelyStunted = whoData.data.height_for_age?.['Severely Stunted'] || 0;
-            const severelyWasted = whoData.data.weight_for_height?.['Severely Wasted'] || 0;
-            
-            console.log('📊 WHO Severely Cases:');
-            console.log('  - Severely Underweight (WFA):', severelyUnderweight);
-            console.log('  - Severely Stunted (HFA):', severelyStunted);
-            console.log('  - Severely Wasted (WFH):', severelyWasted);
-            
-            // Update Severely Underweight card
-            const highRisk = document.getElementById('community-high-risk');
-            const riskChange = document.getElementById('community-risk-change');
-            if (highRisk && riskChange) {
-                console.log('📊 Setting severely underweight to:', severelyUnderweight);
-                highRisk.textContent = severelyUnderweight;
-                riskChange.textContent = severelyUnderweight;
-                dashboardState.highRisk = severelyUnderweight;
-            }
-            
-            // Update Severely Stunted card
-            const samCases = document.getElementById('community-sam-cases');
-            const samChange = document.getElementById('community-sam-change');
-            if (samCases && samChange) {
-                console.log('📊 Setting severely stunted to:', severelyStunted);
-                samCases.textContent = severelyStunted;
-                samChange.textContent = severelyStunted;
-                dashboardState.samCases = severelyStunted;
-            }
-            
-            // Update Severely Wasted card
-            const criticalMuac = document.getElementById('community-critical-muac');
-            const muacChange = document.getElementById('community-muac-change');
-            if (criticalMuac && muacChange) {
-                console.log('📊 Setting severely wasted to:', severelyWasted);
-                criticalMuac.textContent = severelyWasted;
-                muacChange.textContent = severelyWasted;
-                dashboardState.criticalMuac = severelyWasted;
+            try {
+                if (!whoData || !whoData.data) {
+                    console.log('❌ No WHO data available for severely cases');
+                    return;
+                }
+                
+                // Get severely cases from WHO classifications
+                const severelyUnderweight = whoData.data.weight_for_age?.['Severely Underweight'] || 0;
+                const severelyStunted = whoData.data.height_for_age?.['Severely Stunted'] || 0;
+                const severelyWasted = whoData.data.weight_for_height?.['Severely Wasted'] || 0;
+                
+                console.log('📊 WHO Severely Cases:');
+                console.log('  - Severely Underweight (WFA):', severelyUnderweight);
+                console.log('  - Severely Stunted (HFA):', severelyStunted);
+                console.log('  - Severely Wasted (WFH):', severelyWasted);
+                
+                // Update Severely Underweight card
+                const highRisk = document.getElementById('community-high-risk');
+                const riskChange = document.getElementById('community-risk-change');
+                if (highRisk && riskChange) {
+                    console.log('📊 Setting severely underweight to:', severelyUnderweight);
+                    highRisk.textContent = severelyUnderweight;
+                    riskChange.textContent = severelyUnderweight;
+                    dashboardState.highRisk = severelyUnderweight;
+                }
+                
+                // Update Severely Stunted card
+                const samCases = document.getElementById('community-sam-cases');
+                const samChange = document.getElementById('community-sam-change');
+                if (samCases && samChange) {
+                    console.log('📊 Setting severely stunted to:', severelyStunted);
+                    samCases.textContent = severelyStunted;
+                    samChange.textContent = severelyStunted;
+                    dashboardState.samCases = severelyStunted;
+                }
+                
+                // Update Severely Wasted card
+                const criticalMuac = document.getElementById('community-critical-muac');
+                const muacChange = document.getElementById('community-muac-change');
+                if (criticalMuac && muacChange) {
+                    console.log('📊 Setting severely wasted to:', severelyWasted);
+                    criticalMuac.textContent = severelyWasted;
+                    muacChange.textContent = severelyWasted;
+                    dashboardState.criticalMuac = severelyWasted;
+                }
+            } catch (error) {
+                console.error('❌ Error updating severely cases cards:', error);
             }
         }
 
@@ -9801,8 +9805,8 @@ body {
                 
                 console.log('WHO chart updated successfully');
                 
-                // Update severely cases cards with WHO data
-                updateSeverelyCasesCards(response);
+                // Note: Severely cases will be updated by the manual WHO chart update
+                // which has access to the full WHO data structure
                 
             } catch (error) {
                 console.error('Error updating WHO classification chart:', error);
