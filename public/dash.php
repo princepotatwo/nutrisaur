@@ -7621,7 +7621,16 @@ body {
         // Function to update barangay options based on selected municipality
         function updateBarangayOptions(municipality) {
             const barangayDropdown = document.getElementById('dropdown-content');
+            if (!barangayDropdown) {
+                console.error('❌ Barangay dropdown not found');
+                return;
+            }
+            
             const barangayOptionsContainer = barangayDropdown.querySelector('.options-container');
+            if (!barangayOptionsContainer) {
+                console.error('❌ Barangay options container not found');
+                return;
+            }
             
             // Clear existing options except the first "All Barangays" option
             const existingOptions = barangayOptionsContainer.querySelectorAll('.option-group');
@@ -10670,6 +10679,7 @@ body {
                             const standardData = data.data[standardKey];
                             console.log('📊 Standard key:', standardKey);
                             console.log('📊 Standard data:', standardData);
+                            console.log('📊 Available keys in data.data:', Object.keys(data.data));
                             
                             if (standardData) {
                                 console.log('📊 Standard classifications:', standardData.classifications);
@@ -10785,17 +10795,25 @@ body {
                         // Update UI elements here if needed
                         if (data && data.success) {
                             console.log('📊 Updating community metrics UI...');
+                            console.log('📊 Full community data structure:', JSON.stringify(data, null, 2));
                             
-                            // Update total screened
+                            // Update total screened - try different data paths
                             const totalScreened = document.getElementById('community-total-screened');
                             console.log('📊 Total screened element:', totalScreened);
-                            console.log('📊 Total users from API:', data.data?.total_users);
+                            console.log('📊 Total users from API (data.data):', data.data?.total_users);
+                            console.log('📊 Total users from API (data.total_users):', data.total_users);
+                            console.log('📊 Total users from API (data.processed_users):', data.processed_users);
                             
-                            if (totalScreened && data.data && data.data.total_users) {
-                                console.log('📊 Setting total screened to:', data.data.total_users);
-                                totalScreened.textContent = data.data.total_users;
+                            // Try multiple data paths for total users
+                            let totalUsers = data.data?.total_users || data.total_users || data.processed_users || 0;
+                            console.log('📊 Final total users value:', totalUsers);
+                            
+                            if (totalScreened && totalUsers > 0) {
+                                console.log('📊 Setting total screened to:', totalUsers);
+                                totalScreened.textContent = totalUsers;
                             } else {
                                 console.log('⚠️ Could not update total screened - missing element or data');
+                                console.log('⚠️ Element found:', !!totalScreened, 'Total users:', totalUsers);
                             }
                             
                             // Update other metrics if available
@@ -10935,10 +10953,14 @@ body {
                 const standardData = data.data[standardKey];
                 console.log('📊 Standard data found:', standardData);
                 
-                if (standardData && standardData.classifications) {
+                if (standardData) {
                     console.log('📊 WHO chart data for', whoStandard, ':', standardData);
-                    console.log('📊 Classifications object:', standardData.classifications);
-                    console.log('📊 Total users:', standardData.total_users);
+                    console.log('📊 Classifications object:', standardData);
+                    console.log('📊 Total users from actual_totals:', data.actual_totals[standardKey]);
+                    
+                    // Use the actual_totals for total users and standardData for classifications
+                    const totalUsers = data.actual_totals[standardKey] || 0;
+                    const classifications = standardData;
                     
                     // Update the donut chart with the filtered data
                     const chartBg = document.getElementById('risk-chart-bg');
@@ -10951,9 +10973,9 @@ body {
                     console.log('  - segments:', segments);
                     
                     if (chartBg && centerText && segments) {
-                        // Calculate total users for this standard
-                        const totalUsers = standardData.total_users || 0;
-                        const classifications = standardData.classifications;
+                        // Use the actual_totals for total users and standardData for classifications
+                        const totalUsers = data.actual_totals[standardKey] || 0;
+                        const classifications = standardData;
                         
                         console.log('📊 Updating WHO chart - Total users:', totalUsers, 'Classifications:', classifications);
                         console.log('📊 Classification entries:', Object.entries(classifications));
