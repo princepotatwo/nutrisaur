@@ -2,7 +2,7 @@
 // get_noreply_token.php - Get refresh token for noreply.nutrisaur@gmail.com
 $clientId = '43537903747-ppt6bbcnfa60p0hchanl32equ9c3b0ao.apps.googleusercontent.com';
 $clientSecret = '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';
-$redirectUri = 'https://nutrisaur-production.up.railway.app/get_noreply_token.php';
+$redirectUri = 'https://nutrisaur-production.up.railway.app/home.php';
 
 // Step 1: Get authorization code
 if (!isset($_GET['code'])) {
