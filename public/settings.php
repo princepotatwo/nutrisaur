@@ -3033,7 +3033,7 @@ header {
 
     </style>
 </head>
-<body>
+<body class="light-theme">
     <div class="navbar">
         <div class="navbar-header">
             <div class="navbar-logo">
@@ -3056,7 +3056,7 @@ header {
         </div>
         <div class="navbar-footer">
             <div>NutriSaur v2.0 • © 2025</div>
-            <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($username); ?></div>
+            <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
         </div>
     </div>
 
