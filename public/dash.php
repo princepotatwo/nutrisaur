@@ -10442,28 +10442,12 @@ body {
         }
 
         // ==============================================
-        // BARANGAY DROPDOWN FUNCTIONALITY - FIXED
-        // Based on screening.php pattern
+        // BARANGAY DROPDOWN FUNCTIONALITY - FIXED  
+        // Minimal integration with existing code
         // ==============================================
 
-        // Municipality and Barangay data (same as screening.php)
-        const municipalitiesData = {
-            'ABUCAY': ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Poblacion', 'Saguing', 'Salapungan', 'Tala'],
-            'BAGAC': ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibayo', 'Paysawan', 'Quinaoayanan', 'San Antonio', 'Saysain', 'Sibucao', 'Tabing-Ilog', 'Tipo', 'Tugatog', 'Wawa'],
-            'CITY OF BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Cupang Proper', 'Cupang West', 'Dangcol (Bernabe)', 'Ibayo', 'Malabia', 'Poblacion', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Jose', 'Sibacan', 'Camacho', 'Talisay', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo', 'Bagong Silang', 'Cupang North', 'Doña Francisca', 'Lote'],
-            'DINALUPIHAN': ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar', 'General Luna', 'Governor Generoso', 'Hacienda', 'Jose Abad Santos (Pob.)', 'Kataasan', 'Layac', 'Lourdes', 'Mabini', 'Maligaya', 'Naparing', 'Paco', 'Pag-asa', 'Pagalanggang', 'Panggalan', 'Pinulot', 'Poblacion', 'Rizal', 'Saguing', 'San Benito', 'San Isidro', 'San Ramon', 'Santo Cristo', 'Sapang Balas', 'Sumalo', 'Tipo', 'Tuklasan', 'Turac', 'Zamora'],
-            'HERMOSA': ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culong', 'Daungan (Pob.)', 'Judicial (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Palihan', 'Pandatung', 'Pulong Gubat', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo'],
-            'LIMAY': ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reforma', 'San Francisco de Asis', 'Townsite'],
-            'MARIVELES': ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Mabayo', 'Malaya', 'Maligaya', 'Mountain View', 'Poblacion', 'San Carlos', 'San Isidro', 'San Nicolas', 'San Pedro', 'Saysain', 'Sisiman', 'Tukuran'],
-            'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang', 'San Pedro', 'Sitio Liyang'],
-            'ORANI': ['Apolinario (Pob.)', 'Bagong Paraiso', 'Balut', 'Bayan (Pob.)', 'Calero (Pob.)', 'Calutit', 'Camachile', 'Del Pilar', 'Kaparangan', 'Mabatang', 'Maria Fe', 'Pagtakhan', 'Paking-Carbonero (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang', 'Poblacion', 'Rizal (Pob.)', 'Sagrada', 'San Jose', 'Sibul', 'Sili', 'Sulong', 'Tagumpay', 'Tala', 'Talimundoc', 'Tugatog', 'Wawa'],
-            'ORION': ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daan Bago', 'Daan Bilolo', 'Daan Pare', 'General Lim (Kaput)', 'Kaput', 'Lati', 'Lusung', 'Puting Buhangin', 'Sabatan', 'San Vicente', 'Santa Elena', 'Santo Domingo', 'Villa Angeles', 'Wakas'],
-            'PILAR': ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Bantan', 'Burgos', 'Del Rosario', 'Diwa', 'Landing', 'Liwa', 'Nueva Vida', 'Panghulo', 'Pantingan', 'Poblacion', 'Rizal', 'Sagrada', 'San Nicolas', 'San Pedro', 'Santo Niño', 'Wakas'],
-            'SAMAL': ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan', 'San Roque', 'Santa Lucia', 'Santo Niño', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
-        };
-
         // Global variable to track current selected barangay
-        let currentSelectedBarangay = '';
+        var dashboardSelectedBarangay = '';
 
         // Fixed API URL construction function
         function constructAPIURL(endpoint, params = {}) {
@@ -10483,30 +10467,7 @@ body {
             return url;
         }
 
-        // Fixed fetchDataFromAPI function with proper URL construction
-        async function fetchDataFromAPI(endpoint, params = {}) {
-            try {
-                const url = constructAPIURL(endpoint, params);
-                console.log('🌐 Fetching from API:', url);
-                
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    console.error('❌ API Response not OK:', response.status, response.statusText);
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                console.log('✅ API Response received:', data);
-                return data;
-                
-            } catch (error) {
-                console.error('❌ API Fetch Error:', error);
-                throw error;
-            }
-        }
-
-        // Dropdown toggle functions
+        // Dropdown toggle functions  
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-content');
             if (dropdown) {
@@ -10516,7 +10477,7 @@ body {
         }
 
         function toggleMunicipalityDropdown() {
-            const dropdown = document.getElementById('municipality-dropdown-content');
+            const dropdown = document.getElementById('municipality-dropdown-content');  
             if (dropdown) {
                 dropdown.classList.toggle('show');
                 console.log('🔽 Municipality dropdown toggled');
@@ -10552,7 +10513,7 @@ body {
                 selectedSpan.textContent = text;
             }
             
-            currentSelectedBarangay = value;
+            dashboardSelectedBarangay = value;
             console.log('✅ Selected barangay:', value);
             
             // Close dropdown
@@ -10561,257 +10522,19 @@ body {
                 dropdown.classList.remove('show');
             }
             
-            // Update dashboard for selected barangay
-            updateDashboardForBarangay(value);
-        }
-
-        // Main function to update dashboard based on barangay selection
-        async function updateDashboardForBarangay(barangay) {
-            console.log('🔄 updateDashboardForBarangay called with barangay:', barangay);
+            // Use existing functions with the selected barangay
+            console.log('🔄 updateDashboardForBarangay called with barangay:', value);
             
+            // Call existing functions that already exist in the dashboard
             try {
-                // Update community metrics
-                await updateCommunityMetrics(barangay);
-                
-                // Update charts
-                await updateCharts(barangay);
-                
-                // Update geographic data
-                await updateGeographicChart(barangay);
-                
-                // Update barangay distribution
-                await updateBarangayDistribution(barangay);
-                
-                // Update gender distribution
-                await updateGenderDistribution(barangay);
-                
-                // Load screening responses
-                await loadScreeningResponses(barangay);
-                
-                console.log('✅ Dashboard updated successfully for barangay:', barangay);
-                
+                updateCommunityMetrics(value);
+                updateCharts(value);
+                if (typeof loadScreeningResponses === 'function') {
+                    loadScreeningResponses(value);
+                }
             } catch (error) {
                 console.error('❌ Error updating dashboard:', error);
             }
-        }
-
-        // Community metrics update function
-        async function updateCommunityMetrics(barangay) {
-            console.log('🔄 updateCommunityMetrics called with barangay:', barangay);
-            
-            try {
-                // Try multiple endpoints to get community metrics
-                const endpoints = [
-                    '/api/DatabaseAPI.php',
-                    '/api/dashboard_assessment_stats.php',
-                    '/api/community_metrics.php'
-                ];
-                
-                const params = {
-                    action: 'dashboard_assessment_stats',
-                    barangay: barangay || ''
-                };
-                
-                let data = null;
-                
-                for (const endpoint of endpoints) {
-                    try {
-                        data = await fetchDataFromAPI(endpoint, params);
-                        if (data && data.success) {
-                            break;
-                        }
-                    } catch (error) {
-                        console.warn(`⚠️ Endpoint ${endpoint} failed:`, error.message);
-                        continue;
-                    }
-                }
-                
-                console.log('📊 Community Metrics Data:', data);
-                
-                if (data && data.success) {
-                    updateCommunityMetricsDisplay(data);
-                } else {
-                    console.warn('⚠️ No valid community metrics data found');
-                }
-                
-            } catch (error) {
-                console.error('❌ Error in updateCommunityMetrics:', error);
-            }
-        }
-
-        // Charts update function
-        async function updateCharts(barangay) {
-            console.log('🔄 updateCharts called with barangay:', barangay);
-            
-            try {
-                const params = {
-                    action: 'dashboard_assessment_stats',
-                    barangay: barangay || ''
-                };
-                
-                const data = await fetchDataFromAPI('/api/DatabaseAPI.php', params);
-                console.log('📈 Risk Distribution Data (RAW):', data);
-                
-                if (data && data.success) {
-                    updateChartsDisplay(data);
-                }
-                
-            } catch (error) {
-                console.error('❌ Error in updateCharts:', error);
-            }
-        }
-
-        // Geographic chart update function
-        async function updateGeographicChart(barangay) {
-            console.log('🌍 updateGeographicChart called with barangay:', barangay);
-            
-            try {
-                const params = {
-                    action: 'geographic_data',
-                    barangay: barangay || ''
-                };
-                
-                const data = await fetchDataFromAPI('/api/DatabaseAPI.php', params);
-                console.log('🌍 Geographic Data:', data);
-                
-                if (data && data.success) {
-                    updateGeographicChartDisplay(data.data || []);
-                } else {
-                    console.log('🌍 No geographic data available');
-                    updateGeographicChartDisplay([]);
-                }
-                
-            } catch (error) {
-                console.error('❌ Error in updateGeographicChart:', error);
-                updateGeographicChartDisplay([]);
-            }
-        }
-
-        // Barangay distribution update function
-        async function updateBarangayDistribution(barangay) {
-            console.log('🔄 Updating barangay distribution for:', barangay);
-            
-            try {
-                const params = { barangay: barangay || '' };
-                const url = constructAPIURL('/api/DatabaseAPI.php', {
-                    action: 'get_barangay_distribution_bulk',
-                    barangay: barangay || ''
-                });
-                
-                console.log('🌐 Barangay API URL:', url);
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                console.log('📊 Barangay API Response:', data);
-                
-                if (data && data.success) {
-                    updateBarangayDistributionDisplay(data.data);
-                }
-                
-            } catch (error) {
-                console.error('❌ Error in updateBarangayDistribution:', error);
-            }
-        }
-
-        // Gender distribution update function
-        async function updateGenderDistribution(barangay) {
-            console.log('🔄 Updating gender distribution for:', barangay);
-            
-            try {
-                const url = constructAPIURL('/api/DatabaseAPI.php', {
-                    action: 'get_gender_distribution_bulk',
-                    barangay: barangay || ''
-                });
-                
-                console.log('🌐 Gender API URL:', url);
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                console.log('📊 Gender API Response:', data);
-                
-                if (data && data.success) {
-                    updateGenderDistributionDisplay(data.data);
-                }
-                
-            } catch (error) {
-                console.error('❌ Error in updateGenderDistribution:', error);
-            }
-        }
-
-        // Load screening responses function
-        async function loadScreeningResponses(barangay) {
-            console.log('📋 loadScreeningResponses called with barangay:', barangay);
-            
-            try {
-                const params = {
-                    action: 'get_screening_responses',
-                    barangay: barangay || ''
-                };
-                
-                const data = await fetchDataFromAPI('/api/DatabaseAPI.php', params);
-                console.log('📋 Screening Responses Data:', data);
-                
-                if (data && data.success) {
-                    updateScreeningResponsesDisplay(data.data || []);
-                }
-                
-            } catch (error) {
-                console.error('❌ Error in loadScreeningResponses:', error);
-            }
-        }
-
-        // Display update functions (placeholders - implement based on your UI structure)
-        function updateCommunityMetricsDisplay(data) {
-            console.log('📊 Updating community metrics display:', data);
-            // Implement based on your dashboard structure
-        }
-
-        function updateChartsDisplay(data) {
-            console.log('📈 Updating charts display:', data);
-            // Implement based on your dashboard structure
-        }
-
-        function updateGeographicChartDisplay(data) {
-            console.log('🌍 updateGeographicChartDisplay called with data:', data);
-            
-            const container = document.querySelector('#geographic-chart-container');
-            if (!container) {
-                console.log('❌ Geographic chart container not found!');
-                return;
-            }
-            
-            // Clear existing content
-            container.innerHTML = '';
-            
-            if (data && data.length > 0) {
-                // Display geographic data
-                data.forEach(item => {
-                    const element = document.createElement('div');
-                    element.className = 'geographic-item';
-                    element.innerHTML = `
-                        <span class="location">${item.barangay || 'Unknown'}</span>
-                        <span class="count">${item.count || 0}</span>
-                    `;
-                    container.appendChild(element);
-                });
-            } else {
-                container.innerHTML = '<div class="no-data">No geographic data available</div>';
-            }
-        }
-
-        function updateBarangayDistributionDisplay(data) {
-            console.log('📊 Updating barangay distribution display:', data);
-            // Implement based on your dashboard structure
-        }
-
-        function updateGenderDistributionDisplay(data) {
-            console.log('📊 Updating gender distribution display:', data);
-            // Implement based on your dashboard structure
-        }
-
-        function updateScreeningResponsesDisplay(data) {
-            console.log('📋 Updating screening responses display:', data);
-            // Implement based on your dashboard structure
         }
 
         // Initialize dropdown event listeners
