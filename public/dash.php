@@ -10738,7 +10738,7 @@ body {
                         console.log('📊 Trends chart data:', data);
                         // Trigger existing trends chart update
                         if (typeof updateTrendsChart === 'function') {
-                            updateTrendsChart(data);
+                            updateTrendsChart(value);
                         }
                     })
                     .catch(error => console.error('❌ Error fetching trends data:', error));
@@ -10756,7 +10756,7 @@ body {
                         console.log('📊 Age classification data:', data);
                         // Trigger existing age chart update
                         if (typeof updateAgeClassificationChart === 'function') {
-                            updateAgeClassificationChart(data);
+                            updateAgeClassificationChart(value);
                         }
                     })
                     .catch(error => console.error('❌ Error fetching age data:', error));
