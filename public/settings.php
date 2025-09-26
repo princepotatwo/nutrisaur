@@ -806,7 +806,7 @@ header {
 
 .filter-section {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     align-items: end;
 }
@@ -879,7 +879,7 @@ header {
 /* Responsive Design */
 @media (max-width: 1200px) {
     .filter-section {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 10px;
     }
 }
@@ -899,7 +899,7 @@ header {
     }
 
     .filter-section {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 8px;
     }
 
@@ -3426,25 +3426,6 @@ header {
                                     <option value="Female">Female</option>
                                 </select>
                             </div>
-
-                            <div class="filter-item">
-                                <label>RISK LEVEL</label>
-                                <select id="riskFilter" onchange="filterByRisk()">
-                                    <option value="">All</option>
-                                    <option value="Low">Low Risk</option>
-                                    <option value="Medium">Medium Risk</option>
-                                    <option value="High">High Risk</option>
-                                </select>
-                            </div>
-
-                            <div class="filter-item">
-                                <label>LOCATION</label>
-                                <select id="locationFilter" onchange="filterByLocation()">
-                                    <option value="">All</option>
-                                    <option value="Urban">Urban</option>
-                                    <option value="Rural">Rural</option>
-                                </select>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -4891,13 +4872,6 @@ header {
             applyAllFilters();
         }
 
-        function filterByRisk() {
-            applyAllFilters();
-        }
-
-        function filterByLocation() {
-            applyAllFilters();
-        }
 
         function applyAllFilters() {
             const municipalityFilter = document.getElementById('municipalityFilter').value;
@@ -4905,8 +4879,6 @@ header {
             const minAge = document.getElementById('minAge').value;
             const maxAge = document.getElementById('maxAge').value;
             const sexFilter = document.getElementById('sexFilter').value;
-            const riskFilter = document.getElementById('riskFilter').value;
-            const locationFilter = document.getElementById('locationFilter').value;
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             
             const tableRows = document.querySelectorAll('.user-table tbody tr');
@@ -4960,27 +4932,6 @@ header {
                 // Sex filter
                 if (sexFilter && row.cells[4].textContent !== sexFilter) {
                     showRow = false;
-                }
-                
-                // Risk filter (assuming risk is in a specific column - adjust as needed)
-                if (riskFilter) {
-                    // You may need to adjust this based on your table structure
-                    const riskText = row.cells[6] ? row.cells[6].textContent.toLowerCase() : '';
-                    if (riskText) {
-                        if (riskFilter === 'Low' && !riskText.includes('low')) showRow = false;
-                        if (riskFilter === 'Medium' && !riskText.includes('medium')) showRow = false;
-                        if (riskFilter === 'High' && !riskText.includes('high')) showRow = false;
-                    }
-                }
-                
-                // Location filter (assuming location is in a specific column - adjust as needed)
-                if (locationFilter) {
-                    // You may need to adjust this based on your table structure
-                    const locationText = row.cells[7] ? row.cells[7].textContent.toLowerCase() : '';
-                    if (locationText) {
-                        if (locationFilter === 'Urban' && !locationText.includes('urban')) showRow = false;
-                        if (locationFilter === 'Rural' && !locationText.includes('rural')) showRow = false;
-                    }
                 }
                 
                 if (showRow) {
