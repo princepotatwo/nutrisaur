@@ -663,69 +663,146 @@ function getGoogleUserInfo($accessToken) {
 }
 
 /**
- * Send verification email using hardcoded email functionality
+ * Send verification email using Gmail API
  */
 function sendVerificationEmail($email, $username, $verificationCode) {
-    // Use Resend API for reliable email delivery
-    $apiKey = 're_P6tUyJB2_FjTagamRhwJrJ29q22mmyU4V';
-    $apiUrl = 'https://api.resend.com/emails';
+    // Gmail API credentials (use your existing OAuth credentials)
+    $clientId = '43537903747-ppt6bbcnfa60p0hchanl32equ9c3b0ao.apps.googleusercontent.com';
+    $clientSecret = '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';
+    $refreshToken = 'YOUR_REFRESH_TOKEN_HERE'; // You need to get this once
     
-    $emailData = [
-        'from' => 'NUTRISAUR <onboarding@resend.dev>',
-        'to' => [$email],
-        'subject' => 'NUTRISAUR - Email Verification',
-        'html' => "
-        <html>
-        <head>
-            <title>Email Verification</title>
-            <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: #2A3326; color: #A1B454; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-                .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-                .verification-code { 
-                    background: #2A3326; 
-                    color: #A1B454; 
-                    font-size: 32px; 
-                    font-weight: bold; 
-                    text-align: center; 
-                    padding: 20px; 
-                    border-radius: 8px; 
-                    margin: 20px 0;
-                    letter-spacing: 4px;
-                }
-                .footer { text-align: center; margin-top: 30px; color: #666; }
-            </style>
-        </head>
-        <body>
-            <div class='container'>
-                <div class='header'>
-                    <h1>Welcome to NUTRISAUR!</h1>
-                </div>
-                <div class='content'>
-                    <p>Hello " . htmlspecialchars($username) . ",</p>
-                    <p>Thank you for registering with NUTRISAUR. To complete your registration, please use the verification code below:</p>
-                    <div class='verification-code'>" . $verificationCode . "</div>
-                    <p><strong>This code will expire in 5 minutes.</strong></p>
-                    <p>If you did not create an account with NUTRISAUR, please ignore this email.</p>
-                    <div class='footer'>
-                        <p>Best regards,<br>NUTRISAUR Team</p>
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-        "
+    // Get access token
+    $accessToken = getGmailAccessToken($clientId, $clientSecret, $refreshToken);
+    
+    if (!$accessToken) {
+        error_log("Failed to get Gmail access token");
+        return false;
+    }
+    
+    // Create email message
+    $message = createGmailMessage($email, $username, $verificationCode);
+    
+    // Send via Gmail API
+    $response = sendGmailMessage($accessToken, $message);
+    
+    return $response;
+}
+
+/**
+ * Get Gmail access token using refresh token
+ */
+function getGmailAccessToken($clientId, $clientSecret, $refreshToken) {
+    $url = 'https://oauth2.googleapis.com/token';
+    $data = [
+        'client_id' => $clientId,
+        'client_secret' => $clientSecret,
+        'refresh_token' => $refreshToken,
+        'grant_type' => 'refresh_token'
     ];
     
-    // Send email via Resend API
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    
+    if ($curlError) {
+        error_log("Gmail API token exchange cURL error: " . $curlError);
+        return false;
+    }
+    
+    if ($httpCode === 200) {
+        $tokenData = json_decode($response, true);
+        if (isset($tokenData['access_token'])) {
+            return $tokenData['access_token'];
+        }
+    }
+    
+    error_log("Gmail API token exchange failed. HTTP Code: $httpCode, Response: $response");
+    return false;
+}
+
+/**
+ * Create Gmail message
+ */
+function createGmailMessage($to, $username, $verificationCode) {
+    $subject = 'NUTRISAUR - Email Verification';
+    $htmlBody = "
+    <html>
+    <head>
+        <title>Email Verification</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #2A3326; color: #A1B454; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+            .verification-code { 
+                background: #2A3326; 
+                color: #A1B454; 
+                font-size: 32px; 
+                font-weight: bold; 
+                text-align: center; 
+                padding: 20px; 
+                border-radius: 8px; 
+                margin: 20px 0;
+                letter-spacing: 4px;
+            }
+            .footer { text-align: center; margin-top: 30px; color: #666; }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>Welcome to NUTRISAUR!</h1>
+            </div>
+            <div class='content'>
+                <p>Hello " . htmlspecialchars($username) . ",</p>
+                <p>Thank you for registering with NUTRISAUR. To complete your registration, please use the verification code below:</p>
+                <div class='verification-code'>" . $verificationCode . "</div>
+                <p><strong>This code will expire in 5 minutes.</strong></p>
+                <p>If you did not create an account with NUTRISAUR, please ignore this email.</p>
+                <div class='footer'>
+                    <p>Best regards,<br>NUTRISAUR Team</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>";
+    
+    // Create MIME message
+    $boundary = uniqid(rand(), true);
+    $rawMessage = "From: NUTRISAUR <noreply@nutrisaur.app>\r\n";
+    $rawMessage .= "To: $to\r\n";
+    $rawMessage .= "Subject: $subject\r\n";
+    $rawMessage .= "MIME-Version: 1.0\r\n";
+    $rawMessage .= "Content-Type: multipart/alternative; boundary=$boundary\r\n\r\n";
+    $rawMessage .= "--$boundary\r\n";
+    $rawMessage .= "Content-Type: text/html; charset=UTF-8\r\n\r\n";
+    $rawMessage .= $htmlBody . "\r\n";
+    $rawMessage .= "--$boundary--\r\n";
+    
+    return base64_encode($rawMessage);
+}
+
+/**
+ * Send Gmail message
+ */
+function sendGmailMessage($accessToken, $message) {
+    $url = 'https://gmail.googleapis.com/gmail/v1/users/me/messages/send';
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['raw' => $message]));
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
+        'Authorization: Bearer ' . $accessToken,
+        'Content-Type: application/json'
     ]);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -736,19 +813,19 @@ function sendVerificationEmail($email, $username, $verificationCode) {
     curl_close($ch);
     
     if ($curlError) {
-        error_log("Resend API cURL error: " . $curlError);
+        error_log("Gmail API send cURL error: " . $curlError);
         return false;
     }
     
     if ($httpCode === 200) {
         $responseData = json_decode($response, true);
         if (isset($responseData['id'])) {
-            error_log("Email sent successfully via Resend API. Email ID: " . $responseData['id']);
+            error_log("Email sent successfully via Gmail API. Message ID: " . $responseData['id']);
             return true;
         }
     }
     
-    error_log("Resend API failed. HTTP Code: $httpCode, Response: $response");
+    error_log("Gmail API send failed. HTTP Code: $httpCode, Response: $response");
     return false;
 }
 ?>
