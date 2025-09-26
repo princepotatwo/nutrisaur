@@ -3721,6 +3721,10 @@ header {
                                     // Check if height column exists in database
                                     $heightCheck = $db->select('community_users', 'height', 'email = ?', [$users[0]['email'] ?? '']);
                                     error_log("DEBUG: Height column check result: " . json_encode($heightCheck));
+                                    
+                                    // Also check what columns actually exist in the table
+                                    $tableInfo = $db->select('community_users', '*', 'LIMIT 1', []);
+                                    error_log("DEBUG: Table structure check: " . json_encode($tableInfo));
                                 }
                                 
                                 if (!empty($users)) {
@@ -3855,16 +3859,19 @@ header {
                                             }
                                             
                                             if ($standardName === 'height-for-age' || $standardName === 'weight-for-height' || $standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                // Get height value from database
-                                                $heightValue = $user['height'] ?? 'N/A';
+                                                // Get height value from database - try multiple possible column names
+                                                $heightValue = $user['height'] ?? $user['height_cm'] ?? $user['HEIGHT'] ?? 'N/A';
+                                                
                                                 // Debug output to see what's in the user data
                                                 if ($heightValue === 'N/A' || empty($heightValue)) {
                                                     error_log("DEBUG: Height data not found for user " . ($user['name'] ?? 'unknown') . ". Available keys: " . implode(', ', array_keys($user)));
                                                     error_log("DEBUG: Height value: " . var_export($user['height'], true));
+                                                    error_log("DEBUG: Height_cm value: " . var_export($user['height_cm'], true));
+                                                    error_log("DEBUG: HEIGHT value: " . var_export($user['HEIGHT'], true));
                                                 }
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($heightValue) . '</td>';
                                             } else {
-                                                $heightValue = $user['height'] ?? 'N/A';
+                                                $heightValue = $user['height'] ?? $user['height_cm'] ?? $user['HEIGHT'] ?? 'N/A';
                                                 echo '<td class="text-center conditional-column" style="display:none;">' . htmlspecialchars($heightValue) . '</td>';
                                             }
                                             
