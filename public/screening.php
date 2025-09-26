@@ -4176,20 +4176,8 @@ header {
                 
                 // Classification filter
                 if (classification && showRow) {
-                    const rowStandard = row.dataset.standard;
-                    const ageMonths = parseInt(row.dataset.ageMonths);
-                    
-                    // Get the classification from the appropriate column based on the standard
-                    let rowClassification = '';
-                    if (rowStandard === 'weight-for-age') {
-                        rowClassification = row.cells[2].textContent.trim();
-                    } else if (rowStandard === 'height-for-age') {
-                        rowClassification = row.cells[3].textContent.trim();
-                    } else if (rowStandard === 'weight-for-height') {
-                        rowClassification = row.cells[4].textContent.trim();
-                    } else if (rowStandard === 'bmi-for-age' || rowStandard === 'bmi-adult') {
-                        rowClassification = row.cells[6].textContent.trim();
-                    }
+                    // Classification is always in column 8 (index 8)
+                    const rowClassification = row.cells[8].textContent.trim();
                     
                     if (rowClassification !== classification) {
                         showRow = false;
@@ -4243,6 +4231,7 @@ header {
         document.addEventListener('DOMContentLoaded', function() {
             initializeTableFunctionality();
             updateTableHeaders(); // Initialize table headers on page load
+            updateClassificationOptions(); // Initialize classification dropdown based on default standard
             filterByStandard(); // Initialize with default WHO standard (weight-for-age)
         });
 
@@ -4802,9 +4791,109 @@ header {
             applyAllFilters();
         }
 
+        function updateClassificationOptions() {
+            const standardFilter = document.getElementById('standardFilter');
+            const classificationFilter = document.getElementById('classificationFilter');
+            
+            if (!standardFilter || !classificationFilter) return;
+            
+            const selectedStandard = standardFilter.value;
+            
+            // Clear existing options
+            classificationFilter.innerHTML = '<option value="">All Classifications</option>';
+            
+            // Add options based on selected standard
+            if (selectedStandard === 'weight-for-age') {
+                classificationFilter.innerHTML += `
+                    <optgroup label="Weight-for-Age">
+                        <option value="Severely Underweight">Severely Underweight</option>
+                        <option value="Underweight">Underweight</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Overweight">Overweight</option>
+                    </optgroup>`;
+            } else if (selectedStandard === 'height-for-age') {
+                classificationFilter.innerHTML += `
+                    <optgroup label="Height-for-Age (Stunting)">
+                        <option value="Severely Stunted">Severely Stunted</option>
+                        <option value="Stunted">Stunted</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Tall">Tall</option>
+                    </optgroup>`;
+            } else if (selectedStandard === 'weight-for-height') {
+                classificationFilter.innerHTML += `
+                    <optgroup label="Weight-for-Height (Wasting)">
+                        <option value="Severely Wasted">Severely Wasted</option>
+                        <option value="Wasted">Wasted</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Overweight">Overweight</option>
+                        <option value="Obese">Obese</option>
+                    </optgroup>`;
+            } else if (selectedStandard === 'bmi-for-age') {
+                classificationFilter.innerHTML += `
+                    <optgroup label="BMI-for-Age">
+                        <option value="Severely Underweight">Severely Underweight</option>
+                        <option value="Underweight">Underweight</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Overweight">Overweight</option>
+                        <option value="Obese">Obese</option>
+                    </optgroup>`;
+            } else if (selectedStandard === 'bmi-adult') {
+                classificationFilter.innerHTML += `
+                    <optgroup label="BMI Adult">
+                        <option value="Underweight">Underweight</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Overweight">Overweight</option>
+                        <option value="Obese">Obese</option>
+                    </optgroup>`;
+            } else if (selectedStandard === 'all-ages') {
+                // Show all classifications when "All Ages" is selected
+                classificationFilter.innerHTML += `
+                    <optgroup label="Weight-for-Age">
+                        <option value="Severely Underweight">Severely Underweight</option>
+                        <option value="Underweight">Underweight</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Overweight">Overweight</option>
+                    </optgroup>
+                    <optgroup label="Height-for-Age (Stunting)">
+                        <option value="Severely Stunted">Severely Stunted</option>
+                        <option value="Stunted">Stunted</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Tall">Tall</option>
+                    </optgroup>
+                    <optgroup label="Weight-for-Height (Wasting)">
+                        <option value="Severely Wasted">Severely Wasted</option>
+                        <option value="Wasted">Wasted</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Overweight">Overweight</option>
+                        <option value="Obese">Obese</option>
+                    </optgroup>
+                    <optgroup label="BMI-for-Age">
+                        <option value="Severely Underweight">Severely Underweight</option>
+                        <option value="Underweight">Underweight</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Overweight">Overweight</option>
+                        <option value="Obese">Obese</option>
+                    </optgroup>
+                    <optgroup label="BMI Adult">
+                        <option value="Underweight">Underweight</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Overweight">Overweight</option>
+                        <option value="Obese">Obese</option>
+                    </optgroup>`;
+            }
+        }
+
         function filterByStandard() {
             updateTableHeaders();
             updateTableBodyColumns();
+            
+            // Clear classification filter when standard changes
+            const classificationFilter = document.getElementById('classificationFilter');
+            if (classificationFilter) {
+                classificationFilter.value = '';
+            }
+            
+            updateClassificationOptions(); // Update classification dropdown based on standard
             
             // Show only rows for the selected WHO standard
             const standardFilter = document.getElementById('standardFilter');
