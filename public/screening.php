@@ -3711,6 +3711,12 @@ header {
                                 
                                 $users = $result['success'] ? $result['data'] : [];
                                 
+                                // Debug: Log the first user's data to see what columns are available
+                                if (!empty($users)) {
+                                    error_log("DEBUG: First user data keys: " . implode(', ', array_keys($users[0])));
+                                    error_log("DEBUG: First user height data: " . ($users[0]['height'] ?? 'NOT_FOUND') . " | height_cm: " . ($users[0]['height_cm'] ?? 'NOT_FOUND'));
+                                }
+                                
                                 if (!empty($users)) {
                                     foreach ($users as $user) {
                                         // Use WHO Growth Standards decision tree for each user
@@ -3843,8 +3849,12 @@ header {
                                             }
                                             
                                             if ($standardName === 'height-for-age' || $standardName === 'weight-for-height' || $standardName === 'bmi-for-age' || $standardName === 'bmi-adult') {
-                                                // Try different possible column names for height
+                                                // Debug: Check what height data is available
                                                 $heightValue = $user['height'] ?? $user['height_cm'] ?? 'N/A';
+                                                // Debug output to see what's in the user data
+                                                if ($heightValue === 'N/A') {
+                                                    error_log("DEBUG: Height data not found for user " . ($user['name'] ?? 'unknown') . ". Available keys: " . implode(', ', array_keys($user)));
+                                                }
                                                 echo '<td class="text-center conditional-column">' . htmlspecialchars($heightValue) . '</td>';
                                             } else {
                                                 $heightValue = $user['height'] ?? $user['height_cm'] ?? 'N/A';
