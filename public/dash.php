@@ -10637,7 +10637,7 @@ body {
                 // Force refresh all dashboard components with barangay filter
                 // This will trigger the existing functions to re-fetch data with the barangay parameter
                 
-                // 1. Update WHO classifications
+                // 1. Update WHO classifications with proper barangay filtering
                 console.log('🔄 Updating WHO classifications for barangay:', value);
                 const whoApiUrl = constructAPIURL('/api/DatabaseAPI.php', {
                     action: 'get_all_who_classifications_bulk',
@@ -10647,9 +10647,22 @@ body {
                     .then(response => response.json())
                     .then(data => {
                         console.log('📊 WHO classifications data:', data);
-                        // Trigger existing WHO chart update
-                        if (typeof updateWHOChart === 'function') {
-                            updateWHOChart(data);
+                        
+                        // Update WHO chart with barangay filter
+                        if (data && data.success && data.data) {
+                            // Get current WHO standard
+                            const whoStandardSelect = document.getElementById('who-standard-select');
+                            const currentStandard = whoStandardSelect ? whoStandardSelect.value : 'weight-for-age';
+                            
+                            console.log('🔄 Updating WHO chart with barangay filter:', value, 'standard:', currentStandard);
+                            
+                            // Trigger WHO chart update with the filtered data
+                            if (typeof updateWHOChart === 'function') {
+                                updateWHOChart(data);
+                            } else {
+                                // Fallback: manually update the WHO chart
+                                updateWHOChartManually(data, currentStandard);
+                            }
                         }
                     })
                     .catch(error => console.error('❌ Error fetching WHO data:', error));
@@ -10780,8 +10793,12 @@ body {
                         
                         municipalityOptions.forEach(item => {
                             // Remove existing listeners to avoid duplicates
-                            item.removeEventListener('click', handleMunicipalityClick);
-                            item.addEventListener('click', handleMunicipalityClick);
+                            try {
+                                item.removeEventListener('click', handleMunicipalityClick);
+                                item.addEventListener('click', handleMunicipalityClick);
+                            } catch (error) {
+                                console.warn('⚠️ Error adding municipality listener:', error);
+                            }
                         });
                     } else {
                         console.error('❌ Municipality dropdown not found');
@@ -10795,8 +10812,12 @@ body {
                         
                         barangayOptions.forEach(item => {
                             // Remove existing listeners to avoid duplicates
-                            item.removeEventListener('click', handleBarangayClick);
-                            item.addEventListener('click', handleBarangayClick);
+                            try {
+                                item.removeEventListener('click', handleBarangayClick);
+                                item.addEventListener('click', handleBarangayClick);
+                            } catch (error) {
+                                console.warn('⚠️ Error adding barangay listener:', error);
+                            }
                         });
                     } else {
                         console.error('❌ Barangay dropdown not found');
@@ -10807,7 +10828,7 @@ body {
                 } catch (error) {
                     console.error('❌ Error initializing dropdown functionality:', error);
                 }
-            }, 100); // Small delay to ensure DOM is ready
+            }, 200); // Increased delay to ensure DOM is ready
         });
 
         // Separate event handler functions to avoid conflicts
@@ -10823,6 +10844,100 @@ body {
             const text = this.textContent;
             console.log('🏘️ Barangay option clicked:', value, text);
             selectOption(value, text);
+        }
+
+        // Manual WHO chart update function
+        function updateWHOChartManually(data, whoStandard) {
+            console.log('🔄 Manually updating WHO chart with data:', data, 'standard:', whoStandard);
+            
+            try {
+                // Get the current WHO standard data from the bulk response
+                const standardKey = whoStandard.replace('-', '_');
+                const standardData = data.data[standardKey];
+                
+                if (standardData && standardData.classifications) {
+                    console.log('📊 WHO chart data for', whoStandard, ':', standardData);
+                    
+                    // Update the donut chart with the filtered data
+                    const chartBg = document.getElementById('risk-chart-bg');
+                    const centerText = document.getElementById('risk-center-text');
+                    const segments = document.getElementById('risk-segments');
+                    
+                    if (chartBg && centerText && segments) {
+                        // Calculate total users for this standard
+                        const totalUsers = standardData.total_users || 0;
+                        const classifications = standardData.classifications;
+                        
+                        console.log('📊 Updating WHO chart - Total users:', totalUsers, 'Classifications:', classifications);
+                        
+                        // Update center text
+                        centerText.textContent = totalUsers;
+                        
+                        // Update chart segments based on classifications
+                        if (totalUsers > 0) {
+                            // Create segments for each classification
+                            let segmentHtml = '';
+                            let totalPercentage = 0;
+                            
+                            Object.entries(classifications).forEach(([key, value], index) => {
+                                if (value > 0) {
+                                    const percentage = (value / totalUsers) * 100;
+                                    const color = getClassificationColor(key);
+                                    const startAngle = totalPercentage;
+                                    const endAngle = totalPercentage + percentage;
+                                    
+                                    segmentHtml += `
+                                        <div class="segment" style="
+                                            background: conic-gradient(from ${startAngle}deg, ${color} ${startAngle}deg ${endAngle}deg, transparent ${endAngle}deg);
+                                            position: absolute;
+                                            top: 0;
+                                            left: 0;
+                                            width: 100%;
+                                            height: 100%;
+                                            border-radius: 50%;
+                                        "></div>
+                                    `;
+                                    
+                                    totalPercentage += percentage;
+                                }
+                            });
+                            
+                            segments.innerHTML = segmentHtml;
+                            
+                            // Update chart background
+                            if (totalPercentage > 0) {
+                                chartBg.style.background = `conic-gradient(#E91E63 0% ${totalPercentage}%, #f0f0f0 ${totalPercentage}% 100%)`;
+                            }
+                            
+                            console.log('✅ WHO chart updated manually with barangay filter');
+                        } else {
+                            // No data - show empty chart
+                            centerText.textContent = '0';
+                            segments.innerHTML = '';
+                            chartBg.style.background = '#f0f0f0';
+                        }
+                    } else {
+                        console.error('❌ WHO chart elements not found');
+                    }
+                } else {
+                    console.log('⚠️ No data available for WHO standard:', whoStandard);
+                }
+            } catch (error) {
+                console.error('❌ Error updating WHO chart manually:', error);
+            }
+        }
+
+        // Helper function to get classification colors
+        function getClassificationColor(classification) {
+            const colors = {
+                'severe': '#E91E63',
+                'moderate': '#FF9800', 
+                'mild': '#FFC107',
+                'normal': '#4CAF50',
+                'overweight': '#9C27B0',
+                'obese': '#F44336'
+            };
+            return colors[classification] || '#E91E63';
         }
 
     </script>
