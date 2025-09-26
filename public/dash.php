@@ -10643,10 +10643,18 @@ body {
                     action: 'get_all_who_classifications_bulk',
                     barangay: value
                 });
+                console.log('🌐 WHO API URL:', whoApiUrl);
+                
                 fetch(whoApiUrl)
-                    .then(response => response.json())
+                    .then(response => {
+                        console.log('📡 WHO API Response Status:', response.status);
+                        return response.json();
+                    })
                     .then(data => {
-                        console.log('📊 WHO classifications data:', data);
+                        console.log('📊 WHO classifications data (RAW):', data);
+                        console.log('📊 WHO data success:', data?.success);
+                        console.log('📊 WHO data keys:', Object.keys(data || {}));
+                        console.log('📊 WHO data.data keys:', Object.keys(data?.data || {}));
                         
                         // Update WHO chart with barangay filter
                         if (data && data.success && data.data) {
@@ -10655,17 +10663,36 @@ body {
                             const currentStandard = whoStandardSelect ? whoStandardSelect.value : 'weight-for-age';
                             
                             console.log('🔄 Updating WHO chart with barangay filter:', value, 'standard:', currentStandard);
+                            console.log('📊 WHO data for standard', currentStandard, ':', data.data);
+                            
+                            // Debug: Check if we have data for the current standard
+                            const standardKey = currentStandard.replace('-', '_');
+                            const standardData = data.data[standardKey];
+                            console.log('📊 Standard key:', standardKey);
+                            console.log('📊 Standard data:', standardData);
+                            
+                            if (standardData) {
+                                console.log('📊 Standard classifications:', standardData.classifications);
+                                console.log('📊 Standard total users:', standardData.total_users);
+                            }
                             
                             // Trigger WHO chart update with the filtered data
                             if (typeof updateWHOChart === 'function') {
+                                console.log('🔄 Using existing updateWHOChart function');
                                 updateWHOChart(data);
                             } else {
+                                console.log('🔄 Using manual WHO chart update');
                                 // Fallback: manually update the WHO chart
                                 updateWHOChartManually(data, currentStandard);
                             }
+                        } else {
+                            console.log('⚠️ No valid WHO data received for barangay:', value);
                         }
                     })
-                    .catch(error => console.error('❌ Error fetching WHO data:', error));
+                    .catch(error => {
+                        console.error('❌ Error fetching WHO data:', error);
+                        console.error('❌ Error details:', error.message);
+                    });
                 
                 // 2. Update trends chart
                 console.log('🔄 Updating trends chart for barangay:', value);
@@ -10742,20 +10769,68 @@ body {
                     action: 'get_community_metrics',
                     barangay: value
                 });
+                console.log('🌐 Community API URL:', communityApiUrl);
+                
                 fetch(communityApiUrl)
-                    .then(response => response.json())
+                    .then(response => {
+                        console.log('📡 Community API Response Status:', response.status);
+                        return response.json();
+                    })
                     .then(data => {
-                        console.log('📊 Community metrics data:', data);
+                        console.log('📊 Community metrics data (RAW):', data);
+                        console.log('📊 Community data success:', data?.success);
+                        console.log('📊 Community data keys:', Object.keys(data || {}));
+                        console.log('📊 Community data.data:', data?.data);
+                        
                         // Update UI elements here if needed
                         if (data && data.success) {
+                            console.log('📊 Updating community metrics UI...');
+                            
                             // Update total screened
                             const totalScreened = document.getElementById('community-total-screened');
+                            console.log('📊 Total screened element:', totalScreened);
+                            console.log('📊 Total users from API:', data.data?.total_users);
+                            
                             if (totalScreened && data.data && data.data.total_users) {
+                                console.log('📊 Setting total screened to:', data.data.total_users);
                                 totalScreened.textContent = data.data.total_users;
+                            } else {
+                                console.log('⚠️ Could not update total screened - missing element or data');
                             }
+                            
+                            // Update other metrics if available
+                            if (data.data) {
+                                console.log('📊 Available community metrics:', Object.keys(data.data));
+                                
+                                // Update high risk if available
+                                const highRisk = document.getElementById('community-high-risk');
+                                if (highRisk && data.data.high_risk) {
+                                    console.log('📊 Setting high risk to:', data.data.high_risk);
+                                    highRisk.textContent = data.data.high_risk;
+                                }
+                                
+                                // Update SAM cases if available
+                                const samCases = document.getElementById('community-sam-cases');
+                                if (samCases && data.data.sam_cases) {
+                                    console.log('📊 Setting SAM cases to:', data.data.sam_cases);
+                                    samCases.textContent = data.data.sam_cases;
+                                }
+                                
+                                // Update critical MUAC if available
+                                const criticalMuac = document.getElementById('community-critical-muac');
+                                if (criticalMuac && data.data.critical_muac) {
+                                    console.log('📊 Setting critical MUAC to:', data.data.critical_muac);
+                                    criticalMuac.textContent = data.data.critical_muac;
+                                }
+                            }
+                        } else {
+                            console.log('⚠️ Community metrics API returned unsuccessful response');
                         }
                     })
-                    .catch(error => console.error('❌ Error fetching community metrics:', error));
+                    .catch(error => {
+                        console.error('❌ Error fetching community metrics:', error);
+                        console.error('❌ Error details:', error.message);
+                    });
                 
                 // 7. Update charts with correct API
                 console.log('🔄 Updating charts for barangay:', value);
@@ -10849,19 +10924,31 @@ body {
         // Manual WHO chart update function
         function updateWHOChartManually(data, whoStandard) {
             console.log('🔄 Manually updating WHO chart with data:', data, 'standard:', whoStandard);
+            console.log('📊 Full data object:', JSON.stringify(data, null, 2));
             
             try {
                 // Get the current WHO standard data from the bulk response
                 const standardKey = whoStandard.replace('-', '_');
+                console.log('📊 Looking for standard key:', standardKey);
+                console.log('📊 Available data keys:', Object.keys(data?.data || {}));
+                
                 const standardData = data.data[standardKey];
+                console.log('📊 Standard data found:', standardData);
                 
                 if (standardData && standardData.classifications) {
                     console.log('📊 WHO chart data for', whoStandard, ':', standardData);
+                    console.log('📊 Classifications object:', standardData.classifications);
+                    console.log('📊 Total users:', standardData.total_users);
                     
                     // Update the donut chart with the filtered data
                     const chartBg = document.getElementById('risk-chart-bg');
                     const centerText = document.getElementById('risk-center-text');
                     const segments = document.getElementById('risk-segments');
+                    
+                    console.log('📊 Chart elements found:');
+                    console.log('  - chartBg:', chartBg);
+                    console.log('  - centerText:', centerText);
+                    console.log('  - segments:', segments);
                     
                     if (chartBg && centerText && segments) {
                         // Calculate total users for this standard
@@ -10869,8 +10956,10 @@ body {
                         const classifications = standardData.classifications;
                         
                         console.log('📊 Updating WHO chart - Total users:', totalUsers, 'Classifications:', classifications);
+                        console.log('📊 Classification entries:', Object.entries(classifications));
                         
                         // Update center text
+                        console.log('📊 Setting center text to:', totalUsers);
                         centerText.textContent = totalUsers;
                         
                         // Update chart segments based on classifications
@@ -10879,12 +10968,16 @@ body {
                             let segmentHtml = '';
                             let totalPercentage = 0;
                             
+                            console.log('📊 Processing classifications...');
                             Object.entries(classifications).forEach(([key, value], index) => {
+                                console.log(`📊 Processing ${key}: ${value} users`);
                                 if (value > 0) {
                                     const percentage = (value / totalUsers) * 100;
                                     const color = getClassificationColor(key);
                                     const startAngle = totalPercentage;
                                     const endAngle = totalPercentage + percentage;
+                                    
+                                    console.log(`📊 ${key}: ${value} users (${percentage.toFixed(2)}%) - ${color} - ${startAngle}deg to ${endAngle}deg`);
                                     
                                     segmentHtml += `
                                         <div class="segment" style="
@@ -10902,28 +10995,41 @@ body {
                                 }
                             });
                             
+                            console.log('📊 Total percentage:', totalPercentage);
+                            console.log('📊 Setting segments HTML:', segmentHtml);
                             segments.innerHTML = segmentHtml;
                             
                             // Update chart background
                             if (totalPercentage > 0) {
-                                chartBg.style.background = `conic-gradient(#E91E63 0% ${totalPercentage}%, #f0f0f0 ${totalPercentage}% 100%)`;
+                                const backgroundStyle = `conic-gradient(#E91E63 0% ${totalPercentage}%, #f0f0f0 ${totalPercentage}% 100%)`;
+                                console.log('📊 Setting chart background to:', backgroundStyle);
+                                chartBg.style.background = backgroundStyle;
                             }
                             
                             console.log('✅ WHO chart updated manually with barangay filter');
                         } else {
                             // No data - show empty chart
+                            console.log('📊 No data - showing empty chart');
                             centerText.textContent = '0';
                             segments.innerHTML = '';
                             chartBg.style.background = '#f0f0f0';
                         }
                     } else {
                         console.error('❌ WHO chart elements not found');
+                        console.error('❌ Missing elements:', {
+                            chartBg: !chartBg,
+                            centerText: !centerText,
+                            segments: !segments
+                        });
                     }
                 } else {
                     console.log('⚠️ No data available for WHO standard:', whoStandard);
+                    console.log('⚠️ Standard data:', standardData);
+                    console.log('⚠️ Has classifications:', standardData?.classifications);
                 }
             } catch (error) {
                 console.error('❌ Error updating WHO chart manually:', error);
+                console.error('❌ Error stack:', error.stack);
             }
         }
 

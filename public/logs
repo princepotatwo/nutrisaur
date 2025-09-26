@@ -18,9 +18,6 @@
  Fetching WHO data for: Object
  API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
  🚀 Initializing municipality and barangay dropdown functionality...
- 📍 Found 13 municipality options
- 📍 Found 234 barangay options
- ✅ Municipality and barangay dropdown functionality initialized
  Bulk API Response: Object
  Mapping weight-for-age to weight_for_age: Object
  Classification values: Array(6)
@@ -66,6 +63,9 @@
  📊 Loading initial trends chart...
  📊 Updating trends chart with all classifications...
  Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
+ 📍 Found 13 municipality options
+ 📍 Found 234 barangay options
+ ✅ Municipality and barangay dropdown functionality initialized
  All classifications data received: Object
  Data success: true
  Data keys: Array(5)
@@ -89,6 +89,13 @@
  🔄 Loading gender distribution data...
  Fetching gender distribution data for: Object
  Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+ Gender API Response: Object
+ Updating gender distribution display: Object
+ 🌍 Loading geographic distribution with pre-loaded data...
+ 🌍 No pre-loaded geographic data available
+ 🌍 updateGeographicChartDisplay called with data: Array(0)
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:7404
  🔍 Card Debug - Checking card elements:
  Card Container: 
  Number of cards found: 4
@@ -113,13 +120,6 @@
    - High Risk (Severely Underweight): 2
    - SAM Cases (Severely Stunted): 1
    - Critical MUAC (Severely Wasted): 2
- Gender API Response: Object
- Updating gender distribution display: Object
- 🌍 Loading geographic distribution with pre-loaded data...
- 🌍 No pre-loaded geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:7404
  🔄 Starting community metrics update...
  Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
  DatabaseAPI response for dashboard_assessment_stats : Object
@@ -161,62 +161,25 @@ updateGeographicChartDisplay @ dash:7404
  ✅ Added 17 barangays for MARIVELES
  ✅ Municipality selection complete, barangay dropdown updated
  📊 WHO classifications data: Object
- 📊 Community metrics data: Object
+ 🔄 Updating WHO chart with barangay filter: MARIVELES standard: weight-for-age
+ 🔄 Manually updating WHO chart with data: Object standard: weight-for-age
+ ⚠️ No data available for WHO standard: weight-for-age
  📊 Barangay distribution data: Object
  Updating barangay distribution display: Object
- 📊 Charts data: Object
- 📊 Gender distribution data: Object
- Updating gender distribution display: Object
  📊 Age classification data: Object
  📊 Updating Age Classification Line Chart...
  📊 Using WHO Standard: weight-for-age
  📊 Using Barangay: Select Barangay
  📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=Select%20Barangay
+ 📊 Gender distribution data: Object
+ Updating gender distribution display: Object
+ 📊 Community metrics data: Object
+ 📊 Charts data: Object
  📊 Trends chart data: Object
  📊 Updating trends chart with all classifications...
  Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Select Barangay
  📊 Age classification API response: Object
  No age classification line chart data available
- All classifications data received: Object
- Data success: true
- Data keys: Array(5)
- 🔽 Barangay dropdown toggled
- ✅ Selected barangay: Batangas II
- 🔄 updateDashboardForBarangay called with barangay: Batangas II
- 🔄 Updating dashboard for barangay: Batangas II
- 🔄 Updating WHO classifications for barangay: Batangas II
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Batangas%20II
- 🔄 Updating trends chart for barangay: Batangas II
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Batangas%20II
- 🔄 Updating age classification chart for barangay: Batangas II
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=Batangas%20II
- 🔄 Updating barangay distribution for barangay: Batangas II
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=Batangas%20II
- 🔄 Updating gender distribution for barangay: Batangas II
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=Batangas%20II
- 🔄 Updating community metrics for barangay: Batangas II
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_community_metrics&barangay=Batangas%20II
- 🔄 Updating charts for barangay: Batangas II
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=analysis_data&barangay=Batangas%20II
- ✅ Dashboard update initiated for barangay: Batangas II
- 📊 Age classification data: Object
- 📊 Updating Age Classification Line Chart...
- Canvas not found, restoring...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: Batangas II
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=Batangas%20II
- 📊 WHO classifications data: Object
- 📊 Gender distribution data: Object
- Updating gender distribution display: Object
- 📊 Community metrics data: Object
- 📊 Charts data: Object
- 📊 Barangay distribution data: Object
- Updating barangay distribution display: Object
- 📊 Age classification API response: Object
- No age classification line chart data available
- 📊 Trends chart data: Object
- 📊 Updating trends chart with all classifications...
- Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Batangas II
  All classifications data received: Object
  Data success: true
  Data keys: Array(5)
@@ -240,18 +203,21 @@ updateGeographicChartDisplay @ dash:7404
  🔧 Constructed URL: /api/DatabaseAPI.php?action=analysis_data&barangay=Alion
  ✅ Dashboard update initiated for barangay: Alion
  📊 WHO classifications data: Object
- 📊 Charts data: Object
+ 🔄 Updating WHO chart with barangay filter: Alion standard: weight-for-age
+ 🔄 Manually updating WHO chart with data: Object standard: weight-for-age
+ ⚠️ No data available for WHO standard: weight-for-age
+ 📊 Gender distribution data: Object
+ Updating gender distribution display: Object
  📊 Barangay distribution data: Object
  Updating barangay distribution display: Object
- 📊 Community metrics data: Object
+ 📊 Charts data: Object
  📊 Age classification data: Object
  📊 Updating Age Classification Line Chart...
  Canvas not found, restoring...
  📊 Using WHO Standard: weight-for-age
  📊 Using Barangay: Alion
  📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=Alion
- 📊 Gender distribution data: Object
- Updating gender distribution display: Object
+ 📊 Community metrics data: Object
  📊 Trends chart data: Object
  📊 Updating trends chart with all classifications...
  Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Alion
@@ -313,90 +279,43 @@ updateGeographicChartDisplay @ dash:7404
  ✅ Age Classification Line Chart created successfully
  ✅ Chart update completed
  🏁 WHO classification loading completed
- WHO dropdown changed to: weight-for-age
- 🔄 Starting WHO standard change handler...
- 📊 WHO Standard selected: weight-for-age
- 📊 Dropdown element found: true
- 📊 Dropdown value: weight-for-age
- 📡 Fetching WHO data...
- Fetching WHO data for: Object
- API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
- Bulk API Response: Object
- Mapping weight-for-age to weight_for_age: Object
- Classification values: Array(6)
- Calculated total: 2
- Original total_users: 6
- Extracted weight-for-age data: Object
- Processed data for donut chart: Object
- 📊 Data received for chart update: Object
- 🎨 Updating chart...
- WHO Chart Update - Data received: Object
- Data type: object
- Data classifications: Object
- Data total: 2
- Chart elements found:
-   - chartBg (risk-chart-bg): 
-   - centerText (risk-center-text): 
-   - segments (risk-segments): 
- Processing classifications: Object
- Classifications keys: Array(6)
- Classifications values: Array(6)
- Total users: 2
- Has data (non-zero counts): true
- Chart segments: Array(1)
- Chart segments length: 1
- Chart segments details: Array(1)
- Creating gradient: conic-gradient(#E91E63 0% 100%)
- Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 100%)
- Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 100%) repeat scroll 0% 0% / auto padding-box border-box
- Computed opacity: 1
- Element dimensions: Object
- WHO chart updated successfully
- 🎨 Updating age classification chart...
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: Alion
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=Alion
- 📊 Age classification API response: Object
- 📊 Age Classification Line Chart Data: Object
- 📊 Creating Chart.js line chart with data: Object
- ✅ Age Classification Line Chart created successfully
- ✅ Chart update completed
- 🏁 WHO classification loading completed
  🔽 Municipality dropdown toggled
- ✅ Selected barangay: 
- 🔄 updateDashboardForBarangay called with barangay: 
- 🔄 Updating dashboard for barangay: 
- 🔄 Updating WHO classifications for barangay: 
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
- 🔄 Updating trends chart for barangay: 
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
- 🔄 Updating age classification chart for barangay: 
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
- 🔄 Updating barangay distribution for barangay: 
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
- 🔄 Updating gender distribution for barangay: 
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
- 🔄 Updating community metrics for barangay: 
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_community_metrics&barangay=
- 🔄 Updating charts for barangay: 
- 🔧 Constructed URL: /api/DatabaseAPI.php?action=analysis_data&barangay=
- ✅ Dashboard update initiated for barangay: 
+ ✅ Selected barangay: HERMOSA
+ 🔄 updateDashboardForBarangay called with barangay: HERMOSA
+ 🔄 Updating dashboard for barangay: HERMOSA
+ 🔄 Updating WHO classifications for barangay: HERMOSA
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=HERMOSA
+ 🔄 Updating trends chart for barangay: HERMOSA
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=HERMOSA
+ 🔄 Updating age classification chart for barangay: HERMOSA
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=HERMOSA
+ 🔄 Updating barangay distribution for barangay: HERMOSA
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=HERMOSA
+ 🔄 Updating gender distribution for barangay: HERMOSA
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=HERMOSA
+ 🔄 Updating community metrics for barangay: HERMOSA
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_community_metrics&barangay=HERMOSA
+ 🔄 Updating charts for barangay: HERMOSA
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=analysis_data&barangay=HERMOSA
+ ✅ Dashboard update initiated for barangay: HERMOSA
 dash:6790 Uncaught 
- 🏛️ Municipality option clicked:  All Municipalities
- 🏛️ Municipality selected:  All Municipalities
- 🏘️ Updating barangay dropdown for municipality: 
- ⚠️ No barangays found for municipality: 
+ 🏛️ Municipality option clicked: HERMOSA HERMOSA
+ 🏛️ Municipality selected: HERMOSA HERMOSA
+ 🏘️ Updating barangay dropdown for municipality: HERMOSA
+ ✅ Added 20 barangays for HERMOSA
  ✅ Municipality selection complete, barangay dropdown updated
  📊 WHO classifications data: Object
- 📊 Charts data: Object
- 📊 Age classification data: Object
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: Select Barangay
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=Select%20Barangay
+ 🔄 Updating WHO chart with barangay filter: HERMOSA standard: weight-for-age
+ 🔄 Manually updating WHO chart with data: Object standard: weight-for-age
+ ⚠️ No data available for WHO standard: weight-for-age
  📊 Barangay distribution data: Object
  Updating barangay distribution display: Object
+ 📊 Age classification data: Object
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: Select Barangay
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=Select%20Barangay
+ 📊 Charts data: Object
  📊 Gender distribution data: Object
  Updating gender distribution display: Object
  📊 Community metrics data: Object
@@ -405,6 +324,151 @@ dash:6790 Uncaught
  Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Select Barangay
  📊 Age classification API response: Object
  No age classification line chart data available
+ All classifications data received: Object
+ Data success: true
+ Data keys: Array(5)
+ 🔽 Barangay dropdown toggled
+ 🔽 Barangay dropdown toggled
+ 🔽 Municipality dropdown toggled
+ ✅ Selected barangay: MARIVELES
+ 🔄 updateDashboardForBarangay called with barangay: MARIVELES
+ 🔄 Updating dashboard for barangay: MARIVELES
+ 🔄 Updating WHO classifications for barangay: MARIVELES
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=MARIVELES
+ 🔄 Updating trends chart for barangay: MARIVELES
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=MARIVELES
+ 🔄 Updating age classification chart for barangay: MARIVELES
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=MARIVELES
+ 🔄 Updating barangay distribution for barangay: MARIVELES
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=MARIVELES
+ 🔄 Updating gender distribution for barangay: MARIVELES
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=MARIVELES
+ 🔄 Updating community metrics for barangay: MARIVELES
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_community_metrics&barangay=MARIVELES
+ 🔄 Updating charts for barangay: MARIVELES
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=analysis_data&barangay=MARIVELES
+ ✅ Dashboard update initiated for barangay: MARIVELES
+dash:6790 Uncaught 
+ 🏛️ Municipality option clicked: MARIVELES MARIVELES
+ 🏛️ Municipality selected: MARIVELES MARIVELES
+ 🏘️ Updating barangay dropdown for municipality: MARIVELES
+ ✅ Added 17 barangays for MARIVELES
+ ✅ Municipality selection complete, barangay dropdown updated
+ 📊 Age classification data: Object
+ 📊 Updating Age Classification Line Chart...
+ Canvas not found, restoring...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: Select Barangay
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=Select%20Barangay
+ 📊 WHO classifications data: Object
+ 🔄 Updating WHO chart with barangay filter: MARIVELES standard: weight-for-age
+ 🔄 Manually updating WHO chart with data: Object standard: weight-for-age
+ ⚠️ No data available for WHO standard: weight-for-age
+ 📊 Charts data: Object
+ 📊 Gender distribution data: Object
+ Updating gender distribution display: Object
+ 📊 Community metrics data: Object
+ 📊 Barangay distribution data: Object
+ Updating barangay distribution display: Object
+ 📊 Age classification API response: Object
+ No age classification line chart data available
+ 📊 Trends chart data: Object
+ 📊 Updating trends chart with all classifications...
+ Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Select Barangay
+ All classifications data received: Object
+ Data success: true
+ Data keys: Array(5)
+ 🔽 Barangay dropdown toggled
+ ✅ Selected barangay: Alion
+ 🔄 updateDashboardForBarangay called with barangay: Alion
+ 🔄 Updating dashboard for barangay: Alion
+ 🔄 Updating WHO classifications for barangay: Alion
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Alion
+ 🔄 Updating trends chart for barangay: Alion
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Alion
+ 🔄 Updating age classification chart for barangay: Alion
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=Alion
+ 🔄 Updating barangay distribution for barangay: Alion
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=Alion
+ 🔄 Updating gender distribution for barangay: Alion
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=Alion
+ 🔄 Updating community metrics for barangay: Alion
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_community_metrics&barangay=Alion
+ 🔄 Updating charts for barangay: Alion
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=analysis_data&barangay=Alion
+ ✅ Dashboard update initiated for barangay: Alion
+ 📊 Age classification data: Object
+ 📊 Updating Age Classification Line Chart...
+ Canvas not found, restoring...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: Alion
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=Alion
+ 📊 Barangay distribution data: Object
+ Updating barangay distribution display: Object
+ 📊 WHO classifications data: Object
+ 🔄 Updating WHO chart with barangay filter: Alion standard: weight-for-age
+ 🔄 Manually updating WHO chart with data: Object standard: weight-for-age
+ ⚠️ No data available for WHO standard: weight-for-age
+ 📊 Community metrics data: Object
+ 📊 Gender distribution data: Object
+ Updating gender distribution display: Object
+ 📊 Charts data: Object
+ 📊 Age classification API response: Object
+ 📊 Age Classification Line Chart Data: Object
+ 📊 Creating Chart.js line chart with data: Object
+ ✅ Age Classification Line Chart created successfully
+ 📊 Trends chart data: Object
+ 📊 Updating trends chart with all classifications...
+ Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Alion
+ All classifications data received: Object
+ Data success: true
+ Data keys: Array(5)
+ ✅ Trends chart updated successfully with all classifications
+ 🔽 Municipality dropdown toggled
+ ✅ Selected barangay: ABUCAY
+ 🔄 updateDashboardForBarangay called with barangay: ABUCAY
+ 🔄 Updating dashboard for barangay: ABUCAY
+ 🔄 Updating WHO classifications for barangay: ABUCAY
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=ABUCAY
+ 🔄 Updating trends chart for barangay: ABUCAY
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=ABUCAY
+ 🔄 Updating age classification chart for barangay: ABUCAY
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ABUCAY
+ 🔄 Updating barangay distribution for barangay: ABUCAY
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ABUCAY
+ 🔄 Updating gender distribution for barangay: ABUCAY
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=ABUCAY
+ 🔄 Updating community metrics for barangay: ABUCAY
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_community_metrics&barangay=ABUCAY
+ 🔄 Updating charts for barangay: ABUCAY
+ 🔧 Constructed URL: /api/DatabaseAPI.php?action=analysis_data&barangay=ABUCAY
+ ✅ Dashboard update initiated for barangay: ABUCAY
+dash:6790 Uncaught 
+ 🏛️ Municipality option clicked: ABUCAY ABUCAY
+ 🏛️ Municipality selected: ABUCAY ABUCAY
+ 🏘️ Updating barangay dropdown for municipality: ABUCAY
+ ✅ Added 10 barangays for ABUCAY
+ ✅ Municipality selection complete, barangay dropdown updated
+ 📊 Age classification data: Object
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: Select Barangay
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=Select%20Barangay
+ 📊 WHO classifications data: Object
+ 🔄 Updating WHO chart with barangay filter: ABUCAY standard: weight-for-age
+ 🔄 Manually updating WHO chart with data: Object standard: weight-for-age
+ ⚠️ No data available for WHO standard: weight-for-age
+ 📊 Gender distribution data: Object
+ Updating gender distribution display: Object
+ 📊 Charts data: Object
+ 📊 Community metrics data: Object
+ 📊 Barangay distribution data: Object
+ Updating barangay distribution display: Object
+ 📊 Age classification API response: Object
+ No age classification line chart data available
+ 📊 Trends chart data: Object
+ 📊 Updating trends chart with all classifications...
+ Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Select Barangay
  All classifications data received: Object
  Data success: true
  Data keys: Array(5)
@@ -433,118 +497,23 @@ dash:6790 Uncaught
  🏘️ Updating barangay dropdown for municipality: MARIVELES
  ✅ Added 17 barangays for MARIVELES
  ✅ Municipality selection complete, barangay dropdown updated
- 📊 Barangay distribution data: Object
- Updating barangay distribution display: Object
- 📊 Age classification data: Object
- 📊 Updating Age Classification Line Chart...
- Canvas not found, restoring...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: Select Barangay
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=Select%20Barangay
  📊 WHO classifications data: Object
- 📊 Charts data: Object
- 📊 Community metrics data: Object
- 📊 Gender distribution data: Object
- Updating gender distribution display: Object
- 📊 Age classification API response: Object
- No age classification line chart data available
- 📊 Trends chart data: Object
- 📊 Updating trends chart with all classifications...
- Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Select Barangay
- All classifications data received: Object
- Data success: true
- Data keys: Array(5)
- WHO dropdown changed to: bmi-adult
- 🔄 Starting WHO standard change handler...
- 📊 WHO Standard selected: bmi-adult
- 📊 Dropdown element found: true
- 📊 Dropdown value: bmi-adult
- 📡 Fetching WHO data...
- Fetching WHO data for: Object
- API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-adult
- Bulk API Response: Object
- Mapping bmi-adult to bmi_adult: Object
- Classification values: Array(5)
- Calculated total: 3
- Original total_users: 6
- Extracted bmi-adult data: Object
- Processed data for donut chart: Object
- 📊 Data received for chart update: Object
- 🎨 Updating chart...
- WHO Chart Update - Data received: Object
- Data type: object
- Data classifications: Object
- Data total: 3
- Chart elements found:
-   - chartBg (risk-chart-bg): 
-   - centerText (risk-center-text): 
-   - segments (risk-segments): 
- Processing classifications: Object
-dash:8825 Classifications keys: Array(5)
-dash:8826 Classifications values: Array(5)
-dash:8827 Total users: 3
-dash:8831 Has data (non-zero counts): true
-dash:8867 Chart segments: Array(1)
-dash:8868 Chart segments length: 1
-dash:8869 Chart segments details: Array(1)
-dash:8881 Creating gradient: conic-gradient(#FFC107 0% 100%)
-dash:8884 Chart background set to: conic-gradient(rgb(255, 193, 7) 0%, rgb(255, 193, 7) 100%)
-dash:8888 Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(255, 193, 7) 0%, rgb(255, 193, 7) 100%) repeat scroll 0% 0% / auto padding-box border-box
-dash:8889 Computed opacity: 1
-dash:8890 Element dimensions: Object
-dash:8914 WHO chart updated successfully
-dash:8968 🎨 Updating age classification chart...
+dash:9820 🔄 Updating WHO chart with barangay filter: MARIVELES standard: weight-for-age
+dash:10014 🔄 Manually updating WHO chart with data: Object standard: weight-for-age
+dash:10086 ⚠️ No data available for WHO standard: weight-for-age
+dash:9932 📊 Charts data: Object
+dash:9860 📊 Age classification data: Object
 dash:8581 📊 Updating Age Classification Line Chart...
 dash:8587 Canvas not found, restoring...
 dash:8610 📊 Using WHO Standard: bmi-adult
 dash:8611 📊 Using Barangay: Select Barangay
 dash:8615 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=Select%20Barangay
-dash:8620 📊 Age classification API response: Object
-dash:8630 No age classification line chart data available
-dash:8970 ✅ Chart update completed
-dash:8976 🏁 WHO classification loading completed
-dash:9751 🔽 Municipality dropdown toggled
-dash:9785 ✅ Selected barangay: 
-dash:9794 🔄 updateDashboardForBarangay called with barangay: 
-dash:9798 🔄 Updating dashboard for barangay: 
-dash:9804 🔄 Updating WHO classifications for barangay: 
-dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
-dash:9821 🔄 Updating trends chart for barangay: 
-dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
-dash:9838 🔄 Updating age classification chart for barangay: 
-dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
-dash:9856 🔄 Updating barangay distribution for barangay: 
-dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
-dash:9873 🔄 Updating gender distribution for barangay: 
-dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
-dash:9890 🔄 Updating community metrics for barangay: 
-dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_community_metrics&barangay=
-dash:9911 🔄 Updating charts for barangay: 
-dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=analysis_data&barangay=
-dash:9924 ✅ Dashboard update initiated for barangay: 
-dash:6790 Uncaught TypeError: Cannot read properties of null (reading 'querySelectorAll')
-    at updateBarangayOptions (dash:6790:62)
-    at selectMunicipalityOption (dash:6779:17)
-    at HTMLDivElement.<anonymous> (dash:6762:21)
-dash:9980 🏛️ Municipality option clicked:  All Municipalities
-dash:9695 🏛️ Municipality selected:  All Municipalities
-dash:9639 🏘️ Updating barangay dropdown for municipality: 
-dash:9686 ⚠️ No barangays found for municipality: 
-dash:9714 ✅ Municipality selection complete, barangay dropdown updated
-dash:9812 📊 WHO classifications data: Object
-dash:9864 📊 Barangay distribution data: Object
-dash:9176 Updating barangay distribution display: Object
-dash:9881 📊 Gender distribution data: Object
+dash:9894 📊 Gender distribution data: Object
 dash:9126 Updating gender distribution display: Object
-dash:9898 📊 Community metrics data: Object
-dash:9919 📊 Charts data: Object
-dash:9847 📊 Age classification data: Object
-dash:8581 📊 Updating Age Classification Line Chart...
-dash:8587 Canvas not found, restoring...
-dash:8610 📊 Using WHO Standard: bmi-adult
-dash:8611 📊 Using Barangay: Select Barangay
-dash:8615 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=Select%20Barangay
-dash:9829 📊 Trends chart data: Object
+dash:9911 📊 Community metrics data: Object
+dash:9877 📊 Barangay distribution data: Object
+dash:9176 Updating barangay distribution display: Object
+dash:9842 📊 Trends chart data: Object
 dash:8301 📊 Updating trends chart with all classifications...
 dash:8319 Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Select Barangay
 dash:8620 📊 Age classification API response: Object
@@ -552,3 +521,49 @@ dash:8630 No age classification line chart data available
 dash:8327 All classifications data received: Object
 dash:8328 Data success: true
 dash:8329 Data keys: Array(5)
+dash:9743 🔽 Barangay dropdown toggled
+dash:9785 ✅ Selected barangay: Alion
+dash:9794 🔄 updateDashboardForBarangay called with barangay: Alion
+dash:9798 🔄 Updating dashboard for barangay: Alion
+dash:9804 🔄 Updating WHO classifications for barangay: Alion
+dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Alion
+dash:9834 🔄 Updating trends chart for barangay: Alion
+dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Alion
+dash:9851 🔄 Updating age classification chart for barangay: Alion
+dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=Alion
+dash:9869 🔄 Updating barangay distribution for barangay: Alion
+dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=Alion
+dash:9886 🔄 Updating gender distribution for barangay: Alion
+dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=Alion
+dash:9903 🔄 Updating community metrics for barangay: Alion
+dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=get_community_metrics&barangay=Alion
+dash:9924 🔄 Updating charts for barangay: Alion
+dash:9734 🔧 Constructed URL: /api/DatabaseAPI.php?action=analysis_data&barangay=Alion
+dash:9937 ✅ Dashboard update initiated for barangay: Alion
+dash:9812 📊 WHO classifications data: Object
+dash:9820 🔄 Updating WHO chart with barangay filter: Alion standard: weight-for-age
+dash:10014 🔄 Manually updating WHO chart with data: Object standard: weight-for-age
+dash:10086 ⚠️ No data available for WHO standard: weight-for-age
+dash:9877 📊 Barangay distribution data: Object
+dash:9176 Updating barangay distribution display: Object
+dash:9894 📊 Gender distribution data: Object
+dash:9126 Updating gender distribution display: Object
+dash:9860 📊 Age classification data: Object
+dash:8581 📊 Updating Age Classification Line Chart...
+dash:8587 Canvas not found, restoring...
+dash:8610 📊 Using WHO Standard: bmi-adult
+dash:8611 📊 Using Barangay: Alion
+dash:8615 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=Alion
+dash:9911 📊 Community metrics data: Object
+dash:9932 📊 Charts data: Object
+dash:9842 📊 Trends chart data: Object
+dash:8301 📊 Updating trends chart with all classifications...
+dash:8319 Fetching all classifications from bulk API: /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=Alion
+dash:8620 📊 Age classification API response: Object
+dash:8638 📊 Age Classification Line Chart Data: Object
+dash:8651 📊 Creating Chart.js line chart with data: Object
+dash:8762 ✅ Age Classification Line Chart created successfully
+dash:8327 All classifications data received: Object
+dash:8328 Data success: true
+dash:8329 Data keys: Array(5)
+dash:8426 ✅ Trends chart updated successfully with all classifications
