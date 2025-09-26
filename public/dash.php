@@ -1137,6 +1137,50 @@ header {
     z-index: 1002;
     position: absolute;
     max-width: 250px;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.filter-container .custom-select-container {
+    position: relative;
+    overflow: visible;
+}
+
+.filter-container .custom-select-container .dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1003;
+}
+
+.filter-container .search-container {
+    position: sticky;
+    top: 0;
+    background-color: var(--color-card);
+    z-index: 1004;
+}
+
+.filter-container .options-container {
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.filter-container .option-group {
+    margin-bottom: 8px;
+}
+
+.filter-container .option-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 /* Stats grid styles */
@@ -5535,8 +5579,9 @@ header .user-info {
     gap: 20px;
     align-items: center;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
     z-index: 10;
+    width: 100%;
 }
 
 .filter-group {
