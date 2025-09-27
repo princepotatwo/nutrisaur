@@ -9260,17 +9260,21 @@ body {
                 
                 console.log('Processing WHO standard data:', data.data);
                 
-                // Process each WHO standard data and count only eligible users
+                // Process each WHO standard data and count only eligible users (exclude "No Data")
                 Object.entries(data.data).forEach(([standard, standardData]) => {
                     console.log(`Processing standard: ${standard}`, standardData);
                     
                     if (typeof standardData === 'object' && standardData !== null) {
-                        // Count total users for this standard (sum of all classifications)
-                        const totalUsers = Object.values(standardData).reduce((sum, count) => {
-                            return typeof count === 'number' ? sum + count : sum;
+                        // Count total users for this standard (sum of all classifications EXCEPT "No Data")
+                        const totalUsers = Object.entries(standardData).reduce((sum, [classification, count]) => {
+                            // Exclude "No Data" from the count
+                            if (classification !== 'No Data' && typeof count === 'number') {
+                                return sum + count;
+                            }
+                            return sum;
                         }, 0);
                         
-                        console.log(`Total users for ${standard}: ${totalUsers}`);
+                        console.log(`Total users for ${standard}: ${totalUsers} (excluding No Data)`);
                         
                         if (totalUsers > 0) {
                             // Convert standard name to display format
