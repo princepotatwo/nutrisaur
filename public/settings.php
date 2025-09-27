@@ -4463,7 +4463,110 @@ header {
 
         function updateTableStructure(tableType, users) {
             const tableBody = document.getElementById('usersTableBody');
-            const tableHead = document.querySelector('#usersTable thead tr');
+            const tableHead = document.querySelector('.user-table thead tr');
+            
+            console.log('updateTableStructure called with:', tableType, users.length, 'users');
+            console.log('tableBody:', tableBody);
+            console.log('tableHead:', tableHead);
+            
+            if (!tableBody || !tableHead) {
+                console.error('Table elements not found. Looking for alternative selectors...');
+                // Try alternative selectors
+                const altTableBody = document.querySelector('tbody');
+                const altTableHead = document.querySelector('thead tr');
+                
+                if (!altTableBody || !altTableHead) {
+                    console.error('No table elements found at all');
+                    showMessage('Table elements not found. Please refresh the page.', 'error');
+                    return;
+                }
+                
+                // Use alternative elements
+                altTableBody.innerHTML = '';
+                altTableHead.innerHTML = '';
+                
+                if (tableType === 'users') {
+                    // Update table headers for users table
+                    altTableHead.innerHTML = `
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Email Verified</th>
+                        <th>Created At</th>
+                        <th>Last Login</th>
+                        <th>Status</th>
+                        <th>ACTIONS</th>
+                    `;
+                    
+                    // Update table body with users data
+                    altTableBody.innerHTML = users.map(user => `
+                        <tr>
+                            <td>${user.user_id}</td>
+                            <td><span class="editable" data-field="username" data-id="${user.user_id}">${user.username}</span></td>
+                            <td><span class="editable" data-field="email" data-id="${user.user_id}">${user.email}</span></td>
+                            <td>${user.email_verified ? '✅' : '❌'}</td>
+                            <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                            <td>${user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</td>
+                            <td>${user.is_active ? '🟢 Active' : '🔴 Inactive'}</td>
+                            <td>
+                                <button class="btn-edit" onclick="editUser(${user.user_id})" title="Edit User">
+                                    <span>✏️</span>
+                                </button>
+                                <button class="btn-delete" onclick="deleteUser(${user.user_id})" title="Delete User">
+                                    <span>🗑️</span>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    // Update table headers for community_users table (existing structure)
+                    altTableHead.innerHTML = `
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Municipality</th>
+                        <th>Barangay</th>
+                        <th>Gender</th>
+                        <th>Birthday</th>
+                        <th>Weight</th>
+                        <th>Height</th>
+                        <th>MUAC</th>
+                        <th>Screening Date</th>
+                        <th>ACTIONS</th>
+                    `;
+                    
+                    // Update table body with community users data
+                    altTableBody.innerHTML = users.map(user => `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.name || 'N/A'}</td>
+                            <td>${user.email}</td>
+                            <td>${user.municipality || 'N/A'}</td>
+                            <td>${user.barangay || 'N/A'}</td>
+                            <td>${user.sex || 'N/A'}</td>
+                            <td>${user.birthday || 'N/A'}</td>
+                            <td>${user.weight || 'N/A'}</td>
+                            <td>${user.height || 'N/A'}</td>
+                            <td>${user.muac || 'N/A'}</td>
+                            <td>${user.screening_date ? new Date(user.screening_date).toLocaleDateString() : 'N/A'}</td>
+                            <td>
+                                <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
+                                    <span>✏️</span>
+                                </button>
+                                <button class="btn-delete" onclick="deleteUser('${user.email}')" title="Delete User">
+                                    <span>🗑️</span>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+                
+                // Add click handlers for editable fields in users table
+                if (tableType === 'users') {
+                    addEditableHandlers();
+                }
+                return;
+            }
             
             if (tableType === 'users') {
                 // Update table headers for users table
