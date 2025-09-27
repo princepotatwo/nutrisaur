@@ -1127,43 +1127,57 @@ class WHOGrowthStandards {
     public function calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate = null) {
         $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
         
-        // BMI-for-Age only applies to children 2+ years (24+ months)
+        // BMI-for-Age only applies to ages 2-19 years (24-228 months)
         if ($ageInMonths < 24) {
             return ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only applies to children 2+ years (24+ months)'];
+        }
+        
+        if ($ageInMonths >= 228) {
+            return ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only applies to children under 19 years (228 months)'];
         }
         
         // Calculate BMI: weight(kg) / height(m)²
         $heightInMeters = $height / 100;
         $bmi = $weight / ($heightInMeters * $heightInMeters);
         
-        // For adults 20+ years (240+ months), use adult BMI classification
-        if ($ageInMonths >= 240) {
-            return $this->getAdultBMIClassification($bmi);
-        }
-        
-        // For children 2-19 years (24-228 months), use WHO BMI-for-Age standards
-        $standards = ($sex === 'Male') ? $this->getBMIForAgeBoys() : $this->getBMIForAgeGirls();
-        
-        // Find closest age
-        $closestAge = $this->findClosestAge($standards, $ageInMonths);
-        
-        if ($closestAge === null) {
-            return ['z_score' => null, 'classification' => 'Age out of range', 'error' => 'Age not found in BMI-for-Age standards'];
-        }
-        
-        $median = $standards[$closestAge]['median'];
-        $sd = $standards[$closestAge]['sd'];
-        
-        // Calculate z-score: (observed - median) / sd
-        $zScore = ($bmi - $median) / $sd;
-        $classification = $this->getBMIClassification($zScore);
+        // Simple BMI classification based on BMI value ranges
+        $classification = $this->getSimpleBMIClassification($bmi, $ageInMonths, $sex);
         
         return [
-            'z_score' => round($zScore, 2),
+            'z_score' => null, // No Z-Score for simple classification
             'classification' => $classification,
             'bmi' => round($bmi, 2),
             'age_months' => $ageInMonths
         ];
+    }
+    
+    /**
+     * Simple BMI classification based on BMI value ranges
+     * This is much simpler than Z-Score calculations
+     */
+    private function getSimpleBMIClassification($bmi, $ageInMonths, $sex) {
+        // Age-based BMI ranges (simplified)
+        if ($ageInMonths < 60) { // Under 5 years
+            if ($bmi < 14) return 'Underweight';
+            if ($bmi < 18) return 'Normal';
+            if ($bmi < 20) return 'Overweight';
+            return 'Obese';
+        } elseif ($ageInMonths < 120) { // 5-10 years
+            if ($bmi < 15) return 'Underweight';
+            if ($bmi < 20) return 'Normal';
+            if ($bmi < 22) return 'Overweight';
+            return 'Obese';
+        } elseif ($ageInMonths < 180) { // 10-15 years
+            if ($bmi < 16) return 'Underweight';
+            if ($bmi < 22) return 'Normal';
+            if ($bmi < 25) return 'Overweight';
+            return 'Obese';
+        } else { // 15-19 years
+            if ($bmi < 17) return 'Underweight';
+            if ($bmi < 24) return 'Normal';
+            if ($bmi < 28) return 'Overweight';
+            return 'Obese';
+        }
     }
     
     /**
