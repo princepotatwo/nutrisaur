@@ -236,7 +236,7 @@ function getAgeRestrictions($whoStandard) {
         case 'weight-for-height':
             return ['min' => 0, 'max' => 60]; // 0-60 months (0-5 years)
         case 'bmi-for-age':
-            return ['min' => 24, 'max' => 1200]; // 24-1200 months (2-100 years)
+            return ['min' => 60, 'max' => 228]; // 60-228 months (5-19 years)
         case 'bmi-adult':
             return ['min' => 228, 'max' => 999]; // 228+ months (19+ years)
         default:
@@ -7272,7 +7272,7 @@ body {
                     <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
                     <option value="height-for-age">Height-for-Age (0-71 months)</option>
                     <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
-                    <option value="bmi-for-age">BMI-for-Age (2-19 years)</option>
+                    <option value="bmi-for-age">BMI-for-Age (5-19 years)</option>
                     <option value="bmi-adult">BMI Adult (≥19 years)</option>
                 </select>
             </div>
@@ -9364,7 +9364,7 @@ body {
                 case 'weight-for-height':
                     return { fromMonths: 0, toMonths: 60 }; // 0-5 years
                 case 'bmi-for-age':
-                    return { fromMonths: 24, toMonths: 1200 }; // 2-100 years
+                    return { fromMonths: 60, toMonths: 228 }; // 5-19 years
                 case 'bmi-adult':
                     return { fromMonths: 228, toMonths: 600 }; // 19-50 years (extended for display)
                 default:
@@ -9407,8 +9407,8 @@ body {
                 // Age groups: 19-24, 25-30, 31-36, 37-42, 43-48, 49-54, 55-60, 61-66, 67-72, 73+
                 pattern = [0.08, 0.12, 0.18, 0.22, 0.20, 0.12, 0.06, 0.02, 0.00, 0.00];
             } else if (whoStandard === 'bmi-for-age') {
-                // BMI-for-Age: Distribute across 2-19 years
-                // Age groups: 2-4, 5-7, 8-10, 11-13, 14-16, 17-19, 20-22, 23-25, 26-28, 29+
+                // BMI-for-Age: Distribute across 5-19 years
+                // Age groups: 5-7, 8-10, 11-13, 14-16, 17-19, 20-22, 23-25, 26-28, 29+
                 // More distributed across age groups, peak in middle childhood/adolescence
                 pattern = [0.10, 0.12, 0.14, 0.16, 0.16, 0.14, 0.10, 0.06, 0.02, 0.00];
             } else if (whoStandard === 'weight-for-height') {
@@ -9691,7 +9691,7 @@ body {
                 'weight-for-age': 'Distribution of children by Weight-for-Age classification. Shows nutritional status based on weight relative to age (0-71 months).',
                 'height-for-age': 'Distribution of children by Height-for-Age classification. Shows stunting status based on height relative to age (0-71 months).',
                 'weight-for-height': 'Distribution of children by Weight-for-Height classification. Shows wasting status based on weight relative to height (0-60 months).',
-                'bmi-for-age': 'Distribution of children by BMI-for-Age classification. Shows nutritional status based on BMI relative to age (2-19 years).',
+                'bmi-for-age': 'Distribution of children by BMI-for-Age classification. Shows nutritional status based on BMI relative to age (5-19 years).',
                 'bmi-adult': 'Distribution of adults by BMI classification. Shows nutritional status based on BMI for adults (≥19 years).'
             };
             

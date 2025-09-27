@@ -1430,14 +1430,14 @@ class WHOGrowthStandards {
     
     /**
      * Calculate BMI-for-Age z-score and classification
-     * WHO standards: 2-19 years (24-228 months) + Adult BMI (20+ years/240+ months)
+     * WHO standards: 5-19 years (60-228 months)
      */
     public function calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate = null) {
         $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
         
-        // BMI-for-Age only applies to ages 2-19 years (24-228 months)
-        if ($ageInMonths < 24) {
-            return ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only applies to children 2+ years (24+ months)'];
+        // BMI-for-Age only applies to ages 5-19 years (60-228 months)
+        if ($ageInMonths < 60) {
+            return ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only applies to children 5+ years (60+ months)'];
         }
         
         if ($ageInMonths >= 228) {
@@ -1464,13 +1464,8 @@ class WHOGrowthStandards {
      * This is much simpler than Z-Score calculations
      */
     private function getSimpleBMIClassification($bmi, $ageInMonths, $sex) {
-        // Age-based BMI ranges (simplified)
-        if ($ageInMonths < 60) { // Under 5 years
-            if ($bmi < 14) return 'Underweight';
-            if ($bmi < 18) return 'Normal';
-            if ($bmi < 20) return 'Overweight';
-            return 'Obese';
-        } elseif ($ageInMonths < 120) { // 5-10 years
+        // Age-based BMI ranges (5-19 years only)
+        if ($ageInMonths < 120) { // 5-10 years
             if ($bmi < 15) return 'Underweight';
             if ($bmi < 20) return 'Normal';
             if ($bmi < 22) return 'Overweight';

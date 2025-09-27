@@ -3666,7 +3666,7 @@ header {
                                     <option value="weight-for-age">Weight-for-Age (0-71 months)</option>
                                     <option value="height-for-age">Height-for-Age (0-71 months)</option>
                                     <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
-                                    <option value="bmi-for-age">BMI-for-Age (2-19 years)</option>
+                                    <option value="bmi-for-age">BMI-for-Age (5-19 years)</option>
                                     <option value="bmi-adult">BMI Adult (≥19 years)</option>
                                 </select>
                             </div>
@@ -3813,7 +3813,7 @@ header {
                                             if ($standardName === 'weight-for-age' && $ageInMonths > 71) continue;
                                             if ($standardName === 'height-for-age' && $ageInMonths > 71) continue;
                                             if ($standardName === 'weight-for-height' && $ageInMonths > 60) continue;
-                                            if ($standardName === 'bmi-for-age' && ($ageInMonths < 24 || $ageInMonths >= 228)) continue;
+                                            if ($standardName === 'bmi-for-age' && ($ageInMonths < 60 || $ageInMonths >= 228)) continue;
                                             if ($standardName === 'bmi-adult' && $ageInMonths < 228) continue;
                                             
                                             
@@ -4169,8 +4169,8 @@ header {
                         // Show all standards for all ages
                         showRow = true;
                     } else if (standard === 'bmi-for-age') {
-                        // BMI-for-Age: 2-19 years (24-228 months)
-                        if (ageMonths < 24 || ageMonths >= 228 || rowStandard !== 'bmi-for-age') {
+                        // BMI-for-Age: 5-19 years (60-228 months)
+                        if (ageMonths < 60 || ageMonths >= 228 || rowStandard !== 'bmi-for-age') {
                             showRow = false;
                         }
                     } else if (standard === 'bmi-adult') {
@@ -4191,8 +4191,8 @@ header {
                                 showRow = false;
                             }
                         } else if (standard === 'bmi-for-age') {
-                            // BMI-for-Age: 2-19 years (24-228 months)
-                            if (ageMonths < 24 || ageMonths >= 240 || rowStandard !== standard) {
+                            // BMI-for-Age: 5-19 years (60-228 months)
+                            if (ageMonths < 60 || ageMonths >= 228 || rowStandard !== standard) {
                                 showRow = false;
                             }
                         } else {
@@ -4707,7 +4707,7 @@ header {
                 if (standard === 'all-ages') {
                     return true;
                 } else if (standard === 'bmi-for-age') {
-                    return rowStandard === 'bmi-for-age' && ageMonths >= 24 && ageMonths < 228;
+                    return rowStandard === 'bmi-for-age' && ageMonths >= 60 && ageMonths < 228;
                 } else if (standard === 'bmi-adult') {
                     return rowStandard === 'bmi-adult' && ageMonths >= 228;
                 } else {
