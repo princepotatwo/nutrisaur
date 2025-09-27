@@ -10411,7 +10411,13 @@ body {
                 
                 // Load initial trends chart with all classifications
                 console.log('📊 Loading initial trends chart...');
-                await updateTrendsChart('');
+                console.log('📊 updateTrendsChart function exists:', typeof updateTrendsChart);
+                try {
+                    await updateTrendsChart('');
+                    console.log('📊 Trends chart loaded successfully');
+                } catch (error) {
+                    console.error('❌ Error loading trends chart:', error);
+                }
                 
                 
                 // Load initial age classification chart with default range
