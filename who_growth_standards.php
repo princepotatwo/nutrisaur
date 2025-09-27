@@ -1435,8 +1435,12 @@ class WHOGrowthStandards {
     public function calculateBMIForAge($weight, $height, $birthDate, $sex, $screeningDate = null) {
         $ageInMonths = $this->calculateAgeInMonths($birthDate, $screeningDate);
         
+        // DEBUG: Log BMI calculation entry
+        echo "<script>console.log('WHO BMI CALC DEBUG - Weight: $weight, Height: $height, BirthDate: $birthDate, Sex: $sex, Age: {$ageInMonths}m');</script>";
+        
         // BMI-for-Age only applies to ages 2-100 years (24-1200 months)
         if ($ageInMonths < 24) {
+            echo "<script>console.log('WHO BMI CALC DEBUG - Age too young: {$ageInMonths}m < 24m');</script>";
             return ['z_score' => null, 'classification' => 'Not applicable', 'error' => 'BMI-for-Age only applies to children 2+ years (24+ months)'];
         }
         
@@ -1463,7 +1467,14 @@ class WHOGrowthStandards {
         
         // Calculate z-score: (observed - median) / sd
         $zScore = ($bmi - $median) / $sd;
+        
+        // DEBUG: Log Z-Score calculation details
+        echo "<script>console.log('WHO BMI Z-SCORE DEBUG - BMI: $bmi, Median: $median, SD: $sd, Z-Score: $zScore, Closest Age: $closestAge');</script>";
+        
         $classification = $this->getBMIClassification($zScore);
+        
+        // DEBUG: Log final classification
+        echo "<script>console.log('WHO BMI CLASSIFICATION DEBUG - Z-Score: $zScore, Classification: $classification');</script>";
         
         return [
             'z_score' => round($zScore, 2),
