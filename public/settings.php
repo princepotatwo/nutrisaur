@@ -4484,6 +4484,12 @@ header {
         }
 
         function loadUsersTable() {
+            // Hide the filter controls (control-row-2) since they're not needed for users table
+            const controlRow2 = document.querySelector('.control-row-2');
+            if (controlRow2) {
+                controlRow2.style.display = 'none';
+            }
+            
             // Fetch users from database and update table
             fetch('/settings.php', {
                 method: 'POST',
@@ -4505,6 +4511,8 @@ header {
                     const data = JSON.parse(text);
                     if (data.success) {
                         updateTableStructure('users', data.users);
+                        updateTableToggleButton();
+                        currentTableType = 'users';
                     } else {
                         console.error('Failed to load users:', data.error);
                         showMessage('Failed to load users: ' + data.error, 'error');
@@ -4522,6 +4530,12 @@ header {
         }
 
         function loadCommunityUsersTable() {
+            // Show the filter controls (control-row-2) since they're needed for community users table
+            const controlRow2 = document.querySelector('.control-row-2');
+            if (controlRow2) {
+                controlRow2.style.display = 'block';
+            }
+            
             // Restore the original table structure and data
             console.log('Restoring original community users table');
             
@@ -4570,6 +4584,10 @@ header {
                 console.log('No stored data, reloading page to show community users table');
                 window.location.reload();
             }
+            
+            // Update table toggle button and current table type
+            updateTableToggleButton();
+            currentTableType = 'community_users';
         }
 
         function updateTableStructure(tableType, users) {
