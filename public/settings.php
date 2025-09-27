@@ -116,7 +116,7 @@ if ($db->isAvailable()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MHO Nutritional Assessment Module - NutriSaur</title>
+    <title>MHO Nutritional Assessment Module</title>
 </head>
 <style>
 /* Dark Theme - Default */
