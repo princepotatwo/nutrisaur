@@ -118,34 +118,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             }
             break;
             
-        case 'get_community_users_table':
-            try {
-                require_once __DIR__ . "/../config.php";
-                $db = new DatabaseAPI();
-                
-                if (!$db->isAvailable()) {
-                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
-                    break;
-                }
-                
-                // Use the same method as the existing working code
-                $result = $db->select(
-                    'community_users',
-                    '*',
-                    '',
-                    [],
-                    'screening_date DESC'
-                );
-                
-                if ($result['success']) {
-                    echo json_encode(['success' => true, 'users' => $result['data']]);
-                } else {
-                    echo json_encode(['success' => false, 'error' => $result['error'] ?? 'Failed to fetch data']);
-                }
-            } catch (Exception $e) {
-                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-            }
-            break;
             
         case 'update_user_field':
             try {
@@ -3831,9 +3803,37 @@ header {
         // Municipalities and Barangays data
         const municipalities = <?php echo json_encode($municipalities); ?>;
 
+        // Function to extract community users data from existing table
+        function extractCommunityUsersData() {
+            const tableBody = document.getElementById('usersTableBody');
+            const rows = tableBody.querySelectorAll('tr');
+            const users = [];
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 6) { // Make sure we have enough columns
+                    const user = {
+                        name: cells[0].textContent.trim(),
+                        email: cells[1].textContent.trim(),
+                        municipality: cells[2].textContent.trim(),
+                        barangay: cells[3].textContent.trim(),
+                        sex: cells[4].textContent.trim(),
+                        birthday: cells[5].textContent.trim()
+                    };
+                    users.push(user);
+                }
+            });
+            
+            console.log('Extracted community users data:', users.length, 'users');
+            return users;
+        }
+
         // Initialize screening page
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing screening page...');
+            
+            // Extract and store the original community users data
+            originalCommunityUsersData = extractCommunityUsersData();
             initializeTableFunctionality();
         });
 
@@ -4349,6 +4349,7 @@ header {
         // CSV Functions
         // Global variable to track current table type
         let currentTableType = 'admin'; // 'admin' for community_users, 'users' for users table
+        let originalCommunityUsersData = null; // Store original community users data
 
         function downloadCSVTemplate() {
             // Toggle between admin table and users table
@@ -4434,41 +4435,15 @@ header {
         }
 
         function loadCommunityUsersTable() {
-            // Fetch community users from database and update table
-            fetch('/settings.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'action=get_community_users_table'
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.text();
-            })
-            .then(text => {
-                console.log('Raw response:', text);
-                try {
-                    const data = JSON.parse(text);
-                    if (data.success) {
-                        updateTableStructure('community_users', data.users);
-                    } else {
-                        console.error('Failed to load community users:', data.error);
-                        showMessage('Failed to load community users: ' + data.error, 'error');
-                    }
-                } catch (e) {
-                    console.error('JSON parse error:', e);
-                    console.error('Response text:', text);
-                    showMessage('Error parsing server response', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error loading community users:', error);
-                showMessage('Error loading community users: ' + error.message, 'error');
-            });
+            // Use the original community users data that was loaded on page load
+            if (originalCommunityUsersData && originalCommunityUsersData.length > 0) {
+                console.log('Using stored community users data:', originalCommunityUsersData.length, 'users');
+                updateTableStructure('community_users', originalCommunityUsersData);
+            } else {
+                // If no stored data, reload the page to get the original data
+                console.log('No stored data, reloading page to show community users table');
+                window.location.reload();
+            }
         }
 
         function updateTableStructure(tableType, users) {
