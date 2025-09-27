@@ -9375,18 +9375,18 @@ body {
                     gap: 5px;
                 `;
                 
-                // Function to get classification color (same as donut chart)
+                // Function to get classification color (exact match with donut chart)
                 function getClassificationColor(classification) {
                     const colors = {
-                        'Underweight': '#FFC107',          // Amber
-                        'Normal': '#4CAF50',               // Green
-                        'Overweight': '#FF9800',           // Orange
-                        'Obese': '#F44336',                // Red
-                        'Severely Underweight': '#9C27B0', // Purple
-                        'Stunted': '#2196F3',              // Blue
-                        'Severely Stunted': '#9C27B0',     // Purple
-                        'Wasted': '#FF5722',               // Deep Orange
-                        'Severely Wasted': '#795548'       // Brown
+                        'Severely Underweight': '#E91E63',  // Pink
+                        'Underweight': '#FFC107',           // Amber
+                        'Normal': '#4CAF50',                // Green
+                        'Overweight': '#FF9800',            // Orange
+                        'Obese': '#F44336',                 // Red
+                        'Severely Stunted': '#E91E63',      // Pink
+                        'Stunted': '#2196F3',               // Blue
+                        'Severely Wasted': '#E91E63',       // Pink
+                        'Wasted': '#FF9800'                 // Orange
                     };
                     return colors[classification] || '#9E9E9E';
                 }
