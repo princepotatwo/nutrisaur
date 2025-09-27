@@ -9345,7 +9345,6 @@ body {
                 if (trendsContainer) {
                     trendsContainer.appendChild(populationScale);
                     trendsContainer.style.position = 'relative';
-                    trendsContainer.style.paddingLeft = '50px'; // Make room for the scale
                 }
                 
                 // Function to get WHO standard color
