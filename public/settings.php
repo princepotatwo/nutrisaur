@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
-                $stmt = $pdo->prepare("SELECT id, name, email, municipality, barangay, sex, birthday, weight, height, muac, screening_date FROM community_users ORDER BY screening_date DESC");
+                $stmt = $pdo->prepare("SELECT name, email, municipality, barangay, sex, birthday, weight, height, muac, screening_date FROM community_users ORDER BY screening_date DESC");
                 $stmt->execute();
                 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
@@ -4521,7 +4521,6 @@ header {
                 } else {
                     // Update table headers for community_users table (existing structure)
                     altTableHead.innerHTML = `
-                        <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Municipality</th>
@@ -4538,7 +4537,6 @@ header {
                     // Update table body with community users data
                     altTableBody.innerHTML = users.map(user => `
                         <tr>
-                            <td>${user.id}</td>
                             <td>${user.name || 'N/A'}</td>
                             <td>${user.email}</td>
                             <td>${user.municipality || 'N/A'}</td>
@@ -4604,7 +4602,6 @@ header {
             } else {
                 // Update table headers for community_users table (existing structure)
                 tableHead.innerHTML = `
-                    <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Municipality</th>
@@ -4621,7 +4618,6 @@ header {
                 // Update table body with community users data
                 tableBody.innerHTML = users.map(user => `
                     <tr>
-                        <td>${user.id}</td>
                         <td>${user.name || 'N/A'}</td>
                         <td>${user.email}</td>
                         <td>${user.municipality || 'N/A'}</td>
