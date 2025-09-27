@@ -92,6 +92,149 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Handle AJAX requests for table management
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    header('Content-Type: application/json');
+    
+    $action = $_POST['action'];
+    
+    switch ($action) {
+        case 'get_users_table':
+            try {
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                    break;
+                }
+                
+                $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified, created_at, last_login, is_active FROM users ORDER BY created_at DESC");
+                $stmt->execute();
+                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                echo json_encode(['success' => true, 'users' => $users]);
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
+            break;
+            
+        case 'get_community_users_table':
+            try {
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                    break;
+                }
+                
+                $stmt = $pdo->prepare("SELECT id, name, email, municipality, barangay, sex, birthday, weight, height, muac, screening_date FROM community_users ORDER BY screening_date DESC");
+                $stmt->execute();
+                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                echo json_encode(['success' => true, 'users' => $users]);
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
+            break;
+            
+        case 'update_user_field':
+            try {
+                $user_id = $_POST['user_id'] ?? '';
+                $field = $_POST['field'] ?? '';
+                $value = $_POST['value'] ?? '';
+                
+                if (empty($user_id) || empty($field) || !in_array($field, ['username', 'email'])) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid parameters']);
+                    break;
+                }
+                
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                    break;
+                }
+                
+                // Validate email format if field is email
+                if ($field === 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid email format']);
+                    break;
+                }
+                
+                // Check if username/email already exists (excluding current user)
+                $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE $field = ? AND user_id != ?");
+                $checkStmt->execute([$value, $user_id]);
+                if ($checkStmt->fetch()) {
+                    echo json_encode(['success' => false, 'error' => "$field already exists"]);
+                    break;
+                }
+                
+                $updateStmt = $pdo->prepare("UPDATE users SET $field = ? WHERE user_id = ?");
+                $result = $updateStmt->execute([$value, $user_id]);
+                
+                if ($result) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to update user']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
+            break;
+            
+        case 'add_user':
+            try {
+                $username = $_POST['username'] ?? '';
+                $email = $_POST['email'] ?? '';
+                $password = $_POST['password'] ?? '';
+                
+                if (empty($username) || empty($email) || empty($password)) {
+                    echo json_encode(['success' => false, 'error' => 'All fields are required']);
+                    break;
+                }
+                
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid email format']);
+                    break;
+                }
+                
+                if (strlen($password) < 6) {
+                    echo json_encode(['success' => false, 'error' => 'Password must be at least 6 characters']);
+                    break;
+                }
+                
+                $pdo = $db->getPDO();
+                if (!$pdo) {
+                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                    break;
+                }
+                
+                // Check if user already exists
+                $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
+                $checkStmt->execute([$email, $username]);
+                if ($checkStmt->fetch()) {
+                    echo json_encode(['success' => false, 'error' => 'User with this email or username already exists']);
+                    break;
+                }
+                
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, email_verified, created_at) VALUES (?, ?, ?, 1, NOW())");
+                $result = $insertStmt->execute([$username, $email, $hashedPassword]);
+                
+                if ($result) {
+                    echo json_encode(['success' => true, 'message' => 'User added successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to add user']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            }
+            break;
+            
+        default:
+            echo json_encode(['success' => false, 'error' => 'Unknown action']);
+            break;
+    }
+    exit;
+}
+
 // Get existing screening assessments using DatabaseHelper
 $screening_assessments = [];
 if ($db->isAvailable()) {
@@ -2806,6 +2949,97 @@ header {
             background-color: rgba(229, 115, 115, 0.25);
         }
 
+        /* Editable fields styling */
+        .editable {
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            min-width: 100px;
+            border: 1px solid transparent;
+        }
+
+        .editable:hover {
+            background-color: rgba(161, 180, 84, 0.1);
+            border-color: rgba(161, 180, 84, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .editable:active {
+            background-color: rgba(161, 180, 84, 0.2);
+            transform: translateY(0);
+        }
+
+        /* User modal styling */
+        .modal-content .input-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-content .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        .modal-content .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(161, 180, 84, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--color-text);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-content .input-group input:focus {
+            outline: none;
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .modal-content .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .modal-content .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-content .btn-submit {
+            background-color: var(--color-highlight);
+            color: white;
+        }
+
+        .modal-content .btn-submit:hover {
+            background-color: var(--color-accent1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+        }
+
+        .modal-content .btn-cancel {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--color-text);
+            border: 1px solid rgba(161, 180, 84, 0.3);
+        }
+
+        .modal-content .btn-cancel:hover {
+            background-color: rgba(161, 180, 84, 0.1);
+            border-color: var(--color-highlight);
+        }
+
         /* Auto-fit columns - automatically distributes space equally */
         /* All columns will automatically get equal width distribution */
         /* No need for specific nth-child rules - table will auto-adjust */
@@ -3361,13 +3595,13 @@ header {
                     <!-- Row 1: Action Buttons and Search -->
                     <div class="control-row-1">
                         <div class="action-section">
-                            <button class="btn-add" onclick="downloadCSVTemplate()">
-                                <span class="btn-icon">📥</span>
-                                <span class="btn-text">Download Template</span>
+                            <button class="btn-add" id="tableToggleBtn" onclick="downloadCSVTemplate()">
+                                <span class="btn-icon">👥</span>
+                                <span class="btn-text">Switch to Users Table</span>
                             </button>
-                            <button class="btn-secondary" onclick="showCSVImportModal()">
-                                <span class="btn-icon">📁</span>
-                                <span class="btn-text">Import CSV</span>
+                            <button class="btn-secondary" onclick="showUserImportModal()">
+                                <span class="btn-icon">➕</span>
+                                <span class="btn-text">Add User</span>
                             </button>
                             <button class="btn-delete-all" onclick="deleteAllUsers()">
                                 <span class="btn-icon">🗑️</span>
@@ -3550,6 +3784,32 @@ header {
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <!-- User Import Modal -->
+    <div id="userImportModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserImportModal()">&times;</span>
+            <h2>Add New User</h2>
+            <form id="userForm">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-submit" onclick="addNewUser()">Add User</button>
+                    <button type="button" class="btn btn-cancel" onclick="closeUserImportModal()">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -4073,22 +4333,22 @@ header {
 
 
         // CSV Functions
+        // Global variable to track current table type
+        let currentTableType = 'admin'; // 'admin' for community_users, 'users' for users table
+
         function downloadCSVTemplate() {
-            const csvContent = [
-                ['name', 'email', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight', 'height', 'muac', 'screening_date'],
-                ['John Doe', 'john@example.com', 'CITY OF BALANGA (Capital)', 'Bagumbayan', 'Male', '1999-01-15', 'No', '70', '175', '25', '2024-01-15 10:30:00']
-            ];
-            
-            const csv = csvContent.map(row => row.map(field => `"${field}"`).join(',')).join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'assessment_template.csv';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
+            // Toggle between admin table and users table
+            if (currentTableType === 'admin') {
+                // Switch to users table
+                currentTableType = 'users';
+                loadUsersTable();
+                updateTableToggleButton();
+            } else {
+                // Switch back to admin table (community_users)
+                currentTableType = 'admin';
+                loadCommunityUsersTable();
+                updateTableToggleButton();
+            }
         }
 
         function showCSVImportModal() {
@@ -4097,6 +4357,255 @@ header {
                 modal.style.display = 'block';
                 resetCSVForm();
             }
+        }
+
+        function showUserImportModal() {
+            // Show modal for adding new user
+            const modal = document.getElementById('userImportModal');
+            if (modal) {
+                modal.style.display = 'block';
+                resetUserForm();
+            }
+        }
+
+        function updateTableToggleButton() {
+            const btn = document.getElementById('tableToggleBtn');
+            if (btn) {
+                if (currentTableType === 'users') {
+                    btn.querySelector('.btn-text').textContent = 'Switch to Admin Table';
+                    btn.querySelector('.btn-icon').textContent = '👨‍💼';
+                } else {
+                    btn.querySelector('.btn-text').textContent = 'Switch to Users Table';
+                    btn.querySelector('.btn-icon').textContent = '👥';
+                }
+            }
+        }
+
+        function loadUsersTable() {
+            // Fetch users from database and update table
+            fetch('/settings.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=get_users_table'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateTableStructure('users', data.users);
+                } else {
+                    console.error('Failed to load users:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading users:', error);
+            });
+        }
+
+        function loadCommunityUsersTable() {
+            // Fetch community users from database and update table
+            fetch('/settings.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=get_community_users_table'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateTableStructure('community_users', data.users);
+                } else {
+                    console.error('Failed to load community users:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading community users:', error);
+            });
+        }
+
+        function updateTableStructure(tableType, users) {
+            const tableBody = document.getElementById('usersTableBody');
+            const tableHead = document.querySelector('#usersTable thead tr');
+            
+            if (tableType === 'users') {
+                // Update table headers for users table
+                tableHead.innerHTML = `
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Email Verified</th>
+                    <th>Created At</th>
+                    <th>Last Login</th>
+                    <th>Status</th>
+                    <th>ACTIONS</th>
+                `;
+                
+                // Update table body with users data
+                tableBody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.user_id}</td>
+                        <td><span class="editable" data-field="username" data-id="${user.user_id}">${user.username}</span></td>
+                        <td><span class="editable" data-field="email" data-id="${user.user_id}">${user.email}</span></td>
+                        <td>${user.email_verified ? '✅' : '❌'}</td>
+                        <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                        <td>${user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</td>
+                        <td>${user.is_active ? '🟢 Active' : '🔴 Inactive'}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editUser(${user.user_id})" title="Edit User">
+                                <span>✏️</span>
+                            </button>
+                            <button class="btn-delete" onclick="deleteUser(${user.user_id})" title="Delete User">
+                                <span>🗑️</span>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                // Update table headers for community_users table (existing structure)
+                tableHead.innerHTML = `
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Municipality</th>
+                    <th>Barangay</th>
+                    <th>Gender</th>
+                    <th>Birthday</th>
+                    <th>Weight</th>
+                    <th>Height</th>
+                    <th>MUAC</th>
+                    <th>Screening Date</th>
+                    <th>ACTIONS</th>
+                `;
+                
+                // Update table body with community users data
+                tableBody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.name || 'N/A'}</td>
+                        <td>${user.email}</td>
+                        <td>${user.municipality || 'N/A'}</td>
+                        <td>${user.barangay || 'N/A'}</td>
+                        <td>${user.sex || 'N/A'}</td>
+                        <td>${user.birthday || 'N/A'}</td>
+                        <td>${user.weight || 'N/A'}</td>
+                        <td>${user.height || 'N/A'}</td>
+                        <td>${user.muac || 'N/A'}</td>
+                        <td>${user.screening_date ? new Date(user.screening_date).toLocaleDateString() : 'N/A'}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
+                                <span>✏️</span>
+                            </button>
+                            <button class="btn-delete" onclick="deleteUser('${user.email}')" title="Delete User">
+                                <span>🗑️</span>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Add click handlers for editable fields in users table
+            if (tableType === 'users') {
+                addEditableHandlers();
+            }
+        }
+
+        function addEditableHandlers() {
+            document.querySelectorAll('.editable').forEach(element => {
+                element.addEventListener('click', function() {
+                    const field = this.dataset.field;
+                    const id = this.dataset.id;
+                    const currentValue = this.textContent;
+                    
+                    if (field === 'username' || field === 'email') {
+                        const newValue = prompt(`Edit ${field}:`, currentValue);
+                        if (newValue && newValue !== currentValue) {
+                            updateUserField(id, field, newValue);
+                        }
+                    }
+                });
+            });
+        }
+
+        function updateUserField(userId, field, newValue) {
+            fetch('/settings.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=update_user_field&user_id=${userId}&field=${field}&value=${encodeURIComponent(newValue)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the display
+                    const element = document.querySelector(`[data-field="${field}"][data-id="${userId}"]`);
+                    if (element) {
+                        element.textContent = newValue;
+                    }
+                    showMessage('User updated successfully!', 'success');
+                } else {
+                    showMessage('Failed to update user: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating user:', error);
+                showMessage('Error updating user', 'error');
+            });
+        }
+
+        function resetUserForm() {
+            document.getElementById('userForm').reset();
+        }
+
+        function closeUserImportModal() {
+            const modal = document.getElementById('userImportModal');
+            if (modal) {
+                modal.style.display = 'none';
+                resetUserForm();
+            }
+        }
+
+        function addNewUser() {
+            const form = document.getElementById('userForm');
+            const formData = new FormData(form);
+            
+            const username = formData.get('username');
+            const email = formData.get('email');
+            const password = formData.get('password');
+            
+            if (!username || !email || !password) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            fetch('/settings.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=add_user&username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('User added successfully!', 'success');
+                    closeUserImportModal();
+                    // Reload the appropriate table
+                    if (currentTableType === 'users') {
+                        loadUsersTable();
+                    } else {
+                        loadCommunityUsersTable();
+                    }
+                } else {
+                    showMessage('Failed to add user: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding user:', error);
+                showMessage('Error adding user', 'error');
+            });
         }
 
         function closeCSVImportModal() {
