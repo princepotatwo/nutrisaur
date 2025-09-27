@@ -9363,6 +9363,75 @@ body {
                 if (trendsContainer) {
                     trendsContainer.appendChild(populationScale);
                     trendsContainer.style.position = 'relative';
+                    
+                    // Add legend inside the 15px margin area
+                    const legend = document.createElement('div');
+                    legend.className = 'trends-legend';
+                    legend.style.cssText = `
+                        position: absolute;
+                        top: 15px;
+                        right: 15px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        max-width: 200px;
+                        z-index: 20;
+                    `;
+                    
+                    // Function to get classification acronym
+                    function getClassificationAcronym(classification) {
+                        const acronyms = {
+                            'Severely Underweight': 'SUW',
+                            'Underweight': 'UW',
+                            'Normal': 'N',
+                            'Overweight': 'OW',
+                            'Obese': 'O',
+                            'Severely Stunted': 'SS',
+                            'Stunted': 'S',
+                            'Severely Wasted': 'SW',
+                            'Wasted': 'W'
+                        };
+                        return acronyms[classification] || classification.substring(0, 3).toUpperCase();
+                    }
+                    
+                    // Get unique classifications from all active standards
+                    const uniqueClassifications = new Set();
+                    activeStandards.forEach(standard => {
+                        Object.keys(standard.classifications).forEach(classification => {
+                            uniqueClassifications.add(classification);
+                        });
+                    });
+                    
+                    // Create legend items
+                    uniqueClassifications.forEach(classification => {
+                        const legendItem = document.createElement('div');
+                        legendItem.style.cssText = `
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+                            font-size: 10px;
+                            color: var(--color-text);
+                            opacity: 0.8;
+                        `;
+                        
+                        const colorDot = document.createElement('div');
+                        colorDot.style.cssText = `
+                            width: 8px;
+                            height: 8px;
+                            border-radius: 50%;
+                            background-color: ${getClassificationColor(classification)};
+                            flex-shrink: 0;
+                        `;
+                        
+                        const label = document.createElement('span');
+                        label.textContent = getClassificationAcronym(classification);
+                        
+                        legendItem.appendChild(colorDot);
+                        legendItem.appendChild(label);
+                        legend.appendChild(legendItem);
+                    });
+                    
+                    trendsContainer.appendChild(legend);
                 }
                 
                 // Add padding to trends chart to move bars to the right and avoid overlap
