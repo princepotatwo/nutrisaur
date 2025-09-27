@@ -4437,21 +4437,17 @@ header {
 
         // CSV Functions
         // Global variable to track current table type
-        let currentTableType = 'admin'; // 'admin' for community_users, 'users' for users table
+        let currentTableType = 'community_users'; // 'community_users' for community users table, 'users' for users table
         let originalCommunityUsersData = null; // Store original community users data
 
         function downloadCSVTemplate() {
-            // Toggle between admin table and users table
-            if (currentTableType === 'admin') {
+            // Toggle between community_users table and users table
+            if (currentTableType === 'community_users') {
                 // Switch to users table
-                currentTableType = 'users';
                 loadUsersTable();
-                updateTableToggleButton();
             } else {
-                // Switch back to admin table (community_users)
-                currentTableType = 'admin';
+                // Switch back to community_users table
                 loadCommunityUsersTable();
-                updateTableToggleButton();
             }
         }
 
