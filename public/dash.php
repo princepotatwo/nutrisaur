@@ -9286,10 +9286,28 @@ body {
                 
                 console.log('WHO standard counts:', whoStandardCounts);
 
-                // Convert to array and filter out standards with 0 users
+                // Convert to array and include classification breakdown for gradient bars
                 const activeStandards = Object.entries(whoStandardCounts)
                     .filter(([standard, count]) => count > 0)
-                    .map(([standard, count]) => ({ standard, count }));
+                    .map(([standard, count]) => {
+                        // Get classification breakdown for this standard
+                        const originalStandard = standard.replace(/-/g, '_').toLowerCase();
+                        const classificationBreakdown = data.data[originalStandard] || {};
+                        
+                        // Filter out "No Data" and create percentage breakdown
+                        const filteredClassifications = {};
+                        Object.entries(classificationBreakdown).forEach(([classification, classificationCount]) => {
+                            if (classification !== 'No Data' && typeof classificationCount === 'number' && classificationCount > 0) {
+                                filteredClassifications[classification] = classificationCount;
+                            }
+                        });
+                        
+                        return { 
+                            standard, 
+                            count, 
+                            classifications: filteredClassifications 
+                        };
+                    });
 
                 if (activeStandards.length === 0) {
                     trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No WHO standard data found</div>';
@@ -9357,51 +9375,81 @@ body {
                     gap: 5px;
                 `;
                 
-                // Function to get WHO standard color
-                function getWHOStandardColor(standard) {
+                // Function to get classification color (same as donut chart)
+                function getClassificationColor(classification) {
                     const colors = {
-                        'Weight-For-Age': '#4CAF50',      // Green
-                        'Height-For-Age': '#2196F3',       // Blue
-                        'Weight-For-Height': '#FF9800',    // Orange
-                        'Bmi-For-Age': '#9C27B0',         // Purple
-                        'Bmi-Adult': '#F44336'             // Red
+                        'Underweight': '#FFC107',          // Amber
+                        'Normal': '#4CAF50',               // Green
+                        'Overweight': '#FF9800',           // Orange
+                        'Obese': '#F44336',                // Red
+                        'Severely Underweight': '#9C27B0', // Purple
+                        'Stunted': '#2196F3',              // Blue
+                        'Severely Stunted': '#9C27B0',     // Purple
+                        'Wasted': '#FF5722',               // Deep Orange
+                        'Severely Wasted': '#795548'       // Brown
                     };
-                    return colors[standard] || '#9E9E9E';
+                    return colors[classification] || '#9E9E9E';
                 }
 
-                // Create bars for each WHO standard with height aligned to population scale
+                // Create gradient bars for each WHO standard based on classification distribution
                 activeStandards.forEach((item, index) => {
                     // Calculate bar height to align with population scale (1,2,3,4,5,6)
-                    // Each scale unit represents chartHeight/6 of the chart
-                    const scaleUnitHeight = chartHeight / 6; // Height per scale unit
+                    const scaleUnitHeight = chartHeight / 6;
                     const barHeight = item.count * scaleUnitHeight;
-                    const color = getWHOStandardColor(item.standard);
                     
-                    // Create WHO standard bar
-                    const barDiv = document.createElement('div');
-                    barDiv.className = `trend-bar who-standard-bar`;
-                    barDiv.style.cssText = `
+                    // Create container for gradient bar
+                    const barContainer = document.createElement('div');
+                    barContainer.className = `trend-bar-container`;
+                    barContainer.style.cssText = `
                         height: ${barHeight}px;
-                        background-color: ${color};
-                        border: 1px solid rgba(255,255,255,0.2);
-                        border-radius: 4px 4px 0 0;
-                        position: relative;
-                        cursor: pointer;
+                        width: 100%;
                         flex: 1;
                         min-width: 30px;
                         max-width: 50px;
+                        display: flex;
+                        flex-direction: column;
+                        border-radius: 4px 4px 0 0;
+                        overflow: hidden;
+                        border: 1px solid rgba(255,255,255,0.2);
+                        cursor: pointer;
                         transition: all 0.3s ease;
+                        position: relative;
                     `;
-                    barDiv.title = `${item.standard}: ${item.count} users`;
+                    barContainer.title = `${item.standard}: ${item.count} users`;
                     
-                    // Add count value on bar
-                    barDiv.innerHTML = `
-                        <div class="trend-bar-value" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+                    // Create gradient segments based on classifications
+                    const classifications = item.classifications;
+                    const totalUsers = item.count;
+                    
+                    // Sort classifications by count (descending) for better visual stacking
+                    const sortedClassifications = Object.entries(classifications)
+                        .sort(([,a], [,b]) => b - a);
+                    
+                    sortedClassifications.forEach(([classification, count]) => {
+                        const percentage = (count / totalUsers) * 100;
+                        const segmentHeight = (count / totalUsers) * barHeight;
+                        const color = getClassificationColor(classification);
+                        
+                        const segment = document.createElement('div');
+                        segment.style.cssText = `
+                            height: ${segmentHeight}px;
+                            background-color: ${color};
+                            border: none;
+                            flex-shrink: 0;
+                        `;
+                        segment.title = `${classification}: ${count} users (${percentage.toFixed(1)}%)`;
+                        
+                        barContainer.appendChild(segment);
+                    });
+                    
+                    // Add count value overlay on the bar
+                    barContainer.innerHTML += `
+                        <div class="trend-bar-value" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); pointer-events: none;">
                             ${item.count}
                         </div>
                     `;
                     
-                    trendsChart.appendChild(barDiv);
+                    trendsChart.appendChild(barContainer);
                 });
 
                 // Create labels showing WHO standard initials positioned below bars
