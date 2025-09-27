@@ -9339,24 +9339,18 @@ body {
                     trendsChart.appendChild(barDiv);
                 });
 
-                // Create labels showing WHO standard legend
+                // Create labels showing WHO standard names only
                 const trendsLabels = document.getElementById('trends-labels');
                 if (trendsLabels) {
                     trendsLabels.innerHTML = '';
                     
                     activeStandards.forEach(item => {
-                        const color = getWHOStandardColor(item.standard);
-                        
                         const labelDiv = document.createElement('div');
                         labelDiv.className = 'trend-label-item';
-                        labelDiv.style.display = 'flex';
-                        labelDiv.style.alignItems = 'center';
-                        labelDiv.style.gap = '8px';
                         labelDiv.style.marginBottom = '4px';
                         
                         labelDiv.innerHTML = `
-                            <div style="width: 12px; height: 12px; background-color: ${color}; border-radius: 2px; flex-shrink: 0;"></div>
-                            <div style="font-size: 11px; color: var(--color-text);">${item.standard} (${item.count})</div>
+                            <div style="font-size: 11px; color: var(--color-text); font-weight: 500;">${item.standard} (${item.count})</div>
                         `;
                         
                         trendsLabels.appendChild(labelDiv);
