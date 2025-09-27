@@ -9411,9 +9411,10 @@ body {
                     trendsLabels.style.cssText = `
                         display: flex;
                         justify-content: space-between;
-                        align-items: flex-end;
-                        padding-top: 10px;
+                        align-items: center;
+                        padding: 10px 10px 0 50px;
                         height: 40px;
+                        gap: 5px;
                     `;
                     
                     // Function to get WHO standard initials
@@ -9437,7 +9438,8 @@ body {
                             font-size: 11px;
                             color: var(--color-text);
                             font-weight: 500;
-                            margin: 0 2px;
+                            min-width: 30px;
+                            max-width: 50px;
                         `;
                         
                         const initials = getWHOStandardInitials(item.standard);
