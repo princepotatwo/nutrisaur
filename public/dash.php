@@ -7335,8 +7335,8 @@ body {
 
             
             <div class="chart-card">
-                <h3>Classification Trends</h3>
-                <p class="chart-description">Distribution of nutritional classifications across different WHO standards. Shows trends and patterns in screening data.</p>
+                <h3>WHO Standard Distribution</h3>
+                <p class="chart-description">Number of users eligible for each WHO standard based on age. Shows how many users can be assessed with each growth standard.</p>
                 <div class="trends-chart-container">
                     <div class="trends-chart" id="trends-chart">
                         <!-- Bar chart will be generated dynamically -->
@@ -9218,9 +9218,9 @@ body {
             }
         }
 
-        // Function to update trends chart with all classifications
+        // Function to update trends chart with WHO standard counts
         async function updateTrendsChart(barangay = '') {
-            console.log('📊 Updating trends chart with all classifications...');
+            console.log('📊 Updating trends chart with WHO standard counts...');
             
             try {
                 const trendsChart = document.getElementById('trends-chart');
@@ -9235,9 +9235,9 @@ body {
                 // Get current filter values
                 const barangayValue = barangay || '';
 
-                // OPTIMIZED: Fetch all classifications using bulk API
-                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=${barangayValue}`;
-                console.log('Fetching all classifications from bulk API:', url);
+                // Fetch individual user data to count by WHO standard
+                const url = `/api/DatabaseAPI.php?action=get_detailed_screening_responses&barangay=${barangayValue}`;
+                console.log('Fetching user data for WHO standard counts:', url);
                 
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -9245,106 +9245,138 @@ body {
                 }
                 
                 const data = await response.json();
-                console.log('All classifications data received:', data);
-                console.log('Data success:', data.success);
-                console.log('Data keys:', data.data ? Object.keys(data.data) : 'No data object');
+                console.log('User data received for WHO standard counts:', data);
 
-                if (!data.success || !data.data || Object.keys(data.data).length === 0) {
-                    console.log('No data available for trends chart');
-                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No data available</div>';
+                if (!data.success || !data.data || data.data.length === 0) {
+                    console.log('No user data available for trends chart');
+                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No user data available</div>';
                     return;
                 }
 
-                // OPTIMIZED: Process bulk API data format
-                // The bulk API returns: { weight_for_age: {...}, height_for_age: {...}, etc. }
-                // We need to combine all classifications into a single array
-                const allClassifications = {};
-                
-                // Combine all WHO standards into one classification object
-                Object.values(data.data).forEach(standardData => {
-                    if (typeof standardData === 'object') {
-                        Object.entries(standardData).forEach(([classification, count]) => {
-                            // Only include valid classifications, exclude "No Data"
-                            if (classification !== 'No Data' && count > 0) {
-                                allClassifications[classification] = (allClassifications[classification] || 0) + count;
-                            }
-                        });
+                const users = data.data;
+                console.log(`Processing ${users.length} users for WHO standard counts`);
+
+                if (users.length === 0) {
+                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No users found</div>';
+                    return;
+                }
+
+                // Count users by WHO standard eligibility
+                const whoStandardCounts = {
+                    'Weight-for-Age': 0,
+                    'Height-for-Age': 0,
+                    'Weight-for-Height': 0,
+                    'BMI-for-Age': 0,
+                    'BMI-Adult': 0
+                };
+
+                users.forEach(user => {
+                    const ageInMonths = user.age_in_months || 0;
+                    
+                    // Weight-for-Age: 0-71 months
+                    if (ageInMonths >= 0 && ageInMonths <= 71) {
+                        whoStandardCounts['Weight-for-Age']++;
+                    }
+                    
+                    // Height-for-Age: 0-71 months
+                    if (ageInMonths >= 0 && ageInMonths <= 71) {
+                        whoStandardCounts['Height-for-Age']++;
+                    }
+                    
+                    // Weight-for-Height: 0-60 months
+                    if (ageInMonths >= 0 && ageInMonths <= 60) {
+                        whoStandardCounts['Weight-for-Height']++;
+                    }
+                    
+                    // BMI-for-Age: 60-228 months (5-19 years)
+                    if (ageInMonths >= 60 && ageInMonths < 228) {
+                        whoStandardCounts['BMI-for-Age']++;
+                    }
+                    
+                    // BMI-Adult: 228+ months (19+ years)
+                    if (ageInMonths >= 228) {
+                        whoStandardCounts['BMI-Adult']++;
                     }
                 });
 
-                // Convert to array and sort by count (lowest to highest)
-                const classificationsArray = Object.entries(allClassifications)
-                    .map(([classification, count]) => ({ classification, count }))
-                    .sort((a, b) => a.count - b.count);
+                // Filter out standards with 0 users
+                const activeStandards = Object.entries(whoStandardCounts)
+                    .filter(([standard, count]) => count > 0)
+                    .map(([standard, count]) => ({ standard, count }));
 
-                if (classificationsArray.length === 0) {
-                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No classifications found</div>';
+                if (activeStandards.length === 0) {
+                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No eligible users found</div>';
                     return;
                 }
 
-                // Find max count for scaling
-                const maxCount = Math.max(...classificationsArray.map(item => item.count));
-
-                // Calculate dynamic scaling based on number of bars and available space
-                const numBars = classificationsArray.length;
-                const chartHeight = 300; // Chart area height (no padding needed for labels)
-                const maxBarHeight = Math.min(chartHeight * 0.8, Math.max(80, chartHeight - (numBars * 3)));
+                // Calculate dynamic scaling
+                const maxCount = Math.max(...activeStandards.map(item => item.count));
+                const chartHeight = 300;
+                const maxBarHeight = Math.min(chartHeight * 0.8, Math.max(60, chartHeight - (activeStandards.length * 10)));
                 
-                // Function to create abbreviations
-                function createAbbreviation(classification) {
-                    if (classification.includes('Normal')) return 'N';
-                    if (classification.includes('Overweight')) return 'OW';
-                    if (classification.includes('Obese')) return 'O';
-                    if (classification.includes('Underweight')) return 'UW';
-                    if (classification.includes('Stunted')) return 'S';
-                    if (classification.includes('Wasted')) return 'W';
-                    if (classification.includes('Tall')) return 'T';
-                    return classification.charAt(0).toUpperCase();
+                // Function to get WHO standard color
+                function getWHOStandardColor(standard) {
+                    const colors = {
+                        'Weight-for-Age': '#4CAF50',      // Green
+                        'Height-for-Age': '#2196F3',      // Blue
+                        'Weight-for-Height': '#FF9800',    // Orange
+                        'BMI-for-Age': '#9C27B0',         // Purple
+                        'BMI-Adult': '#F44336'            // Red
+                    };
+                    return colors[standard] || '#9E9E9E';
                 }
 
-                // Create bars
-                classificationsArray.forEach((item, index) => {
+                // Create bars for each WHO standard
+                activeStandards.forEach((item, index) => {
                     const barHeight = maxCount > 0 ? (item.count / maxCount) * maxBarHeight : 20;
+                    const color = getWHOStandardColor(item.standard);
                     
+                    // Create WHO standard bar
                     const barDiv = document.createElement('div');
-                    barDiv.className = `trend-bar ${item.classification.toLowerCase().replace(/\s+/g, '-')}`;
+                    barDiv.className = `trend-bar who-standard-bar`;
                     barDiv.style.height = `${barHeight}px`;
+                    barDiv.style.backgroundColor = color;
+                    barDiv.style.border = '1px solid rgba(255,255,255,0.2)';
+                    barDiv.style.borderRadius = '4px 4px 0 0';
+                    barDiv.style.position = 'relative';
+                    barDiv.style.cursor = 'pointer';
+                    barDiv.title = `${item.standard}: ${item.count} users`;
                     
+                    // Add count value on bar
                     barDiv.innerHTML = `
-                        <div class="trend-bar-value">${item.count}</div>
+                        <div class="trend-bar-value" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: bold; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+                            ${item.count}
+                        </div>
                     `;
                     
                     trendsChart.appendChild(barDiv);
                 });
 
-                // Create labels in separate container
+                // Create labels showing WHO standard legend
                 const trendsLabels = document.getElementById('trends-labels');
                 if (trendsLabels) {
                     trendsLabels.innerHTML = '';
                     
-                    classificationsArray.forEach((item, index) => {
+                    activeStandards.forEach(item => {
+                        const color = getWHOStandardColor(item.standard);
+                        
                         const labelDiv = document.createElement('div');
                         labelDiv.className = 'trend-label-item';
-                        
-                        // Create abbreviation for classification
-                        const abbreviation = createAbbreviation(item.classification);
-                        
-                        // Format classification label
-                        let standardLabel = item.classification;
-                        if (standardLabel && standardLabel.length > 10) {
-                            standardLabel = standardLabel.substring(0, 10);
-                        }
+                        labelDiv.style.display = 'flex';
+                        labelDiv.style.alignItems = 'center';
+                        labelDiv.style.gap = '8px';
+                        labelDiv.style.marginBottom = '4px';
                         
                         labelDiv.innerHTML = `
-                            <div class="trend-label-classification">${abbreviation}</div>
-                            <div class="trend-label-standard">${standardLabel}</div>
+                            <div style="width: 12px; height: 12px; background-color: ${color}; border-radius: 2px; flex-shrink: 0;"></div>
+                            <div style="font-size: 11px; color: var(--color-text);">${item.standard} (${item.count})</div>
                         `;
                         
                         trendsLabels.appendChild(labelDiv);
                     });
                 }
 
-                console.log('✅ Trends chart updated successfully with all classifications');
+                console.log(`✅ Trends chart updated successfully with WHO standard counts:`, activeStandards);
 
             } catch (error) {
                 console.error('❌ Error updating trends chart:', error);
