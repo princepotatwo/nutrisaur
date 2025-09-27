@@ -9339,18 +9339,32 @@ body {
                     trendsChart.appendChild(barDiv);
                 });
 
-                // Create labels showing WHO standard names only
+                // Create labels showing WHO standard initials only
                 const trendsLabels = document.getElementById('trends-labels');
                 if (trendsLabels) {
                     trendsLabels.innerHTML = '';
+                    
+                    // Function to get WHO standard initials
+                    function getWHOStandardInitials(standard) {
+                        const initials = {
+                            'Weight-For-Age': 'WFA',
+                            'Height-For-Age': 'HFA',
+                            'Weight-For-Height': 'WFH',
+                            'Bmi-For-Age': 'BFA',
+                            'Bmi-Adult': 'BMA'
+                        };
+                        return initials[standard] || standard;
+                    }
                     
                     activeStandards.forEach(item => {
                         const labelDiv = document.createElement('div');
                         labelDiv.className = 'trend-label-item';
                         labelDiv.style.marginBottom = '4px';
                         
+                        const initials = getWHOStandardInitials(item.standard);
+                        
                         labelDiv.innerHTML = `
-                            <div style="font-size: 11px; color: var(--color-text); font-weight: 500;">${item.standard} (${item.count})</div>
+                            <div style="font-size: 11px; color: var(--color-text); font-weight: 500;">${initials}</div>
                         `;
                         
                         trendsLabels.appendChild(labelDiv);
