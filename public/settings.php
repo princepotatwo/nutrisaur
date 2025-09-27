@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Handle AJAX requests for table management
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($_POST['municipality'])) {
     header('Content-Type: application/json');
     
     $action = $_POST['action'];
@@ -101,7 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     switch ($action) {
         case 'get_users_table':
             try {
-                $pdo = $db->getPDO();
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -119,7 +120,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             
         case 'get_community_users_table':
             try {
-                $pdo = $db->getPDO();
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -146,7 +148,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     break;
                 }
                 
-                $pdo = $db->getPDO();
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -200,7 +203,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     break;
                 }
                 
-                $pdo = $db->getPDO();
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -4390,16 +4394,32 @@ header {
                 },
                 body: 'action=get_users_table'
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    updateTableStructure('users', data.users);
-                } else {
-                    console.error('Failed to load users:', data.error);
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(text => {
+                console.log('Raw response:', text);
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        updateTableStructure('users', data.users);
+                    } else {
+                        console.error('Failed to load users:', data.error);
+                        showMessage('Failed to load users: ' + data.error, 'error');
+                    }
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    console.error('Response text:', text);
+                    showMessage('Error parsing server response', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error loading users:', error);
+                showMessage('Error loading users: ' + error.message, 'error');
             });
         }
 
@@ -4412,16 +4432,32 @@ header {
                 },
                 body: 'action=get_community_users_table'
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    updateTableStructure('community_users', data.users);
-                } else {
-                    console.error('Failed to load community users:', data.error);
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(text => {
+                console.log('Raw response:', text);
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        updateTableStructure('community_users', data.users);
+                    } else {
+                        console.error('Failed to load community users:', data.error);
+                        showMessage('Failed to load community users: ' + data.error, 'error');
+                    }
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    console.error('Response text:', text);
+                    showMessage('Error parsing server response', 'error');
                 }
             })
             .catch(error => {
                 console.error('Error loading community users:', error);
+                showMessage('Error loading community users: ' + error.message, 'error');
             });
         }
 
@@ -4557,6 +4593,56 @@ header {
 
         function resetUserForm() {
             document.getElementById('userForm').reset();
+        }
+
+        function showMessage(message, type) {
+            // Create or find message container
+            let messageContainer = document.getElementById('messageContainer');
+            if (!messageContainer) {
+                messageContainer = document.createElement('div');
+                messageContainer.id = 'messageContainer';
+                messageContainer.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 10000;
+                    max-width: 400px;
+                `;
+                document.body.appendChild(messageContainer);
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                padding: 15px;
+                margin-bottom: 10px;
+                border-radius: 8px;
+                font-weight: 500;
+                animation: slideInRight 0.3s ease-out;
+            `;
+            
+            if (type === 'error') {
+                messageDiv.style.backgroundColor = 'rgba(207, 134, 134, 0.1)';
+                messageDiv.style.color = 'var(--color-danger)';
+                messageDiv.style.border = '1px solid rgba(207, 134, 134, 0.3)';
+            } else if (type === 'success') {
+                messageDiv.style.backgroundColor = 'rgba(161, 180, 84, 0.1)';
+                messageDiv.style.color = 'var(--color-highlight)';
+                messageDiv.style.border = '1px solid rgba(161, 180, 84, 0.3)';
+            } else {
+                messageDiv.style.backgroundColor = 'rgba(66, 133, 244, 0.1)';
+                messageDiv.style.color = '#4285F4';
+                messageDiv.style.border = '1px solid rgba(66, 133, 244, 0.3)';
+            }
+            
+            messageDiv.textContent = message;
+            messageContainer.appendChild(messageDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 5000);
         }
 
         function closeUserImportModal() {
