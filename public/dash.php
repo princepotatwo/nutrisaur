@@ -9253,16 +9253,22 @@ body {
                     return;
                 }
 
-                // Count total users for each WHO standard
+                // Count users eligible for each WHO standard based on age
                 const whoStandardCounts = {};
                 
-                // Process each WHO standard data
+                console.log('Processing WHO standard data:', data.data);
+                
+                // Process each WHO standard data and count only eligible users
                 Object.entries(data.data).forEach(([standard, standardData]) => {
+                    console.log(`Processing standard: ${standard}`, standardData);
+                    
                     if (typeof standardData === 'object' && standardData !== null) {
                         // Count total users for this standard (sum of all classifications)
                         const totalUsers = Object.values(standardData).reduce((sum, count) => {
                             return typeof count === 'number' ? sum + count : sum;
                         }, 0);
+                        
+                        console.log(`Total users for ${standard}: ${totalUsers}`);
                         
                         if (totalUsers > 0) {
                             // Convert standard name to display format
@@ -9271,6 +9277,8 @@ body {
                         }
                     }
                 });
+                
+                console.log('WHO standard counts:', whoStandardCounts);
 
                 // Convert to array and filter out standards with 0 users
                 const activeStandards = Object.entries(whoStandardCounts)
