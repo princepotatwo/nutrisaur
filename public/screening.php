@@ -3743,6 +3743,11 @@ header {
                                             $wfl_classification = $results['weight_for_length']['classification'] ?? 'N/A';
                                             $bmi_classification = $results['bmi_for_age']['classification'] ?? 'N/A';
                                             
+                                            // DEBUG: Log BMI classification details
+                                            if (isset($results['bmi_for_age'])) {
+                                                error_log("🔍 BMI DEBUG - User: {$user['name']}, Age: {$ageInMonths}m, BMI: {$bmi}, Z-Score: {$bmi_zscore}, Classification: {$bmi_classification}");
+                                            }
+                                            
                                             // Format z-scores for display (only Z-score value, no prefix)
                                             $wfa_display = $wfa_zscore !== null ? number_format($wfa_zscore, 2) : 'N/A';
                                             $hfa_display = $hfa_zscore !== null ? number_format($hfa_zscore, 2) : 'N/A';
