@@ -9310,7 +9310,7 @@ body {
                 populationScale.className = 'population-scale';
                 populationScale.style.cssText = `
                     position: absolute;
-                    left: 0;
+                    left: -45px;
                     top: 0;
                     height: ${chartHeight}px;
                     width: 40px;
@@ -9321,7 +9321,7 @@ body {
                     font-size: 10px;
                     color: var(--color-text);
                     opacity: 0.7;
-                    z-index: 1;
+                    z-index: 10;
                 `;
                 
                 // Create scale labels (0 to total screened, divided into 10)
