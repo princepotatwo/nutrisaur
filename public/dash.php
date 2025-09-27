@@ -9221,11 +9221,13 @@ body {
         // Function to update trends chart with WHO standard counts using same data as donut chart
         async function updateTrendsChart(barangay = '') {
             console.log('📊 Updating trends chart with WHO standard counts...');
+            console.log('📊 Trends chart function called with barangay:', barangay);
             
             try {
                 const trendsChart = document.getElementById('trends-chart');
+                console.log('📊 Trends chart element found:', trendsChart);
                 if (!trendsChart) {
-                    console.error('Trends chart element not found');
+                    console.error('❌ Trends chart element not found');
                     return;
                 }
 
@@ -9237,7 +9239,7 @@ body {
 
                 // Use the same bulk API that the donut chart uses
                 const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=${barangayValue}`;
-                console.log('Fetching WHO standard data from bulk API (same as donut chart):', url);
+                console.log('📊 Fetching WHO standard data from bulk API (same as donut chart):', url);
                 
                 const response = await fetch(url);
                 if (!response.ok) {
