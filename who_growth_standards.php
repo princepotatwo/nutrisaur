@@ -126,25 +126,20 @@ class WHOGrowthDecisionTreeBuilder {
     
     public static function buildBMIClassificationTree() {
         $root = new DecisionTreeNode();
-        $root->condition = function($zScore) { return $zScore < -3; };
-        $root->trueChild = new DecisionTreeNode(null, 'Severely Underweight', true);
-        
-        $underweight = new DecisionTreeNode();
-        $underweight->condition = function($zScore) { return $zScore < -2; };
-        $underweight->trueChild = new DecisionTreeNode(null, 'Underweight', true);
+        $root->condition = function($zScore) { return $zScore < -1.645; };
+        $root->trueChild = new DecisionTreeNode(null, 'Underweight', true);
         
         $normal = new DecisionTreeNode();
-        $normal->condition = function($zScore) { return $zScore <= 1; };
+        $normal->condition = function($zScore) { return $zScore <= 1.036; };
         $normal->trueChild = new DecisionTreeNode(null, 'Normal', true);
         
         $overweight = new DecisionTreeNode();
-        $overweight->condition = function($zScore) { return $zScore <= 2; };
+        $overweight->condition = function($zScore) { return $zScore <= 1.645; };
         $overweight->trueChild = new DecisionTreeNode(null, 'Overweight', true);
         
         $obese = new DecisionTreeNode(null, 'Obese', true);
         
-        $root->falseChild = $underweight;
-        $underweight->falseChild = $normal;
+        $root->falseChild = $normal;
         $normal->falseChild = $overweight;
         $overweight->falseChild = $obese;
         

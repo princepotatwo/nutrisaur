@@ -66,11 +66,10 @@ function getAccurateZScoreRange($classification, $standard) {
             'Obese' => '> +3SD'
         ],
         'bmi-for-age' => [
-            'Severely Underweight' => '≤ -3SD',
-            'Underweight' => '> -3SD to ≤ -2SD',
-            'Normal' => '> -2SD to ≤ +1SD',
-            'Overweight' => '> +1SD to ≤ +2SD',
-            'Obese' => '> +2SD'
+            'Underweight' => '< 5th percentile',
+            'Normal' => '5th – 85th percentile',
+            'Overweight' => '85th – 95th percentile',
+            'Obese' => '> 95th percentile'
         ],
         'bmi-adult' => [
             'Underweight' => '< 18.5 kg/m²',
@@ -4859,7 +4858,6 @@ header {
             } else if (selectedStandard === 'bmi-for-age') {
                 classificationFilter.innerHTML += `
                     <optgroup label="BMI-for-Age">
-                        <option value="Severely Underweight">Severely Underweight</option>
                         <option value="Underweight">Underweight</option>
                         <option value="Normal">Normal</option>
                         <option value="Overweight">Overweight</option>
@@ -4896,7 +4894,6 @@ header {
                         <option value="Obese">Obese</option>
                     </optgroup>
                     <optgroup label="BMI-for-Age">
-                        <option value="Severely Underweight">Severely Underweight</option>
                         <option value="Underweight">Underweight</option>
                         <option value="Normal">Normal</option>
                         <option value="Overweight">Overweight</option>

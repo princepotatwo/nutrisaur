@@ -181,9 +181,15 @@ function getInitialClassifications($whoStandard) {
     // Initialize classifications based on WHO standard (matching API logic)
     switch ($whoStandard) {
         case 'weight-for-age':
-        case 'bmi-for-age':
             return [
                 'Severely Underweight' => 0,
+                'Underweight' => 0,
+                'Normal' => 0,
+                'Overweight' => 0,
+                'Obese' => 0
+            ];
+        case 'bmi-for-age':
+            return [
                 'Underweight' => 0,
                 'Normal' => 0,
                 'Overweight' => 0,

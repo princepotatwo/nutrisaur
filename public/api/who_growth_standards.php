@@ -106,16 +106,18 @@ class WHOGrowthStandards {
     }
 
     /**
-     * Get BMI classification based on z-score
+     * Get BMI classification based on z-score using percentile ranges
+     * < 5th percentile → Underweight (z-score < -1.645)
+     * 5th – 85th percentile → Normal (z-score -1.645 to +1.036)
+     * 85th – 95th percentile → Overweight (z-score +1.036 to +1.645)
+     * > 95th percentile → Obese (z-score > +1.645)
      */
     public function getBMIClassification($zScore) {
-        if ($zScore < -3) {
-            return 'Severely Underweight';
-        } elseif ($zScore < -2) {
+        if ($zScore < -1.645) {
             return 'Underweight';
-        } elseif ($zScore <= 1) {
+        } elseif ($zScore <= 1.036) {
             return 'Normal';
-        } elseif ($zScore <= 2) {
+        } elseif ($zScore <= 1.645) {
             return 'Overweight';
         } else {
             return 'Obese';
