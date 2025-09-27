@@ -8086,12 +8086,12 @@ body {
                         
                         // Force update the total screened card
                         console.log('📊 Setting total screened to:', totalUsersValue);
-                        totalScreened.textContent = totalUsersValue;
-                        dashboardState.totalScreened = totalUsersValue;
+                            totalScreened.textContent = totalUsersValue;
+                            dashboardState.totalScreened = totalUsersValue;
                         
                         console.log('📊 Setting screened change to:', recentRegValue);
-                        screenedChange.textContent = recentRegValue;
-                        dashboardState.recentRegistrations = recentRegValue;
+                            screenedChange.textContent = recentRegValue;
+                            dashboardState.recentRegistrations = recentRegValue;
                     } else {
                         console.log('❌ HTML elements not found for Total Screened');
                     }
@@ -9305,12 +9305,12 @@ body {
                 const totalScreened = data.total_users || 6; // Get total screened users
                 const scaleSteps = 10;
                 
-                // Create population scale container inside trends chart
+                // Create population scale container using the existing 8px padding space
                 const populationScale = document.createElement('div');
                 populationScale.className = 'population-scale';
                 populationScale.style.cssText = `
                     position: absolute;
-                    left: -45px;
+                    left: -8px;
                     top: 0;
                     height: ${chartHeight}px;
                     width: 40px;
