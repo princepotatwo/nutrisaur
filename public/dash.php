@@ -9362,9 +9362,12 @@ body {
                     return colors[standard] || '#9E9E9E';
                 }
 
-                // Create bars for each WHO standard
+                // Create bars for each WHO standard with height aligned to population scale
                 activeStandards.forEach((item, index) => {
-                    const barHeight = maxCount > 0 ? (item.count / maxCount) * maxBarHeight : 20;
+                    // Calculate bar height to align with population scale (1,2,3,4,5,6)
+                    // Each scale unit represents chartHeight/6 of the chart
+                    const scaleUnitHeight = chartHeight / 6; // Height per scale unit
+                    const barHeight = item.count * scaleUnitHeight;
                     const color = getWHOStandardColor(item.standard);
                     
                     // Create WHO standard bar
@@ -9376,6 +9379,7 @@ body {
                     barDiv.style.borderRadius = '4px 4px 0 0';
                     barDiv.style.position = 'relative';
                     barDiv.style.cursor = 'pointer';
+                    barDiv.style.alignSelf = 'flex-end'; // Align bars to bottom (where "1" is on scale)
                     barDiv.title = `${item.standard}: ${item.count} users`;
                     
                     // Add count value on bar
