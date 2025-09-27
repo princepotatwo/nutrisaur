@@ -2833,7 +2833,7 @@ class DatabaseAPI {
                     'Overweight' => 0, 'Obese' => 0, 'No Data' => 0
                 ],
                 'bmi_for_age' => [
-                    'Severely Underweight' => 0, 'Underweight' => 0, 'Normal' => 0, 
+                    'Underweight' => 0, 'Normal' => 0, 
                     'Overweight' => 0, 'Obese' => 0, 'No Data' => 0
                 ],
                 'bmi_adult' => [
@@ -5830,7 +5830,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'weight-for-age' => ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese'],
                     'height-for-age' => ['Severely Stunted', 'Stunted', 'Normal', 'Tall'],
                     'weight-for-height' => ['Severely Wasted', 'Wasted', 'Normal', 'Overweight', 'Obese'],
-                    'bmi-for-age' => ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese'],
+                    'bmi-for-age' => ['Underweight', 'Normal', 'Overweight', 'Obese'],
                     'bmi-adult' => ['Underweight', 'Normal', 'Overweight', 'Obese']
                 ];
                 
