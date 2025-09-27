@@ -3752,6 +3752,10 @@ header {
                                                 $debugInfo = "BMI DEBUG - User: {$user['name']}, Age: {$ageInMonths}m, BMI: {$bmi}, Z-Score: {$bmi_zscore}, Classification: {$bmi_classification}";
                                                 echo "<script>console.log('$debugInfo');</script>";
                                                 
+                                                // DEBUG: Show raw user data
+                                                $debugRaw = "BMI RAW DEBUG - Weight: {$user['weight']}, Height: {$user['height']}, Birthday: {$user['birthday']}, Sex: {$user['sex']}";
+                                                echo "<script>console.log('$debugRaw');</script>";
+                                                
                                                 // DEBUG: Show reference data being used
                                                 $sex = $user['sex'];
                                                 $age = $ageInMonths;
