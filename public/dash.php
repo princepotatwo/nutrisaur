@@ -9218,7 +9218,7 @@ body {
             }
         }
 
-        // Function to update trends chart with WHO standard counts
+        // Function to update trends chart with WHO standard counts using same data as donut chart
         async function updateTrendsChart(barangay = '') {
             console.log('📊 Updating trends chart with WHO standard counts...');
             
@@ -9235,9 +9235,9 @@ body {
                 // Get current filter values
                 const barangayValue = barangay || '';
 
-                // Fetch individual user data to count by WHO standard
-                const url = `/api/DatabaseAPI.php?action=get_detailed_screening_responses&barangay=${barangayValue}`;
-                console.log('Fetching user data for WHO standard counts:', url);
+                // Use the same bulk API that the donut chart uses
+                const url = `/api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=${barangayValue}`;
+                console.log('Fetching WHO standard data from bulk API (same as donut chart):', url);
                 
                 const response = await fetch(url);
                 if (!response.ok) {
@@ -9245,67 +9245,40 @@ body {
                 }
                 
                 const data = await response.json();
-                console.log('User data received for WHO standard counts:', data);
+                console.log('WHO standard data received:', data);
 
-                if (!data.success || !data.data || data.data.length === 0) {
-                    console.log('No user data available for trends chart');
-                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No user data available</div>';
+                if (!data.success || !data.data || Object.keys(data.data).length === 0) {
+                    console.log('No WHO standard data available for trends chart');
+                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No data available</div>';
                     return;
                 }
 
-                const users = data.data;
-                console.log(`Processing ${users.length} users for WHO standard counts`);
-
-                if (users.length === 0) {
-                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No users found</div>';
-                    return;
-                }
-
-                // Count users by WHO standard eligibility
-                const whoStandardCounts = {
-                    'Weight-for-Age': 0,
-                    'Height-for-Age': 0,
-                    'Weight-for-Height': 0,
-                    'BMI-for-Age': 0,
-                    'BMI-Adult': 0
-                };
-
-                users.forEach(user => {
-                    const ageInMonths = user.age_in_months || 0;
-                    
-                    // Weight-for-Age: 0-71 months
-                    if (ageInMonths >= 0 && ageInMonths <= 71) {
-                        whoStandardCounts['Weight-for-Age']++;
-                    }
-                    
-                    // Height-for-Age: 0-71 months
-                    if (ageInMonths >= 0 && ageInMonths <= 71) {
-                        whoStandardCounts['Height-for-Age']++;
-                    }
-                    
-                    // Weight-for-Height: 0-60 months
-                    if (ageInMonths >= 0 && ageInMonths <= 60) {
-                        whoStandardCounts['Weight-for-Height']++;
-                    }
-                    
-                    // BMI-for-Age: 60-228 months (5-19 years)
-                    if (ageInMonths >= 60 && ageInMonths < 228) {
-                        whoStandardCounts['BMI-for-Age']++;
-                    }
-                    
-                    // BMI-Adult: 228+ months (19+ years)
-                    if (ageInMonths >= 228) {
-                        whoStandardCounts['BMI-Adult']++;
+                // Count total users for each WHO standard
+                const whoStandardCounts = {};
+                
+                // Process each WHO standard data
+                Object.entries(data.data).forEach(([standard, standardData]) => {
+                    if (typeof standardData === 'object' && standardData !== null) {
+                        // Count total users for this standard (sum of all classifications)
+                        const totalUsers = Object.values(standardData).reduce((sum, count) => {
+                            return typeof count === 'number' ? sum + count : sum;
+                        }, 0);
+                        
+                        if (totalUsers > 0) {
+                            // Convert standard name to display format
+                            const displayName = standard.replace(/_/g, '-').replace(/\b\w/g, l => l.toUpperCase());
+                            whoStandardCounts[displayName] = totalUsers;
+                        }
                     }
                 });
 
-                // Filter out standards with 0 users
+                // Convert to array and filter out standards with 0 users
                 const activeStandards = Object.entries(whoStandardCounts)
                     .filter(([standard, count]) => count > 0)
                     .map(([standard, count]) => ({ standard, count }));
 
                 if (activeStandards.length === 0) {
-                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No eligible users found</div>';
+                    trendsChart.innerHTML = '<div style="color: var(--color-text); text-align: center; padding: 40px;">No WHO standard data found</div>';
                     return;
                 }
 
@@ -9317,11 +9290,11 @@ body {
                 // Function to get WHO standard color
                 function getWHOStandardColor(standard) {
                     const colors = {
-                        'Weight-for-Age': '#4CAF50',      // Green
-                        'Height-for-Age': '#2196F3',      // Blue
-                        'Weight-for-Height': '#FF9800',    // Orange
-                        'BMI-for-Age': '#9C27B0',         // Purple
-                        'BMI-Adult': '#F44336'            // Red
+                        'Weight-For-Age': '#4CAF50',      // Green
+                        'Height-For-Age': '#2196F3',       // Blue
+                        'Weight-For-Height': '#FF9800',    // Orange
+                        'Bmi-For-Age': '#9C27B0',         // Purple
+                        'Bmi-Adult': '#F44336'             // Red
                     };
                     return colors[standard] || '#9E9E9E';
                 }
