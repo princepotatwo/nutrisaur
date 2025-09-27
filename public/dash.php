@@ -9340,12 +9340,13 @@ body {
                     populationScale.appendChild(scaleLabel);
                 }
                 
-                // Add population scale to trends chart container
-                trendsChart.appendChild(populationScale);
-                
-                // Adjust trends chart positioning to accommodate the scale
-                trendsChart.style.paddingLeft = '50px';
-                trendsChart.style.position = 'relative';
+                // Add population scale to trends chart container (not inside trends chart)
+                const trendsContainer = trendsChart.parentNode;
+                if (trendsContainer) {
+                    trendsContainer.appendChild(populationScale);
+                    trendsContainer.style.position = 'relative';
+                    trendsContainer.style.paddingLeft = '50px'; // Make room for the scale
+                }
                 
                 // Function to get WHO standard color
                 function getWHOStandardColor(standard) {
