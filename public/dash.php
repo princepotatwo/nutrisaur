@@ -9299,7 +9299,7 @@ body {
                 // Calculate dynamic scaling
                 const maxCount = Math.max(...activeStandards.map(item => item.count));
                 const chartHeight = 300;
-                const maxBarHeight = Math.min(chartHeight * 0.8, Math.max(60, chartHeight - (activeStandards.length * 10)));
+                const maxBarHeight = Math.min(chartHeight * 0.8, Math.max(120, chartHeight - (activeStandards.length * 10))); // 2x bigger bars
                 
                 // Add population scale inside the trends chart container
                 const totalScreened = data.total_users || 6; // Get total screened users
@@ -9324,12 +9324,12 @@ body {
                     z-index: 10;
                 `;
                 
-                // Create scale labels (0 to total screened, divided into 10)
-                for (let i = scaleSteps; i >= 0; i--) {
-                    const value = Math.round((i / scaleSteps) * totalScreened);
+                // Create scale labels (1,2,3,4,5,6 - simple scale for total screened users)
+                const scaleValues = [6, 5, 4, 3, 2, 1];
+                scaleValues.forEach((value, index) => {
                     const scaleLabel = document.createElement('div');
                     scaleLabel.style.cssText = `
-                        height: ${chartHeight / scaleSteps}px;
+                        height: ${chartHeight / scaleValues.length}px;
                         display: flex;
                         align-items: center;
                         justify-content: flex-end;
@@ -9338,7 +9338,7 @@ body {
                     `;
                     scaleLabel.textContent = value.toString();
                     populationScale.appendChild(scaleLabel);
-                }
+                });
                 
                 // Add population scale to trends chart container (not inside trends chart)
                 const trendsContainer = trendsChart.parentNode;
@@ -9346,6 +9346,9 @@ body {
                     trendsContainer.appendChild(populationScale);
                     trendsContainer.style.position = 'relative';
                 }
+                
+                // Add padding to trends chart to move bars to the right and avoid overlap
+                trendsChart.style.paddingLeft = '40px';
                 
                 // Function to get WHO standard color
                 function getWHOStandardColor(standard) {
