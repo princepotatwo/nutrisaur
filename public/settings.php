@@ -731,6 +731,35 @@ header {
     line-height: inherit !important;
 }
 
+/* Verification status icons styling */
+.verified-status {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.verified-icon, .not-verified-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    line-height: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-style: normal;
+}
+
+.verified-icon {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.not-verified-icon {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
 /* Card Deck Fan Component Styles */
 .card-deck-container {
     background: var(--color-card);
@@ -4610,16 +4639,16 @@ header {
             }
             
             if (tableType === 'users') {
-                // Update table headers for users table
-                tableHead.innerHTML = `
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Email Verified</th>
-                    <th>Created At</th>
-                    <th>Last Login</th>
-                    <th>ACTIONS</th>
-                `;
+           // Update table headers for users table
+           tableHead.innerHTML = `
+               <th>ID</th>
+               <th>Username</th>
+               <th>Email</th>
+               <th>Verified</th>
+               <th>Created At</th>
+               <th>Last Login</th>
+               <th>ACTIONS</th>
+           `;
                 
                 // Update table body with users data
                 tableBody.innerHTML = users.map(user => `
@@ -4627,7 +4656,12 @@ header {
                         <td>${user.user_id}</td>
                         <td><span class="editable" data-field="username" data-id="${user.user_id}">${user.username}</span></td>
                         <td><span class="editable" data-field="email" data-id="${user.user_id}">${user.email}</span></td>
-                        <td>${user.email_verified ? '✅' : '❌'}</td>
+                        <td class="verified-status">
+                            ${user.email_verified ? 
+                                '<i class="verified-icon" style="color: #28a745; font-size: 16px;">✓</i>' : 
+                                '<i class="not-verified-icon" style="color: #dc3545; font-size: 16px;">✗</i>'
+                            }
+                        </td>
                         <td>${new Date(user.created_at).toLocaleDateString()}</td>
                         <td>${user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</td>
                         <td class="action-buttons">
