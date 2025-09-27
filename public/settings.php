@@ -3582,7 +3582,7 @@ header {
                     <div class="control-row-1">
                         <div class="action-section">
                             <button class="btn-add" id="tableToggleBtn" onclick="downloadCSVTemplate()">
-                                <span class="btn-text">Switch to Users</span>
+                                <span class="btn-text">Switch to Admins</span>
                             </button>
                             <button class="btn-secondary" onclick="showUserImportModal()">
                                 <span class="btn-icon">➕</span>
@@ -4386,9 +4386,9 @@ header {
             const btn = document.getElementById('tableToggleBtn');
             if (btn) {
                 if (currentTableType === 'users') {
-                    btn.querySelector('.btn-text').textContent = 'Switch to Admin';
+                    btn.querySelector('.btn-text').textContent = 'Switch to Community';
                 } else {
-                    btn.querySelector('.btn-text').textContent = 'Switch to Users';
+                    btn.querySelector('.btn-text').textContent = 'Switch to Admins';
                 }
             }
         }
