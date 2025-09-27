@@ -9348,7 +9348,14 @@ body {
                 }
                 
                 // Add padding to trends chart to move bars to the right and avoid overlap
-                trendsChart.style.paddingLeft = '40px';
+                trendsChart.style.cssText = `
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    height: ${chartHeight}px;
+                    padding: 0 10px 0 50px;
+                    gap: 5px;
+                `;
                 
                 // Function to get WHO standard color
                 function getWHOStandardColor(standard) {
@@ -9373,13 +9380,18 @@ body {
                     // Create WHO standard bar
                     const barDiv = document.createElement('div');
                     barDiv.className = `trend-bar who-standard-bar`;
-                    barDiv.style.height = `${barHeight}px`;
-                    barDiv.style.backgroundColor = color;
-                    barDiv.style.border = '1px solid rgba(255,255,255,0.2)';
-                    barDiv.style.borderRadius = '4px 4px 0 0';
-                    barDiv.style.position = 'relative';
-                    barDiv.style.cursor = 'pointer';
-                    barDiv.style.alignSelf = 'flex-end'; // Align bars to bottom (where "1" is on scale)
+                    barDiv.style.cssText = `
+                        height: ${barHeight}px;
+                        background-color: ${color};
+                        border: 1px solid rgba(255,255,255,0.2);
+                        border-radius: 4px 4px 0 0;
+                        position: relative;
+                        cursor: pointer;
+                        flex: 1;
+                        min-width: 30px;
+                        max-width: 50px;
+                        transition: all 0.3s ease;
+                    `;
                     barDiv.title = `${item.standard}: ${item.count} users`;
                     
                     // Add count value on bar
@@ -9392,10 +9404,17 @@ body {
                     trendsChart.appendChild(barDiv);
                 });
 
-                // Create labels showing WHO standard initials only
+                // Create labels showing WHO standard initials positioned below bars
                 const trendsLabels = document.getElementById('trends-labels');
                 if (trendsLabels) {
                     trendsLabels.innerHTML = '';
+                    trendsLabels.style.cssText = `
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                        padding-top: 10px;
+                        height: 40px;
+                    `;
                     
                     // Function to get WHO standard initials
                     function getWHOStandardInitials(standard) {
@@ -9409,16 +9428,20 @@ body {
                         return initials[standard] || standard;
                     }
                     
-                    activeStandards.forEach(item => {
+                    activeStandards.forEach((item, index) => {
                         const labelDiv = document.createElement('div');
                         labelDiv.className = 'trend-label-item';
-                        labelDiv.style.marginBottom = '4px';
+                        labelDiv.style.cssText = `
+                            flex: 1;
+                            text-align: center;
+                            font-size: 11px;
+                            color: var(--color-text);
+                            font-weight: 500;
+                            margin: 0 2px;
+                        `;
                         
                         const initials = getWHOStandardInitials(item.standard);
-                        
-                        labelDiv.innerHTML = `
-                            <div style="font-size: 11px; color: var(--color-text); font-weight: 500;">${initials}</div>
-                        `;
+                        labelDiv.textContent = initials;
                         
                         trendsLabels.appendChild(labelDiv);
                     });
