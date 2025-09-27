@@ -4961,7 +4961,7 @@ header {
                     }
                     
                     // Height column (index 5) - shifted due to email column
-                    if (selectedStandard === 'height-for-age' || selectedStandard === 'weight-for-height' || selectedStandard === 'all-ages') {
+                    if (selectedStandard === 'height-for-age' || selectedStandard === 'weight-for-height' || selectedStandard === 'bmi-for-age' || selectedStandard === 'bmi-adult' || selectedStandard === 'all-ages') {
                         cells[5].style.display = '';
                     } else {
                         cells[5].style.display = 'none';
