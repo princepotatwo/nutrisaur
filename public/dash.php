@@ -9301,17 +9301,16 @@ body {
                 const chartHeight = 300;
                 const maxBarHeight = Math.min(chartHeight * 0.8, Math.max(60, chartHeight - (activeStandards.length * 10)));
                 
-                // Add population scale on the left side (0 to total screened users, divided into 10)
+                // Add population scale inside the trends chart container
                 const totalScreened = data.total_users || 6; // Get total screened users
                 const scaleSteps = 10;
-                const stepValue = Math.ceil(totalScreened / scaleSteps);
                 
-                // Create population scale container
+                // Create population scale container inside trends chart
                 const populationScale = document.createElement('div');
                 populationScale.className = 'population-scale';
                 populationScale.style.cssText = `
                     position: absolute;
-                    left: -50px;
+                    left: 0;
                     top: 0;
                     height: ${chartHeight}px;
                     width: 40px;
@@ -9322,6 +9321,7 @@ body {
                     font-size: 10px;
                     color: var(--color-text);
                     opacity: 0.7;
+                    z-index: 1;
                 `;
                 
                 // Create scale labels (0 to total screened, divided into 10)
@@ -9340,15 +9340,12 @@ body {
                     populationScale.appendChild(scaleLabel);
                 }
                 
-                // Insert population scale before the chart
-                trendsChart.parentNode.insertBefore(populationScale, trendsChart);
+                // Add population scale to trends chart container
+                trendsChart.appendChild(populationScale);
                 
-                // Ensure the trends chart container has relative positioning for the scale
-                const trendsContainer = trendsChart.parentNode;
-                if (trendsContainer) {
-                    trendsContainer.style.position = 'relative';
-                    trendsContainer.style.paddingLeft = '50px'; // Make room for the scale
-                }
+                // Adjust trends chart positioning to accommodate the scale
+                trendsChart.style.paddingLeft = '50px';
+                trendsChart.style.position = 'relative';
                 
                 // Function to get WHO standard color
                 function getWHOStandardColor(standard) {
