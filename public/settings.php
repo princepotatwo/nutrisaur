@@ -121,17 +121,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
         case 'get_community_users_table':
             try {
                 require_once __DIR__ . "/../config.php";
-                $pdo = getDatabaseConnection();
-                if (!$pdo) {
+                $db = new DatabaseAPI();
+                
+                if (!$db->isAvailable()) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
                 }
                 
-                $stmt = $pdo->prepare("SELECT name, email, municipality, barangay, sex, birthday, weight, height, muac, screening_date FROM community_users ORDER BY screening_date DESC");
-                $stmt->execute();
-                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                // Use the same method as the existing working code
+                $result = $db->select(
+                    'community_users',
+                    '*',
+                    '',
+                    [],
+                    'screening_date DESC'
+                );
                 
-                echo json_encode(['success' => true, 'users' => $users]);
+                if ($result['success']) {
+                    echo json_encode(['success' => true, 'users' => $result['data']]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => $result['error'] ?? 'Failed to fetch data']);
+                }
             } catch (Exception $e) {
                 echo json_encode(['success' => false, 'error' => $e->getMessage()]);
             }
@@ -4521,16 +4531,12 @@ header {
                 } else {
                     // Update table headers for community_users table (existing structure)
                     altTableHead.innerHTML = `
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Municipality</th>
-                        <th>Barangay</th>
-                        <th>Gender</th>
-                        <th>Birthday</th>
-                        <th>Weight</th>
-                        <th>Height</th>
-                        <th>MUAC</th>
-                        <th>Screening Date</th>
+                        <th>NAME</th>
+                        <th>EMAIL</th>
+                        <th>MUNICIPALITY</th>
+                        <th>BARANGAY</th>
+                        <th>SEX</th>
+                        <th>BIRTHDAY</th>
                         <th>ACTIONS</th>
                     `;
                     
@@ -4543,11 +4549,7 @@ header {
                             <td>${user.barangay || 'N/A'}</td>
                             <td>${user.sex || 'N/A'}</td>
                             <td>${user.birthday || 'N/A'}</td>
-                            <td>${user.weight || 'N/A'}</td>
-                            <td>${user.height || 'N/A'}</td>
-                            <td>${user.muac || 'N/A'}</td>
-                            <td>${user.screening_date ? new Date(user.screening_date).toLocaleDateString() : 'N/A'}</td>
-                            <td>
+                            <td class="action-buttons">
                                 <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                     <span>✏️</span>
                                 </button>
@@ -4602,16 +4604,12 @@ header {
             } else {
                 // Update table headers for community_users table (existing structure)
                 tableHead.innerHTML = `
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Municipality</th>
-                    <th>Barangay</th>
-                    <th>Gender</th>
-                    <th>Birthday</th>
-                    <th>Weight</th>
-                    <th>Height</th>
-                    <th>MUAC</th>
-                    <th>Screening Date</th>
+                    <th>NAME</th>
+                    <th>EMAIL</th>
+                    <th>MUNICIPALITY</th>
+                    <th>BARANGAY</th>
+                    <th>SEX</th>
+                    <th>BIRTHDAY</th>
                     <th>ACTIONS</th>
                 `;
                 
@@ -4624,11 +4622,7 @@ header {
                         <td>${user.barangay || 'N/A'}</td>
                         <td>${user.sex || 'N/A'}</td>
                         <td>${user.birthday || 'N/A'}</td>
-                        <td>${user.weight || 'N/A'}</td>
-                        <td>${user.height || 'N/A'}</td>
-                        <td>${user.muac || 'N/A'}</td>
-                        <td>${user.screening_date ? new Date(user.screening_date).toLocaleDateString() : 'N/A'}</td>
-                        <td>
+                        <td class="action-buttons">
                             <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                 <span>✏️</span>
                             </button>
