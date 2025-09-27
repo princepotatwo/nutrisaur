@@ -9444,7 +9444,7 @@ body {
                     gap: 5px;
                 `;
                 
-                // Function to get classification color (exact match with donut chart)
+                // Function to get classification color (exact match with age chart and donut chart)
                 function getClassificationColor(classification) {
                     const colors = {
                         'Severely Underweight': '#E91E63',  // Pink
@@ -9452,10 +9452,10 @@ body {
                         'Normal': '#4CAF50',                // Green
                         'Overweight': '#FF9800',            // Orange
                         'Obese': '#F44336',                 // Red
-                        'Severely Stunted': '#E91E63',      // Pink
+                        'Severely Stunted': '#673AB7',      // Purple (matches age chart)
                         'Stunted': '#2196F3',               // Blue
-                        'Severely Wasted': '#E91E63',       // Pink
-                        'Wasted': '#FF9800'                 // Orange
+                        'Severely Wasted': '#D32F2F',       // Dark Red (matches age chart)
+                        'Wasted': '#FF5722'                 // Deep Orange (matches age chart)
                     };
                     return colors[classification] || '#9E9E9E';
                 }
