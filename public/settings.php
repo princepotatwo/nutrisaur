@@ -4432,12 +4432,51 @@ header {
         }
 
         function loadCommunityUsersTable() {
-            // Use the original community users data that was loaded on page load
+            // Restore the original table structure and data
+            console.log('Restoring original community users table');
+            
+            const tableBody = document.getElementById('usersTableBody');
+            const tableHead = document.querySelector('.user-table thead tr');
+            
+            // Restore original headers
+            tableHead.innerHTML = `
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>MUNICIPALITY</th>
+                <th>BARANGAY</th>
+                <th>SEX</th>
+                <th>BIRTHDAY</th>
+                <th>ACTIONS</th>
+            `;
+            
+            // Clear the table body first
+            tableBody.innerHTML = '';
+            
+            // Restore original community users data
             if (originalCommunityUsersData && originalCommunityUsersData.length > 0) {
-                console.log('Using stored community users data:', originalCommunityUsersData.length, 'users');
-                updateTableStructure('community_users', originalCommunityUsersData);
+                originalCommunityUsersData.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.name || 'N/A'}</td>
+                        <td>${user.email}</td>
+                        <td>${user.municipality || 'N/A'}</td>
+                        <td>${user.barangay || 'N/A'}</td>
+                        <td>${user.sex || 'N/A'}</td>
+                        <td>${user.birthday || 'N/A'}</td>
+                        <td class="action-buttons">
+                            <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
+                                Edit
+                            </button>
+                            <button class="btn-delete" onclick="deleteUser('${user.email}')" title="Delete User">
+                                Delete
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                console.log('Restored', originalCommunityUsersData.length, 'community users');
             } else {
-                // If no stored data, reload the page to get the original data
+                // If no stored data, reload the page
                 console.log('No stored data, reloading page to show community users table');
                 window.location.reload();
             }
@@ -4476,7 +4515,6 @@ header {
                         <th>Email Verified</th>
                         <th>Created At</th>
                         <th>Last Login</th>
-                        <th>Status</th>
                         <th>ACTIONS</th>
                     `;
                     
@@ -4489,13 +4527,12 @@ header {
                             <td>${user.email_verified ? '✅' : '❌'}</td>
                             <td>${new Date(user.created_at).toLocaleDateString()}</td>
                             <td>${user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</td>
-                            <td>${user.is_active ? '🟢 Active' : '🔴 Inactive'}</td>
-                            <td>
+                            <td class="action-buttons">
                                 <button class="btn-edit" onclick="editUser(${user.user_id})" title="Edit User">
-                                    <span>✏️</span>
+                                    Edit
                                 </button>
                                 <button class="btn-delete" onclick="deleteUser(${user.user_id})" title="Delete User">
-                                    <span>🗑️</span>
+                                    Delete
                                 </button>
                             </td>
                         </tr>
@@ -4549,7 +4586,6 @@ header {
                     <th>Email Verified</th>
                     <th>Created At</th>
                     <th>Last Login</th>
-                    <th>Status</th>
                     <th>ACTIONS</th>
                 `;
                 
@@ -4562,13 +4598,12 @@ header {
                         <td>${user.email_verified ? '✅' : '❌'}</td>
                         <td>${new Date(user.created_at).toLocaleDateString()}</td>
                         <td>${user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}</td>
-                        <td>${user.is_active ? '🟢 Active' : '🔴 Inactive'}</td>
-                        <td>
+                        <td class="action-buttons">
                             <button class="btn-edit" onclick="editUser(${user.user_id})" title="Edit User">
-                                <span>✏️</span>
+                                Edit
                             </button>
                             <button class="btn-delete" onclick="deleteUser(${user.user_id})" title="Delete User">
-                                <span>🗑️</span>
+                                Delete
                             </button>
                         </td>
                     </tr>
