@@ -1651,8 +1651,8 @@ class DatabaseAPI {
                         // These standards are for children 0-71 months only
                         $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
                     } elseif ($whoStandard === 'bmi-for-age') {
-                        // BMI-for-Age: 2-19 years (24-228 months) - exactly like screening.php
-                        $shouldProcess = ($ageInMonths >= 24 && $ageInMonths < 228);
+                        // BMI-for-Age: 5-19 years (60-228 months) - exactly like screening.php
+                        $shouldProcess = ($ageInMonths >= 60 && $ageInMonths < 228);
                     } elseif ($whoStandard === 'bmi-adult') {
                         // BMI Adult: ≥19 years (228+ months) - exactly like screening.php
                         $shouldProcess = ($ageInMonths >= 228);
@@ -2749,7 +2749,7 @@ class DatabaseAPI {
             case 'weight-for-height':
                 return ['min' => 0, 'max' => 60]; // 0-60 months (0-5 years)
             case 'bmi-for-age':
-                return ['min' => 24, 'max' => 1200]; // 24-1200 months (2-100 years)
+                return ['min' => 60, 'max' => 228]; // 60-228 months (5-19 years)
             case 'bmi-adult':
                 return ['min' => 228, 'max' => 999]; // 228+ months (19+ years)
             default:
@@ -2784,8 +2784,8 @@ class DatabaseAPI {
                     break;
                     
                 case 'bmi-for-age':
-                    // 2-100 years old (24-1200 months)
-                    $isEligible = $ageInMonths >= 24 && $ageInMonths <= 1200;
+                    // 5-19 years old (60-228 months)
+                    $isEligible = $ageInMonths >= 60 && $ageInMonths <= 228;
                     break;
                     
                 case 'bmi-adult':
@@ -4285,8 +4285,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'ranges' => [[0,6],[7,12],[13,18],[19,24],[25,30],[31,36],[37,42],[43,48],[49,54],[55,60]]
                     ],
                     'bmi-for-age' => [
-                        'labels' => ['2-3y','4-5y','6-7y','8-9y','10-11y','12-13y','14-15y','16-17y','18-19y'],
-                        'ranges' => [[24,36],[48,60],[72,84],[96,108],[120,132],[144,156],[168,180],[192,204],[216,228]]
+                        'labels' => ['5-6y','7-8y','9-10y','11-12y','13-14y','15-16y','17-18y','19y'],
+                        'ranges' => [[60,72],[84,96],[108,120],[132,144],[156,168],[180,192],[204,216],[216,228]]
                     ],
                     'bmi-adult' => [
                         'labels' => ['19-27y','28-36y','37-45y','46-54y','55-63y','64-72y','73-81y','82-90y','91-100y'],

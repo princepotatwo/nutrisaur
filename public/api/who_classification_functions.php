@@ -114,8 +114,8 @@ function getWHOClassificationData($db, $timeFrame, $barangay = null, $whoStandar
                     $shouldProcess = ($ageInMonths >= 0 && $ageInMonths <= 71);
                     error_log("  - User age: {$ageInMonths} months, WFA/HFA eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 } elseif ($whoStandard === 'bmi-for-age') {
-                    // BMI-for-Age: 2-19 years (24-228 months) - exactly like screening.php
-                    $shouldProcess = ($ageInMonths >= 24 && $ageInMonths < 228);
+                    // BMI-for-Age: 5-19 years (60-228 months) - exactly like screening.php
+                    $shouldProcess = ($ageInMonths >= 60 && $ageInMonths < 228);
                     error_log("  - User age: {$ageInMonths} months, BMI-for-Age eligible: " . ($shouldProcess ? 'YES' : 'NO'));
                 } elseif ($whoStandard === 'bmi-adult') {
                     // BMI Adult: ≥19 years (228+ months) - exactly like screening.php

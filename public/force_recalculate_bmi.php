@@ -48,8 +48,8 @@ try {
             // Calculate age in months
             $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
             
-            // Only process users eligible for BMI-for-age (2-19 years, 24-228 months)
-            if ($ageInMonths < 24 || $ageInMonths >= 228) {
+            // Only process users eligible for BMI-for-age (5-19 years, 60-228 months)
+            if ($ageInMonths < 60 || $ageInMonths >= 228) {
                 echo "⏭️  User $processedCount: Skipping - not eligible for BMI-for-age (age: {$ageInMonths} months)\n";
                 continue;
             }
