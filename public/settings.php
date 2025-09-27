@@ -3738,7 +3738,7 @@ header {
                     <div class="control-row-1">
                         <div class="action-section">
                             <button class="btn-add" id="tableToggleBtn" onclick="downloadCSVTemplate()">
-                                <span class="btn-text">Switch to Community</span>
+                                <span class="btn-text">Switch to Admin</span>
                             </button>
                             <button class="btn-secondary" onclick="showUserImportModal()">
                                 <span class="btn-icon">➕</span>
