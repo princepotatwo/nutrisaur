@@ -9301,6 +9301,55 @@ body {
                 const chartHeight = 300;
                 const maxBarHeight = Math.min(chartHeight * 0.8, Math.max(60, chartHeight - (activeStandards.length * 10)));
                 
+                // Add population scale on the left side (0 to total screened users, divided into 10)
+                const totalScreened = data.total_users || 6; // Get total screened users
+                const scaleSteps = 10;
+                const stepValue = Math.ceil(totalScreened / scaleSteps);
+                
+                // Create population scale container
+                const populationScale = document.createElement('div');
+                populationScale.className = 'population-scale';
+                populationScale.style.cssText = `
+                    position: absolute;
+                    left: -50px;
+                    top: 0;
+                    height: ${chartHeight}px;
+                    width: 40px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    font-size: 10px;
+                    color: var(--color-text);
+                    opacity: 0.7;
+                `;
+                
+                // Create scale labels (0 to total screened, divided into 10)
+                for (let i = scaleSteps; i >= 0; i--) {
+                    const value = Math.round((i / scaleSteps) * totalScreened);
+                    const scaleLabel = document.createElement('div');
+                    scaleLabel.style.cssText = `
+                        height: ${chartHeight / scaleSteps}px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-end;
+                        padding-right: 5px;
+                        border-right: 1px solid rgba(0,0,0,0.1);
+                    `;
+                    scaleLabel.textContent = value.toString();
+                    populationScale.appendChild(scaleLabel);
+                }
+                
+                // Insert population scale before the chart
+                trendsChart.parentNode.insertBefore(populationScale, trendsChart);
+                
+                // Ensure the trends chart container has relative positioning for the scale
+                const trendsContainer = trendsChart.parentNode;
+                if (trendsContainer) {
+                    trendsContainer.style.position = 'relative';
+                    trendsContainer.style.paddingLeft = '50px'; // Make room for the scale
+                }
+                
                 // Function to get WHO standard color
                 function getWHOStandardColor(standard) {
                     const colors = {
