@@ -697,9 +697,38 @@ header {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 }
 
-/* Light theme: White sun icon */
+        /* Light theme: White sun icon */
 .light-theme .new-theme-toggle-btn .new-theme-icon {
     color: #FFFFFF;
+}
+
+/* Ensure consistent table styling for both users and community users tables */
+.user-table th,
+.user-table td,
+.assessment-table th,
+.assessment-table td {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+/* Force consistent styling for dynamically loaded content */
+.user-table tbody tr td {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    vertical-align: middle !important;
+}
+
+.user-table thead tr th {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure editable fields maintain consistent styling */
+.user-table .editable {
+    font-size: inherit !important;
+    font-family: inherit !important;
+    line-height: inherit !important;
 }
 
 /* Card Deck Fan Component Styles */
@@ -2691,13 +2720,14 @@ header {
             padding: 12px 8px;
             text-align: left;
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
             vertical-align: middle;
             position: relative;
             line-height: 1.4;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-family: inherit;
         }
 
         /* Specific text handling for different columns */
@@ -2754,7 +2784,7 @@ header {
             .user-table th,
             .user-table td {
                 padding: 10px 6px;
-                font-size: 12px;
+                font-size: 13px;
             }
             
             .action-buttons .btn-edit,
@@ -2770,7 +2800,7 @@ header {
             .user-table th,
             .user-table td {
                 padding: 8px 4px;
-                font-size: 11px;
+                font-size: 12px;
             }
             
             .action-buttons {
@@ -3033,18 +3063,20 @@ header {
         .user-table th {
             color: var(--color-highlight);
             font-weight: 700;
-            font-size: 13px;
+            font-size: 14px;
             position: sticky;
             top: 0;
             background-color: var(--color-card);
             z-index: 10;
             border-bottom: 2px solid rgba(161, 180, 84, 0.4);
             padding: 14px 8px;
+            text-align: center;
+            vertical-align: middle;
+            font-family: inherit;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             backdrop-filter: blur(10px);
-            text-align: center;
         }
 
         /* Header alignment for specific columns */
