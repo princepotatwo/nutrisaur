@@ -1,354 +1,188 @@
-2025-09-26T23:53:19.000000000Z [inf]  Starting Container
-2025-09-26T23:53:20.396304390Z [err]  [Fri Sep 26 23:53:19 2025] PHP 8.1.33 Development Server (http://0.0.0.0:8080) started
-2025-09-26T23:53:20.396311015Z [err]  [Fri Sep 26 23:53:20 2025] 100.64.0.2:50667 Accepted
-2025-09-26T23:53:20.396315604Z [err]  [Fri Sep 26 23:53:20 2025] === ROUTER DEBUG ===
-2025-09-26T23:53:20.396320286Z [err]  [Fri Sep 26 23:53:20 2025] Requested path: health
-2025-09-26T23:53:20.396326203Z [err]  [Fri Sep 26 23:53:20 2025] Public path: /var/www/html/public/
-2025-09-26T23:53:20.396333118Z [err]  [Fri Sep 26 23:53:20 2025] Public API path: /var/www/html/public/api/
-2025-09-26T23:53:20.396339258Z [err]  [Fri Sep 26 23:53:20 2025] Request URI: /health
-2025-09-26T23:53:20.396345776Z [err]  [Fri Sep 26 23:53:20 2025] Script Name: /index.php
-2025-09-26T23:53:20.396375142Z [err]  [Fri Sep 26 23:53:20 2025] 100.64.0.2:50667 [200]: GET /health
-2025-09-26T23:53:20.396381352Z [err]  [Fri Sep 26 23:53:20 2025] 100.64.0.2:50667 Closing
-2025-09-26T23:53:27.341976699Z [err]  [Fri Sep 26 23:53:27 2025] 100.64.0.3:41010 Accepted
-2025-09-26T23:53:27.341984279Z [err]  [Fri Sep 26 23:53:27 2025] === ROUTER DEBUG ===
-2025-09-26T23:53:27.341989519Z [err]  [Fri Sep 26 23:53:27 2025] Requested path: 
-2025-09-26T23:53:27.341995253Z [err]  [Fri Sep 26 23:53:27 2025] Public path: /var/www/html/public/
-2025-09-26T23:53:27.342000588Z [err]  [Fri Sep 26 23:53:27 2025] Public API path: /var/www/html/public/api/
-2025-09-26T23:53:27.342006317Z [err]  [Fri Sep 26 23:53:27 2025] Request URI: /
-2025-09-26T23:53:27.342011581Z [err]  [Fri Sep 26 23:53:27 2025] Script Name: /index.php
-2025-09-26T23:53:27.384600434Z [err]  [Fri Sep 26 23:53:27 2025] 100.64.0.3:41010 [200]: GET /
-2025-09-26T23:53:27.384607099Z [err]  [Fri Sep 26 23:53:27 2025] 100.64.0.3:41010 Closing
-2025-09-26T23:53:27.878652352Z [err]  [Fri Sep 26 23:53:27 2025] 100.64.0.3:41012 Accepted
-2025-09-26T23:53:27.878658350Z [err]  [Fri Sep 26 23:53:27 2025] 100.64.0.3:41012 [200]: GET /google-oauth-config.js
-2025-09-26T23:53:27.878664618Z [err]  [Fri Sep 26 23:53:27 2025] 100.64.0.3:41012 Closing
-2025-09-26T23:53:27.940405218Z [err]  [Fri Sep 26 23:53:27 2025] 100.64.0.3:41024 Accepted
-2025-09-26T23:53:27.981742794Z [err]  [Fri Sep 26 23:53:27 2025] 100.64.0.3:41024 [200]: POST /home.php
-2025-09-26T23:53:27.981751342Z [err]  [Fri Sep 26 23:53:27 2025] 100.64.0.3:41024 Closing
-2025-09-26T23:53:48.021087537Z [err]  [Fri Sep 26 23:53:43 2025] 100.64.0.4:26840 Accepted
-2025-09-26T23:53:48.021095762Z [err]  [Fri Sep 26 23:53:43 2025] 100.64.0.4:26840 [200]: POST /home.php
-2025-09-26T23:53:48.021102395Z [err]  [Fri Sep 26 23:53:43 2025] 100.64.0.4:26840 Closing
-2025-09-26T23:53:48.021108721Z [err]  [Fri Sep 26 23:53:44 2025] 100.64.0.4:26850 Accepted
-2025-09-26T23:53:48.021115021Z [err]  [Fri Sep 26 23:53:44 2025] === ROUTER DEBUG ===
-2025-09-26T23:53:48.021126147Z [err]  [Fri Sep 26 23:53:44 2025] Requested path: dash
-2025-09-26T23:53:48.021132838Z [err]  [Fri Sep 26 23:53:44 2025] Public path: /var/www/html/public/
-2025-09-26T23:53:48.021142774Z [err]  [Fri Sep 26 23:53:44 2025] Public API path: /var/www/html/public/api/
-2025-09-26T23:53:48.021149731Z [err]  [Fri Sep 26 23:53:44 2025] Request URI: /dash
-2025-09-26T23:53:48.021156597Z [err]  [Fri Sep 26 23:53:44 2025] Script Name: /index.php
-2025-09-26T23:53:48.021163006Z [err]  [Fri Sep 26 23:53:44 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:48.021168644Z [err]  [Fri Sep 26 23:53:44 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:48.021176301Z [err]  [Fri Sep 26 23:53:44 2025] 🔍 getTimeFrameData Debug - Starting
-2025-09-26T23:53:48.021182153Z [err]  [Fri Sep 26 23:53:44 2025]   - Barangay: null
-2025-09-26T23:53:48.021201081Z [err]  [Fri Sep 26 23:53:44 2025] 🔍 getTimeFrameData Debug - Querying database
-2025-09-26T23:53:48.021212944Z [err]  [Fri Sep 26 23:53:44 2025]   - WHERE clause: 1=1
-2025-09-26T23:53:48.021225682Z [err]  [Fri Sep 26 23:53:44 2025]   - Params: []
-2025-09-26T23:53:48.022118487Z [err]  [Fri Sep 26 23:53:44 2025]   - Query result success: YES
-2025-09-26T23:53:48.022128937Z [err]  [Fri Sep 26 23:53:44 2025]   - Query result message: No message
-2025-09-26T23:53:48.022133321Z [err]  [Fri Sep 26 23:53:44 2025]   - Number of users found: 6
-2025-09-26T23:53:48.022143843Z [err]  [Fri Sep 26 23:53:44 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.022149493Z [err]  [Fri Sep 26 23:53:45 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.022153805Z [err]  [Fri Sep 26 23:53:44 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.022157335Z [err]  [Fri Sep 26 23:53:45 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.022160919Z [err]  [Fri Sep 26 23:53:44 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.022166161Z [err]  [Fri Sep 26 23:53:45 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.022167808Z [err]  [Fri Sep 26 23:53:45 2025] 📊 WHO Classification Summary for weight-for-age:
-2025-09-26T23:53:48.022172618Z [err]  [Fri Sep 26 23:53:45 2025] 📊 WHO Classification Summary for height-for-age:
-2025-09-26T23:53:48.022178756Z [err]  [Fri Sep 26 23:53:45 2025]   - Total users in database: 6
-2025-09-26T23:53:48.022184153Z [err]  [Fri Sep 26 23:53:45 2025]   - Total users in database: 6
-2025-09-26T23:53:48.022184745Z [err]  [Fri Sep 26 23:53:45 2025]   - Users processed (with classifications): 2
-2025-09-26T23:53:48.022190012Z [err]  [Fri Sep 26 23:53:45 2025]   - Users eligible for standard: 2
-2025-09-26T23:53:48.022196062Z [err]  [Fri Sep 26 23:53:45 2025]   - Classifications: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
-2025-09-26T23:53:48.022196703Z [err]  [Fri Sep 26 23:53:45 2025]   - Users eligible for standard: 2
-2025-09-26T23:53:48.022216098Z [err]  [Fri Sep 26 23:53:45 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":1,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":1,"Stunted":0,"Tall":0,"No Data":0}
-2025-09-26T23:53:48.022225511Z [err]  [Fri Sep 26 23:53:45 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.022245977Z [err]  [Fri Sep 26 23:53:45 2025]   - Users processed (with classifications): 2
-2025-09-26T23:53:48.022308395Z [err]  [Fri Sep 26 23:53:45 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.022316027Z [err]  [Fri Sep 26 23:53:45 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.022792994Z [err]  [Fri Sep 26 23:53:47 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:48.022796424Z [err]  [Fri Sep 26 23:53:45 2025] 📊 WHO Classification Summary for weight-for-height:
-2025-09-26T23:53:48.022805935Z [err]  [Fri Sep 26 23:53:47 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.022807000Z [err]  [Fri Sep 26 23:53:45 2025]   - Total users in database: 6
-2025-09-26T23:53:48.022814122Z [err]  [Fri Sep 26 23:53:45 2025]   - Users eligible for standard: 2
-2025-09-26T23:53:48.022816487Z [err]  [Fri Sep 26 23:53:47 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.022822018Z [err]  [Fri Sep 26 23:53:45 2025]   - Users processed (with classifications): 2
-2025-09-26T23:53:48.022827334Z [err]  [Fri Sep 26 23:53:47 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.022830784Z [err]  [Fri Sep 26 23:53:45 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"Severely Wasted":2,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
-2025-09-26T23:53:48.022838529Z [err]  [Fri Sep 26 23:53:47 2025] 100.64.0.4:26890 [200]: GET /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
-2025-09-26T23:53:48.022838687Z [err]  [Fri Sep 26 23:53:45 2025] 🔍 Nutritional Statistics Debug - Starting
-2025-09-26T23:53:48.022848314Z [err]  [Fri Sep 26 23:53:47 2025] 100.64.0.4:26890 Closing
-2025-09-26T23:53:48.022849123Z [err]  [Fri Sep 26 23:53:45 2025]   - Barangay: null
-2025-09-26T23:53:48.022855656Z [err]  [Fri Sep 26 23:53:45 2025]   - Total users found: 5
-2025-09-26T23:53:48.022857605Z [err]  [Fri Sep 26 23:53:47 2025] 100.64.0.4:26900 Accepted
-2025-09-26T23:53:48.022862838Z [err]  [Fri Sep 26 23:53:45 2025] 🔍 Nutritional Statistics generated successfully
-2025-09-26T23:53:48.022865943Z [err]  [Fri Sep 26 23:53:47 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:48.022869362Z [err]  [Fri Sep 26 23:53:45 2025] 100.64.0.4:26850 [200]: GET /dash
-2025-09-26T23:53:48.022875466Z [err]  [Fri Sep 26 23:53:47 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:48.022876349Z [err]  [Fri Sep 26 23:53:45 2025] 100.64.0.4:26850 Closing
-2025-09-26T23:53:48.022882332Z [err]  [Fri Sep 26 23:53:45 2025] 100.64.0.4:26862 Accepted
-2025-09-26T23:53:48.022884905Z [err]  [Fri Sep 26 23:53:47 2025] 100.64.0.4:26900 [200]: GET /api/dashboard_assessment_stats.php
-2025-09-26T23:53:48.022888319Z [err]  [Fri Sep 26 23:53:45 2025] 100.64.0.4:26862 [200]: GET /logo.png
-2025-09-26T23:53:48.022894067Z [err]  [Fri Sep 26 23:53:47 2025] 100.64.0.4:26900 Closing
-2025-09-26T23:53:48.022896288Z [err]  [Fri Sep 26 23:53:45 2025] 100.64.0.4:26862 Closing
-2025-09-26T23:53:48.022901583Z [err]  [Fri Sep 26 23:53:45 2025] 100.64.0.4:26870 Accepted
-2025-09-26T23:53:48.022908325Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:48.022914251Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:48.022920128Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.022929665Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.022937354Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.022943984Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26870 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
-2025-09-26T23:53:48.022951155Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26870 Closing
-2025-09-26T23:53:48.022958493Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26876 Accepted
-2025-09-26T23:53:48.022982451Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:48.022990693Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:48.022998092Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.023005644Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.023011964Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.023020672Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Donut data success: YES
-2025-09-26T23:53:48.023026510Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-26T23:53:48.023032319Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Classifications from donut: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":4}
-2025-09-26T23:53:48.023040612Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.023047055Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.023058192Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.023065514Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 17 years (204 months)
-2025-09-26T23:53:48.023073145Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-26T23:53:48.023080574Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-26T23:53:48.023087011Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User vivigiv - Birthday: 2023-09-23, Age: 2 years (24 months), Range: 22-28m, Classification: Severely Underweight
-2025-09-26T23:53:48.023093434Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 20.1 years (241 months)
-2025-09-26T23:53:48.023101325Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User meow - Birthday: 2025-04-10, Age: 0.4 years (5 months), Range: 0-7m, Classification: Severely Underweight
-2025-09-26T23:53:48.023107789Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-26T23:53:48.023114141Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Processed 6 users, skipped 0, eligible 2, charted 2
-2025-09-26T23:53:48.023120621Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-26T23:53:48.023126882Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Age classification summary - Total users: 2
-2025-09-26T23:53:48.023132972Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-26T23:53:48.023139317Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26876 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
-2025-09-26T23:53:48.023146944Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26876 Closing
-2025-09-26T23:53:48.023153730Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26884 Accepted
-2025-09-26T23:53:48.023160900Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:48.023167229Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:48.023173479Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.023180379Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.023186762Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.023194696Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26884 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
-2025-09-26T23:53:48.023200256Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26884 Closing
-2025-09-26T23:53:48.023209944Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26886 Accepted
-2025-09-26T23:53:48.023217226Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:48.023226812Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:48.023234404Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.023240963Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.023248885Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.023257399Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Donut data success: YES
-2025-09-26T23:53:48.023265834Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-26T23:53:48.023272983Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Classifications from donut: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":4}
-2025-09-26T23:53:48.023310991Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.023317916Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.023324735Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.023331363Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 17 years (204 months)
-2025-09-26T23:53:48.023337538Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-26T23:53:48.023343982Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-26T23:53:48.023351107Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User vivigiv - Birthday: 2023-09-23, Age: 2 years (24 months), Range: 22-28m, Classification: Severely Underweight
-2025-09-26T23:53:48.023358382Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 20.1 years (241 months)
-2025-09-26T23:53:48.023365199Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: User meow - Birthday: 2025-04-10, Age: 0.4 years (5 months), Range: 0-7m, Classification: Severely Underweight
-2025-09-26T23:53:48.023373764Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-26T23:53:48.023381760Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Processed 6 users, skipped 0, eligible 2, charted 2
-2025-09-26T23:53:48.023389319Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-26T23:53:48.023396596Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Age classification summary - Total users: 2
-2025-09-26T23:53:48.023404756Z [err]  [Fri Sep 26 23:53:46 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-26T23:53:48.023413634Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26886 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
-2025-09-26T23:53:48.023421436Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26886 Closing
-2025-09-26T23:53:48.023428801Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26888 Accepted
-2025-09-26T23:53:48.023435953Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:48.023443465Z [err]  [Fri Sep 26 23:53:46 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:48.023450431Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-26T23:53:48.023457142Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-26T23:53:48.023464691Z [err]  [Fri Sep 26 23:53:46 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-26T23:53:48.023473234Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26888 [200]: GET /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
-2025-09-26T23:53:48.023482006Z [err]  [Fri Sep 26 23:53:46 2025] 100.64.0.4:26888 Closing
-2025-09-26T23:53:48.023488096Z [err]  [Fri Sep 26 23:53:47 2025] 100.64.0.4:26890 Accepted
-2025-09-26T23:53:48.023495692Z [err]  [Fri Sep 26 23:53:47 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:49.911349702Z [err]  [Fri Sep 26 23:53:49 2025] 100.64.0.4:26910 Accepted
-2025-09-26T23:53:49.911354366Z [err]  [Fri Sep 26 23:53:49 2025] === ROUTER DEBUG ===
-2025-09-26T23:53:49.911358914Z [err]  [Fri Sep 26 23:53:49 2025] Requested path: settings
-2025-09-26T23:53:49.911363503Z [err]  [Fri Sep 26 23:53:49 2025] Public path: /var/www/html/public/
-2025-09-26T23:53:49.911367527Z [err]  [Fri Sep 26 23:53:49 2025] Public API path: /var/www/html/public/api/
-2025-09-26T23:53:49.911372313Z [err]  [Fri Sep 26 23:53:49 2025] Request URI: /settings
-2025-09-26T23:53:49.911376243Z [err]  [Fri Sep 26 23:53:49 2025] Script Name: /index.php
-2025-09-26T23:53:49.947234794Z [err]  [Fri Sep 26 23:53:49 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:49.986683638Z [err]  [Fri Sep 26 23:53:49 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:49.999099394Z [err]  [Fri Sep 26 23:53:49 2025] 100.64.0.4:26910 [200]: GET /settings
-2025-09-26T23:53:49.999113830Z [err]  [Fri Sep 26 23:53:49 2025] 100.64.0.4:26910 Closing
-2025-09-26T23:53:50.165274271Z [err]  [Fri Sep 26 23:53:50 2025] 100.64.0.4:26916 Accepted
-2025-09-26T23:53:50.165282350Z [err]  [Fri Sep 26 23:53:50 2025] 100.64.0.4:26916 [200]: GET /logo.png
-2025-09-26T23:53:50.165292674Z [err]  [Fri Sep 26 23:53:50 2025] 100.64.0.4:26916 Closing
-2025-09-26T23:53:52.071704996Z [err]  [Fri Sep 26 23:53:52 2025] 100.64.0.5:40526 Accepted
-2025-09-26T23:53:52.071724102Z [err]  [Fri Sep 26 23:53:52 2025] === ROUTER DEBUG ===
-2025-09-26T23:53:52.071730680Z [err]  [Fri Sep 26 23:53:52 2025] Requested path: screening
-2025-09-26T23:53:52.071735908Z [err]  [Fri Sep 26 23:53:52 2025] Public path: /var/www/html/public/
-2025-09-26T23:53:52.071740978Z [err]  [Fri Sep 26 23:53:52 2025] Public API path: /var/www/html/public/api/
-2025-09-26T23:53:52.071746513Z [err]  [Fri Sep 26 23:53:52 2025] Request URI: /screening
-2025-09-26T23:53:52.071751674Z [err]  [Fri Sep 26 23:53:52 2025] Script Name: /index.php
-2025-09-26T23:53:52.112732297Z [err]  [Fri Sep 26 23:53:52 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-26T23:53:52.157206957Z [err]  [Fri Sep 26 23:53:52 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-26T23:53:52.431122027Z [err]  [Fri Sep 26 23:53:52 2025] 100.64.0.5:40526 [200]: GET /screening
-2025-09-26T23:53:52.431132413Z [err]  [Fri Sep 26 23:53:52 2025] 100.64.0.5:40526 Closing
-2025-09-26T23:53:52.431138576Z [err]  [Fri Sep 26 23:53:52 2025] 100.64.0.5:40538 Accepted
-2025-09-26T23:53:52.431145760Z [err]  [Fri Sep 26 23:53:52 2025] 100.64.0.5:40538 [200]: GET /logo.png
-2025-09-26T23:53:52.434426075Z [err]  [Fri Sep 26 23:53:52 2025] 100.64.0.5:40538 Closing
-2025-09-27T00:00:02.664704756Z [err]  [Fri Sep 26 23:59:54 2025] 100.64.0.3:48856 Accepted
-2025-09-27T00:00:02.664712739Z [err]  [Fri Sep 26 23:59:54 2025] === ROUTER DEBUG ===
-2025-09-27T00:00:02.664718878Z [err]  [Fri Sep 26 23:59:54 2025] Requested path: 
-2025-09-27T00:00:02.664724577Z [err]  [Fri Sep 26 23:59:54 2025] Public path: /var/www/html/public/
-2025-09-27T00:00:02.664730712Z [err]  [Fri Sep 26 23:59:54 2025] Public API path: /var/www/html/public/api/
-2025-09-27T00:00:02.664737490Z [err]  [Fri Sep 26 23:59:54 2025] Request URI: /
-2025-09-27T00:00:02.664743652Z [err]  [Fri Sep 26 23:59:54 2025] Script Name: /index.php
-2025-09-27T00:00:02.664748081Z [err]  [Fri Sep 26 23:59:54 2025] 100.64.0.3:48856 [302]: GET /
-2025-09-27T00:00:02.664751932Z [err]  [Fri Sep 26 23:59:54 2025] 100.64.0.3:48856 Closing
-2025-09-27T00:00:02.664756102Z [err]  [Fri Sep 26 23:59:54 2025] 100.64.0.3:48868 Accepted
-2025-09-27T00:00:02.664762161Z [err]  [Fri Sep 26 23:59:54 2025] === ROUTER DEBUG ===
-2025-09-27T00:00:02.664768136Z [err]  [Fri Sep 26 23:59:54 2025] Requested path: dash
-2025-09-27T00:00:02.664773877Z [err]  [Fri Sep 26 23:59:54 2025] Public path: /var/www/html/public/
-2025-09-27T00:00:02.664779762Z [err]  [Fri Sep 26 23:59:54 2025] Public API path: /var/www/html/public/api/
-2025-09-27T00:00:02.664786139Z [err]  [Fri Sep 26 23:59:54 2025] Request URI: /dash
-2025-09-27T00:00:02.664792385Z [err]  [Fri Sep 26 23:59:54 2025] Script Name: /index.php
-2025-09-27T00:00:02.664798177Z [err]  [Fri Sep 26 23:59:54 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:00:02.664803650Z [err]  [Fri Sep 26 23:59:54 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:00:02.664813488Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getTimeFrameData Debug - Starting
-2025-09-27T00:00:02.664823495Z [err]  [Fri Sep 26 23:59:54 2025]   - Barangay: null
-2025-09-27T00:00:02.664828649Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getTimeFrameData Debug - Querying database
-2025-09-27T00:00:02.664833819Z [err]  [Fri Sep 26 23:59:54 2025]   - WHERE clause: 1=1
-2025-09-27T00:00:02.664838051Z [err]  [Fri Sep 26 23:59:54 2025]   - Params: []
-2025-09-27T00:00:02.665415305Z [err]  [Fri Sep 26 23:59:54 2025]   - Query result success: YES
-2025-09-27T00:00:02.665422724Z [err]  [Fri Sep 26 23:59:54 2025]   - Query result message: No message
-2025-09-27T00:00:02.665427399Z [err]  [Fri Sep 26 23:59:54 2025]   - Number of users found: 6
-2025-09-27T00:00:02.665432303Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665437291Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665443118Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665448676Z [err]  [Fri Sep 26 23:59:54 2025] 📊 WHO Classification Summary for weight-for-age:
-2025-09-27T00:00:02.665452865Z [err]  [Fri Sep 26 23:59:54 2025]   - Total users in database: 6
-2025-09-27T00:00:02.665457409Z [err]  [Fri Sep 26 23:59:54 2025]   - Users eligible for standard: 2
-2025-09-27T00:00:02.665462185Z [err]  [Fri Sep 26 23:59:54 2025]   - Users processed (with classifications): 2
-2025-09-27T00:00:02.665467260Z [err]  [Fri Sep 26 23:59:54 2025]   - Classifications: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
-2025-09-27T00:00:02.665471957Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665478253Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665483870Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665488380Z [err]  [Fri Sep 26 23:59:54 2025] 📊 WHO Classification Summary for height-for-age:
-2025-09-27T00:00:02.665493551Z [err]  [Fri Sep 26 23:59:54 2025]   - Total users in database: 6
-2025-09-27T00:00:02.665498371Z [err]  [Fri Sep 26 23:59:54 2025]   - Users eligible for standard: 2
-2025-09-27T00:00:02.665503415Z [err]  [Fri Sep 26 23:59:54 2025]   - Users processed (with classifications): 2
-2025-09-27T00:00:02.665508320Z [err]  [Fri Sep 26 23:59:54 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":1,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":1,"Stunted":0,"Tall":0,"No Data":0}
-2025-09-27T00:00:02.665513417Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665519523Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665524953Z [err]  [Fri Sep 26 23:59:54 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665529566Z [err]  [Fri Sep 26 23:59:55 2025] 📊 WHO Classification Summary for weight-for-height:
-2025-09-27T00:00:02.665536240Z [err]  [Fri Sep 26 23:59:55 2025]   - Total users in database: 6
-2025-09-27T00:00:02.665541733Z [err]  [Fri Sep 26 23:59:55 2025]   - Users eligible for standard: 2
-2025-09-27T00:00:02.665546344Z [err]  [Fri Sep 26 23:59:55 2025]   - Users processed (with classifications): 2
-2025-09-27T00:00:02.665552662Z [err]  [Fri Sep 26 23:59:55 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"Severely Wasted":2,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
-2025-09-27T00:00:02.665557745Z [err]  [Fri Sep 26 23:59:55 2025] 🔍 Nutritional Statistics Debug - Starting
-2025-09-27T00:00:02.665562748Z [err]  [Fri Sep 26 23:59:55 2025]   - Barangay: null
-2025-09-27T00:00:02.665567719Z [err]  [Fri Sep 26 23:59:55 2025]   - Total users found: 5
-2025-09-27T00:00:02.665572356Z [err]  [Fri Sep 26 23:59:55 2025] 🔍 Nutritional Statistics generated successfully
-2025-09-27T00:00:02.665585285Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-27T00:00:02.665586791Z [err]  [Fri Sep 26 23:59:55 2025] 100.64.0.3:48868 [200]: GET /dash
-2025-09-27T00:00:02.665593345Z [err]  [Fri Sep 26 23:59:55 2025] 100.64.0.3:48868 Closing
-2025-09-27T00:00:02.665597139Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16894 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
-2025-09-27T00:00:02.665598987Z [err]  [Fri Sep 26 23:59:55 2025] 100.64.0.3:16832 Accepted
-2025-09-27T00:00:02.665603864Z [err]  [Fri Sep 26 23:59:55 2025] 100.64.0.3:16832 [200]: GET /logo.png
-2025-09-27T00:00:02.665606253Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16894 Closing
-2025-09-27T00:00:02.665609841Z [err]  [Fri Sep 26 23:59:55 2025] 100.64.0.3:16832 Closing
-2025-09-27T00:00:02.665613716Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16906 Accepted
-2025-09-27T00:00:02.665616942Z [err]  [Fri Sep 26 23:59:55 2025] 100.64.0.3:16846 Accepted
-2025-09-27T00:00:02.665622013Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:00:02.665623393Z [err]  [Fri Sep 26 23:59:55 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:00:02.665629234Z [err]  [Fri Sep 26 23:59:55 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:00:02.665630194Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:00:02.665634947Z [err]  [Fri Sep 26 23:59:55 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665638071Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665640925Z [err]  [Fri Sep 26 23:59:55 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665647401Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665648119Z [err]  [Fri Sep 26 23:59:55 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665653982Z [err]  [Fri Sep 26 23:59:55 2025] 100.64.0.3:16846 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
-2025-09-27T00:00:02.665656246Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665659979Z [err]  [Fri Sep 26 23:59:55 2025] 100.64.0.3:16846 Closing
-2025-09-27T00:00:02.665663573Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16906 [200]: GET /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
-2025-09-27T00:00:02.665665583Z [err]  [Fri Sep 26 23:59:55 2025] 100.64.0.3:16862 Accepted
-2025-09-27T00:00:02.665671173Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16906 Closing
-2025-09-27T00:00:02.665671319Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:00:02.665678256Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:00:02.665678757Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16918 Accepted
-2025-09-27T00:00:02.665684517Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665688435Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:00:02.665689703Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665694785Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665700266Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Donut data success: YES
-2025-09-27T00:00:02.665702559Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:00:02.665706457Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-27T00:00:02.665711818Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Classifications from donut: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":4}
-2025-09-27T00:00:02.665715722Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665717195Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665723031Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665725247Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665728923Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665732706Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665736507Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 17 years (204 months)
-2025-09-27T00:00:02.665741800Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16918 [200]: GET /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
-2025-09-27T00:00:02.665742781Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-27T00:00:02.665748466Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-27T00:00:02.665750701Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16918 Closing
-2025-09-27T00:00:02.665754847Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User vivigiv - Birthday: 2023-09-23, Age: 2 years (24 months), Range: 22-28m, Classification: Severely Underweight
-2025-09-27T00:00:02.665759727Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 20.1 years (241 months)
-2025-09-27T00:00:02.665762587Z [err]  [Fri Sep 26 23:59:57 2025] 100.64.0.3:16924 Accepted
-2025-09-27T00:00:02.665765296Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User meow - Birthday: 2025-04-10, Age: 0.4 years (5 months), Range: 0-7m, Classification: Severely Underweight
-2025-09-27T00:00:02.665770603Z [err]  [Fri Sep 26 23:59:57 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:00:02.665772771Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-27T00:00:02.665778457Z [err]  [Fri Sep 26 23:59:57 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:00:02.665779250Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Processed 6 users, skipped 0, eligible 2, charted 2
-2025-09-27T00:00:02.665786022Z [err]  [Fri Sep 26 23:59:57 2025] 100.64.0.3:16924 [200]: GET /api/dashboard_assessment_stats.php
-2025-09-27T00:00:02.665786082Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-27T00:00:02.665793036Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Age classification summary - Total users: 2
-2025-09-27T00:00:02.665793917Z [err]  [Fri Sep 26 23:59:57 2025] 100.64.0.3:16924 Closing
-2025-09-27T00:00:02.665800422Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-27T00:00:02.665802231Z [err]  [Fri Sep 26 23:59:58 2025] 100.64.0.3:16928 Accepted
-2025-09-27T00:00:02.665807360Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16862 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
-2025-09-27T00:00:02.665809684Z [err]  [Fri Sep 26 23:59:58 2025] === ROUTER DEBUG ===
-2025-09-27T00:00:02.665813391Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16862 Closing
-2025-09-27T00:00:02.665817655Z [err]  [Fri Sep 26 23:59:58 2025] Requested path: screening
-2025-09-27T00:00:02.665819986Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16878 Accepted
-2025-09-27T00:00:02.665826128Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:00:02.665827006Z [err]  [Fri Sep 26 23:59:58 2025] Public path: /var/www/html/public/
-2025-09-27T00:00:02.665832450Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:00:02.665835032Z [err]  [Fri Sep 26 23:59:58 2025] Public API path: /var/www/html/public/api/
-2025-09-27T00:00:02.665839284Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665842617Z [err]  [Fri Sep 26 23:59:58 2025] Request URI: /screening
-2025-09-27T00:00:02.665844828Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665850268Z [err]  [Fri Sep 26 23:59:58 2025] Script Name: /index.php
-2025-09-27T00:00:02.665850299Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665856083Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16878 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
-2025-09-27T00:00:02.665858241Z [err]  [Fri Sep 26 23:59:58 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:00:02.665862076Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16878 Closing
-2025-09-27T00:00:02.665867579Z [err]  [Fri Sep 26 23:59:58 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:00:02.665870233Z [err]  [Fri Sep 26 23:59:56 2025] 100.64.0.3:16894 Accepted
-2025-09-27T00:00:02.665875810Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:00:02.665877424Z [err]  [Fri Sep 26 23:59:59 2025] 100.64.0.3:16928 [200]: GET /screening
-2025-09-27T00:00:02.665881362Z [err]  [Fri Sep 26 23:59:56 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:00:02.665884461Z [err]  [Fri Sep 26 23:59:59 2025] 100.64.0.3:16928 Closing
-2025-09-27T00:00:02.665890541Z [err]  [Fri Sep 26 23:59:59 2025] 100.64.0.3:16934 Accepted
-2025-09-27T00:00:02.665891307Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665898301Z [err]  [Fri Sep 26 23:59:59 2025] 100.64.0.3:16934 [200]: GET /logo.png
-2025-09-27T00:00:02.665898406Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665904816Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665906782Z [err]  [Fri Sep 26 23:59:59 2025] 100.64.0.3:16934 Closing
-2025-09-27T00:00:02.665912537Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Donut data success: YES
-2025-09-27T00:00:02.665918127Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-27T00:00:02.665923419Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Classifications from donut: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":4}
-2025-09-27T00:00:02.665929017Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:00:02.665933601Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:00:02.665938198Z [err]  [Fri Sep 26 23:59:56 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:00:02.665942857Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 17 years (204 months)
-2025-09-27T00:00:02.665948131Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-27T00:00:02.665954117Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-27T00:00:02.665959066Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User vivigiv - Birthday: 2023-09-23, Age: 2 years (24 months), Range: 22-28m, Classification: Severely Underweight
-2025-09-27T00:00:02.665964699Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 20.1 years (241 months)
-2025-09-27T00:00:02.665968980Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: User meow - Birthday: 2025-04-10, Age: 0.4 years (5 months), Range: 0-7m, Classification: Severely Underweight
-2025-09-27T00:00:02.665973525Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-27T00:00:02.665980582Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Processed 6 users, skipped 0, eligible 2, charted 2
-2025-09-27T00:00:02.665986847Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-27T00:00:02.665991259Z [err]  [Fri Sep 26 23:59:56 2025] DEBUG: Age classification summary - Total users: 2
+2025-09-27T00:36:21.000000000Z [inf]  Starting Container
+2025-09-27T00:36:21.764687828Z [err]  [Sat Sep 27 00:36:21 2025] PHP 8.1.33 Development Server (http://0.0.0.0:8080) started
+2025-09-27T00:36:22.435024279Z [err]  [Sat Sep 27 00:36:22 2025] 100.64.0.2:50281 Accepted
+2025-09-27T00:36:22.435030075Z [err]  [Sat Sep 27 00:36:22 2025] === ROUTER DEBUG ===
+2025-09-27T00:36:22.435034295Z [err]  [Sat Sep 27 00:36:22 2025] Requested path: health
+2025-09-27T00:36:22.435038199Z [err]  [Sat Sep 27 00:36:22 2025] Public path: /var/www/html/public/
+2025-09-27T00:36:22.435041923Z [err]  [Sat Sep 27 00:36:22 2025] Public API path: /var/www/html/public/api/
+2025-09-27T00:36:22.435048774Z [err]  [Sat Sep 27 00:36:22 2025] Request URI: /health
+2025-09-27T00:36:22.435053473Z [err]  [Sat Sep 27 00:36:22 2025] Script Name: /index.php
+2025-09-27T00:36:22.435056902Z [err]  [Sat Sep 27 00:36:22 2025] 100.64.0.2:50281 [200]: GET /health
+2025-09-27T00:36:22.435060491Z [err]  [Sat Sep 27 00:36:22 2025] 100.64.0.2:50281 Closing
+2025-09-27T00:36:28.366986277Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27012 Accepted
+2025-09-27T00:36:28.366992027Z [err]  [Sat Sep 27 00:36:28 2025] === ROUTER DEBUG ===
+2025-09-27T00:36:28.366996771Z [err]  [Sat Sep 27 00:36:28 2025] Requested path: 
+2025-09-27T00:36:28.367003412Z [err]  [Sat Sep 27 00:36:28 2025] Public path: /var/www/html/public/
+2025-09-27T00:36:28.367007371Z [err]  [Sat Sep 27 00:36:28 2025] Public API path: /var/www/html/public/api/
+2025-09-27T00:36:28.367011587Z [err]  [Sat Sep 27 00:36:28 2025] Request URI: /
+2025-09-27T00:36:28.367015646Z [err]  [Sat Sep 27 00:36:28 2025] Script Name: /index.php
+2025-09-27T00:36:28.375412749Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27012 [200]: GET /
+2025-09-27T00:36:28.375418100Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27012 Closing
+2025-09-27T00:36:28.461786175Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27022 Accepted
+2025-09-27T00:36:28.461791775Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27022 [200]: GET /google-oauth-config.js
+2025-09-27T00:36:28.461796510Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27022 Closing
+2025-09-27T00:36:28.536629175Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27028 Accepted
+2025-09-27T00:36:28.539920216Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27028 [200]: POST /home.php
+2025-09-27T00:36:28.539924967Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27028 Closing
+2025-09-27T00:36:36.442930142Z [err]  [Sat Sep 27 00:36:36 2025] 100.64.0.4:38758 Accepted
+2025-09-27T00:36:36.493782145Z [err]  [Sat Sep 27 00:36:36 2025] 100.64.0.4:38758 [200]: POST /home.php
+2025-09-27T00:36:36.493787600Z [err]  [Sat Sep 27 00:36:36 2025] 100.64.0.4:38758 Closing
+2025-09-27T00:36:37.565291947Z [err]  [Sat Sep 27 00:36:37 2025] 100.64.0.4:38770 Accepted
+2025-09-27T00:36:37.568819844Z [err]  [Sat Sep 27 00:36:37 2025] === ROUTER DEBUG ===
+2025-09-27T00:36:37.568826437Z [err]  [Sat Sep 27 00:36:37 2025] Requested path: dash
+2025-09-27T00:36:37.568831779Z [err]  [Sat Sep 27 00:36:37 2025] Public path: /var/www/html/public/
+2025-09-27T00:36:37.568836857Z [err]  [Sat Sep 27 00:36:37 2025] Public API path: /var/www/html/public/api/
+2025-09-27T00:36:37.568845183Z [err]  [Sat Sep 27 00:36:37 2025] Request URI: /dash
+2025-09-27T00:36:37.568849344Z [err]  [Sat Sep 27 00:36:37 2025] Script Name: /index.php
+2025-09-27T00:36:37.632249844Z [err]  [Sat Sep 27 00:36:37 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-27T00:36:37.676128246Z [err]  [Sat Sep 27 00:36:37 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-27T00:36:37.679253455Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getTimeFrameData Debug - Starting
+2025-09-27T00:36:37.679260901Z [err]  [Sat Sep 27 00:36:37 2025]   - Barangay: null
+2025-09-27T00:36:37.679265723Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getTimeFrameData Debug - Querying database
+2025-09-27T00:36:37.679269891Z [err]  [Sat Sep 27 00:36:37 2025]   - WHERE clause: 1=1
+2025-09-27T00:36:37.679276527Z [err]  [Sat Sep 27 00:36:37 2025]   - Params: []
+2025-09-27T00:36:37.682923041Z [err]  [Sat Sep 27 00:36:37 2025]   - Query result success: YES
+2025-09-27T00:36:37.682933981Z [err]  [Sat Sep 27 00:36:37 2025]   - Query result message: No message
+2025-09-27T00:36:37.682941528Z [err]  [Sat Sep 27 00:36:37 2025]   - Number of users found: 6
+2025-09-27T00:36:37.682947276Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:37.682955878Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:37.682964051Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:37.728084562Z [err]  [Sat Sep 27 00:36:37 2025] 📊 WHO Classification Summary for weight-for-age:
+2025-09-27T00:36:37.728096975Z [err]  [Sat Sep 27 00:36:37 2025]   - Total users in database: 6
+2025-09-27T00:36:37.728105877Z [err]  [Sat Sep 27 00:36:37 2025]   - Users eligible for standard: 2
+2025-09-27T00:36:37.728110779Z [err]  [Sat Sep 27 00:36:37 2025]   - Users processed (with classifications): 2
+2025-09-27T00:36:37.728115070Z [err]  [Sat Sep 27 00:36:37 2025]   - Classifications: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
+2025-09-27T00:36:37.731335653Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:37.731344331Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:37.731348745Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:37.786300299Z [err]  [Sat Sep 27 00:36:37 2025] 📊 WHO Classification Summary for height-for-age:
+2025-09-27T00:36:37.786304497Z [err]  [Sat Sep 27 00:36:37 2025]   - Total users in database: 6
+2025-09-27T00:36:37.786309615Z [err]  [Sat Sep 27 00:36:37 2025]   - Users eligible for standard: 2
+2025-09-27T00:36:37.786314235Z [err]  [Sat Sep 27 00:36:37 2025]   - Users processed (with classifications): 2
+2025-09-27T00:36:37.786318405Z [err]  [Sat Sep 27 00:36:37 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":1,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":1,"Stunted":0,"Tall":0,"No Data":0}
+2025-09-27T00:36:37.786322875Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:37.786327349Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:37.786331757Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:37.824043485Z [err]  [Sat Sep 27 00:36:37 2025] 📊 WHO Classification Summary for weight-for-height:
+2025-09-27T00:36:37.824059348Z [err]  [Sat Sep 27 00:36:37 2025]   - Total users in database: 6
+2025-09-27T00:36:37.824064717Z [err]  [Sat Sep 27 00:36:37 2025]   - Users eligible for standard: 2
+2025-09-27T00:36:37.824069553Z [err]  [Sat Sep 27 00:36:37 2025]   - Users processed (with classifications): 2
+2025-09-27T00:36:37.824074096Z [err]  [Sat Sep 27 00:36:37 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"Severely Wasted":2,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
+2025-09-27T00:36:38.139418154Z [err]  [Sat Sep 27 00:36:38 2025] 🔍 Nutritional Statistics Debug - Starting
+2025-09-27T00:36:38.139421611Z [err]  [Sat Sep 27 00:36:38 2025]   - Barangay: null
+2025-09-27T00:36:38.454119853Z [err]  [Sat Sep 27 00:36:38 2025]   - Total users found: 5
+2025-09-27T00:36:38.454124862Z [err]  [Sat Sep 27 00:36:38 2025] 🔍 Nutritional Statistics generated successfully
+2025-09-27T00:36:38.454130726Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38770 [200]: GET /dash
+2025-09-27T00:36:38.454136305Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38770 Closing
+2025-09-27T00:36:38.656982740Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38778 Accepted
+2025-09-27T00:36:38.656986469Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38778 [200]: GET /logo.png
+2025-09-27T00:36:38.656990853Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38778 Closing
+2025-09-27T00:36:38.979462368Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:46786 Accepted
+2025-09-27T00:36:39.016380404Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-27T00:36:39.064455265Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-27T00:36:39.064458747Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:39.064462332Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:39.064467246Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:39.110557425Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46786 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
+2025-09-27T00:36:39.110562344Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46786 Closing
+2025-09-27T00:36:39.164091257Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46788 Accepted
+2025-09-27T00:36:39.207961026Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-27T00:36:39.248934915Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-27T00:36:39.252313737Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:39.252321694Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:39.252327201Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:39.294194906Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Donut data success: YES
+2025-09-27T00:36:39.294200009Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: WHO Standard: weight-for-age
+2025-09-27T00:36:39.294203866Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classifications from donut: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":4}
+2025-09-27T00:36:39.297498726Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:39.297505626Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:39.297510675Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:39.343196802Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 17 years (204 months)
+2025-09-27T00:36:39.343203722Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-09-27T00:36:39.343212413Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-09-27T00:36:39.343219924Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User vivigiv - Birthday: 2023-09-23, Age: 2 years (24 months), Range: 22-28m, Classification: Severely Underweight
+2025-09-27T00:36:39.343226568Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 20.1 years (241 months)
+2025-09-27T00:36:39.343232252Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User meow - Birthday: 2025-04-10, Age: 0.4 years (5 months), Range: 0-7m, Classification: Severely Underweight
+2025-09-27T00:36:39.343238886Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: WHO Standard: weight-for-age
+2025-09-27T00:36:39.343244031Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Processed 6 users, skipped 0, eligible 2, charted 2
+2025-09-27T00:36:39.343248901Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
+2025-09-27T00:36:39.343254341Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Age classification summary - Total users: 2
+2025-09-27T00:36:39.343259584Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
+2025-09-27T00:36:39.343265800Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46788 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
+2025-09-27T00:36:39.343272732Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46788 Closing
+2025-09-27T00:36:39.442708284Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46800 Accepted
+2025-09-27T00:36:39.489131322Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-27T00:36:39.531770739Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-27T00:36:39.535048195Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:39.535062355Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:39.535069381Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:39.582257806Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46800 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
+2025-09-27T00:36:39.582263187Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46800 Closing
+2025-09-27T00:36:39.644327279Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46804 Accepted
+2025-09-27T00:36:39.695879581Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-27T00:36:39.742035250Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-27T00:36:39.742042287Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:39.742048455Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:39.742053049Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:39.790868636Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Donut data success: YES
+2025-09-27T00:36:39.790874534Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: WHO Standard: weight-for-age
+2025-09-27T00:36:39.790878952Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classifications from donut: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":4}
+2025-09-27T00:36:39.790883899Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:39.790889052Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:39.790894923Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:39.831276434Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 17 years (204 months)
+2025-09-27T00:36:39.831280991Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-09-27T00:36:39.831286115Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-09-27T00:36:39.831290810Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User vivigiv - Birthday: 2023-09-23, Age: 2 years (24 months), Range: 22-28m, Classification: Severely Underweight
+2025-09-27T00:36:39.831294778Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 20.1 years (241 months)
+2025-09-27T00:36:39.831298643Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User meow - Birthday: 2025-04-10, Age: 0.4 years (5 months), Range: 0-7m, Classification: Severely Underweight
+2025-09-27T00:36:39.831302591Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: WHO Standard: weight-for-age
+2025-09-27T00:36:39.831306916Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Processed 6 users, skipped 0, eligible 2, charted 2
+2025-09-27T00:36:39.831311073Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
+2025-09-27T00:36:39.831314739Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Age classification summary - Total users: 2
+2025-09-27T00:36:39.831318316Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
+2025-09-27T00:36:39.831324210Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46804 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
+2025-09-27T00:36:39.831329294Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46804 Closing
+2025-09-27T00:36:39.899685263Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46808 Accepted
+2025-09-27T00:36:39.940430232Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-27T00:36:39.982678871Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-27T00:36:39.982685251Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:39.982689879Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:39.982693649Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:39.982734493Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46808 [200]: GET /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
+2025-09-27T00:36:39.982738608Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46808 Closing
+2025-09-27T00:36:40.117998839Z [err]  [Sat Sep 27 00:36:40 2025] 100.64.0.4:46812 Accepted
+2025-09-27T00:36:40.118259081Z [err]  [Sat Sep 27 00:36:40 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-27T00:36:40.128223886Z [err]  [Sat Sep 27 00:36:40 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-27T00:36:40.132234600Z [err]  [Sat Sep 27 00:36:40 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
+2025-09-27T00:36:40.132238617Z [err]  [Sat Sep 27 00:36:40 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
+2025-09-27T00:36:40.132242828Z [err]  [Sat Sep 27 00:36:40 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
+2025-09-27T00:36:40.132247071Z [err]  [Sat Sep 27 00:36:40 2025] 100.64.0.4:46812 [200]: GET /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+2025-09-27T00:36:40.132252296Z [err]  [Sat Sep 27 00:36:40 2025] 100.64.0.4:46812 Closing
+2025-09-27T00:36:40.996516988Z [err]  [Sat Sep 27 00:36:40 2025] 100.64.0.4:46824 Accepted
+2025-09-27T00:36:41.005601468Z [err]  [Sat Sep 27 00:36:41 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-27T00:36:41.014459593Z [err]  [Sat Sep 27 00:36:41 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-27T00:36:41.014465212Z [err]  [Sat Sep 27 00:36:41 2025] 100.64.0.4:46824 [200]: GET /api/dashboard_assessment_stats.php
+2025-09-27T00:36:41.014471433Z [err]  [Sat Sep 27 00:36:41 2025] 100.64.0.4:46824 Closing
+2025-09-27T00:36:43.584525170Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46830 Accepted
+2025-09-27T00:36:43.584534306Z [err]  [Sat Sep 27 00:36:43 2025] === ROUTER DEBUG ===
+2025-09-27T00:36:43.584539681Z [err]  [Sat Sep 27 00:36:43 2025] Requested path: screening
+2025-09-27T00:36:43.584544831Z [err]  [Sat Sep 27 00:36:43 2025] Public path: /var/www/html/public/
+2025-09-27T00:36:43.584550388Z [err]  [Sat Sep 27 00:36:43 2025] Public API path: /var/www/html/public/api/
+2025-09-27T00:36:43.584555795Z [err]  [Sat Sep 27 00:36:43 2025] Request URI: /screening
+2025-09-27T00:36:43.584560520Z [err]  [Sat Sep 27 00:36:43 2025] Script Name: /index.php
+2025-09-27T00:36:43.635185781Z [err]  [Sat Sep 27 00:36:43 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-09-27T00:36:43.679005809Z [err]  [Sat Sep 27 00:36:43 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-09-27T00:36:43.730866182Z [err]  [Sat Sep 27 00:36:43 2025] PHP Warning:  Undefined variable $ageInMonths in /var/www/html/public/screening.php on line 3748
+2025-09-27T00:36:43.730875967Z [err]  [Sat Sep 27 00:36:43 2025] PHP Warning:  Undefined variable $bmi in /var/www/html/public/screening.php on line 3748
+2025-09-27T00:36:43.730881341Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: Naimatu Azizah, Age: m, BMI: , Z-Score: 7.09, Classification: Obese
+2025-09-27T00:36:43.781969842Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: jsjsh, Age: 204m, BMI: 22.9, Z-Score: 1.1, Classification: Overweight
+2025-09-27T00:36:43.835359630Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: jvjvj, Age: 240m, BMI: 17.1, Z-Score: 1.1, Classification: Overweight
+2025-09-27T00:36:43.876208403Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: vivigiv, Age: 240m, BMI: 17.1, Z-Score: -3.3, Classification: Underweight
+2025-09-27T00:36:43.913633041Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: mem, Age: 24m, BMI: 11.9, Z-Score: 2.51, Classification: Obese
+2025-09-27T00:36:43.982099599Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: meow, Age: 241m, BMI: 18.3, Z-Score: , Classification: Not applicable
+2025-09-27T00:36:43.982104559Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46830 [200]: GET /screening
+2025-09-27T00:36:43.982108494Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46830 Closing
+2025-09-27T00:36:43.982112127Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46844 Accepted
+2025-09-27T00:36:43.982115999Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46844 [200]: GET /logo.png
+2025-09-27T00:36:43.982120510Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46844 Closing

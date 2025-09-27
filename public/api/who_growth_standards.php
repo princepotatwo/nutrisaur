@@ -2038,7 +2038,7 @@ class WHOGrowthStandards {
      */
     private function getBMIForAgeBoys() {
         return [
-            // Age 72-120 months (6-10 years) - BMI-for-Age standards
+            // Age 72-228 months (6-19 years) - BMI-for-Age standards
             72 => ['median' => 15.2, 'sd' => 1.0],
             78 => ['median' => 15.3, 'sd' => 1.0],
             84 => ['median' => 15.4, 'sd' => 1.0],
@@ -2047,7 +2047,25 @@ class WHOGrowthStandards {
             102 => ['median' => 15.7, 'sd' => 1.0],
             108 => ['median' => 15.8, 'sd' => 1.0],
             114 => ['median' => 15.9, 'sd' => 1.0],
-            120 => ['median' => 16.0, 'sd' => 1.0]
+            120 => ['median' => 16.0, 'sd' => 1.0],
+            126 => ['median' => 16.1, 'sd' => 1.0],
+            132 => ['median' => 16.2, 'sd' => 1.0],
+            138 => ['median' => 16.3, 'sd' => 1.0],
+            144 => ['median' => 16.4, 'sd' => 1.0],
+            150 => ['median' => 16.5, 'sd' => 1.0],
+            156 => ['median' => 16.6, 'sd' => 1.0],
+            162 => ['median' => 16.7, 'sd' => 1.0],
+            168 => ['median' => 16.8, 'sd' => 1.0],
+            174 => ['median' => 16.9, 'sd' => 1.0],
+            180 => ['median' => 17.0, 'sd' => 1.0],
+            186 => ['median' => 17.1, 'sd' => 1.0],
+            192 => ['median' => 17.2, 'sd' => 1.0],
+            198 => ['median' => 17.3, 'sd' => 1.0],
+            204 => ['median' => 17.4, 'sd' => 1.0],
+            210 => ['median' => 17.5, 'sd' => 1.0],
+            216 => ['median' => 17.6, 'sd' => 1.0],
+            222 => ['median' => 17.7, 'sd' => 1.0],
+            228 => ['median' => 17.8, 'sd' => 1.0]
         ];
     }
 
@@ -2056,7 +2074,7 @@ class WHOGrowthStandards {
      */
     private function getBMIForAgeGirls() {
         return [
-            // Age 72-120 months (6-10 years) - BMI-for-Age standards
+            // Age 72-228 months (6-19 years) - BMI-for-Age standards
             72 => ['median' => 15.0, 'sd' => 1.0],
             78 => ['median' => 15.1, 'sd' => 1.0],
             84 => ['median' => 15.2, 'sd' => 1.0],
@@ -2065,7 +2083,25 @@ class WHOGrowthStandards {
             102 => ['median' => 15.5, 'sd' => 1.0],
             108 => ['median' => 15.6, 'sd' => 1.0],
             114 => ['median' => 15.7, 'sd' => 1.0],
-            120 => ['median' => 15.8, 'sd' => 1.0]
+            120 => ['median' => 15.8, 'sd' => 1.0],
+            126 => ['median' => 15.9, 'sd' => 1.0],
+            132 => ['median' => 16.0, 'sd' => 1.0],
+            138 => ['median' => 16.1, 'sd' => 1.0],
+            144 => ['median' => 16.2, 'sd' => 1.0],
+            150 => ['median' => 16.3, 'sd' => 1.0],
+            156 => ['median' => 16.4, 'sd' => 1.0],
+            162 => ['median' => 16.5, 'sd' => 1.0],
+            168 => ['median' => 16.6, 'sd' => 1.0],
+            174 => ['median' => 16.7, 'sd' => 1.0],
+            180 => ['median' => 16.8, 'sd' => 1.0],
+            186 => ['median' => 16.9, 'sd' => 1.0],
+            192 => ['median' => 17.0, 'sd' => 1.0],
+            198 => ['median' => 17.1, 'sd' => 1.0],
+            204 => ['median' => 17.2, 'sd' => 1.0],
+            210 => ['median' => 17.3, 'sd' => 1.0],
+            216 => ['median' => 17.4, 'sd' => 1.0],
+            222 => ['median' => 17.5, 'sd' => 1.0],
+            228 => ['median' => 17.6, 'sd' => 1.0]
         ];
     }
 }
