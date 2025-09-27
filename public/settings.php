@@ -242,6 +242,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
            }
            break;
+           
+       case 'update_user':
+           try {
+               $user_id = $_POST['user_id'] ?? '';
+               $username = $_POST['username'] ?? '';
+               $email = $_POST['email'] ?? '';
+               $password = $_POST['password'] ?? '';
+               
+               if (empty($user_id) || empty($username) || empty($email)) {
+                   echo json_encode(['success' => false, 'error' => 'User ID, username, and email are required']);
+                   break;
+               }
+               
+               if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                   echo json_encode(['success' => false, 'error' => 'Invalid email format']);
+                   break;
+               }
+               
+               require_once __DIR__ . "/../config.php";
+               $pdo = getDatabaseConnection();
+               if (!$pdo) {
+                   echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                   break;
+               }
+               
+               // Check if email already exists for another user
+               $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? AND user_id != ?");
+               $checkStmt->execute([$email, $user_id]);
+               if ($checkStmt->fetch()) {
+                   echo json_encode(['success' => false, 'error' => 'Email already exists for another user']);
+                   break;
+               }
+               
+               // Check if username already exists for another user
+               $checkStmt2 = $pdo->prepare("SELECT user_id FROM users WHERE username = ? AND user_id != ?");
+               $checkStmt2->execute([$username, $user_id]);
+               if ($checkStmt2->fetch()) {
+                   echo json_encode(['success' => false, 'error' => 'Username already exists for another user']);
+                   break;
+               }
+               
+               // Prepare update query
+               if (!empty($password)) {
+                   // Update with new password
+                   if (strlen($password) < 6) {
+                       echo json_encode(['success' => false, 'error' => 'Password must be at least 6 characters']);
+                       break;
+                   }
+                   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                   $updateStmt = $pdo->prepare("UPDATE users SET username = ?, email = ?, password = ? WHERE user_id = ?");
+                   $result = $updateStmt->execute([$username, $email, $hashedPassword, $user_id]);
+               } else {
+                   // Update without password
+                   $updateStmt = $pdo->prepare("UPDATE users SET username = ?, email = ? WHERE user_id = ?");
+                   $result = $updateStmt->execute([$username, $email, $user_id]);
+               }
+               
+               if ($result) {
+                   echo json_encode(['success' => true, 'message' => 'User updated successfully']);
+               } else {
+                   echo json_encode(['success' => false, 'error' => 'Failed to update user']);
+               }
+           } catch (Exception $e) {
+               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+           }
+           break;
             
         default:
             echo json_encode(['success' => false, 'error' => 'Unknown action']);
@@ -5037,6 +5103,8 @@ header {
 
         // User management functions
         function editUser(identifier) {
+            console.log('editUser called with identifier:', identifier, 'currentTableType:', currentTableType);
+            
             if (!identifier || identifier === '') {
                 alert('Invalid user identifier');
                 return;
@@ -5045,6 +5113,7 @@ header {
             if (currentTableType === 'users') {
                 // For users table, identifier is user_id
                 const userRow = document.querySelector(`tr[data-user-id="${identifier}"]`);
+                console.log('Found user row:', userRow);
                 if (!userRow) {
                     alert('User data not found');
                     return;
@@ -5056,9 +5125,10 @@ header {
                     username: userRow.cells[1].textContent.trim(),
                     email: userRow.cells[2].textContent.trim()
                 };
+                console.log('Extracted user data:', userData);
                 
                 // Show edit modal for users table
-                showEditUserModal(userData);
+                showEditUsersTableModal(userData);
             } else {
                 // For community_users table, identifier is email
                 const userRow = document.querySelector(`tr[data-user-email="${identifier}"]`);
@@ -5378,11 +5448,121 @@ header {
             document.getElementById('editUserForm').reset();
         }
 
+        // Functions for Users Table Edit Modal
+        function showEditUsersTableModal(userData) {
+            console.log('showEditUsersTableModal called with:', userData);
+            
+            // Check if modal exists
+            const modal = document.getElementById('editUsersTableModal');
+            if (!modal) {
+                console.error('editUsersTableModal not found');
+                alert('Edit modal not found. Please refresh the page.');
+                return;
+            }
+            
+            // Populate the form with user data
+            document.getElementById('editUserId').value = userData.user_id;
+            document.getElementById('editUsername').value = userData.username;
+            document.getElementById('editUserEmail').value = userData.email;
+            document.getElementById('editPassword').value = ''; // Clear password field
+            
+            // Clear any previous error messages
+            document.getElementById('userEmailError').textContent = '';
+            
+            // Show the modal
+            modal.style.display = 'block';
+            console.log('Modal should be visible now');
+        }
+
+        function closeEditUsersTableModal() {
+            document.getElementById('editUsersTableModal').style.display = 'none';
+            document.getElementById('editUsersTableForm').reset();
+            document.getElementById('userEmailError').textContent = '';
+        }
+
+        function saveUsersTableChanges() {
+            const userId = document.getElementById('editUserId').value;
+            const username = document.getElementById('editUsername').value.trim();
+            const email = document.getElementById('editUserEmail').value.trim();
+            const password = document.getElementById('editPassword').value.trim();
+            
+            // Validate required fields
+            if (!username || !email) {
+                alert('Username and email are required');
+                return;
+            }
+            
+            // Validate email format
+            if (!isValidEmail(email)) {
+                document.getElementById('userEmailError').textContent = 'Please enter a valid email address';
+                return;
+            }
+            
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('action', 'update_user');
+            formData.append('user_id', userId);
+            formData.append('username', username);
+            formData.append('email', email);
+            if (password) {
+                formData.append('password', password);
+            }
+            
+            // Show loading state
+            const saveButton = document.querySelector('#editUsersTableModal .btn-primary');
+            const originalText = saveButton.textContent;
+            saveButton.textContent = 'Saving...';
+            saveButton.disabled = true;
+            
+            // Send update request
+            fetch('/settings.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        showMessage('User updated successfully', 'success');
+                        closeEditUsersTableModal();
+                        // Reload the users table to show updated data
+                        loadUsersTable();
+                    } else {
+                        showMessage('Error updating user: ' + data.error, 'error');
+                        if (data.error.includes('email')) {
+                            document.getElementById('userEmailError').textContent = data.error;
+                        }
+                    }
+                } catch (e) {
+                    showMessage('Error parsing server response', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('Error updating user: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                saveButton.textContent = originalText;
+                saveButton.disabled = false;
+            });
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
         // Close modal when clicking outside of it
         window.onclick = function(event) {
-            const modal = document.getElementById('editUserModal');
-            if (event.target === modal) {
+            const editUserModal = document.getElementById('editUserModal');
+            const editUsersTableModal = document.getElementById('editUsersTableModal');
+            
+            if (event.target === editUserModal) {
                 closeEditUserModal();
+            } else if (event.target === editUsersTableModal) {
+                closeEditUsersTableModal();
             }
         }
 
@@ -5930,6 +6110,42 @@ header {
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeEditUserModal()">Cancel</button>
                 <button type="button" class="btn btn-primary" onclick="saveUserChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Users Table Modal (for users table only) -->
+    <div id="editUsersTableModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit User Account</h2>
+                <span class="close" onclick="closeEditUsersTableModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editUsersTableForm">
+                    <div class="form-group">
+                        <label for="editUsername">Username *</label>
+                        <input type="text" id="editUsername" name="username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editUserEmail">Email *</label>
+                        <input type="email" id="editUserEmail" name="email" required>
+                        <small id="userEmailError" style="color: red; font-size: 12px;"></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editPassword">Password</label>
+                        <input type="password" id="editPassword" name="password" placeholder="Leave blank to keep current password">
+                        <small style="color: #666; font-size: 12px;">Leave blank to keep current password</small>
+                    </div>
+                    
+                    <input type="hidden" id="editUserId" name="user_id">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditUsersTableModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveUsersTableChanges()">Save Changes</button>
             </div>
         </div>
     </div>
