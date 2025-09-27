@@ -164,55 +164,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             }
             break;
             
-        case 'add_user':
-            try {
-                $username = $_POST['username'] ?? '';
-                $email = $_POST['email'] ?? '';
-                $password = $_POST['password'] ?? '';
-                
-                if (empty($username) || empty($email) || empty($password)) {
-                    echo json_encode(['success' => false, 'error' => 'All fields are required']);
-                    break;
-                }
-                
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid email format']);
-                    break;
-                }
-                
-                if (strlen($password) < 6) {
-                    echo json_encode(['success' => false, 'error' => 'Password must be at least 6 characters']);
-                    break;
-                }
-                
-                require_once __DIR__ . "/../config.php";
-                $pdo = getDatabaseConnection();
-                if (!$pdo) {
-                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
-                    break;
-                }
-                
-                // Check if user already exists
-                $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
-                $checkStmt->execute([$email, $username]);
-                if ($checkStmt->fetch()) {
-                    echo json_encode(['success' => false, 'error' => 'User with this email or username already exists']);
-                    break;
-                }
-                
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, email_verified, created_at) VALUES (?, ?, ?, 1, NOW())");
-                $result = $insertStmt->execute([$username, $email, $hashedPassword]);
-                
-                if ($result) {
-                    echo json_encode(['success' => true, 'message' => 'User added successfully']);
-                } else {
-                    echo json_encode(['success' => false, 'error' => 'Failed to add user']);
-                }
-            } catch (Exception $e) {
-                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-            }
-            break;
+       case 'add_user':
+           try {
+               $username = $_POST['username'] ?? '';
+               $email = $_POST['email'] ?? '';
+               $password = $_POST['password'] ?? '';
+               
+               if (empty($username) || empty($email) || empty($password)) {
+                   echo json_encode(['success' => false, 'error' => 'All fields are required']);
+                   break;
+               }
+               
+               if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                   echo json_encode(['success' => false, 'error' => 'Invalid email format']);
+                   break;
+               }
+               
+               if (strlen($password) < 6) {
+                   echo json_encode(['success' => false, 'error' => 'Password must be at least 6 characters']);
+                   break;
+               }
+               
+               require_once __DIR__ . "/../config.php";
+               $pdo = getDatabaseConnection();
+               if (!$pdo) {
+                   echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                   break;
+               }
+               
+               // Check if user already exists
+               $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
+               $checkStmt->execute([$email, $username]);
+               if ($checkStmt->fetch()) {
+                   echo json_encode(['success' => false, 'error' => 'User with this email or username already exists']);
+                   break;
+               }
+               
+               $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+               $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, email_verified, created_at) VALUES (?, ?, ?, 1, NOW())");
+               $result = $insertStmt->execute([$username, $email, $hashedPassword]);
+               
+               if ($result) {
+                   echo json_encode(['success' => true, 'message' => 'User added successfully']);
+               } else {
+                   echo json_encode(['success' => false, 'error' => 'Failed to add user']);
+               }
+           } catch (Exception $e) {
+               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+           }
+           break;
+           
+       case 'delete_user':
+           try {
+               $user_id = $_POST['user_id'] ?? '';
+               
+               if (empty($user_id)) {
+                   echo json_encode(['success' => false, 'error' => 'User ID is required']);
+                   break;
+               }
+               
+               require_once __DIR__ . "/../config.php";
+               $pdo = getDatabaseConnection();
+               if (!$pdo) {
+                   echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                   break;
+               }
+               
+               $deleteStmt = $pdo->prepare("DELETE FROM users WHERE user_id = ?");
+               $result = $deleteStmt->execute([$user_id]);
+               
+               if ($result && $deleteStmt->rowCount() > 0) {
+                   echo json_encode(['success' => true, 'message' => 'User deleted successfully']);
+               } else {
+                   echo json_encode(['success' => false, 'error' => 'User not found or could not be deleted']);
+               }
+           } catch (Exception $e) {
+               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+           }
+           break;
             
         default:
             echo json_encode(['success' => false, 'error' => 'Unknown action']);
@@ -4652,7 +4681,7 @@ header {
                 
                 // Update table body with users data
                 tableBody.innerHTML = users.map(user => `
-                    <tr>
+                    <tr data-user-id="${user.user_id}">
                         <td>${user.user_id}</td>
                         <td><span class="editable" data-field="username" data-id="${user.user_id}">${user.username}</span></td>
                         <td><span class="editable" data-field="email" data-id="${user.user_id}">${user.email}</span></td>
@@ -4993,36 +5022,55 @@ header {
         }
 
         // User management functions
-        function editUser(userEmail) {
-            if (!userEmail || userEmail === '') {
-                alert('Invalid user email');
+        function editUser(identifier) {
+            if (!identifier || identifier === '') {
+                alert('Invalid user identifier');
                 return;
             }
             
-            // Get user data from the table row
-            const userRow = document.querySelector(`tr[data-user-email="${userEmail}"]`);
-            if (!userRow) {
-                alert('User data not found');
-                return;
+            if (currentTableType === 'users') {
+                // For users table, identifier is user_id
+                const userRow = document.querySelector(`tr[data-user-id="${identifier}"]`);
+                if (!userRow) {
+                    alert('User data not found');
+                    return;
+                }
+                
+                // Extract user data from table cells for users table
+                const userData = {
+                    user_id: identifier,
+                    username: userRow.cells[1].textContent.trim(),
+                    email: userRow.cells[2].textContent.trim()
+                };
+                
+                // Show edit modal for users table
+                showEditUserModal(userData);
+            } else {
+                // For community_users table, identifier is email
+                const userRow = document.querySelector(`tr[data-user-email="${identifier}"]`);
+                if (!userRow) {
+                    alert('User data not found');
+                    return;
+                }
+                
+                // Extract user data from table cells for community_users table
+                const userData = {
+                    email: identifier,
+                    name: userRow.cells[0].textContent.trim(),
+                    municipality: userRow.cells[2].textContent.trim(),
+                    barangay: userRow.cells[3].textContent.trim(),
+                    sex: userRow.cells[4].textContent.trim(),
+                    birthday: userRow.cells[5].textContent.trim()
+                };
+                
+                // Show edit modal for community_users table
+                showEditUserModal(userData);
             }
-            
-            // Extract user data from table cells
-            const userData = {
-                email: userEmail,
-                name: userRow.cells[0].textContent.trim(),
-                municipality: userRow.cells[2].textContent.trim(),
-                barangay: userRow.cells[3].textContent.trim(),
-                sex: userRow.cells[4].textContent.trim(),
-                birthday: userRow.cells[5].textContent.trim()
-            };
-            
-            // Show edit modal
-            showEditUserModal(userData);
         }
 
-        function deleteUser(userEmail) {
-            if (!userEmail || userEmail === '') {
-                alert('Invalid user email');
+        function deleteUser(identifier) {
+            if (!identifier || identifier === '') {
+                alert('Invalid user identifier');
                 return;
             }
 
@@ -5037,27 +5085,49 @@ header {
             deleteBtn.innerHTML = '⏳';
             deleteBtn.disabled = true;
 
+            // Prepare request data based on table type
+            let requestData = {};
+            let endpoint = '';
+            
+            if (currentTableType === 'users') {
+                // For users table, use user_id
+                requestData = { user_id: identifier };
+                endpoint = '/settings.php';
+            } else {
+                // For community_users table, use email
+                requestData = { user_email: identifier };
+                endpoint = '/api/delete_user.php';
+            }
+
             // Send delete request to server
-            fetch('/api/delete_user.php', {
+            fetch(endpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': currentTableType === 'users' ? 'application/x-www-form-urlencoded' : 'application/json',
                 },
-                body: JSON.stringify({
-                    user_email: userEmail
-                })
+                body: currentTableType === 'users' ? 
+                    `action=delete_user&${Object.keys(requestData).map(key => `${key}=${encodeURIComponent(requestData[key])}`).join('&')}` :
+                    JSON.stringify(requestData)
             })
-            .then(response => response.json())
+            .then(response => currentTableType === 'users' ? response.text().then(text => {
+                try { return JSON.parse(text); } catch { return {success: false, error: 'Invalid response'}; }
+            }) : response.json())
             .then(data => {
                 if (data.success) {
                     // Remove the row from the table
-                    const row = document.querySelector(`tr[data-user-email="${userEmail}"]`);
+                    let row;
+                    if (currentTableType === 'users') {
+                        row = document.querySelector(`tr[data-user-id="${identifier}"]`);
+                    } else {
+                        row = document.querySelector(`tr[data-user-email="${identifier}"]`);
+                    }
+                    
                     if (row) {
                         row.remove();
                         showNotification('User deleted successfully!', 'success');
                     }
                 } else {
-                    showNotification('Error deleting user: ' + (data.message || 'Unknown error'), 'error');
+                    showNotification('Error deleting user: ' + (data.message || data.error || 'Unknown error'), 'error');
                 }
             })
             .catch(error => {
