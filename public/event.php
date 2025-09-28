@@ -783,9 +783,9 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
             $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationPayload['title'], $notificationPayload['body']);
             
             if ($fcmResult['success']) {
-                error_log("Event notification sent successfully to $userEmail: {$notificationPayload['title']}");
-                $successCount++;
-            } else {
+                    error_log("Event notification sent successfully to $userEmail: {$notificationPayload['title']}");
+                    $successCount++;
+                } else {
                 error_log("FCM notification failed for user $userEmail: " . ($fcmResult['error'] ?? 'Unknown error'));
                 $failureCount++;
             }
@@ -1390,17 +1390,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                     } else {
                                         error_log("⚠️ No FCM tokens found for location: $location");
                                     }
-                                
-                                // Track imported event for notifications
-                                $importedEvents[] = [
-                                    'id' => $eventId,
-                                    'title' => $title,
-                                    'type' => $type,
-                                    'date_time' => $dateObj->format('Y-m-d H:i:s'),
-                                    'location' => $location,
-                                    'organizer' => $organizer,
+                            
+                            // Track imported event for notifications
+                            $importedEvents[] = [
+                                'id' => $eventId,
+                                'title' => $title,
+                                'type' => $type,
+                                'date_time' => $dateObj->format('Y-m-d H:i:s'),
+                                'location' => $location,
+                                'organizer' => $organizer,
                                     'description' => $description
-                                ];
+                            ];
                             }
                         } catch(PDOException $e) {
                             $errors[] = "Row $row: Database error - " . $e->getMessage();
@@ -1456,7 +1456,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                 }
             } catch(Exception $e) {
                 $errorMessage = "Error processing CSV file: " . $e->getMessage();
-            }
         }
             } else {
             if (isset($_FILES['csvFile'])) {
