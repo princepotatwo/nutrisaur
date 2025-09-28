@@ -456,6 +456,7 @@ public class FCMTokenManager {
     
     /**
      * Clear FCM token from database for specific user (called during logout)
+     * This method is synchronous to ensure the token is cleared before logout completes
      */
     public void clearFCMTokenForUser(String userEmail) {
         if (userEmail == null || userEmail.isEmpty()) {
@@ -463,40 +464,38 @@ public class FCMTokenManager {
             return;
         }
         
-        new Thread(() -> {
-            try {
-                // Clear FCM token for the user
-                JSONObject data = new JSONObject();
-                data.put("fcm_token", null); // Clear FCM token
-                
-                JSONObject requestData = new JSONObject();
-                requestData.put("table", "community_users");
-                requestData.put("data", data);
-                requestData.put("where", "email = ?");
-                requestData.put("params", new JSONArray().put(userEmail));
-                
-                RequestBody body = RequestBody.create(
-                    requestData.toString(), 
-                    MediaType.parse("application/json; charset=utf-8")
-                );
-                
-                Request request = new Request.Builder()
-                    .url(SERVER_URL)
-                    .post(body)
-                    .addHeader("Content-Type", "application/json")
-                    .build();
-                
-                try (Response response = httpClient.newCall(request).execute()) {
-                    if (response.isSuccessful()) {
-                        Log.d(TAG, "FCM token cleared from database for: " + userEmail);
-                    } else {
-                        Log.w(TAG, "Failed to clear FCM token: " + response.code());
-                    }
+        try {
+            // Clear FCM token for the user
+            JSONObject data = new JSONObject();
+            data.put("fcm_token", null); // Clear FCM token
+            
+            JSONObject requestData = new JSONObject();
+            requestData.put("table", "community_users");
+            requestData.put("data", data);
+            requestData.put("where", "email = ?");
+            requestData.put("params", new JSONArray().put(userEmail));
+            
+            RequestBody body = RequestBody.create(
+                requestData.toString(), 
+                MediaType.parse("application/json; charset=utf-8")
+            );
+            
+            Request request = new Request.Builder()
+                .url(SERVER_URL)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+            
+            try (Response response = httpClient.newCall(request).execute()) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "FCM token cleared from database for: " + userEmail);
+                } else {
+                    Log.w(TAG, "Failed to clear FCM token: " + response.code());
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error clearing FCM token: " + e.getMessage());
             }
-        }).start();
+        } catch (Exception e) {
+            Log.e(TAG, "Error clearing FCM token: " + e.getMessage());
+        }
     }
     
     /**
