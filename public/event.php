@@ -6,6 +6,8 @@ ini_set('display_errors', 1);
 // Debug logging
 error_log("🚀 EVENT.PHP LOADED - URI: " . $_SERVER['REQUEST_URI']);
 error_log("🚀 GET PARAMS: " . json_encode($_GET));
+error_log("🚀 POST PARAMS: " . json_encode($_POST));
+error_log("🚀 REQUEST_METHOD: " . $_SERVER['REQUEST_METHOD']);
 
 // Include DatabaseAPI for FCM functionality
 require_once __DIR__ . '/api/DatabaseAPI.php';
