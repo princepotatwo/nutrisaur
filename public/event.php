@@ -1046,6 +1046,14 @@ function getFCMTokensByLocation($targetLocation = null) {
                 error_log("Processing municipality case: $targetLocation");
                 // Get tokens for all users in the municipality
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                
+                // Handle special case for BALANGA -> CITY OF BALANGA
+                if ($municipalityName === 'BALANGA') {
+                    $municipalityName = 'CITY OF BALANGA';
+                }
+                
+                error_log("Looking for municipality: '$municipalityName'");
+                
                 $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                     FROM community_users
@@ -1091,6 +1099,17 @@ function getFCMTokensByLocation($targetLocation = null) {
             $tokenCount = $tokenStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             error_log("Total FCM tokens with barangay data: $tokenWithBarangayCount, Total active FCM tokens: $tokenCount");
+            
+            // Debug: Show what municipalities and barangays actually exist in the database
+            if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
+                $debugStmt = $db->getPDO()->prepare("SELECT DISTINCT municipality, COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' GROUP BY municipality");
+                $debugStmt->execute();
+                $municipalities = $debugStmt->fetchAll(PDO::FETCH_ASSOC);
+                error_log("Available municipalities in database: " . json_encode($municipalities));
+                
+                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                error_log("Looking for municipality: '$municipalityName'");
+            }
         }
         
         return $tokens;
