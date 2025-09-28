@@ -180,35 +180,68 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if ($result['success']) {
             $eventId = $nextId; // Use the program_id we calculated, not insert_id
             
-            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING (simple working approach)
+            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING (with location filtering)
             $notificationType = $_POST['notification_type'] ?? 'push';
             if ($notificationType !== 'none') {
                 error_log("📱 Sending notifications for event ID: $eventId");
                 
-                // Get FCM tokens directly from database (simple approach)
-                $stmt = $db->getPDO()->prepare("
-                    SELECT fcm_token, email as user_email 
-                    FROM community_users 
-                    WHERE fcm_token IS NOT NULL 
-                    AND fcm_token != ''
-                ");
-                $stmt->execute();
-                $fcmTokenData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                // Get FCM tokens based on location with proper filtering
+                $fcmTokenData = [];
                 
-                error_log("📱 FCM tokens found: " . count($fcmTokenData) . " total users");
+                if ($location === 'All Locations' || empty($location)) {
+                    // Send to all users
+                    $stmt = $db->getPDO()->prepare("
+                        SELECT fcm_token, email as user_email 
+                        FROM community_users 
+                        WHERE fcm_token IS NOT NULL 
+                        AND fcm_token != ''
+                    ");
+                    $stmt->execute();
+                    $fcmTokenData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    error_log("📱 Sending to ALL locations - " . count($fcmTokenData) . " tokens");
+                } else {
+                    // Check if it's a municipality (starts with MUNICIPALITY_)
+                    if (strpos($location, 'MUNICIPALITY_') === 0) {
+                        $municipalityName = str_replace('MUNICIPALITY_', '', $location);
+                        $stmt = $db->getPDO()->prepare("
+                            SELECT fcm_token, email as user_email 
+                            FROM community_users 
+                            WHERE fcm_token IS NOT NULL 
+                            AND fcm_token != ''
+                            AND municipality = :municipality
+                        ");
+                        $stmt->bindParam(':municipality', $municipalityName);
+                        $stmt->execute();
+                        $fcmTokenData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        error_log("📱 Sending to MUNICIPALITY $municipalityName - " . count($fcmTokenData) . " tokens");
+                    } else {
+                        // Send to specific barangay
+                        $stmt = $db->getPDO()->prepare("
+                            SELECT fcm_token, email as user_email 
+                            FROM community_users 
+                            WHERE fcm_token IS NOT NULL 
+                            AND fcm_token != ''
+                            AND barangay = :barangay
+                        ");
+                        $stmt->bindParam(':barangay', $location);
+                        $stmt->execute();
+                        $fcmTokenData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        error_log("📱 Sending to BARANGAY $location - " . count($fcmTokenData) . " tokens");
+                    }
+                }
                 
                 if (!empty($fcmTokenData)) {
                     // Enhanced notification data with event_id
-                $notificationData = [
-                    'title' => "🎯 Event: $title",
-                    'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
-                    'target_user' => 'all',
-                    'event_id' => $eventId,
-                    'event_type' => $type,
-                    'event_location' => $location,
-                    'event_date' => date('M j, Y g:i A', strtotime($date_time))
-                ];
-                
+                    $notificationData = [
+                        'title' => "🎯 Event: $title",
+                        'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
+                        'target_user' => 'all',
+                        'event_id' => $eventId,
+                        'event_type' => $type,
+                        'event_location' => $location,
+                        'event_date' => date('M j, Y g:i A', strtotime($date_time))
+                    ];
+                    
                     // Send FCM notifications directly
                     $successCount = 0;
                     foreach ($fcmTokenData as $tokenData) {
@@ -228,7 +261,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                     
                     error_log("📱 Notification sent to " . $successCount . " users directly via FCM");
                 } else {
-                    error_log("⚠️ No FCM tokens found in database");
+                    error_log("⚠️ No FCM tokens found for location: $location");
                 }
             }
         } else {
