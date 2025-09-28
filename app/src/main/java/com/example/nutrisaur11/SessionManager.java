@@ -263,20 +263,40 @@ public class SessionManager {
             
             // Clear user-specific data
             if (currentUserEmail != null) {
+                Log.d(TAG, "=== SESSION CLEARING DEBUG START ===");
+                Log.d(TAG, "Current user email: " + currentUserEmail);
+                
+                Log.d(TAG, "Step 1: Clearing AddedFoodManager data");
                 AddedFoodManager.clearUserData(context, currentUserEmail);
+                Log.d(TAG, "Step 1.1: AddedFoodManager cleared");
+                
+                Log.d(TAG, "Step 2: Clearing CalorieTracker data");
                 CalorieTracker.clearUserData(context, currentUserEmail);
+                Log.d(TAG, "Step 2.1: CalorieTracker cleared");
+                
+                Log.d(TAG, "Step 3: Clearing GeminiCacheManager data");
                 GeminiCacheManager.clearUserData(context, currentUserEmail);
+                Log.d(TAG, "Step 3.1: GeminiCacheManager cleared");
+                
+                Log.d(TAG, "Step 4: Clearing FavoritesManager data");
                 FavoritesManager.clearUserData(context, currentUserEmail);
+                Log.d(TAG, "Step 4.1: FavoritesManager cleared");
                 
-                // Clear FCM token from database
+                Log.d(TAG, "Step 5: Creating FCMTokenManager instance");
                 FCMTokenManager fcmManager = new FCMTokenManager(context);
-                fcmManager.clearFCMTokenForUser(currentUserEmail);
+                Log.d(TAG, "Step 5.1: FCMTokenManager created");
                 
-                // Clear profile cache
+                Log.d(TAG, "Step 6: Calling clearFCMTokenForUser");
+                fcmManager.clearFCMTokenForUser(currentUserEmail);
+                Log.d(TAG, "Step 6.1: clearFCMTokenForUser call completed");
+                
+                Log.d(TAG, "Step 7: Clearing CommunityUserManager cache");
                 CommunityUserManager userManager = new CommunityUserManager(context);
                 userManager.clearUserCache(currentUserEmail);
+                Log.d(TAG, "Step 7.1: CommunityUserManager cache cleared");
                 
-                Log.d(TAG, "Cleared user-specific data for: " + currentUserEmail);
+                Log.d(TAG, "SUCCESS: Cleared user-specific data for: " + currentUserEmail);
+                Log.d(TAG, "=== SESSION CLEARING DEBUG END ===");
             }
             
             // Clear all user data from main preferences
