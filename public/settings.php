@@ -4622,6 +4622,7 @@ header {
             if (originalCommunityUsersData && originalCommunityUsersData.length > 0) {
                 originalCommunityUsersData.forEach(user => {
                     const row = document.createElement('tr');
+                    row.setAttribute('data-user-email', user.email); // Add the missing data attribute
                     row.innerHTML = `
                         <td>${user.name || 'N/A'}</td>
                         <td>${user.email}</td>
@@ -4721,7 +4722,7 @@ header {
                     
                     // Update table body with community users data
                     altTableBody.innerHTML = users.map(user => `
-                        <tr>
+                        <tr data-user-email="${user.email}">
                             <td>${user.name || 'N/A'}</td>
                             <td>${user.email}</td>
                             <td>${user.municipality || 'N/A'}</td>
@@ -4797,7 +4798,7 @@ header {
                 
                 // Update table body with community users data
                 tableBody.innerHTML = users.map(user => `
-                    <tr>
+                    <tr data-user-email="${user.email}">
                         <td>${user.name || 'N/A'}</td>
                         <td>${user.email}</td>
                         <td>${user.municipality || 'N/A'}</td>
@@ -5132,6 +5133,7 @@ header {
             } else {
                 // For community_users table, identifier is email
                 const userRow = document.querySelector(`tr[data-user-email="${identifier}"]`);
+                console.log('Found community user row:', userRow);
                 if (!userRow) {
                     alert('User data not found');
                     return;
@@ -5146,6 +5148,7 @@ header {
                     sex: userRow.cells[4].textContent.trim(),
                     birthday: userRow.cells[5].textContent.trim()
                 };
+                console.log('Extracted community user data:', userData);
                 
                 // Show edit modal for community_users table
                 showEditUserModal(userData);
@@ -5340,29 +5343,45 @@ header {
 
         // Edit User Modal Functions
         function showEditUserModal(userData) {
+            console.log('showEditUserModal called with userData:', userData);
+            
+            // Check if modal exists
+            const modal = document.getElementById('editUserModal');
+            if (!modal) {
+                console.error('editUserModal not found');
+                alert('Edit modal not found. Please refresh the page.');
+                return;
+            }
+            
             // First, fetch complete user data from database
             fetchUserData(userData.email, (completeUserData) => {
+                console.log('fetchUserData callback received:', completeUserData);
+                
+                // Use completeUserData if available, otherwise fall back to userData
+                const finalUserData = Object.keys(completeUserData).length > 0 ? completeUserData : userData;
+                console.log('Using final user data:', finalUserData);
+                
                 // Populate form with complete user data
-                document.getElementById('editName').value = completeUserData.name || userData.name;
-                document.getElementById('editEmail').value = completeUserData.email || userData.email;
-                document.getElementById('editSex').value = completeUserData.sex || userData.sex;
-                document.getElementById('editBirthday').value = completeUserData.birthday || userData.birthday;
-                document.getElementById('editWeight').value = completeUserData.weight || '';
-                document.getElementById('editHeight').value = completeUserData.height || '';
-                document.getElementById('editMuac').value = completeUserData.muac || '';
+                document.getElementById('editName').value = finalUserData.name || '';
+                document.getElementById('editEmail').value = finalUserData.email || '';
+                document.getElementById('editSex').value = finalUserData.sex || '';
+                document.getElementById('editBirthday').value = finalUserData.birthday || '';
+                document.getElementById('editWeight').value = finalUserData.weight || '';
+                document.getElementById('editHeight').value = finalUserData.height || '';
+                document.getElementById('editMuac').value = finalUserData.muac || '';
                 
                 // Store original email for comparison
-                const originalEmail = completeUserData.email || userData.email;
+                const originalEmail = finalUserData.email || userData.email;
                 document.getElementById('editEmail').setAttribute('data-original-email', originalEmail);
                 
                 // Initialize municipality and barangay dropdowns
                 initializeMunicipalityDropdown();
-                document.getElementById('editMunicipality').value = completeUserData.municipality || userData.municipality;
+                document.getElementById('editMunicipality').value = finalUserData.municipality || '';
                 updateBarangayOptions();
                 
                 // Set barangay after options are loaded
                 setTimeout(() => {
-                    document.getElementById('editBarangay').value = completeUserData.barangay || userData.barangay;
+                    document.getElementById('editBarangay').value = finalUserData.barangay || '';
                 }, 100);
                 
                 // Calculate and display age
@@ -5372,8 +5391,8 @@ header {
                 togglePregnancyField();
                 
                 // Set pregnancy status if available
-                if (completeUserData.is_pregnant !== undefined) {
-                    document.getElementById('editPregnancy').value = completeUserData.is_pregnant ? 'Yes' : 'No';
+                if (finalUserData.is_pregnant !== undefined) {
+                    document.getElementById('editPregnancy').value = finalUserData.is_pregnant ? 'Yes' : 'No';
                 }
                 
                 // Clear any previous error messages
@@ -5381,8 +5400,8 @@ header {
                 document.getElementById('editEmail').style.borderColor = '';
                 
                 // Show modal
-                console.log('Showing edit modal for user:', completeUserData);
-                document.getElementById('editUserModal').style.display = 'block';
+                console.log('Showing edit modal for user:', finalUserData);
+                modal.style.display = 'block';
                 
                 // Ensure modal is visible and centered
                 setTimeout(() => {
@@ -5420,6 +5439,8 @@ header {
         }
 
         function fetchUserData(email, callback) {
+            console.log('fetchUserData called with email:', email);
+            
             fetch('api/DatabaseAPI.php?action=get_community_user_data', {
                 method: 'POST',
                 headers: {
@@ -5427,11 +5448,16 @@ header {
                 },
                 body: JSON.stringify({ email: email })
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('fetchUserData response status:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('fetchUserData response data:', data);
                 if (data.success && data.user) {
                     callback(data.user);
                 } else {
+                    console.warn('API returned unsuccessful response, using fallback data');
                     // Fallback to basic data if API fails
                     callback({});
                 }
@@ -5446,6 +5472,20 @@ header {
         function closeEditUserModal() {
             document.getElementById('editUserModal').style.display = 'none';
             document.getElementById('editUserForm').reset();
+        }
+        
+        // Debug function to test modal display
+        function testEditModal() {
+            console.log('Testing edit modal...');
+            const testData = {
+                email: 'test@example.com',
+                name: 'Test User',
+                municipality: 'CITY OF BALANGA',
+                barangay: 'San Jose',
+                sex: 'Female',
+                birthday: '1990-01-01'
+            };
+            showEditUserModal(testData);
         }
 
         // Functions for Users Table Edit Modal
@@ -6015,6 +6055,9 @@ header {
         // Initialize barangay options on page load
         document.addEventListener('DOMContentLoaded', function() {
             updateBarangayOptions();
+            
+            // Load community users table by default
+            loadCommunityUsersTable();
             
             // Add event listener for municipality changes
             const municipalityFilter = document.getElementById('municipalityFilter');
