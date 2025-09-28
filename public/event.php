@@ -1527,6 +1527,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             } catch(Exception $e) {
                 $errorMessage = "Error processing CSV file: " . $e->getMessage();
             }
+            
+            // Return JSON response for AJAX calls
+            header('Content-Type: application/json');
+            if ($importedCount > 0) {
+                echo json_encode([
+                    'success' => true,
+                    'imported_count' => $importedCount,
+                    'message' => "Successfully imported $importedCount events!",
+                    'errors' => $errors ?? []
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'imported_count' => 0,
+                    'message' => $errorMessage ?? 'No events were imported',
+                    'errors' => $errors ?? []
+                ]);
+            }
+            exit;
         }
             } else {
             if (isset($_FILES['csvFile'])) {
@@ -6444,7 +6463,7 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
             importBtn.innerHTML = '🔄 Uploading...';
             importStatus.style.display = 'block';
             
-            fetch('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=import_csv', {
+            fetch('event.php', {
                 method: 'POST',
                 body: formData
             })
