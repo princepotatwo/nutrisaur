@@ -180,58 +180,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if ($result['success']) {
             $eventId = $nextId; // Use the program_id we calculated, not insert_id
             
-            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING
+            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING (using working approach)
             $notificationType = $_POST['notification_type'] ?? 'push';
             if ($notificationType !== 'none') {
                 error_log("📱 Sending notifications for event ID: $eventId");
                 
-                // Get FCM tokens based on location
-                $fcmTokens = [];
-                if ($location === 'All Locations') {
-                    $fcmTokens = $db->getActiveFCMTokens();
-                    error_log("📱 Sending to ALL locations - " . count($fcmTokens) . " tokens");
-                } else {
-                    // Check if it's a municipality (all caps, known municipalities)
-                    $municipalities = ['HERMOSA', 'LIMAY', 'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'];
-                    if (in_array($location, $municipalities)) {
-                        $fcmTokens = $db->getFCMTokensByMunicipality($location);
-                        error_log("📱 Sending to MUNICIPALITY $location (all barangays) - " . count($fcmTokens) . " tokens");
-                    } else {
-                        $fcmTokens = $db->getFCMTokensByBarangay($location);
-                        error_log("📱 Sending to BARANGAY $location - " . count($fcmTokens) . " tokens");
-                    }
-                }
+                // Use the new getFCMTokensByLocation function (same as working version)
+                $fcmTokenData = getFCMTokensByLocation($location);
+                error_log("📱 FCM tokens found: " . count($fcmTokenData) . " for location: '$location'");
                 
-                if (!empty($fcmTokens)) {
+                if (!empty($fcmTokenData)) {
                     // Enhanced notification data with event_id
-                $notificationData = [
-                    'title' => "🎯 Event: $title",
-                    'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
-                    'target_user' => 'all',
-                    'event_id' => $eventId,
-                    'event_type' => $type,
-                    'event_location' => $location,
-                    'event_date' => date('M j, Y g:i A', strtotime($date_time))
-                ];
-                
-                // Send FCM notifications directly (no cURL to avoid duplicates)
-                $successCount = 0;
-                foreach ($fcmTokens as $tokenData) {
-                    $fcmToken = $tokenData['fcm_token'];
-                    $userEmail = $tokenData['user_email'];
+                    $notificationData = [
+                        'title' => "🎯 Event: $title",
+                        'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
+                        'target_user' => 'all',
+                        'event_id' => $eventId,
+                        'event_type' => $type,
+                        'event_location' => $location,
+                        'event_date' => date('M j, Y g:i A', strtotime($date_time))
+                    ];
                     
-                    error_log("🔍 Attempting to send FCM notification to user: $userEmail, token: " . substr($fcmToken, 0, 20) . "...");
-                    $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
-                    error_log("🔍 FCM Result: " . json_encode($fcmResult));
-                    if ($fcmResult['success']) {
-                        $successCount++;
-                        error_log("✅ FCM notification sent successfully to $userEmail");
-                    } else {
-                        error_log("❌ FCM notification failed for $userEmail: " . ($fcmResult['error'] ?? 'Unknown error'));
+                    // Send FCM notifications directly (same as working version)
+                    $successCount = 0;
+                    foreach ($fcmTokenData as $tokenData) {
+                        $fcmToken = $tokenData['fcm_token'];
+                        $userEmail = $tokenData['user_email'];
+                        
+                        error_log("🔍 Attempting to send FCM notification to user: $userEmail, token: " . substr($fcmToken, 0, 20) . "...");
+                        $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
+                        error_log("🔍 FCM Result: " . json_encode($fcmResult));
+                        if ($fcmResult['success']) {
+                            $successCount++;
+                            error_log("✅ FCM notification sent successfully to $userEmail");
+                        } else {
+                            error_log("❌ FCM notification failed for $userEmail: " . ($fcmResult['error'] ?? 'Unknown error'));
+                        }
                     }
-                }
-                
-                error_log("📱 Notification sent to " . $successCount . " users directly via FCM");
+                    
+                    error_log("📱 Notification sent to " . $successCount . " users directly via FCM");
                 } else {
                     error_log("⚠️ No FCM tokens found for location: $location");
                 }
