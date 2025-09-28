@@ -429,48 +429,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
     }
 }
 
-// Handle get events request for mobile app
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_events') {
-    header('Content-Type: application/json');
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type');
-    
-    try {
-        // Get all events from programs table
-        $db = DatabaseAPI::getInstance();
-        $result = $db->universalQuery("SELECT * FROM programs ORDER BY date_time ASC");
-        $events = $result['success'] ? $result['data'] : [];
-        
-        // Format events for mobile app
-        $formattedEvents = [];
-        foreach ($events as $event) {
-            $formattedEvents[] = [
-                'id' => $event['program_id'],
-                'title' => $event['title'],
-                'type' => $event['type'],
-                'description' => $event['description'],
-                'date_time' => $event['date_time'],
-                'location' => $event['location'],
-                'organizer' => $event['organizer'],
-                'created_at' => (!empty($event['created_at']) && $event['created_at'] !== '0000-00-00 00:00:00') ? strtotime($event['created_at']) : time()
-            ];
-        }
-        
-        echo json_encode([
-            'success' => true,
-            'events' => $formattedEvents
-        ]);
-        exit;
-        
-    } catch (Exception $e) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Error fetching events: ' . $e->getMessage()
-        ]);
-        exit;
-    }
-}
 
 // Handle debug request for FCM status
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'debug_fcm') {
