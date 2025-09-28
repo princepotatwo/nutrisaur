@@ -18,6 +18,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CountDownLatch;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -456,7 +457,7 @@ public class FCMTokenManager {
     
     /**
      * Clear FCM token from database for specific user (called during logout)
-     * This method is synchronous to ensure the token is cleared before logout completes
+     * This method runs in background thread but waits for completion to ensure timing
      */
     public void clearFCMTokenForUser(String userEmail) {
         Log.d(TAG, "=== FCM TOKEN CLEARING DEBUG START ===");
@@ -469,79 +470,96 @@ public class FCMTokenManager {
         
         Log.d(TAG, "Step 1: Starting FCM token clearing for: " + userEmail);
         
-        try {
-            Log.d(TAG, "Step 2: Creating JSON data object");
-            // Clear FCM token for the user
-            JSONObject data = new JSONObject();
-            data.put("fcm_token", null); // Clear FCM token
-            Log.d(TAG, "Step 2.1: Created data JSON: " + data.toString());
-            
-            Log.d(TAG, "Step 3: Creating request data object");
-            JSONObject requestData = new JSONObject();
-            requestData.put("table", "community_users");
-            requestData.put("data", data);
-            requestData.put("where", "email = ?");
-            requestData.put("params", new JSONArray().put(userEmail));
-            Log.d(TAG, "Step 3.1: Created requestData JSON: " + requestData.toString());
-            
-            String requestBody = requestData.toString();
-            Log.d(TAG, "Step 4: Final request body: " + requestBody);
-            
-            Log.d(TAG, "Step 5: Creating RequestBody");
-            RequestBody body = RequestBody.create(
-                requestBody, 
-                MediaType.parse("application/json; charset=utf-8")
-            );
-            Log.d(TAG, "Step 5.1: RequestBody created successfully");
-            
-            Log.d(TAG, "Step 6: Checking httpClient");
-            if (httpClient == null) {
-                Log.e(TAG, "ERROR: HttpClient is null, cannot clear FCM token");
-                return;
-            }
-            Log.d(TAG, "Step 6.1: HttpClient is not null");
-            
-            Log.d(TAG, "Step 7: Checking SERVER_URL");
-            Log.d(TAG, "Step 7.1: SERVER_URL value: '" + SERVER_URL + "'");
-            if (SERVER_URL == null || SERVER_URL.isEmpty()) {
-                Log.e(TAG, "ERROR: SERVER_URL is null or empty, cannot clear FCM token");
-                return;
-            }
-            Log.d(TAG, "Step 7.2: SERVER_URL is valid");
-            
-            Log.d(TAG, "Step 8: Building HTTP request");
-            Request request = new Request.Builder()
-                .url(SERVER_URL)
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .build();
-            Log.d(TAG, "Step 8.1: HTTP request built successfully");
-            Log.d(TAG, "Step 8.2: Request URL: " + request.url());
-            Log.d(TAG, "Step 8.3: Request method: " + request.method());
-            Log.d(TAG, "Step 8.4: Request headers: " + request.headers());
-            
-            Log.d(TAG, "Step 9: Executing HTTP request");
-            try (Response response = httpClient.newCall(request).execute()) {
-                Log.d(TAG, "Step 9.1: HTTP request executed");
-                Log.d(TAG, "Step 9.2: Response code: " + response.code());
-                Log.d(TAG, "Step 9.3: Response message: " + response.message());
-                Log.d(TAG, "Step 9.4: Response headers: " + response.headers());
+        // Use CountDownLatch to wait for background thread completion
+        final CountDownLatch latch = new CountDownLatch(1);
+        
+        // Run in background thread to avoid NetworkOnMainThreadException
+        new Thread(() -> {
+            try {
+                Log.d(TAG, "Step 2: Creating JSON data object");
+                // Clear FCM token for the user
+                JSONObject data = new JSONObject();
+                data.put("fcm_token", null); // Clear FCM token
+                Log.d(TAG, "Step 2.1: Created data JSON: " + data.toString());
                 
-                if (response.isSuccessful()) {
-                    Log.d(TAG, "SUCCESS: FCM token cleared from database for: " + userEmail);
-                    String responseBody = response.body() != null ? response.body().string() : "null";
-                    Log.d(TAG, "Step 9.5: Response body: " + responseBody);
-                } else {
-                    Log.w(TAG, "WARNING: Failed to clear FCM token: " + response.code());
-                    String responseBody = response.body() != null ? response.body().string() : "null";
-                    Log.w(TAG, "Step 9.6: Error response body: " + responseBody);
+                Log.d(TAG, "Step 3: Creating request data object");
+                JSONObject requestData = new JSONObject();
+                requestData.put("table", "community_users");
+                requestData.put("data", data);
+                requestData.put("where", "email = ?");
+                requestData.put("params", new JSONArray().put(userEmail));
+                Log.d(TAG, "Step 3.1: Created requestData JSON: " + requestData.toString());
+                
+                String requestBody = requestData.toString();
+                Log.d(TAG, "Step 4: Final request body: " + requestBody);
+                
+                Log.d(TAG, "Step 5: Creating RequestBody");
+                RequestBody body = RequestBody.create(
+                    requestBody, 
+                    MediaType.parse("application/json; charset=utf-8")
+                );
+                Log.d(TAG, "Step 5.1: RequestBody created successfully");
+                
+                Log.d(TAG, "Step 6: Checking httpClient");
+                if (httpClient == null) {
+                    Log.e(TAG, "ERROR: HttpClient is null, cannot clear FCM token");
+                    return;
                 }
+                Log.d(TAG, "Step 6.1: HttpClient is not null");
+                
+                Log.d(TAG, "Step 7: Checking SERVER_URL");
+                Log.d(TAG, "Step 7.1: SERVER_URL value: '" + SERVER_URL + "'");
+                if (SERVER_URL == null || SERVER_URL.isEmpty()) {
+                    Log.e(TAG, "ERROR: SERVER_URL is null or empty, cannot clear FCM token");
+                    return;
+                }
+                Log.d(TAG, "Step 7.2: SERVER_URL is valid");
+                
+                Log.d(TAG, "Step 8: Building HTTP request");
+                Request request = new Request.Builder()
+                    .url(SERVER_URL)
+                    .post(body)
+                    .addHeader("Content-Type", "application/json")
+                    .build();
+                Log.d(TAG, "Step 8.1: HTTP request built successfully");
+                Log.d(TAG, "Step 8.2: Request URL: " + request.url());
+                Log.d(TAG, "Step 8.3: Request method: " + request.method());
+                Log.d(TAG, "Step 8.4: Request headers: " + request.headers());
+                
+                Log.d(TAG, "Step 9: Executing HTTP request");
+                try (Response response = httpClient.newCall(request).execute()) {
+                    Log.d(TAG, "Step 9.1: HTTP request executed");
+                    Log.d(TAG, "Step 9.2: Response code: " + response.code());
+                    Log.d(TAG, "Step 9.3: Response message: " + response.message());
+                    Log.d(TAG, "Step 9.4: Response headers: " + response.headers());
+                    
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "SUCCESS: FCM token cleared from database for: " + userEmail);
+                        String responseBody = response.body() != null ? response.body().string() : "null";
+                        Log.d(TAG, "Step 9.5: Response body: " + responseBody);
+                    } else {
+                        Log.w(TAG, "WARNING: Failed to clear FCM token: " + response.code());
+                        String responseBody = response.body() != null ? response.body().string() : "null";
+                        Log.w(TAG, "Step 9.6: Error response body: " + responseBody);
+                    }
+                }
+                Log.d(TAG, "Step 10: HTTP request completed");
+            } catch (Exception e) {
+                Log.e(TAG, "ERROR: Exception in FCM token clearing: " + e.getMessage());
+                Log.e(TAG, "ERROR: Exception type: " + e.getClass().getSimpleName());
+                Log.e(TAG, "ERROR: Stack trace:", e);
+            } finally {
+                latch.countDown(); // Signal completion
             }
-            Log.d(TAG, "Step 10: HTTP request completed");
-        } catch (Exception e) {
-            Log.e(TAG, "ERROR: Exception in FCM token clearing: " + e.getMessage());
-            Log.e(TAG, "ERROR: Exception type: " + e.getClass().getSimpleName());
-            Log.e(TAG, "ERROR: Stack trace:", e);
+        }).start();
+        
+        // Wait for background thread to complete (max 10 seconds)
+        try {
+            Log.d(TAG, "Step 11: Waiting for background thread to complete");
+            latch.await(10, java.util.concurrent.TimeUnit.SECONDS);
+            Log.d(TAG, "Step 11.1: Background thread completed");
+        } catch (InterruptedException e) {
+            Log.e(TAG, "ERROR: Interrupted while waiting for FCM token clearing: " + e.getMessage());
         }
         
         Log.d(TAG, "=== FCM TOKEN CLEARING DEBUG END ===");
