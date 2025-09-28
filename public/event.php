@@ -180,28 +180,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if ($result['success']) {
             $eventId = $nextId; // Use the program_id we calculated, not insert_id
             
-            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING (using working approach)
+            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING (simple working approach)
             $notificationType = $_POST['notification_type'] ?? 'push';
             if ($notificationType !== 'none') {
                 error_log("📱 Sending notifications for event ID: $eventId");
                 
-                // Use the new getFCMTokensByLocation function (same as working version)
-                $fcmTokenData = getFCMTokensByLocation($location);
-                error_log("📱 FCM tokens found: " . count($fcmTokenData) . " for location: '$location'");
+                // Get FCM tokens directly from database (simple approach)
+                $stmt = $db->getPDO()->prepare("
+                    SELECT fcm_token, email as user_email 
+                    FROM community_users 
+                    WHERE fcm_token IS NOT NULL 
+                    AND fcm_token != ''
+                ");
+                $stmt->execute();
+                $fcmTokenData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                error_log("📱 FCM tokens found: " . count($fcmTokenData) . " total users");
                 
                 if (!empty($fcmTokenData)) {
                     // Enhanced notification data with event_id
-                    $notificationData = [
-                        'title' => "🎯 Event: $title",
-                        'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
-                        'target_user' => 'all',
-                        'event_id' => $eventId,
-                        'event_type' => $type,
-                        'event_location' => $location,
-                        'event_date' => date('M j, Y g:i A', strtotime($date_time))
-                    ];
-                    
-                    // Send FCM notifications directly (same as working version)
+                $notificationData = [
+                    'title' => "🎯 Event: $title",
+                    'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
+                    'target_user' => 'all',
+                    'event_id' => $eventId,
+                    'event_type' => $type,
+                    'event_location' => $location,
+                    'event_date' => date('M j, Y g:i A', strtotime($date_time))
+                ];
+                
+                    // Send FCM notifications directly
                     $successCount = 0;
                     foreach ($fcmTokenData as $tokenData) {
                         $fcmToken = $tokenData['fcm_token'];
@@ -220,7 +228,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                     
                     error_log("📱 Notification sent to " . $successCount . " users directly via FCM");
                 } else {
-                    error_log("⚠️ No FCM tokens found for location: $location");
+                    error_log("⚠️ No FCM tokens found in database");
                 }
             }
         } else {
@@ -825,9 +833,9 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
             $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationPayload['title'], $notificationPayload['body']);
             
             if ($fcmResult['success']) {
-                error_log("Event notification sent successfully to $userEmail: {$notificationPayload['title']}");
-                $successCount++;
-            } else {
+                    error_log("Event notification sent successfully to $userEmail: {$notificationPayload['title']}");
+                    $successCount++;
+                } else {
                 error_log("FCM notification failed for user $userEmail: " . ($fcmResult['error'] ?? 'Unknown error'));
                 $failureCount++;
             }
@@ -1375,17 +1383,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             
                             if ($result['success']) {
                                 $eventId = $nextId; // Use the program_id we calculated
-                                $importedCount++;
+                            $importedCount++;
                                 error_log("📁 CSV IMPORT: Row $row successfully inserted - Event ID: $eventId");
-                                
-                                // Track imported event for notifications
-                                $importedEvents[] = [
-                                    'id' => $eventId,
-                                    'title' => $title,
-                                    'type' => $type,
-                                    'date_time' => $dateObj->format('Y-m-d H:i:s'),
-                                    'location' => $location,
-                                    'organizer' => $organizer,
+                            
+                            // Track imported event for notifications
+                            $importedEvents[] = [
+                                'id' => $eventId,
+                                'title' => $title,
+                                'type' => $type,
+                                'date_time' => $dateObj->format('Y-m-d H:i:s'),
+                                'location' => $location,
+                                'organizer' => $organizer,
                                     'description' => $description
                                 ];
                                 
