@@ -1451,19 +1451,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                 exit;
                             }
                         }
-                } else {
-                    $errorMessage = "Error reading CSV file.";
+                    } else {
+                        $errorMessage = "Error reading CSV file.";
+                    }
+                } catch(Exception $e) {
+                    $errorMessage = "Error processing CSV file: " . $e->getMessage();
                 }
-            } catch(Exception $e) {
-                $errorMessage = "Error processing CSV file: " . $e->getMessage();
-        }
             } else {
-            if (isset($_FILES['csvFile'])) {
-                $errorMessage = "File upload error: " . $_FILES['csvFile']['error'];
-            } else {
-                $errorMessage = "Please select a CSV file to upload.";
+                if (isset($_FILES['csvFile'])) {
+                    $errorMessage = "File upload error: " . $_FILES['csvFile']['error'];
+                } else {
+                    $errorMessage = "Please select a CSV file to upload.";
+                }
             }
-        }
 }
 
 // Note: Deletion is now handled via AJAX calls to /api/delete_program.php and /api/delete_all_programs.php
