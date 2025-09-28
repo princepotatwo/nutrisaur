@@ -6343,6 +6343,7 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
             
             const formData = new FormData();
             formData.append('csvFile', file);
+            formData.append('import_csv', '1'); // Add the required POST parameter
             
             // Show loading state
             const importBtn = document.getElementById('importBtn');
