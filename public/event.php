@@ -185,50 +185,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             if ($notificationType !== 'none') {
                 error_log("📱 Sending notifications for event ID: $eventId");
                 
-                // Get FCM tokens based on location with proper filtering
-                $fcmTokenData = [];
-                
-                if ($location === 'All Locations' || empty($location)) {
-                    // Send to all users
-                    $stmt = $db->getPDO()->prepare("
-                        SELECT fcm_token, email as user_email 
-                        FROM community_users 
-                        WHERE fcm_token IS NOT NULL 
-                        AND fcm_token != ''
-                    ");
-                    $stmt->execute();
-                    $fcmTokenData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    error_log("📱 Sending to ALL locations - " . count($fcmTokenData) . " tokens");
-                } else {
-                    // Check if it's a municipality (starts with MUNICIPALITY_)
-                    if (strpos($location, 'MUNICIPALITY_') === 0) {
-                        $municipalityName = str_replace('MUNICIPALITY_', '', $location);
-                        $stmt = $db->getPDO()->prepare("
-                            SELECT fcm_token, email as user_email 
-                            FROM community_users 
-                            WHERE fcm_token IS NOT NULL 
-                            AND fcm_token != ''
-                            AND municipality = :municipality
-                        ");
-                        $stmt->bindParam(':municipality', $municipalityName);
-                        $stmt->execute();
-                        $fcmTokenData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        error_log("📱 Sending to MUNICIPALITY $municipalityName - " . count($fcmTokenData) . " tokens");
-                    } else {
-                        // Send to specific barangay
-                        $stmt = $db->getPDO()->prepare("
-                            SELECT fcm_token, email as user_email 
-                            FROM community_users 
-                            WHERE fcm_token IS NOT NULL 
-                            AND fcm_token != ''
-                            AND barangay = :barangay
-                        ");
-                        $stmt->bindParam(':barangay', $location);
-                        $stmt->execute();
-                        $fcmTokenData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        error_log("📱 Sending to BARANGAY $location - " . count($fcmTokenData) . " tokens");
-                    }
-                }
+                // Use the centralized getFCMTokensByLocation function for consistent filtering
+                $fcmTokenData = getFCMTokensByLocation($location);
+                error_log("📱 FCM tokens found: " . count($fcmTokenData) . " for location: '$location'");
                 
                 if (!empty($fcmTokenData)) {
                     // Enhanced notification data with event_id
@@ -1076,7 +1035,7 @@ function getFCMTokensByLocation($targetLocation = null) {
         // Debug logging
         error_log("getFCMTokensByLocation called with targetLocation: '$targetLocation' (type: " . gettype($targetLocation) . ", length: " . strlen($targetLocation ?? '') . ")");
         
-        if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '') {
+        if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '' || $targetLocation === 'All Locations') {
             error_log("Processing 'all locations' case - getting all FCM tokens");
             // Get all FCM tokens (no status column check)
             $stmt = $db->getPDO()->prepare("
@@ -1298,7 +1257,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
         $db = DatabaseAPI::getInstance();
         
         // Delete the event from database
-        $result = $db->universalDelete('programs', ['program_id' => $programId]);
+        $result = $db->universalDelete('programs', 'program_id = ?', [$programId]);
         
         if ($result['success']) {
             // Redirect back with success message
@@ -7447,118 +7406,6 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
 
 
         // CSV Upload Functions
-        // 🚨 COMPLETELY NEW EVENT CREATION HANDLER - NO REDIRECTS, NO DASHBOARD
-        // Define this function globally so it's available immediately
-        window.handleNewEventCreation = async function() {
-            console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
-            
-            // Get form data from the form element
-            const form = document.getElementById('newCreateEventForm');
-            const formData = new FormData(form);
-            const eventData = {
-                title: formData.get('eventTitle'),
-                description: formData.get('eventDescription'),
-                date_time: formData.get('eventDate'),
-                location: formData.get('eventLocation'),
-                organizer: formData.get('eventOrganizer')
-            };
-            
-            console.log('Event data:', eventData);
-            
-            // Validate required fields
-            if (!eventData.title || !eventData.description || !eventData.date_time || !eventData.organizer) {
-                showNotificationError('Please fill in all required fields');
-                return;
-            }
-            
-            try {
-                console.log('✅ Validation passed, starting event creation process');
-                
-                // Show loading state
-                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
-                submitBtn.disabled = true;
-                
-                console.log('🔄 Calling save_event_only API...');
-                console.log('📤 Sending event data to programs table:', {
-                    title: eventData.title,
-                    type: eventData.type,
-                    description: eventData.description,
-                    date_time: eventData.date_time,
-                    location: eventData.location,
-                    organizer: eventData.organizer
-                });
-                
-                // 🚨 STEP 1: SAVE EVENT TO DATABASE FIRST (using the working PHP logic)
-                const saveResponse = await fetch('event.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: new URLSearchParams({
-                        'action': 'save_event_only',
-                        'title': eventData.title,
-                        'description': eventData.description,
-                        'date_time': eventData.date_time,
-                        'location': eventData.location,
-                        'organizer': eventData.organizer
-                    })
-                });
-                
-                const saveResult = await saveResponse.json();
-                console.log('📊 Save API response:', saveResult);
-                
-                if (!saveResult.success) {
-                    console.error('❌ Save API failed:', saveResult.message);
-                    throw new Error(`Failed to save event: ${saveResult.message}`);
-                }
-                
-                console.log('✅ Event saved successfully!');
-                
-                // Notifications are now handled automatically in PHP after saving
-                
-                // Fetch and display current programs table
-                console.log('🔍 Fetching current programs table to verify...');
-                try {
-                    const programsResponse = await fetch('/api/DatabaseAPI.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                        body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
-                    });
-                    const programsResult = await programsResponse.json();
-                    console.log('📊 Current programs table (last 5 events):', programsResult);
-                } catch (error) {
-                    console.error('❌ Error fetching programs table:', error);
-                }
-                
-                    // Reset form
-                    form.reset();
-                    
-                    // Show success message
-                showNotificationSuccess(`🎉 Event "${eventData.title}" created successfully!`);
-                
-                // Refresh the page to show the new event
-                setTimeout(() => {
-                    location.reload();
-                }, 2000); // Wait 2 seconds to show the success message
-                
-            } catch (error) {
-                console.error('Error creating event:', error);
-                showNotificationError('Error creating event. Please try again.');
-            } finally {
-                // Restore button state
-                const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<span class="btn-text">Create Event</span>';
-                    submitBtn.disabled = false;
-                }
-            }
-        }
 
         // Theme toggle function
         function newToggleTheme() {
