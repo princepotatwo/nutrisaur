@@ -78,7 +78,7 @@ try {
     // Initialize database
     $db = new DatabaseAPI();
     
-    if (!$db->isAvailable()) {
+    if (!$db->isDatabaseAvailable()) {
         throw new Exception('Database not available');
     }
     

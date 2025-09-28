@@ -1,5 +1,5 @@
 <?php
-// Test database connection
+// Simple database test with GET request
 header('Content-Type: application/json');
 
 try {
