@@ -1283,195 +1283,147 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     }
 }
 
-// Handle CSV file upload and import
+// 🚨 CLEAN CSV IMPORT METHOD - NO COMPLEX LOGIC
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
-    
+    error_log("=== CLEAN CSV IMPORT STARTED ===");
     
     if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
         $file = $_FILES['csvFile'];
-        $fileName = $file['name'];
-        $fileTmpName = $file['tmp_name'];
-        $fileSize = $file['size'];
-        $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
         
-        // Check if file is CSV
-        if ($fileExt != 'csv') {
+        // Simple validation
+        if (strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) !== 'csv') {
             header('Content-Type: application/json');
-            echo json_encode([
-                'success' => false,
-                'imported_count' => 0,
-                'message' => 'Please upload a CSV file only.',
-                'errors' => []
-            ]);
+            echo json_encode(['success' => false, 'message' => 'Please upload a CSV file only.']);
             exit;
-        } elseif ($fileSize > 5000000) { // 5MB limit
+        }
+        
+        if ($file['size'] > 5000000) {
             header('Content-Type: application/json');
-            echo json_encode([
-                'success' => false,
-                'imported_count' => 0,
-                'message' => 'File size too large. Please upload a file smaller than 5MB.',
-                'errors' => []
-            ]);
+            echo json_encode(['success' => false, 'message' => 'File size too large. Max 5MB.']);
             exit;
-        } else {
-            try {
-                // Simple database connection using config.php
-                require_once __DIR__ . '/../config.php';
-                $pdo = getDatabaseConnection();
-                
-                if (!$pdo) {
-                    throw new Exception("Database connection failed");
-                }
-                
-                $importedCount = 0;
-                $errors = [];
-                $row = 0;
-                
-                // Open CSV file
-                if (($handle = fopen($fileTmpName, "r")) !== FALSE) {
+        }
+        
+        try {
+            // Simple database connection
+            require_once __DIR__ . '/../config.php';
+            $pdo = getDatabaseConnection();
+            
+            if (!$pdo) {
+                throw new Exception("Database connection failed");
+            }
+            
+                    $importedCount = 0;
+                    $errors = [];
+            $row = 0;
                     
+            // Process CSV
+            if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
                     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                         $row++;
+                    if ($row == 1) continue; // Skip header
                         
-                        // Skip header row
-                        if ($row == 1) continue;
-                        
-                        // Check if we have enough columns (5 required - simplified structure)
+                    // Validate columns
                         if (count($data) < 5) {
-                            $errors[] = "Row $row: Insufficient data columns";
+                        $errors[] = "Row $row: Need 5 columns";
                             continue;
                         }
                         
-                        // Extract data from CSV (5 columns - simplified structure)
+                    // Extract data
                         $title = trim($data[0]);
                         $date_time = trim($data[1]);
                         $location = trim($data[2]);
                         $organizer = trim($data[3]);
                         $description = trim($data[4]);
                         
-                        // Auto-set type to "Event" since we removed the type field
-                        $type = 'Event';
-                        
-                        // Clean up the date string - remove any extra spaces or quotes
-                        $date_time = trim($date_time, " \t\n\r\0\x0B\"'");
-                        
                         // Validate required fields
-                        if (empty($title) || empty($date_time) || empty($location)) {
-                            $errors[] = "Row $row: Missing required fields (title, date, or location)";
+                    if (empty($title) || empty($date_time) || empty($location) || empty($organizer)) {
+                        $errors[] = "Row $row: Missing required fields";
                             continue;
                         }
                         
-                        // Validate date format - try multiple formats
-                        $dateObj = null;
-                        $dateFormats = [
-                            'Y-m-d H:i',      // 2024-01-15 14:00
-                            'Y-m-d H:i:s',    // 2024-01-15 14:00:00
-                            'Y/m/d H:i',      // 2024/01/15 14:00
-                            'Y/m/d H:i:s',    // 2024/01/15 14:00:00
-                            'd-m-Y H:i',      // 15-01-2024 14:00
-                            'd/m/Y H:i',      // 15/01/2024 14:00
-                            'm-d-Y H:i',      // 01-15-2024 14:00
-                            'm/d/Y H:i',      // 01/15/2024 14:00
-                        ];
-                        
-                        foreach ($dateFormats as $format) {
-                            $dateObj = DateTime::createFromFormat($format, $date_time);
-                            if ($dateObj) {
-                                break;
-                            }
-                        }
-                        
+                    // Simple date validation
+                    $dateObj = DateTime::createFromFormat('Y-m-d H:i:s', $date_time);
+                    if (!$dateObj) {
+                        $dateObj = DateTime::createFromFormat('Y-m-d H:i', $date_time);
+                    }
                         if (!$dateObj) {
-                            $errors[] = "Row $row: Invalid date format. Use YYYY-MM-DD HH:MM (e.g., 2024-01-15 14:00)";
+                        $errors[] = "Row $row: Invalid date format";
                             continue;
                         }
                         
-                        // Simple direct database insertion
+                    // Get next ID
+                    $stmt = $pdo->query("SELECT MAX(program_id) as max_id FROM programs");
+                    $result = $stmt->fetch();
+                    $nextId = ($result['max_id'] ?? 0) + 1;
+                    
+                    // Insert into database
+                    $stmt = $pdo->prepare("
+                        INSERT INTO programs (program_id, title, type, description, date_time, location, organizer) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ");
+                    
+                    $success = $stmt->execute([
+                        $nextId,
+                        $title,
+                        'Event',
+                        $description,
+                        $dateObj->format('Y-m-d H:i:s'),
+                        $location,
+                        $organizer
+                    ]);
+                    
+                    if ($success) {
+                            $importedCount++;
+                        error_log("✅ CSV: Row $row imported - ID: $nextId");
+                        
+                        // Send notification
                         try {
-                            // Get next program_id
-                            $stmt = $pdo->query("SELECT MAX(program_id) as max_id FROM programs");
-                            $result = $stmt->fetch();
-                            $nextId = ($result['max_id'] ?? 0) + 1;
+                            $notificationTitle = "🎯 Event: $title";
+                            $notificationBody = "New event: $title at $location on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
                             
-                            // Direct INSERT - no complex API calls
-                            $stmt = $pdo->prepare("
-                                INSERT INTO programs (program_id, title, type, description, date_time, location, organizer) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?)
+                            $tokenStmt = $pdo->prepare("
+                                SELECT fcm_token FROM community_users 
+                                WHERE fcm_token IS NOT NULL AND fcm_token != ''
+                                AND (municipality = ? OR barangay = ? OR ? = 'All Locations')
                             ");
+                            $tokenStmt->execute([$location, $location, $location]);
+                            $tokens = $tokenStmt->fetchAll();
                             
-                            $success = $stmt->execute([
-                                $nextId,
-                                $title,
-                                'Event',
-                                $description,
-                                $dateObj->format('Y-m-d H:i:s'),
-                                $location,
-                                $organizer
-                            ]);
+                            foreach ($tokens as $token) {
+                                sendEventFCMNotificationToToken($token['fcm_token'], $notificationTitle, $notificationBody);
+                            }
                             
-                            if ($success) {
-                                $importedCount++;
-                                error_log("✅ CSV: Row $row imported successfully - ID: $nextId");
-                            
-                                // Send simple notification
-                                try {
-                                    $notificationTitle = "🎯 Event: $title";
-                                    $notificationBody = "New event: $title at $location on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
-                                    
-                                    // Get FCM tokens for location
-                                    $tokenStmt = $pdo->prepare("
-                                        SELECT fcm_token, email 
-                                        FROM community_users 
-                                        WHERE fcm_token IS NOT NULL AND fcm_token != ''
-                                        AND (municipality = ? OR barangay = ? OR ? = 'All Locations')
-                                    ");
-                                    $tokenStmt->execute([$location, $location, $location]);
-                                    $tokens = $tokenStmt->fetchAll();
-                                    
-                                    $sentCount = 0;
-                                    foreach ($tokens as $token) {
-                                        $result = sendEventFCMNotificationToToken($token['fcm_token'], $notificationTitle, $notificationBody);
-                                        if ($result['success']) {
-                                            $sentCount++;
-                                        }
-                                    }
-                                    error_log("📱 CSV: Sent notifications to $sentCount users for event: $title");
-                                    
-                                } catch (Exception $e) {
-                                    error_log("⚠️ CSV: Notification failed for row $row: " . $e->getMessage());
+                        } catch (Exception $e) {
+                            error_log("⚠️ CSV: Notification failed: " . $e->getMessage());
                                 }
                                 
                             } else {
-                                $errors[] = "Row $row: Database insert failed";
-                            }
-                            
-                        } catch(PDOException $e) {
-                            $errors[] = "Row $row: Database error - " . $e->getMessage();
+                        $errors[] = "Row $row: Database insert failed";
                         }
                     }
                     fclose($handle);
-                }
-                
-                // Return JSON response
-                header('Content-Type: application/json');
-                if ($importedCount > 0) {
-                    echo json_encode([
-                        'success' => true,
-                        'imported_count' => $importedCount,
-                        'message' => "Successfully imported $importedCount events!",
-                        'errors' => $errors
-                    ]);
-                } else {
-                    echo json_encode([
-                        'success' => false,
-                        'imported_count' => 0,
-                        'message' => 'No events imported. ' . implode('; ', $errors),
-                        'errors' => $errors
-                    ]);
-                }
-                exit;
-                
-            } catch (Exception $e) {
+            }
+            
+            // Return response
+            header('Content-Type: application/json');
+            if ($importedCount > 0) {
+                echo json_encode([
+                    'success' => true,
+                    'imported_count' => $importedCount,
+                    'message' => "Successfully imported $importedCount events!",
+                    'errors' => $errors
+                ]);
+                                } else {
+                echo json_encode([
+                    'success' => false,
+                    'imported_count' => 0,
+                    'message' => 'No events imported. ' . implode('; ', $errors),
+                    'errors' => $errors
+                ]);
+            }
+            exit;
+            
+        } catch (Exception $e) {
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -1482,7 +1434,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             exit;
         }
         
-    } else {
+                        } else {
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
@@ -1491,7 +1443,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             'errors' => []
         ]);
         exit;
-    }
+        }
 }
 
 // Note: Deletion is now handled via AJAX calls to /api/delete_program.php and /api/delete_all_programs.php
