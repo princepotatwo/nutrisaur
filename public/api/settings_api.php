@@ -36,10 +36,10 @@ try {
             // Get all user preferences using Universal DatabaseAPI
             $result = $db->select(
                 'user_preferences',
-                'id, user_email, age, gender, barangay, municipality, province, weight_kg, height_cm, bmi, risk_score, malnutrition_risk, screening_date, created_at, updated_at, name, birthday, income, muac, screening_answers, allergies, diet_prefs, avoid_foods, swelling, weight_loss, feeding_behavior, physical_signs, dietary_diversity, clinical_risk_factors, whz_score, income_level',
+                'id, user_email, age, gender, barangay, municipality, province, weight_kg, height_cm, bmi, risk_score, malnutrition_risk, screening_date, created_at, name, birthday, income, muac, screening_answers, allergies, diet_prefs, avoid_foods, swelling, weight_loss, feeding_behavior, physical_signs, dietary_diversity, clinical_risk_factors, whz_score, income_level',
                 '',
                 [],
-                'updated_at DESC',
+                'created_at DESC',
                 '100'
             );
             
@@ -61,8 +61,7 @@ try {
                         'municipality' => $user['municipality'] ?? 'N/A',
                         'risk_score' => $user['risk_score'] ?? 'N/A',
                         'malnutrition_risk' => $user['malnutrition_risk'] ?? 'N/A',
-                        'created_at' => $user['created_at'] ?? 'N/A',
-                        'updated_at' => $user['updated_at'] ?? 'N/A'
+                        'created_at' => $user['created_at'] ?? 'N/A'
                     ];
                 }
                 
@@ -97,8 +96,7 @@ try {
                 'height' => $_POST['height'] ?? null,
                 'weight' => $_POST['weight'] ?? null,
                 'risk_score' => $_POST['risk_score'] ?? 0,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'created_at' => date('Y-m-d H:i:s')
             ];
             
             // Check if user already exists
@@ -140,8 +138,7 @@ try {
                 'gender' => $_POST['gender'] ?? '',
                 'height' => $_POST['height'] ?? null,
                 'weight' => $_POST['weight'] ?? null,
-                'risk_score' => $_POST['risk_score'] ?? 0,
-                'updated_at' => date('Y-m-d H:i:s')
+                'risk_score' => $_POST['risk_score'] ?? 0
             ];
             
             $result = $db->update('user_preferences', $userData, 'user_email = ?', [$_POST['user_email']]);

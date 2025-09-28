@@ -1,295 +1,297 @@
- Gemini API response code: 200
-2025-09-27 21:14:47.829 11608-12032 GeminiService           com.example.nutrisaur11              D  Gemini API response received successfully
-2025-09-27 21:14:47.830 11608-12032 Compatibil...geReporter com.example.nutrisaur11              D  Compat change id reported: 247079863; UID 10132; state: ENABLED
-2025-09-27 21:14:47.830 11608-12032 GeminiService           com.example.nutrisaur11              D  Extracted text from Gemini response: {"malnutrition_types": ["HEALTHY"], "severity": "NONE", "confidence": 0.7, "assessment": "Based on the image provided, there are no obvious visual indicators of malnutrition. The individual appears to have a healthy body composition for this image.", "recommendations": ["Maintain a balanced diet", "Regular physical activity"], "signs": [], "urgent_care": false}
-2025-09-27 21:14:47.830 11608-12032 GeminiService           com.example.nutrisaur11              D  Extracted text from Gemini: {"malnutrition_types": ["HEALTHY"], "severity": "NONE", "confidence": 0.7, "assessment": "Based on the image provided, there are no obvious visual indicators of malnutrition. The individual appears to have a healthy body composition for this image.", "recommendations": ["Maintain a balanced diet", "Regular physical activity"], "signs": [], "urgent_care": false}
-2025-09-27 21:14:47.830 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  AI PRIMARY analysis completed successfully on attempt 1
-2025-09-27 21:14:47.831 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  Extracted malnutrition_types: [HEALTHY] -> detected: false
-2025-09-27 21:14:47.832 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  AI Parsing Results: verification=HEALTHY_DETECTED, severity=NONE, confidence=0.7
-2025-09-27 21:14:47.834 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:47.843 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  Found recommendations array: "Maintain a balanced diet", "Regular physical activity"
-2025-09-27 21:14:47.844 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  Added simple recommendation: Maintain a balanced diet
-2025-09-27 21:14:47.844 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  Added simple recommendation: Regular physical activity
-2025-09-27 21:14:47.844 11608-11608 ImageValidationActivity com.example.nutrisaur11              D  Validation completed: isVerified=true
-2025-09-27 21:14:47.845 11608-11608 ImageValidationActivity com.example.nutrisaur11              D  Image validation passed - navigating directly to results
-2025-09-27 21:14:47.847 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:47.864 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:47.878   852-963   BufferQueueDebug        surfaceflinger                       E  [ActivityRecord{1f924ac u0 com.example.nutrisaur11/.AnalysisResultsActivity t824}#5518](this:0xb400007d13fb4a30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'ActivityRecord{1f924ac u0 com.example.nutrisaur11/.AnalysisResultsActivity t824}#5518'
-2025-09-27 21:14:47.881 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:47.898 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:47.898 11608-11703 RenderInspector         com.example.nutrisaur11              W  DequeueBuffer time out on com.example.nutrisaur11/com.example.nutrisaur11.ImageValidationActivity, count=2, avg=20 ms, max=20 ms.
-2025-09-27 21:14:47.916 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D  meow new tls: 0xb40000791597d8c0
-2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D  applied 1 plugins for [com.example.nutrisaur11]:
-2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D    plugin 1: [libMEOW_gift.so]: 0xb400007976682380
-2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D  rebuild call chain: 0xb400007915990980
-2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D  meow delete tls: 0xb40000791597d8c0
-2025-09-27 21:14:47.941 11608-11608 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
-2025-09-27 21:14:47.948 11608-11608 ScrollerOp...ionManager com.example.nutrisaur11              D  registerConfigChangedListener
-2025-09-27 21:14:47.974 11608-11608 AnalysisResults         com.example.nutrisaur11              D  AI result passed directly from FavoritesActivity
-2025-09-27 21:14:47.983 11608-11608 skia                    com.example.nutrisaur11              D  SkJpegCodec::onGetPixels + (2448, 3264)
-2025-09-27 21:14:47.989 11608-11608 skia                    com.example.nutrisaur11              D  stream getLength() not supported, use temp buffer for loading stream, buffer addr 0x78ceeec000 length 1734155
-2025-09-27 21:14:47.989 11608-11608 skia                    com.example.nutrisaur11              D  LoadInputStreamToMem va 0x78ceeec000  size 1736448
-2025-09-27 21:14:47.986 11608-11608 ple.nutrisaur11         com.example.nutrisaur11              W  type=1400 audit(0.0:19088): avc:  denied  { search } for  name="ppm" dev="proc" ino=4026531923 scontext=u:r:untrusted_app:s0:c132,c256,c512,c768 tcontext=u:object_r:proc_ppm:s0 tclass=dir permissive=0 app=com.example.nutrisaur11
-2025-09-27 21:14:47.990 11608-11608 libjpeg-alpha           com.example.nutrisaur11              D  Huffman Builder run in subthread
-2025-09-27 21:14:47.991 11608-11608 libjpeg-alpha           com.example.nutrisaur11              D  Tile Decoder (#thread:4, size:768 512 512 656x816, alignment:256x16)
-2025-09-27 21:14:47.986 11608-11608 ple.nutrisaur11         com.example.nutrisaur11              W  type=1400 audit(0.0:19089): avc:  denied  { search } for  name="ppm" dev="proc" ino=4026531923 scontext=u:r:untrusted_app:s0:c132,c256,c512,c768 tcontext=u:object_r:proc_ppm:s0 tclass=dir permissive=0 app=com.example.nutrisaur11
-2025-09-27 21:14:48.029  2200-2546  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: mainTaskId=824   userId=0   windowMode=1   baseIntent=Intent { act=android.intent.action.MAIN flag=268435456 cmp=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.MainActivity} }
-2025-09-27 21:14:48.032 11608-11608 skia                    com.example.nutrisaur11              D  SkJpegCodec::onGetPixels -
-2025-09-27 21:14:48.033 11608-11608 skia                    com.example.nutrisaur11              D  onGetGainmapInfo: false.
-2025-09-27 21:14:48.034 11608-11608 AnalysisResults         com.example.nutrisaur11              D  Loaded uploaded image from URI: content://com.miui.gallery.open/raw/%2Fstorage%2Femulated%2F0%2FDCIM%2FCamera%2FIMG_20250913_073552.jpg
-2025-09-27 21:14:48.051 11608-11608 AnalysisResults         com.example.nutrisaur11              D  Loaded, rotated and scaled captured image from temporary storage
-2025-09-27 21:14:48.070 11608-11608 AnalysisResults         com.example.nutrisaur11              D  AI Results displayed - Status: HEALTHY, Severity: NONE
-2025-09-27 21:14:48.079 11608-11703 libc                    com.example.nutrisaur11              W  Access denied finding property "ro.vendor.display.iris_x7.support"
-2025-09-27 21:14:48.079 11608-11608 VRI[Analys...sActivity] com.example.nutrisaur11              D  hardware acceleration = true, forceHwAccelerated = false
-2025-09-27 21:14:48.082   852-963   BufferQueueDebug        surfaceflinger                       E  [1a95d44 com.example.nutrisaur11/com.example.nutrisaur11.AnalysisResultsActivity#5519](this:0xb400007d13fdea30,id:-1,api:0,p:-1,c:-1) id info cannot be read from '1a95d44 com.example.nutrisaur11/com.example.nutrisaur11.AnalysisResultsActivity#5519'
-2025-09-27 21:14:48.104   852-1716  BufferQueueDebug        surfaceflinger                       E  [com.example.nutrisaur11/com.example.nutrisaur11.AnalysisResultsActivity#5520](this:0xb400007d13c6ca30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'com.example.nutrisaur11/com.example.nutrisaur11.AnalysisResultsActivity#5520'
-2025-09-27 21:14:48.119 11608-11608 BufferQueueConsumer     com.example.nutrisaur11              D  [](id:2d5800000007,api:0,p:-1,c:11608) connect: controlledByApp=false
-2025-09-27 21:14:48.121 11608-11703 OpenGLRenderer          com.example.nutrisaur11              E  Unable to match the desired swap behavior.
-2025-09-27 21:14:48.124 11608-11608 VRI[Analys...sActivity] com.example.nutrisaur11              D  vri.reportNextDraw android.view.ViewRootImpl.performTraversals:4402 android.view.ViewRootImpl.doTraversal:3018 android.view.ViewRootImpl$TraversalRunnable.run:10526 android.view.Choreographer$CallbackRecord.run:1682 android.view.Choreographer$CallbackRecord.run:1691 
-2025-09-27 21:14:48.124 11608-11608 VRI[Analys...sActivity] com.example.nutrisaur11              D  vri.Setup new sync=wmsSync-VRI[AnalysisResultsActivity]#14
-2025-09-27 21:14:48.131 11608-11703 OpenGLRenderer          com.example.nutrisaur11              D  makeCurrent grContext:0xb400007976900240 reset mTextureAvailable
-2025-09-27 21:14:48.139 11608-11703 BLASTBufferQueue        com.example.nutrisaur11              D  [VRI[AnalysisResultsActivity]#5](f:0,a:1) acquireNextBufferLocked size=720x1600 mFrameNumber=1 applyTransaction=true mTimestamp=15613197591083(auto) mPendingTransactions.size=0 graphicBufferId=49855980372004 transform=0
-2025-09-27 21:14:48.140 11608-11608 VRI[Analys...sActivity] com.example.nutrisaur11              D  vri.reportDrawFinished
-2025-09-27 21:14:48.145   852-963   BufferQueueDebug        surfaceflinger                       E  [Transition Root: ActivityRecord{1f924ac u0 com.example.nutrisaur11/.AnalysisResultsActivity t824}#5523](this:0xb400007d0ba30a30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'Transition Root: ActivityRecord{1f924ac u0 com.example.nutrisaur11/.AnalysisResultsActivity t824}#5523'
-2025-09-27 21:14:48.151   852-963   BufferQueueDebug        surfaceflinger                       E  [b9025f ActivityRecordInputSink com.example.nutrisaur11/.AnalysisResultsActivity#5524](this:0xb400007d0bab1a30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'b9025f ActivityRecordInputSink com.example.nutrisaur11/.AnalysisResultsActivity#5524'
-2025-09-27 21:14:48.152   852-1643  BufferQueueDebug        surfaceflinger                       E  [DefaultTransition Dim Layer for - Surface(name=ActivityRecord{206a1a7 u0 com.example.nutrisaur11/.ImageValidationActivity t824}#5504)/@0x150b10e#5525](this:0xb400007d13681a30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'DefaultTransition Dim Layer for - Surface(name=ActivityRecord{206a1a7 u0 com.example.nutrisaur11/.ImageValidationActivity t824}#5504)/@0x150b10e#5525'
-2025-09-27 21:14:48.165 11608-11608 HandWritingStubImpl     com.example.nutrisaur11              I  refreshLastKeyboardType: 1
-2025-09-27 21:14:48.165 11608-11608 HandWritingStubImpl     com.example.nutrisaur11              I  getCurrentKeyboardType: 1
-2025-09-27 21:14:48.196 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:48.207 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:48.214 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:48.224 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:48.235 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:48.246 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:48.257 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:48.268 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:48.702 11608-11608 BLASTBufferQueue        com.example.nutrisaur11              D  [VRI[ImageValidationActivity]#4](f:0,a:2) destructor()
-2025-09-27 21:14:48.703 11608-11608 BufferQueueConsumer     com.example.nutrisaur11              D  [VRI[ImageValidationActivity]#4(BLAST Consumer)4](id:2d5800000006,api:0,p:-1,c:11608) disconnect
-2025-09-27 21:14:48.711 11608-11608 WindowOnBackDispatcher  com.example.nutrisaur11              W  sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda23@3cf4ae1
-2025-09-27 21:14:48.714 11608-11608 View                    com.example.nutrisaur11              D  [Warning] assignParent to null: this = DecorView@98e828[ImageValidationActivity]
-2025-09-27 21:14:49.663 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.679 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.699 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.714 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.728 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.745 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.762 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.778 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.795 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.812 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.829 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.853 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.861 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.879 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.895 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.911 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.928 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.945 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.961 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.979 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:49.995 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.012 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.028 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.045 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.062 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.095 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.112 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.128 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.145 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.162 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.178 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.195 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.212 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.228 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.245 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.261 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.378 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.396 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.412 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.429 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.445 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.462 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.478 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.498 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.512 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.528 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.545 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.564 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.581 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.597 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.614 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.630 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.647 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.664 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.680 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.697 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.713 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.730 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.747 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.764 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.779 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.797 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.812 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.831 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.846 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.863 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.879 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.896 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.914 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.930 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.946 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.953 11608-11608 MiInputConsumer         com.example.nutrisaur11              I  optimized resample latency: 605010 ns
-2025-09-27 21:14:50.963 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.978 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:50.995 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.012 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.030 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.045 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.061 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.079 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.096 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.113 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.128 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.146 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.163 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.179 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.196 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.213 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.230 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.247 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.264 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.280 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.297 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.314 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.330 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.346 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.363 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.380 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.397 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.414 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.431 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.448 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.464 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.481 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.499 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.513 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.530 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.546 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.563 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.580 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.596 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.612 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.630 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.646 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.665 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.682 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.699 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.716 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.731 11608-11608 SplineOverScroller      com.example.nutrisaur11              D  mFlingDuration: 1210,mFlingDistance: 290.6976318359375,mVelocity: 675
-2025-09-27 21:14:51.732 11608-11608 ScrollIdentify          com.example.nutrisaur11              I  on fling
-2025-09-27 21:14:51.732 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.745 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.762 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.779 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.796 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.812 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.828 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.846 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.863 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.879 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.886 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.903 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.911 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.931 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.946 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.962 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.979 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:51.996 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.017 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.035 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.052 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.069 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.084 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.103 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.120 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.135 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.152 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.168 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.185 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.202 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.218 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.233 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.253 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.269 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.286 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.303 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.320 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.336 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.351 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.368 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.386 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.401 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.418 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.436 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.453 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.467 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.482 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.501 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.519 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.536 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.550 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.579 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.585 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.600 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.620 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.636 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.650 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.670 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.686 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.702 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.717 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.734 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.751 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.768 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.786 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.799 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.817 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.836 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.853 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.869 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.883 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.902 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.918 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.933 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.951 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:52.966 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.371 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.388 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.404 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.422 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.437 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.454 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.470 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.487 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.504 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.520 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.536 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.553 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.570 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.587 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.602 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:14:53.615 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
-2025-09-27 21:15:51.568 11608-11703 GED                     com.example.nutrisaur11              I  ged_boost_gpu_freq, level 100, eOrigin 2, final_idx 31, oppidx_max 31, oppidx_min 0
-2025-09-27 21:15:51.590 11608-11608 BLASTBufferQueue        com.example.nutrisaur11              D  [VRI[AnalysisResultsActivity]#5](f:0,a:2) destructor()
-2025-09-27 21:15:51.592 11608-11608 BufferQueueConsumer     com.example.nutrisaur11              D  [VRI[AnalysisResultsActivity]#5(BLAST Consumer)5](id:2d5800000007,api:0,p:-1,c:11608) disconnect
-2025-09-27 21:15:51.595 11608-11703 GED                     com.example.nutrisaur11              I  ged_boost_gpu_freq, level 100, eOrigin 2, final_idx 31, oppidx_max 31, oppidx_min 0
-2025-09-27 21:15:51.597 11608-11703 GED                     com.example.nutrisaur11              I  ged_boost_gpu_freq, level 100, eOrigin 2, final_idx 31, oppidx_max 31, oppidx_min 0
-2025-09-27 21:15:51.663  2200-2546  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: mainTaskId=824   userId=0   windowMode=1   baseIntent=Intent { act=android.intent.action.MAIN flag=268435456 cmp=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.MainActivity} }
-2025-09-27 21:15:51.669 11608-11608 WindowOnBackDispatcher  com.example.nutrisaur11              W  sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda23@bc884a4
-2025-09-27 21:15:51.672 11608-11703 GED                     com.example.nutrisaur11              I  ged_boost_gpu_freq, level 100, eOrigin 2, final_idx 31, oppidx_max 31, oppidx_min 0
-2025-09-27 21:15:51.672 11608-11608 View                    com.example.nutrisaur11              D  [Warning] assignParent to null: this = DecorView@63f88e9[AnalysisResultsActivity]
-2025-09-27 21:15:51.683  2200-2546  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: mainTaskId=824   userId=0   windowMode=1   baseIntent=Intent { act=android.intent.action.MAIN flag=268435456 cmp=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.MainActivity} }
-2025-09-27 21:15:53.638 11608-12088 FA                      com.example.nutrisaur11              I  Application backgrounded at: timestamp_millis: 1758978951634
-2025-09-27 21:16:35.635 11608-11612 ple.nutrisaur11         com.example.nutrisaur11              I  System.exit called, status: 1
-2025-09-27 21:16:35.635 11608-11612 AndroidRuntime          com.example.nutrisaur11              I  VM exiting with result code 1, cleanup skipped.
+2025-09-28 15:47:14.944  1522-1554  HeapUsage Monitor       system_server                        D  HeapAllocSize : 73MB; monitorSize : 500MB
+2025-09-28 15:47:15.409 29610-29690 fb4a.Multi...torLacrima com.facebook.katana                  W  Pausing error state checks
+2025-09-28 15:47:15.866 29610-30058 fb4a.msys               com.facebook.katana                  E  E[C mem.context]_AppStateChangeLogging(7887)=>[Critical] app_state/prev/1/new/0/process/0
+2025-09-28 15:47:15.871 29610-30058 fb4a.msys               com.facebook.katana                  E  E[C mem.context]_ScheduleBackgroundDisconnectionTaskIfNeededOnExecutionContext(3627)=>[INFO] background/disconnect_schedule/duration/120
+2025-09-28 15:47:15.895  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x4, 8113418, channel '127099 NavigationBar0 (server)'
+2025-09-28 15:47:15.895  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x4, 8113418, channel '891d6fa control_center (server)'
+2025-09-28 15:47:15.895  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x0, 8113418, channel '820e30f com.example.nutrisaur11/com.example.nutrisaur11.MainActivity (server)'
+2025-09-28 15:47:15.899 31535-31535 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759045635899
+2025-09-28 15:47:15.931  1182-3267  AudioFlinger            audioserver                          I  setGameParameters keyvalue: xlog.volume.music.speaker=60
+2025-09-28 15:47:15.932  1007-1080  audio_hw_primary        android.hardware.audio.service       D  adev_set_parameters: enter: xlog.volume.music.speaker=60
+2025-09-28 15:47:15.932  1007-1080  audio_hw_hfp            android.hardware.audio.service       D  hfp_set_parameters: enter
+2025-09-28 15:47:15.932  1007-1080  audio_hw_extn           android.hardware.audio.service       D  audio_extn_fm_set_parameters: Enter
+2025-09-28 15:47:15.951  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x1, 8113474, channel '820e30f com.example.nutrisaur11/com.example.nutrisaur11.MainActivity (server)'
+2025-09-28 15:47:15.954  1522-4738  ActivityTaskManager     system_server                        I  START u0 {cmp=com.example.nutrisaur11/.AccountActivity} from uid 10257
+2025-09-28 15:47:15.954  1522-4738  MiuiMultiWindowAdapter  system_server                        D  getFreeformBlackList: Origin Logic
+2025-09-28 15:47:15.954  1522-4738  MiuiMultiWindowAdapter  system_server                        D  MiuiMultiWindowAdapter::getFreeformBlackList::sSmallWindowBlackList = [com.miui.securitycenter, com.miui.weather2, com.miui.miservice, com.android.calendar, com.xiaomi.calendar, com.android.contacts, com.miui.mishare.connectivity, com.android.settings, com.android.printspooler, com.miui.backup, com.miui.huanji, com.miui.calculator, com.android.deskclock, com.android.thememanager, com.mfashiongallery.emag, com.miui.virtualsim, com.miui.smarttravel, com.mi.health, com.android.camera, com.lbe.security.miui, com.miui.cleanmaster, com.miui.newhome, com.miui.voiceassist, com.android.phone, com.miui.yellowpage, com.android.updater, com.miui.tsmclient, com.miui.securitycore, com.xiaomi.account, com.xiaomi.shop, com.mipay.wallet, com.xiaomi.youpin, com.xiaomi.hm.health, com.miui.bugreport, com.xiaomi.mibrain.speech, com.xiaomi.mimoji, com.xiaomi.scanner, com.duokan.phone.remotecontroller, com.miui.hybrid, com.android.incallui, com.miui.video, com.miui.videoplayer, com.miui.fm, com.miui.packageinstaller, com.mi.android.globallauncher, com.mi.android.globallauncher-poco, com.google.android.dialer, com.google.android.apps.magazines, com.miui.compass, com.miui.greenguard, com.kiteguard, com.google.android.apps.prodcasts, com.google.ar.lens, com.xiangkan.android, com.android.bankabc, com.sohu.inputmethod.sogou, com.tencent.mtt, com.shyz.toutiao, com.netease.mc.mi, com.outfit7.talkingtomgoldrun.mi, com.doudz.mi, com.wepie.snake.new.mi, cn.jj, com.standddz002.mi, com.miHoYo.bh3.mi, com.qqgame.hlddz, com.happyelements.AndroidAnimal, com.minitech.miniworld.TMobile.mi, com.mfp.jelly.xiaomi, com.lilithgames.afk.mi, com.tencent.peng, com.teenpatti.hd.gold, blockpuzzle.jewelgames.jewelslegend, com.playgendary.tanks, com.chillingo.robberybobfree.android.row, com.episodeinteractive.android.catalog, com.playrix.township, com.ansangha.drdriving, com.google.android.youtube, com.gbits.atm.mi, com.tencent.tetris, com.sukhavati.gotoplaying.bubble.BubbleShooter.mint, com.block.puzzle.game.hippo.mi, com.youzu.bs.mi, com.miHoYo.Yuanshen, com.baidu.BaiduMap, com.google.android.googlequicksearchbox, com.appsomniacs.da2, com.android.stk, com.feiyu.carrot3.mi, com.popcap.pvz2cthdxm, com.mxtech.videoplayer.ad, com.miui.securitycenter, cn.cisc, com.kiloo.subwaysurf, com.cncyj.mostbrain, pdf.tap.scanner, com.miHoYo.ys.mi, com.netease.sky.mi, com.miHoYo.ys.bilibili, com.og.ttddz.mi, com.ximalaya.ting.lite, com.google.android.apps.podcasts, com.google.android.apps.googleassistant, com.netease.onmyoji.mi, com.netease.onmyoji.bili, com.netease.mrzh.mi, com.netease.mrzh.bili, com.tencent.tmgp.yys.zqb, com.google.android.gm, com.tencent.tmgp.pubgmhd]
+2025-09-28 15:47:15.956  1522-4738  MiuiFreeFo...gerService system_server                        D  onStartActivityInner as = Task{2494e29 #9647 type=standard A=10257:com.example.nutrisaur11 U=0 visible=true mode=fullscreen translucent=false sz=1} op = null
+2025-09-28 15:47:15.956  1522-4738  MiuiFreeFo...gerService system_server                        D  onStartActivityInner as = Task{2494e29 #9647 type=standard A=10257:com.example.nutrisaur11 U=0 visible=true mode=fullscreen translucent=false sz=1} op = null
+2025-09-28 15:47:15.959  1522-4738  CompatibilityInfo       system_server                        D  mCompatibilityFlags - 0
+2025-09-28 15:47:15.959  1522-4738  CompatibilityInfo       system_server                        D  applicationDensity - 440
+2025-09-28 15:47:15.959  1522-4738  CompatibilityInfo       system_server                        D  applicationScale - 1.0
+2025-09-28 15:47:15.961  1522-4738  ActivityTrigger         system_server                        D  ActivityTrigger activityPauseTrigger 
+2025-09-28 15:47:15.967  1522-4738  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:15.971 31535-31535 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759045635971
+2025-09-28 15:47:15.972 31535-31535 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-09-28 15:47:15.976  1522-3265  ActivityTaskManager     system_server                        I  The Process com.example.nutrisaur11 Already Exists in BG. So sending its PID: 31535
+2025-09-28 15:47:15.977  1522-3265  ActivityTaskManager     system_server                        W  Tried to set launchTime (0) < mLastActivityLaunchTime (8108410)
+2025-09-28 15:47:15.979  1522-3265  CompatibilityInfo       system_server                        D  mCompatibilityFlags - 0
+2025-09-28 15:47:15.979  1522-3265  CompatibilityInfo       system_server                        D  applicationDensity - 440
+2025-09-28 15:47:15.979  1522-3265  CompatibilityInfo       system_server                        D  applicationScale - 1.0
+2025-09-28 15:47:15.980  1522-3265  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+2025-09-28 15:47:15.985  1522-3265  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+2025-09-28 15:47:15.991 29610-30851 fb4a.X.9QT              com.facebook.katana                  W  Failed to get checksum of current QT language pack on device
+                                                                                                    X.9QW: No QT files found for build 792873347 and locale en_GB and user 100007757984466
+                                                                                                    	at X.9QU.A01(Unknown Source:251)
+                                                                                                    	at X.9QT.A00(Unknown Source:102)
+                                                                                                    	at X.7V6.A05(Unknown Source:3214)
+                                                                                                    	at X.7V6.A0A(Unknown Source:4)
+                                                                                                    	at X.7V6.A09(Unknown Source:4)
+                                                                                                    	at X.7V6.A0B(Unknown Source:4)
+                                                                                                    	at X.7V6.A0E(Unknown Source:5)
+                                                                                                    	at X.2HK.A01(Unknown Source:3254)
+                                                                                                    	at X.2HK.run(Unknown Source:2409)
+                                                                                                    	at X.2IA.call(Unknown Source:236)
+                                                                                                    	at java.util.concurrent.FutureTask.run(FutureTask.java:317)
+                                                                                                    	at X.3Q2.A00(Unknown Source:19)
+                                                                                                    	at X.1Ea.call(Unknown Source:48)
+                                                                                                    	at java.util.concurrent.FutureTask.run(FutureTask.java:317)
+                                                                                                    	at X.1CU.run(Unknown Source:2)
+                                                                                                    	at X.1BE.run(Unknown Source:2)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+                                                                                                    	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+                                                                                                    	at X.1Bo.run(Unknown Source:3)
+                                                                                                    	at X.1Bs.run(Unknown Source:17)
+                                                                                                    	at java.lang.Thread.run(Thread.java:1119)
+2025-09-28 15:47:15.994 31535-31535 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759045635994
+2025-09-28 15:47:15.994 31535-31535 SessionManager          com.example.nutrisaur11              D  Using cached valid session
+2025-09-28 15:47:15.994 31535-31535 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-09-28 15:47:15.994 31535-31535 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-09-28 15:47:15.996 31535-31535 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-09-28 15:47:16.053 31535-31535 AccountActivity         com.example.nutrisaur11              D  Fetching user data from community_users table...
+2025-09-28 15:47:16.053 31535-31628 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE ===
+2025-09-28 15:47:16.054 31535-31629 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-09-28 15:47:16.054 31535-31629 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
+2025-09-28 15:47:16.057 31535-31535 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759045636057
+2025-09-28 15:47:16.057 31535-31535 SessionManager          com.example.nutrisaur11              D  Using cached valid session
+2025-09-28 15:47:16.063  1522-3265  MiuiActivi...rServiceEx system_server                        V  dispatchActivityLifeState state = onResume
+2025-09-28 15:47:16.063  1522-3265  MiuiActivi...rServiceEx system_server                        V  dispatchActivityLifeState r = ActivityRecord{e5ef4c4 u0 com.example.nutrisaur11/.AccountActivity t9647}
+2025-09-28 15:47:16.066  3056-3056  RecentsImpl             com.miui.home                        D  mActivityStateObserver com.example.nutrisaur11.AccountActivity
+2025-09-28 15:47:16.067  3056-3056  RecentsImpl             com.miui.home                        W  onResumed className=com.example.nutrisaur11.AccountActivity   mIsInAnotherPro=false   isKeyguardLocked=false
+2025-09-28 15:47:16.083  3056-4762  RecentsModel            com.miui.home                        D  onTaskStackChangedBackground
+2025-09-28 15:47:16.083  3056-3388  RecentsModel            com.miui.home                        D  onTaskStackChangedBackground    MSG_TASK_STACK_CHANGE
+2025-09-28 15:47:16.083  3056-3388  RecentsModel            com.miui.home                        D  preloadRecents
+2025-09-28 15:47:16.083  3056-3388  RecentsModel            com.miui.home                        W  getRunningTask
+2025-09-28 15:47:16.083  4257-6520  SCTaskStackListener     com.miui.securitycenter.remote       I  onTaskStackChanged! inSplit = false
+2025-09-28 15:47:16.084  3056-3388  RecentsModel            com.miui.home                        W  getRunningTask   taskInfo=TaskInfo{userId=0 taskId=9647 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity } baseActivity=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.AccountActivity} topActivity=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.AccountActivity} origActivity=null realActivity=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.MainActivity} numActivities=1 lastActiveTime=8113608 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true token=WCT{android.window.IWindowContainerToken$Stub$Proxy@bec9e5c} topActivityType=1 pictureInPictureParams=PictureInPictureParams( aspectRatio=null sourceRectHint=null hasSetActions=false isAutoPipEnabled=false isSeamlessResizeEnabled=true) displayCutoutSafeInsets=Rect(0, 93 - 0, 0) topActivityInfo=ActivityInfo{327a565 com.example.nutrisaur11.AccountActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=true topActivityInSizeCompat=false locusId= null windowMode=1}
+2025-09-28 15:47:16.084  3056-3388  RecentsModel            com.miui.home                        W  getTaskInfoIgnoreHomeAndFreeform   taskInfo=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.AccountActivity}
+2025-09-28 15:47:16.085  4257-25110 SCTaskStackListener     com.miui.securitycenter.remote       I  onTaskStackChanged! inSplit = false
+2025-09-28 15:47:16.085  3056-3388  ActivityManagerWrapper  com.miui.home                        E  get all recent tasks force including 9647
+2025-09-28 15:47:16.087  3056-3388  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: size=5
+2025-09-28 15:47:16.088  3056-3388  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9647   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-09-28 15:47:16.088  3056-3388  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9644   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.facebook.katana/.LoginActivity }
+2025-09-28 15:47:16.088  3056-3388  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9640   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=org.telegram.messenger/.DefaultIcon }
+2025-09-28 15:47:16.088  3056-3388  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9633   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=com.android.chrome/com.google.android.apps.chrome.Main }
+2025-09-28 15:47:16.088  3056-3388  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9609   userId=0   baseIntent=Intent { act=android.settings.APPLICATION_DETAILS_SETTINGS dat=package:com.example.nutrisaur11 flg=0x10008000 cmp=com.android.settings/.applications.InstalledAppDetails }
+2025-09-28 15:47:16.094  1522-3474  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,2400))
+2025-09-28 15:47:16.129 31535-31535 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-09-28 15:47:16.135 31535-31552 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223363923266ms; Flags=1, FrameTimelineVsyncId=114590, IntendedVsync=8113588603105, Vsync=8113588603105, InputEventId=0, HandleInputStart=8113589225132, AnimationStart=8113589226539, PerformTraversalsStart=8113589227580, DrawStart=8113642412945, FrameDeadline=8113605269771, FrameInterval=8113589216382, FrameStartTime=16666666, SyncQueued=8113647189507, SyncStart=8113647289247, IssueDrawCommandsStart=8113647423310, SwapBuffers=8113651452007, FrameCompleted=9223372036854775807, DequeueBufferDuration=12656, QueueBufferDuration=1029896, GpuCompleted=9223372036854775807, SwapBuffersCompleted=8113652804820, DisplayPresentTime=0, 
+2025-09-28 15:47:16.142  1522-1550  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.143  1522-1546  ActivityTaskManager     system_server                        I  Displayed com.example.nutrisaur11/.AccountActivity: +186ms
+2025-09-28 15:47:16.145  1522-1550  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.151  1522-1550  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.155  1522-1550  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.157  1522-1550  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.167  1522-1550  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.173  1522-3474  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.177 31535-31535 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-09-28 15:47:16.184  1522-3265  InputManager-JNI        system_server                        W  Input channel object '820e30f com.example.nutrisaur11/com.example.nutrisaur11.MainActivity (client)' was disposed without first being removed with the input manager!
+2025-09-28 15:47:16.190  1522-3265  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.192 31535-31535 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-09-28 15:47:16.192  1522-1550  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.198  9601-9601  GoogleInpu...hodService com...gle.android.inputmethod.latin  I  GoogleInputMethodService.onFinishInput():2057 
+2025-09-28 15:47:16.199  9601-9601  Module                  com...gle.android.inputmethod.latin  I  DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+2025-09-28 15:47:16.199  9601-9601  GoogleInpu...hodService com...gle.android.inputmethod.latin  I  GoogleInputMethodService.onStartInput():1318 onStartInput(EditorInfo{EditorInfo{packageName=com.example.nutrisaur11, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=-1, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+2025-09-28 15:47:16.200  9601-9601  Module                  com...gle.android.inputmethod.latin  I  DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+2025-09-28 15:47:16.206  1522-1550  MiuiFreeFo...ntListener system_server                        W  setMiuiFreeFormTouchExcludeRegion mTouchExcludeRegion = SkRegion((0,0,1080,93)(0,2270,1080,2400))
+2025-09-28 15:47:16.231  5783-5925  CarrierServices         com.google.android.ims               I  [57] fau.handleMessage:39 RcsEngineImpl[DUAL_REG]:[b180b5b6-bceb]>Handler: handleMessage processing message:[NOTIFY_UPTIME_IGNORE_STATE_CHANGED] with [non-null]:RcsEngineImpl reference
+2025-09-28 15:47:16.232  5783-5933  CarrierServices         com.google.android.ims               I  [58] eqy.c:51 Connected state: [1], networkType: [WIFI]
+2025-09-28 15:47:16.242  1522-2591  ConnectivityService     system_server                        D  NetReassign [no changes] [c 0] [a 0] [i 3]
+2025-09-28 15:47:16.396 31535-31629 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-09-28 15:47:16.396 31535-31629 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-09-28 15:47:16.397 31535-31629 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"MARIVELES","barangay":"Malaya","sex":"Male","birthday":"2000-09-28","age":"","is_pregnant":"N\/A","weight":"60","height":"175","muac_cm":"","bmi":"","bmi_category":"","muac_category":"","screening_date":"2025-09-28 06:01:42","screened_by":"","notes":"","status":"","created_at":"","updated_at":""}}
+2025-09-28 15:47:16.397 31535-31629 CommunityUserManager    com.example.nutrisaur11              D  Retrieved user data from database:
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    birthday: 2000-09-28
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    is_pregnant: N/A
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    muac_category: 
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    notes: 
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    weight_kg: 60
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    nutritional_risk: 
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    height_cm: 175
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    sex: Male
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    municipality: MARIVELES
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    muac_cm: 
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    screening_date: 2025-09-28 06:01:42
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    bmi_category: 
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    name: Pingol , Kevin C.
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    barangay: Malaya
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    email: kevinpingol123@gmail.com
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    age: 
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D    bmi: 
+2025-09-28 15:47:16.398 31535-31629 CommunityUserManager    com.example.nutrisaur11              D  Essential user data found for personalization
+2025-09-28 15:47:16.398 31535-31628 AccountActivity         com.example.nutrisaur11              D  User data fetched from community_users table
+2025-09-28 15:47:16.398 31535-31535 AccountActivity         com.example.nutrisaur11              D  Populating form fields with user data
+2025-09-28 15:47:16.406 31535-31535 AccountActivity         com.example.nutrisaur11              D  Original values stored for change detection
+2025-09-28 15:47:16.406 31535-31535 AccountActivity         com.example.nutrisaur11              D  Form fields populated with database data
+2025-09-28 15:47:16.487 29610-31504 fb4a.Accou...nagerUtils com.facebook.katana                  E  Only a single account of type com.facebook.auth.login is expected, but 3 account found
+2025-09-28 15:47:16.731   605-605   SELinux                 hwservicemanager                     E  avc:  denied  { find } for interface=vendor.qti.mstatservice::IMStatService sid=u:r:vendor_mstatservice_app:s0:c223,c256,c512,c768 pid=2969 scontext=u:r:vendor_mstatservice_app:s0:c223,c256,c512,c768 tcontext=u:object_r:default_android_hwservice:s0 tclass=hwservice_manager permissive=0
+2025-09-28 15:47:16.732  2969-2969  MStatsSystem            com....qualcomm.mstatssystemservice  E  HIDL interface is not registered as a service yet.
+2025-09-28 15:47:17.136 29610-31506 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:17.137 29610-31506 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:17.137 29610-31506 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:17.137 29610-31506 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:17.138 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:17.138 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:17.217 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:17.217 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:17.218 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:17.220 29610-29662 fb4a.2I0                com.facebook.katana                  W  Detecting leaks
+2025-09-28 15:47:17.249  1522-3265  ProcessStats            system_server                        W  Tracking association SourceState{7b0164a com.miui.analytics/10100 BTopFgs #51746} whose proc state 2 is better than process ProcessState{7715f78 com.miui.securitycenter.remote/1000 pkg=com.miui.securitycenter} proc state 3 (115 skipped)
+2025-09-28 15:47:17.305 29610-31478 fb4a.DbFee...iesHandler com.facebook.katana                  E  Inconsistent input for deleteStories!
+2025-09-28 15:47:17.311 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:17.544  1823-2874  BufferPoolAccessor2.0   media.swcodec                        D  bufferpool2 0xb400007d31638628 : 4(16384 size) total buffers - 3(12288 size) used buffers - 744/754 (recycle/alloc) - 13/754 (fetch/transfer)
+2025-09-28 15:47:17.544  1823-2874  BufferPoolAccessor2.0   media.swcodec                        D  evictor expired: 1, evicted: 1
+2025-09-28 15:47:17.707  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x4, 8115231, channel '127099 NavigationBar0 (server)'
+2025-09-28 15:47:17.707  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x4, 8115231, channel '891d6fa control_center (server)'
+2025-09-28 15:47:17.707  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x0, 8115231, channel 'a6609a9 com.example.nutrisaur11/com.example.nutrisaur11.AccountActivity (server)'
+2025-09-28 15:47:17.709 31535-31535 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759045637709
+2025-09-28 15:47:17.759  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x1, 8115283, channel 'a6609a9 com.example.nutrisaur11/com.example.nutrisaur11.AccountActivity (server)'
+2025-09-28 15:47:18.009 31535-31639 ProfileInstaller        com.example.nutrisaur11              D  Installing profile for com.example.nutrisaur11
+2025-09-28 15:47:18.044 29610-31478 fb4a.4aV                com.facebook.katana                  W  FeedUnit is not GraphQLStory so can't extract actors.FeedUnitType:ShowcaseFeedUnit
+2025-09-28 15:47:18.049 29610-29662 facebook.katan          com.facebook.katana                  I  Explicit concurrent copying GC freed 3221KB AllocSpace bytes, 26(876KB) LOS objects, 12% free, 55MB/63MB, paused 609us,232us total 827.930ms
+2025-09-28 15:47:18.056 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.056 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.057 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.057 29610-31478 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.058 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.058 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.069 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.070 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.070 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.079 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.436 29610-31505 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.436 29610-31505 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.436 29610-31505 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.436 29610-31505 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.437 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.437 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.463 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.464 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.464 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.487 29610-31505 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.487 29610-31505 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.487 29610-31505 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.487 29610-31505 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.518 29610-31481 fb4a.DbFee...iesHandler com.facebook.katana                  E  Inconsistent input for deleteStories!
+2025-09-28 15:47:18.521 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.522 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.522 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.536 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.537 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.537 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.540 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.542 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.542 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.543 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.543 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.549 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.587 29610-31504 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.587 29610-31504 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.589 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.589 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.590 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.598 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.598 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.598 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.598 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.599 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.599 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.618 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.619 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.619 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.624 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.823  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x4, 8116346, channel '127099 NavigationBar0 (server)'
+2025-09-28 15:47:18.823  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x4, 8116346, channel '891d6fa control_center (server)'
+2025-09-28 15:47:18.823  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x0, 8116346, channel 'a6609a9 com.example.nutrisaur11/com.example.nutrisaur11.AccountActivity (server)'
+2025-09-28 15:47:18.824 31535-31535 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759045638824
+2025-09-28 15:47:18.873  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x1, 8116397, channel 'a6609a9 com.example.nutrisaur11/com.example.nutrisaur11.AccountActivity (server)'
+2025-09-28 15:47:18.889 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.889 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.889 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.889 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.890 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.890 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.896 29610-31480 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.896 29610-31480 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.901 29610-31501 fb4a.4aV                com.facebook.katana                  W  FeedUnit is not GraphQLStory so can't extract actors.FeedUnitType:DiscoverFeedUnit
+2025-09-28 15:47:18.902 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.902 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.902 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:18.902 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.902 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.903 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.920 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.922 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.922 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.927 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.928 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.928 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.930 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:18.931 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:18.931 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:18.936 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:19.488  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x4, 8117012, channel '127099 NavigationBar0 (server)'
+2025-09-28 15:47:19.488  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x4, 8117012, channel '891d6fa control_center (server)'
+2025-09-28 15:47:19.489  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x0, 8117012, channel 'a6609a9 com.example.nutrisaur11/com.example.nutrisaur11.AccountActivity (server)'
+2025-09-28 15:47:19.490 31535-31535 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759045639489
+2025-09-28 15:47:19.572  1522-2555  MIUIInput               system_server                        D  [MotionEvent] publisher action=0x1, 8117096, channel 'a6609a9 com.example.nutrisaur11/com.example.nutrisaur11.AccountActivity (server)'
+2025-09-28 15:47:19.577 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:19.577 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.578 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:19.578  4257-5020  TrafficManageService    com.miui.securitycenter.remote       D  onReceive: intent.action = com.android.server.action.NETWORK_STATS_UPDATED
+2025-09-28 15:47:19.578 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.578 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.578 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:19.607 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:19.607 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.608 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:19.608 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.608 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.608 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:19.618 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:19.619 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.619 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:19.630 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:19.631 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.631 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:19.638 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:19.638 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.638 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:19.638 29610-31481 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.663 29610-31470 fb4a.DbFee...iesHandler com.facebook.katana                  E  Inconsistent input for deleteStories!
+2025-09-28 15:47:19.666 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:19.666 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.666 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:19.679 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:19.680 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.680 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:19.682 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:19.687 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:19.687 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.690 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:19.690 29610-31501 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.692 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.692 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:19.705 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:19.706 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.706 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:19.710 29610-31486 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:19.852 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerStart(int markerId, int instanceKey) has not been implemented
+2025-09-28 15:47:19.852 29610-31470 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.857 29610-31469 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerAnnotate(int markerId, int instanceKey, String annotationKey, @Nullable String annotationValue) has not been implemented
+2025-09-28 15:47:19.857 29610-31469 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerPoint(int markerId, int instanceKey, String name) has not been implemented
+2025-09-28 15:47:19.859 29610-31469 fb4a.NoOpQ...anceLogger com.facebook.katana                  W  markerEnd(int markerId, int instanceKey, short action) has not been implemented
+2025-09-28 15:47:20.169 29610-29662 facebook.katan          com.facebook.katana                  I  Waiting for a blocking GC Explicit
+2025-09-28 15:47:20.282 29610-29662 facebook.katan          com.facebook.katana                  I  WaitForGcToComplete blocked Explicit on Background for 113.393ms
+2025-09-28 15:47:20.957 29610-29662 facebook.katan          com.facebook.katana                  I  Explicit concurrent copying GC freed 655KB AllocSpace bytes, 5(176KB) LOS objects, 12% free, 55MB/63MB, paused 537us,266us total 675.213ms
+2025-09-28 15:47:21.816  1522-2578  MiuiNetworkPolicy       system_server                        D  updateLimit mLimitEnabled=true,enabled=false,mNetworkPriorityMode=255
