@@ -185,22 +185,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             if ($notificationType !== 'none') {
                 error_log("📱 Sending notifications for event ID: $eventId");
                 
-                // Get FCM tokens based on location
-                $fcmTokens = [];
-                if ($location === 'All Locations') {
-                    $fcmTokens = $db->getActiveFCMTokens();
-                    error_log("📱 Sending to ALL locations - " . count($fcmTokens) . " tokens");
-                } else {
-                    // Check if it's a municipality (all caps, known municipalities)
-                    $municipalities = ['HERMOSA', 'LIMAY', 'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'];
-                    if (in_array($location, $municipalities)) {
-                        $fcmTokens = $db->getFCMTokensByMunicipality($location);
-                        error_log("📱 Sending to MUNICIPALITY $location (all barangays) - " . count($fcmTokens) . " tokens");
-                    } else {
-                        $fcmTokens = $db->getFCMTokensByBarangay($location);
-                        error_log("📱 Sending to BARANGAY $location - " . count($fcmTokens) . " tokens");
-                    }
-                }
+                // Use the new getFCMTokensByLocation function
+                $fcmTokenData = getFCMTokensByLocation($location);
+                $fcmTokens = array_column($fcmTokenData, 'fcm_token');
+                error_log("📱 FCM tokens found: " . count($fcmTokens) . " for location: '$location'");
                 
                 if (!empty($fcmTokens)) {
                     // Enhanced notification data with event_id
