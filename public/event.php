@@ -146,14 +146,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     try {
         // Get form data
         $title = $_POST['title'] ?? '';
-        $type = $_POST['type'] ?? '';
         $description = $_POST['description'] ?? '';
         $date_time = $_POST['date_time'] ?? '';
         $location = $_POST['location'] ?? '';
         $organizer = $_POST['organizer'] ?? '';
         
+        // Auto-set type to "Event" since we removed the type field
+        $type = 'Event';
+        
         // Validate required fields
-        if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
+        if (empty($title) || empty($description) || empty($date_time) || empty($organizer)) {
             echo json_encode(['success' => false, 'message' => 'All required fields must be filled']);
             exit;
         }
@@ -4267,7 +4269,7 @@ header:hover {
                             <div class="upload-text">
                                 <h4>Upload CSV File</h4>
                                 <p>Click to select or drag and drop your CSV file here</p>
-                                <p class="csv-format">Format: Event Title, Type, Date & Time, Location, Organizer, Description, Notification Type, Recipient Group</p>
+                                <p class="csv-format">Format: Event Title, Date & Time, Location, Organizer, Description</p>
                             </div>
                             <input type="file" id="csvFile" name="csvFile" accept=".csv" style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" onchange="handleFileSelect(this)">
                         </div>
@@ -4382,16 +4384,6 @@ header:hover {
                     <input type="text" id="eventTitle" name="eventTitle" placeholder="e.g., Nutrition Seminar in Barangay Hall" value="<?php echo htmlspecialchars($recommended_program); ?>" required>
                 </div>
                 
-                <div class="form-group">
-                    <label for="eventType">Event Type</label>
-                    <select id="eventType" name="eventType" required>
-                        <option value="Workshop">Workshop</option>
-                        <option value="Seminar">Seminar</option>
-                        <option value="Webinar">Webinar</option>
-                        <option value="Demo">Demo</option>
-                        <option value="Training">Training</option>
-                    </select>
-                </div>
                 
                 <div class="form-group">
                     <label for="eventDate">Date & Time</label>
@@ -4705,7 +4697,7 @@ header:hover {
                 
                 <div class="form-group">
                     <label for="eventOrganizer">Person in Charge</label>
-                    <input type="text" id="eventOrganizer" name="eventOrganizer" placeholder="Name of organizer" required>
+                    <input type="text" id="eventOrganizer" name="eventOrganizer" value="<?php echo htmlspecialchars($username ?? $email ?? 'Unknown User'); ?>" readonly>
                 </div>
                 
                 <div class="form-group">
@@ -4713,35 +4705,7 @@ header:hover {
                     <textarea id="eventDescription" name="eventDescription" placeholder="Brief description of the event..." required></textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label for="notificationType">Notification Type</label>
-                    <select id="notificationType" name="notificationType">
-                        <option value="push">Push Notification (Recommended)</option>
-                        <option value="email">Email Only</option>
-                        <option value="both">Push + Email</option>
-                        <option value="none">No Notifications</option>
-                    </select>
-                </div>
                 
-                <div class="form-group">
-                    <label for="recipientGroup">Recipient Group</label>
-                    <select id="recipientGroup" name="recipientGroup">
-                        <option value="All Users">All Users</option>
-                        <option value="Parents">Parents</option>
-                        <option value="Health Workers">Health Workers</option>
-                        <option value="Barangay Officials">Barangay Officials</option>
-                    </select>
-                </div>
-                
-                <!-- Notification Preview Section -->
-                <div id="notificationPreview" style="margin-top: 20px; display: none;">
-                    <div style="background: rgba(161, 180, 84, 0.05); padding: 15px; border-radius: 10px; border-left: 4px solid var(--color-highlight);">
-                        <h4 style="margin: 0 0 10px 0; color: var(--color-highlight);">📱 Notification Preview</h4>
-                        <div id="notificationPreviewContent">
-                            <div style="text-align: center; opacity: 0.7;">Select a location to see notification preview</div>
-                        </div>
-                    </div>
-                </div>
                 
                 <div class="form-actions">
                     <button type="button" onclick="handleNewEventCreation()" class="btn btn-add">
@@ -4749,15 +4713,6 @@ header:hover {
                     </button>
                 </div>
                 
-                <!-- Location Preview Section -->
-                <div id="locationPreview" style="margin-top: 20px; display: none;">
-                    <div style="background: rgba(161, 180, 84, 0.05); padding: 15px; border-radius: 10px; border-left: 4px solid var(--color-highlight);">
-                        <h4 style="margin: 0 0 10px 0; color: var(--color-highlight);">Location Preview</h4>
-                        <div id="locationPreviewContent">
-                            <div style="text-align: center; opacity: 0.7;">Select a location to see which users would receive notifications</div>
-                        </div>
-                    </div>
-                </div>
             </form>
         </div>
         
@@ -4799,7 +4754,6 @@ header:hover {
                 <thead>
                     <tr>
                         <th>Event Title</th>
-                        <th>Type</th>
                         <th>Date & Time</th>
                         <th>Location</th>
                         <th>Organizer</th>
@@ -4818,7 +4772,6 @@ header:hover {
                             ?>
                             <tr class="event-row <?php echo $status; ?>">
                                 <td><?php echo htmlspecialchars($program['title']); ?></td>
-                                <td><?php echo htmlspecialchars($program['type']); ?></td>
                                 <td><?php echo date('M j, Y, g:i A', strtotime($program['date_time'])); ?></td>
                                 <td><?php echo htmlspecialchars($program['location']); ?></td>
                                 <td><?php echo htmlspecialchars($program['organizer']); ?></td>
@@ -4882,16 +4835,6 @@ header:hover {
                     <input type="text" id="edit_eventTitle" name="eventTitle" required>
                 </div>
                 
-                <div class="form-group">
-                    <label for="edit_eventType">Event Type</label>
-                    <select id="edit_eventType" name="eventType" required>
-                        <option value="Workshop">Workshop</option>
-                        <option value="Seminar">Seminar</option>
-                        <option value="Webinar">Webinar</option>
-                        <option value="Demo">Demo</option>
-                        <option value="Training">Training</option>
-                    </select>
-                </div>
                 
                 <div class="form-group">
                     <label for="edit_eventDate">Date & Time</label>
@@ -4980,7 +4923,7 @@ header:hover {
                 
                 <div class="form-group">
                     <label for="edit_eventOrganizer">Person in Charge</label>
-                    <input type="text" id="edit_eventOrganizer" name="eventOrganizer" required>
+                    <input type="text" id="edit_eventOrganizer" name="eventOrganizer" value="<?php echo htmlspecialchars($username ?? $email ?? 'Unknown User'); ?>" readonly>
                 </div>
                 
                 <div class="form-group">
@@ -4988,14 +4931,6 @@ header:hover {
                     <textarea id="edit_eventDescription" name="eventDescription" required></textarea>
                 </div>
                 
-                <div class="form-group">
-                    <label for="edit_notificationType">Notification Type</label>
-                    <select id="edit_notificationType" name="notificationType">
-                        <option value="email">Email</option>
-                        <option value="sms">Text Message</option>
-                        <option value="both">Both Email and Text</option>
-                    </select>
-                </div>
                 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-add">Update Event</button>
@@ -5044,16 +4979,6 @@ header:hover {
                     <input type="text" id="add_eventTitle" name="eventTitle" placeholder="e.g., Nutrition Seminar" required>
                 </div>
                 
-                <div class="form-group">
-                    <label for="add_eventType">Event Type</label>
-                    <select id="add_eventType" name="eventType" required>
-                        <option value="Workshop">Workshop</option>
-                        <option value="Seminar">Seminar</option>
-                        <option value="Webinar">Webinar</option>
-                        <option value="Demo">Demo</option>
-                        <option value="Training">Training</option>
-                    </select>
-                </div>
                 
                 <div class="form-group">
                     <label for="add_eventDate">Date & Time</label>
@@ -5067,7 +4992,7 @@ header:hover {
                 
                 <div class="form-group">
                     <label for="add_eventOrganizer">Person in Charge</label>
-                    <input type="text" id="add_eventOrganizer" name="eventOrganizer" placeholder="Name of organizer" required>
+                    <input type="text" id="add_eventOrganizer" name="eventOrganizer" value="<?php echo htmlspecialchars($username ?? $email ?? 'Unknown User'); ?>" readonly>
                 </div>
                 
                 <div class="form-group">
@@ -5098,13 +5023,10 @@ header:hover {
             const formData = new FormData(form);
             const eventData = {
                 title: formData.get('eventTitle'),
-                type: formData.get('eventType'),
                 description: formData.get('eventDescription'),
                 date_time: formData.get('eventDate'),
                 location: formData.get('eventLocation'),
-                organizer: formData.get('eventOrganizer'),
-                notificationType: formData.get('notificationType'),
-                recipientGroup: formData.get('recipientGroup')
+                organizer: formData.get('eventOrganizer')
             };
             
             console.log('Event data:', eventData);
@@ -5115,7 +5037,7 @@ header:hover {
             }
             
             // Validate required fields
-            if (!eventData.title || !eventData.type || !eventData.description || !eventData.date_time || !eventData.organizer) {
+            if (!eventData.title || !eventData.description || !eventData.date_time || !eventData.organizer) {
                 console.error('Missing required fields:', {
                     title: eventData.title,
                     type: eventData.type,
@@ -5156,13 +5078,10 @@ header:hover {
                     body: new URLSearchParams({
                         'action': 'save_event_only',
                         'title': eventData.title,
-                        'type': eventData.type,
                         'description': eventData.description,
                         'date_time': eventData.date_time,
                         'location': eventData.location,
-                        'organizer': eventData.organizer,
-                        'notification_type': eventData.notificationType,
-                        'recipient_group': eventData.recipientGroup
+                        'organizer': eventData.organizer
                     })
                 });
                 
@@ -5781,7 +5700,6 @@ header:hover {
                 
                 row.innerHTML = `
                     <td>${event.title}</td>
-                    <td>${event.type}</td>
                     <td>${formattedDate}</td>
                     <td>${event.location}</td>
                     <td>${event.organizer}</td>
@@ -6903,7 +6821,6 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             // Set form values
             document.getElementById('edit_program_id').value = programId;
             document.getElementById('edit_eventTitle').value = title;
-            document.getElementById('edit_eventType').value = type;
             document.getElementById('edit_eventDescription').value = description;
             
             // Set location dropdown value with improved matching
@@ -6981,10 +6898,9 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
         function openAddEventModal() {
             // Reset form values
             document.getElementById('add_eventTitle').value = '';
-            document.getElementById('add_eventType').value = 'Workshop';
             document.getElementById('add_eventDate').value = '';
             document.getElementById('add_eventLocation').value = '';
-            document.getElementById('add_eventOrganizer').value = '';
+            document.getElementById('add_eventOrganizer').value = '<?php echo htmlspecialchars($username ?? $email ?? 'Unknown User'); ?>';
             document.getElementById('add_eventDescription').value = '';
             
             // Set default date to tomorrow
@@ -7424,7 +7340,6 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                 
                 row.innerHTML = `
                     <td>${event.title}</td>
-                    <td>${event.type}</td>
                     <td>${formattedDate}</td>
                     <td>${event.location}</td>
                     <td>${event.organizer}</td>
@@ -7453,19 +7368,16 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             const formData = new FormData(form);
             const eventData = {
                 title: formData.get('eventTitle'),
-                type: formData.get('eventType'),
                 description: formData.get('eventDescription'),
                 date_time: formData.get('eventDate'),
                 location: formData.get('eventLocation'),
-                organizer: formData.get('eventOrganizer'),
-                notificationType: formData.get('notificationType'),
-                recipientGroup: formData.get('recipientGroup')
+                organizer: formData.get('eventOrganizer')
             };
             
             console.log('Event data:', eventData);
             
             // Validate required fields
-            if (!eventData.title || !eventData.type || !eventData.description || !eventData.date_time || !eventData.organizer) {
+            if (!eventData.title || !eventData.description || !eventData.date_time || !eventData.organizer) {
                 showNotificationError('Please fill in all required fields');
                 return;
             }
@@ -7499,13 +7411,10 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                     body: new URLSearchParams({
                         'action': 'save_event_only',
                         'title': eventData.title,
-                        'type': eventData.type,
                         'description': eventData.description,
                         'date_time': eventData.date_time,
                         'location': eventData.location,
-                        'organizer': eventData.organizer,
-                        'notification_type': eventData.notificationType,
-                        'recipient_group': eventData.recipientGroup
+                        'organizer': eventData.organizer
                     })
                 });
                 
