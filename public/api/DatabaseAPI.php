@@ -763,25 +763,60 @@ class DatabaseAPI {
      */
     public function registerFCMToken($fcmToken, $deviceName, $userEmail, $userBarangay, $appVersion, $platform) {
         try {
-            error_log("FCM_DEBUG: Registering FCM token for user: " . $userEmail);
+            // Debug logging
+            error_log("FCM_DEBUG: Starting FCM token registration");
+            error_log("FCM_DEBUG: FCM Token: " . $fcmToken);
+            error_log("FCM_DEBUG: User Email: " . $userEmail);
+            error_log("FCM_DEBUG: User Barangay: " . $userBarangay);
+            error_log("FCM_DEBUG: Device Name: " . $deviceName);
+            error_log("FCM_DEBUG: App Version: " . $appVersion);
+            error_log("FCM_DEBUG: Platform: " . $platform);
             
-            // Simple approach: Just update the FCM token for the user
-            $stmt = $this->pdo->prepare("UPDATE community_users SET fcm_token = :fcm_token WHERE email = :email");
-            $stmt->bindParam(':fcm_token', $fcmToken);
+            // Check if user exists in community_users table
+            $stmt = $this->pdo->prepare("SELECT email FROM community_users WHERE email = :email");
             $stmt->bindParam(':email', $userEmail);
-            $result = $stmt->execute();
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
-            if ($result && $stmt->rowCount() > 0) {
-                error_log("FCM_DEBUG: FCM token registered successfully for: " . $userEmail);
-                return ['success' => true, 'message' => 'FCM token registered successfully'];
-            } else {
-                error_log("FCM_DEBUG: No user found to update FCM token for: " . $userEmail);
-                return ['success' => false, 'message' => 'User not found'];
+            error_log("FCM_DEBUG: User exists check - Found: " . ($user ? 'YES' : 'NO'));
+            if ($user) {
+                error_log("FCM_DEBUG: User found: " . $user['email']);
             }
+            
+            if ($user) {
+                // Update existing user with FCM token
+                error_log("FCM_DEBUG: Updating existing user with FCM token");
+                $stmt = $this->pdo->prepare("UPDATE community_users SET 
+                    fcm_token = :fcm_token
+                    WHERE email = :email");
+            } else {
+                // Insert new user with FCM token (minimal data)
+                error_log("FCM_DEBUG: Creating new user with FCM token");
+                $stmt = $this->pdo->prepare("INSERT INTO community_users 
+                    (email, fcm_token, barangay, screening_date) 
+                    VALUES (:email, :fcm_token, :user_barangay, CURRENT_TIMESTAMP)");
+            }
+            
+            // SAFER APPROACH: Only clear tokens for the specific user, not all users with same email
+            // This prevents accidentally clearing other users' tokens
+            if ($user) {
+                error_log("FCM_DEBUG: Clearing existing FCM token for specific user only");
+                $clearStmt = $this->pdo->prepare("UPDATE community_users SET fcm_token = NULL WHERE email = :email AND fcm_token IS NOT NULL");
+                $clearStmt->bindParam(':email', $userEmail);
+                $clearStmt->execute();
+            }
+            
+            $stmt->bindParam(':fcm_token', $fcmToken);
+            $stmt->bindParam(':user_barangay', $userBarangay);
+            $stmt->bindParam(':email', $userEmail);
+            $stmt->execute();
+            
+            error_log("FCM_DEBUG: FCM token registration completed successfully");
+            return ['success' => true, 'message' => 'FCM token registered successfully'];
             
         } catch (PDOException $e) {
             error_log("FCM_DEBUG: FCM token registration failed: " . $e->getMessage());
-            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+            return ['success' => false, 'message' => 'Failed to register FCM token: ' . $e->getMessage()];
         }
     }
     
@@ -3647,8 +3682,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             'screened_by' => '',
                             'notes' => '',
                             'status' => '',
-                            'created_at' => '',
-                            'updated_at' => ''
+                            'created_at' => ''
                         ]
                     ]);
                 } else {
@@ -4592,10 +4626,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             barangay,
                             income,
                             bmi,
-                            created_at,
-                            updated_at
+                            created_at
                         FROM community_users
-                        ORDER BY updated_at DESC";
+                        ORDER BY created_at DESC";
                 
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute();
@@ -4613,8 +4646,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'municipality' => 'N/A', // Municipality not stored in community_users table
                         'income' => $user['income'],
                         'bmi' => $user['bmi'],
-                        'created_at' => $user['created_at'],
-                        'updated_at' => $user['updated_at']
+                        'created_at' => $user['created_at']
                     ];
                 }
                 
@@ -5294,8 +5326,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 'screened_by' => $user['screened_by'] ?? '',
                                 'notes' => $user['notes'] ?? '',
                                 'status' => $user['status'] ?? '',
-                                'created_at' => $user['created_at'] ?? '',
-                                'updated_at' => $user['updated_at'] ?? ''
+                                'created_at' => $user['created_at'] ?? ''
                             ]
                         ]);
                     } else {
