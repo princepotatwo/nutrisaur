@@ -3396,6 +3396,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
     // Get the action from query parameter or POST data
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
     
+    // DEBUG: Log the action being processed
+    error_log("🔍 DatabaseAPI Debug - Action received: '" . $action . "'");
+    error_log("🔍 DatabaseAPI Debug - GET params: " . print_r($_GET, true));
+    error_log("🔍 DatabaseAPI Debug - POST params: " . print_r($_POST, true));
+    
     switch ($action) {
         
         // ========================================
@@ -4713,7 +4718,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, 0, NOW())");
                     $result = $stmt->execute([$username, $email, $hashedPassword, $verificationCode, $expiresAt]);
                     
-                    if (!$result) {
+                    if (!$result['success']) {
                         echo json_encode(['success' => false, 'message' => 'Failed to create user account']);
                         break;
                     }
@@ -4809,7 +4814,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $stmt = $pdo->prepare("UPDATE users SET email_verified = 1, verification_code = NULL, verification_code_expires = NULL WHERE user_id = ?");
                     $result = $stmt->execute([$user['user_id']]);
                     
-                    if (!$result) {
+                    if (!$result['success']) {
                         echo json_encode(['success' => false, 'message' => 'Failed to verify email']);
                         break;
                     }
@@ -4885,7 +4890,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $stmt = $pdo->prepare("UPDATE users SET verification_code = ?, verification_code_expires = ? WHERE user_id = ?");
                     $result = $stmt->execute([$verificationCode, $expiresAt, $user['user_id']]);
                     
-                    if (!$result) {
+                    if (!$result['success']) {
                         echo json_encode(['success' => false, 'message' => 'Failed to update verification code']);
                         break;
                     }
@@ -4915,6 +4920,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         // TEST API
         // ========================================
         case 'test':
+            echo json_encode([
+                'success' => true,
+                'message' => 'TEST ENDPOINT UPDATED - Deployment is working!',
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            break;
+            
+        case 'test_old':
             $results = [];
             
             // Test database connection
@@ -5791,10 +5804,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
-        // AGE CLASSIFICATION CHART API
+        // GOOGLE OAUTH COMMUNITY USER SIGN-IN
         // ========================================
-    case 'get_age_classification_chart':
-        try {
+        case 'get_age_classification_chart':
+            try {
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             $timeFrame = $_GET['time_frame'] ?? $_POST['time_frame'] ?? '1d';
             $fromMonths = isset($_GET['from_months']) ? intval($_GET['from_months']) : 0;
@@ -6025,6 +6038,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'populationScale' => $populationScale
                     ]
                 ]);
+                break;
                 
             } catch (Exception $e) {
                 echo json_encode([
@@ -6040,6 +6054,200 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             ]);
         }
         break;
+        */
+        
+        // ========================================
+        // GOOGLE OAUTH COMMUNITY USER SIGN-IN
+        // ========================================
+        case 'google_signin':
+            try {
+                // Get input data
+                $input = json_decode(file_get_contents('php://input'), true);
+                
+                if (!$input) {
+                    $input = $_POST; // Fallback to POST data
+                }
+                
+                $idToken = $input['id_token'] ?? '';
+                $email = $input['email'] ?? '';
+                $name = $input['name'] ?? '';
+                $profilePicture = $input['profile_picture'] ?? '';
+                
+                if (empty($idToken) || empty($email)) {
+                    throw new Exception('Missing required parameters');
+                }
+                
+                // Check if user exists in community_users table
+                $result = $db->universalSelect('community_users', '*', 'email = ?', '', '', [$email]);
+                
+                if (!$result['success'] || empty($result['data'])) {
+                    // Create new user in community_users table (NEW USER - needs screening)
+                    $userData = [
+                        'email' => $email,
+                        'name' => $name,
+                        'password' => password_hash(uniqid('google_', true), PASSWORD_DEFAULT),
+                        'municipality' => 'Unknown',
+                        'barangay' => 'Unknown',
+                        'sex' => 'Unknown',
+                        'birthday' => '1900-01-01',
+                        'is_pregnant' => 'No',
+                        'weight' => '0',
+                        'height' => '0',
+                        'screening_date' => date('Y-m-d H:i:s')
+                    ];
+                    
+                    $result = $db->universalInsert('community_users', $userData);
+                    
+                    if (!$result['success']) {
+                        throw new Exception('Failed to create user account');
+                    }
+                    
+                    $message = 'NEW_USER:Account created successfully with Google Sign-In';
+                } else {
+                    // User exists (EXISTING USER - go to dashboard)
+                    $message = 'EXISTING_USER:Signed in successfully with Google';
+                }
+                
+                // Start session
+                session_start();
+                $_SESSION['user_email'] = $email;
+                $_SESSION['username'] = $name;
+                $_SESSION['logged_in'] = true;
+                $_SESSION['user_type'] = 'community_user';
+                
+                // Return success response
+                echo json_encode([
+                    'success' => true,
+                    'message' => $message,
+                    'user' => [
+                        'email' => $email,
+                        'name' => $name,
+                        'type' => 'community_user'
+                    ]
+                ]);
+                
+            } catch (Exception $e) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'error' => $e->getMessage()
+                ]);
+            }
+            break;
+            
+        case 'google_signin_actual':
+            try {
+                // Get input data
+                $input = json_decode(file_get_contents('php://input'), true);
+                
+                if (!$input) {
+                    $input = $_POST; // Fallback to POST data
+                }
+                
+                $idToken = $input['id_token'] ?? '';
+                $email = $input['email'] ?? '';
+                $name = $input['name'] ?? '';
+                $profilePicture = $input['profile_picture'] ?? '';
+                
+                if (empty($idToken) || empty($email)) {
+                    throw new Exception('Missing required parameters');
+                }
+                
+                // Google OAuth Client IDs (both web and Android)
+                $webClientId = '43537903747-ppt6bbcnfa60p0hchanl32equ9c3b0ao.apps.googleusercontent.com';
+                $androidClientId = '43537903747-2nd9mtmm972ucoirho2sthkqlu8mct6b.apps.googleusercontent.com';
+                
+                // Verify the token with Google
+                $response = file_get_contents("https://oauth2.googleapis.com/tokeninfo?id_token=$idToken");
+                
+                if (!$response) {
+                    throw new Exception('Failed to verify token with Google');
+                }
+                
+                $tokenInfo = json_decode($response, true);
+                
+                if (!$tokenInfo) {
+                    throw new Exception('Invalid token response from Google');
+                }
+                
+                // Verify the audience (client ID)
+                if ($tokenInfo['aud'] !== $webClientId && $tokenInfo['aud'] !== $androidClientId) {
+                    throw new Exception('Invalid client ID');
+                }
+                
+                // Verify the email matches
+                if ($tokenInfo['email'] !== $email) {
+                    throw new Exception('Email mismatch');
+                }
+                
+                // Token is valid, proceed with user creation/authentication
+                $userEmail = $tokenInfo['email'];
+                $userName = $name ?: $tokenInfo['name'] ?? 'Google User';
+                
+                // Initialize database
+                $db = new DatabaseAPI();
+                
+                if (!$db->isAvailable()) {
+                    throw new Exception('Database not available');
+                }
+                
+                // Check if user exists in community_users table
+                $existingUser = $db->select('community_users', '*', 'email = ?', [$userEmail]);
+                
+                if (empty($existingUser)) {
+                    // Create new user in community_users table (NEW USER - needs screening)
+                    $userData = [
+                        'email' => $userEmail,
+                        'name' => $userName,
+                        'password' => password_hash(uniqid('google_', true), PASSWORD_DEFAULT),
+                        'municipality' => 'Unknown',
+                        'barangay' => 'Unknown',
+                        'sex' => 'Unknown',
+                        'birthday' => '1900-01-01',  // Default values for required fields
+                        'is_pregnant' => 'No',
+                        'weight' => '0',
+                        'height' => '0',
+                        'screening_date' => date('Y-m-d H:i:s')
+                    ];
+                    
+                    $result = $db->universalInsert('community_users', $userData);
+                    
+                    if (!$result['success']) {
+                        throw new Exception('Failed to create user account');
+                    }
+                    
+                    $message = 'NEW_USER:Account created successfully with Google Sign-In';
+                } else {
+                    // User exists (EXISTING USER - go to dashboard)
+                    $message = 'EXISTING_USER:Signed in successfully with Google';
+                }
+                
+                // Start session
+                session_start();
+                $_SESSION['user_email'] = $userEmail;
+                $_SESSION['username'] = $userName;
+                $_SESSION['logged_in'] = true;
+                $_SESSION['user_type'] = 'community_user';
+                
+                // Return success response
+                echo json_encode([
+                    'success' => true,
+                    'message' => $message,
+                    'user' => [
+                        'email' => $userEmail,
+                        'name' => $userName,
+                        'type' => 'community_user'
+                    ]
+                ]);
+                
+            } catch (Exception $e) {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'error' => $e->getMessage()
+                ]);
+            }
+            break;
             
         // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
@@ -6047,7 +6255,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
         default:
             echo json_encode([
                 'success' => true,
-                'message' => 'Nutrisaur Universal Database API',
+                'message' => 'DEFAULT CASE REACHED',
+                'debug' => [
+                    'action_received' => $action,
+                    'get_params' => $_GET,
+                    'post_params' => $_POST,
+                    'request_method' => $_SERVER['REQUEST_METHOD'] ?? 'unknown'
+                ],
+                'original_message' => 'Nutrisaur Universal Database API',
                 'universal_operations' => [
                     'select' => 'POST /DatabaseAPI.php?action=select (table, columns, where, order_by, limit, params)',
                     'insert' => 'POST /DatabaseAPI.php?action=insert (table, data)',
