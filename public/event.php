@@ -108,35 +108,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     header('Content-Type: application/json');
     
     try {
-        // Test the notification API directly with correct parameters
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-            'notification_data' => json_encode([
-                'title' => '🎯 Event: Test Event',
-                'body' => 'New event: Test Event at Bangkal on Sep 15, 2025 6:30 PM',
-                'target_user' => 'all'
-            ])
-        ]));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/x-www-form-urlencoded'
-        ]);
+        // Test notification using direct FCM sending (no cURL to avoid duplicates)
+        $testResult = sendEventFCMNotificationToToken('test_token', '🎯 Event: Test Event', 'New event: Test Event at Bangkal on Sep 15, 2025 6:30 PM');
         
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
+        if ($testResult['success']) {
+            $response = json_encode(['success' => true, 'message' => 'Test notification sent successfully']);
+        } else {
+            $response = json_encode(['success' => false, 'message' => 'Test notification failed: ' . $testResult['error']]);
+        }
         
-        echo json_encode([
-            'success' => true,
-            'http_code' => $httpCode,
-            'response' => $response,
-            'error' => $error
-        ]);
+        echo $response;
     } catch (Exception $e) {
         echo json_encode([
             'success' => false,
@@ -231,24 +212,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                     'event_date' => date('M j, Y g:i A', strtotime($date_time))
                 ];
                 
-                // Call the notification API
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
-                curl_setopt($ch, CURLOPT_POST, true);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                    'notification_data' => json_encode($notificationData)
-                ]));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/x-www-form-urlencoded'
-                ));
+                // Send FCM notifications directly (no cURL to avoid duplicates)
+                $successCount = 0;
+                foreach ($fcmTokens as $fcmToken) {
+                    $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
+                    if ($fcmResult['success']) {
+                        $successCount++;
+                    }
+                }
                 
-                $notificationResponse = curl_exec($ch);
-                curl_close($ch);
-                
-                error_log("📱 Notification sent to " . count($fcmTokens) . " users: " . $notificationResponse);
+                error_log("📱 Notification sent to " . $successCount . " users directly via FCM");
                 } else {
                     error_log("⚠️ No FCM tokens found for location: $location");
                 }
