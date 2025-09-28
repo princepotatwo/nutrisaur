@@ -9332,8 +9332,8 @@ body {
                 populationScale.style.cssText = `
                     position: absolute;
                     left: -8px;
-                    top: 0;
-                    height: ${chartHeight}px;
+                    top: 10px;
+                    height: ${chartHeight - 20}px;
                     width: 40px;
                     display: flex;
                     flex-direction: column;
@@ -9346,19 +9346,13 @@ body {
                 `;
                 
                 // Create scale labels based on calculated population slice (stops at populationSlice)
-                const scaleValues = [populationSlice, Math.ceil(populationSlice * 0.8), Math.ceil(populationSlice * 0.6), Math.ceil(populationSlice * 0.4), Math.ceil(populationSlice * 0.2), 1];
-                
-                // Ensure we have at least 6 different values for proper scaling
-                const uniqueValues = [...new Set(scaleValues)].sort((a, b) => b - a);
-                if (uniqueValues.length < 6) {
-                    // Fill with additional values if needed
-                    const maxVal = uniqueValues[0];
-                    const additionalValues = [];
-                    for (let i = 1; i <= 6 - uniqueValues.length; i++) {
-                        additionalValues.push(Math.max(1, Math.ceil(maxVal * (0.2 - (i * 0.03)))));
-                    }
-                    scaleValues.splice(scaleValues.length - 1, 0, ...additionalValues);
+                // Create a proper scale that shows the population slice and its fractions
+                const scaleValues = [];
+                for (let i = 6; i >= 1; i--) {
+                    scaleValues.push(Math.ceil(populationSlice * (i / 6)));
                 }
+                
+                console.log(`Scale values: ${scaleValues.join(', ')}`);
                 scaleValues.forEach((value, index) => {
                     const scaleLabel = document.createElement('div');
                     scaleLabel.style.cssText = `
@@ -9455,7 +9449,7 @@ body {
                     justify-content: space-between;
                     align-items: flex-end;
                     height: ${chartHeight}px;
-                    padding: 0 10px 0 50px;
+                    padding: 10px 10px 10px 50px;
                     gap: 5px;
                 `;
                 
@@ -9480,9 +9474,13 @@ body {
                     // Calculate bar height to align with population scale (stops at populationSlice)
                     const maxValue = populationSlice; // Use calculated population slice as maximum
                     const normalizedCount = Math.min(item.count, maxValue); // Cap at population slice
-                    const barHeight = (normalizedCount / maxValue) * chartHeight;
                     
-                    console.log(`Bar ${index}: count=${item.count}, maxValue=${maxValue}, normalizedCount=${normalizedCount}, barHeight=${barHeight}`);
+                    // Calculate bar height as percentage of chart height, with padding to stay within bounds
+                    const chartPadding = 20; // Padding to keep bars within container
+                    const availableHeight = chartHeight - chartPadding;
+                    const barHeight = Math.min((normalizedCount / maxValue) * availableHeight, availableHeight);
+                    
+                    console.log(`Bar ${index}: count=${item.count}, maxValue=${maxValue}, normalizedCount=${normalizedCount}, barHeight=${barHeight}, availableHeight=${availableHeight}`);
                     
                     // Create container for gradient bar
                     const barContainer = document.createElement('div');
