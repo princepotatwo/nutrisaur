@@ -1052,7 +1052,7 @@ function getFCMTokensByLocation($targetLocation = null) {
             error_log("Processing 'all locations' case - getting all ACTIVE FCM tokens only");
             // Get only active users' FCM tokens
             $stmt = $db->getPDO()->prepare("
-                SELECT fcm_token, email as user_email, barangay as user_barangay
+                SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                 FROM community_users
                 WHERE status = 'active'
                 AND fcm_token IS NOT NULL 
@@ -1066,27 +1066,42 @@ function getFCMTokensByLocation($targetLocation = null) {
             // Check if it's a municipality (starts with MUNICIPALITY_)
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 error_log("Processing municipality case: $targetLocation");
-                // Get tokens for all barangays in the municipality
-                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                // Map MUNICIPALITY_ values to actual municipality names
+                $municipalityMapping = [
+                    'MUNICIPALITY_BALANGA' => 'CITY OF BALANGA',
+                    'MUNICIPALITY_ABUCAY' => 'ABUCAY',
+                    'MUNICIPALITY_BAGAC' => 'BAGAC',
+                    'MUNICIPALITY_DINALUPIHAN' => 'DINALUPIHAN',
+                    'MUNICIPALITY_HERMOSA' => 'HERMOSA',
+                    'MUNICIPALITY_LIMAY' => 'LIMAY',
+                    'MUNICIPALITY_MARIVELES' => 'MARIVELES',
+                    'MUNICIPALITY_MORONG' => 'MORONG',
+                    'MUNICIPALITY_ORANI' => 'ORANI',
+                    'MUNICIPALITY_ORION' => 'ORION',
+                    'MUNICIPALITY_PILAR' => 'PILAR',
+                    'MUNICIPALITY_SAMAL' => 'SAMAL'
+                ];
+                
+                $actualMunicipalityName = $municipalityMapping[$targetLocation] ?? $targetLocation;
+                error_log("Mapped $targetLocation to $actualMunicipalityName");
+                
+                // Get tokens for all users in the municipality
                 $stmt = $db->getPDO()->prepare("
-                    SELECT fcm_token, email as user_email, barangay as user_barangay
+                    SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                     FROM community_users
                     WHERE status = 'active'
                     AND fcm_token IS NOT NULL 
                     AND fcm_token != ''
-                    AND barangay IS NOT NULL 
-                    AND barangay != ''
-                    AND (barangay = :targetLocation OR barangay LIKE :municipalityPattern)
+                    AND municipality = :municipalityName
                 ");
-                $stmt->bindParam(':targetLocation', $targetLocation);
-                $stmt->bindParam(':municipalityPattern', $municipalityName . '%');
+                $stmt->bindParam(':municipalityName', $actualMunicipalityName);
                 $stmt->execute();
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
             } else {
                 error_log("Processing barangay case: $targetLocation - getting ACTIVE tokens only");
                 // Get FCM tokens by barangay for active users only
                 $stmt = $db->getPDO()->prepare("
-                    SELECT fcm_token, email as user_email, barangay as user_barangay
+                    SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                     FROM community_users
                     WHERE status = 'active'
                     AND fcm_token IS NOT NULL 
