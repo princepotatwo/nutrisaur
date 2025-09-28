@@ -1036,13 +1036,12 @@ function getFCMTokensByLocation($targetLocation = null) {
         error_log("getFCMTokensByLocation called with targetLocation: '$targetLocation' (type: " . gettype($targetLocation) . ", length: " . strlen($targetLocation ?? '') . ")");
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '') {
-            error_log("Processing 'all locations' case - getting all ACTIVE FCM tokens only");
-            // Get only active users' FCM tokens
+            error_log("Processing 'all locations' case - getting all FCM tokens");
+            // Get all FCM tokens (no status column check)
             $stmt = $db->getPDO()->prepare("
                 SELECT fcm_token, email as user_email, barangay as user_barangay
                 FROM community_users
-                WHERE status = 'active'
-                AND fcm_token IS NOT NULL 
+                WHERE fcm_token IS NOT NULL 
                 AND fcm_token != ''
                 AND barangay IS NOT NULL 
                 AND barangay != ''
@@ -1058,8 +1057,7 @@ function getFCMTokensByLocation($targetLocation = null) {
                 $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, email as user_email, barangay as user_barangay
                     FROM community_users
-                    WHERE status = 'active'
-                    AND fcm_token IS NOT NULL 
+                    WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND barangay IS NOT NULL 
                     AND barangay != ''
@@ -1075,8 +1073,7 @@ function getFCMTokensByLocation($targetLocation = null) {
                 $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, email as user_email, barangay as user_barangay
                     FROM community_users
-                    WHERE status = 'active'
-                    AND fcm_token IS NOT NULL 
+                    WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND barangay = :targetLocation
                 ");
@@ -1095,12 +1092,12 @@ function getFCMTokensByLocation($targetLocation = null) {
             error_log("No FCM tokens found. Checking if there are any FCM tokens with barangay data...");
             
             // Check if there are any FCM tokens with barangay data from community_users table
-            $checkStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE barangay IS NOT NULL AND barangay != '' AND status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
+            $checkStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE barangay IS NOT NULL AND barangay != '' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $checkStmt->execute();
             $tokenWithBarangayCount = $checkStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
-            // Check if there are any active FCM tokens from community_users table
-            $tokenStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
+            // Check if there are any FCM tokens from community_users table
+            $tokenStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
             $tokenStmt->execute();
             $tokenCount = $tokenStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
