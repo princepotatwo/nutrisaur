@@ -215,9 +215,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 // Send FCM notifications directly (no cURL to avoid duplicates)
                 $successCount = 0;
                 foreach ($fcmTokens as $fcmToken) {
+                    error_log("🔍 Attempting to send FCM notification to token: " . substr($fcmToken, 0, 20) . "...");
                     $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
+                    error_log("🔍 FCM Result: " . json_encode($fcmResult));
                     if ($fcmResult['success']) {
                         $successCount++;
+                        error_log("✅ FCM notification sent successfully");
+                    } else {
+                        error_log("❌ FCM notification failed: " . ($fcmResult['error'] ?? 'Unknown error'));
                     }
                 }
                 
