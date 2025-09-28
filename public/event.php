@@ -1299,21 +1299,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         // Skip header row
                         if ($row == 1) continue;
                         
-                        // Check if we have enough columns
-                        if (count($data) < 8) {
+                        // Check if we have enough columns (now only 5 required)
+                        if (count($data) < 5) {
                             $errors[] = "Row $row: Insufficient data columns";
                             continue;
                         }
                         
-                        // Extract data from CSV
+                        // Extract data from CSV (simplified structure)
                         $title = trim($data[0]);
-                        $type = trim($data[1]);
-                        $date_time = trim($data[2]);
-                        $location = trim($data[3]);
-                        $organizer = trim($data[4]);
-                        $description = trim($data[5]);
-                        $notificationType = trim($data[6]);
-                        $recipientGroup = trim($data[7]);
+                        $date_time = trim($data[1]);
+                        $location = trim($data[2]);
+                        $organizer = trim($data[3]);
+                        $description = trim($data[4]);
+                        
+                        // Auto-set type to "Event" since we removed the type field
+                        $type = 'Event';
                         
                         // Clean up the date string - remove any extra spaces or quotes
                         $date_time = trim($date_time, " \t\n\r\0\x0B\"'");
@@ -5843,8 +5843,8 @@ header:hover {
                 return `${year}-${month}-${day} ${hours}:${minutes}`;
             };
             
-            const csvContent = `title,type,description,date_time,location,organizer
-Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,Sample Organizer`;
+            const csvContent = `title,date_time,location,organizer,description
+Sample Event,${formatDate(future1)},Sample Location,Sample Organizer,Sample description`;
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
