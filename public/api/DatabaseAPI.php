@@ -962,7 +962,7 @@ class DatabaseAPI {
                 $count = $dup['count'];
                 
                 // Get all users with this email
-                $stmt = $this->pdo->prepare("SELECT community_user_id, email, fcm_token, created_at FROM community_users WHERE email = :email ORDER BY created_at ASC");
+                $stmt = $this->pdo->prepare("SELECT community_user_id, email, fcm_token FROM community_users WHERE email = :email");
                 $stmt->bindParam(':email', $email);
                 $stmt->execute();
                 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -2092,7 +2092,7 @@ class DatabaseAPI {
             $analysis['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
             
             // Critical MUAC
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM community_users $whereClause AND muac < 11.5");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM community_users $whereClause");
             $stmt->execute($params);
             $analysis['critical_muac'] = $stmt->fetch(PDO::FETCH_ASSOC)['critical_muac'];
             
@@ -2444,7 +2444,7 @@ class DatabaseAPI {
             $data['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
             
             // Critical MUAC in time frame
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM community_users $whereClause AND muac < 11.5");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as critical_muac FROM community_users $whereClause");
             $stmt->execute($params);
             $data['critical_muac'] = $stmt->fetch(PDO::FETCH_ASSOC)['critical_muac'];
             
@@ -3807,19 +3807,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                         is_pregnant = ?, 
                                         weight = ?, 
                                         height = ?, 
-                                        muac = ?, 
                                         screening_date = NOW()
                                       WHERE email = ?";
                         
                         $updateStmt = $pdo->prepare($updateSql);
                         $result = $updateStmt->execute([
                             $municipality, $barangay, $sex, $birthday, $is_pregnant, 
-                            $weight, $height, $muac, $email
+                            $weight, $height, $email
                         ]);
                         
                         if ($result) {
                             // Verify the update worked
-                            $verifyStmt = $pdo->prepare("SELECT weight, height, muac_cm FROM community_users WHERE email = ?");
+                            $verifyStmt = $pdo->prepare("SELECT weight, height FROM community_users WHERE email = ?");
                             $verifyStmt->execute([$email]);
                             $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
                             
@@ -3836,18 +3835,18 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     } else {
                         // Create new user with direct SQL
                         $insertSql = "INSERT INTO community_users 
-                                     (name, email, municipality, barangay, sex, birthday, is_pregnant, weight, height, muac_cm, screening_date) 
-                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                                     (name, email, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date) 
+                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                         
                         $insertStmt = $pdo->prepare($insertSql);
                         $result = $insertStmt->execute([
                             $name, $email, $municipality, $barangay, $sex, $birthday, 
-                            $is_pregnant, $weight, $height, $muac
+                            $is_pregnant, $weight, $height
                         ]);
                         
                         if ($result) {
                             // Verify the insert worked
-                            $verifyStmt = $pdo->prepare("SELECT weight, height, muac_cm FROM community_users WHERE email = ?");
+                            $verifyStmt = $pdo->prepare("SELECT weight, height FROM community_users WHERE email = ?");
                             $verifyStmt->execute([$email]);
                             $savedData = $verifyStmt->fetch(PDO::FETCH_ASSOC);
                             
@@ -5313,20 +5312,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 'barangay' => $user['barangay'] ?? '',
                                 'sex' => $user['sex'] ?? '',
                                 'birthday' => $user['birthday'] ?? '',
-                                'age' => $user['age'] ?? '',
                                 'is_pregnant' => $user['is_pregnant'] ?? '',
                                 'weight' => $user['weight'] ?? '',
                                 'height' => $user['height'] ?? '',
-                                'muac_cm' => '',
-                                'bmi' => $user['bmi'] ?? '',
-                                'bmi_category' => $user['bmi_category'] ?? '',
-                                'muac_category' => $user['muac_category'] ?? '',
-                                'bmi' => $user['bmi'] ?? '',
                                 'screening_date' => $user['screening_date'] ?? '',
-                                'screened_by' => $user['screened_by'] ?? '',
-                                'notes' => $user['notes'] ?? '',
-                                'status' => $user['status'] ?? '',
-                                'created_at' => $user['created_at'] ?? ''
+                                'fcm_token' => $user['fcm_token'] ?? '',
+                                'bmi-for-age' => $user['bmi-for-age'] ?? '',
+                                'weight-for-height' => $user['weight-for-height'] ?? '',
+                                'weight-for-age' => $user['weight-for-age'] ?? '',
+                                'weight-for-length' => $user['weight-for-length'] ?? '',
+                                'height-for-age' => $user['height-for-age'] ?? ''
                             ]
                         ]);
                     } else {
