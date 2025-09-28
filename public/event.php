@@ -214,15 +214,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 
                 // Send FCM notifications directly (no cURL to avoid duplicates)
                 $successCount = 0;
-                foreach ($fcmTokens as $fcmToken) {
-                    error_log("🔍 Attempting to send FCM notification to token: " . substr($fcmToken, 0, 20) . "...");
+                foreach ($fcmTokens as $tokenData) {
+                    $fcmToken = $tokenData['fcm_token'];
+                    $userEmail = $tokenData['user_email'];
+                    
+                    error_log("🔍 Attempting to send FCM notification to user: $userEmail, token: " . substr($fcmToken, 0, 20) . "...");
                     $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
                     error_log("🔍 FCM Result: " . json_encode($fcmResult));
                     if ($fcmResult['success']) {
                         $successCount++;
-                        error_log("✅ FCM notification sent successfully");
+                        error_log("✅ FCM notification sent successfully to $userEmail");
                     } else {
-                        error_log("❌ FCM notification failed: " . ($fcmResult['error'] ?? 'Unknown error'));
+                        error_log("❌ FCM notification failed for $userEmail: " . ($fcmResult['error'] ?? 'Unknown error'));
                     }
                 }
                 
