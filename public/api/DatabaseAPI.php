@@ -2599,8 +2599,12 @@ class DatabaseAPI {
             $params = [];
             
             foreach ($data as $key => $value) {
-                $setParts[] = "$key = ?";
-                $params[] = $value;
+                if ($value === null || $value === 'null') {
+                    $setParts[] = "$key = NULL";
+                } else {
+                    $setParts[] = "$key = ?";
+                    $params[] = $value;
+                }
             }
             
             // Merge WHERE parameters
