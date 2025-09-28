@@ -1301,12 +1301,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             $errorMessage = "File size too large. Please upload a file smaller than 5MB.";
         } else {
             try {
-                // Open the CSV file
+                // Simple database connection using config.php
+                require_once __DIR__ . '/../config.php';
+                $pdo = getDatabaseConnection();
+                
+                if (!$pdo) {
+                    throw new Exception("Database connection failed");
+                }
+                
+                $importedCount = 0;
+                $errors = [];
+                $row = 0;
+                
+                // Open CSV file
                 if (($handle = fopen($fileTmpName, "r")) !== FALSE) {
-                    $row = 0;
-                    $importedCount = 0;
-                    $errors = [];
-                    $importedEvents = []; // Track imported events for notifications
                     
                     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                         $row++;
@@ -1364,84 +1372,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             continue;
                         }
                         
-                        // Use the SAME approach as manual event creation
+                        // Simple direct database insertion
                         try {
-                            // Get next available program_id (same as manual creation)
-                            $maxIdResult = $db->universalQuery("SELECT MAX(program_id) as max_id FROM programs");
-                            $nextId = ($maxIdResult['success'] && !empty($maxIdResult['data'])) ? $maxIdResult['data'][0]['max_id'] + 1 : 1;
+                            // Get next program_id
+                            $stmt = $pdo->query("SELECT MAX(program_id) as max_id FROM programs");
+                            $result = $stmt->fetch();
+                            $nextId = ($result['max_id'] ?? 0) + 1;
                             
-                            // Insert using DatabaseAPI::universalInsert (same as manual creation)
-                            $result = $db->universalInsert('programs', [
-                                'program_id' => $nextId,
-                                'title' => $title,
-                                'type' => $type,
-                                'description' => $description,
-                                'date_time' => $dateObj->format('Y-m-d H:i:s'),
-                                'location' => $location,
-                                'organizer' => $organizer,
+                            // Direct INSERT - no complex API calls
+                            $stmt = $pdo->prepare("
+                                INSERT INTO programs (program_id, title, type, description, date_time, location, organizer) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?)
+                            ");
+                            
+                            $success = $stmt->execute([
+                                $nextId,
+                                $title,
+                                'Event',
+                                $description,
+                                $dateObj->format('Y-m-d H:i:s'),
+                                $location,
+                                $organizer
                             ]);
                             
-                            if ($result['success']) {
-                                $eventId = $nextId; // Use the program_id we calculated
-                            $importedCount++;
-                                error_log("📁 CSV IMPORT: Row $row successfully inserted - Event ID: $eventId");
+                            if ($success) {
+                                $importedCount++;
+                                error_log("✅ CSV: Row $row imported successfully - ID: $nextId");
                             
-                            // Track imported event for notifications
-                            $importedEvents[] = [
-                                'id' => $eventId,
-                                'title' => $title,
-                                'type' => $type,
-                                'date_time' => $dateObj->format('Y-m-d H:i:s'),
-                                'location' => $location,
-                                'organizer' => $organizer,
-                                    'description' => $description
-                                ];
-                                
-                                // Send notifications immediately (same as manual creation)
-                                error_log("📱 CSV IMPORT: Sending notifications for event ID: $eventId");
-                                
-                                // Use the new getFCMTokensByLocation function
-                                $fcmTokenData = getFCMTokensByLocation($location);
-                                error_log("📱 CSV IMPORT: FCM tokens found: " . count($fcmTokenData) . " for location: '$location'");
-                                
-                                if (!empty($fcmTokenData)) {
-                                    // Enhanced notification data with event_id
-                                    $notificationData = [
-                                        'title' => "🎯 Event: $title",
-                                        'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s'))),
-                                        'target_user' => 'all',
-                                        'event_id' => $eventId,
-                                        'event_type' => $type,
-                                        'event_location' => $location,
-                                        'event_date' => date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')))
-                                    ];
+                                // Send simple notification
+                                try {
+                                    $notificationTitle = "🎯 Event: $title";
+                                    $notificationBody = "New event: $title at $location on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
                                     
-                                    // Send FCM notifications directly (same as manual creation)
-                                    $successCount = 0;
-                                    foreach ($fcmTokenData as $tokenData) {
-                                        $fcmToken = $tokenData['fcm_token'];
-                                        $userEmail = $tokenData['user_email'];
-                                        
-                                        error_log("🔍 CSV IMPORT: Attempting to send FCM notification to user: $userEmail, token: " . substr($fcmToken, 0, 20) . "...");
-                                        $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
-                                        error_log("🔍 CSV IMPORT: FCM Result: " . json_encode($fcmResult));
-                                        if ($fcmResult['success']) {
-                                            $successCount++;
-                                            error_log("✅ CSV IMPORT: FCM notification sent successfully to $userEmail");
-                                        } else {
-                                            error_log("❌ CSV IMPORT: FCM notification failed for $userEmail: " . ($fcmResult['error'] ?? 'Unknown error'));
+                                    // Get FCM tokens for location
+                                    $tokenStmt = $pdo->prepare("
+                                        SELECT fcm_token, email 
+                                        FROM community_users 
+                                        WHERE fcm_token IS NOT NULL AND fcm_token != ''
+                                        AND (municipality = ? OR barangay = ? OR ? = 'All Locations')
+                                    ");
+                                    $tokenStmt->execute([$location, $location, $location]);
+                                    $tokens = $tokenStmt->fetchAll();
+                                    
+                                    $sentCount = 0;
+                                    foreach ($tokens as $token) {
+                                        $result = sendEventFCMNotificationToToken($token['fcm_token'], $notificationTitle, $notificationBody);
+                                        if ($result['success']) {
+                                            $sentCount++;
                                         }
                                     }
+                                    error_log("📱 CSV: Sent notifications to $sentCount users for event: $title");
                                     
-                                    error_log("📱 CSV IMPORT: Notification sent to " . $successCount . " users directly via FCM");
-                                } else {
-                                    error_log("⚠️ CSV IMPORT: No FCM tokens found for location: $location");
+                                } catch (Exception $e) {
+                                    error_log("⚠️ CSV: Notification failed for row $row: " . $e->getMessage());
                                 }
                                 
                             } else {
-                                error_log("📁 CSV IMPORT: Row $row database insert failed: " . $result['message']);
-                                $errors[] = "Row $row: Database insert failed - " . $result['message'];
-                                continue;
+                                $errors[] = "Row $row: Database insert failed";
                             }
                             
                         } catch(PDOException $e) {
@@ -1449,111 +1436,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         }
                     }
                     fclose($handle);
-                    
-                    // Send real-time notifications for imported events with location-based targeting
-                    if (!empty($importedEvents)) {
-                        try {
-                            foreach ($importedEvents as $event) {
-                                // Get FCM tokens based on event location
-                                $fcmTokenData = getFCMTokensByLocation($event['location']);
-                                $fcmTokens = array_column($fcmTokenData, 'fcm_token');
-                            
-                            if (!empty($fcmTokens)) {
-                                    // Determine target type for logging
-                                    $targetType = 'all';
-                                    $targetValue = 'all';
-                                    if (!empty($event['location'])) {
-                                        if (strpos($event['location'], 'MUNICIPALITY_') === 0) {
-                                            $targetType = 'municipality';
-                                            $targetValue = $event['location'];
-                                        } else {
-                                            $targetType = 'barangay';
-                                            $targetValue = $event['location'];
-                                        }
-                                    }
-                                    
-                                    $notificationSent = sendEventFCMNotification($fcmTokenData, [
-                                        'title' => $event['title'],
-                                        'body' => "New event imported: $event[title] at $event[location] on " . date('M j, Y g:i A', strtotime($event['date_time'])),
-                                        'data' => [
-                                            'event_id' => $event['id'],
-                                            'event_title' => $event['title'],
-                                            'event_type' => $event['type'],
-                                            'event_description' => $event['description'],
-                                            'event_date' => $event['date_time'],
-                                            'event_location' => $event['location'],
-                                            'event_organizer' => $event['organizer'],
-                                            'notification_type' => 'imported_event',
-                                            'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
-                                        ]
-                                    ], $event['location']);
-                                    
-                                    // Log the notification attempt
-                                    logNotificationAttempt($event['id'], 'imported_event', $targetType, $targetValue, count($fcmTokens), $notificationSent);
-                                } else {
-                                    // Log the attempt with no tokens found
-                                    logNotificationAttempt($event['id'], 'imported_event', 'barangay', $event['location'], 0, false, 'No FCM tokens found for location');
-                                }
-                            }
-                            
-                        } catch(Exception $e) {
-                            error_log("Error sending notifications for imported events: " . $e->getMessage());
-                        }
-                    }
-                    
-                                            // Show success/error message
-                        if ($importedCount > 0) {
-                            $successMessage = "Successfully imported $importedCount events!";
-                            if (!empty($errors)) {
-                                $successMessage .= " However, " . count($errors) . " rows had errors.";
-                            }
-                            
-                            // Force refresh the programs list
-                            $stmt = $conn->prepare("SELECT * FROM programs ORDER BY date_time DESC");
-                            $stmt->execute();
-                            $programs = $stmt->fetchAll();
-                            
-
-                            $successMessage = "CSV imported successfully! $importedCount events imported.";
-                            if (count($errors) > 0) {
-                                $successMessage .= " However, " . count($errors) . " rows had errors.";
-                            }
-                        } else {
-                            $errorMessage = "No events were imported. " . implode("; ", $errors);
-                        }
-                } else {
-                    $errorMessage = "Error reading CSV file.";
                 }
-            } catch(Exception $e) {
-                $errorMessage = "Error processing CSV file: " . $e->getMessage();
-            }
-            
-            // Return JSON response for AJAX calls
+                
+                // Return JSON response
+                header('Content-Type: application/json');
+                if ($importedCount > 0) {
+                    echo json_encode([
+                        'success' => true,
+                        'imported_count' => $importedCount,
+                        'message' => "Successfully imported $importedCount events!",
+                        'errors' => $errors
+                    ]);
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'imported_count' => 0,
+                        'message' => 'No events imported. ' . implode('; ', $errors),
+                        'errors' => $errors
+                    ]);
+                }
+                exit;
+                
+        } catch (Exception $e) {
             header('Content-Type: application/json');
-            if ($importedCount > 0) {
-                echo json_encode([
-                    'success' => true,
-                    'imported_count' => $importedCount,
-                    'message' => "Successfully imported $importedCount events!",
-                    'errors' => $errors ?? []
-                ]);
-            } else {
-                echo json_encode([
-                    'success' => false,
-                    'imported_count' => 0,
-                    'message' => $errorMessage ?? 'No events were imported',
-                    'errors' => $errors ?? []
-                ]);
-            }
+            echo json_encode([
+                'success' => false,
+                'imported_count' => 0,
+                'message' => 'CSV import failed: ' . $e->getMessage(),
+                'errors' => []
+            ]);
             exit;
         }
-            } else {
-            if (isset($_FILES['csvFile'])) {
-                $errorMessage = "File upload error: " . $_FILES['csvFile']['error'];
-            } else {
-                $errorMessage = "Please select a CSV file to upload.";
-            }
-        }
+        
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'imported_count' => 0,
+            'message' => 'File upload failed',
+            'errors' => []
+        ]);
+        exit;
+    }
 }
 
 // Note: Deletion is now handled via AJAX calls to /api/delete_program.php and /api/delete_all_programs.php
