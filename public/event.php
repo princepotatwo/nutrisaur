@@ -898,13 +898,13 @@ function sendNotificationViaAPI($notificationData) {
         // Get FCM tokens for the target user from community_users table
         $fcmTokens = [];
         if (!empty($targetUser)) {
-            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE email = :email AND status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
+            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE email = :email AND fcm_token IS NOT NULL AND fcm_token != ''");
             $stmt->bindParam(':email', $targetUser);
             $stmt->execute();
             $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
         } else {
             // Send to all active tokens if no specific user
-            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
+            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
             $stmt->execute();
             $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
         }
@@ -1054,8 +1054,7 @@ function getFCMTokensByLocation($targetLocation = null) {
             $stmt = $db->getPDO()->prepare("
                 SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                 FROM community_users
-                WHERE status = 'active'
-                AND fcm_token IS NOT NULL 
+                WHERE fcm_token IS NOT NULL 
                 AND fcm_token != ''
                 AND barangay IS NOT NULL 
                 AND barangay != ''
@@ -1089,22 +1088,26 @@ function getFCMTokensByLocation($targetLocation = null) {
                 $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                     FROM community_users
-                    WHERE status = 'active'
-                    AND fcm_token IS NOT NULL 
+                    WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND municipality = :municipalityName
                 ");
                 $stmt->bindParam(':municipalityName', $actualMunicipalityName);
                 $stmt->execute();
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                // Debug: Log what we found
+                error_log("Municipality query result: Found " . count($tokens) . " tokens for municipality '$actualMunicipalityName'");
+                if (count($tokens) > 0) {
+                    error_log("First token: " . json_encode($tokens[0]));
+                }
             } else {
                 error_log("Processing barangay case: $targetLocation - getting ACTIVE tokens only");
                 // Get FCM tokens by barangay for active users only
                 $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                     FROM community_users
-                    WHERE status = 'active'
-                    AND fcm_token IS NOT NULL 
+                    WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND barangay = :targetLocation
                 ");
@@ -1123,12 +1126,12 @@ function getFCMTokensByLocation($targetLocation = null) {
             error_log("No FCM tokens found. Checking if there are any FCM tokens with barangay data...");
             
             // Check if there are any FCM tokens with barangay data from community_users table
-            $checkStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE barangay IS NOT NULL AND barangay != '' AND status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
+            $checkStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE barangay IS NOT NULL AND barangay != '' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $checkStmt->execute();
             $tokenWithBarangayCount = $checkStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // Check if there are any active FCM tokens from community_users table
-            $tokenStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
+            $tokenStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
             $tokenStmt->execute();
             $tokenCount = $tokenStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
@@ -1183,7 +1186,6 @@ function getUserLocationStats() {
             SELECT COUNT(*) as total_users_with_barangay
             FROM community_users
             WHERE barangay IS NOT NULL AND barangay != ''
-            AND status = 'active'
         ");
         $stmt->execute();
         $stats['total_users_with_barangay'] = $stmt->fetchColumn();
@@ -1192,7 +1194,7 @@ function getUserLocationStats() {
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as total_fcm_tokens
             FROM community_users 
-            WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''
+            WHERE fcm_token IS NOT NULL AND fcm_token != ''
         ");
         $stmt->execute();
         $stats['total_fcm_tokens'] = $stmt->fetchColumn();
@@ -1201,7 +1203,7 @@ function getUserLocationStats() {
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as fcm_tokens_with_barangay
             FROM community_users
-            WHERE status = 'active' 
+            WHERE 1=1 
             AND fcm_token IS NOT NULL 
             AND fcm_token != ''
             AND barangay IS NOT NULL 
@@ -1214,7 +1216,7 @@ function getUserLocationStats() {
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as fcm_tokens_without_barangay
             FROM community_users 
-            WHERE status = 'active' 
+            WHERE 1=1 
             AND fcm_token IS NOT NULL 
             AND fcm_token != ''
             AND (barangay IS NULL OR barangay = '')
@@ -1239,10 +1241,10 @@ function getUsersForLocation($targetLocation) {
     try {
         if (empty($targetLocation) || $targetLocation === 'all') {
             $result = $db->universalQuery("
-                SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
+                SELECT cu.email as user_email, cu.barangay, cu.fcm_token
                 FROM community_users cu
                 WHERE cu.barangay IS NOT NULL AND cu.barangay != ''
-                AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
+                AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
                 ORDER BY cu.barangay, cu.email
             ");
             $users = $result['success'] ? $result['data'] : [];
@@ -1251,20 +1253,20 @@ function getUsersForLocation($targetLocation) {
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $result = $db->universalQuery("
-                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
+                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token
                     FROM community_users cu
                     WHERE cu.barangay IS NOT NULL AND cu.barangay != ''
-                    AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
+                    AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
                     AND (cu.barangay = ? OR cu.barangay LIKE ?)
                     ORDER BY cu.barangay, cu.email
                 ", [$targetLocation, $municipalityName . '%']);
                 $users = $result['success'] ? $result['data'] : [];
             } else {
                 $result = $db->universalQuery("
-                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
+                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token
                     FROM community_users cu
                     WHERE cu.barangay = ?
-                    AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
+                    AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
                     ORDER BY cu.email
                 ", [$targetLocation]);
                 $users = $result['success'] ? $result['data'] : [];
