@@ -787,15 +787,14 @@ class DatabaseAPI {
                 // Update existing user with FCM token
                 error_log("FCM_DEBUG: Updating existing user with FCM token");
                 $stmt = $this->pdo->prepare("UPDATE community_users SET 
-                    fcm_token = :fcm_token,
-                    updated_at = CURRENT_TIMESTAMP
+                    fcm_token = :fcm_token
                     WHERE email = :email");
             } else {
                 // Insert new user with FCM token (minimal data)
                 error_log("FCM_DEBUG: Creating new user with FCM token");
                 $stmt = $this->pdo->prepare("INSERT INTO community_users 
-                    (email, fcm_token, barangay, screening_date, created_at, updated_at) 
-                    VALUES (:email, :fcm_token, :user_barangay, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+                    (email, fcm_token, barangay, screening_date) 
+                    VALUES (:email, :fcm_token, :user_barangay, CURRENT_TIMESTAMP)");
             }
             
             // SAFER APPROACH: Only clear tokens for the specific user, not all users with same email
@@ -4090,6 +4089,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     echo json_encode(['success' => false, 'message' => 'FCM token is required']);
                     break;
                 }
+                
+                // No database schema changes needed
                 
                 $result = $db->registerFCMToken($fcmToken, $deviceName, $userEmail, $userBarangay, $appVersion, $platform);
                 echo json_encode($result);
