@@ -787,20 +787,25 @@ class DatabaseAPI {
                 // Update existing user with FCM token
                 error_log("FCM_DEBUG: Updating existing user with FCM token");
                 $stmt = $this->pdo->prepare("UPDATE community_users SET 
-                    fcm_token = :fcm_token
+                    fcm_token = :fcm_token,
+                    updated_at = CURRENT_TIMESTAMP
                     WHERE email = :email");
             } else {
                 // Insert new user with FCM token (minimal data)
                 error_log("FCM_DEBUG: Creating new user with FCM token");
                 $stmt = $this->pdo->prepare("INSERT INTO community_users 
-                    (email, fcm_token, barangay, screening_date) 
-                    VALUES (:email, :fcm_token, :user_barangay, CURRENT_TIMESTAMP)");
+                    (email, fcm_token, barangay, screening_date, created_at, updated_at) 
+                    VALUES (:email, :fcm_token, :user_barangay, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
             }
             
-            // First, clear any existing FCM tokens for this user to prevent duplicates
-            $clearStmt = $this->pdo->prepare("UPDATE community_users SET fcm_token = NULL WHERE email = :email");
-            $clearStmt->bindParam(':email', $userEmail);
-            $clearStmt->execute();
+            // SAFER APPROACH: Only clear tokens for the specific user, not all users with same email
+            // This prevents accidentally clearing other users' tokens
+            if ($user) {
+                error_log("FCM_DEBUG: Clearing existing FCM token for specific user only");
+                $clearStmt = $this->pdo->prepare("UPDATE community_users SET fcm_token = NULL WHERE email = :email AND fcm_token IS NOT NULL");
+                $clearStmt->bindParam(':email', $userEmail);
+                $clearStmt->execute();
+            }
             
             $stmt->bindParam(':fcm_token', $fcmToken);
             $stmt->bindParam(':user_barangay', $userBarangay);
@@ -934,6 +939,54 @@ class DatabaseAPI {
             return true;
         } catch (PDOException $e) {
             return false;
+        }
+    }
+    
+    /**
+     * Check for and fix duplicate emails that could cause FCM token issues
+     */
+    public function fixDuplicateEmails() {
+        try {
+            // Find duplicate emails
+            $stmt = $this->pdo->query("
+                SELECT email, COUNT(*) as count 
+                FROM community_users 
+                GROUP BY email 
+                HAVING COUNT(*) > 1 
+                ORDER BY count DESC
+            ");
+            $duplicates = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $fixedCount = 0;
+            foreach ($duplicates as $dup) {
+                $email = $dup['email'];
+                $count = $dup['count'];
+                
+                // Get all users with this email
+                $stmt = $this->pdo->prepare("SELECT community_user_id, email, fcm_token, created_at FROM community_users WHERE email = :email ORDER BY created_at ASC");
+                $stmt->bindParam(':email', $email);
+                $stmt->execute();
+                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                if (count($users) > 1) {
+                    // Keep the first user, update others with unique emails
+                    $keepUser = $users[0];
+                    $updateUsers = array_slice($users, 1);
+                    
+                    foreach ($updateUsers as $index => $user) {
+                        $newEmail = $email . '_duplicate_' . ($index + 1) . '@nutrisaur.fixed';
+                        $stmt = $this->pdo->prepare("UPDATE community_users SET email = :new_email WHERE community_user_id = :user_id");
+                        $stmt->bindParam(':new_email', $newEmail);
+                        $stmt->bindParam(':user_id', $user['community_user_id']);
+                        $stmt->execute();
+                        $fixedCount++;
+                    }
+                }
+            }
+            
+            return ['success' => true, 'fixed_count' => $fixedCount, 'duplicates_found' => count($duplicates)];
+        } catch (PDOException $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
     
