@@ -1270,9 +1270,10 @@ function getUsersForLocation($targetLocation) {
 
 // Handle CSV file upload and import
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
-    
+    error_log("📁 CSV IMPORT: Starting CSV import process");
     
     if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
+        error_log("📁 CSV IMPORT: CSV file received successfully");
         $file = $_FILES['csvFile'];
         $fileName = $file['name'];
         $fileTmpName = $file['tmp_name'];
@@ -1281,10 +1282,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
         
         // Check if file is CSV
         if ($fileExt != 'csv') {
+            error_log("📁 CSV IMPORT: Error - File is not CSV, extension: " . $fileExt);
             $errorMessage = "Please upload a CSV file only.";
         } elseif ($fileSize > 5000000) { // 5MB limit
+            error_log("📁 CSV IMPORT: Error - File too large: " . $fileSize . " bytes");
             $errorMessage = "File size too large. Please upload a file smaller than 5MB.";
         } else {
+            error_log("📁 CSV IMPORT: File validation passed, starting processing");
             try {
                 // Open the CSV file
                 if (($handle = fopen($fileTmpName, "r")) !== FALSE) {
@@ -1295,9 +1299,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                     
                     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                         $row++;
+                        error_log("📁 CSV IMPORT: Processing row $row with " . count($data) . " columns");
                         
                         // Skip header row
-                        if ($row == 1) continue;
+                        if ($row == 1) {
+                            error_log("📁 CSV IMPORT: Skipping header row");
+                            continue;
+                        }
                         
                         // Check if we have enough columns (now only 5 required)
                         if (count($data) < 5) {
@@ -1312,6 +1320,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         $organizer = trim($data[3]);
                         $description = trim($data[4]);
                         
+                        error_log("📁 CSV IMPORT: Row $row data - Title: '$title', Date: '$date_time', Location: '$location', Organizer: '$organizer'");
+                        
                         // Auto-set type to "Event" since we removed the type field
                         $type = 'Event';
                         
@@ -1320,6 +1330,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         
                         // Validate required fields
                         if (empty($title) || empty($date_time) || empty($location)) {
+                            error_log("📁 CSV IMPORT: Row $row validation failed - Missing required fields");
                             $errors[] = "Row $row: Missing required fields (title, date, or location)";
                             continue;
                         }
@@ -1345,9 +1356,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         }
                         
                         if (!$dateObj) {
+                            error_log("📁 CSV IMPORT: Row $row date validation failed - Invalid date format: '$date_time'");
                             $errors[] = "Row $row: Invalid date format. Use YYYY-MM-DD HH:MM (e.g., 2024-01-15 14:00)";
                             continue;
                         }
+                        
+                        error_log("📁 CSV IMPORT: Row $row date validation passed - Parsed date: " . $dateObj->format('Y-m-d H:i:s'));
                         
                         // Check for duplicate events before inserting
                         try {
@@ -1386,6 +1400,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             $stmt->execute();
                             $eventId = $conn->lastInsertId();
                             $importedCount++;
+                            error_log("📁 CSV IMPORT: Row $row successfully inserted - Event ID: $eventId");
                             
                             // Track imported event for notifications
                             $importedEvents[] = [
@@ -1403,6 +1418,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         }
                     }
                     fclose($handle);
+                    error_log("📁 CSV IMPORT: Processing completed - Imported: $importedCount events, Errors: " . count($errors));
                     
                     // Send real-time notifications for imported events with location-based targeting
                     if (!empty($importedEvents)) {
@@ -1471,8 +1487,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             if (count($errors) > 0) {
                                 $successMessage .= " However, " . count($errors) . " rows had errors.";
                             }
+                            
+                            // If this is an AJAX request, return JSON response
+                            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                                echo json_encode([
+                                    'success' => true,
+                                    'message' => $successMessage,
+                                    'imported_count' => $importedCount,
+                                    'errors' => $errors
+                                ]);
+                                exit;
+                            }
                         } else {
                             $errorMessage = "No events were imported. " . implode("; ", $errors);
+                            
+                            // If this is an AJAX request, return JSON response
+                            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                                echo json_encode([
+                                    'success' => false,
+                                    'message' => $errorMessage,
+                                    'imported_count' => 0,
+                                    'errors' => $errors
+                                ]);
+                                exit;
+                            }
                         }
                 } else {
                     $errorMessage = "Error reading CSV file.";
@@ -6193,6 +6231,7 @@ Community Outreach,${formatDate(future3)},LIMAY,Dr. Ana Rodriguez,Food distribut
             
             const formData = new FormData();
             formData.append('csvFile', file);
+            formData.append('import_csv', '1');
             
             // Show loading state
             const importBtn = document.getElementById('importBtn');
@@ -6203,7 +6242,7 @@ Community Outreach,${formatDate(future3)},LIMAY,Dr. Ana Rodriguez,Food distribut
             importBtn.innerHTML = '🔄 Uploading...';
             importStatus.style.display = 'block';
             
-            fetch('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=import_csv', {
+            fetch('event.php', {
                 method: 'POST',
                 body: formData
             })
