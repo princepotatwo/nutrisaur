@@ -5331,6 +5331,16 @@ header:hover {
             }, 3000);
         }
 
+        // Show success notification function
+        function showNotificationSuccess(message) {
+            showNotification(message, 'success');
+        }
+
+        // Show error notification function
+        function showNotificationError(message) {
+            showNotification(message, 'error');
+        }
+
         // Individual event deletion function (like settings.php deleteUser)
         function deleteEvent(eventId) {
             if (!eventId || eventId === '') {
@@ -7589,8 +7599,10 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
             } finally {
                 // Restore button state
                 const submitBtn = document.querySelector('#newCreateEventForm .btn-add');
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span class="btn-text">Create Event</span>';
+                    submitBtn.disabled = false;
+                }
             }
         }
 

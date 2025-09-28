@@ -1,188 +1,295 @@
-2025-09-27T00:36:21.000000000Z [inf]  Starting Container
-2025-09-27T00:36:21.764687828Z [err]  [Sat Sep 27 00:36:21 2025] PHP 8.1.33 Development Server (http://0.0.0.0:8080) started
-2025-09-27T00:36:22.435024279Z [err]  [Sat Sep 27 00:36:22 2025] 100.64.0.2:50281 Accepted
-2025-09-27T00:36:22.435030075Z [err]  [Sat Sep 27 00:36:22 2025] === ROUTER DEBUG ===
-2025-09-27T00:36:22.435034295Z [err]  [Sat Sep 27 00:36:22 2025] Requested path: health
-2025-09-27T00:36:22.435038199Z [err]  [Sat Sep 27 00:36:22 2025] Public path: /var/www/html/public/
-2025-09-27T00:36:22.435041923Z [err]  [Sat Sep 27 00:36:22 2025] Public API path: /var/www/html/public/api/
-2025-09-27T00:36:22.435048774Z [err]  [Sat Sep 27 00:36:22 2025] Request URI: /health
-2025-09-27T00:36:22.435053473Z [err]  [Sat Sep 27 00:36:22 2025] Script Name: /index.php
-2025-09-27T00:36:22.435056902Z [err]  [Sat Sep 27 00:36:22 2025] 100.64.0.2:50281 [200]: GET /health
-2025-09-27T00:36:22.435060491Z [err]  [Sat Sep 27 00:36:22 2025] 100.64.0.2:50281 Closing
-2025-09-27T00:36:28.366986277Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27012 Accepted
-2025-09-27T00:36:28.366992027Z [err]  [Sat Sep 27 00:36:28 2025] === ROUTER DEBUG ===
-2025-09-27T00:36:28.366996771Z [err]  [Sat Sep 27 00:36:28 2025] Requested path: 
-2025-09-27T00:36:28.367003412Z [err]  [Sat Sep 27 00:36:28 2025] Public path: /var/www/html/public/
-2025-09-27T00:36:28.367007371Z [err]  [Sat Sep 27 00:36:28 2025] Public API path: /var/www/html/public/api/
-2025-09-27T00:36:28.367011587Z [err]  [Sat Sep 27 00:36:28 2025] Request URI: /
-2025-09-27T00:36:28.367015646Z [err]  [Sat Sep 27 00:36:28 2025] Script Name: /index.php
-2025-09-27T00:36:28.375412749Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27012 [200]: GET /
-2025-09-27T00:36:28.375418100Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27012 Closing
-2025-09-27T00:36:28.461786175Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27022 Accepted
-2025-09-27T00:36:28.461791775Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27022 [200]: GET /google-oauth-config.js
-2025-09-27T00:36:28.461796510Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27022 Closing
-2025-09-27T00:36:28.536629175Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27028 Accepted
-2025-09-27T00:36:28.539920216Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27028 [200]: POST /home.php
-2025-09-27T00:36:28.539924967Z [err]  [Sat Sep 27 00:36:28 2025] 100.64.0.3:27028 Closing
-2025-09-27T00:36:36.442930142Z [err]  [Sat Sep 27 00:36:36 2025] 100.64.0.4:38758 Accepted
-2025-09-27T00:36:36.493782145Z [err]  [Sat Sep 27 00:36:36 2025] 100.64.0.4:38758 [200]: POST /home.php
-2025-09-27T00:36:36.493787600Z [err]  [Sat Sep 27 00:36:36 2025] 100.64.0.4:38758 Closing
-2025-09-27T00:36:37.565291947Z [err]  [Sat Sep 27 00:36:37 2025] 100.64.0.4:38770 Accepted
-2025-09-27T00:36:37.568819844Z [err]  [Sat Sep 27 00:36:37 2025] === ROUTER DEBUG ===
-2025-09-27T00:36:37.568826437Z [err]  [Sat Sep 27 00:36:37 2025] Requested path: dash
-2025-09-27T00:36:37.568831779Z [err]  [Sat Sep 27 00:36:37 2025] Public path: /var/www/html/public/
-2025-09-27T00:36:37.568836857Z [err]  [Sat Sep 27 00:36:37 2025] Public API path: /var/www/html/public/api/
-2025-09-27T00:36:37.568845183Z [err]  [Sat Sep 27 00:36:37 2025] Request URI: /dash
-2025-09-27T00:36:37.568849344Z [err]  [Sat Sep 27 00:36:37 2025] Script Name: /index.php
-2025-09-27T00:36:37.632249844Z [err]  [Sat Sep 27 00:36:37 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:36:37.676128246Z [err]  [Sat Sep 27 00:36:37 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:36:37.679253455Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getTimeFrameData Debug - Starting
-2025-09-27T00:36:37.679260901Z [err]  [Sat Sep 27 00:36:37 2025]   - Barangay: null
-2025-09-27T00:36:37.679265723Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getTimeFrameData Debug - Querying database
-2025-09-27T00:36:37.679269891Z [err]  [Sat Sep 27 00:36:37 2025]   - WHERE clause: 1=1
-2025-09-27T00:36:37.679276527Z [err]  [Sat Sep 27 00:36:37 2025]   - Params: []
-2025-09-27T00:36:37.682923041Z [err]  [Sat Sep 27 00:36:37 2025]   - Query result success: YES
-2025-09-27T00:36:37.682933981Z [err]  [Sat Sep 27 00:36:37 2025]   - Query result message: No message
-2025-09-27T00:36:37.682941528Z [err]  [Sat Sep 27 00:36:37 2025]   - Number of users found: 6
-2025-09-27T00:36:37.682947276Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:37.682955878Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:37.682964051Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:37.728084562Z [err]  [Sat Sep 27 00:36:37 2025] 📊 WHO Classification Summary for weight-for-age:
-2025-09-27T00:36:37.728096975Z [err]  [Sat Sep 27 00:36:37 2025]   - Total users in database: 6
-2025-09-27T00:36:37.728105877Z [err]  [Sat Sep 27 00:36:37 2025]   - Users eligible for standard: 2
-2025-09-27T00:36:37.728110779Z [err]  [Sat Sep 27 00:36:37 2025]   - Users processed (with classifications): 2
-2025-09-27T00:36:37.728115070Z [err]  [Sat Sep 27 00:36:37 2025]   - Classifications: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
-2025-09-27T00:36:37.731335653Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:37.731344331Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:37.731348745Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:37.786300299Z [err]  [Sat Sep 27 00:36:37 2025] 📊 WHO Classification Summary for height-for-age:
-2025-09-27T00:36:37.786304497Z [err]  [Sat Sep 27 00:36:37 2025]   - Total users in database: 6
-2025-09-27T00:36:37.786309615Z [err]  [Sat Sep 27 00:36:37 2025]   - Users eligible for standard: 2
-2025-09-27T00:36:37.786314235Z [err]  [Sat Sep 27 00:36:37 2025]   - Users processed (with classifications): 2
-2025-09-27T00:36:37.786318405Z [err]  [Sat Sep 27 00:36:37 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":1,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":1,"Stunted":0,"Tall":0,"No Data":0}
-2025-09-27T00:36:37.786322875Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:37.786327349Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:37.786331757Z [err]  [Sat Sep 27 00:36:37 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:37.824043485Z [err]  [Sat Sep 27 00:36:37 2025] 📊 WHO Classification Summary for weight-for-height:
-2025-09-27T00:36:37.824059348Z [err]  [Sat Sep 27 00:36:37 2025]   - Total users in database: 6
-2025-09-27T00:36:37.824064717Z [err]  [Sat Sep 27 00:36:37 2025]   - Users eligible for standard: 2
-2025-09-27T00:36:37.824069553Z [err]  [Sat Sep 27 00:36:37 2025]   - Users processed (with classifications): 2
-2025-09-27T00:36:37.824074096Z [err]  [Sat Sep 27 00:36:37 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"Severely Wasted":2,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
-2025-09-27T00:36:38.139418154Z [err]  [Sat Sep 27 00:36:38 2025] 🔍 Nutritional Statistics Debug - Starting
-2025-09-27T00:36:38.139421611Z [err]  [Sat Sep 27 00:36:38 2025]   - Barangay: null
-2025-09-27T00:36:38.454119853Z [err]  [Sat Sep 27 00:36:38 2025]   - Total users found: 5
-2025-09-27T00:36:38.454124862Z [err]  [Sat Sep 27 00:36:38 2025] 🔍 Nutritional Statistics generated successfully
-2025-09-27T00:36:38.454130726Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38770 [200]: GET /dash
-2025-09-27T00:36:38.454136305Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38770 Closing
-2025-09-27T00:36:38.656982740Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38778 Accepted
-2025-09-27T00:36:38.656986469Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38778 [200]: GET /logo.png
-2025-09-27T00:36:38.656990853Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:38778 Closing
-2025-09-27T00:36:38.979462368Z [err]  [Sat Sep 27 00:36:38 2025] 100.64.0.4:46786 Accepted
-2025-09-27T00:36:39.016380404Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:36:39.064455265Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:36:39.064458747Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:39.064462332Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:39.064467246Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:39.110557425Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46786 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
-2025-09-27T00:36:39.110562344Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46786 Closing
-2025-09-27T00:36:39.164091257Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46788 Accepted
-2025-09-27T00:36:39.207961026Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:36:39.248934915Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:36:39.252313737Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:39.252321694Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:39.252327201Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:39.294194906Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Donut data success: YES
-2025-09-27T00:36:39.294200009Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-27T00:36:39.294203866Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classifications from donut: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":4}
-2025-09-27T00:36:39.297498726Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:39.297505626Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:39.297510675Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:39.343196802Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 17 years (204 months)
-2025-09-27T00:36:39.343203722Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-27T00:36:39.343212413Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-27T00:36:39.343219924Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User vivigiv - Birthday: 2023-09-23, Age: 2 years (24 months), Range: 22-28m, Classification: Severely Underweight
-2025-09-27T00:36:39.343226568Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 20.1 years (241 months)
-2025-09-27T00:36:39.343232252Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User meow - Birthday: 2025-04-10, Age: 0.4 years (5 months), Range: 0-7m, Classification: Severely Underweight
-2025-09-27T00:36:39.343238886Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-27T00:36:39.343244031Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Processed 6 users, skipped 0, eligible 2, charted 2
-2025-09-27T00:36:39.343248901Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-27T00:36:39.343254341Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Age classification summary - Total users: 2
-2025-09-27T00:36:39.343259584Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-27T00:36:39.343265800Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46788 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
-2025-09-27T00:36:39.343272732Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46788 Closing
-2025-09-27T00:36:39.442708284Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46800 Accepted
-2025-09-27T00:36:39.489131322Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:36:39.531770739Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:36:39.535048195Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:39.535062355Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:39.535069381Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:39.582257806Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46800 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=
-2025-09-27T00:36:39.582263187Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46800 Closing
-2025-09-27T00:36:39.644327279Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46804 Accepted
-2025-09-27T00:36:39.695879581Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:36:39.742035250Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:36:39.742042287Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:39.742048455Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:39.742053049Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:39.790868636Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Donut data success: YES
-2025-09-27T00:36:39.790874534Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-27T00:36:39.790878952Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classifications from donut: {"Severely Underweight":2,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":4}
-2025-09-27T00:36:39.790883899Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:39.790889052Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:39.790894923Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:39.831276434Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 17 years (204 months)
-2025-09-27T00:36:39.831280991Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-27T00:36:39.831286115Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
-2025-09-27T00:36:39.831290810Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User vivigiv - Birthday: 2023-09-23, Age: 2 years (24 months), Range: 22-28m, Classification: Severely Underweight
-2025-09-27T00:36:39.831294778Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 20.1 years (241 months)
-2025-09-27T00:36:39.831298643Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: User meow - Birthday: 2025-04-10, Age: 0.4 years (5 months), Range: 0-7m, Classification: Severely Underweight
-2025-09-27T00:36:39.831302591Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: WHO Standard: weight-for-age
-2025-09-27T00:36:39.831306916Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Processed 6 users, skipped 0, eligible 2, charted 2
-2025-09-27T00:36:39.831311073Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-27T00:36:39.831314739Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Age classification summary - Total users: 2
-2025-09-27T00:36:39.831318316Z [err]  [Sat Sep 27 00:36:39 2025] DEBUG: Classification counts: {"Severely Underweight":[1,0,0,1,0,0,0,0,0,0]}
-2025-09-27T00:36:39.831324210Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46804 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
-2025-09-27T00:36:39.831329294Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46804 Closing
-2025-09-27T00:36:39.899685263Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46808 Accepted
-2025-09-27T00:36:39.940430232Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:36:39.982678871Z [err]  [Sat Sep 27 00:36:39 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:36:39.982685251Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:39.982689879Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:39.982693649Z [err]  [Sat Sep 27 00:36:39 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:39.982734493Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46808 [200]: GET /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
-2025-09-27T00:36:39.982738608Z [err]  [Sat Sep 27 00:36:39 2025] 100.64.0.4:46808 Closing
-2025-09-27T00:36:40.117998839Z [err]  [Sat Sep 27 00:36:40 2025] 100.64.0.4:46812 Accepted
-2025-09-27T00:36:40.118259081Z [err]  [Sat Sep 27 00:36:40 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:36:40.128223886Z [err]  [Sat Sep 27 00:36:40 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:36:40.132234600Z [err]  [Sat Sep 27 00:36:40 2025] 🔍 getDetailedScreeningResponses: Found 6 users for location: 
-2025-09-27T00:36:40.132238617Z [err]  [Sat Sep 27 00:36:40 2025] 🔍 getDetailedScreeningResponses: First user municipality: ABUCAY
-2025-09-27T00:36:40.132242828Z [err]  [Sat Sep 27 00:36:40 2025] 🔍 getDetailedScreeningResponses: First user barangay: Capitangan
-2025-09-27T00:36:40.132247071Z [err]  [Sat Sep 27 00:36:40 2025] 100.64.0.4:46812 [200]: GET /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
-2025-09-27T00:36:40.132252296Z [err]  [Sat Sep 27 00:36:40 2025] 100.64.0.4:46812 Closing
-2025-09-27T00:36:40.996516988Z [err]  [Sat Sep 27 00:36:40 2025] 100.64.0.4:46824 Accepted
-2025-09-27T00:36:41.005601468Z [err]  [Sat Sep 27 00:36:41 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:36:41.014459593Z [err]  [Sat Sep 27 00:36:41 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:36:41.014465212Z [err]  [Sat Sep 27 00:36:41 2025] 100.64.0.4:46824 [200]: GET /api/dashboard_assessment_stats.php
-2025-09-27T00:36:41.014471433Z [err]  [Sat Sep 27 00:36:41 2025] 100.64.0.4:46824 Closing
-2025-09-27T00:36:43.584525170Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46830 Accepted
-2025-09-27T00:36:43.584534306Z [err]  [Sat Sep 27 00:36:43 2025] === ROUTER DEBUG ===
-2025-09-27T00:36:43.584539681Z [err]  [Sat Sep 27 00:36:43 2025] Requested path: screening
-2025-09-27T00:36:43.584544831Z [err]  [Sat Sep 27 00:36:43 2025] Public path: /var/www/html/public/
-2025-09-27T00:36:43.584550388Z [err]  [Sat Sep 27 00:36:43 2025] Public API path: /var/www/html/public/api/
-2025-09-27T00:36:43.584555795Z [err]  [Sat Sep 27 00:36:43 2025] Request URI: /screening
-2025-09-27T00:36:43.584560520Z [err]  [Sat Sep 27 00:36:43 2025] Script Name: /index.php
-2025-09-27T00:36:43.635185781Z [err]  [Sat Sep 27 00:36:43 2025] DatabaseAPI: PDO connection established on attempt 1
-2025-09-27T00:36:43.679005809Z [err]  [Sat Sep 27 00:36:43 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-2025-09-27T00:36:43.730866182Z [err]  [Sat Sep 27 00:36:43 2025] PHP Warning:  Undefined variable $ageInMonths in /var/www/html/public/screening.php on line 3748
-2025-09-27T00:36:43.730875967Z [err]  [Sat Sep 27 00:36:43 2025] PHP Warning:  Undefined variable $bmi in /var/www/html/public/screening.php on line 3748
-2025-09-27T00:36:43.730881341Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: Naimatu Azizah, Age: m, BMI: , Z-Score: 7.09, Classification: Obese
-2025-09-27T00:36:43.781969842Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: jsjsh, Age: 204m, BMI: 22.9, Z-Score: 1.1, Classification: Overweight
-2025-09-27T00:36:43.835359630Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: jvjvj, Age: 240m, BMI: 17.1, Z-Score: 1.1, Classification: Overweight
-2025-09-27T00:36:43.876208403Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: vivigiv, Age: 240m, BMI: 17.1, Z-Score: -3.3, Classification: Underweight
-2025-09-27T00:36:43.913633041Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: mem, Age: 24m, BMI: 11.9, Z-Score: 2.51, Classification: Obese
-2025-09-27T00:36:43.982099599Z [err]  [Sat Sep 27 00:36:43 2025] 🔍 BMI DEBUG - User: meow, Age: 241m, BMI: 18.3, Z-Score: , Classification: Not applicable
-2025-09-27T00:36:43.982104559Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46830 [200]: GET /screening
-2025-09-27T00:36:43.982108494Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46830 Closing
-2025-09-27T00:36:43.982112127Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46844 Accepted
-2025-09-27T00:36:43.982115999Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46844 [200]: GET /logo.png
-2025-09-27T00:36:43.982120510Z [err]  [Sat Sep 27 00:36:43 2025] 100.64.0.4:46844 Closing
+ Gemini API response code: 200
+2025-09-27 21:14:47.829 11608-12032 GeminiService           com.example.nutrisaur11              D  Gemini API response received successfully
+2025-09-27 21:14:47.830 11608-12032 Compatibil...geReporter com.example.nutrisaur11              D  Compat change id reported: 247079863; UID 10132; state: ENABLED
+2025-09-27 21:14:47.830 11608-12032 GeminiService           com.example.nutrisaur11              D  Extracted text from Gemini response: {"malnutrition_types": ["HEALTHY"], "severity": "NONE", "confidence": 0.7, "assessment": "Based on the image provided, there are no obvious visual indicators of malnutrition. The individual appears to have a healthy body composition for this image.", "recommendations": ["Maintain a balanced diet", "Regular physical activity"], "signs": [], "urgent_care": false}
+2025-09-27 21:14:47.830 11608-12032 GeminiService           com.example.nutrisaur11              D  Extracted text from Gemini: {"malnutrition_types": ["HEALTHY"], "severity": "NONE", "confidence": 0.7, "assessment": "Based on the image provided, there are no obvious visual indicators of malnutrition. The individual appears to have a healthy body composition for this image.", "recommendations": ["Maintain a balanced diet", "Regular physical activity"], "signs": [], "urgent_care": false}
+2025-09-27 21:14:47.830 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  AI PRIMARY analysis completed successfully on attempt 1
+2025-09-27 21:14:47.831 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  Extracted malnutrition_types: [HEALTHY] -> detected: false
+2025-09-27 21:14:47.832 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  AI Parsing Results: verification=HEALTHY_DETECTED, severity=NONE, confidence=0.7
+2025-09-27 21:14:47.834 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:47.843 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  Found recommendations array: "Maintain a balanced diet", "Regular physical activity"
+2025-09-27 21:14:47.844 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  Added simple recommendation: Maintain a balanced diet
+2025-09-27 21:14:47.844 11608-12032 MalnutritionAIVerifier  com.example.nutrisaur11              D  Added simple recommendation: Regular physical activity
+2025-09-27 21:14:47.844 11608-11608 ImageValidationActivity com.example.nutrisaur11              D  Validation completed: isVerified=true
+2025-09-27 21:14:47.845 11608-11608 ImageValidationActivity com.example.nutrisaur11              D  Image validation passed - navigating directly to results
+2025-09-27 21:14:47.847 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:47.864 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:47.878   852-963   BufferQueueDebug        surfaceflinger                       E  [ActivityRecord{1f924ac u0 com.example.nutrisaur11/.AnalysisResultsActivity t824}#5518](this:0xb400007d13fb4a30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'ActivityRecord{1f924ac u0 com.example.nutrisaur11/.AnalysisResultsActivity t824}#5518'
+2025-09-27 21:14:47.881 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:47.898 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:47.898 11608-11703 RenderInspector         com.example.nutrisaur11              W  DequeueBuffer time out on com.example.nutrisaur11/com.example.nutrisaur11.ImageValidationActivity, count=2, avg=20 ms, max=20 ms.
+2025-09-27 21:14:47.916 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D  meow new tls: 0xb40000791597d8c0
+2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D  applied 1 plugins for [com.example.nutrisaur11]:
+2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D    plugin 1: [libMEOW_gift.so]: 0xb400007976682380
+2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D  rebuild call chain: 0xb400007915990980
+2025-09-27 21:14:47.923 11608-12038 libMEOW                 com.example.nutrisaur11              D  meow delete tls: 0xb40000791597d8c0
+2025-09-27 21:14:47.941 11608-11608 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-09-27 21:14:47.948 11608-11608 ScrollerOp...ionManager com.example.nutrisaur11              D  registerConfigChangedListener
+2025-09-27 21:14:47.974 11608-11608 AnalysisResults         com.example.nutrisaur11              D  AI result passed directly from FavoritesActivity
+2025-09-27 21:14:47.983 11608-11608 skia                    com.example.nutrisaur11              D  SkJpegCodec::onGetPixels + (2448, 3264)
+2025-09-27 21:14:47.989 11608-11608 skia                    com.example.nutrisaur11              D  stream getLength() not supported, use temp buffer for loading stream, buffer addr 0x78ceeec000 length 1734155
+2025-09-27 21:14:47.989 11608-11608 skia                    com.example.nutrisaur11              D  LoadInputStreamToMem va 0x78ceeec000  size 1736448
+2025-09-27 21:14:47.986 11608-11608 ple.nutrisaur11         com.example.nutrisaur11              W  type=1400 audit(0.0:19088): avc:  denied  { search } for  name="ppm" dev="proc" ino=4026531923 scontext=u:r:untrusted_app:s0:c132,c256,c512,c768 tcontext=u:object_r:proc_ppm:s0 tclass=dir permissive=0 app=com.example.nutrisaur11
+2025-09-27 21:14:47.990 11608-11608 libjpeg-alpha           com.example.nutrisaur11              D  Huffman Builder run in subthread
+2025-09-27 21:14:47.991 11608-11608 libjpeg-alpha           com.example.nutrisaur11              D  Tile Decoder (#thread:4, size:768 512 512 656x816, alignment:256x16)
+2025-09-27 21:14:47.986 11608-11608 ple.nutrisaur11         com.example.nutrisaur11              W  type=1400 audit(0.0:19089): avc:  denied  { search } for  name="ppm" dev="proc" ino=4026531923 scontext=u:r:untrusted_app:s0:c132,c256,c512,c768 tcontext=u:object_r:proc_ppm:s0 tclass=dir permissive=0 app=com.example.nutrisaur11
+2025-09-27 21:14:48.029  2200-2546  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: mainTaskId=824   userId=0   windowMode=1   baseIntent=Intent { act=android.intent.action.MAIN flag=268435456 cmp=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.MainActivity} }
+2025-09-27 21:14:48.032 11608-11608 skia                    com.example.nutrisaur11              D  SkJpegCodec::onGetPixels -
+2025-09-27 21:14:48.033 11608-11608 skia                    com.example.nutrisaur11              D  onGetGainmapInfo: false.
+2025-09-27 21:14:48.034 11608-11608 AnalysisResults         com.example.nutrisaur11              D  Loaded uploaded image from URI: content://com.miui.gallery.open/raw/%2Fstorage%2Femulated%2F0%2FDCIM%2FCamera%2FIMG_20250913_073552.jpg
+2025-09-27 21:14:48.051 11608-11608 AnalysisResults         com.example.nutrisaur11              D  Loaded, rotated and scaled captured image from temporary storage
+2025-09-27 21:14:48.070 11608-11608 AnalysisResults         com.example.nutrisaur11              D  AI Results displayed - Status: HEALTHY, Severity: NONE
+2025-09-27 21:14:48.079 11608-11703 libc                    com.example.nutrisaur11              W  Access denied finding property "ro.vendor.display.iris_x7.support"
+2025-09-27 21:14:48.079 11608-11608 VRI[Analys...sActivity] com.example.nutrisaur11              D  hardware acceleration = true, forceHwAccelerated = false
+2025-09-27 21:14:48.082   852-963   BufferQueueDebug        surfaceflinger                       E  [1a95d44 com.example.nutrisaur11/com.example.nutrisaur11.AnalysisResultsActivity#5519](this:0xb400007d13fdea30,id:-1,api:0,p:-1,c:-1) id info cannot be read from '1a95d44 com.example.nutrisaur11/com.example.nutrisaur11.AnalysisResultsActivity#5519'
+2025-09-27 21:14:48.104   852-1716  BufferQueueDebug        surfaceflinger                       E  [com.example.nutrisaur11/com.example.nutrisaur11.AnalysisResultsActivity#5520](this:0xb400007d13c6ca30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'com.example.nutrisaur11/com.example.nutrisaur11.AnalysisResultsActivity#5520'
+2025-09-27 21:14:48.119 11608-11608 BufferQueueConsumer     com.example.nutrisaur11              D  [](id:2d5800000007,api:0,p:-1,c:11608) connect: controlledByApp=false
+2025-09-27 21:14:48.121 11608-11703 OpenGLRenderer          com.example.nutrisaur11              E  Unable to match the desired swap behavior.
+2025-09-27 21:14:48.124 11608-11608 VRI[Analys...sActivity] com.example.nutrisaur11              D  vri.reportNextDraw android.view.ViewRootImpl.performTraversals:4402 android.view.ViewRootImpl.doTraversal:3018 android.view.ViewRootImpl$TraversalRunnable.run:10526 android.view.Choreographer$CallbackRecord.run:1682 android.view.Choreographer$CallbackRecord.run:1691 
+2025-09-27 21:14:48.124 11608-11608 VRI[Analys...sActivity] com.example.nutrisaur11              D  vri.Setup new sync=wmsSync-VRI[AnalysisResultsActivity]#14
+2025-09-27 21:14:48.131 11608-11703 OpenGLRenderer          com.example.nutrisaur11              D  makeCurrent grContext:0xb400007976900240 reset mTextureAvailable
+2025-09-27 21:14:48.139 11608-11703 BLASTBufferQueue        com.example.nutrisaur11              D  [VRI[AnalysisResultsActivity]#5](f:0,a:1) acquireNextBufferLocked size=720x1600 mFrameNumber=1 applyTransaction=true mTimestamp=15613197591083(auto) mPendingTransactions.size=0 graphicBufferId=49855980372004 transform=0
+2025-09-27 21:14:48.140 11608-11608 VRI[Analys...sActivity] com.example.nutrisaur11              D  vri.reportDrawFinished
+2025-09-27 21:14:48.145   852-963   BufferQueueDebug        surfaceflinger                       E  [Transition Root: ActivityRecord{1f924ac u0 com.example.nutrisaur11/.AnalysisResultsActivity t824}#5523](this:0xb400007d0ba30a30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'Transition Root: ActivityRecord{1f924ac u0 com.example.nutrisaur11/.AnalysisResultsActivity t824}#5523'
+2025-09-27 21:14:48.151   852-963   BufferQueueDebug        surfaceflinger                       E  [b9025f ActivityRecordInputSink com.example.nutrisaur11/.AnalysisResultsActivity#5524](this:0xb400007d0bab1a30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'b9025f ActivityRecordInputSink com.example.nutrisaur11/.AnalysisResultsActivity#5524'
+2025-09-27 21:14:48.152   852-1643  BufferQueueDebug        surfaceflinger                       E  [DefaultTransition Dim Layer for - Surface(name=ActivityRecord{206a1a7 u0 com.example.nutrisaur11/.ImageValidationActivity t824}#5504)/@0x150b10e#5525](this:0xb400007d13681a30,id:-1,api:0,p:-1,c:-1) id info cannot be read from 'DefaultTransition Dim Layer for - Surface(name=ActivityRecord{206a1a7 u0 com.example.nutrisaur11/.ImageValidationActivity t824}#5504)/@0x150b10e#5525'
+2025-09-27 21:14:48.165 11608-11608 HandWritingStubImpl     com.example.nutrisaur11              I  refreshLastKeyboardType: 1
+2025-09-27 21:14:48.165 11608-11608 HandWritingStubImpl     com.example.nutrisaur11              I  getCurrentKeyboardType: 1
+2025-09-27 21:14:48.196 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:48.207 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:48.214 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:48.224 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:48.235 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:48.246 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:48.257 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:48.268 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:48.702 11608-11608 BLASTBufferQueue        com.example.nutrisaur11              D  [VRI[ImageValidationActivity]#4](f:0,a:2) destructor()
+2025-09-27 21:14:48.703 11608-11608 BufferQueueConsumer     com.example.nutrisaur11              D  [VRI[ImageValidationActivity]#4(BLAST Consumer)4](id:2d5800000006,api:0,p:-1,c:11608) disconnect
+2025-09-27 21:14:48.711 11608-11608 WindowOnBackDispatcher  com.example.nutrisaur11              W  sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda23@3cf4ae1
+2025-09-27 21:14:48.714 11608-11608 View                    com.example.nutrisaur11              D  [Warning] assignParent to null: this = DecorView@98e828[ImageValidationActivity]
+2025-09-27 21:14:49.663 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.679 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.699 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.714 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.728 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.745 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.762 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.778 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.795 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.812 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.829 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.853 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.861 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.879 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.895 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.911 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.928 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.945 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.961 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.979 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:49.995 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.012 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.028 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.045 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.062 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.095 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.112 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.128 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.145 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.162 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.178 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.195 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.212 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.228 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.245 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.261 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.378 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.396 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.412 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.429 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.445 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.462 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.478 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.498 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.512 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.528 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.545 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.564 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.581 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.597 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.614 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.630 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.647 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.664 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.680 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.697 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.713 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.730 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.747 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.764 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.779 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.797 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.812 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.831 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.846 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.863 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.879 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.896 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.914 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.930 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.946 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.953 11608-11608 MiInputConsumer         com.example.nutrisaur11              I  optimized resample latency: 605010 ns
+2025-09-27 21:14:50.963 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.978 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:50.995 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.012 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.030 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.045 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.061 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.079 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.096 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.113 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.128 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.146 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.163 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.179 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.196 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.213 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.230 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.247 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.264 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.280 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.297 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.314 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.330 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.346 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.363 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.380 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.397 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.414 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.431 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.448 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.464 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.481 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.499 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.513 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.530 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.546 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.563 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.580 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.596 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.612 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.630 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.646 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.665 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.682 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.699 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.716 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.731 11608-11608 SplineOverScroller      com.example.nutrisaur11              D  mFlingDuration: 1210,mFlingDistance: 290.6976318359375,mVelocity: 675
+2025-09-27 21:14:51.732 11608-11608 ScrollIdentify          com.example.nutrisaur11              I  on fling
+2025-09-27 21:14:51.732 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.745 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.762 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.779 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.796 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.812 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.828 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.846 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.863 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.879 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.886 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.903 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.911 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.931 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.946 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.962 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.979 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:51.996 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.017 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.035 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.052 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.069 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.084 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.103 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.120 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.135 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.152 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.168 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.185 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.202 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.218 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.233 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.253 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.269 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.286 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.303 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.320 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.336 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.351 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.368 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.386 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.401 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.418 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.436 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.453 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.467 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.482 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.501 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.519 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.536 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.550 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.579 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.585 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.600 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.620 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.636 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.650 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.670 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.686 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.702 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.717 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.734 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.751 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.768 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.786 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.799 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.817 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.836 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.853 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.869 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.883 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.902 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.918 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.933 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.951 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:52.966 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.371 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.388 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.404 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.422 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.437 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.454 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.470 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.487 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.504 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.520 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.536 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.553 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.570 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.587 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.602 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:14:53.615 11608-11703 gralloc4                com.example.nutrisaur11              I  @set_metadata: update dataspace from GM (0x00000000 -> 0x08010000)
+2025-09-27 21:15:51.568 11608-11703 GED                     com.example.nutrisaur11              I  ged_boost_gpu_freq, level 100, eOrigin 2, final_idx 31, oppidx_max 31, oppidx_min 0
+2025-09-27 21:15:51.590 11608-11608 BLASTBufferQueue        com.example.nutrisaur11              D  [VRI[AnalysisResultsActivity]#5](f:0,a:2) destructor()
+2025-09-27 21:15:51.592 11608-11608 BufferQueueConsumer     com.example.nutrisaur11              D  [VRI[AnalysisResultsActivity]#5(BLAST Consumer)5](id:2d5800000007,api:0,p:-1,c:11608) disconnect
+2025-09-27 21:15:51.595 11608-11703 GED                     com.example.nutrisaur11              I  ged_boost_gpu_freq, level 100, eOrigin 2, final_idx 31, oppidx_max 31, oppidx_min 0
+2025-09-27 21:15:51.597 11608-11703 GED                     com.example.nutrisaur11              I  ged_boost_gpu_freq, level 100, eOrigin 2, final_idx 31, oppidx_max 31, oppidx_min 0
+2025-09-27 21:15:51.663  2200-2546  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: mainTaskId=824   userId=0   windowMode=1   baseIntent=Intent { act=android.intent.action.MAIN flag=268435456 cmp=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.MainActivity} }
+2025-09-27 21:15:51.669 11608-11608 WindowOnBackDispatcher  com.example.nutrisaur11              W  sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda23@bc884a4
+2025-09-27 21:15:51.672 11608-11703 GED                     com.example.nutrisaur11              I  ged_boost_gpu_freq, level 100, eOrigin 2, final_idx 31, oppidx_max 31, oppidx_min 0
+2025-09-27 21:15:51.672 11608-11608 View                    com.example.nutrisaur11              D  [Warning] assignParent to null: this = DecorView@63f88e9[AnalysisResultsActivity]
+2025-09-27 21:15:51.683  2200-2546  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: mainTaskId=824   userId=0   windowMode=1   baseIntent=Intent { act=android.intent.action.MAIN flag=268435456 cmp=ComponentInfo{com.example.nutrisaur11/com.example.nutrisaur11.MainActivity} }
+2025-09-27 21:15:53.638 11608-12088 FA                      com.example.nutrisaur11              I  Application backgrounded at: timestamp_millis: 1758978951634
+2025-09-27 21:16:35.635 11608-11612 ple.nutrisaur11         com.example.nutrisaur11              I  System.exit called, status: 1
+2025-09-27 21:16:35.635 11608-11612 AndroidRuntime          com.example.nutrisaur11              I  VM exiting with result code 1, cleanup skipped.

@@ -947,8 +947,8 @@ class DatabaseAPI {
     public function logNotification($eventId, $fcmToken, $title, $body, $status, $response = null) {
         try {
             $stmt = $this->pdo->prepare("INSERT INTO notification_logs 
-                (event_id, notification_type, target_type, target_value, tokens_sent, success, error_message) 
-                VALUES (:event_id, :notification_type, :target_type, :target_value, :tokens_sent, :success, :error_message)");
+                (event_id, notification_type, target_type, target_value, tokens_sent, success, error_message, created_at) 
+                VALUES (:event_id, :notification_type, :target_type, :target_value, :tokens_sent, :success, :error_message, NOW())");
             
             $notificationType = $title; // Use title as notification type
             $targetType = 'specific';
@@ -5046,6 +5046,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             $successCount++;
                             error_log("NOTIFICATION_DEBUG: Successfully sent FCM notification");
                         } else {
+                            // Check if the error is due to unregistered token
+                            if (strpos($fcmResult['error'], 'UNREGISTERED') !== false || 
+                                strpos($fcmResult['error'], '404') !== false) {
+                                // Remove invalid FCM token from database
+                                error_log("NOTIFICATION_DEBUG: Removing invalid FCM token: " . substr($fcmToken, 0, 20) . "...");
+                                $db->deactivateFCMToken($fcmToken);
+                            }
+                            
                             // Log failed notification
                             $db->logNotification(
                                 null, // event_id
