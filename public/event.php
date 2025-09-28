@@ -1296,9 +1296,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
         
         // Check if file is CSV
         if ($fileExt != 'csv') {
-            $errorMessage = "Please upload a CSV file only.";
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'imported_count' => 0,
+                'message' => 'Please upload a CSV file only.',
+                'errors' => []
+            ]);
+            exit;
         } elseif ($fileSize > 5000000) { // 5MB limit
-            $errorMessage = "File size too large. Please upload a file smaller than 5MB.";
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'imported_count' => 0,
+                'message' => 'File size too large. Please upload a file smaller than 5MB.',
+                'errors' => []
+            ]);
+            exit;
         } else {
             try {
                 // Simple database connection using config.php
@@ -1457,7 +1471,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                 }
                 exit;
                 
-        } catch (Exception $e) {
+            } catch (Exception $e) {
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
