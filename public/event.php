@@ -187,10 +187,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 
                 // Use the new getFCMTokensByLocation function
                 $fcmTokenData = getFCMTokensByLocation($location);
-                $fcmTokens = array_column($fcmTokenData, 'fcm_token');
-                error_log("📱 FCM tokens found: " . count($fcmTokens) . " for location: '$location'");
+                error_log("📱 FCM tokens found: " . count($fcmTokenData) . " for location: '$location'");
                 
-                if (!empty($fcmTokens)) {
+                if (!empty($fcmTokenData)) {
                     // Enhanced notification data with event_id
                 $notificationData = [
                     'title' => "🎯 Event: $title",
@@ -204,7 +203,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 
                 // Send FCM notifications directly (no cURL to avoid duplicates)
                 $successCount = 0;
-                foreach ($fcmTokens as $tokenData) {
+                foreach ($fcmTokenData as $tokenData) {
                     $fcmToken = $tokenData['fcm_token'];
                     $userEmail = $tokenData['user_email'];
                     
