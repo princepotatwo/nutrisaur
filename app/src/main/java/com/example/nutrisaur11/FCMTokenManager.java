@@ -479,7 +479,7 @@ public class FCMTokenManager {
                 Log.d(TAG, "Step 2: Creating JSON data object");
                 // Clear FCM token for the user
                 JSONObject data = new JSONObject();
-                data.put("fcm_token", null); // Clear FCM token
+                data.put("fcm_token", ""); // Clear FCM token with empty string
                 Log.d(TAG, "Step 2.1: Created data JSON: " + data.toString());
                 
                 Log.d(TAG, "Step 3: Creating request data object");
