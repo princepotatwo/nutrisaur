@@ -1272,6 +1272,10 @@ function getUsersForLocation($targetLocation) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
     error_log("📁 CSV IMPORT: Starting CSV import process");
     
+    // Get database connection
+    $db = DatabaseAPI::getInstance();
+    $conn = $db->getPDO();
+    
     if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
         error_log("📁 CSV IMPORT: CSV file received successfully");
         $file = $_FILES['csvFile'];
