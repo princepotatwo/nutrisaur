@@ -1,5 +1,5 @@
 <?php
-require_once './DatabaseAPI.php';
+require_once __DIR__ . '/DatabaseAPI.php';
 
 // Set content type to JSON
 header('Content-Type: application/json');
