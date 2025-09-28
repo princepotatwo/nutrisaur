@@ -1295,21 +1295,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         // Skip header row
                         if ($row == 1) continue;
                         
-                        // Check if we have enough columns
-                        if (count($data) < 8) {
+                        // Check if we have enough columns (5 required - simplified structure)
+                        if (count($data) < 5) {
                             $errors[] = "Row $row: Insufficient data columns";
                             continue;
                         }
                         
-                        // Extract data from CSV
+                        // Extract data from CSV (5 columns - simplified structure)
                         $title = trim($data[0]);
-                        $type = trim($data[1]);
-                        $date_time = trim($data[2]);
-                        $location = trim($data[3]);
-                        $organizer = trim($data[4]);
-                        $description = trim($data[5]);
-                        $notificationType = trim($data[6]);
-                        $recipientGroup = trim($data[7]);
+                        $date_time = trim($data[1]);
+                        $location = trim($data[2]);
+                        $organizer = trim($data[3]);
+                        $description = trim($data[4]);
+                        
+                        // Auto-set type to "Event" since we removed the type field
+                        $type = 'Event';
                         
                         // Clean up the date string - remove any extra spaces or quotes
                         $date_time = trim($date_time, " \t\n\r\0\x0B\"'");
@@ -1345,56 +1345,85 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             continue;
                         }
                         
-                        // Check for duplicate events before inserting
+                        // Use the SAME approach as manual event creation
                         try {
-                            $checkStmt = $conn->prepare("
-                                SELECT program_id FROM programs 
-                                WHERE title = :title 
-                                AND date_time = :date_time 
-                                AND location = :location
-                            ");
-                            $checkStmt->bindParam(':title', $title);
-                            $checkStmt->bindParam(':date_time', $dateObj->format('Y-m-d H:i:s'));
-                            $checkStmt->bindParam(':location', $location);
-                            $checkStmt->execute();
+                            // Get next available program_id (same as manual creation)
+                            $maxIdResult = $db->universalQuery("SELECT MAX(program_id) as max_id FROM programs");
+                            $nextId = ($maxIdResult['success'] && !empty($maxIdResult['data'])) ? $maxIdResult['data'][0]['max_id'] + 1 : 1;
                             
-                            if ($checkStmt->fetch()) {
-                                continue; // Skip duplicate
-                            }
-                            
-                            // Insert into database (only if not duplicate)
-                            $stmt = $conn->prepare("
-                                INSERT INTO programs (title, type, description, date_time, location, organizer, created_at) 
-                                VALUES (:title, :type, :description, :date_time, :location, :organizer, :created_at)
-                            ");
-                            
-                            // Use current timestamp for real-time detection
-                            $created_at = time() * 1000; // Current time in milliseconds
-                            
-                            $stmt->bindParam(':title', $title);
-                            $stmt->bindParam(':type', $type);
-                            $stmt->bindParam(':description', $description);
-                            $stmt->bindParam(':date_time', $dateObj->format('Y-m-d H:i:s'));
-                            $stmt->bindParam(':location', $location);
-                            $stmt->bindParam(':organizer', $organizer);
-                            $stmt->bindParam(':created_at', $created_at);
-                            
-                            $stmt->execute();
-                            $eventId = $conn->lastInsertId();
-                            $importedCount++;
-                            
-                            // Track imported event for notifications
-                            $importedEvents[] = [
-                                'id' => $eventId,
+                            // Insert using DatabaseAPI::universalInsert (same as manual creation)
+                            $result = $db->universalInsert('programs', [
+                                'program_id' => $nextId,
                                 'title' => $title,
                                 'type' => $type,
+                                'description' => $description,
                                 'date_time' => $dateObj->format('Y-m-d H:i:s'),
                                 'location' => $location,
                                 'organizer' => $organizer,
-                                'description' => $description,
-                                'notification_type' => $notificationType,
-                                'recipient_group' => $recipientGroup
-                            ];
+                            ]);
+                            
+                            if ($result['success']) {
+                                $eventId = $nextId; // Use the program_id we calculated
+                                $importedCount++;
+                                error_log("📁 CSV IMPORT: Row $row successfully inserted - Event ID: $eventId");
+                                
+                                // Track imported event for notifications
+                                $importedEvents[] = [
+                                    'id' => $eventId,
+                                    'title' => $title,
+                                    'type' => $type,
+                                    'date_time' => $dateObj->format('Y-m-d H:i:s'),
+                                    'location' => $location,
+                                    'organizer' => $organizer,
+                                    'description' => $description
+                                ];
+                                
+                                // Send notifications immediately (same as manual creation)
+                                error_log("📱 CSV IMPORT: Sending notifications for event ID: $eventId");
+                                
+                                // Use the new getFCMTokensByLocation function
+                                $fcmTokenData = getFCMTokensByLocation($location);
+                                error_log("📱 CSV IMPORT: FCM tokens found: " . count($fcmTokenData) . " for location: '$location'");
+                                
+                                if (!empty($fcmTokenData)) {
+                                    // Enhanced notification data with event_id
+                                    $notificationData = [
+                                        'title' => "🎯 Event: $title",
+                                        'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s'))),
+                                        'target_user' => 'all',
+                                        'event_id' => $eventId,
+                                        'event_type' => $type,
+                                        'event_location' => $location,
+                                        'event_date' => date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')))
+                                    ];
+                                    
+                                    // Send FCM notifications directly (same as manual creation)
+                                    $successCount = 0;
+                                    foreach ($fcmTokenData as $tokenData) {
+                                        $fcmToken = $tokenData['fcm_token'];
+                                        $userEmail = $tokenData['user_email'];
+                                        
+                                        error_log("🔍 CSV IMPORT: Attempting to send FCM notification to user: $userEmail, token: " . substr($fcmToken, 0, 20) . "...");
+                                        $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
+                                        error_log("🔍 CSV IMPORT: FCM Result: " . json_encode($fcmResult));
+                                        if ($fcmResult['success']) {
+                                            $successCount++;
+                                            error_log("✅ CSV IMPORT: FCM notification sent successfully to $userEmail");
+                                        } else {
+                                            error_log("❌ CSV IMPORT: FCM notification failed for $userEmail: " . ($fcmResult['error'] ?? 'Unknown error'));
+                                        }
+                                    }
+                                    
+                                    error_log("📱 CSV IMPORT: Notification sent to " . $successCount . " users directly via FCM");
+                                } else {
+                                    error_log("⚠️ CSV IMPORT: No FCM tokens found for location: $location");
+                                }
+                                
+                            } else {
+                                error_log("📁 CSV IMPORT: Row $row database insert failed: " . $result['message']);
+                                $errors[] = "Row $row: Database insert failed - " . $result['message'];
+                                continue;
+                            }
                             
                         } catch(PDOException $e) {
                             $errors[] = "Row $row: Database error - " . $e->getMessage();
@@ -5839,8 +5868,10 @@ header:hover {
                 return `${year}-${month}-${day} ${hours}:${minutes}`;
             };
             
-            const csvContent = `title,type,description,date_time,location,organizer
-Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,Sample Organizer`;
+            const csvContent = `title,date_time,location,organizer,description
+Nutrition Workshop,${formatDate(future1)},CITY OF BALANGA,Dr. Maria Santos,Free nutrition screening and health consultation
+Health Seminar,${formatDate(future2)},ABUCAY,Dr. Juan Cruz,Community health education and awareness
+Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup and consultation`;
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
