@@ -5487,6 +5487,25 @@ header {
             };
             showEditUserModal(testData);
         }
+        
+        // Debug function to test barangay functionality
+        function testBarangayOptions() {
+            console.log('Testing barangay options...');
+            const municipalitySelect = document.getElementById('editMunicipality');
+            const barangaySelect = document.getElementById('editBarangay');
+            
+            console.log('Municipality select:', municipalitySelect);
+            console.log('Barangay select:', barangaySelect);
+            
+            if (municipalitySelect && barangaySelect) {
+                // Set a test municipality
+                municipalitySelect.value = 'CITY OF BALANGA';
+                updateBarangayOptions();
+                console.log('Barangay options after update:', barangaySelect.options.length);
+            } else {
+                console.error('Required elements not found');
+            }
+        }
 
         // Functions for Users Table Edit Modal
         function showEditUsersTableModal(userData) {
@@ -5624,13 +5643,20 @@ header {
         }
 
         function updateBarangayOptions() {
+            console.log('updateBarangayOptions called');
             const municipality = document.getElementById('editMunicipality').value;
             const barangaySelect = document.getElementById('editBarangay');
+            
+            console.log('Selected municipality:', municipality);
+            console.log('Barangay select element:', barangaySelect);
             
             // Clear existing options
             barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
             
-            if (!municipality) return;
+            if (!municipality) {
+                console.log('No municipality selected, returning');
+                return;
+            }
             
             // Barangay data (same as in NutritionalScreeningActivity.java)
             const barangayMap = {
@@ -5649,12 +5675,16 @@ header {
             };
             
             const barangays = barangayMap[municipality] || [];
+            console.log('Found barangays for', municipality, ':', barangays.length, 'barangays');
+            
             barangays.forEach(barangay => {
                 const option = document.createElement('option');
                 option.value = barangay;
                 option.textContent = barangay;
                 barangaySelect.appendChild(option);
             });
+            
+            console.log('Added', barangays.length, 'barangay options to select');
         }
 
         function togglePregnancyField() {
@@ -6016,8 +6046,8 @@ header {
             console.log(`Showing ${count} users`);
         }
 
-        // Update barangay options when municipality changes
-        function updateBarangayOptions() {
+        // Update barangay options when municipality changes (for filters)
+        function updateFilterBarangayOptions() {
             const municipalityFilter = document.getElementById('municipalityFilter');
             const barangayFilter = document.getElementById('barangayFilter');
             
@@ -6054,7 +6084,7 @@ header {
 
         // Initialize barangay options on page load
         document.addEventListener('DOMContentLoaded', function() {
-            updateBarangayOptions();
+            updateFilterBarangayOptions();
             
             // Load community users table by default
             loadCommunityUsersTable();
@@ -6063,7 +6093,7 @@ header {
             const municipalityFilter = document.getElementById('municipalityFilter');
             if (municipalityFilter) {
                 municipalityFilter.addEventListener('change', function() {
-                    updateBarangayOptions();
+                    updateFilterBarangayOptions();
                     applyAllFilters();
                 });
             }
