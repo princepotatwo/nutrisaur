@@ -1270,14 +1270,9 @@ function getUsersForLocation($targetLocation) {
 
 // Handle CSV file upload and import
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
-    error_log("📁 CSV IMPORT: Starting CSV import process");
     
-    // Get database connection
-    $db = DatabaseAPI::getInstance();
-    $conn = $db->getPDO();
     
     if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
-        error_log("📁 CSV IMPORT: CSV file received successfully");
         $file = $_FILES['csvFile'];
         $fileName = $file['name'];
         $fileTmpName = $file['tmp_name'];
@@ -1286,13 +1281,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
         
         // Check if file is CSV
         if ($fileExt != 'csv') {
-            error_log("📁 CSV IMPORT: Error - File is not CSV, extension: " . $fileExt);
             $errorMessage = "Please upload a CSV file only.";
         } elseif ($fileSize > 5000000) { // 5MB limit
-            error_log("📁 CSV IMPORT: Error - File too large: " . $fileSize . " bytes");
             $errorMessage = "File size too large. Please upload a file smaller than 5MB.";
         } else {
-            error_log("📁 CSV IMPORT: File validation passed, starting processing");
             try {
                 // Open the CSV file
                 if (($handle = fopen($fileTmpName, "r")) !== FALSE) {
@@ -1303,38 +1295,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                     
                     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                         $row++;
-                        error_log("📁 CSV IMPORT: Processing row $row with " . count($data) . " columns");
                         
                         // Skip header row
-                        if ($row == 1) {
-                            error_log("📁 CSV IMPORT: Skipping header row");
-                            continue;
-                        }
+                        if ($row == 1) continue;
                         
-                        // Check if we have enough columns (now only 5 required)
-                        if (count($data) < 5) {
+                        // Check if we have enough columns
+                        if (count($data) < 8) {
                             $errors[] = "Row $row: Insufficient data columns";
                             continue;
                         }
                         
-                        // Extract data from CSV (simplified structure)
+                        // Extract data from CSV
                         $title = trim($data[0]);
-                        $date_time = trim($data[1]);
-                        $location = trim($data[2]);
-                        $organizer = trim($data[3]);
-                        $description = trim($data[4]);
-                        
-                        error_log("📁 CSV IMPORT: Row $row data - Title: '$title', Date: '$date_time', Location: '$location', Organizer: '$organizer'");
-                        
-                        // Auto-set type to "Event" since we removed the type field
-                        $type = 'Event';
+                        $type = trim($data[1]);
+                        $date_time = trim($data[2]);
+                        $location = trim($data[3]);
+                        $organizer = trim($data[4]);
+                        $description = trim($data[5]);
+                        $notificationType = trim($data[6]);
+                        $recipientGroup = trim($data[7]);
                         
                         // Clean up the date string - remove any extra spaces or quotes
                         $date_time = trim($date_time, " \t\n\r\0\x0B\"'");
                         
                         // Validate required fields
                         if (empty($title) || empty($date_time) || empty($location)) {
-                            error_log("📁 CSV IMPORT: Row $row validation failed - Missing required fields");
                             $errors[] = "Row $row: Missing required fields (title, date, or location)";
                             continue;
                         }
@@ -1360,12 +1345,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         }
                         
                         if (!$dateObj) {
-                            error_log("📁 CSV IMPORT: Row $row date validation failed - Invalid date format: '$date_time'");
                             $errors[] = "Row $row: Invalid date format. Use YYYY-MM-DD HH:MM (e.g., 2024-01-15 14:00)";
                             continue;
                         }
-                        
-                        error_log("📁 CSV IMPORT: Row $row date validation passed - Parsed date: " . $dateObj->format('Y-m-d H:i:s'));
                         
                         // Check for duplicate events before inserting
                         try {
@@ -1404,7 +1386,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             $stmt->execute();
                             $eventId = $conn->lastInsertId();
                             $importedCount++;
-                            error_log("📁 CSV IMPORT: Row $row successfully inserted - Event ID: $eventId");
                             
                             // Track imported event for notifications
                             $importedEvents[] = [
@@ -1414,7 +1395,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                 'date_time' => $dateObj->format('Y-m-d H:i:s'),
                                 'location' => $location,
                                 'organizer' => $organizer,
-                                'description' => $description
+                                'description' => $description,
+                                'notification_type' => $notificationType,
+                                'recipient_group' => $recipientGroup
                             ];
                             
                         } catch(PDOException $e) {
@@ -1422,7 +1405,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         }
                     }
                     fclose($handle);
-                    error_log("📁 CSV IMPORT: Processing completed - Imported: $importedCount events, Errors: " . count($errors));
                     
                     // Send real-time notifications for imported events with location-based targeting
                     if (!empty($importedEvents)) {
@@ -1430,8 +1412,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             foreach ($importedEvents as $event) {
                                 // Get FCM tokens based on event location
                                 $fcmTokenData = getFCMTokensByLocation($event['location']);
+                                $fcmTokens = array_column($fcmTokenData, 'fcm_token');
                             
-                            if (!empty($fcmTokenData)) {
+                            if (!empty($fcmTokens)) {
                                     // Determine target type for logging
                                     $targetType = 'all';
                                     $targetValue = 'all';
@@ -1462,7 +1445,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                     ], $event['location']);
                                     
                                     // Log the notification attempt
-                                    logNotificationAttempt($event['id'], 'imported_event', $targetType, $targetValue, count($fcmTokenData), $notificationSent);
+                                    logNotificationAttempt($event['id'], 'imported_event', $targetType, $targetValue, count($fcmTokens), $notificationSent);
                                 } else {
                                     // Log the attempt with no tokens found
                                     logNotificationAttempt($event['id'], 'imported_event', 'barangay', $event['location'], 0, false, 'No FCM tokens found for location');
@@ -1491,30 +1474,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             if (count($errors) > 0) {
                                 $successMessage .= " However, " . count($errors) . " rows had errors.";
                             }
-                            
-                            // If this is an AJAX request, return JSON response
-                            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-                                echo json_encode([
-                                    'success' => true,
-                                    'message' => $successMessage,
-                                    'imported_count' => $importedCount,
-                                    'errors' => $errors
-                                ]);
-                                exit;
-                            }
                         } else {
                             $errorMessage = "No events were imported. " . implode("; ", $errors);
-                            
-                            // If this is an AJAX request, return JSON response
-                            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-                                echo json_encode([
-                                    'success' => false,
-                                    'message' => $errorMessage,
-                                    'imported_count' => 0,
-                                    'errors' => $errors
-                                ]);
-                                exit;
-                            }
                         }
                 } else {
                     $errorMessage = "Error reading CSV file.";
@@ -5882,10 +5843,8 @@ header:hover {
                 return `${year}-${month}-${day} ${hours}:${minutes}`;
             };
             
-            const csvContent = `title,date_time,location,organizer,description
-Nutrition Workshop,${formatDate(future1)},CITY OF BALANGA,Dr. Maria Santos,Free nutrition screening and health consultation
-Health Seminar,${formatDate(future2)},ABUCAY,Dr. Juan Cruz,Educational session on proper nutrition for children
-Community Outreach,${formatDate(future3)},LIMAY,Dr. Ana Rodriguez,Food distribution and health assessment`;
+            const csvContent = `title,type,description,date_time,location,organizer
+Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,Sample Organizer`;
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
@@ -6235,7 +6194,6 @@ Community Outreach,${formatDate(future3)},LIMAY,Dr. Ana Rodriguez,Food distribut
             
             const formData = new FormData();
             formData.append('csvFile', file);
-            formData.append('import_csv', '1');
             
             // Show loading state
             const importBtn = document.getElementById('importBtn');
@@ -6246,7 +6204,7 @@ Community Outreach,${formatDate(future3)},LIMAY,Dr. Ana Rodriguez,Food distribut
             importBtn.innerHTML = '🔄 Uploading...';
             importStatus.style.display = 'block';
             
-            fetch('event.php', {
+            fetch('https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=import_csv', {
                 method: 'POST',
                 body: formData
             })
