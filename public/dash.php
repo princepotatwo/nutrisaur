@@ -9321,6 +9321,7 @@ body {
                 
                 // Add population scale inside the trends chart container
                 const totalScreened = data.total_users || 6; // Get total screened users
+                const populationSlice = Math.ceil(totalScreened / 10); // Auto-calculate population slice (total users / 10)
                 const scaleSteps = 10;
                 
                 // Create population scale container using the existing 8px padding space
@@ -9342,8 +9343,8 @@ body {
                     z-index: 10;
                 `;
                 
-                // Create scale labels (1,2,3,4,5,6 - simple scale for total screened users)
-                const scaleValues = [6, 5, 4, 3, 2, 1];
+                // Create scale labels based on calculated population slice (stops at populationSlice)
+                const scaleValues = [populationSlice, Math.ceil(populationSlice * 0.8), Math.ceil(populationSlice * 0.6), Math.ceil(populationSlice * 0.4), Math.ceil(populationSlice * 0.2), 1];
                 scaleValues.forEach((value, index) => {
                     const scaleLabel = document.createElement('div');
                     scaleLabel.style.cssText = `
@@ -9462,9 +9463,11 @@ body {
 
                 // Create gradient bars for each WHO standard based on classification distribution
                 activeStandards.forEach((item, index) => {
-                    // Calculate bar height to align with population scale (1,2,3,4,5,6)
+                    // Calculate bar height to align with population scale (stops at populationSlice)
                     const scaleUnitHeight = chartHeight / 6;
-                    const barHeight = item.count * scaleUnitHeight;
+                    const maxValue = populationSlice; // Use calculated population slice as maximum
+                    const normalizedCount = Math.min(item.count, maxValue); // Cap at population slice
+                    const barHeight = (normalizedCount / maxValue) * chartHeight;
                     
                     // Create container for gradient bar
                     const barContainer = document.createElement('div');
