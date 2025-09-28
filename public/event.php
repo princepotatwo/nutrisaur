@@ -851,39 +851,14 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
                 'event_date' => date('M j, Y g:i A', strtotime($date_time))
             ];
             
-            // Send via the working notification API (same as dash.php)
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=send_notification');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-                'notification_data' => json_encode($notificationPayload)
-            ]));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            // Send FCM notification directly (no cURL to avoid duplicate notifications)
+            $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationPayload['title'], $notificationPayload['body']);
             
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $error = curl_error($ch);
-            curl_close($ch);
-            
-            if ($error) {
-                error_log("cURL Error for user $userEmail: " . $error);
-                $failureCount++;
-                continue;
-            }
-            
-            if ($httpCode === 200) {
-                $responseData = json_decode($response, true);
-                if (isset($responseData['success']) && $responseData['success']) {
-                    error_log("Event notification sent successfully to $userEmail: {$notificationPayload['title']}");
-                    $successCount++;
-                } else {
-                    error_log("Notification API returned success=false for user $userEmail: " . ($responseData['message'] ?? 'Unknown error'));
-                    $failureCount++;
-                }
+            if ($fcmResult['success']) {
+                error_log("Event notification sent successfully to $userEmail: {$notificationPayload['title']}");
+                $successCount++;
             } else {
-                error_log("Notification API error for user $userEmail: HTTP $httpCode - Response: $response");
+                error_log("FCM notification failed for user $userEmail: " . ($fcmResult['error'] ?? 'Unknown error'));
                 $failureCount++;
             }
         }
