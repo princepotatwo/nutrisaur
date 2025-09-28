@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/DatabaseAPI.php';
+require_once '../DatabaseAPI.php';
 
 // Set content type to JSON
 header('Content-Type: application/json');
@@ -78,7 +78,7 @@ try {
     // Initialize database
     $db = new DatabaseAPI();
     
-    if (!$db->isDatabaseAvailable()) {
+    if (!$db->isAvailable()) {
         throw new Exception('Database not available');
     }
     
