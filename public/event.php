@@ -5844,7 +5844,9 @@ header:hover {
             };
             
             const csvContent = `title,date_time,location,organizer,description
-Sample Event,${formatDate(future1)},Sample Location,Sample Organizer,Sample description`;
+Nutrition Workshop,${formatDate(future1)},CITY OF BALANGA,Dr. Maria Santos,Free nutrition screening and health consultation
+Health Seminar,${formatDate(future2)},ABUCAY,Dr. Juan Cruz,Educational session on proper nutrition for children
+Community Outreach,${formatDate(future3)},LIMAY,Dr. Ana Rodriguez,Food distribution and health assessment`;
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
