@@ -1395,9 +1395,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                 'date_time' => $dateObj->format('Y-m-d H:i:s'),
                                 'location' => $location,
                                 'organizer' => $organizer,
-                                'description' => $description,
-                                'notification_type' => $notificationType,
-                                'recipient_group' => $recipientGroup
+                                'description' => $description
                             ];
                             
                         } catch(PDOException $e) {
@@ -1412,9 +1410,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             foreach ($importedEvents as $event) {
                                 // Get FCM tokens based on event location
                                 $fcmTokenData = getFCMTokensByLocation($event['location']);
-                                $fcmTokens = array_column($fcmTokenData, 'fcm_token');
                             
-                            if (!empty($fcmTokens)) {
+                            if (!empty($fcmTokenData)) {
                                     // Determine target type for logging
                                     $targetType = 'all';
                                     $targetValue = 'all';
@@ -1445,7 +1442,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                     ], $event['location']);
                                     
                                     // Log the notification attempt
-                                    logNotificationAttempt($event['id'], 'imported_event', $targetType, $targetValue, count($fcmTokens), $notificationSent);
+                                    logNotificationAttempt($event['id'], 'imported_event', $targetType, $targetValue, count($fcmTokenData), $notificationSent);
                                 } else {
                                     // Log the attempt with no tokens found
                                     logNotificationAttempt($event['id'], 'imported_event', 'barangay', $event['location'], 0, false, 'No FCM tokens found for location');
