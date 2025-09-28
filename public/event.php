@@ -1264,6 +1264,33 @@ function getUsersForLocation($targetLocation) {
     }
 }
 
+// Handle individual event deletion
+if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
+    $programId = (int)$_GET['delete'];
+    
+    try {
+        // Get database connection
+        $db = DatabaseAPI::getInstance();
+        
+        // Delete the event from database
+        $result = $db->universalDelete('programs', ['program_id' => $programId]);
+        
+        if ($result['success']) {
+            // Redirect back with success message
+            header("Location: event.php?deleted=1&deleted_id=" . $programId);
+            exit;
+        } else {
+            // Redirect back with error message
+            header("Location: event.php?error=1&message=" . urlencode($result['message']));
+            exit;
+        }
+    } catch (Exception $e) {
+        // Redirect back with error message
+        header("Location: event.php?error=1&message=" . urlencode("Error deleting event: " . $e->getMessage()));
+        exit;
+    }
+}
+
 // Handle CSV file upload and import
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
     
@@ -4776,6 +4803,12 @@ header:hover {
                 <div class="alert alert-success">
                     Event updated successfully!
                     <br>Update notification sent to all users!
+                </div>
+            <?php endif; ?>
+            
+            <?php if(isset($_GET['error'])): ?>
+                <div class="alert alert-danger">
+                    Error: <?php echo htmlspecialchars($_GET['message'] ?? 'Unknown error occurred'); ?>
                 </div>
             <?php endif; ?>
             
