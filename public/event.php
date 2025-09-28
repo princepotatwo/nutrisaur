@@ -6,8 +6,6 @@ ini_set('display_errors', 1);
 // Debug logging
 error_log("🚀 EVENT.PHP LOADED - URI: " . $_SERVER['REQUEST_URI']);
 error_log("🚀 GET PARAMS: " . json_encode($_GET));
-error_log("🚀 POST PARAMS: " . json_encode($_POST));
-error_log("🚀 REQUEST_METHOD: " . $_SERVER['REQUEST_METHOD']);
 
 // Include DatabaseAPI for FCM functionality
 require_once __DIR__ . '/api/DatabaseAPI.php';
@@ -187,11 +185,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             if ($notificationType !== 'none') {
                 error_log("📱 Sending notifications for event ID: $eventId");
                 
-                // Use the new getFCMTokensByLocation function
-                $fcmTokenData = getFCMTokensByLocation($location);
-                error_log("📱 FCM tokens found: " . count($fcmTokenData) . " for location: '$location'");
+                // Get FCM tokens based on location
+                $fcmTokens = [];
+                if ($location === 'All Locations') {
+                    $fcmTokens = $db->getActiveFCMTokens();
+                    error_log("📱 Sending to ALL locations - " . count($fcmTokens) . " tokens");
+                } else {
+                    // Check if it's a municipality (all caps, known municipalities)
+                    $municipalities = ['HERMOSA', 'LIMAY', 'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'];
+                    if (in_array($location, $municipalities)) {
+                        $fcmTokens = $db->getFCMTokensByMunicipality($location);
+                        error_log("📱 Sending to MUNICIPALITY $location (all barangays) - " . count($fcmTokens) . " tokens");
+                    } else {
+                        $fcmTokens = $db->getFCMTokensByBarangay($location);
+                        error_log("📱 Sending to BARANGAY $location - " . count($fcmTokens) . " tokens");
+                    }
+                }
                 
-                if (!empty($fcmTokenData)) {
+                if (!empty($fcmTokens)) {
                     // Enhanced notification data with event_id
                 $notificationData = [
                     'title' => "🎯 Event: $title",
@@ -205,7 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 
                 // Send FCM notifications directly (no cURL to avoid duplicates)
                 $successCount = 0;
-                foreach ($fcmTokenData as $tokenData) {
+                foreach ($fcmTokens as $tokenData) {
                     $fcmToken = $tokenData['fcm_token'];
                     $userEmail = $tokenData['user_email'];
                     
@@ -887,13 +898,13 @@ function sendNotificationViaAPI($notificationData) {
         // Get FCM tokens for the target user from community_users table
         $fcmTokens = [];
         if (!empty($targetUser)) {
-            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE email = :email AND fcm_token IS NOT NULL AND fcm_token != ''");
+            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE email = :email AND status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $stmt->bindParam(':email', $targetUser);
             $stmt->execute();
             $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
         } else {
             // Send to all active tokens if no specific user
-            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
+            $stmt = $db->getPDO()->prepare("SELECT fcm_token FROM community_users WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $stmt->execute();
             $fcmTokens = $stmt->fetchAll(PDO::FETCH_COLUMN);
         }
@@ -1041,9 +1052,10 @@ function getFCMTokensByLocation($targetLocation = null) {
             error_log("Processing 'all locations' case - getting all ACTIVE FCM tokens only");
             // Get only active users' FCM tokens
             $stmt = $db->getPDO()->prepare("
-                SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
+                SELECT fcm_token, email as user_email, barangay as user_barangay
                 FROM community_users
-                WHERE fcm_token IS NOT NULL 
+                WHERE status = 'active'
+                AND fcm_token IS NOT NULL 
                 AND fcm_token != ''
                 AND barangay IS NOT NULL 
                 AND barangay != ''
@@ -1054,49 +1066,30 @@ function getFCMTokensByLocation($targetLocation = null) {
             // Check if it's a municipality (starts with MUNICIPALITY_)
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 error_log("Processing municipality case: $targetLocation");
-                // Map MUNICIPALITY_ values to actual municipality names
-                $municipalityMapping = [
-                    'MUNICIPALITY_BALANGA' => 'CITY OF BALANGA',
-                    'MUNICIPALITY_ABUCAY' => 'ABUCAY',
-                    'MUNICIPALITY_BAGAC' => 'BAGAC',
-                    'MUNICIPALITY_DINALUPIHAN' => 'DINALUPIHAN',
-                    'MUNICIPALITY_HERMOSA' => 'HERMOSA',
-                    'MUNICIPALITY_LIMAY' => 'LIMAY',
-                    'MUNICIPALITY_MARIVELES' => 'MARIVELES',
-                    'MUNICIPALITY_MORONG' => 'MORONG',
-                    'MUNICIPALITY_ORANI' => 'ORANI',
-                    'MUNICIPALITY_ORION' => 'ORION',
-                    'MUNICIPALITY_PILAR' => 'PILAR',
-                    'MUNICIPALITY_SAMAL' => 'SAMAL'
-                ];
-                
-                $actualMunicipalityName = $municipalityMapping[$targetLocation] ?? $targetLocation;
-                error_log("Mapped $targetLocation to $actualMunicipalityName");
-                
-                // Get tokens for all users in the municipality
+                // Get tokens for all barangays in the municipality
+                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $stmt = $db->getPDO()->prepare("
-                    SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
+                    SELECT fcm_token, email as user_email, barangay as user_barangay
                     FROM community_users
-                    WHERE fcm_token IS NOT NULL 
+                    WHERE status = 'active'
+                    AND fcm_token IS NOT NULL 
                     AND fcm_token != ''
-                    AND municipality = :municipalityName
+                    AND barangay IS NOT NULL 
+                    AND barangay != ''
+                    AND (barangay = :targetLocation OR barangay LIKE :municipalityPattern)
                 ");
-                $stmt->bindParam(':municipalityName', $actualMunicipalityName);
+                $stmt->bindParam(':targetLocation', $targetLocation);
+                $stmt->bindParam(':municipalityPattern', $municipalityName . '%');
                 $stmt->execute();
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                // Debug: Log what we found
-                error_log("Municipality query result: Found " . count($tokens) . " tokens for municipality '$actualMunicipalityName'");
-                if (count($tokens) > 0) {
-                    error_log("First token: " . json_encode($tokens[0]));
-                }
             } else {
                 error_log("Processing barangay case: $targetLocation - getting ACTIVE tokens only");
                 // Get FCM tokens by barangay for active users only
                 $stmt = $db->getPDO()->prepare("
-                    SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
+                    SELECT fcm_token, email as user_email, barangay as user_barangay
                     FROM community_users
-                    WHERE fcm_token IS NOT NULL 
+                    WHERE status = 'active'
+                    AND fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND barangay = :targetLocation
                 ");
@@ -1115,12 +1108,12 @@ function getFCMTokensByLocation($targetLocation = null) {
             error_log("No FCM tokens found. Checking if there are any FCM tokens with barangay data...");
             
             // Check if there are any FCM tokens with barangay data from community_users table
-            $checkStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE barangay IS NOT NULL AND barangay != '' AND fcm_token IS NOT NULL AND fcm_token != ''");
+            $checkStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE barangay IS NOT NULL AND barangay != '' AND status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $checkStmt->execute();
             $tokenWithBarangayCount = $checkStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // Check if there are any active FCM tokens from community_users table
-            $tokenStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
+            $tokenStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''");
             $tokenStmt->execute();
             $tokenCount = $tokenStmt->fetch(PDO::FETCH_ASSOC)['total'];
             
@@ -1175,6 +1168,7 @@ function getUserLocationStats() {
             SELECT COUNT(*) as total_users_with_barangay
             FROM community_users
             WHERE barangay IS NOT NULL AND barangay != ''
+            AND status = 'active'
         ");
         $stmt->execute();
         $stats['total_users_with_barangay'] = $stmt->fetchColumn();
@@ -1183,7 +1177,7 @@ function getUserLocationStats() {
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as total_fcm_tokens
             FROM community_users 
-            WHERE fcm_token IS NOT NULL AND fcm_token != ''
+            WHERE status = 'active' AND fcm_token IS NOT NULL AND fcm_token != ''
         ");
         $stmt->execute();
         $stats['total_fcm_tokens'] = $stmt->fetchColumn();
@@ -1192,7 +1186,7 @@ function getUserLocationStats() {
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as fcm_tokens_with_barangay
             FROM community_users
-            WHERE 1=1 
+            WHERE status = 'active' 
             AND fcm_token IS NOT NULL 
             AND fcm_token != ''
             AND barangay IS NOT NULL 
@@ -1205,7 +1199,7 @@ function getUserLocationStats() {
         $stmt = $db->getPDO()->prepare("
             SELECT COUNT(*) as fcm_tokens_without_barangay
             FROM community_users 
-            WHERE 1=1 
+            WHERE status = 'active' 
             AND fcm_token IS NOT NULL 
             AND fcm_token != ''
             AND (barangay IS NULL OR barangay = '')
@@ -1230,10 +1224,10 @@ function getUsersForLocation($targetLocation) {
     try {
         if (empty($targetLocation) || $targetLocation === 'all') {
             $result = $db->universalQuery("
-                SELECT cu.email as user_email, cu.barangay, cu.fcm_token
+                SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
                 FROM community_users cu
                 WHERE cu.barangay IS NOT NULL AND cu.barangay != ''
-                AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
+                AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
                 ORDER BY cu.barangay, cu.email
             ");
             $users = $result['success'] ? $result['data'] : [];
@@ -1242,20 +1236,20 @@ function getUsersForLocation($targetLocation) {
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $result = $db->universalQuery("
-                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token
+                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
                     FROM community_users cu
                     WHERE cu.barangay IS NOT NULL AND cu.barangay != ''
-                    AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
+                    AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
                     AND (cu.barangay = ? OR cu.barangay LIKE ?)
                     ORDER BY cu.barangay, cu.email
                 ", [$targetLocation, $municipalityName . '%']);
                 $users = $result['success'] ? $result['data'] : [];
             } else {
                 $result = $db->universalQuery("
-                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token
+                    SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
                     FROM community_users cu
                     WHERE cu.barangay = ?
-                    AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
+                    AND cu.status = 'active' AND cu.fcm_token IS NOT NULL AND cu.fcm_token != ''
                     ORDER BY cu.email
                 ", [$targetLocation]);
                 $users = $result['success'] ? $result['data'] : [];
@@ -6023,8 +6017,9 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                     console.log('✅ Updated selected state for item:', clickedItem);
                 }
                 
-                // Location preview removed - no action needed
-                console.log('✅ Location selected:', value, text);
+                // Show location preview
+                console.log('🔄 Calling showLocationPreview with:', value, text);
+                showLocationPreview(value, text);
             } else {
                 console.error('❌ Some required elements not found for location selection');
                 console.error('Missing elements:', {
@@ -6034,6 +6029,193 @@ Sample Event,Workshop,Sample description,${formatDate(future1)},Sample Location,
                     hiddenInput: !hiddenInput ? 'MISSING' : 'FOUND'
                 });
             }
+        }
+        
+        // Function to show location preview
+        function showLocationPreview(locationValue, locationText) {
+            console.log('🔍 showLocationPreview called with:', locationValue, locationText);
+            
+            const previewDiv = document.getElementById('locationPreview');
+            const contentDiv = document.getElementById('locationPreviewContent');
+            const notificationPreviewDiv = document.getElementById('notificationPreview');
+            const notificationContentDiv = document.getElementById('notificationPreviewContent');
+            
+            console.log('🔍 Preview elements found:', {
+                previewDiv: !!previewDiv,
+                contentDiv: !!contentDiv,
+                notificationPreviewDiv: !!notificationPreviewDiv,
+                notificationContentDiv: !!notificationContentDiv
+            });
+            
+            if (!previewDiv || !contentDiv) {
+                console.error('❌ Required preview elements not found');
+                return;
+            }
+            
+            // Show loading state
+            previewDiv.style.display = 'block';
+            contentDiv.innerHTML = '<div style="text-align: center; opacity: 0.7;">🔄 Loading location preview...</div>';
+            
+            // Show notification preview loading state
+            if (notificationPreviewDiv && notificationContentDiv) {
+                notificationPreviewDiv.style.display = 'block';
+                notificationContentDiv.innerHTML = '<div style="text-align: center; opacity: 0.7;">🔄 Loading notification preview...</div>';
+            }
+            
+            // Fetch users for this location
+            console.log('🔄 Fetching location preview for:', locationValue);
+            fetch('event.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: 'action=get_location_preview&location=' + encodeURIComponent(locationValue)
+            })
+            .then(response => response.text())
+            .then(data => {
+                try {
+                    const result = JSON.parse(data);
+                    if (result.success) {
+                        displayLocationPreview(result.users, locationText);
+                        displayNotificationPreview(result.users, locationText);
+                    } else {
+                        contentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error loading preview: ' + (result.message || 'Unknown error') + '</div>';
+                        if (notificationContentDiv) {
+                            notificationContentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error loading preview</div>';
+                        }
+                    }
+                } catch (e) {
+                    contentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error parsing response</div>';
+                    if (notificationContentDiv) {
+                        notificationContentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error parsing response</div>';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                contentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error loading preview</div>';
+                if (notificationContentDiv) {
+                    notificationContentDiv.innerHTML = '<div style="text-align: center; color: var(--color-danger);">❌ Error loading preview</div>';
+                }
+            });
+        }
+        
+        // Function to display location preview
+        function displayLocationPreview(users, locationText) {
+            const contentDiv = document.getElementById('locationPreviewContent');
+            
+            if (!users || users.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; opacity: 0.7;">
+                        <div style="margin-bottom: 10px;"><strong>${locationText}</strong></div>
+                        <div>No users found for this location</div>
+                        <div style="font-size: 12px; margin-top: 5px;">Users need to complete screening to appear here</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: bold; margin-bottom: 5px;"><strong>${locationText}</strong></div>
+                    <div style="font-size: 14px; opacity: 0.8;">${users.length} user(s) would receive notifications</div>
+                </div>
+                <div style="max-height: 200px; overflow-y: auto;">
+            `;
+            
+            users.forEach(user => {
+                const hasToken = user.fcm_token && user.is_active;
+                const statusIcon = hasToken ? '✓' : '!';
+                const statusColor = hasToken ? 'var(--color-highlight)' : 'var(--color-warning)';
+                
+                html += `
+                    <div style="
+                        padding: 8px; 
+                        margin-bottom: 8px; 
+                        background: rgba(161, 180, 84, 0.05); 
+                        border-radius: 6px; 
+                        border-left: 3px solid ${statusColor};
+                        font-size: 12px;
+                    ">
+                        <div style="font-weight: bold; margin-bottom: 4px;">
+                            ${statusIcon} ${user.user_email}
+                        </div>
+                        <div style="opacity: 0.8;">
+                            ${user.barangay} | ${hasToken ? 'FCM Token Active' : 'No FCM Token'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            contentDiv.innerHTML = html;
+        }
+        
+        // Function to display notification preview
+        function displayNotificationPreview(users, locationText) {
+            const notificationContentDiv = document.getElementById('notificationPreviewContent');
+            
+            if (!notificationContentDiv) return;
+            
+            if (!users || users.length === 0) {
+                notificationContentDiv.innerHTML = `
+                    <div style="text-align: center; opacity: 0.7;">
+                        <div style="margin-bottom: 10px;"><strong>📱 Notification Preview</strong></div>
+                        <div>No users to notify in this location</div>
+                        <div style="font-size: 12px; margin-top: 5px;">Users need to complete screening to receive notifications</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const eventTitle = document.getElementById('eventTitle')?.value || 'Event Title';
+            const eventDate = document.getElementById('eventDate')?.value || 'Event Date';
+            const notificationType = document.getElementById('notificationType')?.value || 'push';
+            
+            let html = `
+                <div style="margin-bottom: 15px;">
+                    <div style="font-weight: bold; margin-bottom: 5px;"><strong>📱 Notification Preview</strong></div>
+                    <div style="font-size: 14px; opacity: 0.8;">${users.length} user(s) will receive ${notificationType} notifications</div>
+                </div>
+                <div style="background: rgba(161, 180, 84, 0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">📋 Sample Notification:</div>
+                    <div style="font-size: 13px; line-height: 1.4;">
+                        <div><strong>Title:</strong> New Event: ${eventTitle}</div>
+                        <div><strong>Message:</strong> ${eventTitle} at ${locationText} on ${eventDate}</div>
+                        <div><strong>Type:</strong> ${notificationType === 'push' ? 'Push Notification' : notificationType === 'both' ? 'Push + Email' : 'Email Only'}</div>
+                    </div>
+                </div>
+                <div style="max-height: 150px; overflow-y: auto;">
+            `;
+            
+            users.forEach(user => {
+                const hasToken = user.fcm_token && user.is_active;
+                const statusIcon = hasToken ? '📱' : '📧';
+                const statusText = hasToken ? 'Push Ready' : 'Email Only';
+                const statusColor = hasToken ? 'var(--color-highlight)' : 'var(--color-warning)';
+                
+                html += `
+                    <div style="
+                        padding: 8px; 
+                        margin-bottom: 8px; 
+                        background: rgba(161, 180, 84, 0.05); 
+                        border-radius: 6px; 
+                        border-left: 3px solid ${statusColor};
+                        font-size: 12px;
+                    ">
+                        <div style="font-weight: bold; margin-bottom: 4px;">
+                            ${statusIcon} ${user.user_email}
+                        </div>
+                        <div style="opacity: 0.8;">
+                            ${user.barangay} | ${statusText}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            notificationContentDiv.innerHTML = html;
         }
         
         // Function to debug FCM status
