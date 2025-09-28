@@ -270,7 +270,7 @@ public class SessionManager {
                 
                 // Clear FCM token from database
                 FCMTokenManager fcmManager = new FCMTokenManager(context);
-                fcmManager.clearData();
+                fcmManager.clearFCMTokenForUser(currentUserEmail);
                 
                 // Clear profile cache
                 CommunityUserManager userManager = new CommunityUserManager(context);
