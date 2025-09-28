@@ -1518,7 +1518,7 @@ class DatabaseAPI {
             }
             
             // Build WHERE clause for barangay filtering
-            $whereClause = "WHERE bmi IS NOT NULL AND bmi != ''";
+            $whereClause = "WHERE 1=1";
             $params = [];
             if (!empty($barangay)) {
                 if (strpos($barangay, 'MUNICIPALITY_') === 0) {
@@ -2082,12 +2082,12 @@ class DatabaseAPI {
             $analysis['total_screenings'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // High risk cases
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause AND bmi IN ('High', 'Severe')");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause");
             $stmt->execute($params);
             $analysis['high_risk_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['high_risk'];
             
             // SAM cases (Severe Acute Malnutrition)
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause AND bmi = 'Severe'");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause");
             $stmt->execute($params);
             $analysis['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
             
@@ -2434,12 +2434,12 @@ class DatabaseAPI {
             $data['total_screenings'] = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             
             // High risk cases in time frame
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause AND bmi IN ('High', 'Severe')");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as high_risk FROM community_users $whereClause");
             $stmt->execute($params);
             $data['high_risk_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['high_risk'];
             
             // SAM cases in time frame
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause AND bmi = 'Severe'");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) as sam_cases FROM community_users $whereClause");
             $stmt->execute($params);
             $data['sam_cases'] = $stmt->fetch(PDO::FETCH_ASSOC)['sam_cases'];
             

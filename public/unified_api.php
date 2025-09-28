@@ -412,17 +412,14 @@ function handleMobileSignupRequest($db) {
                 
                 $pdo = $db->getPDO();
                 $stmt = $pdo->prepare("
-                    INSERT INTO community_users (email, name, screening_data, risk_score, screening_date, created_at) 
-                    VALUES (?, ?, ?, ?, NOW(), NOW())
+                    INSERT INTO community_users (email, name, screening_date) 
+                    VALUES (?, ?, NOW())
                     ON DUPLICATE KEY UPDATE 
                     name = VALUES(name),
-                    screening_data = VALUES(screening_data),
-                    risk_score = VALUES(risk_score),
-                    screening_date = NOW(),
-                    updated_at = NOW()
+                    screening_date = NOW()
                 ");
                 
-                $result = $stmt->execute([$email, $username, $screening_data, $risk_score]);
+                $result = $stmt->execute([$email, $username]);
                 
                 if ($result) {
                     echo json_encode(['success' => true, 'message' => 'Screening data saved successfully']);

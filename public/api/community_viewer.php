@@ -357,7 +357,7 @@ function calculateAge($birthday) {
                         <?php foreach ($users as $user): ?>
                             <?php
                             $age = calculateAge($user['birthday']);
-                            $measurements = $user['weight'] . 'kg / ' . $user['height'] . 'cm / ' . $user['muac'] . 'cm';
+                            $measurements = $user['weight'] . 'kg / ' . $user['height'] . 'cm';
                             $genderClass = strtolower($user['sex']) === 'male' ? 'badge-male' : 'badge-female';
                             
                             $pregnancy = '';
