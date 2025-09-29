@@ -4571,6 +4571,62 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             }
             break;
             
+        case 'debug_bmi_adult':
+            // Debug endpoint to see what's happening with BMI Adult data
+            try {
+                $stmt = $db->pdo->prepare("
+                    SELECT 
+                        screening_date,
+                        weight,
+                        height,
+                        birthday,
+                        sex
+                    FROM community_users 
+                    WHERE screening_date BETWEEN '2024-01-01 00:00:00' AND '2024-12-31 23:59:59'
+                    LIMIT 5
+                ");
+                $stmt->execute();
+                $sampleData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                require_once __DIR__ . '/../../who_growth_standards.php';
+                $who = new WHOGrowthStandards();
+                
+                $results = [];
+                foreach ($sampleData as $record) {
+                    $ageInMonths = $who->calculateAgeInMonths($record['birthday'], $record['screening_date']);
+                    $bmi = floatval($record['weight']) / pow(floatval($record['height']) / 100, 2);
+                    
+                    if ($ageInMonths >= 228) {
+                        if ($bmi < 18.5) $classification = 'Underweight';
+                        else if ($bmi < 25) $classification = 'Normal';
+                        else if ($bmi < 30) $classification = 'Overweight';
+                        else $classification = 'Obese';
+                    } else {
+                        $classification = 'No Data (under 19 years)';
+                    }
+                    
+                    $results[] = [
+                        'screening_date' => $record['screening_date'],
+                        'age_months' => $ageInMonths,
+                        'bmi' => $bmi,
+                        'classification' => $classification,
+                        'weight' => $record['weight'],
+                        'height' => $record['height']
+                    ];
+                }
+                
+                echo json_encode([
+                    'success' => true,
+                    'data' => $results
+                ]);
+            } catch (Exception $e) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Debug error: ' . $e->getMessage()
+                ]);
+            }
+            break;
+            
         case 'get_age_classification_line_chart':
             $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
