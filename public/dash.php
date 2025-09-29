@@ -7071,8 +7071,13 @@ body {
 }
 
 .severe-case-item.severely-stunted {
-    background: linear-gradient(135deg, #FF5722, #FF7043);
-    border-color: #FF5722;
+    background: linear-gradient(135deg, #673AB7, #9575CD);
+    border-color: #673AB7;
+}
+
+.severe-case-item.severely-underweight-bmi-adult {
+    background: linear-gradient(135deg, #E91E63, #F06292);
+    border-color: #E91E63;
 }
 
 .severe-cases-empty {
@@ -12134,7 +12139,15 @@ body {
                 // Create list items for each severe case
                 severeCases.forEach((caseData, index) => {
                     const caseItem = document.createElement('div');
-                    caseItem.className = `severe-case-item ${caseData.classification.toLowerCase().replace(/\s+/g, '-')}`;
+                    
+                    // Convert classification to CSS class name
+                    let cssClass = caseData.classification.toLowerCase().replace(/\s+/g, '-');
+                    // Handle BMI Adult case specifically
+                    if (cssClass.includes('bmi-adult')) {
+                        cssClass = 'severely-underweight-bmi-adult';
+                    }
+                    
+                    caseItem.className = `severe-case-item ${cssClass}`;
                     
                     // Format screening date
                     const screeningDate = new Date(caseData.screening_date);
