@@ -6928,6 +6928,168 @@ body {
 .light-theme .option-item {
     color: var(--color-text);
 }
+
+/* Severe Cases List Styles */
+.severe-cases-container {
+    height: 400px;
+    max-height: 400px;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.severe-cases-list {
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 5px;
+}
+
+.severe-case-item {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    min-height: 60px;
+}
+
+.severe-case-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.severe-case-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.severe-case-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+}
+
+.severe-case-details {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.severe-case-classification {
+    font-weight: 600;
+    font-size: 12px;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.severe-case-item.severely-underweight {
+    background: linear-gradient(135deg, #E91E63, #F06292);
+    border-color: #E91E63;
+}
+
+.severe-case-item.severely-wasted {
+    background: linear-gradient(135deg, #D32F2F, #E57373);
+    border-color: #D32F2F;
+}
+
+.severe-case-item.severely-stunted {
+    background: linear-gradient(135deg, #FF5722, #FF7043);
+    border-color: #FF5722;
+}
+
+.severe-cases-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--color-text);
+    font-size: 16px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+/* Custom scrollbar for severe cases list */
+.severe-cases-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.severe-cases-list::-webkit-scrollbar-track {
+    background: var(--color-bg);
+    border-radius: 3px;
+}
+
+.severe-cases-list::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+}
+
+.severe-cases-list::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text);
+}
+
+/* Responsive adjustments for Severe Cases List */
+@media (max-width: 1200px) {
+    .severe-cases-container {
+        height: 350px;
+    }
+    
+    .severe-case-item {
+        padding: 10px 14px;
+        min-height: 55px;
+    }
+    
+    .severe-case-name {
+        font-size: 13px;
+    }
+    
+    .severe-case-details {
+        font-size: 11px;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .severe-cases-container {
+        height: 300px;
+        padding: 8px;
+    }
+    
+    .severe-case-item {
+        padding: 8px 12px;
+        min-height: 50px;
+    }
+    
+    .severe-case-name {
+        font-size: 12px;
+    }
+    
+    .severe-case-details {
+        font-size: 10px;
+        gap: 8px;
+    }
+    
+    .severe-case-classification {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+}
 </style>
 <body class="light-theme">
 
@@ -7405,6 +7567,24 @@ body {
             </div>
         </div>
 
+        <!-- NEW: Severe Malnutrition Cases Card -->
+        <div class="chart-row">
+            <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
+                <div style="margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                        <div style="flex: 1;">
+                            <h3 style="margin: 0; padding: 0;">Severe Malnutrition Cases</h3>
+                            <p class="chart-description" style="margin: 2px 0 0 0; font-size: 12px; line-height: 1.3;">Individual cases of severe malnutrition requiring immediate attention.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="severe-cases-container" class="severe-cases-container">
+                    <div id="severe-cases-list" class="severe-cases-list"></div>
+                </div>
+            </div>
+        </div>
+
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
                 <div style="margin-bottom: 20px;">
@@ -7867,6 +8047,10 @@ body {
             // Update trends chart with new barangay filter
             console.log('🔄 Updating trends chart for barangay:', barangay);
             await updateTrendsChart();
+            
+            // Update severe cases list with new barangay filter
+            console.log('🔄 Updating severe cases list for barangay:', barangay);
+            await updateSevereCasesList(barangay);
             
             // Update screening responses for the selected barangay
             setTimeout(() => {
@@ -10487,6 +10671,10 @@ body {
                 console.log('🎨 Updating trends chart...');
                 await updateTrendsChart();
                 
+                // Update severe cases list with new WHO standard
+                console.log('🎨 Updating severe cases list...');
+                await updateSevereCasesList(barangay);
+                
                 console.log('✅ Chart update completed');
                 
             } catch (error) {
@@ -10947,6 +11135,9 @@ body {
             
             // Initialize trends chart
             initializeTrendsChart();
+            
+            // Initialize severe cases list
+            updateSevereCasesList('');
             
         // Debug: Check initial metric values on page load
         setTimeout(() => {
@@ -11814,6 +12005,85 @@ body {
                 'obese': '#F44336'
             };
             return colors[classification] || '#E91E63';
+        }
+
+        // NEW: Function to update severe cases list
+        async function updateSevereCasesList(barangay = '') {
+            console.log('📊 Updating severe cases list...');
+            console.log('📊 Severe cases function called with barangay:', barangay);
+            
+            try {
+                const severeCasesList = document.getElementById('severe-cases-list');
+                console.log('📊 Severe cases list element found:', severeCasesList);
+                if (!severeCasesList) {
+                    console.error('❌ Severe cases list element not found');
+                    return;
+                }
+
+                // Clear previous list
+                severeCasesList.innerHTML = '';
+
+                // Get current filter values
+                const barangayValue = barangay || '';
+                const whoStandard = document.querySelector('input[name="who-standard"]:checked')?.value || 'weight-for-age';
+
+                // Fetch severe cases data
+                const url = `/api/DatabaseAPI.php?action=get_severe_cases&barangay=${encodeURIComponent(barangayValue)}&who_standard=${whoStandard}`;
+                console.log('📊 Fetching severe cases data from:', url);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Severe cases data received:', data);
+
+                if (!data.success || !data.data || !data.data.severe_cases || data.data.severe_cases.length === 0) {
+                    console.log('No severe cases found');
+                    severeCasesList.innerHTML = '<div class="severe-cases-empty">No severe malnutrition cases found for the selected filters</div>';
+                    return;
+                }
+
+                const severeCases = data.data.severe_cases;
+                console.log(`Found ${severeCases.length} severe cases`);
+
+                // Create list items for each severe case
+                severeCases.forEach((caseData, index) => {
+                    const caseItem = document.createElement('div');
+                    caseItem.className = `severe-case-item ${caseData.classification.toLowerCase().replace(/\s+/g, '-')}`;
+                    
+                    // Format screening date
+                    const screeningDate = new Date(caseData.screening_date);
+                    const formattedDate = screeningDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    
+                    caseItem.innerHTML = `
+                        <div class="severe-case-info">
+                            <div class="severe-case-name">${caseData.name}</div>
+                            <div class="severe-case-details">
+                                <span>Age: ${caseData.age}</span>
+                                <span>Date: ${formattedDate}</span>
+                            </div>
+                        </div>
+                        <div class="severe-case-classification">${caseData.classification}</div>
+                    `;
+                    
+                    severeCasesList.appendChild(caseItem);
+                });
+
+                console.log(`✅ Severe cases list updated successfully with ${severeCases.length} cases`);
+
+            } catch (error) {
+                console.error('❌ Error updating severe cases list:', error);
+                const severeCasesList = document.getElementById('severe-cases-list');
+                if (severeCasesList) {
+                    severeCasesList.innerHTML = '<div class="severe-cases-empty">Error loading severe cases: ' + error.message + '</div>';
+                }
+            }
         }
 
     </script>
