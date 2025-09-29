@@ -460,7 +460,7 @@ function getTimeFrameData($db, $barangay = null, $dbAPI = null) {
         $totalScreened = count($users);
         $highRiskCases = 0; // Count of Severely Underweight
         $samCases = 0; // Count of Severely Stunted
-        $criticalMuac = 0; // Count of Severely Wasted
+        $severelyWasted = 0; // Count of Severely Wasted
         $barangaysCovered = [];
         
         // Get Weight-for-Age classifications (for Severely Underweight)
@@ -478,7 +478,7 @@ function getTimeFrameData($db, $barangay = null, $dbAPI = null) {
         // Get Weight-for-Height classifications (for Severely Wasted)
         $wfhData = $dbAPI->getWHOClassifications('weight-for-height', '1d', $barangay);
         if ($wfhData['success'] && isset($wfhData['data']['classifications'])) {
-            $criticalMuac = $wfhData['data']['classifications']['Severely Wasted'] ?? 0;
+            $severelyWasted = $wfhData['data']['classifications']['Severely Wasted'] ?? 0;
             }
             
             // Track barangays
@@ -493,7 +493,7 @@ function getTimeFrameData($db, $barangay = null, $dbAPI = null) {
         echo "<script>console.log('  - Total Screened: $totalScreened');</script>";
         echo "<script>console.log('  - Severely Underweight (WFA): $highRiskCases');</script>";
         echo "<script>console.log('  - Severely Stunted (HFA): $samCases');</script>";
-        echo "<script>console.log('  - Severely Wasted (WFH): $criticalMuac');</script>";
+        echo "<script>console.log('  - Severely Wasted (WFH): $severelyWasted');</script>";
         
         // Log full classification objects
         if (isset($wfaData['data']['classifications'])) {
@@ -510,7 +510,7 @@ function getTimeFrameData($db, $barangay = null, $dbAPI = null) {
             'total_screened' => $totalScreened,
             'high_risk_cases' => $highRiskCases,
             'sam_cases' => $samCases,
-            'critical_muac' => $criticalMuac,
+            'critical_muac' => $severelyWasted,
             'barangays_covered' => count(array_unique($barangaysCovered)),
             'earliest_screening' => $totalScreened > 0 ? $users[count($users)-1]['screening_date'] : null,
             'latest_update' => $totalScreened > 0 ? $users[0]['screening_date'] : null
