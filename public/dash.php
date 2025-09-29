@@ -6785,6 +6785,51 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Chart text theme support */
+.dark-theme .population-scale {
+    color: #FFFFFF !important;
+}
+
+.dark-theme .population-scale .scale-label {
+    color: #FFFFFF !important;
+}
+
+.light-theme .population-scale {
+    color: #000000 !important;
+}
+
+.light-theme .population-scale .scale-label {
+    color: #000000 !important;
+}
+
+/* Chart legend and labels theme support */
+.dark-theme .trends-legend {
+    color: #FFFFFF !important;
+}
+
+.dark-theme .trends-legend .legend-item {
+    color: #FFFFFF !important;
+}
+
+.light-theme .trends-legend {
+    color: #000000 !important;
+}
+
+.light-theme .trends-legend .legend-item {
+    color: #000000 !important;
+}
+
+/* Chart title and axis labels theme support */
+.dark-theme .chart-title,
+.dark-theme .chart-axis-label {
+    color: #FFFFFF !important;
+}
+
+.light-theme .chart-title,
+.light-theme .chart-axis-label {
+    color: #000000 !important;
+}
+
 /* ===== BARANGAY DROPDOWN FUNCTIONALITY CSS ===== */
 .dropdown-content {
     display: none;
@@ -9555,6 +9600,9 @@ body {
                 // Create population scale container using the existing 8px padding space
                 const populationScale = document.createElement('div');
                 populationScale.className = 'population-scale';
+                const isLightTheme = document.body.classList.contains('light-theme');
+                const textColor = isLightTheme ? '#000000' : '#FFFFFF';
+                
                 populationScale.style.cssText = `
                     position: absolute;
                     left: -8px;
@@ -9566,7 +9614,7 @@ body {
                     justify-content: space-between;
                     align-items: flex-end;
                     font-size: 10px;
-                    color: var(--color-text);
+                    color: ${textColor};
                     opacity: 0.7;
                     z-index: 10;
                 `;
@@ -9587,7 +9635,10 @@ body {
                         align-items: center;
                         justify-content: flex-end;
                         padding-right: 5px;
-                        border-right: 1px solid rgba(0,0,0,0.1);
+                        border-right: 1px solid ${isLightTheme ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)'};
+                        color: ${textColor};
+                        font-size: 9px;
+                        font-weight: 500;
                     `;
                     scaleLabel.textContent = value.toString();
                     populationScale.appendChild(scaleLabel);
@@ -9611,6 +9662,7 @@ body {
                         gap: 8px;
                         max-width: 200px;
                         z-index: 20;
+                        color: ${textColor};
                     `;
                     
                     // Function to get classification acronym
@@ -9645,7 +9697,7 @@ body {
                             align-items: center;
                             gap: 4px;
                             font-size: 10px;
-                            color: var(--color-text);
+                            color: ${textColor};
                             opacity: 0.8;
                         `;
                         
@@ -11229,6 +11281,28 @@ body {
                 localStorage.setItem('theme', 'dark');
                 console.log('Switched to dark theme');
             }
+            
+            // Refresh charts to apply new theme
+            setTimeout(() => {
+                // Refresh trends chart if it exists
+                if (typeof updateTrendsChart === 'function') {
+                    updateTrendsChart();
+                }
+                
+                // Refresh age classification chart if it exists
+                if (typeof updateAgeClassificationChart === 'function') {
+                    const currentBarangay = getCurrentBarangay();
+                    updateAgeClassificationChart(currentBarangay);
+                }
+                
+                // Refresh severe cases list if it exists
+                if (typeof updateSevereCasesList === 'function') {
+                    const currentBarangay = getCurrentBarangay();
+                    updateSevereCasesList(currentBarangay);
+                }
+                
+                console.log('Charts refreshed for new theme');
+            }, 100);
         }
 
         // Initialize theme on page load
