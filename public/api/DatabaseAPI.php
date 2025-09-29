@@ -3150,23 +3150,21 @@ class DatabaseAPI {
             // Always create exactly 10 time periods for consistent visualization
             $numPeriods = 10;
             
-            // Calculate the total time span and divide into equal periods
-            // Add 1 second to ensure we include the TO date in the calculation
-            $totalSeconds = $to->getTimestamp() - $from->getTimestamp() + 1;
-            $periodSeconds = $totalSeconds / $numPeriods;
-            
+            // Create periods that ensure the last one ends exactly at the TO date
             $current = clone $from;
+            $totalDays = $from->diff($to)->days;
+            $daysPerPeriod = $totalDays / ($numPeriods - 1); // Use numPeriods-1 to ensure last period ends at TO
+            
             for ($i = 0; $i < $numPeriods; $i++) {
-                // For the last period, make sure it ends exactly at the 'to' date
                 if ($i === $numPeriods - 1) {
+                    // Last period always ends exactly at the TO date
                     $periodEnd = clone $to;
                 } else {
-                    // Calculate the exact end timestamp for this period
-                    $endTimestamp = $from->getTimestamp() + (($i + 1) * $periodSeconds);
-                    $periodEnd = new DateTime();
-                    $periodEnd->setTimestamp($endTimestamp);
+                    // Calculate period end based on days
+                    $periodEnd = clone $from;
+                    $periodEnd->add(new DateInterval('P' . round($daysPerPeriod * ($i + 1)) . 'D'));
                     
-                    // Ensure we don't go past the TO date
+                    // Don't go past the TO date
                     if ($periodEnd > $to) {
                         $periodEnd = clone $to;
                     }
@@ -3174,14 +3172,14 @@ class DatabaseAPI {
                 
                 // Create appropriate labels based on time span
                 if ($diffDays <= 31) {
-                    // Daily grouping
-                    $label = $current->format('M j');
+                    // Daily grouping - use the period end date for the label
+                    $label = $periodEnd->format('M j');
                 } else if ($diffDays <= 365) {
-                    // Monthly grouping
-                    $label = $current->format('M Y');
+                    // Monthly grouping - use the period end date for the label
+                    $label = $periodEnd->format('M Y');
                 } else {
-                    // Yearly grouping
-                    $label = $current->format('M Y');
+                    // Yearly grouping - use the period end date for the label
+                    $label = $periodEnd->format('M Y');
                 }
                 
                 $timeLabels[] = $label;
