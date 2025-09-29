@@ -4959,7 +4959,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                             // BMI adult uses simple BMI calculation
                             $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
                             
-                            if ($bmi < 18.5) $classification = 'Underweight';
+                            if ($bmi < 16.0) $classification = 'Severely Underweight';
+                            else if ($bmi < 18.5) $classification = 'Underweight';
                             else if ($bmi < 25) $classification = 'Normal';
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';

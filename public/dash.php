@@ -7080,6 +7080,11 @@ body {
     border-color: #E91E63;
 }
 
+.severe-case-item.severely-underweight-(bmi-adult) {
+    background: linear-gradient(135deg, #E91E63, #F06292);
+    border-color: #E91E63;
+}
+
 .severe-cases-empty {
     display: flex;
     align-items: center;
