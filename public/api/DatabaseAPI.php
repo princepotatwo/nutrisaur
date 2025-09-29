@@ -3347,8 +3347,14 @@ class DatabaseAPI {
                 ];
             }
 
+            // Debug logging
+            error_log("🔍 getSevereCasesBulk called with barangay: '$barangay', whoStandard: '$whoStandard'");
+
             // Use the same method as other bulk APIs - get all users (no time filtering)
             $users = $this->getDetailedScreeningResponses('1d', $barangay);
+            
+            // Debug logging
+            error_log("🔍 getSevereCasesBulk found " . count($users) . " users after filtering");
             
             if (empty($users)) {
                 return [
@@ -3377,7 +3383,7 @@ class DatabaseAPI {
                 );
 
                 if ($assessment['success'] && isset($assessment['results'])) {
-                    // Check ALL WHO standards for severe cases, not just the selected one
+                    // Check ALL WHO standards for severe cases, but filter by selected WHO standard
                     $severeClassifications = [];
                     
                     // Check Weight-for-Age
@@ -3421,8 +3427,41 @@ class DatabaseAPI {
                         }
                     }
                     
-                    // Add all severe cases found
-                    foreach ($severeClassifications as $classification) {
+                    // Filter by WHO standard - only include cases relevant to the selected standard
+                    $filteredClassifications = [];
+                    switch ($whoStandard) {
+                        case 'weight-for-age':
+                            $filteredClassifications = array_filter($severeClassifications, function($c) {
+                                return in_array($c, ['Severely Underweight']);
+                            });
+                            break;
+                        case 'height-for-age':
+                            $filteredClassifications = array_filter($severeClassifications, function($c) {
+                                return in_array($c, ['Severely Stunted']);
+                            });
+                            break;
+                        case 'weight-for-height':
+                            $filteredClassifications = array_filter($severeClassifications, function($c) {
+                                return in_array($c, ['Severely Wasted']);
+                            });
+                            break;
+                        case 'bmi-for-age':
+                            $filteredClassifications = array_filter($severeClassifications, function($c) {
+                                return in_array($c, ['Severely Underweight']);
+                            });
+                            break;
+                        case 'bmi-adult':
+                            $filteredClassifications = array_filter($severeClassifications, function($c) {
+                                return in_array($c, ['Severely Underweight']);
+                            });
+                            break;
+                        default:
+                            // If no specific standard, show all severe cases
+                            $filteredClassifications = $severeClassifications;
+                    }
+                    
+                    // Add filtered severe cases
+                    foreach ($filteredClassifications as $classification) {
                         $age = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
                         $ageYears = floor($age / 12);
                         $ageMonths = $age % 12;
@@ -3444,6 +3483,12 @@ class DatabaseAPI {
             usort($severeCases, function($a, $b) {
                 return strtotime($b['screening_date']) - strtotime($a['screening_date']);
             });
+
+            // Debug logging
+            error_log("🔍 getSevereCasesBulk found " . count($severeCases) . " severe cases for whoStandard: '$whoStandard'");
+            if (!empty($severeCases)) {
+                error_log("🔍 Severe cases: " . json_encode($severeCases));
+            }
 
             return [
                 'success' => true,
