@@ -9804,12 +9804,12 @@ body {
         
         // Function to initialize trends chart with default date range
         function initializeTrendsChart() {
-            const today = new Date();
-            const thirtyDaysAgo = new Date(today);
-            thirtyDaysAgo.setDate(today.getDate() - 30);
+            // Set default date range to cover 2024 data (when most screening occurred)
+            const fromDate = '2024-01-01';
+            const toDate = '2024-12-31';
             
-            document.getElementById('trends-from-date').value = thirtyDaysAgo.toISOString().split('T')[0];
-            document.getElementById('trends-to-date').value = today.toISOString().split('T')[0];
+            document.getElementById('trends-from-date').value = fromDate;
+            document.getElementById('trends-to-date').value = toDate;
             
             // Load initial data
             updateTrendsChart();
@@ -9817,12 +9817,26 @@ body {
         
         // Function to set quick date ranges
         function setQuickDateRange(days) {
-            const today = new Date();
-            const startDate = new Date(today);
-            startDate.setDate(today.getDate() - days);
+            // Use 2024 as the base year since that's when the screening data exists
+            let fromDate, toDate;
             
-            document.getElementById('trends-from-date').value = startDate.toISOString().split('T')[0];
-            document.getElementById('trends-to-date').value = today.toISOString().split('T')[0];
+            if (days === 30) {
+                fromDate = '2024-01-01';
+                toDate = '2024-01-31';
+            } else if (days === 90) {
+                fromDate = '2024-01-01';
+                toDate = '2024-03-31';
+            } else if (days === 365) {
+                fromDate = '2024-01-01';
+                toDate = '2024-12-31';
+            } else {
+                // Fallback to 2024 full year
+                fromDate = '2024-01-01';
+                toDate = '2024-12-31';
+            }
+            
+            document.getElementById('trends-from-date').value = fromDate;
+            document.getElementById('trends-to-date').value = toDate;
             
             // Update active button
             document.querySelectorAll('.quick-date-btn').forEach(btn => btn.classList.remove('active'));
