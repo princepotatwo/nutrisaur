@@ -7081,8 +7081,16 @@ body {
 }
 
 .severe-case-item.severely-underweight-(bmi-adult) {
-    background: linear-gradient(135deg, #E91E63, #F06292);
-    border-color: #E91E63;
+    background: linear-gradient(135deg, #E91E63, #F06292) !important;
+    border-color: #E91E63 !important;
+    color: white !important;
+}
+
+/* Additional rule for any BMI Adult severe case */
+.severe-case-item[class*="bmi-adult"] {
+    background: linear-gradient(135deg, #E91E63, #F06292) !important;
+    border-color: #E91E63 !important;
+    color: white !important;
 }
 
 .severe-cases-empty {
@@ -12202,6 +12210,9 @@ body {
                     // No special handling needed - use the actual classification
                     
                     caseItem.className = `severe-case-item ${cssClass}`;
+                    
+                    // Debug: Log the CSS class being applied
+                    console.log('🔍 Severe case CSS class:', cssClass, 'for classification:', caseData.classification);
                     
                     // Format screening date
                     const screeningDate = new Date(caseData.screening_date);

@@ -3312,6 +3312,7 @@ class DatabaseAPI {
             ];
 
             $datasets = [];
+            $lineOffset = 0;
             foreach ($allClassifications as $classification) {
                 // Skip "No Data" and "Age out of range" classifications from line chart
                 if ($classification === 'No Data' || $classification === 'Age out of range') {
@@ -3325,7 +3326,10 @@ class DatabaseAPI {
                 
                 $data = [];
                 foreach ($timeLabels as $label) {
-                    $data[] = $periodData[$label]['classifications'][$classification] ?? 0;
+                    $baseValue = $periodData[$label]['classifications'][$classification] ?? 0;
+                    // Add small offset to prevent lines from overlapping
+                    $offsetValue = $baseValue + ($lineOffset * 0.1);
+                    $data[] = $offsetValue;
                 }
 
                 $datasets[] = [
@@ -3339,6 +3343,8 @@ class DatabaseAPI {
                     'pointHoverRadius' => 6,
                     'borderWidth' => 3
                 ];
+                
+                $lineOffset++; // Increment offset for next line
             }
 
             // Get total population count to match donut chart and age chart
