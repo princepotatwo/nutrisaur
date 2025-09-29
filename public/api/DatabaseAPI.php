@@ -3469,12 +3469,12 @@ class DatabaseAPI {
                         }
                     }
                     
-                    // Check BMI Adult
+                    // Check BMI Adult - only include SEVERELY underweight cases
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
                     if ($ageInMonths >= 228) { // 19+ years
                         $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                        if ($bmi < 18.5) {
-                            $severeClassifications[] = 'Underweight (BMI Adult)';
+                        if ($bmi < 16.0) { // Only severely underweight (BMI < 16.0)
+                            $severeClassifications[] = 'Severely Underweight (BMI Adult)';
                         }
                     }
                     
