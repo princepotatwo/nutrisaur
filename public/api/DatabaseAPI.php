@@ -3256,7 +3256,7 @@ class DatabaseAPI {
                                     $periodData[$periodLabel]['classifications'][$classification] = 0;
                                 }
                                 $periodData[$periodLabel]['classifications'][$classification]++;
-                                
+                            }
                         }
                         break;
                     }
