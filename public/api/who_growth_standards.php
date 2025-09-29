@@ -1180,13 +1180,41 @@ class WHOGrowthStandards {
      * This is a TRUE decision tree based on exact WHO table ranges
      */
     public function calculateWeightForAge($weight, $ageInMonths, $sex) {
-        // Function removed for testing - will use main who_growth_standards.php
-        return [
-            'z_score' => null,
-            'classification' => 'Function Removed',
-            'error' => 'Using main who_growth_standards.php instead',
-            'method' => 'testing'
-        ];
+        // Use hardcoded lookup tables for both boys and girls
+        if ($sex === 'Male') {
+            $lookup = $this->getWeightForAgeBoysLookup();
+        } else {
+            $lookup = $this->getWeightForAgeGirlsLookup();
+        }
+        
+        if (!isset($lookup[$ageInMonths])) {
+            return ['z_score' => null, 'classification' => 'Age out of range', 'error' => 'Age must be 0-71 months'];
+        }
+        
+        $ranges = $lookup[$ageInMonths];
+        
+        foreach ($ranges as $category => $range) {
+            if ($weight >= $range['min'] && $weight <= $range['max']) {
+                // Calculate z-score using the original formula for the closest age
+                $standards = ($sex === 'Male') ? $this->getWeightForAgeBoys() : $this->getWeightForAgeGirls();
+                if (isset($standards[$ageInMonths])) {
+                    $median = $standards[$ageInMonths]['median'];
+                    $sd = $standards[$ageInMonths]['sd'];
+                    $zScore = ($weight - $median) / $sd;
+                } else {
+                    $zScore = null;
+                }
+                
+                return [
+                    'z_score' => $zScore !== null ? round($zScore, 2) : null,
+                    'classification' => $zScore !== null ? $this->getWeightForAgeClassification($zScore) : ucfirst(str_replace('_', ' ', $category)),
+                    'age_used' => $ageInMonths,
+                    'method' => 'hardcoded_lookup_table'
+                ];
+            }
+        }
+        
+        return ['z_score' => null, 'classification' => 'No Data', 'error' => 'Weight not found in any range'];
     }
     
     /**
