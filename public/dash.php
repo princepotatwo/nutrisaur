@@ -9933,8 +9933,8 @@ body {
                 
                 console.log('📊 Trends Chart Filters:', { fromDate, toDate, barangay, whoStandard });
                 
-                // Show loading state
-                const chartContainer = document.querySelector('.trends-chart-container');
+                // Show loading state - target the specific container for the trends line chart
+                const chartContainer = document.querySelector('#trendsLineChart').parentElement;
                 if (chartContainer) {
                     chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading trends chart...</div>';
                 }
@@ -9966,9 +9966,10 @@ body {
                     return;
                 }
                 
-                // Create chart
-                if (chartContainer) {
-                    chartContainer.innerHTML = '<canvas id="trendsLineChart"></canvas>';
+                // Create chart - target the specific container for the trends line chart
+                const trendsChartContainer = document.querySelector('#trendsLineChart').parentElement;
+                if (trendsChartContainer) {
+                    trendsChartContainer.innerHTML = '<canvas id="trendsLineChart"></canvas>';
                     const canvas = document.getElementById('trendsLineChart');
                     const ctx = canvas.getContext('2d');
                     
@@ -10066,9 +10067,9 @@ body {
                 
             } catch (error) {
                 console.error('❌ Error updating trends chart:', error);
-                const chartContainer = document.querySelector('.trends-chart-container');
-                if (chartContainer) {
-                    chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Error loading trends chart</div>';
+                const trendsChartContainer = document.querySelector('#trendsLineChart').parentElement;
+                if (trendsChartContainer) {
+                    trendsChartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Error loading trends chart</div>';
                 }
             }
         }
