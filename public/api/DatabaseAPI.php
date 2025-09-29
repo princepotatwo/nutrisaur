@@ -1758,7 +1758,7 @@ class DatabaseAPI {
                             // For BMI-adult, use adult BMI classification
                             $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
                             if ($bmi < 18.5) $classification = 'Underweight';
-                            else if ($bmi < 25) $classification = 'Normal weight';
+                            else if ($bmi < 25) $classification = 'Normal';
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';
                         }
@@ -2893,7 +2893,7 @@ class DatabaseAPI {
                     'Overweight' => 0, 'Obese' => 0, 'No Data' => 0
                 ],
                 'bmi_adult' => [
-                    'Underweight' => 0, 'Normal weight' => 0, 'Overweight' => 0, 
+                    'Underweight' => 0, 'Normal' => 0, 'Overweight' => 0, 
                     'Obese' => 0, 'No Data' => 0
                 ]
             ];
@@ -3473,13 +3473,16 @@ class DatabaseAPI {
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
                     if ($ageInMonths >= 228) { // 19+ years
                         $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                        error_log("🔍 BMI Adult Debug - User: {$user['name']}, BMI: $bmi, Age: $ageInMonths months");
                         if ($bmi < 18.5) {
                             $severeClassifications[] = 'Underweight (BMI Adult)';
+                            error_log("🔍 Added 'Underweight (BMI Adult)' for user: {$user['name']}");
                         }
                     }
                     
                     // Filter by WHO standard - only include cases relevant to the selected standard
                     $filteredClassifications = [];
+                    error_log("🔍 All severe classifications before filtering: " . json_encode($severeClassifications));
                     switch ($whoStandard) {
                         case 'weight-for-age':
                             $filteredClassifications = array_filter($severeClassifications, function($c) {
@@ -3510,6 +3513,7 @@ class DatabaseAPI {
                             // If no specific standard, show all severe cases
                             $filteredClassifications = $severeClassifications;
                     }
+                    error_log("🔍 Filtered classifications for $whoStandard: " . json_encode($filteredClassifications));
                     
                     // Add filtered severe cases
                     foreach ($filteredClassifications as $classification) {
@@ -3638,7 +3642,7 @@ class DatabaseAPI {
         $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
         
         if ($bmi < 18.5) $classification = 'Underweight';
-        else if ($bmi < 25) $classification = 'Normal weight';
+        else if ($bmi < 25) $classification = 'Normal';
         else if ($bmi < 30) $classification = 'Overweight';
         else $classification = 'Obese';
         
