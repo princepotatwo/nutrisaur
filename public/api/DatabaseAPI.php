@@ -3251,6 +3251,11 @@ class DatabaseAPI {
                                     $periodData[$periodLabel]['classifications'][$classification] = 0;
                                 }
                                 $periodData[$periodLabel]['classifications'][$classification]++;
+                                
+                                // Debug: Log classification being added
+                                error_log("DEBUG: Adding classification '$classification' to period '$periodLabel' for WHO standard '$whoStandard'");
+                            } else {
+                                error_log("DEBUG: Skipping 'No Data' classification for WHO standard '$whoStandard'");
                             }
                         }
                         break;
@@ -3264,6 +3269,11 @@ class DatabaseAPI {
                 $allClassifications = array_merge($allClassifications, array_keys($period['classifications']));
             }
             $allClassifications = array_unique($allClassifications);
+            
+            // Debug: Log what classifications were found
+            error_log("DEBUG: WHO Standard: $whoStandard");
+            error_log("DEBUG: All classifications found: " . json_encode($allClassifications));
+            error_log("DEBUG: Period data: " . json_encode($periodData));
 
             // Define colors for classifications (matching existing charts)
             $colors = [
