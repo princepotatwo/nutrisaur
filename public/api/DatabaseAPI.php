@@ -1758,7 +1758,7 @@ class DatabaseAPI {
                             // For BMI-adult, use adult BMI classification
                             $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
                             if ($bmi < 18.5) $classification = 'Underweight';
-                            else if ($bmi < 25) $classification = 'Normal';
+                            else if ($bmi < 25) $classification = 'Normal weight';
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';
                         }
@@ -2893,7 +2893,7 @@ class DatabaseAPI {
                     'Overweight' => 0, 'Obese' => 0, 'No Data' => 0
                 ],
                 'bmi_adult' => [
-                    'Underweight' => 0, 'Normal' => 0, 'Overweight' => 0, 
+                    'Underweight' => 0, 'Normal weight' => 0, 'Overweight' => 0, 
                     'Obese' => 0, 'No Data' => 0
                 ]
             ];
@@ -3638,7 +3638,7 @@ class DatabaseAPI {
         $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
         
         if ($bmi < 18.5) $classification = 'Underweight';
-        else if ($bmi < 25) $classification = 'Normal';
+        else if ($bmi < 25) $classification = 'Normal weight';
         else if ($bmi < 30) $classification = 'Overweight';
         else $classification = 'Obese';
         
