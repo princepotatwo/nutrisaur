@@ -3291,6 +3291,11 @@ class DatabaseAPI {
                     continue;
                 }
                 
+                // Skip "Not applicable" classification for BMI-for-age standard
+                if ($classification === 'Not applicable' && $whoStandard === 'bmi-for-age') {
+                    continue;
+                }
+                
                 $data = [];
                 foreach ($timeLabels as $label) {
                     $data[] = $periodData[$label]['classifications'][$classification] ?? 0;
