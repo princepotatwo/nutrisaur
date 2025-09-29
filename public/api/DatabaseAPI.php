@@ -3229,14 +3229,17 @@ class DatabaseAPI {
                             if ($whoStandard === 'bmi-adult') {
                                 // BMI Adult - always calculate manually since assessment results might not include it
                                 $ageInMonths = $who->calculateAgeInMonths($record['birthday'], $record['screening_date']);
+                                error_log("DEBUG BMI Adult: Age in months: $ageInMonths, Birthday: {$record['birthday']}, Screening: {$record['screening_date']}");
                                 if ($ageInMonths >= 228) { // 19+ years
                                     $bmi = floatval($record['weight']) / pow(floatval($record['height']) / 100, 2);
                                     if ($bmi < 18.5) $classification = 'Underweight';
                                     else if ($bmi < 25) $classification = 'Normal';
                                     else if ($bmi < 30) $classification = 'Overweight';
                                     else $classification = 'Obese';
+                                    error_log("DEBUG BMI Adult: BMI: $bmi, Classification: $classification");
                                 } else {
                                     $classification = 'No Data';
+                                    error_log("DEBUG BMI Adult: Too young for BMI adult (age: $ageInMonths months)");
                                 }
                             } else {
                                 // Other WHO standards
@@ -3253,6 +3256,9 @@ class DatabaseAPI {
                                     $periodData[$periodLabel]['classifications'][$classification] = 0;
                                 }
                                 $periodData[$periodLabel]['classifications'][$classification]++;
+                                error_log("DEBUG Trends: Added classification '$classification' to period '$periodLabel'");
+                            } else {
+                                error_log("DEBUG Trends: Skipping 'No Data' classification for period '$periodLabel'");
                             }
                         }
                         break;
