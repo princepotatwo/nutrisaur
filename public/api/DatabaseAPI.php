@@ -3341,11 +3341,11 @@ class DatabaseAPI {
             // Calculate total users based on actual classifications from the datasets
             $totalUsersWithClassifications = 0;
             
-            // Count users from the first period's classifications to get the actual count
-            $firstPeriod = reset($periodData);
-            if ($firstPeriod && isset($firstPeriod['classifications'])) {
-                foreach ($firstPeriod['classifications'] as $classification => $count) {
-                    $totalUsersWithClassifications += $count;
+            // Count users from the datasets to get the actual count
+            // Sum up the first data point from each dataset to get the total unique users
+            foreach ($datasets as $dataset) {
+                if (isset($dataset['data']) && is_array($dataset['data']) && count($dataset['data']) > 0) {
+                    $totalUsersWithClassifications += $dataset['data'][0];
                 }
             }
 
