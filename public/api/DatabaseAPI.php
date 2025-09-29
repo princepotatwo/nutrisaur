@@ -3225,7 +3225,9 @@ class DatabaseAPI {
                     $ageInMonths = $who->calculateAgeInMonths($record['birthday'], $record['screening_date']);
                     if ($ageInMonths >= 228) { // 19+ years
                         $bmi = floatval($record['weight']) / pow(floatval($record['height']) / 100, 2);
-                        if ($bmi < 18.5) $classification = 'Underweight';
+                        if ($bmi < 16.0) $classification = 'Severely Underweight';
+                        else if ($bmi < 17.0) $classification = 'Moderately Underweight';
+                        else if ($bmi < 18.5) $classification = 'Mildly Underweight';
                         else if ($bmi < 25) $classification = 'Normal';
                         else if ($bmi < 30) $classification = 'Overweight';
                         else $classification = 'Obese';
@@ -3297,6 +3299,8 @@ class DatabaseAPI {
             // Define colors for classifications (matching existing charts)
             $colors = [
                 'Severely Underweight' => '#E91E63',
+                'Moderately Underweight' => '#FF5722',
+                'Mildly Underweight' => '#FFC107',
                 'Underweight' => '#FFC107',
                 'Normal' => '#4CAF50',
                 'Overweight' => '#FF9800',
@@ -3472,7 +3476,7 @@ class DatabaseAPI {
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
                     if ($ageInMonths >= 228) { // 19+ years
                         $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                        if ($bmi < 18.5) {
+                        if ($bmi < 16.0) {
                             $severeClassifications[] = 'Severely Underweight (BMI Adult)';
                         }
                     }
