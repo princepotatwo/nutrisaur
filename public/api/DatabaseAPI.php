@@ -3339,12 +3339,12 @@ class DatabaseAPI {
             }
 
             // Get total population count to match donut chart and age chart
-            // This should be the same as the total users in the database, not just those in the date range
+            // Use the same logic as dashboard_assessment_stats.php
             $totalPopulationQuery = "SELECT COUNT(*) as total FROM community_users";
             $totalPopulationParams = [];
             
             if ($barangay && $barangay !== '') {
-                // Known municipalities from the system
+                // Known municipalities from the system (same logic as dashboard_assessment_stats.php)
                 $knownMunicipalities = [
                     'ABUCAY', 'BAGAC', 'CITY OF BALANGA', 'DINALUPIHAN', 'HERMOSA', 'LIMAY', 
                     'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'
@@ -3361,7 +3361,7 @@ class DatabaseAPI {
                 }
             }
             
-            $totalPopulationStmt = $pdo->prepare($totalPopulationQuery);
+            $totalPopulationStmt = $this->pdo->prepare($totalPopulationQuery);
             $totalPopulationStmt->execute($totalPopulationParams);
             $totalPopulationResult = $totalPopulationStmt->fetch(PDO::FETCH_ASSOC);
             $totalUsersWithClassifications = $totalPopulationResult['total'] ?? 0;
