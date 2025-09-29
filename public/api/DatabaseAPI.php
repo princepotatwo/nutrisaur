@@ -3173,11 +3173,13 @@ class DatabaseAPI {
                 // Create appropriate labels based on time span
                 // For the last period, always use the TO date for the label
                 if ($i === $numPeriods - 1) {
+                    // This is the last period - force it to show the TO date
                     if ($diffDays <= 31) {
                         $label = $to->format('M j');
                     } else {
                         $label = $to->format('M Y');
                     }
+                    error_log("DEBUG: Last period (i=$i), TO date: " . $to->format('Y-m-d') . ", label: $label");
                 } else {
                     if ($diffDays <= 31) {
                         // Daily grouping - use the period end date for the label
