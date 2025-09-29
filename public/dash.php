@@ -7534,7 +7534,7 @@ body {
 
 
 
-        <div class="chart-row">
+        <div class="chart-row" style="display: none;">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
                 <div style="margin-bottom: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
@@ -7567,7 +7567,7 @@ body {
             </div>
         </div>
 
-        <!-- NEW: Severe Malnutrition Cases Card -->
+        <!-- Severe Malnutrition Cases Card - Replaces Community Health Trends -->
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
                 <div style="margin-bottom: 10px;">
