@@ -3183,8 +3183,8 @@ class DatabaseAPI {
                     'classifications' => []
                 ];
                 
+                // Move to the next period start (don't add +1 day to avoid gaps)
                 $current = clone $periodEnd;
-                $current->modify('+1 day'); // Move to next day to avoid overlap
             }
 
             // Process screening data and group by time periods
