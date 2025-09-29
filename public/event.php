@@ -737,7 +737,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                             
                             if (isset($csvSentNotifications[$csvNotificationKey])) {
                                 error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                continue;
+                                return;
                             }
                             $csvSentNotifications[$csvNotificationKey] = true;
                             
@@ -815,7 +815,7 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
                             
                             if (isset($csvSentNotifications[$csvNotificationKey])) {
                                 error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                continue;
+                                return;
                             }
                             $csvSentNotifications[$csvNotificationKey] = true;
                             
@@ -829,7 +829,7 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
             
             if (empty($fcmToken) || empty($userEmail)) {
                 $failureCount++;
-                continue;
+                return;
             }
             
             // Use the SAME working notification API that dash.php uses for critical risk
@@ -930,7 +930,7 @@ function sendNotificationViaAPI($notificationData) {
                             
                             if (isset($csvSentNotifications[$csvNotificationKey])) {
                                 error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                continue;
+                                return;
                             }
                             $csvSentNotifications[$csvNotificationKey] = true;
                             
@@ -1008,7 +1008,7 @@ function sendEventFCMNotification($tokens, $notificationData, $targetLocation = 
             
             if (empty($fcmToken) || empty($userEmail)) {
                 error_log("Empty FCM token or user email for notification");
-                continue;
+                return;
             }
             
             try {
@@ -1360,12 +1360,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
                     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                         $row++;
-                    if ($row == 1) continue; // Skip header
+                    if ($row == 1) return; // Skip header
                         
                     // Validate columns
                         if (count($data) < 5) {
                         $errors[] = "Row $row: Need 5 columns";
-                            continue;
+                            return;
                         }
                         
                     // Extract data
@@ -1378,7 +1378,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         // Validate required fields
                     if (empty($title) || empty($date_time) || empty($location) || empty($organizer)) {
                         $errors[] = "Row $row: Missing required fields";
-                            continue;
+                            return;
                         }
                         
                     // Simple date validation
@@ -1388,7 +1388,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                     }
                         if (!$dateObj) {
                         $errors[] = "Row $row: Invalid date format";
-                            continue;
+                            return;
                         }
                         
                     // Get next ID
@@ -1422,7 +1422,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             
                             if (isset($csvSentNotifications[$csvNotificationKey])) {
                                 error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                continue;
+                                return;
                             }
                             $csvSentNotifications[$csvNotificationKey] = true;
                             
@@ -1554,7 +1554,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
                             
                             if (isset($csvSentNotifications[$csvNotificationKey])) {
                                 error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                continue;
+                                return;
                             }
                             $csvSentNotifications[$csvNotificationKey] = true;
                             
