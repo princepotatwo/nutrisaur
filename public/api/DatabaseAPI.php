@@ -3179,7 +3179,6 @@ class DatabaseAPI {
                     } else {
                         $label = $to->format('M Y');
                     }
-                    error_log("DEBUG: Last period (i=$i), TO date: " . $to->format('Y-m-d') . ", label: $label");
                 } else {
                     if ($diffDays <= 31) {
                         // Daily grouping - use the period end date for the label
