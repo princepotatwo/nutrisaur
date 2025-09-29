@@ -201,6 +201,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                         'event_date' => date('M j, Y g:i A', strtotime($date_time))
                     ];
                     
+                    // Simple duplicate prevention - track sent notifications
+                    static $sentNotifications = [];
+                    $notificationKey = $eventId . "_" . $title;
+                    
+                    if (isset($sentNotifications[$notificationKey])) {
+                        error_log("⚠️ Notification already sent for event: $title - skipping duplicate");
+                        return;
+                    }
+                    $sentNotifications[$notificationKey] = true;
+                    
                     // Send FCM notifications directly
                     $successCount = 0;
                     foreach ($fcmTokenData as $tokenData) {
@@ -721,7 +731,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         
         error_log("✅ AJAX Event created successfully with ID: $eventId");
         
-        // Send notifications using the SAME approach as dash.php
+        // Simple duplicate prevention for CSV
+                            static $csvSentNotifications = [];
+                            $csvNotificationKey = $nextId . "_" . $title;
+                            
+                            if (isset($csvSentNotifications[$csvNotificationKey])) {
+                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
+                                continue;
+                            }
+                            $csvSentNotifications[$csvNotificationKey] = true;
+                            
+                            // Send notifications using the SAME approach as dash.php
         $notificationMessage = '';
         if ($notificationType !== 'none') {
             try {
@@ -789,7 +809,17 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
         $locationText = ($location === 'all' || empty($location)) ? 'All Locations' : $location;
         $notificationBody = "New event: $title at $locationText on " . date('M j, Y g:i A', strtotime($date_time));
         
-        // Send notifications using the working API
+        // Simple duplicate prevention for CSV
+                            static $csvSentNotifications = [];
+                            $csvNotificationKey = $nextId . "_" . $title;
+                            
+                            if (isset($csvSentNotifications[$csvNotificationKey])) {
+                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
+                                continue;
+                            }
+                            $csvSentNotifications[$csvNotificationKey] = true;
+                            
+                            // Send notifications using the working API
         $successCount = 0;
         $failureCount = 0;
         
@@ -894,7 +924,17 @@ function sendNotificationViaAPI($notificationData) {
             return ['success' => false, 'error' => 'No active FCM tokens found'];
         }
         
-        // Send notification to each token
+        // Simple duplicate prevention for CSV
+                            static $csvSentNotifications = [];
+                            $csvNotificationKey = $nextId . "_" . $title;
+                            
+                            if (isset($csvSentNotifications[$csvNotificationKey])) {
+                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
+                                continue;
+                            }
+                            $csvSentNotifications[$csvNotificationKey] = true;
+                            
+                            // Send notification to each token
         $successCount = 0;
         $failCount = 0;
         
@@ -1376,7 +1416,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             $importedCount++;
                         error_log("✅ CSV: Row $row imported - ID: $nextId");
                         
-                        // Send notification
+                        // Simple duplicate prevention for CSV
+                            static $csvSentNotifications = [];
+                            $csvNotificationKey = $nextId . "_" . $title;
+                            
+                            if (isset($csvSentNotifications[$csvNotificationKey])) {
+                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
+                                continue;
+                            }
+                            $csvSentNotifications[$csvNotificationKey] = true;
+                            
+                            // Send notification
                         try {
                             $notificationTitle = "🎯 Event: $title";
                             $notificationBody = "New event: $title at $location on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
@@ -1498,7 +1548,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
         
         $stmt->execute();
         
-        // Send notification about the updated event with location-based targeting
+        // Simple duplicate prevention for CSV
+                            static $csvSentNotifications = [];
+                            $csvNotificationKey = $nextId . "_" . $title;
+                            
+                            if (isset($csvSentNotifications[$csvNotificationKey])) {
+                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
+                                continue;
+                            }
+                            $csvSentNotifications[$csvNotificationKey] = true;
+                            
+                            // Send notification about the updated event with location-based targeting
         try {
             // Get FCM tokens based on event location
             $fcmTokenData = getFCMTokensByLocation($location);
