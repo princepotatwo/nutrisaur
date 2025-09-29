@@ -3062,6 +3062,230 @@ class DatabaseAPI {
     }
 
     /**
+     * Get trends chart data based on screening date ranges
+     * Groups users by time periods and shows WHO classification trends
+     */
+    public function getTrendsChartData($fromDate, $toDate, $barangay = '', $whoStandard = 'weight-for-age') {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return [
+                    'success' => false,
+                    'message' => 'Database connection not available'
+                ];
+            }
+
+            // Validate date inputs
+            if (empty($fromDate) || empty($toDate)) {
+                return [
+                    'success' => false,
+                    'message' => 'From date and To date are required'
+                ];
+            }
+
+            // Build where clause
+            $whereClause = "WHERE screening_date BETWEEN :from_date AND :to_date";
+            $params = [
+                ':from_date' => $fromDate . ' 00:00:00',
+                ':to_date' => $toDate . ' 23:59:59'
+            ];
+            
+            if (!empty($barangay)) {
+                $whereClause .= " AND barangay = :barangay";
+                $params[':barangay'] = $barangay;
+            }
+
+            // Get screening data with dates
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    DATE(screening_date) as screening_date_only,
+                    screening_date,
+                    weight,
+                    height,
+                    birthday,
+                    sex
+                FROM community_users 
+                $whereClause
+                ORDER BY screening_date ASC
+            ");
+            
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+            
+            $stmt->execute();
+            $screeningData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (empty($screeningData)) {
+                return [
+                    'success' => true,
+                    'data' => [
+                        'timeLabels' => [],
+                        'datasets' => [],
+                        'totalUsers' => 0
+                    ]
+                ];
+            }
+
+            // Determine time grouping strategy
+            $from = new DateTime($fromDate);
+            $to = new DateTime($toDate);
+            $diffDays = $from->diff($to)->days;
+
+            $timeLabels = [];
+            $periodData = [];
+
+            if ($diffDays <= 31) {
+                // Daily grouping (max 15 periods)
+                $periodSize = max(1, ceil($diffDays / 15));
+                $current = clone $from;
+                while ($current <= $to) {
+                    $periodEnd = clone $current;
+                    $periodEnd->modify("+{$periodSize} days");
+                    if ($periodEnd > $to) $periodEnd = clone $to;
+                    
+                    $label = $current->format('M j') . ' - ' . $periodEnd->format('M j');
+                    $timeLabels[] = $label;
+                    $periodData[$label] = [
+                        'start' => clone $current,
+                        'end' => clone $periodEnd,
+                        'classifications' => []
+                    ];
+                    
+                    $current = clone $periodEnd;
+                    $current->modify('+1 day');
+                }
+            } else if ($diffDays <= 365) {
+                // Monthly grouping (max 12 periods)
+                $current = new DateTime($from->format('Y-m-01')); // Start of month
+                while ($current <= $to && count($timeLabels) < 12) {
+                    $label = $current->format('M Y');
+                    $timeLabels[] = $label;
+                    
+                    $periodEnd = clone $current;
+                    $periodEnd->modify('last day of this month');
+                    if ($periodEnd > $to) $periodEnd = clone $to;
+                    
+                    $periodData[$label] = [
+                        'start' => clone $current,
+                        'end' => clone $periodEnd,
+                        'classifications' => []
+                    ];
+                    
+                    $current->modify('first day of next month');
+                }
+            } else {
+                // Yearly grouping (max 10 periods)
+                $current = new DateTime($from->format('Y-01-01')); // Start of year
+                while ($current <= $to && count($timeLabels) < 10) {
+                    $label = $current->format('Y');
+                    $timeLabels[] = $label;
+                    
+                    $periodEnd = new DateTime($current->format('Y-12-31'));
+                    if ($periodEnd > $to) $periodEnd = clone $to;
+                    
+                    $periodData[$label] = [
+                        'start' => clone $current,
+                        'end' => clone $periodEnd,
+                        'classifications' => []
+                    ];
+                    
+                    $current->modify('first day of next year');
+                }
+            }
+
+            // Process screening data and group by time periods
+            require_once __DIR__ . '/../../who_growth_standards.php';
+            $who = new WHOGrowthStandards();
+
+            foreach ($screeningData as $record) {
+                $screeningDate = new DateTime($record['screening_date']);
+                
+                // Find which time period this record belongs to
+                foreach ($periodData as $periodLabel => $period) {
+                    if ($screeningDate >= $period['start'] && $screeningDate <= $period['end']) {
+                        // Calculate WHO classification
+                        $assessment = $who->getComprehensiveAssessment(
+                            floatval($record['weight']),
+                            floatval($record['height']),
+                            $record['birthday'],
+                            $record['sex'],
+                            $record['screening_date']
+                        );
+
+                        if ($assessment['success'] && isset($assessment['results'])) {
+                            $standardKey = str_replace('-', '_', $whoStandard);
+                            if (isset($assessment['results'][$standardKey]['classification'])) {
+                                $classification = $assessment['results'][$standardKey]['classification'];
+                                if (!isset($periodData[$periodLabel]['classifications'][$classification])) {
+                                    $periodData[$periodLabel]['classifications'][$classification] = 0;
+                                }
+                                $periodData[$periodLabel]['classifications'][$classification]++;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // Create datasets for Chart.js
+            $allClassifications = [];
+            foreach ($periodData as $period) {
+                $allClassifications = array_merge($allClassifications, array_keys($period['classifications']));
+            }
+            $allClassifications = array_unique($allClassifications);
+
+            // Define colors for classifications (matching existing charts)
+            $colors = [
+                'Severely Underweight' => '#E91E63',
+                'Underweight' => '#FFC107',
+                'Normal' => '#4CAF50',
+                'Overweight' => '#FF9800',
+                'Obese' => '#F44336',
+                'Severely Wasted' => '#D32F2F',
+                'Wasted' => '#FF5722',
+                'Severely Stunted' => '#673AB7',
+                'Stunted' => '#2196F3',
+                'Tall' => '#00BCD4'
+            ];
+
+            $datasets = [];
+            foreach ($allClassifications as $classification) {
+                $data = [];
+                foreach ($timeLabels as $label) {
+                    $data[] = $periodData[$label]['classifications'][$classification] ?? 0;
+                }
+
+                $datasets[] = [
+                    'label' => $classification,
+                    'data' => $data,
+                    'borderColor' => $colors[$classification] ?? '#999999',
+                    'backgroundColor' => ($colors[$classification] ?? '#999999') . '20',
+                    'fill' => false,
+                    'tension' => 0.1
+                ];
+            }
+
+            $totalUsers = count($screeningData);
+
+            return [
+                'success' => true,
+                'data' => [
+                    'timeLabels' => $timeLabels,
+                    'datasets' => $datasets,
+                    'totalUsers' => $totalUsers
+                ]
+            ];
+
+        } catch (Exception $e) {
+            error_log("Error getting trends chart data: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Error processing trends data: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * OPTIMIZED: Get gender distribution data in bulk (no time frame)
      * This follows the same efficient pattern as getAllWHOClassificationsBulk
      */
@@ -4285,6 +4509,24 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             }
             
             echo json_encode(['success' => true, 'data' => $allClassifications]);
+            break;
+            
+        case 'get_trends_chart_data':
+            $fromDate = $_GET['from_date'] ?? $_POST['from_date'] ?? '';
+            $toDate = $_GET['to_date'] ?? $_POST['to_date'] ?? '';
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
+            
+            try {
+                $result = $db->getTrendsChartData($fromDate, $toDate, $barangay, $whoStandard);
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Trends chart data error: " . $e->getMessage());
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error fetching trends chart data: ' . $e->getMessage()
+                ]);
+            }
             break;
             
         case 'get_age_classification_line_chart':

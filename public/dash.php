@@ -3443,6 +3443,31 @@ header .user-info {
     line-height: 1.2;
 }
 
+/* Trends Chart Styles */
+.trends-chart-container {
+    height: 400px;
+    max-height: 400px;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible; /* Allow tooltips to appear outside */
+    position: relative;
+}
+
+.quick-date-btn:hover {
+    background: rgba(161, 180, 84, 0.2) !important;
+    border-color: rgba(161, 180, 84, 0.5) !important;
+    transform: translateY(-1px);
+}
+
+.quick-date-btn.active {
+    background: var(--color-highlight) !important;
+    color: white !important;
+    border-color: var(--color-highlight) !important;
+}
+
 /* Age Classification Chart Styles */
 .age-classification-chart-container {
     height: 400px;
@@ -7355,6 +7380,43 @@ body {
                 <div style="margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
                         <div style="flex: 1;">
+                            <h3>Community Health Trends Over Time</h3>
+                            <p class="chart-description">Nutritional status trends over selected time periods based on screening dates.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Date Picker Controls -->
+                    <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label style="font-size: 14px; color: var(--color-text); font-weight: 500;">From:</label>
+                            <input type="date" id="trends-from-date" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); font-size: 14px;">
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <label style="font-size: 14px; color: var(--color-text); font-weight: 500;">To:</label>
+                            <input type="date" id="trends-to-date" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); font-size: 14px;">
+                        </div>
+                        <button id="generate-trends-chart" style="padding: 8px 16px; background: var(--color-highlight); color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: all 0.2s;">
+                            📊 Generate Chart
+                        </button>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="quick-date-btn" data-range="30" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text);">30 days</button>
+                            <button class="quick-date-btn" data-range="90" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text);">90 days</button>
+                            <button class="quick-date-btn" data-range="365" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text);">1 year</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: visible; position: relative;">
+                    <canvas id="trendsLineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-row">
+            <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <div style="flex: 1;">
                 <h3>Age Classification Chart</h3>
                 <p class="chart-description">Nutritional classifications by age groups. Age range adjusts based on selected WHO standard.</p>
                 </div>
@@ -7808,6 +7870,10 @@ body {
             
             // Automatically refresh intelligent programs for the selected location
             await updateIntelligentPrograms(barangay);
+            
+            // Update trends chart with new barangay filter
+            console.log('🔄 Updating trends chart for barangay:', barangay);
+            await updateTrendsChart();
             
             // Update screening responses for the selected barangay
             setTimeout(() => {
@@ -9732,6 +9798,267 @@ body {
             return distribution;
         }
 
+        // Function to update trends chart using screening date data
+        // Community Health Trends Over Time - NEW FEATURE
+        let trendsLineChart = null;
+        
+        // Function to initialize trends chart with default date range
+        function initializeTrendsChart() {
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today);
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+            
+            document.getElementById('trends-from-date').value = thirtyDaysAgo.toISOString().split('T')[0];
+            document.getElementById('trends-to-date').value = today.toISOString().split('T')[0];
+            
+            // Load initial data
+            updateTrendsChart();
+        }
+        
+        // Function to set quick date ranges
+        function setQuickDateRange(days) {
+            const today = new Date();
+            const startDate = new Date(today);
+            startDate.setDate(today.getDate() - days);
+            
+            document.getElementById('trends-from-date').value = startDate.toISOString().split('T')[0];
+            document.getElementById('trends-to-date').value = today.toISOString().split('T')[0];
+            
+            // Update active button
+            document.querySelectorAll('.quick-date-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update chart
+            updateTrendsChart();
+        }
+        
+        // Function to group dates into time periods
+        function groupDatesByPeriod(screeningDates, fromDate, toDate) {
+            const from = new Date(fromDate);
+            const to = new Date(toDate);
+            const diffTime = Math.abs(to - from);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            let periodType, periodFormat, maxPeriods;
+            
+            // Determine grouping strategy based on date range
+            if (diffDays <= 31) {
+                periodType = 'daily';
+                periodFormat = 'MMM DD';
+                maxPeriods = Math.min(diffDays, 15);
+            } else if (diffDays <= 365) {
+                periodType = 'monthly';
+                periodFormat = 'MMM YYYY';
+                maxPeriods = 12;
+            } else {
+                periodType = 'yearly';
+                periodFormat = 'YYYY';
+                maxPeriods = 10;
+            }
+            
+            // Create time periods
+            const periods = [];
+            const periodData = {};
+            
+            if (periodType === 'daily') {
+                const periodSize = Math.max(1, Math.ceil(diffDays / maxPeriods));
+                for (let i = 0; i < diffDays; i += periodSize) {
+                    const periodStart = new Date(from);
+                    periodStart.setDate(from.getDate() + i);
+                    const periodEnd = new Date(periodStart);
+                    periodEnd.setDate(periodStart.getDate() + periodSize - 1);
+                    
+                    const periodLabel = `${periodStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${periodEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+                    periods.push(periodLabel);
+                    periodData[periodLabel] = { start: periodStart, end: periodEnd, data: [] };
+                }
+            } else if (periodType === 'monthly') {
+                const current = new Date(from.getFullYear(), from.getMonth(), 1);
+                while (current <= to && periods.length < maxPeriods) {
+                    const periodLabel = current.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    periods.push(periodLabel);
+                    
+                    const periodEnd = new Date(current.getFullYear(), current.getMonth() + 1, 0);
+                    periodData[periodLabel] = { start: new Date(current), end: periodEnd, data: [] };
+                    
+                    current.setMonth(current.getMonth() + 1);
+                }
+            } else { // yearly
+                const current = new Date(from.getFullYear(), 0, 1);
+                while (current <= to && periods.length < maxPeriods) {
+                    const periodLabel = current.getFullYear().toString();
+                    periods.push(periodLabel);
+                    
+                    const periodEnd = new Date(current.getFullYear(), 11, 31);
+                    periodData[periodLabel] = { start: new Date(current), end: periodEnd, data: [] };
+                    
+                    current.setFullYear(current.getFullYear() + 1);
+                }
+            }
+            
+            return { periods, periodData, periodType };
+        }
+        
+        // Function to update trends chart
+        async function updateTrendsChart() {
+            console.log('📊 Updating Trends Chart...');
+            
+            try {
+                const fromDate = document.getElementById('trends-from-date').value;
+                const toDate = document.getElementById('trends-to-date').value;
+                
+                if (!fromDate || !toDate) {
+                    console.log('Date range not selected');
+                    return;
+                }
+                
+                // Get current filters
+                const filters = getAllActiveFilters();
+                const barangay = filters.finalFilter;
+                const whoStandard = filters.whoStandard || 'weight-for-age';
+                
+                console.log('📊 Trends Chart Filters:', { fromDate, toDate, barangay, whoStandard });
+                
+                // Show loading state
+                const chartContainer = document.querySelector('.trends-chart-container');
+                if (chartContainer) {
+                    chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading trends chart...</div>';
+                }
+                
+                // Fetch screening data with date range
+                const apiUrl = `/api/DatabaseAPI.php?action=get_trends_chart_data&from_date=${fromDate}&to_date=${toDate}&barangay=${encodeURIComponent(barangay)}&who_standard=${whoStandard}`;
+                console.log('📊 Fetching trends data from:', apiUrl);
+                
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                
+                console.log('📊 Trends API response:', data);
+                
+                if (!data.success) {
+                    console.error('Failed to fetch trends data:', data.message);
+                    if (chartContainer) {
+                        chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Error loading trends data</div>';
+                    }
+                    return;
+                }
+                
+                const { timeLabels, datasets, totalUsers } = data.data;
+                
+                if (!timeLabels || timeLabels.length === 0 || !datasets || datasets.length === 0) {
+                    console.log('No trends data available');
+                    if (chartContainer) {
+                        chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">No data available for selected date range</div>';
+                    }
+                    return;
+                }
+                
+                // Create chart
+                if (chartContainer) {
+                    chartContainer.innerHTML = '<canvas id="trendsLineChart"></canvas>';
+                    const canvas = document.getElementById('trendsLineChart');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Destroy existing chart
+                    if (trendsLineChart) {
+                        trendsLineChart.destroy();
+                    }
+                    
+                    console.log('📊 Creating trends line chart with data:', { timeLabels, datasets, totalUsers });
+                    
+                    trendsLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: timeLabels,
+                            datasets: datasets
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                    labels: {
+                                        usePointStyle: true,
+                                        padding: 20,
+                                        font: {
+                                            size: 12
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                    titleColor: 'white',
+                                    bodyColor: 'white',
+                                    borderColor: 'rgba(255, 255, 255, 0.2)',
+                                    borderWidth: 1,
+                                    callbacks: {
+                                        title: function(tooltipItems) {
+                                            return `Period: ${tooltipItems[0].label}`;
+                                        },
+                                        label: function(context) {
+                                            const dataset = context.dataset;
+                                            const value = context.parsed.y;
+                                            const total = dataset.data.reduce((sum, val) => sum + val, 0);
+                                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                            return `${dataset.label}: ${value} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Time Period',
+                                        font: {
+                                            size: 12,
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.1)'
+                                    }
+                                },
+                                y: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Number of Users',
+                                        font: {
+                                            size: 12,
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(255, 255, 255, 0.1)'
+                                    }
+                                }
+                            },
+                            interaction: {
+                                mode: 'nearest',
+                                axis: 'x',
+                                intersect: false
+                            }
+                        }
+                    });
+                }
+                
+                console.log('✅ Trends chart updated successfully');
+                
+            } catch (error) {
+                console.error('❌ Error updating trends chart:', error);
+                const chartContainer = document.querySelector('.trends-chart-container');
+                if (chartContainer) {
+                    chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Error loading trends chart</div>';
+                }
+            }
+        }
+
         // Function to update age classification chart using donut chart data
         // Age Classification Line Chart - NEW FEATURE
         let ageClassificationLineChart = null;
@@ -10131,6 +10458,11 @@ body {
                 // Also update the age classification chart with the new WHO standard
                 console.log('🎨 Updating age classification chart...');
                 await updateAgeClassificationChart(barangay);
+                
+                // Update trends chart with new WHO standard
+                console.log('🎨 Updating trends chart...');
+                await updateTrendsChart();
+                
                 console.log('✅ Chart update completed');
                 
             } catch (error) {
@@ -10588,6 +10920,9 @@ body {
             // Initialize dropdown selections
             setupBarangaySelection();
             setupMunicipalitySelection();
+            
+            // Initialize trends chart
+            initializeTrendsChart();
             
         // Debug: Check initial metric values on page load
         setTimeout(() => {
@@ -11242,6 +11577,21 @@ body {
         // Initialize dropdown event listeners
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Initializing municipality and barangay dropdown functionality...');
+            
+            // Initialize trends chart event listeners
+            const generateBtn = document.getElementById('generate-trends-chart');
+            const quickDateBtns = document.querySelectorAll('.quick-date-btn');
+            
+            if (generateBtn) {
+                generateBtn.addEventListener('click', updateTrendsChart);
+            }
+            
+            quickDateBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const days = parseInt(this.getAttribute('data-range'));
+                    setQuickDateRange(days);
+                });
+            });
             
             // Wait a bit for the DOM to fully render
             setTimeout(() => {
