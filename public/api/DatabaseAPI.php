@@ -3152,19 +3152,19 @@ class DatabaseAPI {
             
             if ($diffDays <= 31) {
                 // Daily grouping - spread across 10 periods
-                $periodSize = max(1, ceil($diffDays / $numPeriods));
                 $current = clone $from;
                 for ($i = 0; $i < $numPeriods && $current <= $to; $i++) {
                     // For the last period, make sure it ends exactly at the 'to' date
                     if ($i === $numPeriods - 1) {
                         $periodEnd = clone $to;
+                        $label = $current->format('M j') . ' - ' . $periodEnd->format('M j');
                     } else {
+                        $periodSize = max(1, ceil(($to->getTimestamp() - $current->getTimestamp()) / ($numPeriods - $i) / 86400));
                         $periodEnd = clone $current;
                         $periodEnd->modify("+{$periodSize} days");
-                        if ($periodEnd > $to) $periodEnd = clone $to;
+                        $label = $current->format('M j');
                     }
                     
-                    $label = $current->format('M j');
                     $timeLabels[] = $label;
                     $periodData[$label] = [
                         'start' => clone $current,
@@ -3177,19 +3177,19 @@ class DatabaseAPI {
                 }
             } else if ($diffDays <= 365) {
                 // Weekly/Monthly grouping - spread across 10 periods
-                $periodSize = max(1, ceil($diffDays / $numPeriods / 7)); // Weekly periods
                 $current = clone $from;
                 for ($i = 0; $i < $numPeriods && $current <= $to; $i++) {
                     // For the last period, make sure it ends exactly at the 'to' date
                     if ($i === $numPeriods - 1) {
                         $periodEnd = clone $to;
+                        $label = $current->format('M j') . ' - ' . $periodEnd->format('M j');
                     } else {
+                        $periodSize = max(1, ceil(($to->getTimestamp() - $current->getTimestamp()) / ($numPeriods - $i) / 604800));
                         $periodEnd = clone $current;
                         $periodEnd->modify("+{$periodSize} weeks");
-                        if ($periodEnd > $to) $periodEnd = clone $to;
+                        $label = $current->format('M j');
                     }
                     
-                    $label = $current->format('M j');
                     $timeLabels[] = $label;
                     $periodData[$label] = [
                         'start' => clone $current,
@@ -3202,19 +3202,19 @@ class DatabaseAPI {
                 }
             } else {
                 // Monthly/Yearly grouping - spread across 10 periods
-                $periodSize = max(1, ceil($diffDays / $numPeriods / 30)); // Monthly periods
                 $current = clone $from;
                 for ($i = 0; $i < $numPeriods && $current <= $to; $i++) {
                     // For the last period, make sure it ends exactly at the 'to' date
                     if ($i === $numPeriods - 1) {
                         $periodEnd = clone $to;
+                        $label = $current->format('M Y') . ' - ' . $periodEnd->format('M Y');
                     } else {
+                        $periodSize = max(1, ceil(($to->getTimestamp() - $current->getTimestamp()) / ($numPeriods - $i) / 2592000));
                         $periodEnd = clone $current;
                         $periodEnd->modify("+{$periodSize} months");
-                        if ($periodEnd > $to) $periodEnd = clone $to;
+                        $label = $current->format('M Y');
                     }
                     
-                    $label = $current->format('M Y');
                     $timeLabels[] = $label;
                     $periodData[$label] = [
                         'start' => clone $current,
