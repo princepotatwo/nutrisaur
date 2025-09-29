@@ -3090,8 +3090,16 @@ class DatabaseAPI {
             ];
             
             if (!empty($barangay)) {
-                $whereClause .= " AND barangay = :barangay";
-                $params[':barangay'] = $barangay;
+                if (strpos($barangay, 'MUNICIPALITY_') === 0) {
+                    // Handle municipality-level filtering
+                    $municipality = str_replace('MUNICIPALITY_', '', $barangay);
+                    $whereClause .= " AND municipality = :municipality";
+                    $params[':municipality'] = $municipality;
+                } else {
+                    // Handle specific barangay filtering
+                    $whereClause .= " AND barangay = :barangay";
+                    $params[':barangay'] = $barangay;
+                }
             }
 
             // Get screening data with dates
