@@ -3339,22 +3339,53 @@ class DatabaseAPI {
             }
 
             // Calculate total users based on actual classifications, not raw screening data
-            // Count unique users across all periods to avoid double counting
+            // Count the actual number of users with valid classifications by re-processing the data
             $totalUsersWithClassifications = 0;
-            $uniqueUsers = [];
+            $processedUsers = [];
             
-            // Count users only once, even if they appear in multiple periods
-            foreach ($periodData as $period) {
-                foreach ($period['classifications'] as $classification => $count) {
-                    if (!isset($uniqueUsers[$classification])) {
-                        $uniqueUsers[$classification] = 0;
+            foreach ($screeningData as $record) {
+                $screeningDate = new DateTime($record['screening_date']);
+                
+                // Calculate WHO classification
+                $assessment = $who->getComprehensiveAssessment(
+                    floatval($record['weight']),
+                    floatval($record['height']),
+                    $record['birthday'],
+                    $record['sex'],
+                    $record['screening_date']
+                );
+
+                // Handle BMI Adult separately since it might not be in assessment results
+                if ($whoStandard === 'bmi-adult') {
+                    $ageInMonths = $who->calculateAgeInMonths($record['birthday'], $record['screening_date']);
+                    if ($ageInMonths >= 228) { // 19+ years
+                        $bmi = floatval($record['weight']) / pow(floatval($record['height']) / 100, 2);
+                        if ($bmi < 18.5) $classification = 'Underweight';
+                        else if ($bmi < 25) $classification = 'Normal';
+                        else if ($bmi < 30) $classification = 'Overweight';
+                        else $classification = 'Obese';
+                    } else {
+                        $classification = 'No Data';
                     }
-                    $uniqueUsers[$classification] = max($uniqueUsers[$classification], $count);
+                } else if ($assessment['success'] && isset($assessment['results'])) {
+                    $standardKey = str_replace('-', '_', $whoStandard);
+                    if (isset($assessment['results'][$standardKey]['classification'])) {
+                        $classification = $assessment['results'][$standardKey]['classification'];
+                    } else {
+                        $classification = 'No Data';
+                    }
+                } else {
+                    $classification = 'No Data';
                 }
-            }
-            
-            foreach ($uniqueUsers as $classification => $count) {
-                $totalUsersWithClassifications += $count;
+                
+                // Count only users with valid classifications
+                if ($classification !== 'No Data') {
+                    $userKey = $record['screening_date'] . '_' . $record['birthday'] . '_' . $record['weight'] . '_' . $record['height'];
+                    if (!isset($processedUsers[$userKey])) {
+                        $processedUsers[$userKey] = true;
+                        $totalUsersWithClassifications++;
+                    }
+                }
             }
 
             return [
