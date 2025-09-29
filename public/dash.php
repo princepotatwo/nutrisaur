@@ -7383,26 +7383,28 @@ body {
                             <h3>Community Health Trends Over Time</h3>
                             <p class="chart-description">Nutritional status trends over selected time periods based on screening dates.</p>
                         </div>
+                        
+                        <!-- Date Picker Controls - Moved to top right -->
+                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-left: 20px;">
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <label style="font-size: 14px; color: var(--color-text); font-weight: 500;">From:</label>
+                                <input type="date" id="trends-from-date" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); font-size: 14px;">
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <label style="font-size: 14px; color: var(--color-text); font-weight: 500;">To:</label>
+                                <input type="date" id="trends-to-date" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); font-size: 14px;">
+                            </div>
+                            <button id="generate-trends-chart" style="padding: 8px 16px; background: var(--color-highlight); color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">
+                                📊 Generate Chart
+                            </button>
+                        </div>
                     </div>
                     
-                    <!-- Date Picker Controls -->
-                    <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <label style="font-size: 14px; color: var(--color-text); font-weight: 500;">From:</label>
-                            <input type="date" id="trends-from-date" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); font-size: 14px;">
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <label style="font-size: 14px; color: var(--color-text); font-weight: 500;">To:</label>
-                            <input type="date" id="trends-to-date" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); font-size: 14px;">
-                        </div>
-                        <button id="generate-trends-chart" style="padding: 8px 16px; background: var(--color-highlight); color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: all 0.2s;">
-                            📊 Generate Chart
-                        </button>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="quick-date-btn" data-range="30" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text);">30 days</button>
-                            <button class="quick-date-btn" data-range="90" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text);">90 days</button>
-                            <button class="quick-date-btn" data-range="365" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text);">1 year</button>
-                        </div>
+                    <!-- Quick Date Buttons - Below the title section -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                        <button class="quick-date-btn" data-range="30" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text); transition: all 0.2s ease;">30 days</button>
+                        <button class="quick-date-btn" data-range="90" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text); transition: all 0.2s ease;">90 days</button>
+                        <button class="quick-date-btn" data-range="365" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text); transition: all 0.2s ease;">1 year</button>
                     </div>
                 </div>
                 
