@@ -4070,7 +4070,7 @@ header .user-info {
 /* Classification Trends Chart Styles */
 .trends-chart-container {
     height: 350px;
-    margin-top: 15px;
+    margin-top: 0;
     padding: 0 10px;
     position: relative;
 }
@@ -7402,7 +7402,7 @@ body {
                     
                 </div>
                 
-                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px; box-sizing: border-box; margin-top: 0;">
+                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px; box-sizing: border-box; margin-top: 0 !important;">
                     <canvas id="trendsLineChart" style="max-width: 100%; max-height: 100%;"></canvas>
                 </div>
             </div>
