@@ -7406,7 +7406,7 @@ body {
                     </div>
                 </div>
                 
-                <div class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: visible; position: relative;">
+                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: visible; position: relative;">
                     <canvas id="trendsLineChart"></canvas>
                 </div>
             </div>
@@ -9933,8 +9933,8 @@ body {
                 
                 console.log('📊 Trends Chart Filters:', { fromDate, toDate, barangay, whoStandard });
                 
-                // Show loading state - target the specific container for the trends line chart
-                const chartContainer = document.querySelector('#trendsLineChart').parentElement;
+                // Show loading state - target the trends chart container directly
+                const chartContainer = document.getElementById('trends-chart-container');
                 if (chartContainer) {
                     chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading trends chart...</div>';
                 }
@@ -9967,7 +9967,7 @@ body {
                 }
                 
                 // Create chart - target the specific container for the trends line chart
-                const trendsChartContainer = document.querySelector('#trendsLineChart').parentElement;
+                const trendsChartContainer = document.getElementById('trends-chart-container');
                 if (trendsChartContainer) {
                     trendsChartContainer.innerHTML = '<canvas id="trendsLineChart"></canvas>';
                     const canvas = document.getElementById('trendsLineChart');
@@ -10067,7 +10067,7 @@ body {
                 
             } catch (error) {
                 console.error('❌ Error updating trends chart:', error);
-                const trendsChartContainer = document.querySelector('#trendsLineChart').parentElement;
+                const trendsChartContainer = document.getElementById('trends-chart-container');
                 if (trendsChartContainer) {
                     trendsChartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Error loading trends chart</div>';
                 }
