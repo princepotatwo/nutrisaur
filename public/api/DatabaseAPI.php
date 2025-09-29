@@ -3335,6 +3335,114 @@ class DatabaseAPI {
     }
 
     /**
+     * Get severe malnutrition cases in bulk (no time frame)
+     * This follows the same efficient pattern as getAllWHOClassificationsBulk
+     */
+    public function getSevereCasesBulk($barangay = '', $whoStandard = 'weight-for-age') {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return [
+                    'success' => false,
+                    'message' => 'Database connection not available'
+                ];
+            }
+
+            // Use the same method as other bulk APIs - get all users (no time filtering)
+            $users = $this->getDetailedScreeningResponses('1d', $barangay);
+            
+            if (empty($users)) {
+                return [
+                    'success' => true,
+                    'data' => [
+                        'severe_cases' => [],
+                        'total_users' => 0
+                    ]
+                ];
+            }
+
+            // Process users and identify severe cases
+            require_once __DIR__ . '/../../who_growth_standards.php';
+            $who = new WHOGrowthStandards();
+            
+            $severeCases = [];
+            
+            foreach ($users as $user) {
+                // Calculate WHO classification
+                $assessment = $who->getComprehensiveAssessment(
+                    floatval($user['weight']),
+                    floatval($user['height']),
+                    $user['birthday'],
+                    $user['sex'],
+                    $user['screening_date']
+                );
+
+                if ($assessment['success'] && isset($assessment['results'])) {
+                    $standardKey = str_replace('-', '_', $whoStandard);
+                    
+                    // Handle different WHO standards properly
+                    if ($whoStandard === 'bmi-adult') {
+                        // BMI Adult - calculate manually
+                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
+                        if ($ageInMonths >= 228) { // 19+ years
+                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                            if ($bmi < 18.5) $classification = 'Underweight';
+                            else if ($bmi < 25) $classification = 'Normal';
+                            else if ($bmi < 30) $classification = 'Overweight';
+                            else $classification = 'Obese';
+                        } else {
+                            $classification = 'No Data';
+                        }
+                    } else {
+                        // Other WHO standards
+                        if (isset($assessment['results'][$standardKey]['classification'])) {
+                            $classification = $assessment['results'][$standardKey]['classification'];
+                        } else {
+                            $classification = 'No Data';
+                        }
+                    }
+                    
+                    // Only include severe cases
+                    if (in_array($classification, ['Severely Underweight', 'Severely Wasted', 'Severely Stunted'])) {
+                        $age = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
+                        $ageYears = floor($age / 12);
+                        $ageMonths = $age % 12;
+                        $ageText = $ageYears > 0 ? "{$ageYears}y {$ageMonths}m" : "{$ageMonths}m";
+                        
+                        $severeCases[] = [
+                            'name' => $user['name'] ?? 'Unknown',
+                            'age' => $ageText,
+                            'classification' => $classification,
+                            'screening_date' => $user['screening_date'],
+                            'barangay' => $user['barangay'] ?? '',
+                            'municipality' => $user['municipality'] ?? ''
+                        ];
+                    }
+                }
+            }
+
+            // Sort by screening date (most recent first)
+            usort($severeCases, function($a, $b) {
+                return strtotime($b['screening_date']) - strtotime($a['screening_date']);
+            });
+
+            return [
+                'success' => true,
+                'data' => [
+                    'severe_cases' => $severeCases,
+                    'total_users' => count($severeCases)
+                ]
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Severe cases bulk error: " . $e->getMessage());
+            return [
+                'success' => false, 
+                'message' => 'Bulk processing failed: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * OPTIMIZED: Get gender distribution data in bulk (no time frame)
      * This follows the same efficient pattern as getAllWHOClassificationsBulk
      */
@@ -4471,6 +4579,22 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
             $distribution = $db->getGeographicDistribution($barangay);
             echo json_encode(['success' => true, 'data' => $distribution]);
+            break;
+            
+        case 'get_severe_cases':
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            $whoStandard = $_GET['who_standard'] ?? $_POST['who_standard'] ?? 'weight-for-age';
+            
+            try {
+                $result = $db->getSevereCasesBulk($barangay, $whoStandard);
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Severe cases error: " . $e->getMessage());
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error fetching severe cases: ' . $e->getMessage()
+                ]);
+            }
             break;
             
         case 'risk_distribution':

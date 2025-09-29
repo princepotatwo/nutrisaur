@@ -7360,14 +7360,11 @@ body {
 
             
             <div class="chart-card">
-                <h3>WHO Standard Distribution</h3>
-                <p class="chart-description">Number of users eligible for each WHO standard based on age. Shows how many users can be assessed with each growth standard.</p>
-                <div class="trends-chart-container">
-                    <div class="trends-chart" id="trends-chart">
-                        <!-- Bar chart will be generated dynamically -->
-                    </div>
-                    <div class="trends-labels-container" id="trends-labels">
-                        <!-- Labels will be generated dynamically -->
+                <h3>Severe Malnutrition Cases</h3>
+                <p class="chart-description">Users with severe malnutrition classifications. Scroll to view all cases.</p>
+                <div class="severe-cases-container">
+                    <div class="severe-cases-list" id="severe-cases-list">
+                        <!-- Severe cases will be generated dynamically -->
                     </div>
                 </div>
             </div>
@@ -9964,7 +9961,8 @@ body {
                                         padding: 20,
                                         font: {
                                             size: 12
-                                        }
+                                        },
+                                        color: 'var(--color-text)'
                                     }
                                 },
                                 tooltip: {
@@ -9998,10 +9996,22 @@ body {
                                         font: {
                                             size: 12,
                                             weight: 'bold'
-                                        }
+                                        },
+                                        color: 'var(--color-text)'
                                     },
                                     grid: {
-                                        color: 'rgba(255, 255, 255, 0.1)'
+                                        color: function(context) {
+                                            return document.body.classList.contains('light-theme') 
+                                                ? 'rgba(0, 0, 0, 0.2)' 
+                                                : 'rgba(255, 255, 255, 0.2)';
+                                        },
+                                        lineWidth: 2
+                                    },
+                                    ticks: {
+                                        color: 'var(--color-text)',
+                                        font: {
+                                            size: 11
+                                        }
                                     }
                                 },
                                 y: {
@@ -10012,11 +10022,23 @@ body {
                                         font: {
                                             size: 12,
                                             weight: 'bold'
-                                        }
+                                        },
+                                        color: 'var(--color-text)'
                                     },
                                     beginAtZero: true,
                                     grid: {
-                                        color: 'rgba(255, 255, 255, 0.1)'
+                                        color: function(context) {
+                                            return document.body.classList.contains('light-theme') 
+                                                ? 'rgba(0, 0, 0, 0.2)' 
+                                                : 'rgba(255, 255, 255, 0.2)';
+                                        },
+                                        lineWidth: 2
+                                    },
+                                    ticks: {
+                                        color: 'var(--color-text)',
+                                        font: {
+                                            size: 11
+                                        }
                                     }
                                 }
                             },
@@ -10133,7 +10155,8 @@ body {
                                     padding: 20,
                                     font: {
                                         size: 12
-                                    }
+                                    },
+                                    color: 'var(--color-text)'
                                 }
                             },
                             title: {
@@ -10183,33 +10206,53 @@ body {
                                     font: {
                                         size: 14,
                                         weight: 'bold'
-                                    }
+                                    },
+                                    color: 'var(--color-text)'
+                                },
+                                grid: {
+                                    color: function(context) {
+                                        return document.body.classList.contains('light-theme') 
+                                            ? 'rgba(0, 0, 0, 0.2)' 
+                                            : 'rgba(255, 255, 255, 0.2)';
+                                    },
+                                    lineWidth: 2
                                 },
                                 ticks: {
                                     maxRotation: 45,
                                     minRotation: 45,
                                     font: {
                                         size: 11
-                                    }
+                                    },
+                                    color: 'var(--color-text)'
                                 }
                             },
                             y: {
                                 display: true,
                                 title: {
                                     display: true,
-                                    text: 'Population',
+                                    text: 'Number of Users',
                                     font: {
                                         size: 14,
                                         weight: 'bold'
-                                    }
+                                    },
+                                    color: 'var(--color-text)'
                                 },
                                 beginAtZero: true,
                                 suggestedMax: data.totalPopulation || totalUsers,
+                                grid: {
+                                    color: function(context) {
+                                        return document.body.classList.contains('light-theme') 
+                                            ? 'rgba(0, 0, 0, 0.2)' 
+                                            : 'rgba(255, 255, 255, 0.2)';
+                                    },
+                                    lineWidth: 2
+                                },
                                 ticks: {
                                     stepSize: 1,
                                     font: {
                                         size: 11
-                                    }
+                                    },
+                                    color: 'var(--color-text)'
                                 }
                             }
                         },
