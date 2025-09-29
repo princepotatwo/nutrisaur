@@ -3263,6 +3263,11 @@ class DatabaseAPI {
 
             $datasets = [];
             foreach ($allClassifications as $classification) {
+                // Skip "No Data" and "Age out of range" classifications from line chart
+                if ($classification === 'No Data' || $classification === 'Age out of range') {
+                    continue;
+                }
+                
                 $data = [];
                 foreach ($timeLabels as $label) {
                     $data[] = $periodData[$label]['classifications'][$classification] ?? 0;

@@ -7400,16 +7400,10 @@ body {
                         </div>
                     </div>
                     
-                    <!-- Quick Date Buttons - Below the title section -->
-                    <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-                        <button class="quick-date-btn" data-range="30" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text); transition: all 0.2s ease;">30 days</button>
-                        <button class="quick-date-btn" data-range="90" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text); transition: all 0.2s ease;">90 days</button>
-                        <button class="quick-date-btn" data-range="365" style="padding: 6px 12px; background: rgba(161, 180, 84, 0.1); border: 1px solid rgba(161, 180, 84, 0.3); border-radius: 4px; font-size: 12px; cursor: pointer; color: var(--color-text); transition: all 0.2s ease;">1 year</button>
-                    </div>
                 </div>
                 
-                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: visible; position: relative;">
-                    <canvas id="trendsLineChart"></canvas>
+                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px; box-sizing: border-box;">
+                    <canvas id="trendsLineChart" style="max-width: 100%; max-height: 100%;"></canvas>
                 </div>
             </div>
         </div>
@@ -9817,36 +9811,6 @@ body {
             updateTrendsChart();
         }
         
-        // Function to set quick date ranges
-        function setQuickDateRange(days) {
-            // Use 2024 as the base year since that's when the screening data exists
-            let fromDate, toDate;
-            
-            if (days === 30) {
-                fromDate = '2024-01-01';
-                toDate = '2024-01-31';
-            } else if (days === 90) {
-                fromDate = '2024-01-01';
-                toDate = '2024-03-31';
-            } else if (days === 365) {
-                fromDate = '2024-01-01';
-                toDate = '2024-12-31';
-            } else {
-                // Fallback to 2024 full year
-                fromDate = '2024-01-01';
-                toDate = '2024-12-31';
-            }
-            
-            document.getElementById('trends-from-date').value = fromDate;
-            document.getElementById('trends-to-date').value = toDate;
-            
-            // Update active button
-            document.querySelectorAll('.quick-date-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Update chart
-            updateTrendsChart();
-        }
         
         // Function to group dates into time periods
         function groupDatesByPeriod(screeningDates, fromDate, toDate) {
@@ -11597,18 +11561,10 @@ body {
             
             // Initialize trends chart event listeners
             const generateBtn = document.getElementById('generate-trends-chart');
-            const quickDateBtns = document.querySelectorAll('.quick-date-btn');
             
             if (generateBtn) {
                 generateBtn.addEventListener('click', updateTrendsChart);
             }
-            
-            quickDateBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const days = parseInt(this.getAttribute('data-range'));
-                    setQuickDateRange(days);
-                });
-            });
             
             // Wait a bit for the DOM to fully render
             setTimeout(() => {
