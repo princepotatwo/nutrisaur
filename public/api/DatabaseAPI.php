@@ -3155,9 +3155,14 @@ class DatabaseAPI {
                 $periodSize = max(1, ceil($diffDays / $numPeriods));
                 $current = clone $from;
                 for ($i = 0; $i < $numPeriods && $current <= $to; $i++) {
-                    $periodEnd = clone $current;
-                    $periodEnd->modify("+{$periodSize} days");
-                    if ($periodEnd > $to) $periodEnd = clone $to;
+                    // For the last period, make sure it ends exactly at the 'to' date
+                    if ($i === $numPeriods - 1) {
+                        $periodEnd = clone $to;
+                    } else {
+                        $periodEnd = clone $current;
+                        $periodEnd->modify("+{$periodSize} days");
+                        if ($periodEnd > $to) $periodEnd = clone $to;
+                    }
                     
                     $label = $current->format('M j');
                     $timeLabels[] = $label;
@@ -3175,9 +3180,14 @@ class DatabaseAPI {
                 $periodSize = max(1, ceil($diffDays / $numPeriods / 7)); // Weekly periods
                 $current = clone $from;
                 for ($i = 0; $i < $numPeriods && $current <= $to; $i++) {
-                    $periodEnd = clone $current;
-                    $periodEnd->modify("+{$periodSize} weeks");
-                    if ($periodEnd > $to) $periodEnd = clone $to;
+                    // For the last period, make sure it ends exactly at the 'to' date
+                    if ($i === $numPeriods - 1) {
+                        $periodEnd = clone $to;
+                    } else {
+                        $periodEnd = clone $current;
+                        $periodEnd->modify("+{$periodSize} weeks");
+                        if ($periodEnd > $to) $periodEnd = clone $to;
+                    }
                     
                     $label = $current->format('M j');
                     $timeLabels[] = $label;
@@ -3195,9 +3205,14 @@ class DatabaseAPI {
                 $periodSize = max(1, ceil($diffDays / $numPeriods / 30)); // Monthly periods
                 $current = clone $from;
                 for ($i = 0; $i < $numPeriods && $current <= $to; $i++) {
-                    $periodEnd = clone $current;
-                    $periodEnd->modify("+{$periodSize} months");
-                    if ($periodEnd > $to) $periodEnd = clone $to;
+                    // For the last period, make sure it ends exactly at the 'to' date
+                    if ($i === $numPeriods - 1) {
+                        $periodEnd = clone $to;
+                    } else {
+                        $periodEnd = clone $current;
+                        $periodEnd->modify("+{$periodSize} months");
+                        if ($periodEnd > $to) $periodEnd = clone $to;
+                    }
                     
                     $label = $current->format('M Y');
                     $timeLabels[] = $label;
