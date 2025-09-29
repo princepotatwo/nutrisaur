@@ -3090,15 +3090,20 @@ class DatabaseAPI {
             ];
             
             if (!empty($barangay)) {
-                if (strpos($barangay, 'MUNICIPALITY_') === 0) {
-                    // Handle municipality-level filtering
-                    $municipality = str_replace('MUNICIPALITY_', '', $barangay);
-                    $whereClause .= " AND municipality = :municipality";
-                    $params[':municipality'] = $municipality;
+                // Known municipalities from the system (same logic as getAnalysisData)
+                $knownMunicipalities = [
+                    'ABUCAY', 'BAGAC', 'CITY OF BALANGA', 'DINALUPIHAN', 'HERMOSA', 'LIMAY', 
+                    'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'
+                ];
+                
+                if (in_array($barangay, $knownMunicipalities)) {
+                    // It's a municipality, filter by municipality column
+                    $whereClause .= " AND municipality = :location";
+                    $params[':location'] = $barangay;
                 } else {
-                    // Handle specific barangay filtering
-                    $whereClause .= " AND barangay = :barangay";
-                    $params[':barangay'] = $barangay;
+                    // It's a barangay, filter by barangay column
+                    $whereClause .= " AND barangay = :location";
+                    $params[':location'] = $barangay;
                 }
             }
 

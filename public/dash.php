@@ -8017,8 +8017,8 @@ body {
                 finalFilter = barangay;
                 console.log('🔍 Using barangay as filter:', barangay);
             } else if (municipality && municipality !== 'All Municipalities' && municipality !== 'Select Municipality') {
-                finalFilter = 'MUNICIPALITY_' + municipality;
-                console.log('🔍 Using municipality as filter:', municipality, '-> formatted:', finalFilter);
+                finalFilter = municipality;
+                console.log('🔍 Using municipality as filter:', municipality);
             }
             
             console.log('🔍 Final filter value:', finalFilter);
