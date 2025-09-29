@@ -3230,21 +3230,16 @@ class DatabaseAPI {
                             
                             // Handle different WHO standards properly
                             if ($whoStandard === 'bmi-adult') {
-                                // BMI Adult has different structure - use the same logic as donut chart
-                                if (isset($assessment['results']['bmi_adult']['classification'])) {
-                                    $classification = $assessment['results']['bmi_adult']['classification'];
+                                // BMI Adult - always calculate manually since assessment results might not include it
+                                $ageInMonths = $who->calculateAgeInMonths($record['birthday'], $record['screening_date']);
+                                if ($ageInMonths >= 228) { // 19+ years
+                                    $bmi = floatval($record['weight']) / pow(floatval($record['height']) / 100, 2);
+                                    if ($bmi < 18.5) $classification = 'Underweight';
+                                    else if ($bmi < 25) $classification = 'Normal';
+                                    else if ($bmi < 30) $classification = 'Overweight';
+                                    else $classification = 'Obese';
                                 } else {
-                                    // Fallback: try to calculate BMI Adult manually if not in results
-                                    $ageInMonths = $who->calculateAgeInMonths($record['birthday'], $record['screening_date']);
-                                    if ($ageInMonths >= 228) { // 19+ years
-                                        $bmi = floatval($record['weight']) / pow(floatval($record['height']) / 100, 2);
-                                        if ($bmi < 18.5) $classification = 'Underweight';
-                                        else if ($bmi < 25) $classification = 'Normal';
-                                        else if ($bmi < 30) $classification = 'Overweight';
-                                        else $classification = 'Obese';
-                                    } else {
-                                        $classification = 'No Data';
-                                    }
+                                    $classification = 'No Data';
                                 }
                             } else {
                                 // Other WHO standards
