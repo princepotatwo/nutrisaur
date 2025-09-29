@@ -10041,8 +10041,18 @@ body {
             const fromDate = '2024-01-01';
             const toDate = '2024-12-31';
             
-            document.getElementById('trends-from-date').value = fromDate;
-            document.getElementById('trends-to-date').value = toDate;
+            const fromDateInput = document.getElementById('trends-from-date');
+            const toDateInput = document.getElementById('trends-to-date');
+            
+            if (fromDateInput) {
+                fromDateInput.value = fromDate;
+                console.log('📅 Set from date to:', fromDate);
+            }
+            
+            if (toDateInput) {
+                toDateInput.value = toDate;
+                console.log('📅 Set to date to:', toDate);
+            }
             
             // Load initial data
             updateTrendsChart();
@@ -10121,11 +10131,16 @@ body {
             console.log('📊 Updating Trends Chart...');
             
             try {
-                const fromDate = document.getElementById('trends-from-date').value;
-                const toDate = document.getElementById('trends-to-date').value;
+                const fromDateInput = document.getElementById('trends-from-date');
+                const toDateInput = document.getElementById('trends-to-date');
+                const fromDate = fromDateInput ? fromDateInput.value : '';
+                const toDate = toDateInput ? toDateInput.value : '';
+                
+                console.log('📅 Date inputs found:', { fromDateInput: !!fromDateInput, toDateInput: !!toDateInput });
+                console.log('📅 Current date values:', { fromDate, toDate });
                 
                 if (!fromDate || !toDate) {
-                    console.log('Date range not selected');
+                    console.log('📅 Date range not selected - fromDate:', fromDate, 'toDate:', toDate);
                     return;
                 }
                 
@@ -11887,6 +11902,18 @@ body {
             
             if (generateBtn) {
                 generateBtn.addEventListener('click', updateTrendsChart);
+            }
+            
+            // Add event listeners to date inputs for automatic chart updates
+            const fromDateInput = document.getElementById('trends-from-date');
+            const toDateInput = document.getElementById('trends-to-date');
+            
+            if (fromDateInput) {
+                fromDateInput.addEventListener('change', updateTrendsChart);
+            }
+            
+            if (toDateInput) {
+                toDateInput.addEventListener('change', updateTrendsChart);
             }
             
             // Wait a bit for the DOM to fully render
