@@ -3338,14 +3338,20 @@ class DatabaseAPI {
                 ];
             }
 
-            $totalUsers = count($screeningData);
+            // Calculate total users based on actual classifications, not raw screening data
+            $totalUsersWithClassifications = 0;
+            foreach ($periodData as $period) {
+                foreach ($period['classifications'] as $classification => $count) {
+                    $totalUsersWithClassifications += $count;
+                }
+            }
 
             return [
                 'success' => true,
                 'data' => [
                     'timeLabels' => $timeLabels,
                     'datasets' => $datasets,
-                    'totalUsers' => $totalUsers
+                    'totalUsers' => $totalUsersWithClassifications
                 ]
             ];
 
