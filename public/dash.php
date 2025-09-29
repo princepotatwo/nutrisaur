@@ -10178,6 +10178,10 @@ body {
                     
                     console.log('📊 Creating trends line chart with data:', { timeLabels, datasets, totalUsers });
                     
+                    // Get theme-aware colors
+                    const isLightTheme = document.body.classList.contains('light-theme');
+                    const textColor = isLightTheme ? '#000000' : '#FFFFFF';
+                    
                     trendsLineChart = new Chart(ctx, {
                         type: 'line',
                         data: {
@@ -10197,7 +10201,7 @@ body {
                                         font: {
                                             size: 12
                                         },
-                                        color: 'var(--color-text)'
+                                        color: textColor
                                     }
                                 },
                                 tooltip: {
@@ -10232,7 +10236,7 @@ body {
                                             size: 12,
                                             weight: 'bold'
                                         },
-                                        color: 'var(--color-text)'
+                                        color: textColor
                                     },
                                     grid: {
                                         color: function(context) {
@@ -10243,7 +10247,7 @@ body {
                                         lineWidth: 2
                                     },
                                     ticks: {
-                                        color: 'var(--color-text)',
+                                        color: textColor,
                                         font: {
                                             size: 11
                                         }
@@ -10258,7 +10262,7 @@ body {
                                             size: 12,
                                             weight: 'bold'
                                         },
-                                        color: 'var(--color-text)'
+                                        color: textColor
                                     },
                                     beginAtZero: true,
                                     grid: {
@@ -10270,7 +10274,7 @@ body {
                                         lineWidth: 2
                                     },
                                     ticks: {
-                                        color: 'var(--color-text)',
+                                        color: textColor,
                                         font: {
                                             size: 11
                                         }
@@ -10372,6 +10376,11 @@ body {
                     const newCtx = newCanvas.getContext('2d');
                     
                     console.log('📊 Creating Chart.js line chart with data:', { ageLabels, datasets, totalUsers });
+                    
+                    // Get theme-aware colors for age classification chart
+                    const isLightTheme = document.body.classList.contains('light-theme');
+                    const textColor = isLightTheme ? '#000000' : '#FFFFFF';
+                    
                     ageClassificationLineChart = new Chart(newCtx, {
                     type: 'line',
                     data: {
@@ -10391,7 +10400,7 @@ body {
                                     font: {
                                         size: 12
                                     },
-                                    color: 'var(--color-text)'
+                                    color: textColor
                                 }
                             },
                             title: {
@@ -10442,7 +10451,7 @@ body {
                                         size: 14,
                                         weight: 'bold'
                                     },
-                                    color: 'var(--color-text)'
+                                    color: textColor
                                 },
                                 grid: {
                                     color: function(context) {
@@ -10458,7 +10467,7 @@ body {
                                     font: {
                                         size: 11
                                     },
-                                    color: 'var(--color-text)'
+                                    color: textColor
                                 }
                             },
                             y: {
@@ -10470,7 +10479,7 @@ body {
                                         size: 14,
                                         weight: 'bold'
                                     },
-                                    color: 'var(--color-text)'
+                                    color: textColor
                                 },
                                 beginAtZero: true,
                                 suggestedMax: data.totalPopulation || totalUsers,
@@ -10487,7 +10496,7 @@ body {
                                     font: {
                                         size: 11
                                     },
-                                    color: 'var(--color-text)'
+                                    color: textColor
                                 }
                             }
                         },
