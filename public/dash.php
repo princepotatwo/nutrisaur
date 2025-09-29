@@ -12107,7 +12107,8 @@ body {
 
                 // Get current filter values
                 const barangayValue = barangay || '';
-                const whoStandard = document.querySelector('input[name="who-standard"]:checked')?.value || 'weight-for-age';
+                const whoStandardSelect = document.getElementById('whoStandardSelect');
+                const whoStandard = whoStandardSelect ? whoStandardSelect.value : 'weight-for-age';
 
                 // Fetch severe cases data
                 const url = `/api/DatabaseAPI.php?action=get_severe_cases&barangay=${encodeURIComponent(barangayValue)}&who_standard=${whoStandard}`;
