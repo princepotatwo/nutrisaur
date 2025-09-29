@@ -3338,48 +3338,33 @@ class DatabaseAPI {
                 ];
             }
 
-            // Calculate total users based on actual classifications - simple approach
-            $totalUsersWithClassifications = 0;
+            // Get total population count to match donut chart and age chart
+            // This should be the same as the total users in the database, not just those in the date range
+            $totalPopulationQuery = "SELECT COUNT(*) as total FROM community_users";
+            $totalPopulationParams = [];
             
-            // Count users with valid classifications by going through screening data once
-            foreach ($screeningData as $record) {
-                // Calculate WHO classification
-                $assessment = $who->getComprehensiveAssessment(
-                    floatval($record['weight']),
-                    floatval($record['height']),
-                    $record['birthday'],
-                    $record['sex'],
-                    $record['screening_date']
-                );
-
-                // Handle BMI Adult separately
-                if ($whoStandard === 'bmi-adult') {
-                    $ageInMonths = $who->calculateAgeInMonths($record['birthday'], $record['screening_date']);
-                    if ($ageInMonths >= 228) { // 19+ years
-                        $bmi = floatval($record['weight']) / pow(floatval($record['height']) / 100, 2);
-                        if ($bmi < 18.5) $classification = 'Underweight';
-                        else if ($bmi < 25) $classification = 'Normal';
-                        else if ($bmi < 30) $classification = 'Overweight';
-                        else $classification = 'Obese';
-                    } else {
-                        $classification = 'No Data';
-                    }
-                } else if ($assessment['success'] && isset($assessment['results'])) {
-                    $standardKey = str_replace('-', '_', $whoStandard);
-                    if (isset($assessment['results'][$standardKey]['classification'])) {
-                        $classification = $assessment['results'][$standardKey]['classification'];
-                    } else {
-                        $classification = 'No Data';
-                    }
-                } else {
-                    $classification = 'No Data';
-                }
+            if ($barangay && $barangay !== '') {
+                // Known municipalities from the system
+                $knownMunicipalities = [
+                    'ABUCAY', 'BAGAC', 'CITY OF BALANGA', 'DINALUPIHAN', 'HERMOSA', 'LIMAY', 
+                    'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'
+                ];
                 
-                // Count only users with valid classifications
-                if ($classification !== 'No Data') {
-                    $totalUsersWithClassifications++;
+                if (in_array($barangay, $knownMunicipalities)) {
+                    // It's a municipality, filter by municipality
+                    $totalPopulationQuery .= " WHERE municipality = :location";
+                    $totalPopulationParams[':location'] = $barangay;
+                } else {
+                    // It's a barangay, filter by barangay
+                    $totalPopulationQuery .= " WHERE barangay = :location";
+                    $totalPopulationParams[':location'] = $barangay;
                 }
             }
+            
+            $totalPopulationStmt = $pdo->prepare($totalPopulationQuery);
+            $totalPopulationStmt->execute($totalPopulationParams);
+            $totalPopulationResult = $totalPopulationStmt->fetch(PDO::FETCH_ASSOC);
+            $totalUsersWithClassifications = $totalPopulationResult['total'] ?? 0;
 
             return [
                 'success' => true,
