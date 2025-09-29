@@ -3171,15 +3171,24 @@ class DatabaseAPI {
                 }
                 
                 // Create appropriate labels based on time span
-                if ($diffDays <= 31) {
-                    // Daily grouping - use the period end date for the label
-                    $label = $periodEnd->format('M j');
-                } else if ($diffDays <= 365) {
-                    // Monthly grouping - use the period end date for the label
-                    $label = $periodEnd->format('M Y');
+                // For the last period, always use the TO date for the label
+                if ($i === $numPeriods - 1) {
+                    if ($diffDays <= 31) {
+                        $label = $to->format('M j');
+                    } else {
+                        $label = $to->format('M Y');
+                    }
                 } else {
-                    // Yearly grouping - use the period end date for the label
-                    $label = $periodEnd->format('M Y');
+                    if ($diffDays <= 31) {
+                        // Daily grouping - use the period end date for the label
+                        $label = $periodEnd->format('M j');
+                    } else if ($diffDays <= 365) {
+                        // Monthly grouping - use the period end date for the label
+                        $label = $periodEnd->format('M Y');
+                    } else {
+                        // Yearly grouping - use the period end date for the label
+                        $label = $periodEnd->format('M Y');
+                    }
                 }
                 
                 $timeLabels[] = $label;
