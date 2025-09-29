@@ -7521,7 +7521,7 @@ body {
             
 
             
-            <div class="chart-card" style="display: none;">
+            <div class="chart-card">
                 <h3>Severe Malnutrition Cases</h3>
                 <p class="chart-description">Users with severe malnutrition classifications. Scroll to view all cases.</p>
                 <div class="severe-cases-container">
@@ -7567,23 +7567,6 @@ body {
             </div>
         </div>
 
-        <!-- Severe Malnutrition Cases Card - New Implementation -->
-        <div class="chart-row">
-            <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
-                <div style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <div style="flex: 1;">
-                            <h3 style="margin: 0; padding: 0;">Severe Malnutrition Cases</h3>
-                            <p class="chart-description" style="margin: 2px 0 0 0; font-size: 12px; line-height: 1.3;">Individual cases of severe malnutrition requiring immediate attention.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="severe-cases-container" class="severe-cases-container">
-                    <div id="severe-cases-list" class="severe-cases-list"></div>
-                </div>
-            </div>
-        </div>
 
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
