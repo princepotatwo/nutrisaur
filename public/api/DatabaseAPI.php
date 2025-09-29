@@ -3227,8 +3227,26 @@ class DatabaseAPI {
 
                         if ($assessment['success'] && isset($assessment['results'])) {
                             $standardKey = str_replace('-', '_', $whoStandard);
-                            if (isset($assessment['results'][$standardKey]['classification'])) {
-                                $classification = $assessment['results'][$standardKey]['classification'];
+                            
+                            // Handle different WHO standards properly
+                            if ($whoStandard === 'bmi-adult') {
+                                // BMI Adult has different structure
+                                if (isset($assessment['results']['bmi_adult']['classification'])) {
+                                    $classification = $assessment['results']['bmi_adult']['classification'];
+                                } else {
+                                    $classification = 'No Data';
+                                }
+                            } else {
+                                // Other WHO standards
+                                if (isset($assessment['results'][$standardKey]['classification'])) {
+                                    $classification = $assessment['results'][$standardKey]['classification'];
+                                } else {
+                                    $classification = 'No Data';
+                                }
+                            }
+                            
+                            // Skip "No Data" classifications from trends chart
+                            if ($classification !== 'No Data') {
                                 if (!isset($periodData[$periodLabel]['classifications'][$classification])) {
                                     $periodData[$periodLabel]['classifications'][$classification] = 0;
                                 }
