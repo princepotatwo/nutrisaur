@@ -3139,24 +3139,27 @@ class DatabaseAPI {
                 ];
             }
 
-            // Determine time grouping strategy
+            // Determine time grouping strategy - Always create exactly 10 columns for better visualization
             $from = new DateTime($fromDate);
             $to = new DateTime($toDate);
             $diffDays = $from->diff($to)->days;
 
             $timeLabels = [];
             $periodData = [];
-
+            
+            // Always create exactly 10 time periods for consistent visualization
+            $numPeriods = 10;
+            
             if ($diffDays <= 31) {
-                // Daily grouping (max 15 periods)
-                $periodSize = max(1, ceil($diffDays / 15));
+                // Daily grouping - spread across 10 periods
+                $periodSize = max(1, ceil($diffDays / $numPeriods));
                 $current = clone $from;
-                while ($current <= $to) {
+                for ($i = 0; $i < $numPeriods && $current <= $to; $i++) {
                     $periodEnd = clone $current;
                     $periodEnd->modify("+{$periodSize} days");
                     if ($periodEnd > $to) $periodEnd = clone $to;
                     
-                    $label = $current->format('M j') . ' - ' . $periodEnd->format('M j');
+                    $label = $current->format('M j');
                     $timeLabels[] = $label;
                     $periodData[$label] = [
                         'start' => clone $current,
@@ -3168,41 +3171,44 @@ class DatabaseAPI {
                     $current->modify('+1 day');
                 }
             } else if ($diffDays <= 365) {
-                // Monthly grouping (max 12 periods)
-                $current = new DateTime($from->format('Y-m-01')); // Start of month
-                while ($current <= $to && count($timeLabels) < 12) {
-                    $label = $current->format('M Y');
-                    $timeLabels[] = $label;
-                    
+                // Weekly/Monthly grouping - spread across 10 periods
+                $periodSize = max(1, ceil($diffDays / $numPeriods / 7)); // Weekly periods
+                $current = clone $from;
+                for ($i = 0; $i < $numPeriods && $current <= $to; $i++) {
                     $periodEnd = clone $current;
-                    $periodEnd->modify('last day of this month');
+                    $periodEnd->modify("+{$periodSize} weeks");
                     if ($periodEnd > $to) $periodEnd = clone $to;
                     
+                    $label = $current->format('M j');
+                    $timeLabels[] = $label;
                     $periodData[$label] = [
                         'start' => clone $current,
                         'end' => clone $periodEnd,
                         'classifications' => []
                     ];
                     
-                    $current->modify('first day of next month');
+                    $current = clone $periodEnd;
+                    $current->modify('+1 week');
                 }
             } else {
-                // Yearly grouping (max 10 periods)
-                $current = new DateTime($from->format('Y-01-01')); // Start of year
-                while ($current <= $to && count($timeLabels) < 10) {
-                    $label = $current->format('Y');
-                    $timeLabels[] = $label;
-                    
-                    $periodEnd = new DateTime($current->format('Y-12-31'));
+                // Monthly/Yearly grouping - spread across 10 periods
+                $periodSize = max(1, ceil($diffDays / $numPeriods / 30)); // Monthly periods
+                $current = clone $from;
+                for ($i = 0; $i < $numPeriods && $current <= $to; $i++) {
+                    $periodEnd = clone $current;
+                    $periodEnd->modify("+{$periodSize} months");
                     if ($periodEnd > $to) $periodEnd = clone $to;
                     
+                    $label = $current->format('M Y');
+                    $timeLabels[] = $label;
                     $periodData[$label] = [
                         'start' => clone $current,
                         'end' => clone $periodEnd,
                         'classifications' => []
                     ];
                     
-                    $current->modify('first day of next year');
+                    $current = clone $periodEnd;
+                    $current->modify('+1 month');
                 }
             }
 
@@ -3303,7 +3309,10 @@ class DatabaseAPI {
                     'borderColor' => $colors[$classification] ?? '#999999',
                     'backgroundColor' => ($colors[$classification] ?? '#999999') . '20',
                     'fill' => false,
-                    'tension' => 0.1
+                    'tension' => 0.4,  // Smoother curves like age classification chart
+                    'pointRadius' => 4,
+                    'pointHoverRadius' => 6,
+                    'borderWidth' => 3
                 ];
             }
 
