@@ -3377,32 +3377,52 @@ class DatabaseAPI {
                 );
 
                 if ($assessment['success'] && isset($assessment['results'])) {
-                    $standardKey = str_replace('-', '_', $whoStandard);
+                    // Check ALL WHO standards for severe cases, not just the selected one
+                    $severeClassifications = [];
                     
-                    // Handle different WHO standards properly
-                    if ($whoStandard === 'bmi-adult') {
-                        // BMI Adult - calculate manually
-                        $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
-                        if ($ageInMonths >= 228) { // 19+ years
-                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                            if ($bmi < 18.5) $classification = 'Underweight';
-                            else if ($bmi < 25) $classification = 'Normal';
-                            else if ($bmi < 30) $classification = 'Overweight';
-                            else $classification = 'Obese';
-                        } else {
-                            $classification = 'No Data';
-                        }
-                    } else {
-                        // Other WHO standards
-                        if (isset($assessment['results'][$standardKey]['classification'])) {
-                            $classification = $assessment['results'][$standardKey]['classification'];
-                        } else {
-                            $classification = 'No Data';
+                    // Check Weight-for-Age
+                    if (isset($assessment['results']['weight_for_age']['classification'])) {
+                        $wfaClassification = $assessment['results']['weight_for_age']['classification'];
+                        if (in_array($wfaClassification, ['Severely Underweight'])) {
+                            $severeClassifications[] = $wfaClassification;
                         }
                     }
                     
-                    // Only include severe cases
-                    if (in_array($classification, ['Severely Underweight', 'Severely Wasted', 'Severely Stunted'])) {
+                    // Check Height-for-Age
+                    if (isset($assessment['results']['height_for_age']['classification'])) {
+                        $hfaClassification = $assessment['results']['height_for_age']['classification'];
+                        if (in_array($hfaClassification, ['Severely Stunted'])) {
+                            $severeClassifications[] = $hfaClassification;
+                        }
+                    }
+                    
+                    // Check Weight-for-Height
+                    if (isset($assessment['results']['weight_for_height']['classification'])) {
+                        $wfhClassification = $assessment['results']['weight_for_height']['classification'];
+                        if (in_array($wfhClassification, ['Severely Wasted'])) {
+                            $severeClassifications[] = $wfhClassification;
+                        }
+                    }
+                    
+                    // Check BMI-for-Age
+                    if (isset($assessment['results']['bmi_for_age']['classification'])) {
+                        $bfaClassification = $assessment['results']['bmi_for_age']['classification'];
+                        if (in_array($bfaClassification, ['Severely Underweight'])) {
+                            $severeClassifications[] = $bfaClassification;
+                        }
+                    }
+                    
+                    // Check BMI Adult
+                    $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
+                    if ($ageInMonths >= 228) { // 19+ years
+                        $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                        if ($bmi < 18.5) {
+                            $severeClassifications[] = 'Severely Underweight';
+                        }
+                    }
+                    
+                    // Add all severe cases found
+                    foreach ($severeClassifications as $classification) {
                         $age = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
                         $ageYears = floor($age / 12);
                         $ageMonths = $age % 12;
