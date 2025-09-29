@@ -3151,7 +3151,8 @@ class DatabaseAPI {
             $numPeriods = 10;
             
             // Calculate the total time span and divide into equal periods
-            $totalSeconds = $to->getTimestamp() - $from->getTimestamp();
+            // Add 1 second to ensure we include the TO date in the calculation
+            $totalSeconds = $to->getTimestamp() - $from->getTimestamp() + 1;
             $periodSeconds = $totalSeconds / $numPeriods;
             
             $current = clone $from;
@@ -3160,8 +3161,15 @@ class DatabaseAPI {
                 if ($i === $numPeriods - 1) {
                     $periodEnd = clone $to;
                 } else {
+                    // Calculate the exact end timestamp for this period
+                    $endTimestamp = $from->getTimestamp() + (($i + 1) * $periodSeconds);
                     $periodEnd = new DateTime();
-                    $periodEnd->setTimestamp($from->getTimestamp() + (($i + 1) * $periodSeconds));
+                    $periodEnd->setTimestamp($endTimestamp);
+                    
+                    // Ensure we don't go past the TO date
+                    if ($periodEnd > $to) {
+                        $periodEnd = clone $to;
+                    }
                 }
                 
                 // Create appropriate labels based on time span
@@ -3183,7 +3191,7 @@ class DatabaseAPI {
                     'classifications' => []
                 ];
                 
-                // Move to the next period start (don't add +1 day to avoid gaps)
+                // Move to the next period start
                 $current = clone $periodEnd;
             }
 
