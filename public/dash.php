@@ -7402,7 +7402,7 @@ body {
                     
                 </div>
                 
-                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px; box-sizing: border-box;">
+                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px; box-sizing: border-box; margin-top: 0;">
                     <canvas id="trendsLineChart" style="max-width: 100%; max-height: 100%;"></canvas>
                 </div>
             </div>
