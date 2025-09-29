@@ -3339,11 +3339,22 @@ class DatabaseAPI {
             }
 
             // Calculate total users based on actual classifications, not raw screening data
+            // Count unique users across all periods to avoid double counting
             $totalUsersWithClassifications = 0;
+            $uniqueUsers = [];
+            
+            // Count users only once, even if they appear in multiple periods
             foreach ($periodData as $period) {
                 foreach ($period['classifications'] as $classification => $count) {
-                    $totalUsersWithClassifications += $count;
+                    if (!isset($uniqueUsers[$classification])) {
+                        $uniqueUsers[$classification] = 0;
+                    }
+                    $uniqueUsers[$classification] = max($uniqueUsers[$classification], $count);
                 }
+            }
+            
+            foreach ($uniqueUsers as $classification => $count) {
+                $totalUsersWithClassifications += $count;
             }
 
             return [
