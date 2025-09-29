@@ -10176,10 +10176,28 @@ body {
                 
                 const { timeLabels, datasets, totalUsers } = data.data;
                 
-                if (!timeLabels || timeLabels.length === 0 || !datasets || datasets.length === 0) {
-                    console.log('No trends data available');
+                console.log('📊 Chart data analysis:', { 
+                    timeLabels: timeLabels ? timeLabels.length : 0, 
+                    datasets: datasets ? datasets.length : 0, 
+                    totalUsers: totalUsers || 0 
+                });
+                
+                if (!timeLabels || timeLabels.length === 0) {
+                    console.log('No time labels available');
                     if (chartContainer) {
-                        chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">No data available for selected date range</div>';
+                        chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">No time period data available for selected date range</div>';
+                    }
+                    return;
+                }
+                
+                if (!datasets || datasets.length === 0) {
+                    console.log('No chartable datasets available - showing message with user count');
+                    if (chartContainer) {
+                        chartContainer.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">
+                            <div style="margin-bottom: 10px;">📊 Found ${totalUsers || 0} users in selected date range</div>
+                            <div style="font-size: 14px; opacity: 0.7;">No nutritional classifications available to display for this period</div>
+                            <div style="font-size: 12px; opacity: 0.5; margin-top: 10px;">Try selecting a different WHO standard or date range</div>
+                        </div>`;
                     }
                     return;
                 }
