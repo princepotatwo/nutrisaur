@@ -3198,6 +3198,7 @@ class DatabaseAPI {
                     'end' => clone $periodEnd,
                     'classifications' => []
                 ];
+                error_log("DEBUG Period $i: Label='$label', Start=" . $current->format('Y-m-d H:i:s') . ", End=" . $periodEnd->format('Y-m-d H:i:s'));
                 
                 // Move to the next period start
                 $current = clone $periodEnd;
@@ -3222,33 +3223,33 @@ class DatabaseAPI {
                             $record['screening_date']
                         );
 
-                        if ($assessment['success'] && isset($assessment['results'])) {
-                            $standardKey = str_replace('-', '_', $whoStandard);
-                            
-                            // Handle different WHO standards properly
-                            if ($whoStandard === 'bmi-adult') {
-                                // BMI Adult - always calculate manually since assessment results might not include it
-                                $ageInMonths = $who->calculateAgeInMonths($record['birthday'], $record['screening_date']);
-                                error_log("DEBUG BMI Adult: Age in months: $ageInMonths, Birthday: {$record['birthday']}, Screening: {$record['screening_date']}");
-                                if ($ageInMonths >= 228) { // 19+ years
-                                    $bmi = floatval($record['weight']) / pow(floatval($record['height']) / 100, 2);
-                                    if ($bmi < 18.5) $classification = 'Underweight';
-                                    else if ($bmi < 25) $classification = 'Normal';
-                                    else if ($bmi < 30) $classification = 'Overweight';
-                                    else $classification = 'Obese';
-                                    error_log("DEBUG BMI Adult: BMI: $bmi, Classification: $classification");
-                                } else {
-                                    $classification = 'No Data';
-                                    error_log("DEBUG BMI Adult: Too young for BMI adult (age: $ageInMonths months)");
-                                }
+                        // Handle BMI Adult separately since it might not be in assessment results
+                        if ($whoStandard === 'bmi-adult') {
+                            // BMI Adult - always calculate manually since assessment results might not include it
+                            $ageInMonths = $who->calculateAgeInMonths($record['birthday'], $record['screening_date']);
+                            error_log("DEBUG BMI Adult: Age in months: $ageInMonths, Birthday: {$record['birthday']}, Screening: {$record['screening_date']}");
+                            if ($ageInMonths >= 228) { // 19+ years
+                                $bmi = floatval($record['weight']) / pow(floatval($record['height']) / 100, 2);
+                                if ($bmi < 18.5) $classification = 'Underweight';
+                                else if ($bmi < 25) $classification = 'Normal';
+                                else if ($bmi < 30) $classification = 'Overweight';
+                                else $classification = 'Obese';
+                                error_log("DEBUG BMI Adult: BMI: $bmi, Classification: $classification");
                             } else {
-                                // Other WHO standards
-                                if (isset($assessment['results'][$standardKey]['classification'])) {
-                                    $classification = $assessment['results'][$standardKey]['classification'];
-                                } else {
-                                    $classification = 'No Data';
-                                }
+                                $classification = 'No Data';
+                                error_log("DEBUG BMI Adult: Too young for BMI adult (age: $ageInMonths months)");
                             }
+                        } else if ($assessment['success'] && isset($assessment['results'])) {
+                            // Other WHO standards
+                            $standardKey = str_replace('-', '_', $whoStandard);
+                            if (isset($assessment['results'][$standardKey]['classification'])) {
+                                $classification = $assessment['results'][$standardKey]['classification'];
+                            } else {
+                                $classification = 'No Data';
+                            }
+                        } else {
+                            $classification = 'No Data';
+                        }
                             
                             // Skip "No Data" classifications from trends chart
                             if ($classification !== 'No Data') {
