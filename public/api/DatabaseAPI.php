@@ -3423,7 +3423,7 @@ class DatabaseAPI {
                     if ($ageInMonths >= 228) { // 19+ years
                         $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
                         if ($bmi < 18.5) {
-                            $severeClassifications[] = 'Severely Underweight';
+                            $severeClassifications[] = 'Severely Underweight (BMI Adult)';
                         }
                     }
                     
@@ -3432,7 +3432,7 @@ class DatabaseAPI {
                     switch ($whoStandard) {
                         case 'weight-for-age':
                             $filteredClassifications = array_filter($severeClassifications, function($c) {
-                                return in_array($c, ['Severely Underweight']);
+                                return $c === 'Severely Underweight' && strpos($c, 'BMI Adult') === false;
                             });
                             break;
                         case 'height-for-age':
@@ -3447,12 +3447,12 @@ class DatabaseAPI {
                             break;
                         case 'bmi-for-age':
                             $filteredClassifications = array_filter($severeClassifications, function($c) {
-                                return in_array($c, ['Severely Underweight']);
+                                return $c === 'Severely Underweight' && strpos($c, 'BMI Adult') === false;
                             });
                             break;
                         case 'bmi-adult':
                             $filteredClassifications = array_filter($severeClassifications, function($c) {
-                                return in_array($c, ['Severely Underweight']);
+                                return strpos($c, 'BMI Adult') !== false;
                             });
                             break;
                         default:
