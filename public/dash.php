@@ -7378,24 +7378,24 @@ body {
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
                 <div style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                         <div style="flex: 1;">
-                            <h3>Community Health Trends Over Time</h3>
-                            <p class="chart-description">Nutritional status trends over selected time periods based on screening dates.</p>
+                            <h3 style="margin: 0; padding: 0;">Community Health Trends Over Time</h3>
+                            <p class="chart-description" style="margin: 2px 0 0 0; font-size: 12px; line-height: 1.3;">Nutritional trends over time periods.</p>
                         </div>
                         
-                        <!-- Date Picker Controls - Moved to top right -->
-                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-left: 20px;">
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <label style="font-size: 14px; color: var(--color-text); font-weight: 500;">From:</label>
-                                <input type="date" id="trends-from-date" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); font-size: 14px;">
+                        <!-- Date Picker Controls - Compact layout -->
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: 15px;">
+                            <div style="display: flex; gap: 5px; align-items: center;">
+                                <label style="font-size: 12px; color: var(--color-text); font-weight: 500;">From:</label>
+                                <input type="date" id="trends-from-date" style="padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg); color: var(--color-text); font-size: 12px; width: 120px;">
                             </div>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <label style="font-size: 14px; color: var(--color-text); font-weight: 500;">To:</label>
-                                <input type="date" id="trends-to-date" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg); color: var(--color-text); font-size: 14px;">
+                            <div style="display: flex; gap: 5px; align-items: center;">
+                                <label style="font-size: 12px; color: var(--color-text); font-weight: 500;">To:</label>
+                                <input type="date" id="trends-to-date" style="padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg); color: var(--color-text); font-size: 12px; width: 120px;">
                             </div>
-                            <button id="generate-trends-chart" style="padding: 8px 16px; background: var(--color-highlight); color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">
-                                📊 Generate Chart
+                            <button id="generate-trends-chart" style="padding: 6px 12px; background: var(--color-highlight); color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">
+                                📊 Generate
                             </button>
                         </div>
                     </div>
