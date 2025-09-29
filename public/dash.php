@@ -824,7 +824,7 @@ if (isset($_GET['logout'])) {
     --color-bg: #1A211A;
     --color-card: #2A3326;
     --color-highlight: #A1B454;
-    --color-text: #E8F0D6;
+    --color-text: #FFFFFF;
     --color-accent1: #8CA86E;
     --color-accent2: #B5C88D;
     --color-accent3: #546048;
@@ -6785,48 +6785,64 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Chart text theme support */
-.dark-theme .population-scale {
-    color: #FFFFFF !important;
-}
-
+/* Chart text theme support - More specific selectors */
+.dark-theme .population-scale,
+.dark-theme .population-scale *,
 .dark-theme .population-scale .scale-label {
     color: #FFFFFF !important;
 }
 
-.light-theme .population-scale {
-    color: #000000 !important;
-}
-
+.light-theme .population-scale,
+.light-theme .population-scale *,
 .light-theme .population-scale .scale-label {
     color: #000000 !important;
 }
 
 /* Chart legend and labels theme support */
-.dark-theme .trends-legend {
-    color: #FFFFFF !important;
-}
-
+.dark-theme .trends-legend,
+.dark-theme .trends-legend *,
 .dark-theme .trends-legend .legend-item {
     color: #FFFFFF !important;
 }
 
-.light-theme .trends-legend {
-    color: #000000 !important;
-}
-
+.light-theme .trends-legend,
+.light-theme .trends-legend *,
 .light-theme .trends-legend .legend-item {
     color: #000000 !important;
 }
 
 /* Chart title and axis labels theme support */
 .dark-theme .chart-title,
-.dark-theme .chart-axis-label {
+.dark-theme .chart-axis-label,
+.dark-theme .chart-card h3,
+.dark-theme .chart-description {
     color: #FFFFFF !important;
 }
 
 .light-theme .chart-title,
-.light-theme .chart-axis-label {
+.light-theme .chart-axis-label,
+.light-theme .chart-card h3,
+.light-theme .chart-description {
+    color: #000000 !important;
+}
+
+/* Force white text for all chart elements in dark theme */
+.dark-theme .chart-card,
+.dark-theme .chart-card *,
+.dark-theme .trends-chart-container,
+.dark-theme .trends-chart-container *,
+.dark-theme .age-classification-chart-container,
+.dark-theme .age-classification-chart-container * {
+    color: #FFFFFF !important;
+}
+
+/* Force black text for all chart elements in light theme */
+.light-theme .chart-card,
+.light-theme .chart-card *,
+.light-theme .trends-chart-container,
+.light-theme .trends-chart-container *,
+.light-theme .age-classification-chart-container,
+.light-theme .age-classification-chart-container * {
     color: #000000 !important;
 }
 
@@ -9614,7 +9630,7 @@ body {
                     justify-content: space-between;
                     align-items: flex-end;
                     font-size: 10px;
-                    color: ${textColor};
+                    color: ${textColor} !important;
                     opacity: 0.7;
                     z-index: 10;
                 `;
@@ -9636,7 +9652,7 @@ body {
                         justify-content: flex-end;
                         padding-right: 5px;
                         border-right: 1px solid ${isLightTheme ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)'};
-                        color: ${textColor};
+                        color: ${textColor} !important;
                         font-size: 9px;
                         font-weight: 500;
                     `;
@@ -9662,7 +9678,7 @@ body {
                         gap: 8px;
                         max-width: 200px;
                         z-index: 20;
-                        color: ${textColor};
+                        color: ${textColor} !important;
                     `;
                     
                     // Function to get classification acronym
@@ -9697,7 +9713,7 @@ body {
                             align-items: center;
                             gap: 4px;
                             font-size: 10px;
-                            color: ${textColor};
+                            color: ${textColor} !important;
                             opacity: 0.8;
                         `;
                         
