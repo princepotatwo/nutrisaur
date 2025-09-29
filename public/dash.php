@@ -12194,10 +12194,7 @@ body {
                     
                     // Convert classification to CSS class name
                     let cssClass = caseData.classification.toLowerCase().replace(/\s+/g, '-');
-                    // Handle BMI Adult case specifically
-                    if (cssClass.includes('bmi-adult')) {
-                        cssClass = 'severely-underweight-bmi-adult';
-                    }
+                    // No special handling needed - use the actual classification
                     
                     caseItem.className = `severe-case-item ${cssClass}`;
                     

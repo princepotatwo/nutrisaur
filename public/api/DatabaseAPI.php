@@ -3473,16 +3473,13 @@ class DatabaseAPI {
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
                     if ($ageInMonths >= 228) { // 19+ years
                         $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                        error_log("🔍 BMI Adult Debug - User: {$user['name']}, BMI: $bmi, Age: $ageInMonths months");
                         if ($bmi < 18.5) {
                             $severeClassifications[] = 'Underweight (BMI Adult)';
-                            error_log("🔍 Added 'Underweight (BMI Adult)' for user: {$user['name']}");
                         }
                     }
                     
                     // Filter by WHO standard - only include cases relevant to the selected standard
                     $filteredClassifications = [];
-                    error_log("🔍 All severe classifications before filtering: " . json_encode($severeClassifications));
                     switch ($whoStandard) {
                         case 'weight-for-age':
                             $filteredClassifications = array_filter($severeClassifications, function($c) {
@@ -3513,7 +3510,6 @@ class DatabaseAPI {
                             // If no specific standard, show all severe cases
                             $filteredClassifications = $severeClassifications;
                     }
-                    error_log("🔍 Filtered classifications for $whoStandard: " . json_encode($filteredClassifications));
                     
                     // Add filtered severe cases
                     foreach ($filteredClassifications as $classification) {
