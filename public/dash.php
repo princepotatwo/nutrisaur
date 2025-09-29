@@ -10738,6 +10738,8 @@ body {
                 
                 // Update severe cases list with new WHO standard
                 console.log('🎨 Updating severe cases list...');
+                console.log('📊 WHO Standard before severe cases call:', selectedStandard);
+                console.log('📊 Dropdown value before severe cases call:', select ? select.value : 'N/A');
                 await updateSevereCasesList(barangay);
                 
                 console.log('✅ Chart update completed');
@@ -12114,6 +12116,11 @@ body {
                 const barangayValue = barangay || '';
                 const whoStandardSelect = document.getElementById('whoStandardSelect');
                 const whoStandard = whoStandardSelect ? whoStandardSelect.value : 'weight-for-age';
+                
+                // Debug logging
+                console.log('📊 Severe cases - WHO Standard Select element:', whoStandardSelect);
+                console.log('📊 Severe cases - WHO Standard value:', whoStandard);
+                console.log('📊 Severe cases - Dropdown value at time of call:', whoStandardSelect ? whoStandardSelect.value : 'N/A');
 
                 // Fetch severe cases data
                 const url = `/api/DatabaseAPI.php?action=get_severe_cases&barangay=${encodeURIComponent(barangayValue)}&who_standard=${whoStandard}`;
