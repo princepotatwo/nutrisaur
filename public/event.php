@@ -80,9 +80,7 @@ function createEventJWT($serviceAccountKey) {
 // 🚨 TEST AJAX ENDPOINT - Add this first to debug the issue
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'test_ajax') {
     error_log("=== TEST AJAX ENDPOINT CALLED ===");
-    // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
-            header('Content-Type: application/json');
+    header('Content-Type: application/json');
     echo json_encode(['success' => true, 'message' => 'AJAX is working!']);
     exit;
 }
@@ -90,9 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 // 🚨 DEBUG FCM TOKENS ENDPOINT
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'debug_fcm_tokens') {
     error_log("=== DEBUG FCM TOKENS CALLED ===");
-    // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
-            header('Content-Type: application/json');
+    header('Content-Type: application/json');
     
     $location = $_POST['location'] ?? 'Bangkal';
     $tokens = getFCMTokensByLocation($location);
@@ -109,9 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 // 🚨 DEBUG NOTIFICATION ENDPOINT
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'debug_notification') {
     error_log("=== DEBUG NOTIFICATION CALLED ===");
-    // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
-            header('Content-Type: application/json');
+    header('Content-Type: application/json');
     
     try {
         // Test notification using direct FCM sending (no cURL to avoid duplicates)
@@ -207,7 +201,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                         'event_date' => date('M j, Y g:i A', strtotime($date_time))
                     ];
                     
-                    
                     // Send FCM notifications directly
                     $successCount = 0;
                     foreach ($fcmTokenData as $tokenData) {
@@ -237,9 +230,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         error_log("✅ Event saved successfully with ID: $eventId");
         
         // Return success response
-        // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
-            header('Content-Type: application/json');
+        header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
             'message' => 'Event saved and notifications sent successfully!',
@@ -257,9 +248,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 
 // Handle get events request for mobile app FIRST (before authentication check)
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_events') {
-    // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
-            header('Content-Type: application/json');
+    header('Content-Type: application/json');
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type');
@@ -394,8 +383,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             $location = $_POST['location'] ?? '';
             $users = getUsersForLocation($location);
             
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
@@ -405,8 +392,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             exit;
             
         } catch (Exception $e) {
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -426,8 +411,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         try {
             $duplicates = $_SESSION['import_duplicates'] ?? [];
             
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
@@ -436,8 +419,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
             exit;
             
         } catch (Exception $e) {
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -450,9 +431,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
 
 // Handle get events request for mobile app
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_events') {
-    // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
-            header('Content-Type: application/json');
+    header('Content-Type: application/json');
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type');
@@ -531,8 +510,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             $debugInfo['firebase_admin_sdk_exists'] = file_exists($adminSdkPath);
             $debugInfo['firebase_admin_sdk_path'] = $adminSdkPath;
             
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
@@ -542,8 +519,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             exit;
             
         } catch (Exception $e) {
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -607,9 +582,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 // Log the notification attempt
                 logNotificationAttempt(0, 'critical_alert', 'user', $targetUser, 1, true);
                 
-                // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
-            header('Content-Type: application/json');
+                header('Content-Type: application/json');
                 echo json_encode([
                     'success' => true,
                     'message' => 'Personal notification sent successfully to ' . $userName,
@@ -623,8 +596,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         } catch (Exception $e) {
             error_log("Error sending personal notification: " . $e->getMessage());
             
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -750,8 +721,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         
         error_log("✅ AJAX Event created successfully with ID: $eventId");
         
-                            
-                            // Send notifications using the SAME approach as dash.php
+        // Send notifications using the SAME approach as dash.php
         $notificationMessage = '';
         if ($notificationType !== 'none') {
             try {
@@ -819,8 +789,7 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
         $locationText = ($location === 'all' || empty($location)) ? 'All Locations' : $location;
         $notificationBody = "New event: $title at $locationText on " . date('M j, Y g:i A', strtotime($date_time));
         
-                            
-                            // Send notifications using the working API
+        // Send notifications using the working API
         $successCount = 0;
         $failureCount = 0;
         
@@ -830,7 +799,7 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
             
             if (empty($fcmToken) || empty($userEmail)) {
                 $failureCount++;
-                return;
+                continue;
             }
             
             // Use the SAME working notification API that dash.php uses for critical risk
@@ -925,8 +894,7 @@ function sendNotificationViaAPI($notificationData) {
             return ['success' => false, 'error' => 'No active FCM tokens found'];
         }
         
-                            
-                            // Send notification to each token
+        // Send notification to each token
         $successCount = 0;
         $failCount = 0;
         
@@ -1000,7 +968,7 @@ function sendEventFCMNotification($tokens, $notificationData, $targetLocation = 
             
             if (empty($fcmToken) || empty($userEmail)) {
                 error_log("Empty FCM token or user email for notification");
-                return;
+                continue;
             }
             
             try {
@@ -1317,41 +1285,24 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 
 // 🚨 CLEAN CSV IMPORT METHOD - NO COMPLEX LOGIC
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
-    error_log("🔍 CSV: Import request received - POST data: " . print_r($_POST, true));
     error_log("=== CLEAN CSV IMPORT STARTED ===");
-    
-    error_log("🔍 CSV: FILES array: " . print_r($_FILES, true));
-    error_log("🔍 CSV: csvFile isset: " . (isset($_FILES['csvFile']) ? 'YES' : 'NO'));
-    if (isset($_FILES['csvFile'])) {
-        error_log("🔍 CSV: csvFile error: " . $_FILES['csvFile']['error']);
-        error_log("🔍 CSV: csvFile name: " . $_FILES['csvFile']['name']);
-        error_log("🔍 CSV: csvFile size: " . $_FILES['csvFile']['size']);
-    }
     
     if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
         $file = $_FILES['csvFile'];
         
         // Simple validation
-        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        error_log("🔍 CSV: File extension check - extension: '$fileExtension', expected: 'csv'");
-        if ($fileExtension !== 'csv') {
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
+        if (strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) !== 'csv') {
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Please upload a CSV file only.']);
             exit;
         }
         
-        error_log("🔍 CSV: File size check - size: " . $file['size'] . " bytes, max: 5000000 bytes");
         if ($file['size'] > 5000000) {
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'File size too large. Max 5MB.']);
             exit;
         }
         
-        error_log("🔍 CSV: File validation passed, starting CSV processing...");
         try {
             // Simple database connection
             require_once __DIR__ . '/../config.php';
@@ -1369,12 +1320,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
                     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                         $row++;
-                    if ($row == 1) return; // Skip header
+                    if ($row == 1) continue; // Skip header
                         
                     // Validate columns
                         if (count($data) < 5) {
                         $errors[] = "Row $row: Need 5 columns";
-                            return;
+                            continue;
                         }
                         
                     // Extract data
@@ -1387,7 +1338,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         // Validate required fields
                     if (empty($title) || empty($date_time) || empty($location) || empty($organizer)) {
                         $errors[] = "Row $row: Missing required fields";
-                            return;
+                            continue;
                         }
                         
                     // Simple date validation
@@ -1397,7 +1348,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                     }
                         if (!$dateObj) {
                         $errors[] = "Row $row: Invalid date format";
-                            return;
+                            continue;
                         }
                         
                     // Get next ID
@@ -1425,8 +1376,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             $importedCount++;
                         error_log("✅ CSV: Row $row imported - ID: $nextId");
                         
-                            
-                            // Send notification
+                        // Send notification
                         try {
                             $notificationTitle = "🎯 Event: $title";
                             $notificationBody = "New event: $title at $location on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
@@ -1478,8 +1428,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             }
             
             // Return response
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             if ($importedCount > 0) {
                 echo json_encode([
@@ -1499,8 +1447,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             exit;
             
         } catch (Exception $e) {
-            // Debug: Log the response before sending
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -1512,13 +1458,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
         }
         
                         } else {
-        // Debug: Log the response before sending
-            error_log("🔍 CSV: File upload failed - csvFile isset: " . (isset($_FILES['csvFile']) ? 'YES' : 'NO'));
-            if (isset($_FILES['csvFile'])) {
-                error_log("🔍 CSV: File upload failed - error code: " . $_FILES['csvFile']['error']);
-            }
-            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
-            header('Content-Type: application/json');
+        header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
             'imported_count' => 0,
@@ -1558,8 +1498,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
         
         $stmt->execute();
         
-                            
-                            // Send notification about the updated event with location-based targeting
+        // Send notification about the updated event with location-based targeting
         try {
             // Get FCM tokens based on event location
             $fcmTokenData = getFCMTokensByLocation($location);

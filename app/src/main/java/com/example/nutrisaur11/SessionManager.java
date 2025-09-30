@@ -17,10 +17,14 @@ public class SessionManager {
     private static final String TAG = "SessionManager";
     private static final String API_BASE_URL = "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php";
     
-    // Battery optimization: Only check database when user interacts with app
-    private static final long SESSION_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes (reduced for better UX)
+    // Real-time validation: Check more frequently for immediate detection
+    private static final long SESSION_CHECK_INTERVAL = 3 * 1000; // 3 seconds for real-time detection
     private static final long IDLE_TIMEOUT = 10 * 60 * 1000; // 10 minutes of inactivity
     private static final long CACHE_VALIDITY = 24 * 60 * 60 * 1000; // 24 hours
+    
+    // Connection quality thresholds
+    private static final long SLOW_CONNECTION_THRESHOLD = 5000; // 5 seconds
+    private static final long VERY_SLOW_CONNECTION_THRESHOLD = 10000; // 10 seconds
     
     // Track user interaction
     private long lastUserInteraction = 0;
@@ -30,11 +34,15 @@ public class SessionManager {
     private static SessionManager instance;
     private ExecutorService executorService;
     private Handler mainHandler;
+    private Handler validationHandler;
+    private Runnable validationRunnable;
     
     private SessionManager(Context context) {
         this.context = context.getApplicationContext();
         this.executorService = Executors.newSingleThreadExecutor();
         this.mainHandler = new Handler(Looper.getMainLooper());
+        this.validationHandler = new Handler(Looper.getMainLooper());
+        startPeriodicValidation();
     }
     
     public static synchronized SessionManager getInstance(Context context) {
@@ -154,12 +162,30 @@ public class SessionManager {
     }
     
     /**
-     * Check if user exists in community_users database
+     * Check if user exists in community_users database with timeout handling
      */
     private boolean checkUserExistsInDatabase(String email) {
         try {
+            Log.d(TAG, "Checking user existence in database: " + email);
+            long startTime = System.currentTimeMillis();
+            
             CommunityUserManager userManager = new CommunityUserManager(context);
             Map<String, String> userData = userManager.getCurrentUserDataFromDatabase();
+            
+            long duration = System.currentTimeMillis() - startTime;
+            Log.d(TAG, "Database check completed in " + duration + "ms");
+            
+            // Store connection duration for cache optimization
+            SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+            prefs.edit().putLong("last_connection_duration_" + email, duration).apply();
+            
+            // Adjust validation frequency based on connection quality
+            if (duration > VERY_SLOW_CONNECTION_THRESHOLD) {
+                Log.d(TAG, "Very slow connection detected (" + duration + "ms), reducing validation frequency");
+                // For very slow connections, we'll be more lenient with validation
+            } else if (duration > SLOW_CONNECTION_THRESHOLD) {
+                Log.d(TAG, "Slow connection detected (" + duration + "ms), monitoring connection quality");
+            }
             
             // If we get empty data, user doesn't exist
             if (userData.isEmpty()) {
@@ -179,6 +205,17 @@ public class SessionManager {
             
         } catch (Exception e) {
             Log.e(TAG, "Error checking user existence: " + e.getMessage());
+            
+            // If it's a timeout or network error, don't immediately fail
+            if (e.getMessage() != null && 
+                (e.getMessage().contains("timeout") || 
+                 e.getMessage().contains("network") ||
+                 e.getMessage().contains("connection"))) {
+                Log.d(TAG, "Network timeout detected, treating as temporary failure");
+                // Return true to avoid unnecessary logout on slow connections
+                return true;
+            }
+            
             return false;
         }
     }
@@ -187,6 +224,8 @@ public class SessionManager {
      * Validate session and handle invalid sessions
      */
     public boolean validateSession(Activity activity) {
+        Log.d(TAG, "=== REAL-TIME SESSION VALIDATION ===");
+        
         // For immediate validation, use cached result only
         SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
         String email = prefs.getString("current_user_email", null);
@@ -201,7 +240,19 @@ public class SessionManager {
         // Check if we have a recent valid session in cache
         long lastCheck = prefs.getLong("session_last_check_" + email, 0);
         long currentTime = System.currentTimeMillis();
-        boolean hasRecentValidSession = (currentTime - lastCheck < SESSION_CHECK_INTERVAL) && 
+        
+        // For slow connections, extend cache validity to reduce network calls
+        long cacheInterval = SESSION_CHECK_INTERVAL;
+        long lastConnectionTime = prefs.getLong("last_connection_time_" + email, 0);
+        if (lastConnectionTime > 0 && (currentTime - lastConnectionTime) < 60000) { // If last connection was slow within 1 minute
+            long lastConnectionDuration = prefs.getLong("last_connection_duration_" + email, 0);
+            if (lastConnectionDuration > SLOW_CONNECTION_THRESHOLD) {
+                cacheInterval = SESSION_CHECK_INTERVAL * 3; // Extend cache to 9 seconds for slow connections
+                Log.d(TAG, "Extending cache validity due to slow connection history");
+            }
+        }
+        
+        boolean hasRecentValidSession = (currentTime - lastCheck < cacheInterval) && 
                                        prefs.getBoolean("session_is_valid_" + email, false);
         
         if (hasRecentValidSession) {
@@ -209,10 +260,78 @@ public class SessionManager {
             return true;
         }
         
-        // If no recent valid session, assume valid for now and validate in background
-        Log.d(TAG, "No recent valid session found, validating in background");
-        validateSessionAsync(activity);
-        return true; // Allow activity to continue while validation happens in background
+        // REAL-TIME VALIDATION: Check database immediately for critical validation
+        Log.d(TAG, "No recent valid session found, performing real-time database check");
+        
+        // First check if device is online
+        if (!isNetworkAvailable()) {
+            Log.d(TAG, "Device is offline, showing offline dialog");
+            handleOfflineSession(activity);
+            return false;
+        }
+        
+        boolean isValid = checkUserExistsInDatabase(email);
+        
+        // Store connection timing for future cache decisions
+        long connectionDuration = prefs.getLong("last_connection_duration_" + email, 0);
+        prefs.edit()
+            .putBoolean("session_is_valid_" + email, isValid)
+            .putLong("session_last_check_" + email, currentTime)
+            .putLong("last_connection_time_" + email, currentTime)
+            .putLong("last_connection_duration_" + email, connectionDuration)
+            .apply();
+        
+        if (!isValid) {
+            Log.d(TAG, "Real-time validation failed, user not found in database");
+            handleInvalidSession(activity);
+            return false;
+        }
+        
+        Log.d(TAG, "Real-time validation successful");
+        return true;
+    }
+    
+    /**
+     * Force real-time validation - bypasses cache and checks database immediately
+     */
+    public boolean forceRealTimeValidation(Activity activity) {
+        Log.d(TAG, "=== FORCE REAL-TIME VALIDATION ===");
+        
+        SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+        String email = prefs.getString("current_user_email", null);
+        boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
+        
+        if (email == null || !isLoggedIn) {
+            Log.d(TAG, "User not logged in");
+            handleInvalidSession(activity);
+            return false;
+        }
+        
+        // First check if device is online
+        if (!isNetworkAvailable()) {
+            Log.d(TAG, "Device is offline, showing offline dialog");
+            handleOfflineSession(activity);
+            return false;
+        }
+        
+        // Force database check - bypass cache
+        boolean isValid = checkUserExistsInDatabase(email);
+        
+        // Update cache with result
+        long currentTime = System.currentTimeMillis();
+        prefs.edit()
+            .putBoolean("session_is_valid_" + email, isValid)
+            .putLong("session_last_check_" + email, currentTime)
+            .apply();
+        
+        if (!isValid) {
+            Log.d(TAG, "Force validation failed, user not found in database");
+            handleInvalidSession(activity);
+            return false;
+        }
+        
+        Log.d(TAG, "Force validation successful");
+        return true;
     }
     
     /**
@@ -236,21 +355,142 @@ public class SessionManager {
      * Handle invalid session - show dialog and redirect to login
      */
     private void handleInvalidSession(Activity activity) {
+        Log.d(TAG, "=== HANDLING INVALID SESSION ===");
+        Log.d(TAG, "Activity: " + (activity != null ? activity.getClass().getSimpleName() : "null"));
+        Log.d(TAG, "Activity finishing: " + (activity != null ? activity.isFinishing() : "null"));
+        
         if (activity == null || activity.isFinishing()) {
+            Log.d(TAG, "Activity is null or finishing, skipping dialog");
             return;
         }
         
+        Log.d(TAG, "Showing logout dialog");
         activity.runOnUiThread(() -> {
             new AlertDialog.Builder(activity)
-                .setTitle("You went offline")
+                .setTitle("Account Not Found")
                 .setMessage("Your account is no longer available or has been deleted from the database. Please log in again.")
                 .setCancelable(false)
                 .setPositiveButton("OK", (dialog, which) -> {
+                    Log.d(TAG, "User clicked OK on logout dialog");
                     clearUserSession();
                     redirectToLogin(activity);
                 })
                 .show();
         });
+    }
+    
+    /**
+     * Handle offline session - show dialog and redirect to login
+     */
+    private void handleOfflineSession(Activity activity) {
+        Log.d(TAG, "=== HANDLING OFFLINE SESSION ===");
+        Log.d(TAG, "Activity: " + (activity != null ? activity.getClass().getSimpleName() : "null"));
+        Log.d(TAG, "Activity finishing: " + (activity != null ? activity.isFinishing() : "null"));
+        
+        if (activity == null || activity.isFinishing()) {
+            Log.d(TAG, "Activity is null or finishing, skipping dialog");
+            return;
+        }
+        
+        Log.d(TAG, "Showing offline dialog");
+        activity.runOnUiThread(() -> {
+            new AlertDialog.Builder(activity)
+                .setTitle("You went offline")
+                .setMessage("No internet connection detected. Please check your network and try again.")
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    Log.d(TAG, "User clicked OK on offline dialog");
+                    clearUserSession();
+                    redirectToLogin(activity);
+                })
+                .show();
+        });
+    }
+    
+    /**
+     * Check if network is available
+     */
+    private boolean isNetworkAvailable() {
+        try {
+            android.net.ConnectivityManager connectivityManager = 
+                (android.net.ConnectivityManager) context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+            
+            if (connectivityManager != null) {
+                // Use modern API for Android 6.0+ (API 23+)
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    android.net.Network activeNetwork = connectivityManager.getActiveNetwork();
+                    if (activeNetwork != null) {
+                        android.net.NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(activeNetwork);
+                        return capabilities != null && (
+                            capabilities.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) ||
+                            capabilities.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                            capabilities.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET)
+                        );
+                    }
+                } else {
+                    // Fallback for older Android versions
+                    android.net.NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+                    return activeNetwork != null && activeNetwork.isConnected();
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking network availability: " + e.getMessage());
+        }
+        return false;
+    }
+    
+    /**
+     * Start periodic validation to check session every 30 seconds
+     */
+    private void startPeriodicValidation() {
+        validationRunnable = new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "=== PERIODIC SESSION VALIDATION ===");
+                
+                // Only validate if user is active and logged in
+                if (isUserActive && isUserValid()) {
+                    // Check if user is still valid in database
+                    SharedPreferences prefs = context.getSharedPreferences("nutrisaur_prefs", Context.MODE_PRIVATE);
+                    String email = prefs.getString("current_user_email", null);
+                    
+                    if (email != null) {
+                        // Check network first
+                        if (!isNetworkAvailable()) {
+                            Log.d(TAG, "Periodic validation: Device offline detected");
+                            // Don't show dialog here, let the next activity resume handle it
+                            return;
+                        }
+                        
+                        // Check database
+                        boolean isValid = checkUserExistsInDatabase(email);
+                        if (!isValid) {
+                            Log.d(TAG, "Periodic validation: User not found in database");
+                            // Clear the cache to force validation on next activity
+                            prefs.edit()
+                                .putBoolean("session_is_valid_" + email, false)
+                                .putLong("session_last_check_" + email, 0)
+                                .apply();
+                        }
+                    }
+                }
+                
+                // Schedule next validation in 3 seconds
+                validationHandler.postDelayed(this, 3000);
+            }
+        };
+        
+        // Start the first validation after 3 seconds
+        validationHandler.postDelayed(validationRunnable, 3000);
+    }
+    
+    /**
+     * Stop periodic validation
+     */
+    public void stopPeriodicValidation() {
+        if (validationHandler != null && validationRunnable != null) {
+            validationHandler.removeCallbacks(validationRunnable);
+        }
     }
     
     /**
