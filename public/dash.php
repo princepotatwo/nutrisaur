@@ -10274,8 +10274,33 @@ body {
                                             const timePeriodTotal = context.chart.data.datasets.reduce((sum, ds) => {
                                                 return sum + (ds.data[context.dataIndex] || 0);
                                             }, 0);
-                                            const percentage = timePeriodTotal > 0 ? Math.round((value / timePeriodTotal) * 100) : 0;
-                                            return `${dataset.label}: ${value} (${percentage}%)`;
+                                            
+                                            if (timePeriodTotal === 0) {
+                                                return `${dataset.label}: ${value} (0%)`;
+                                            }
+                                            
+                                            // Calculate exact percentage
+                                            const exactPercentage = (value / timePeriodTotal) * 100;
+                                            
+                                            // For the last item in the tooltip, adjust to ensure total is 100%
+                                            const tooltipItems = context.chart.tooltip.dataPoints;
+                                            const isLastItem = context.dataIndex === tooltipItems.length - 1;
+                                            
+                                            if (isLastItem && tooltipItems.length > 1) {
+                                                // Calculate what the total would be with current rounding
+                                                let runningTotal = 0;
+                                                for (let i = 0; i < tooltipItems.length - 1; i++) {
+                                                    const itemValue = tooltipItems[i].parsed.y;
+                                                    const itemPercentage = Math.round((itemValue / timePeriodTotal) * 100);
+                                                    runningTotal += itemPercentage;
+                                                }
+                                                // Make the last item's percentage = 100 - running total
+                                                const adjustedPercentage = 100 - runningTotal;
+                                                return `${dataset.label}: ${value} (${adjustedPercentage}%)`;
+                                            } else {
+                                                const percentage = Math.round(exactPercentage);
+                                                return `${dataset.label}: ${value} (${percentage}%)`;
+                                            }
                                         }
                                     }
                                 }
