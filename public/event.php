@@ -1356,6 +1356,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
     error_log("🔍 CSV: Import request received - POST data: " . print_r($_POST, true));
     error_log("=== CLEAN CSV IMPORT STARTED ===");
     
+    error_log("🔍 CSV: FILES array: " . print_r($_FILES, true));
+    error_log("🔍 CSV: csvFile isset: " . (isset($_FILES['csvFile']) ? 'YES' : 'NO'));
+    if (isset($_FILES['csvFile'])) {
+        error_log("🔍 CSV: csvFile error: " . $_FILES['csvFile']['error']);
+        error_log("🔍 CSV: csvFile name: " . $_FILES['csvFile']['name']);
+        error_log("🔍 CSV: csvFile size: " . $_FILES['csvFile']['size']);
+    }
+    
     if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
         $file = $_FILES['csvFile'];
         
@@ -1546,6 +1554,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
         
                         } else {
         // Debug: Log the response before sending
+            error_log("🔍 CSV: File upload failed - csvFile isset: " . (isset($_FILES['csvFile']) ? 'YES' : 'NO'));
+            if (isset($_FILES['csvFile'])) {
+                error_log("🔍 CSV: File upload failed - error code: " . $_FILES['csvFile']['error']);
+            }
             error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
         echo json_encode([
