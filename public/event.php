@@ -1368,7 +1368,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
         $file = $_FILES['csvFile'];
         
         // Simple validation
-        if (strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) !== 'csv') {
+        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        error_log("🔍 CSV: File extension check - extension: '$fileExtension', expected: 'csv'");
+        if ($fileExtension !== 'csv') {
             // Debug: Log the response before sending
             error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
