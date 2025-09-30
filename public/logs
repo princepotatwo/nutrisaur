@@ -1,675 +1,100 @@
---------- beginning of system
---------- beginning of crash
-2025-09-30 15:06:10.411  1522-17132 ActivityManager         pid-1522                             E  ANR in com.example.nutrisaur11 (com.example.nutrisaur11/.LoginActivity)
-                                                                                                    PID: 14198
-                                                                                                    Reason: Input dispatching timed out (96e3cbb com.example.nutrisaur11/com.example.nutrisaur11.LoginActivity (server) is not responding. Waited 5003ms for FocusEvent(hasFocus=false))
-                                                                                                    Parent: com.example.nutrisaur11/.LoginActivity
-                                                                                                    Frozen: false
-                                                                                                    Load: 3.81 / 2.78 / 2.79
-                                                                                                    ----- Output from /proc/pressure/memory -----
-                                                                                                    some avg10=1.23 avg60=1.61 avg300=1.00 total=1102848102
-                                                                                                    full avg10=0.15 avg60=0.23 avg300=0.13 total=272921048
-                                                                                                    ----- End output from /proc/pressure/memory -----
-                                                                                                    
-                                                                                                    CPU usage from 0ms to 5509ms later (2025-09-30 15:06:04.871 to 2025-09-30 15:06:10.381):
-                                                                                                      38% 1522/system_server: 18% user + 20% kernel / faults: 11031 minor 414 major
-                                                                                                      38% 16696/com.facebook.katana: 28% user + 10% kernel / faults: 15638 minor 43 major
-                                                                                                      1% 1739/media.codec: 0.5% user + 0.5% kernel / faults: 20656 minor 234 major
-                                                                                                      9.4% 3038/com.android.systemui: 8.5% user + 0.9% kernel / faults: 3273 minor 208 major
-                                                                                                      9.2% 146/kswapd0: 0% user + 9.2% kernel
-                                                                                                      8% 16410/adbd: 0.7% user + 7.2% kernel / faults: 2493 minor
-                                                                                                      7.6% 14198/com.example.nutrisaur11: 5.2% user + 2.3% kernel / faults: 7324 minor 23 major
-                                                                                                      6.7% 16680/com.miui.android.fashiongallery: 4.5% user + 2.1% kernel / faults: 7522 minor 1088 major
-                                                                                                      5.4% 11125/com.google.android.inputmethod.latin: 4.3% user + 1% kernel / faults: 3606 minor 1269 major
-                                                                                                      0.4% 1823/media.swcodec: 0.1% user + 0.3% kernel / faults: 11871 minor 114 major
-                                                                                                      4% 1198/surfaceflinger: 2.9% user + 1% kernel / faults: 717 minor 9 major
-                                                                                                      4% 25904/kworker/u16:14: 0% user + 4% kernel / faults: 56 minor
-                                                                                                      3.8% 16368/com.android.settings: 2.3% user + 1.4% kernel / faults: 1811 minor 2 major
-                                                                                                      3.6% 602/logd: 0.7% user + 2.9% kernel / faults: 212 minor 10 major
-                                                                                                      3.2% 27360/kworker/u16:3: 0% user + 3.2% kernel / faults: 46 minor
-                                                                                                      2.3% 603/lmkd: 0% user + 2.3% kernel
-                                                                                                      2.1% 3024/com.android.phone: 1.6% user + 0.5% kernel / faults: 1274 minor 371 major
-                                                                                                      0.1% 1043/media.hwcodec: 0.1% user + 0% kernel / faults: 4070 minor 70 major
-                                                                                                      0.1% 1011/android.hardware.camera.provider@2.4-service_64: 0% user + 0.1% kernel / faults: 48 minor 73 major
-                                                                                                      1.8% 20610/kworker/u16:0: 0% user + 1.8% kernel / faults: 41 minor
-                                                                                                      1.6% 21267/kworker/u16:8: 0% user + 1.6% kernel / faults: 7 minor
-                                                                                                      1.4% 4701/com.miui.powerkeeper: 0.9% user + 0.5% kernel / faults: 2023 minor 130 major
-                                                                                                      1.4% 16483/android.process.acore: 0.7% user + 0.7% kernel / faults: 1930 minor 573 major
-                                                                                                      1.4% 23662/kworker/u16:16: 0% user + 1.4% kernel / faults: 2 minor
-                                                                                                      1.2% 2517/com.google.android.googlequicksearchbox:interactor: 0.1% user + 1% kernel / faults: 1147 minor 909 major
-                                                                                                      1.2% 16148/com.lemon.lvoverseas: 0.5% user + 0.7% kernel / faults: 35 minor 1 major
-                                                                                                      1% 562/ueventd: 1% user + 0% kernel
-                                                                                                      1% 1017/android.hardware.graphics.composer@2.4-service: 0.7% user + 0.3% kernel / faults: 97 minor 24 major
-                                                                                                      1% 1027/android.hardware.wifi@1.0-service: 1% user + 0% kernel / faults: 56 minor 3 major
-                                                                                                      1% 2893/com.android.networkstack.process: 0.7% user + 0.3% kernel / faults: 1083 minor 129 major
-                                                                                                      1% 5245/com.lbe.security.miui: 0.5% user + 0.5% kernel / faults: 1876 minor 73 major
-                                                                                                      0% 9120/media.extractor: 0% user + 0% kernel / faults: 2622 minor 58 major
-                                                                                                      1% 20887/kworker/u17:5: 0% user + 1% kernel
-                                                                                                      1% 28881/com.miui.home: 0.5% user + 0.5% kernel / faults: 393 minor 9 major
-                                                                                                      1% 31074/kworker/u16:2: 0% user + 1% kernel
-                                                                                                      0.9% 28579/com.google.android.gms: 0.7% user + 0.1% kernel / faults: 140 minor 5 major
-                                                                                                      0.9% 30625/kworker/u16:6: 0% user + 0.9% kernel / faults: 22 minor
-                                                                                                      0% 729/tombstoned: 0% user + 0% kernel / faults: 19 minor 44 major
-                                                                                                      0.7% 966/loop30: 0% user + 0.7% kernel
-                                                                                                      0.7% 8342/kworker/u16:15: 0% user + 0.7% kernel
-                                                                                                      0.7% 15895/com.shopee.ph: 0.5% user + 0.1% kernel / faults: 1 minor 3 major
-                                                                                                      0.5% 62/rcuop/6: 0% user + 0.5% kernel
-                                                                                                      0.5% 264/kgsl_worker_thr: 0% user + 0.5% kernel
-                                                                                                      0.5% 604/servicemanager: 0.1% user + 0.3% kernel / faults: 29 minor 10 major
-2025-09-30 15:06:39.438  1522-18276 ActivityManager         pid-1522                             E  ANR in com.example.nutrisaur11
-                                                                                                    PID: 17710
-                                                                                                    Reason: Context.startForegroundService() did not then call Service.startForeground(): ServiceRecord{d2e4b40 u0 com.example.nutrisaur11/.FoodPreloadService}
-                                                                                                    Frozen: false
-                                                                                                    Load: 4.28 / 2.95 / 2.85
-                                                                                                    ----- Output from /proc/pressure/memory -----
-                                                                                                    some avg10=2.14 avg60=1.82 avg300=1.09 total=1103505562
-                                                                                                    full avg10=0.29 avg60=0.26 avg300=0.15 total=273127704
-                                                                                                    ----- End output from /proc/pressure/memory -----
-                                                                                                    
-                                                                                                    CPU usage from 0ms to 10181ms later (2025-09-30 15:06:29.193 to 2025-09-30 15:06:39.375):
-                                                                                                      22% 1522/system_server: 11% user + 10% kernel / faults: 21343 minor 135 major
-                                                                                                      5.5% 1739/media.codec: 3.8% user + 1.6% kernel / faults: 20193 minor 3 major
-                                                                                                      10% 17267/com.facebook.orca: 6.7% user + 3.7% kernel / faults: 2676 minor 2 major
-                                                                                                      3.2% 1823/media.swcodec: 1% user + 2.1% kernel / faults: 11722 minor 2 major
-                                                                                                      8.1% 17710/com.example.nutrisaur11: 4.9% user + 3.2% kernel / faults: 7021 minor 13 major
-                                                                                                      7% 16696/com.facebook.katana: 4.7% user + 2.3% kernel / faults: 1656 minor 20 major
-                                                                                                      6% 16680/com.miui.android.fashiongallery: 2.7% user + 3.2% kernel / faults: 2813 minor 1654 major
-                                                                                                      1.2% 1043/media.hwcodec: 0.8% user + 0.4% kernel / faults: 4020 minor
-                                                                                                      3.6% 31074/kworker/u16:2: 0% user + 3.6% kernel
-                                                                                                      3.5% 20610/kworker/u16:0: 0% user + 3.5% kernel
-                                                                                                      2.9% 11125/com.google.android.inputmethod.latin: 2% user + 0.8% kernel / faults: 2985 minor 6 major
-                                                                                                      2.9% 17784/com.xiaomi.mipicks: 1.4% user + 1.4% kernel / faults: 2302 minor 1346 major
-                                                                                                      2.7% 16148/com.lemon.lvoverseas: 1.3% user + 1.3% kernel / faults: 77 minor 12 major
-                                                                                                      2.4% 27376/kworker/u16:10: 0% user + 2.4% kernel
-                                                                                                      2.3% 1027/android.hardware.wifi@1.0-service: 1.6% user + 0.6% kernel / faults: 102 minor 13 major
-                                                                                                      0.7% 1011/android.hardware.camera.provider@2.4-service_64: 0% user + 0.6% kernel / faults: 45 minor
-                                                                                                      1.9% 3024/com.android.phone: 1.2% user + 0.6% kernel / faults: 254 minor 1 major
-                                                                                                      1.9% 9120/media.extractor: 0.8% user + 1% kernel / faults: 2542 minor
-                                                                                                      1.7% 25904/kworker/u16:14: 0% user + 1.7% kernel
-                                                                                                      1.6% 603/lmkd: 0% user + 1.5% kernel
-                                                                                                      1.5% 17865/com.indus.appstore: 1% user + 0.4% kernel / faults: 1002 minor 13 major
-                                                                                                      1.2% 5670/com.google.android.gms.persistent: 0.9% user + 0.2% kernel / faults: 48 minor 5 major
-                                                                                                      1.2% 28579/com.google.android.gms: 0.3% user + 0.8% kernel / faults: 32 minor 15 major
-                                                                                                      0.9% 146/kswapd0: 0% user + 0.9% kernel
-                                                                                                      0.9% 894/netd: 0% user + 0.9% kernel / faults: 515 minor
-                                                                                                      0.9% 11100/com.android.bluetooth: 0% user + 0.8% kernel / faults: 246 minor 1 major
-                                                                                                      0.9% 21416/com.facebook.services: 0.5% user + 0.3% kernel / faults: 185 minor 74 major
-                                                                                                      0.7% 9/rcu_preempt: 0% user + 0.7% kernel
-                                                                                                      0.7% 1198/surfaceflinger: 0.4% user + 0.2% kernel / faults: 666 minor
-                                                                                                      0.6% 602/logd: 0.2% user + 0.3% kernel / faults: 24 minor 1 major
-                                                                                                      0.6% 15895/com.shopee.ph: 0.5% user + 0% kernel / faults: 2 minor 1 major
-                                                                                                      0.2% 729/tombstoned: 0% user + 0.1% kernel / faults: 5 minor 6 major
-                                                                                                      0.2% 2517/com.google.android.googlequicksearchbox:interactor: 0.1% user + 0.1% kernel / faults: 390 minor 74 major
-                                                                                                      0.5% 10469/cds_ol_rx_threa: 0% user + 0.5% kernel
-                                                                                                      0.1% 10/rcu_sched: 0% user + 0.1% kernel
-                                                                                                      0.1% 1007/android.hardware.audio.service: 0% user + 0.1% kernel / faults: 118 minor 27 major
-                                                                                                      0.4% 1182/audioserver: 0% user + 0.3% kernel / faults: 80 minor
-                                                                                                      0.4% 3836/com.miui.daemon: 0.2% user + 0.1% kernel / faults: 97 minor 2 major
-                                                                                                      0.2% 1/init: 0.1% user + 0.1% kernel / faults: 7 minor 3 major
-                                                                                                      0.3% 86/kcompactd0: 0% user + 0.3% kernel
-                                                                                                      0.3% 893/statsd: 0% user + 0.2% kernel / faults: 188 minor 3 major
-                                                                                                      0.3% 1010/android.hardware.bluetooth@1.0-service-qti: 0% user + 0.3% kernel / faults: 64 minor
-                                                                                                      0.2% 1705/cameraserver: 0% user + 0.2% kernel / faults: 67 minor 2 major
-                                                                                                      0.3% 15719/com.google.android.apps.messaging: 0% user + 0.2% kernel / faults: 369 minor 322 major
-                                                                                                      0.3% 17008/com.google.android.webview:webview_service: 0.1% user + 0.1% kernel / faults: 905 minor 117 major
-                                                                                                      0.2% 12/rcuop/0: 0% user + 0.2% kernel
-2025-09-30 15:07:36.985  1522-19064 ActivityManager         pid-1522                             E  ANR in com.example.nutrisaur11
-                                                                                                    PID: 18918
-                                                                                                    Reason: Context.startForegroundService() did not then call Service.startForeground(): ServiceRecord{cd310fa u0 com.example.nutrisaur11/.FoodPreloadService}
-                                                                                                    Frozen: false
-                                                                                                    Load: 2.38 / 2.66 / 2.75
-                                                                                                    ----- Output from /proc/pressure/memory -----
-                                                                                                    some avg10=0.08 avg60=0.75 avg300=0.91 total=1103806182
-                                                                                                    full avg10=0.00 avg60=0.10 avg300=0.12 total=273205511
-                                                                                                    ----- End output from /proc/pressure/memory -----
-                                                                                                    
-                                                                                                    CPU usage from 0ms to 8224ms later (2025-09-30 15:07:28.707 to 2025-09-30 15:07:36.932):
-                                                                                                      72% 1522/system_server: 40% user + 31% kernel / faults: 17996 minor 421 major
-                                                                                                      34% 3038/com.android.systemui: 25% user + 8.2% kernel / faults: 16219 minor 1369 major
-                                                                                                      22% 1198/surfaceflinger: 15% user + 6.8% kernel / faults: 1801 minor 22 major
-                                                                                                      17% 5670/com.google.android.gms.persistent: 12% user + 5.4% kernel / faults: 6905 minor 463 major
-                                                                                                      15% 146/kswapd0: 0% user + 15% kernel
-                                                                                                      2% 1739/media.codec: 1.4% user + 0.6% kernel / faults: 20190 minor
-                                                                                                      12% 11125/com.google.android.inputmethod.latin: 10% user + 2.5% kernel / faults: 7216 minor 34 major
-                                                                                                      6.7% 11100/com.android.bluetooth: 1.9% user + 4.8% kernel / faults: 6647 minor 760 major
-                                                                                                      6.4% 1017/android.hardware.graphics.composer@2.4-service: 2.9% user + 3.5% kernel / faults: 312 minor 2 major
-                                                                                                      0.9% 1823/media.swcodec: 0.3% user + 0.5% kernel / faults: 11722 minor
-                                                                                                      6% 17267/com.facebook.orca: 4.4% user + 1.5% kernel / faults: 1735 minor 1061 major
-                                                                                                      4.9% 16696/com.facebook.katana: 3.3% user + 1.5% kernel / faults: 1111 minor 20 major
-                                                                                                      3.6% 603/lmkd: 0.4% user + 3.1% kernel
-                                                                                                      3.6% 14896/com.xiaomi.mi_connect_service: 1.6% user + 1.9% kernel / faults: 3509 minor 993 major
-                                                                                                      3.5% 18918/com.example.nutrisaur11: 2.9% user + 0.6% kernel / faults: 2467 minor
-                                                                                                      0.4% 21267/kworker/u16:8: 0% user + 0.4% kernel
-                                                                                                      2.6% 27360/kworker/u16:3: 0% user + 2.6% kernel
-                                                                                                      2.4% 98/system: 0% user + 2.4% kernel
-                                                                                                      2.4% 257/crtc_commit:108: 0% user + 2.4% kernel
-                                                                                                      2.4% 602/logd: 1.2% user + 1.2% kernel / faults: 252 minor 2 major
-                                                                                                      0.3% 1043/media.hwcodec: 0.2% user + 0% kernel / faults: 4020 minor
-                                                                                                      0.3% 2517/com.google.android.googlequicksearchbox:interactor: 0.1% user + 0.1% kernel / faults: 1301 minor 564 major
-                                                                                                      0.3% 16206/com.lemon.lvoverseas:push: 0.1% user + 0.1% kernel / faults: 2239 minor 271 major
-                                                                                                      2.1% 1/init: 0.3% user + 1.8% kernel / faults: 8 minor 11 major
-                                                                                                      2% 1182/audioserver: 1.2% user + 0.8% kernel / faults: 363 minor 40 major
-                                                                                                      0.3% 86/kcompactd0: 0% user + 0.3% kernel
-                                                                                                      1.9% 3024/com.android.phone: 1.2% user + 0.7% kernel / faults: 616 minor 25 major
-                                                                                                      1.9% 16148/com.lemon.lvoverseas: 0.8% user + 1% kernel / faults: 97 minor 12 major
-                                                                                                      1.8% 4701/com.miui.powerkeeper: 1% user + 0.7% kernel / faults: 280 minor 5 major
-                                                                                                      1.6% 28881/com.miui.home: 1.2% user + 0.4% kernel / faults: 1374 minor 46 major
-                                                                                                      1.5% 506/irq/246-goodix_: 0% user + 1.5% kernel
-                                                                                                      1.5% 966/loop30: 0% user + 1.5% kernel
-                                                                                                      1.5% 1033/vendor.qti.hardware.display.allocator-service: 0.2% user + 1.3% kernel
-                                                                                                      1.5% 8342/kworker/u16:15: 0% user + 1.5% kernel
-                                                                                                      1.5% 25904/kworker/u16:14: 0% user + 1.5% kernel
-                                                                                                      1.5% 27376/kworker/u16:10: 0% user + 1.5% kernel
-                                                                                                      0.2% 9120/media.extractor: 0% user + 0.1% kernel / faults: 2542 minor
-                                                                                                      0% 25903/kworker/u16:11: 0% user + 0% kernel
-                                                                                                      1.3% 893/statsd: 0.8% user + 0.4% kernel / faults: 157 minor 1 major
-                                                                                                      1.3% 1027/android.hardware.wifi@1.0-service: 0.8% user + 0.4% kernel / faults: 85 minor 18 major
-                                                                                                      1.3% 20610/kworker/u16:0: 0% user + 1.3% kernel
-                                                                                                      1.3% 28579/com.google.android.gms: 0.9% user + 0.3% kernel / faults: 193 minor 38 major
-                                                                                                      1.3% 30625/kworker/u16:6: 0% user + 1.3% kernel
-                                                                                                      1.2% 895/zygote64: 0% user + 1.2% kernel / faults: 180 minor
-                                                                                                      0.1% 1011/android.hardware.camera.provider@2.4-service_64: 0% user + 0.1% kernel / faults: 40 minor
-                                                                                                      0.9% 264/kgsl_worker_thr: 0% user + 0.9% kernel
-                                                                                                      0.9% 604/servicemanager: 0.4% user + 0.4% kernel / faults: 3 minor
-2025-09-30 15:08:37.509  1522-20554 ActivityManager         pid-1522                             E  ANR in com.example.nutrisaur11
-                                                                                                    PID: 20248
-                                                                                                    Reason: Context.startForegroundService() did not then call Service.startForeground(): ServiceRecord{cb2483f u0 com.example.nutrisaur11/.FoodPreloadService}
-                                                                                                    Frozen: false
-                                                                                                    Load: 1.66 / 2.43 / 2.67
-                                                                                                    ----- Output from /proc/pressure/memory -----
-                                                                                                    some avg10=0.26 avg60=0.79 avg300=0.93 total=1104738186
-                                                                                                    full avg10=0.00 avg60=0.15 avg300=0.14 total=273501717
-                                                                                                    ----- End output from /proc/pressure/memory -----
-                                                                                                    
-                                                                                                    CPU usage from 0ms to 7198ms later (2025-09-30 15:08:30.264 to 2025-09-30 15:08:37.462):
-                                                                                                      35% 1522/system_server: 15% user + 20% kernel / faults: 5600 minor 223 major
-                                                                                                      2.9% 1739/media.codec: 1.9% user + 1% kernel / faults: 20496 minor 27 major
-                                                                                                      12% 20526/com.android.camera: 8.3% user + 4.4% kernel / faults: 14724 minor 1343 major
-                                                                                                      8.2% 11125/com.google.android.inputmethod.latin: 5.2% user + 2.9% kernel / faults: 4500 minor 56 major
-                                                                                                      6.9% 20248/com.example.nutrisaur11: 4.7% user + 2.2% kernel / faults: 3787 minor 7 major
-                                                                                                      5% 1198/surfaceflinger: 3% user + 1.9% kernel / faults: 1162 minor 8 major
-                                                                                                      4.4% 3038/com.android.systemui: 2.3% user + 2% kernel / faults: 1812 minor 30 major
-                                                                                                      0.5% 1043/media.hwcodec: 0.4% user + 0% kernel / faults: 4092 minor 22 major
-                                                                                                      4% 3024/com.android.phone: 2.6% user + 1.3% kernel / faults: 1233 minor 82 major
-                                                                                                      4% 5670/com.google.android.gms.persistent: 3.2% user + 0.8% kernel / faults: 2981 minor 11 major
-                                                                                                      3.6% 21267/kworker/u16:8: 0% user + 3.6% kernel
-                                                                                                      0.3% 1823/media.swcodec: 0.2% user + 0.1% kernel / faults: 11960 minor 7 major
-                                                                                                      2.9% 27360/kworker/u16:3: 0% user + 2.9% kernel
-                                                                                                      2.6% 603/lmkd: 0.5% user + 2% kernel
-                                                                                                      0.3% 2517/com.google.android.googlequicksearchbox:interactor: 0.1% user + 0.1% kernel / faults: 1917 minor 300 major
-                                                                                                      2.3% 25904/kworker/u16:14: 0% user + 2.3% kernel
-                                                                                                      2% 16148/com.lemon.lvoverseas: 1.2% user + 0.8% kernel / faults: 160 minor 16 major
-                                                                                                      1.5% 1017/android.hardware.graphics.composer@2.4-service: 0.5% user + 0.9% kernel / faults: 246 minor
-                                                                                                      1.5% 1027/android.hardware.wifi@1.0-service: 0.9% user + 0.5% kernel / faults: 162 minor 7 major
-                                                                                                      1.3% 602/logd: 0.2% user + 1.1% kernel / faults: 152 minor 11 major
-                                                                                                      1.3% 19691/com.google.android.gm: 0.5% user + 0.8% kernel / faults: 198 minor
-                                                                                                      1.3% 20190/kworker/u16:9: 0% user + 1.3% kernel
-                                                                                                      1.1% 1011/android.hardware.camera.provider@2.4-service_64: 0% user + 1.1% kernel / faults: 67 minor
-                                                                                                      1.1% 11100/com.android.bluetooth: 0% user + 1.1% kernel / faults: 438 minor 326 major
-                                                                                                      1.1% 20971/com.miui.msa.global: 0.6% user + 0.4% kernel / faults: 1579 minor 250 major
-                                                                                                      0.9% 1024/android.hardware.sensors@1.0-service: 0.5% user + 0.4% kernel / faults: 260 minor 6 major
-                                                                                                      0.9% 17267/com.facebook.orca: 0.2% user + 0.6% kernel / faults: 267 minor 351 major
-                                                                                                      0.8% 895/zygote64: 0% user + 0.8% kernel / faults: 72 minor
-                                                                                                      0.6% 893/statsd: 0.4% user + 0.2% kernel / faults: 210 minor
-                                                                                                      0% 9120/media.extractor: 0% user + 0% kernel / faults: 2655 minor
-                                                                                                      0.6% 15895/com.shopee.ph: 0.6% user + 0% kernel / faults: 28 minor 3 major
-                                                                                                      0.6% 28881/com.miui.home: 0.6% user + 0% kernel / faults: 278 minor 99 major
-                                                                                                      0.6% 30625/kworker/u16:6: 0% user + 0.6% kernel
-                                                                                                      0.5% 9/rcu_preempt: 0% user + 0.5% kernel
-                                                                                                      0% 729/tombstoned: 0% user + 0% kernel / faults: 42 minor 3 major
-                                                                                                      0.5% 894/netd: 0.1% user + 0.4% kernel / faults: 68 minor 8 major
-                                                                                                      0.5% 28579/com.google.android.gms: 0.5% user + 0% kernel / faults: 60 minor 9 major
-                                                                                                      0.4% 1/init: 0.2% user + 0.1% kernel / faults: 10 minor 3 major
-                                                                                                      0.4% 257/crtc_commit:108: 0% user + 0.4% kernel
-                                                                                                      0.4% 1033/vendor.qti.hardware.display.allocator-service: 0% user + 0.4% kernel
-                                                                                                      0.4% 1182/audioserver: 0.2% user + 0.1% kernel / faults: 101 minor 1 major
-                                                                                                      0% 1721/mediaserver: 0% user + 0% kernel / faults: 95 minor 2 major
-                                                                                                      0.4% 4257/com.miui.securitycenter.remote: 0.1% user + 0.2% kernel / faults: 157 minor 27 major
-                                                                                                      0.4% 16696/com.facebook.katana: 0.4% user + 0% kernel / faults: 137 minor 127 major
-2025-09-30 15:08:37.509  1522-20554 ActivityManager         pid-1522                             E    0.1% 13515/com.google.android.apps.restore: 0.1% user + 0% kernel / faults: 20 minor 4 major
-                                                                                                      0.1% 15884/com.lemon.lvoverseas:smp: 0.1% user + 0% kernel / faults: 6 minor 2 major
-                                                                                                      0% 16192/com.qualcomm.telephony: 0% user + 0% kernel / faults: 4 minor 1 major
-                                                                                                      0.1% 16206/com.lemon.lvoverseas:push: 0% user + 0.1% kernel / faults: 29 minor 57 major
-                                                                                                      0.1% 18746/com.miui.cloudservice: 0% user + 0.1% kernel / faults: 206 minor 286 major
-                                                                                                      0.1% 20030/com.google.android.apps.messaging: 0% user + 0.1% kernel / faults: 7 minor
-                                                                                                      0.1% 20123/com.miui.weather2: 0% user + 0.1% kernel / faults: 120 minor 164 major
-                                                                                                      0.1% 20165/kworker/7:2: 0.1% user + 0% kernel
-                                                                                                      0.1% 20174/com.android.settings: 0% user + 0.1% kernel / faults: 135 minor 83 major
-                                                                                                      0.1% 20189/kworker/u16:4: 0% user + 0.1% kernel
-                                                                                                      0% 21080/com.xiaomi.account: 0% user + 0% kernel / faults: 59 minor 5 major
-                                                                                                      0.1% 21416/com.facebook.services: 0.1% user + 0% kernel / faults: 43 minor 50 major
-                                                                                                      0.1% 23536/com.google.android.ext.services: 0.1% user + 0% kernel / faults: 40 minor 13 major
-                                                                                                      0.1% 25903/kworker/u16:11: 0% user + 0.1% kernel
-                                                                                                      0% 26177/com.google.android.tts: 0% user + 0% kernel / faults: 92 minor 276 major
-                                                                                                      0.1% 26199/kworker/0:3: 0% user + 0.1% kernel
-                                                                                                     +0% 20579/com.android.htmlviewer:remote: 0% user + 0% kernel
-                                                                                                     +0% 20722/com.google.android.setupwizard: 0% user + 0% kernel
-                                                                                                     +0% 20759/crash_dump64: 0% user + 0% kernel
-                                                                                                     +0% 20761/com.example.nutrisaur11: 0% user + 0% kernel
-                                                                                                    24% TOTAL: 11% user + 11% kernel + 0.4% iowait + 0.7% irq + 0.5% softirq
-                                                                                                    CPU usage from 109ms to 545ms later (2025-09-30 15:08:30.373 to 2025-09-30 15:08:30.809):
-                                                                                                      83% 1522/system_server: 15% user + 67% kernel / faults: 1187 minor 89 major
-                                                                                                        46% 20554/AnrConsumer: 13% user + 33% kernel
-                                                                                                        23% 2520/CachedAppOptimi: 0% user + 23% kernel
-                                                                                                        7.8% 1543/android.bg: 2.6% user + 5.2% kernel
-                                                                                                        5.2% 3265/Binder:1522_A: 2.6% user + 2.6% kernel
-                                                                                                        2.6% 2513/SensorService: 0% user + 2.6% kernel
-                                                                                                        2.6% 3899/Binder:1522_10: 0% user + 2.6% kernel
-                                                                                                        2.6% 4388/Binder:1522_15: 2.6% user + 0% kernel
-                                                                                                      65% 20526/com.android.camera: 29% user + 36% kernel / faults: 8810 minor 11 major
-                                                                                                        51% 20526/.android.camera: 18% user + 32% kernel
-                                                                                                        10% 20550/RxCachedThreadS: 10% user + 0% kernel
-                                                                                                       +0% 20570/.android.camera: 0% user + 0% kernel
-                                                                                                       +0% 20571/.android.camera: 0% user + 0% kernel
-                                                                                                       +0% 20572/.android.camera: 0% user + 0% kernel
-                                                                                                       +0% 20573/.android.camera: 0% user + 0% kernel
-                                                                                                       +0% 20574/.android.camera: 0% user + 0% kernel
-                                                                                                      17% 19197/com.miui.mishare.connectivity:ui: 0% user + 17% kernel / faults: 8 minor
-                                                                                                        13% 19205/ReferenceQueueD: 0% user + 13% kernel
-                                                                                                      4.8% 603/lmkd: 0% user + 4.8% kernel
-                                                                                                        4.8% 603/lmkd: 0% user + 4.8% kernel
-                                                                                                      2.3% 70/rcuop/7: 0% user + 2.3% kernel
-                                                                                                      2.4% 602/logd: 2.4% user + 0% kernel / faults: 6 minor 5 major
-                                                                                                      2.5% 1024/android.hardware.sensors@1.0-service: 2.5% user + 0% kernel / faults: 6 minor
-                                                                                                      2.5% 1182/audioserver: 2.5% user + 0% kernel
-                                                                                                      2.9% 3908/irq/84-90b6300.: 0% user + 2.9% kernel
-                                                                                                      3.6% 20190/kworker/u16:9: 0% user + 3.6% kernel
-                                                                                                    28% TOTAL: 12% user + 13% kernel + 1.1% iowait + 0.5% irq + 0.2% softirq
-2025-09-30 15:08:43.621 20248-20248 AndroidRuntime          pid-20248                            E  FATAL EXCEPTION: main
-                                                                                                    Process: com.example.nutrisaur11, PID: 20248
-                                                                                                    android.app.ForegroundServiceDidNotStartInTimeException: Context.startForegroundService() did not then call Service.startForeground(): ServiceRecord{cb2483f u0 com.example.nutrisaur11/.FoodPreloadService}
-                                                                                                    	at android.app.ActivityThread.throwRemoteServiceException(ActivityThread.java:1973)
-                                                                                                    	at android.app.ActivityThread.access$2800(ActivityThread.java:265)
-                                                                                                    	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2198)
-                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:106)
-                                                                                                    	at android.os.Looper.loopOnce(Looper.java:210)
-                                                                                                    	at android.os.Looper.loop(Looper.java:299)
-                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:8168)
-                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
-                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
-                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1037)
-2025-09-30 15:09:50.962  1522-24199 ActivityManager         pid-1522                             E  ANR in com.example.nutrisaur11 (com.example.nutrisaur11/.FoodActivity)
-                                                                                                    PID: 23068
-                                                                                                    Reason: Input dispatching timed out (591acf0 com.example.nutrisaur11/com.example.nutrisaur11.FoodActivity (server) is not responding. Waited 5001ms for MotionEvent(action=MOVE))
-                                                                                                    Parent: com.example.nutrisaur11/.FoodActivity
-                                                                                                    Frozen: false
-                                                                                                    Load: 4.07 / 2.92 / 2.82
-                                                                                                    ----- Output from /proc/pressure/memory -----
-                                                                                                    some avg10=2.46 avg60=2.57 avg300=1.44 total=1107388153
-                                                                                                    full avg10=0.43 avg60=0.39 avg300=0.21 total=274051616
-                                                                                                    ----- End output from /proc/pressure/memory -----
-                                                                                                    
-                                                                                                    CPU usage from 0ms to 11658ms later (2025-09-30 15:09:39.245 to 2025-09-30 15:09:50.902):
-                                                                                                      31% 1522/system_server: 17% user + 14% kernel / faults: 14652 minor 148 major
-                                                                                                      21% 23068/com.example.nutrisaur11: 16% user + 5.2% kernel / faults: 16179 minor 74 major
-                                                                                                      15% 16148/com.lemon.lvoverseas: 6.9% user + 8.4% kernel / faults: 7575 minor 695 major
-                                                                                                      15% 1739/media.codec: 9.6% user + 5.5% kernel / faults: 20197 minor 13 major
-                                                                                                      9.7% 22895/android.process.media: 4.3% user + 5.3% kernel / faults: 1799 minor 1 major
-                                                                                                      6.9% 1198/surfaceflinger: 4% user + 2.9% kernel / faults: 1223 minor 9 major
-                                                                                                      5.7% 10469/cds_ol_rx_threa: 0% user + 5.7% kernel
-                                                                                                      5.5% 1823/media.swcodec: 2.3% user + 3.2% kernel / faults: 11720 minor 11 major
-                                                                                                      5.5% 23566/com.miui.android.fashiongallery: 2.7% user + 2.8% kernel / faults: 1930 minor 13 major
-                                                                                                      3.7% 22594/kworker/u16:13: 0% user + 3.7% kernel
-                                                                                                      3.5% 1017/android.hardware.graphics.composer@2.4-service: 1% user + 2.4% kernel / faults: 286 minor 5 major
-                                                                                                      3.1% 1043/media.hwcodec: 2.5% user + 0.6% kernel / faults: 4024 minor 4 major
-                                                                                                      3.1% 32711/kworker/u16:1: 0% user + 3.1% kernel
-                                                                                                      3% 603/lmkd: 0.3% user + 2.7% kernel
-                                                                                                      2.6% 146/kswapd0: 0% user + 2.6% kernel
-                                                                                                      2.2% 25904/kworker/u16:14: 0% user + 2.2% kernel
-                                                                                                      2.1% 11125/com.google.android.inputmethod.latin: 1.4% user + 0.6% kernel / faults: 2884 minor 106 major
-                                                                                                      2% 22636/com.google.android.apps.messaging: 1% user + 1% kernel / faults: 1909 minor 1672 major
-                                                                                                      1.9% 27360/kworker/u16:3: 0% user + 1.9% kernel
-                                                                                                      1.8% 22595/kworker/u16:17: 0% user + 1.8% kernel
-                                                                                                      1.7% 257/crtc_commit:108: 0% user + 1.7% kernel
-                                                                                                      1.5% 21267/kworker/u16:8: 0% user + 1.5% kernel
-                                                                                                      1.4% 9120/media.extractor: 0.7% user + 0.6% kernel / faults: 2546 minor 1 major
-                                                                                                      1.3% 1/init: 0.2% user + 1.1% kernel
-                                                                                                      1.3% 506/irq/246-goodix_: 0% user + 1.3% kernel
-                                                                                                      0.2% 1011/android.hardware.camera.provider@2.4-service_64: 0% user + 0.1% kernel / faults: 41 minor 18 major
-                                                                                                      1.2% 3024/com.android.phone: 0.7% user + 0.4% kernel / faults: 738 minor 47 major
-                                                                                                      1.2% 21753/com.instagram.android: 0.6% user + 0.6% kernel / faults: 139 minor 3 major
-                                                                                                      1.1% 602/logd: 0.3% user + 0.7% kernel / faults: 2066 minor 57 major
-                                                                                                      1.1% 5670/com.google.android.gms.persistent: 0.5% user + 0.6% kernel / faults: 107 minor 18 major
-                                                                                                      1% 2517/com.google.android.googlequicksearchbox:interactor: 0.6% user + 0.4% kernel / faults: 577 minor 299 major
-                                                                                                      1% 23475/com.xiaomi.mipicks: 0.6% user + 0.4% kernel / faults: 390 minor 250 major
-                                                                                                      0.8% 11100/com.android.bluetooth: 0% user + 0.8% kernel / faults: 193 minor
-                                                                                                      0.7% 9/rcu_preempt: 0% user + 0.7% kernel
-                                                                                                      0.6% 894/netd: 0.2% user + 0.4% kernel / faults: 282 minor 3 major
-                                                                                                      0.6% 1036/vendor.qti.hardware.perf@2.2-service: 0.1% user + 0.5% kernel / faults: 48 minor
-                                                                                                      0.6% 893/statsd: 0.3% user + 0.2% kernel / faults: 171 minor 2 major
-                                                                                                      0.6% 1027/android.hardware.wifi@1.0-service: 0.4% user + 0.1% kernel / faults: 26 minor 19 major
-                                                                                                      0.6% 1182/audioserver: 0.1% user + 0.4% kernel / faults: 70 minor
-                                                                                                      0.4% 264/kgsl_worker_thr: 0% user + 0.4% kernel
-                                                                                                      0% 729/tombstoned: 0% user + 0% kernel / faults: 10 minor 27 major
-                                                                                                      0.4% 3038/com.android.systemui: 0.3% user + 0% kernel / faults: 16 minor
-                                                                                                      0.4% 3836/com.miui.daemon: 0.1% user + 0.2% kernel / faults: 107 minor 6 major
-                                                                                                      0.3% 10/rcu_sched: 0% user + 0.3% kernel
-                                                                                                      0.3% 12/rcuop/0: 0% user + 0.3% kernel
-                                                                                                      0.3% 86/kcompactd0: 0% user + 0.3% kernel
-2025-09-30 15:11:37.951  1522-26919 ActivityManager         system_server                        E  ANR in com.example.nutrisaur11 (com.example.nutrisaur11/.FoodActivity)
-                                                                                                    PID: 25509
-                                                                                                    Reason: Input dispatching timed out (7db18d6 com.example.nutrisaur11/com.example.nutrisaur11.FoodActivity (server) is not responding. Waited 5001ms for MotionEvent(action=MOVE))
-                                                                                                    Parent: com.example.nutrisaur11/.FoodActivity
-                                                                                                    Frozen: false
-                                                                                                    Load: 8.07 / 4.45 / 3.36
-                                                                                                    ----- Output from /proc/pressure/memory -----
-                                                                                                    some avg10=2.16 avg60=3.49 avg300=1.97 total=1110972856
-                                                                                                    full avg10=0.13 avg60=0.31 avg300=0.23 total=274718885
-                                                                                                    ----- End output from /proc/pressure/memory -----
-                                                                                                    
-                                                                                                    CPU usage from 0ms to 21254ms later (2025-09-30 15:11:16.587 to 2025-09-30 15:11:37.840):
-                                                                                                      24% 1522/system_server: 11% user + 12% kernel / faults: 7843 minor 532 major
-                                                                                                      12% 1198/surfaceflinger: 8.7% user + 3.3% kernel / faults: 1350 minor 3 major
-                                                                                                      10% 25509/com.example.nutrisaur11: 5.2% user + 4.8% kernel / faults: 10878 minor 27 major
-                                                                                                      7.1% 3038/com.android.systemui: 5.6% user + 1.4% kernel / faults: 1573 minor 96 major
-                                                                                                      6.8% 1739/media.codec: 4.2% user + 2.5% kernel / faults: 20307 minor 216 major
-                                                                                                      5.9% 15895/com.shopee.ph: 2.4% user + 3.4% kernel / faults: 12146 minor 5051 major
-                                                                                                      4% 1017/android.hardware.graphics.composer@2.4-service: 2.2% user + 1.8% kernel / faults: 322 minor 26 major
-                                                                                                      3.6% 16148/com.lemon.lvoverseas: 1.4% user + 2.2% kernel / faults: 1144 minor 63 major
-                                                                                                      3.1% 27376/kworker/u16:10: 0% user + 3.1% kernel
-                                                                                                      2.9% 602/logd: 1.9% user + 0.9% kernel / faults: 18411 minor 125 major
-                                                                                                      2.3% 25903/kworker/u16:11: 0% user + 2.3% kernel
-                                                                                                      2.1% 603/lmkd: 0% user + 2% kernel
-                                                                                                      2% 1823/media.swcodec: 0.8% user + 1.1% kernel / faults: 11859 minor 87 major
-                                                                                                      1.9% 21267/kworker/u16:8: 0% user + 1.9% kernel
-                                                                                                      1.8% 257/crtc_commit:108: 0% user + 1.8% kernel
-                                                                                                      1.6% 11125/com.google.android.inputmethod.latin: 0.9% user + 0.6% kernel / faults: 3728 minor 248 major
-                                                                                                      1.5% 25945/com.facebook.katana: 0.8% user + 0.7% kernel / faults: 3682 minor 1350 major
-                                                                                                      1.5% 32711/kworker/u16:1: 0% user + 1.5% kernel
-                                                                                                      1.5% 506/irq/246-goodix_: 0% user + 1.5% kernel
-                                                                                                      1.5% 22595/kworker/u16:17: 0% user + 1.5% kernel
-                                                                                                      1.4% 1/init: 0.5% user + 0.8% kernel / faults: 9 minor 5 major
-                                                                                                      1.3% 20612/kworker/u16:12: 0% user + 1.3% kernel
-                                                                                                      1.2% 21753/com.instagram.android: 0.7% user + 0.4% kernel / faults: 257 minor 1 major
-                                                                                                      1.1% 1043/media.hwcodec: 0.6% user + 0.4% kernel / faults: 4065 minor 50 major
-                                                                                                      1% 3024/com.android.phone: 0.6% user + 0.4% kernel / faults: 912 minor 231 major
-                                                                                                      0.1% 1011/android.hardware.camera.provider@2.4-service_64: 0% user + 0.1% kernel / faults: 43 minor 24 major
-                                                                                                      0.9% 1027/android.hardware.wifi@1.0-service: 0.5% user + 0.3% kernel / faults: 131 minor 26 major
-                                                                                                      0.7% 1036/vendor.qti.hardware.perf@2.2-service: 0.3% user + 0.4% kernel / faults: 111 minor
-                                                                                                      0.1% 9120/media.extractor: 0% user + 0% kernel / faults: 2612 minor 54 major
-                                                                                                      0.6% 9/rcu_preempt: 0% user + 0.6% kernel
-                                                                                                      0.6% 264/kgsl_worker_thr: 0% user + 0.6% kernel
-                                                                                                      0.6% 27360/kworker/u16:3: 0% user + 0.6% kernel
-                                                                                                      0.6% 3836/com.miui.daemon: 0.2% user + 0.3% kernel / faults: 370 minor 59 major
-                                                                                                      0.6% 26577/android.process.acore: 0.1% user + 0.4% kernel / faults: 2324 minor 786 major
-                                                                                                      0.5% 98/system: 0% user + 0.5% kernel
-                                                                                                      0.5% 966/loop30: 0% user + 0.5% kernel
-                                                                                                      0.5% 2517/com.google.android.googlequicksearchbox:interactor: 0.3% user + 0.2% kernel / faults: 566 minor 124 major
-                                                                                                      0.5% 11100/com.android.bluetooth: 0% user + 0.5% kernel / faults: 255 minor 28 major
-                                                                                                      0.5% 893/statsd: 0.2% user + 0.2% kernel / faults: 148 minor 11 major
-                                                                                                      0.5% 26604/com.facebook.katana:pretosproc: 0.4% user + 0% kernel / faults: 913 minor
-                                                                                                      0.4% 1024/android.hardware.sensors@1.0-service: 0.2% user + 0.2% kernel / faults: 278 minor 10 major
-                                                                                                      0.4% 5670/com.google.android.gms.persistent: 0% user + 0.3% kernel / faults: 24 minor 5 major
-                                                                                                      0.4% 26635/com.android.camera: 0.2% user + 0.1% kernel / faults: 2323 minor 252 major
-                                                                                                      0.4% 28881/com.miui.home: 0.1% user + 0.2% kernel / faults: 24 minor 21 major
-2025-09-30 15:11:37.951  1522-26919 ActivityManager         system_server                        E    0% 10467/scheduler_threa: 0% user + 0% kernel
-                                                                                                      0% 16206/com.lemon.lvoverseas:push: 0% user + 0% kernel / faults: 2 minor 4 major
-                                                                                                      0% 18533/com.miui.mishare.connectivity: 0% user + 0% kernel / faults: 3 minor 3 major
-                                                                                                      0% 21080/com.xiaomi.account: 0% user + 0% kernel / faults: 7 minor 2 major
-                                                                                                      0% 21376/com.android.vending: 0% user + 0% kernel / faults: 26 minor 22 major
-                                                                                                      0% 26364/com.miui.screenrecorder: 0% user + 0% kernel / faults: 68 minor 46 major
-                                                                                                      0% 26506/com.milink.service: 0% user + 0% kernel / faults: 29 minor
-                                                                                                      0% 28017/kworker/2:1H: 0% user + 0% kernel
-                                                                                                      0% 28579/com.google.android.gms: 0% user + 0% kernel / faults: 6 minor
-                                                                                                      0% 30625/kworker/u16:6: 0% user + 0% kernel
-                                                                                                      0% 31385/kworker/4:2: 0% user + 0% kernel
-                                                                                                    19% TOTAL: 8.2% user + 9% kernel + 0.6% iowait + 0.8% irq + 0.5% softirq
-                                                                                                    CPU usage from 129ms to 584ms later (2025-09-30 15:11:16.715 to 2025-09-30 15:11:17.171):
-                                                                                                      122% 1522/system_server: 69% user + 53% kernel / faults: 3673 minor 1 major
-                                                                                                        58% 1537/HeapTaskDaemon: 53% user + 5.1% kernel
-                                                                                                        48% 26919/AnrConsumer: 7.6% user + 40% kernel
-                                                                                                        10% 1539/FinalizerDaemon: 2.5% user + 7.6% kernel
-                                                                                                        5.1% 1538/ReferenceQueueD: 5.1% user + 0% kernel
-                                                                                                      14% 25509/com.example.nutrisaur11: 14% user + 0% kernel / faults: 276 minor
-                                                                                                        14% 25570/Jit thread pool: 14% user + 0% kernel
-                                                                                                        3.5% 26855/OkHttp TaskRunn: 3.5% user + 0% kernel
-                                                                                                      6.3% 16148/com.lemon.lvoverseas: 3.1% user + 3.1% kernel / faults: 2 minor
-                                                                                                      2.4% 1027/android.hardware.wifi@1.0-service: 0% user + 2.4% kernel / faults: 10 minor
-                                                                                                      3.1% 15895/com.shopee.ph: 3.1% user + 0% kernel
-                                                                                                      3.3% 21376/com.android.vending: 3.3% user + 0% kernel
-                                                                                                      3.3% 22595/kworker/u16:17: 0% user + 3.3% kernel
-                                                                                                      3.5% 25945/com.facebook.katana: 0% user + 3.5% kernel / faults: 43 minor 54 major
-                                                                                                       +0% 26921/Binder:25945_5: 0% user + 0% kernel
-                                                                                                      3.6% 27360/kworker/u16:3: 0% user + 3.6% kernel
-                                                                                                    19% TOTAL: 10% user + 8.4% kernel + 0.2% irq + 0.2% softirq
-2025-09-30 15:14:22.069  1522-29610 ActivityManager         system_server                        E  ANR in com.example.nutrisaur11 (com.example.nutrisaur11/.FoodActivity)
-                                                                                                    PID: 29085
-                                                                                                    Reason: Input dispatching timed out (d5bad5f com.example.nutrisaur11/com.example.nutrisaur11.FoodActivity (server) is not responding. Waited 5000ms for FocusEvent(hasFocus=false))
-                                                                                                    Parent: com.example.nutrisaur11/.FoodActivity
-                                                                                                    Frozen: false
-                                                                                                    Load: 5.26 / 4.35 / 3.47
-                                                                                                    ----- Output from /proc/pressure/memory -----
-                                                                                                    some avg10=0.83 avg60=0.77 avg300=1.35 total=1112621225
-                                                                                                    full avg10=0.06 avg60=0.06 avg300=0.14 total=275183820
-                                                                                                    ----- End output from /proc/pressure/memory -----
-                                                                                                    
-                                                                                                    CPU usage from 0ms to 10035ms later (2025-09-30 15:14:11.919 to 2025-09-30 15:14:21.954):
-                                                                                                      27% 1522/system_server: 11% user + 15% kernel / faults: 5407 minor 81 major
-                                                                                                      0.9% 1739/media.codec: 0.6% user + 0.3% kernel / faults: 19350 minor 5 major
-                                                                                                      12% 29085/com.example.nutrisaur11: 7.9% user + 4.2% kernel / faults: 10588 minor 90 major
-                                                                                                      0.7% 1823/media.swcodec: 0.2% user + 0.4% kernel / faults: 11374 minor 3 major
-                                                                                                      4.3% 3038/com.android.systemui: 2.4% user + 1.8% kernel / faults: 1508 minor 233 major
-                                                                                                      3.9% 11125/com.google.android.inputmethod.latin: 3% user + 0.8% kernel / faults: 2609 minor 28 major
-                                                                                                      3.3% 146/kswapd0: 0% user + 3.3% kernel
-                                                                                                      3.2% 30625/kworker/u16:6: 0% user + 3.2% kernel
-                                                                                                      2.8% 1043/media.hwcodec: 2.1% user + 0.6% kernel / faults: 4027 minor
-                                                                                                      2.6% 20189/kworker/u16:4: 0% user + 2.6% kernel
-                                                                                                      2.4% 603/lmkd: 0% user + 2.4% kernel
-                                                                                                      2.4% 3836/com.miui.daemon: 1.1% user + 1.2% kernel / faults: 2141 minor 151 major
-                                                                                                      2.3% 16148/com.lemon.lvoverseas: 1.2% user + 1% kernel / faults: 81 minor 3 major
-                                                                                                      2.1% 1198/surfaceflinger: 1.3% user + 0.7% kernel / faults: 60 minor
-                                                                                                      2.1% 22594/kworker/u16:13: 0% user + 2.1% kernel
-                                                                                                      2% 3024/com.android.phone: 1.1% user + 0.8% kernel / faults: 1082 minor 64 major
-                                                                                                      2% 22595/kworker/u16:17: 0% user + 2% kernel
-                                                                                                      0.1% 1011/android.hardware.camera.provider@2.4-service_64: 0% user + 0.1% kernel / faults: 43 minor 2 major
-                                                                                                      1.6% 25903/kworker/u16:11: 0% user + 1.6% kernel
-                                                                                                      1.4% 1027/android.hardware.wifi@1.0-service: 0.8% user + 0.5% kernel / faults: 156 minor 10 major
-                                                                                                      1.4% 2517/com.google.android.googlequicksearchbox:interactor: 0.8% user + 0.5% kernel / faults: 635 minor 89 major
-                                                                                                      1.3% 9120/media.extractor: 0.6% user + 0.6% kernel / faults: 2543 minor 1 major
-                                                                                                      1.3% 27360/kworker/u16:3: 0% user + 1.3% kernel
-                                                                                                      1.2% 11100/com.android.bluetooth: 0% user + 1.2% kernel / faults: 262 minor
-                                                                                                      1.2% 21753/com.instagram.android: 0.3% user + 0.8% kernel / faults: 176 minor 77 major
-                                                                                                      1.1% 27376/kworker/u16:10: 0% user + 1.1% kernel
-                                                                                                      1% 8342/kworker/u16:15: 0% user + 1% kernel
-                                                                                                      0.8% 602/logd: 0.3% user + 0.4% kernel / faults: 32 minor 2 major
-                                                                                                      0.7% 9/rcu_preempt: 0% user + 0.7% kernel
-                                                                                                      0.7% 1017/android.hardware.graphics.composer@2.4-service: 0% user + 0.6% kernel / faults: 48 minor
-                                                                                                      0.6% 21267/kworker/u16:8: 0% user + 0.6% kernel
-                                                                                                      0% 729/tombstoned: 0% user + 0% kernel / faults: 3 minor 1 major
-                                                                                                      0.5% 895/zygote64: 0% user + 0.5% kernel / faults: 72 minor
-                                                                                                      0.4% 1024/android.hardware.sensors@1.0-service: 0% user + 0.4% kernel / faults: 230 minor
-                                                                                                      0.4% 1182/audioserver: 0% user + 0.4% kernel / faults: 85 minor
-                                                                                                      0.3% 1/init: 0% user + 0.2% kernel
-                                                                                                      0.3% 12/rcuop/0: 0% user + 0.3% kernel
-                                                                                                      0.3% 86/kcompactd0: 0% user + 0.3% kernel
-                                                                                                      0.3% 893/statsd: 0.1% user + 0.1% kernel / faults: 61 minor 1 major
-                                                                                                      0.3% 1721/mediaserver: 0% user + 0.3% kernel / faults: 63 minor 4 major
-                                                                                                      0.3% 29275/com.xiaomi.mipicks: 0.1% user + 0.1% kernel / faults: 139 minor
-                                                                                                      0.2% 10/rcu_sched: 0% user + 0.2% kernel
-                                                                                                      0.2% 30/rcuop/2: 0% user + 0.2% kernel
-                                                                                                      0.2% 46/rcuop/4: 0% user + 0.2% kernel
-                                                                                                      0.2% 62/rcuop/6: 0% user + 0.2% kernel
-                                                                                                      0.2% 264/kgsl_worker_thr: 0% user + 0.2% kernel
-                                                                                                      0.2% 894/netd: 0% user + 0.2% kernel / faults: 91 minor 3 major
-                                                                                                      0.2% 966/loop30: 0% user + 0.2% kernel
-                                                                                                      0.2% 1705/cameraserver: 0% user + 0.2% kernel / faults: 168 minor 8 major
-                                                                                                      0.2% 1963/msm_irqbalance: 0% user + 0.1% kernel
-                                                                                                      0.2% 3908/irq/84-90b6300.: 0% user + 0.2% kernel
-2025-09-30 15:14:22.069  1522-29610 ActivityManager         system_server                        E      7.1% 1198/surfaceflinger: 7.1% user + 0% kernel
-                                                                                                        2.3% 1277/RenderEngine: 0% user + 2.3% kernel
-                                                                                                        2.3% 1327/surfaceflinger: 0% user + 2.3% kernel
-                                                                                                      4.6% 1027/android.hardware.wifi@1.0-service: 2.3% user + 2.3% kernel / faults: 15 minor
-                                                                                                        2.3% 10473/wifi@1.0-servic: 2.3% user + 0% kernel
-                                                                                                      5.4% 3836/com.miui.daemon: 2.7% user + 2.7% kernel / faults: 18 minor
-                                                                                                        2.7% 29613/pool-2-thread-7: 0% user + 2.7% kernel
-                                                                                                      2% 9/rcu_preempt: 0% user + 2% kernel
-                                                                                                      2% 12/rcuop/0: 0% user + 2% kernel
-                                                                                                      2% 62/rcuop/6: 0% user + 2% kernel
-                                                                                                      2% 63/rcuos/6: 0% user + 2% kernel
-                                                                                                      2% 71/rcuos/7: 0% user + 2% kernel
-                                                                                                      2% 257/crtc_commit:108: 0% user + 2% kernel
-                                                                                                      2% 264/kgsl_worker_thr: 0% user + 2% kernel
-                                                                                                      2.1% 602/logd: 0% user + 2.1% kernel / faults: 2 minor
-                                                                                                      2.3% 1017/android.hardware.graphics.composer@2.4-service: 0% user + 2.3% kernel
-                                                                                                        2.3% 1319/HwBinder:1017_3: 0% user + 2.3% kernel
-                                                                                                      2.3% 1033/vendor.qti.hardware.display.allocator-service: 0% user + 2.3% kernel / faults: 1 minor 1 major
-                                                                                                        4.6% 1033/allocator-servi: 0% user + 4.6% kernel
-                                                                                                      2.3% 1040/vendor.qti.hardware.servicetracker@1.2-service: 2.3% user + 0% kernel
-                                                                                                      2.6% 3038/com.android.systemui: 2.6% user + 0% kernel
-                                                                                                        2.6% 3669/Binder:3038_A: 2.6% user + 0% kernel
-                                                                                                      3.3% 22595/kworker/u16:17: 0% user + 3.3% kernel
-                                                                                                      3.4% 27376/kworker/u16:10: 0% user + 3.4% kernel
-                                                                                                      3.7% 29085/com.example.nutrisaur11: 3.7% user + 0% kernel / faults: 41 minor
-                                                                                                      3.8% 30625/kworker/u16:6: 0% user + 3.8% kernel
-                                                                                                    34% TOTAL: 17% user + 15% kernel + 0.2% iowait + 0.7% irq + 0.5% softirq
-2025-09-30 15:19:46.284  1522-8298  ActivityManager         system_server                        E  ANR in com.example.nutrisaur11 (com.example.nutrisaur11/.MainActivity)
-                                                                                                    PID: 8009
-                                                                                                    Reason: Input dispatching timed out (9db0b79 com.example.nutrisaur11/com.example.nutrisaur11.MainActivity (server) is not responding. Waited 5002ms for FocusEvent(hasFocus=false))
-                                                                                                    Parent: com.example.nutrisaur11/.MainActivity
-                                                                                                    Frozen: false
-                                                                                                    Load: 3.49 / 5.89 / 4.64
-                                                                                                    ----- Output from /proc/pressure/memory -----
-                                                                                                    some avg10=0.33 avg60=1.30 avg300=1.89 total=1121852466
-                                                                                                    full avg10=0.04 avg60=0.27 avg300=0.31 total=277590328
-                                                                                                    ----- End output from /proc/pressure/memory -----
-                                                                                                    
-                                                                                                    CPU usage from 0ms to 11931ms later (2025-09-30 15:19:34.288 to 2025-09-30 15:19:46.218):
-                                                                                                      25% 1522/system_server: 13% user + 11% kernel / faults: 6454 minor 585 major
-                                                                                                      16% 1739/media.codec: 10% user + 6% kernel / faults: 20217 minor 129 major
-                                                                                                      14% 7699/com.instagram.android: 9% user + 5.2% kernel / faults: 5187 minor
-                                                                                                      8% 8009/com.example.nutrisaur11: 5.5% user + 2.5% kernel / faults: 6885 minor 27 major
-                                                                                                      7.5% 1823/media.swcodec: 2.6% user + 4.8% kernel / faults: 11868 minor 91 major
-                                                                                                      6.6% 3643/com.facebook.katana: 3.4% user + 3.1% kernel / faults: 3503 minor 1539 major
-                                                                                                      6.1% 28881/com.miui.home: 4.1% user + 1.9% kernel / faults: 6635 minor 452 major
-                                                                                                      5.2% 1198/surfaceflinger: 3.5% user + 1.6% kernel / faults: 1237 minor 8 major
-                                                                                                      4.6% 28073/com.google.android.googlequicksearchbox:googleapp: 2.5% user + 2% kernel / faults: 6269 minor 3767 major
-                                                                                                      3.4% 20189/kworker/u16:4: 0% user + 3.4% kernel
-                                                                                                      3.1% 27376/kworker/u16:10: 0% user + 3.1% kernel
-                                                                                                      3% 11125/com.google.android.inputmethod.latin: 2.1% user + 0.8% kernel / faults: 3550 minor 619 major
-                                                                                                      2.8% 22595/kworker/u16:17: 0% user + 2.8% kernel
-                                                                                                      2.6% 1043/media.hwcodec: 2% user + 0.5% kernel / faults: 4072 minor 67 major
-                                                                                                      2.4% 16148/com.lemon.lvoverseas: 1.1% user + 1.2% kernel / faults: 86 minor 14 major
-                                                                                                      2.3% 3024/com.android.phone: 1% user + 1.3% kernel / faults: 1456 minor 992 major
-                                                                                                      2% 603/lmkd: 0.1% user + 1.8% kernel
-                                                                                                      1.9% 1017/android.hardware.graphics.composer@2.4-service: 1% user + 0.9% kernel / faults: 325 minor 48 major
-                                                                                                      1.7% 22594/kworker/u16:13: 0% user + 1.7% kernel
-                                                                                                      1.5% 3038/com.android.systemui: 1% user + 0.5% kernel / faults: 128 minor 21 major
-                                                                                                      1.4% 602/logd: 0.4% user + 1% kernel / faults: 3184 minor 86 major
-                                                                                                      1.4% 1011/android.hardware.camera.provider@2.4-service_64: 0% user + 1.3% kernel / faults: 71 minor 57 major
-                                                                                                      0% 9120/media.extractor: 0% user + 0% kernel / faults: 2621 minor 58 major
-                                                                                                      1.1% 30625/kworker/u16:6: 0% user + 1.1% kernel
-                                                                                                      1% 27360/kworker/u16:3: 0% user + 1% kernel
-                                                                                                      1% 11100/com.android.bluetooth: 0% user + 1% kernel / faults: 218 minor 85 major
-                                                                                                      0.7% 9/rcu_preempt: 0% user + 0.7% kernel
-                                                                                                      0.7% 257/crtc_commit:108: 0% user + 0.7% kernel
-                                                                                                      0.7% 1027/android.hardware.wifi@1.0-service: 0.5% user + 0.1% kernel / faults: 116 minor 13 major
-                                                                                                      0.6% 894/netd: 0.1% user + 0.5% kernel / faults: 353 minor 20 major
-                                                                                                      0.6% 2517/com.google.android.googlequicksearchbox:interactor: 0.1% user + 0.5% kernel / faults: 1043 minor 1226 major
-                                                                                                      0.6% 15895/com.shopee.ph: 0.6% user + 0% kernel / faults: 21 minor 7 major
-                                                                                                      0.5% 264/kgsl_worker_thr: 0% user + 0.5% kernel
-                                                                                                      0.5% 966/loop30: 0% user + 0.5% kernel
-                                                                                                      0.5% 615/android.hardware.keymaster@4.1-service-qti: 0% user + 0.5% kernel
-                                                                                                      0.5% 1182/audioserver: 0% user + 0.4% kernel / faults: 73 minor 34 major
-                                                                                                      0.5% 8202/com.android.camera: 0.1% user + 0.3% kernel / faults: 1077 minor
-                                                                                                      0.4% 1/init: 0.2% user + 0.1% kernel
-                                                                                                      0.4% 506/irq/246-goodix_: 0% user + 0.4% kernel
-                                                                                                      0.3% 12/rcuop/0: 0% user + 0.3% kernel
-                                                                                                      0.3% 729/tombstoned: 0% user + 0.2% kernel / faults: 2 minor 5 major
-                                                                                                      0.3% 1007/android.hardware.audio.service: 0% user + 0.3% kernel / faults: 55 minor 25 major
-                                                                                                      0.3% 1024/android.hardware.sensors@1.0-service: 0% user + 0.3% kernel / faults: 204 minor 26 major
-                                                                                                      0.3% 1036/vendor.qti.hardware.perf@2.2-service: 0.1% user + 0.1% kernel / faults: 24 minor
-                                                                                                      0.2% 10/rcu_sched: 0% user + 0.2% kernel
-                                                                                                      0.2% 30/rcuop/2: 0% user + 0.2% kernel
-2025-09-30 15:30:11.850  1522-23054 ActivityManager         system_server                        E  ANR in com.example.nutrisaur11 (com.example.nutrisaur11/.FoodActivity)
-                                                                                                    PID: 22917
-                                                                                                    Reason: Input dispatching timed out (f30ab71 com.example.nutrisaur11/com.example.nutrisaur11.FoodActivity (server) is not responding. Waited 5000ms for MotionEvent(action=DOWN))
-                                                                                                    Parent: com.example.nutrisaur11/.FoodActivity
-                                                                                                    Frozen: false
-                                                                                                    Load: 1.58 / 2.94 / 3.8
-                                                                                                    ----- Output from /proc/pressure/memory -----
-                                                                                                    some avg10=0.32 avg60=1.16 avg300=1.20 total=1132272979
-                                                                                                    full avg10=0.06 avg60=0.23 avg300=0.21 total=280686129
-                                                                                                    ----- End output from /proc/pressure/memory -----
-                                                                                                    
-                                                                                                    CPU usage from 0ms to 9578ms later (2025-09-30 15:30:02.242 to 2025-09-30 15:30:11.821) with 99% awake:
-                                                                                                      34% 1522/system_server: 15% user + 19% kernel / faults: 8068 minor 469 major
-                                                                                                      17% 1739/media.codec: 10% user + 6.7% kernel / faults: 21181 minor 276 major
-                                                                                                      11% 22917/com.example.nutrisaur11: 7.7% user + 4% kernel / faults: 11023 minor 1147 major
-                                                                                                      9.4% 1823/media.swcodec: 3.8% user + 5.5% kernel / faults: 11865 minor 115 major
-                                                                                                      7.2% 1198/surfaceflinger: 5% user + 2.1% kernel / faults: 1548 minor 13 major
-                                                                                                      3.9% 11125/com.google.android.inputmethod.latin: 3% user + 0.9% kernel / faults: 3866 minor 402 major
-                                                                                                      3.8% 19069/kworker/u16:4: 0% user + 3.8% kernel
-                                                                                                      3.3% 15895/com.shopee.ph: 1.3% user + 1.9% kernel / faults: 2088 minor 2535 major
-                                                                                                      0.2% 9120/media.extractor: 0% user + 0.2% kernel / faults: 4184 minor 103 major
-                                                                                                      2.7% 19538/kworker/u16:7: 0% user + 2.7% kernel
-                                                                                                      2.6% 16148/com.lemon.lvoverseas: 1.2% user + 1.3% kernel / faults: 70 minor 7 major
-                                                                                                      2.4% 3024/com.android.phone: 1% user + 1.3% kernel / faults: 1195 minor 516 major
-                                                                                                      2.4% 21267/kworker/u16:8: 0% user + 2.4% kernel
-                                                                                                      0.2% 1011/android.hardware.camera.provider@2.4-service_64: 0% user + 0.1% kernel / faults: 46 minor 19 major
-                                                                                                      2% 1017/android.hardware.graphics.composer@2.4-service: 1.3% user + 0.7% kernel / faults: 304 minor 30 major
-                                                                                                      0.1% 1043/media.hwcodec: 0% user + 0% kernel / faults: 4072 minor 77 major
-                                                                                                      1.8% 22595/kworker/u16:17: 0% user + 1.8% kernel
-                                                                                                      1.7% 603/lmkd: 0.1% user + 1.6% kernel
-                                                                                                      1.7% 3038/com.android.systemui: 0.9% user + 0.8% kernel / faults: 412 minor 10 major
-                                                                                                      1.6% 2517/com.google.android.googlequicksearchbox:interactor: 0.6% user + 1% kernel / faults: 1190 minor 1241 major
-                                                                                                      1.6% 3723/com.google.android.providers.media.module: 1% user + 0.6% kernel / faults: 232 minor 98 major
-                                                                                                      1.6% 3836/com.miui.daemon: 0.9% user + 0.7% kernel / faults: 1143 minor 418 major
-                                                                                                      1.4% 602/logd: 0.3% user + 1.1% kernel / faults: 174 minor 5 major
-                                                                                                      1.4% 8342/kworker/u16:15: 0% user + 1.4% kernel
-                                                                                                      1.4% 27360/kworker/u16:3: 0% user + 1.4% kernel
-                                                                                                      1.3% 1721/mediaserver: 0.3% user + 1% kernel / faults: 1510 minor 79 major
-                                                                                                      1.3% 9129/com.android.bluetooth: 0.1% user + 1.2% kernel / faults: 238 minor 54 major
-                                                                                                      1.1% 1027/android.hardware.wifi@1.0-service: 0.7% user + 0.4% kernel / faults: 131 minor 10 major
-                                                                                                      1.1% 8580/kworker/u16:0: 0% user + 1.1% kernel
-                                                                                                      1% 98/system: 0% user + 1% kernel
-                                                                                                      1% 19146/com.google.android.apps.photos: 0.1% user + 0.9% kernel / faults: 846 minor 1091 major
-                                                                                                      0.9% 257/crtc_commit:108: 0% user + 0.9% kernel
-                                                                                                      0.7% 9/rcu_preempt: 0% user + 0.7% kernel
-                                                                                                      0.7% 5670/com.google.android.gms.persistent: 0.6% user + 0.1% kernel / faults: 113 minor 25 major
-                                                                                                      0.7% 20612/kworker/u16:12: 0% user + 0.7% kernel
-                                                                                                      0.6% 264/kgsl_worker_thr: 0% user + 0.6% kernel
-                                                                                                      0.6% 895/zygote64: 0% user + 0.6% kernel / faults: 111 minor
-                                                                                                      0.6% 966/loop30: 0% user + 0.6% kernel
-                                                                                                      0.6% 1007/android.hardware.audio.service: 0% user + 0.6% kernel / faults: 103 minor 50 major
-                                                                                                      0.6% 22853/com.android.settings:remote: 0.6% user + 0% kernel / faults: 693 minor
-                                                                                                      0% 729/tombstoned: 0% user + 0% kernel / faults: 4 minor 7 major
-                                                                                                      0.5% 893/statsd: 0.1% user + 0.4% kernel / faults: 149 minor 19 major
-                                                                                                      0% 1079/mtd@1.3: 0% user + 0% kernel / faults: 29 minor 75 major
-                                                                                                      0.5% 1182/audioserver: 0% user + 0.5% kernel / faults: 83 minor 45 major
-                                                                                                      0.5% 1705/cameraserver: 0% user + 0.5% kernel / faults: 61 minor 25 major
-2025-09-30 15:30:11.851  1522-23054 ActivityManager         system_server                        E    0.1% 15884/com.lemon.lvoverseas:smp: 0.1% user + 0% kernel / faults: 1 minor
-                                                                                                      0.1% 16010/kworker/3:2: 0% user + 0.1% kernel
-                                                                                                      0.1% 16132/com.milink.service: 0% user + 0.1% kernel / faults: 40 minor 31 major
-                                                                                                      0% 19606/kworker/u17:4: 0% user + 0% kernel
-                                                                                                      0.1% 22280/com.android.camera: 0% user + 0.1% kernel / faults: 43 minor 18 major
-                                                                                                      0.1% 22400/cds_ol_rx_threa: 0% user + 0.1% kernel
-                                                                                                      0.1% 22669/com.google.android.googlequicksearchbox:search: 0.1% user + 0% kernel / faults: 7 minor
-                                                                                                      0.1% 23536/com.google.android.ext.services: 0% user + 0.1% kernel / faults: 54 minor 32 major
-                                                                                                      0.1% 26570/kworker/4:2H: 0% user + 0.1% kernel
-                                                                                                      0.1% 28073/com.google.android.googlequicksearchbox:googleapp: 0% user + 0.1% kernel / faults: 73 minor 51 major
-                                                                                                     +0% 23118/system:ui: 0% user + 0% kernel
-                                                                                                     +0% 23187/com.miui.gallery: 0% user + 0% kernel
-                                                                                                     +0% 23260/com.facebook.orca: 0% user + 0% kernel
-                                                                                                    29% TOTAL: 12% user + 13% kernel + 1.6% iowait + 1% irq + 0.7% softirq
-                                                                                                    CPU usage from 77ms to 530ms later (2025-09-30 15:30:02.319 to 2025-09-30 15:30:02.773) with 99% awake:
-                                                                                                      63% 1522/system_server: 21% user + 42% kernel / faults: 1123 minor 11 major
-                                                                                                        47% 23054/AnrConsumer: 15% user + 31% kernel
-                                                                                                        7.8% 1538/ReferenceQueueD: 2.6% user + 5.2% kernel
-                                                                                                        2.6% 1539/FinalizerDaemon: 0% user + 2.6% kernel
-                                                                                                        2.6% 1564/ActivityManager: 0% user + 2.6% kernel
-                                                                                                        2.6% 4439/Binder:1522_1A: 0% user + 2.6% kernel
-                                                                                                      5.1% 1027/android.hardware.wifi@1.0-service: 5.1% user + 0% kernel / faults: 36 minor 7 major
-                                                                                                        5.1% 1027/wifi@1.0-servic: 2.5% user + 2.5% kernel
-                                                                                                      7.4% 22917/com.example.nutrisaur11: 7.4% user + 0% kernel / faults: 153 minor
-                                                                                                        7.4% 23033/Thread-16: 7.4% user + 0% kernel
-                                                                                                      7.4% 27360/kworker/u16:3: 0% user + 7.4% kernel
-                                                                                                      2.2% 62/rcuop/6: 0% user + 2.2% kernel
-                                                                                                      2.2% 98/system: 0% user + 2.2% kernel
-                                                                                                      2.4% 602/logd: 2.4% user + 0% kernel / faults: 1 minor
-                                                                                                      2.4% 717/f2fs_ckpt-253:1: 0% user + 2.4% kernel
-                                                                                                      2.9% 3836/com.miui.daemon: 0% user + 2.9% kernel / faults: 7 minor 1 major
-                                                                                                      3.2% 15895/com.shopee.ph: 0% user + 3.2% kernel / faults: 18 minor 5 major
-                                                                                                        3.2% 16117/ST.network: 0% user + 3.2% kernel
-                                                                                                        3.2% 16266/SPLogger: 3.2% user + 0% kernel
-                                                                                                    19% TOTAL: 8.1% user + 9.5% kernel + 0.5% iowait + 0.5% irq + 0.5% softirq
---------- beginning of main
+[Tue Sep 30 19:11:55 2025] 🔍 DatabaseAPI Debug - GET params: Array
+(
+    [action] => get_community_user_data
+)
+[Tue Sep 30 19:11:55 2025] 🔍 DatabaseAPI Debug - POST params: Array
+(
+)
+[Tue Sep 30 19:11:55 2025] 100.64.0.6:13266 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
+[Tue Sep 30 19:11:55 2025] 100.64.0.6:13266 Closing
+[Tue Sep 30 19:11:56 2025] 100.64.0.7:32370 Accepted
+[Tue Sep 30 19:11:56 2025] DatabaseAPI: PDO connection established on attempt 1
+[Tue Sep 30 19:11:56 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+[Tue Sep 30 19:11:56 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
+[Tue Sep 30 19:11:56 2025] 🔍 DatabaseAPI Debug - GET params: Array
+(
+    [action] => get_community_user_data
+)
+[Tue Sep 30 19:11:56 2025] 🔍 DatabaseAPI Debug - POST params: Array
+(
+)
+[Tue Sep 30 19:11:56 2025] 100.64.0.7:32370 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
+[Tue Sep 30 19:11:56 2025] 100.64.0.7:32370 Closing
+[Tue Sep 30 19:11:59 2025] 100.64.0.3:46718 Accepted
+[Tue Sep 30 19:11:59 2025] DatabaseAPI: PDO connection established on attempt 1
+[Tue Sep 30 19:11:59 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
+[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - GET params: Array
+(
+    [action] => get_community_user_data
+)
+[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - POST params: Array
+(
+)
+[Tue Sep 30 19:11:59 2025] 100.64.0.3:46718 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
+[Tue Sep 30 19:11:59 2025] 100.64.0.3:46718 Closing
+[Tue Sep 30 19:11:59 2025] 100.64.0.5:15742 Accepted
+[Tue Sep 30 19:11:59 2025] DatabaseAPI: PDO connection established on attempt 1
+[Tue Sep 30 19:11:59 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
+[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - GET params: Array
+(
+    [action] => get_community_user_data
+)
+[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - POST params: Array
+(
+)
+[Tue Sep 30 19:11:59 2025] 100.64.0.5:15742 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
+[Tue Sep 30 19:11:59 2025] 100.64.0.5:15742 Closing
+[Tue Sep 30 19:12:03 2025] 100.64.0.4:17984 Accepted
+[Tue Sep 30 19:12:03 2025] DatabaseAPI: PDO connection established on attempt 1
+[Tue Sep 30 19:12:03 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
+[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - GET params: Array
+(
+    [action] => get_community_user_data
+)
+[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - POST params: Array
+(
+)
+[Tue Sep 30 19:12:03 2025] 100.64.0.4:17984 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
+[Tue Sep 30 19:12:03 2025] 100.64.0.4:17984 Closing
+[Tue Sep 30 19:12:03 2025] 100.64.0.7:32386 Accepted
+[Tue Sep 30 19:12:03 2025] DatabaseAPI: PDO connection established on attempt 1
+[Tue Sep 30 19:12:03 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
+[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - GET params: Array
+(
+    [action] => get_community_user_data
+)
+[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - POST params: Array
+(
+)
+[Tue Sep 30 19:12:03 2025] 100.64.0.7:32386 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
+[Tue Sep 30 19:12:03 2025] 100.64.0.7:32386 Closing
+[Tue Sep 30 19:12:07 2025] 100.64.0.6:26356 Accepted
+[Tue Sep 30 19:12:07 2025] DatabaseAPI: PDO connection established on attempt 1
+[Tue Sep 30 19:12:07 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
+[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - GET params: Array
+(
+    [action] => get_community_user_data
+)
+[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - POST params: Array
+(
+)
+[Tue Sep 30 19:12:07 2025] 100.64.0.6:26356 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
+[Tue Sep 30 19:12:07 2025] 100.64.0.6:26356 Closing
+[Tue Sep 30 19:12:07 2025] 100.64.0.6:46446 Accepted
+[Tue Sep 30 19:12:07 2025] DatabaseAPI: PDO connection established on attempt 1
+[Tue Sep 30 19:12:07 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
+[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - GET params: Array
+(
+    [action] => get_community_user_data
+)
+[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - POST params: Array
+(
+)
+[Tue Sep 30 19:12:07 2025] 100.64.0.6:46446 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
+[Tue Sep 30 19:12:07 2025] 100.64.0.6:46446 Closing

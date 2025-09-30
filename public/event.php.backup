@@ -1395,6 +1395,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             
                         } catch (Exception $e) {
                             error_log("⚠️ CSV: Notification failed: " . $e->getMessage());
+                            
+                            // Fallback: Send to all users if location-specific targeting fails
+                            try {
+                                $allTokensResult = getFCMTokensByLocation("All Locations");
+                                if (!empty($allTokensResult)) {
+                                    $successCount = 0;
+                                    foreach ($allTokensResult as $tokenData) {
+                                        $fcmToken = $tokenData["fcm_token"];
+                                        $userEmail = $tokenData["user_email"];
+                                        
+                                        error_log("🔍 CSV: Fallback - Attempting to send FCM notification to user: $userEmail");
+                                        $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationTitle, $notificationBody);
+                                        if ($fcmResult["success"]) {
+                                            $successCount++;
+                                            error_log("✅ CSV: Fallback FCM notification sent successfully to $userEmail");
+                                        }
+                                    }
+                                    
+                                    error_log("📱 CSV: Fallback notification sent to $successCount users for event: $title");
+                                }
+                            } catch (Exception $fallbackError) {
+                                error_log("⚠️ CSV: Fallback notification also failed: " . $fallbackError->getMessage());
+                            }
                                 }
                                 
                             } else {
