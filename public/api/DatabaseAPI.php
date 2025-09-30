@@ -157,6 +157,59 @@ function sendFCMNotificationToToken($fcmToken, $title, $body) {
     }
 }
 
+/**
+ * Send silent FCM notification for account deletion
+ * This sends a data-only message (no visible notification)
+ * Only for community_users (Android app users)
+ */
+function sendAccountDeletedNotification($userEmail) {
+    try {
+        error_log("Sending account deletion notification to: $userEmail");
+        
+        // Get user's FCM token from community_users table BEFORE deletion
+        $db = DatabaseAPI::getInstance();
+        $stmt = $db->getPDO()->prepare("
+            SELECT fcm_token FROM community_users 
+            WHERE email = ? AND fcm_token IS NOT NULL AND fcm_token != ''
+        ");
+        $stmt->execute([$userEmail]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$user || empty($user['fcm_token'])) {
+            error_log("No FCM token found for user: $userEmail");
+            return false;
+        }
+        
+        $fcmToken = $user['fcm_token'];
+        
+        // Send silent data-only notification (no visible notification)
+        $notification = [
+            'title' => '',  // Empty = no notification
+            'body' => '',   // Empty = no notification
+            'data' => [
+                'type' => 'account_deleted',
+                'message' => 'Your account has been deleted',
+                'silent' => 'true'
+            ]
+        ];
+        
+        // Use existing FCM function
+        $result = sendFCMNotificationToToken($fcmToken, $notification['title'], $notification['body']);
+        
+        if ($result['success']) {
+            error_log("Account deletion notification sent successfully to: $userEmail");
+        } else {
+            error_log("Failed to send account deletion notification to: $userEmail - " . $result['error']);
+        }
+        
+        return $result['success'];
+        
+    } catch (Exception $e) {
+        error_log("Error sending account deletion notification: " . $e->getMessage());
+        return false;
+    }
+}
+
 // Helper function to get Firebase access token
 function getFirebaseAccessToken($serviceAccountKey) {
     try {

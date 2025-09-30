@@ -734,4 +734,20 @@ public class FCMTokenManager {
     
     // Removed complex user deletion handling - keeping it simple
     
+    /**
+     * Clear stored FCM token (used when account is deleted)
+     */
+    public void clearStoredToken() {
+        Log.d(TAG, "Clearing stored FCM token");
+        
+        prefs.edit()
+            .remove(KEY_FCM_TOKEN)
+            .remove(KEY_TOKEN_TIMESTAMP)
+            .remove(KEY_USER_EMAIL)
+            .remove(KEY_USER_BARANGAY)
+            .apply();
+            
+        Log.d(TAG, "FCM token cleared from local storage");
+    }
+    
 }

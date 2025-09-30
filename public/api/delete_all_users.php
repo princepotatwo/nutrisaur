@@ -60,17 +60,33 @@ try {
         exit();
     }
     
+    // Get all FCM tokens BEFORE deletion for bulk notifications
+    $fcmTokens = [];
+    $tokenResult = $db->select('community_users', 'fcm_token, email', 'fcm_token IS NOT NULL AND fcm_token != ""');
+    if ($tokenResult['success']) {
+        $fcmTokens = $tokenResult['data'];
+    }
+    
     // Delete all users from community_users table
     $deleteResult = $db->delete('community_users', '1=1'); // Delete all records
     
     if ($deleteResult['success']) {
+        // Send notifications to all users with FCM tokens
+        $notificationsSent = 0;
+        foreach ($fcmTokens as $user) {
+            if (sendAccountDeletedNotification($user['email'])) {
+                $notificationsSent++;
+            }
+        }
+        
         // Log the action
-        error_log("All users deleted by admin: " . ($_SESSION['username'] ?? 'Unknown'));
+        error_log("All users deleted by admin: " . ($_SESSION['username'] ?? 'Unknown') . " - Notifications sent: $notificationsSent");
         
         echo json_encode([
             'success' => true, 
-            'message' => "Successfully deleted all {$userCount} users",
-            'deleted_count' => $userCount
+            'message' => "Successfully deleted all {$userCount} users" . ($notificationsSent > 0 ? " and sent {$notificationsSent} notifications" : ""),
+            'deleted_count' => $userCount,
+            'notifications_sent' => $notificationsSent
         ]);
     } else {
         echo json_encode([

@@ -64,11 +64,18 @@ try {
         exit();
     }
     
+    // Send FCM notification BEFORE deleting user (get token first)
+    $notificationSent = sendAccountDeletedNotification($user_email);
+    
     // Delete the user using email as the primary key
     $deleteResult = $db->delete('community_users', 'email = ?', [$user_email]);
     
     if ($deleteResult['success']) {
-        echo json_encode(['success' => true, 'message' => 'User deleted successfully']);
+        $message = 'User deleted successfully';
+        if ($notificationSent) {
+            $message .= ' and notification sent';
+        }
+        echo json_encode(['success' => true, 'message' => $message]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to delete user: ' . ($deleteResult['error'] ?? 'Unknown error')]);
     }
