@@ -1264,10 +1264,25 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
         // Get database connection
         $db = DatabaseAPI::getInstance();
         
+        // Get program details before deletion to clean up lock files
+        $programResult = $db->select('programs', 'title, location, date_time', 'program_id = ?', [$programId]);
+        $program = $programResult['success'] && !empty($programResult['data']) ? $programResult['data'][0] : null;
+        
         // Delete the event from database
         $result = $db->universalDelete('programs', 'program_id = ?', [$programId]);
         
         if ($result['success']) {
+            // Clean up corresponding lock file if program details are available
+            if ($program) {
+                $eventKey = md5($program['title'] . $program['location'] . date('Y-m-d H:i:s', strtotime($program['date_time'])));
+                $lockFile = "/tmp/notification_" . $eventKey . ".lock";
+                
+                if (file_exists($lockFile)) {
+                    unlink($lockFile);
+                    error_log("🧹 Deleted lock file for event: " . $program['title'] . " at " . $program['location']);
+                }
+            }
+            
             // Redirect back with success message
             header("Location: event.php?deleted=1&deleted_id=" . $programId);
             exit;

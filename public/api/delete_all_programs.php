@@ -60,16 +60,32 @@ try {
         exit();
     }
     
+    // Get all program details before deletion to clean up lock files
+    $programsResult = $db->select('programs', 'title, location, date_time');
+    $programs = $programsResult['success'] ? $programsResult['data'] : [];
+    
     // Delete all programs from programs table
     $deleteResult = $db->delete('programs', '1=1'); // Delete all records
     
     if ($deleteResult['success']) {
+        // Clean up all corresponding lock files
+        $deletedLockFiles = 0;
+        foreach ($programs as $program) {
+            $eventKey = md5($program['title'] . $program['location'] . date('Y-m-d H:i:s', strtotime($program['date_time'])));
+            $lockFile = "/tmp/notification_" . $eventKey . ".lock";
+            
+            if (file_exists($lockFile)) {
+                unlink($lockFile);
+                $deletedLockFiles++;
+            }
+        }
+        
         // Log the action
-        error_log("All programs deleted by admin: " . ($_SESSION['username'] ?? 'Unknown'));
+        error_log("All programs deleted by admin: " . ($_SESSION['username'] ?? 'Unknown') . " - Cleaned up {$deletedLockFiles} lock files");
         
         echo json_encode([
             'success' => true, 
-            'message' => "Successfully deleted all {$programCount} programs",
+            'message' => "Successfully deleted all {$programCount} programs and {$deletedLockFiles} lock files",
             'deleted_count' => $programCount
         ]);
     } else {

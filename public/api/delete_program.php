@@ -64,10 +64,25 @@ try {
         exit();
     }
     
+    // Get program details before deletion to clean up lock files
+    $programResult = $db->select('programs', 'title, location, date_time', 'program_id = ?', [$program_id]);
+    $program = $programResult['data'][0] ?? null;
+    
     // Delete the program using program_id as the primary key
     $deleteResult = $db->delete('programs', 'program_id = ?', [$program_id]);
     
     if ($deleteResult['success']) {
+        // Clean up corresponding lock file if program details are available
+        if ($program) {
+            $eventKey = md5($program['title'] . $program['location'] . date('Y-m-d H:i:s', strtotime($program['date_time'])));
+            $lockFile = "/tmp/notification_" . $eventKey . ".lock";
+            
+            if (file_exists($lockFile)) {
+                unlink($lockFile);
+                error_log("🧹 Deleted lock file for event: " . $program['title'] . " at " . $program['location']);
+            }
+        }
+        
         echo json_encode(['success' => true, 'message' => 'Program deleted successfully']);
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to delete program: ' . ($deleteResult['error'] ?? 'Unknown error')]);
