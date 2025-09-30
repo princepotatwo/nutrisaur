@@ -210,6 +210,132 @@ function sendAccountDeletedNotification($userEmail) {
     }
 }
 
+/**
+ * Send FCM notification for profile updates
+ * Notifies user when their profile data has been updated
+ */
+function sendProfileUpdatedNotification($userEmail, $updateType = 'profile') {
+    try {
+        error_log("Sending profile update notification to: $userEmail");
+        
+        $db = DatabaseAPI::getInstance();
+        $stmt = $db->getPDO()->prepare("
+            SELECT fcm_token FROM community_users 
+            WHERE email = ? AND fcm_token IS NOT NULL AND fcm_token != ''
+        ");
+        $stmt->execute([$userEmail]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$user || empty($user['fcm_token'])) {
+            error_log("No FCM token found for user: $userEmail");
+            return false;
+        }
+        
+        $fcmToken = $user['fcm_token'];
+        
+        // Create appropriate notification based on update type
+        $title = '';
+        $body = '';
+        $dataType = '';
+        
+        switch ($updateType) {
+            case 'profile':
+                $title = '📝 Profile Updated';
+                $body = 'Your profile information has been updated successfully';
+                $dataType = 'profile_updated';
+                break;
+            case 'screening':
+                $title = '📊 Screening Data Updated';
+                $body = 'Your nutritional screening data has been updated';
+                $dataType = 'screening_updated';
+                break;
+            case 'location':
+                $title = '📍 Location Updated';
+                $body = 'Your location information has been updated';
+                $dataType = 'location_updated';
+                break;
+            default:
+                $title = '✅ Data Updated';
+                $body = 'Your information has been updated successfully';
+                $dataType = 'data_updated';
+        }
+        
+        // Send notification with data payload
+        $result = sendFCMNotificationToToken($fcmToken, $title, $body);
+        
+        if ($result['success']) {
+            error_log("Profile update notification sent successfully to: $userEmail");
+        } else {
+            error_log("Failed to send profile update notification to: $userEmail - " . $result['error']);
+        }
+        
+        return $result['success'];
+        
+    } catch (Exception $e) {
+        error_log("Error sending profile update notification: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Send FCM notification for data refresh
+ * Notifies user when they should refresh their app data
+ */
+function sendDataRefreshNotification($userEmail, $dataType = 'general') {
+    try {
+        error_log("Sending data refresh notification to: $userEmail");
+        
+        $db = DatabaseAPI::getInstance();
+        $stmt = $db->getPDO()->prepare("
+            SELECT fcm_token FROM community_users 
+            WHERE email = ? AND fcm_token IS NOT NULL AND fcm_token != ''
+        ");
+        $stmt->execute([$userEmail]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$user || empty($user['fcm_token'])) {
+            error_log("No FCM token found for user: $userEmail");
+            return false;
+        }
+        
+        $fcmToken = $user['fcm_token'];
+        
+        // Create appropriate notification based on data type
+        $title = '';
+        $body = '';
+        
+        switch ($dataType) {
+            case 'nutrition':
+                $title = '🍎 Nutrition Data Updated';
+                $body = 'Your nutrition recommendations have been updated';
+                break;
+            case 'events':
+                $title = '📅 Events Updated';
+                $body = 'New events are available in your area';
+                break;
+            case 'general':
+            default:
+                $title = '🔄 Data Updated';
+                $body = 'Please refresh the app to see the latest information';
+        }
+        
+        // Send silent data-only notification (no visible notification)
+        $result = sendFCMNotificationToToken($fcmToken, '', '');
+        
+        if ($result['success']) {
+            error_log("Data refresh notification sent successfully to: $userEmail");
+        } else {
+            error_log("Failed to send data refresh notification to: $userEmail - " . $result['error']);
+        }
+        
+        return $result['success'];
+        
+    } catch (Exception $e) {
+        error_log("Error sending data refresh notification: " . $e->getMessage());
+        return false;
+    }
+}
+
 // Helper function to get Firebase access token
 function getFirebaseAccessToken($serviceAccountKey) {
     try {
@@ -4521,6 +4647,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                     
                     if ($result) {
+                        // Send FCM notification for screening data update
+                        sendProfileUpdatedNotification($email, 'screening');
+                        
                         echo json_encode([
                             'success' => true, 
                             'message' => 'Screening data updated successfully',
@@ -6044,6 +6173,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $result = $updateStmt->execute($updateValues);
                     
                     if ($result) {
+                        // Send FCM notification for profile update
+                        $notificationEmail = !empty($newEmail) ? $newEmail : $originalEmail;
+                        sendProfileUpdatedNotification($notificationEmail, 'profile');
+                        
                         echo json_encode([
                             'success' => true,
                             'message' => 'User profile updated successfully',
