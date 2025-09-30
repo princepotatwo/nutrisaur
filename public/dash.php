@@ -10270,8 +10270,11 @@ body {
                                         label: function(context) {
                                             const dataset = context.dataset;
                                             const value = context.parsed.y;
-                                            const total = dataset.data.reduce((sum, val) => sum + val, 0);
-                                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                            // Calculate total for this specific time period across all datasets
+                                            const timePeriodTotal = context.chart.data.datasets.reduce((sum, ds) => {
+                                                return sum + (ds.data[context.dataIndex] || 0);
+                                            }, 0);
+                                            const percentage = timePeriodTotal > 0 ? Math.round((value / timePeriodTotal) * 100) : 0;
                                             return `${dataset.label}: ${value} (${percentage}%)`;
                                         }
                                     }

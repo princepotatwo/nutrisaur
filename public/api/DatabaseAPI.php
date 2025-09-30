@@ -3327,9 +3327,8 @@ class DatabaseAPI {
                 $data = [];
                 foreach ($timeLabels as $label) {
                     $baseValue = $periodData[$label]['classifications'][$classification] ?? 0;
-                    // Add small offset to prevent lines from overlapping
-                    $offsetValue = $baseValue + ($lineOffset * 0.1);
-                    $data[] = $offsetValue;
+                    // Use actual user count without any offset
+                    $data[] = $baseValue;
                 }
 
                 $datasets[] = [
