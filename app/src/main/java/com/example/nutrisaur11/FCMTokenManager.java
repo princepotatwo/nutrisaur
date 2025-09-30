@@ -742,7 +742,7 @@ public class FCMTokenManager {
         
         prefs.edit()
             .remove(KEY_FCM_TOKEN)
-            .remove(KEY_TOKEN_TIMESTAMP)
+            .remove(KEY_LAST_REGISTRATION)
             .remove(KEY_USER_EMAIL)
             .remove(KEY_USER_BARANGAY)
             .apply();
