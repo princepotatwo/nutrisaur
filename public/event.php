@@ -80,7 +80,9 @@ function createEventJWT($serviceAccountKey) {
 // 🚨 TEST AJAX ENDPOINT - Add this first to debug the issue
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'test_ajax') {
     error_log("=== TEST AJAX ENDPOINT CALLED ===");
-    header('Content-Type: application/json');
+    // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
+            header('Content-Type: application/json');
     echo json_encode(['success' => true, 'message' => 'AJAX is working!']);
     exit;
 }
@@ -88,7 +90,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 // 🚨 DEBUG FCM TOKENS ENDPOINT
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'debug_fcm_tokens') {
     error_log("=== DEBUG FCM TOKENS CALLED ===");
-    header('Content-Type: application/json');
+    // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
+            header('Content-Type: application/json');
     
     $location = $_POST['location'] ?? 'Bangkal';
     $tokens = getFCMTokensByLocation($location);
@@ -105,7 +109,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 // 🚨 DEBUG NOTIFICATION ENDPOINT
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'debug_notification') {
     error_log("=== DEBUG NOTIFICATION CALLED ===");
-    header('Content-Type: application/json');
+    // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
+            header('Content-Type: application/json');
     
     try {
         // Test notification using direct FCM sending (no cURL to avoid duplicates)
@@ -240,7 +246,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         error_log("✅ Event saved successfully with ID: $eventId");
         
         // Return success response
-        header('Content-Type: application/json');
+        // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
+            header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
             'message' => 'Event saved and notifications sent successfully!',
@@ -258,7 +266,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 
 // Handle get events request for mobile app FIRST (before authentication check)
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_events') {
-    header('Content-Type: application/json');
+    // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
+            header('Content-Type: application/json');
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type');
@@ -393,6 +403,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             $location = $_POST['location'] ?? '';
             $users = getUsersForLocation($location);
             
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
@@ -402,6 +414,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             exit;
             
         } catch (Exception $e) {
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -421,6 +435,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         try {
             $duplicates = $_SESSION['import_duplicates'] ?? [];
             
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
@@ -429,6 +445,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
             exit;
             
         } catch (Exception $e) {
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -441,7 +459,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
 
 // Handle get events request for mobile app
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_events') {
-    header('Content-Type: application/json');
+    // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
+            header('Content-Type: application/json');
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type');
@@ -520,6 +540,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             $debugInfo['firebase_admin_sdk_exists'] = file_exists($adminSdkPath);
             $debugInfo['firebase_admin_sdk_path'] = $adminSdkPath;
             
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => true,
@@ -529,6 +551,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             exit;
             
         } catch (Exception $e) {
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -592,7 +616,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 // Log the notification attempt
                 logNotificationAttempt(0, 'critical_alert', 'user', $targetUser, 1, true);
                 
-                header('Content-Type: application/json');
+                // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
+            header('Content-Type: application/json');
                 echo json_encode([
                     'success' => true,
                     'message' => 'Personal notification sent successfully to ' . $userName,
@@ -606,6 +632,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         } catch (Exception $e) {
             error_log("Error sending personal notification: " . $e->getMessage());
             
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -1332,12 +1360,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
         
         // Simple validation
         if (strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) !== 'csv') {
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Please upload a CSV file only.']);
             exit;
         }
         
         if ($file['size'] > 5000000) {
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'File size too large. Max 5MB.']);
             exit;
@@ -1478,6 +1510,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             }
             
             // Return response
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             if ($importedCount > 0) {
                 echo json_encode([
@@ -1497,6 +1531,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             exit;
             
         } catch (Exception $e) {
+            // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -1508,7 +1544,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
         }
         
                         } else {
-        header('Content-Type: application/json');
+        // Debug: Log the response before sending
+            error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
+            header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
             'imported_count' => 0,
