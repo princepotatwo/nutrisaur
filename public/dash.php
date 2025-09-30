@@ -10282,9 +10282,10 @@ body {
                                             // Calculate exact percentage
                                             const exactPercentage = (value / timePeriodTotal) * 100;
                                             
-                                            // For the last item in the tooltip, adjust to ensure total is 100%
+                                            // For the last dataset in the tooltip, adjust to ensure total is 100%
                                             const tooltipItems = context.chart.tooltip.dataPoints;
-                                            const isLastItem = context.dataIndex === tooltipItems.length - 1;
+                                            const currentDatasetIndex = tooltipItems.findIndex(item => item.datasetIndex === context.datasetIndex);
+                                            const isLastItem = currentDatasetIndex === tooltipItems.length - 1;
                                             
                                             if (isLastItem && tooltipItems.length > 1) {
                                                 // Calculate what the total would be with current rounding
