@@ -1,100 +1,719 @@
-[Tue Sep 30 19:11:55 2025] 🔍 DatabaseAPI Debug - GET params: Array
-(
-    [action] => get_community_user_data
-)
-[Tue Sep 30 19:11:55 2025] 🔍 DatabaseAPI Debug - POST params: Array
-(
-)
-[Tue Sep 30 19:11:55 2025] 100.64.0.6:13266 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
-[Tue Sep 30 19:11:55 2025] 100.64.0.6:13266 Closing
-[Tue Sep 30 19:11:56 2025] 100.64.0.7:32370 Accepted
-[Tue Sep 30 19:11:56 2025] DatabaseAPI: PDO connection established on attempt 1
-[Tue Sep 30 19:11:56 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Tue Sep 30 19:11:56 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
-[Tue Sep 30 19:11:56 2025] 🔍 DatabaseAPI Debug - GET params: Array
-(
-    [action] => get_community_user_data
-)
-[Tue Sep 30 19:11:56 2025] 🔍 DatabaseAPI Debug - POST params: Array
-(
-)
-[Tue Sep 30 19:11:56 2025] 100.64.0.7:32370 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
-[Tue Sep 30 19:11:56 2025] 100.64.0.7:32370 Closing
-[Tue Sep 30 19:11:59 2025] 100.64.0.3:46718 Accepted
-[Tue Sep 30 19:11:59 2025] DatabaseAPI: PDO connection established on attempt 1
-[Tue Sep 30 19:11:59 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
-[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - GET params: Array
-(
-    [action] => get_community_user_data
-)
-[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - POST params: Array
-(
-)
-[Tue Sep 30 19:11:59 2025] 100.64.0.3:46718 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
-[Tue Sep 30 19:11:59 2025] 100.64.0.3:46718 Closing
-[Tue Sep 30 19:11:59 2025] 100.64.0.5:15742 Accepted
-[Tue Sep 30 19:11:59 2025] DatabaseAPI: PDO connection established on attempt 1
-[Tue Sep 30 19:11:59 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
-[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - GET params: Array
-(
-    [action] => get_community_user_data
-)
-[Tue Sep 30 19:11:59 2025] 🔍 DatabaseAPI Debug - POST params: Array
-(
-)
-[Tue Sep 30 19:11:59 2025] 100.64.0.5:15742 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
-[Tue Sep 30 19:11:59 2025] 100.64.0.5:15742 Closing
-[Tue Sep 30 19:12:03 2025] 100.64.0.4:17984 Accepted
-[Tue Sep 30 19:12:03 2025] DatabaseAPI: PDO connection established on attempt 1
-[Tue Sep 30 19:12:03 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
-[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - GET params: Array
-(
-    [action] => get_community_user_data
-)
-[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - POST params: Array
-(
-)
-[Tue Sep 30 19:12:03 2025] 100.64.0.4:17984 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
-[Tue Sep 30 19:12:03 2025] 100.64.0.4:17984 Closing
-[Tue Sep 30 19:12:03 2025] 100.64.0.7:32386 Accepted
-[Tue Sep 30 19:12:03 2025] DatabaseAPI: PDO connection established on attempt 1
-[Tue Sep 30 19:12:03 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
-[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - GET params: Array
-(
-    [action] => get_community_user_data
-)
-[Tue Sep 30 19:12:03 2025] 🔍 DatabaseAPI Debug - POST params: Array
-(
-)
-[Tue Sep 30 19:12:03 2025] 100.64.0.7:32386 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
-[Tue Sep 30 19:12:03 2025] 100.64.0.7:32386 Closing
-[Tue Sep 30 19:12:07 2025] 100.64.0.6:26356 Accepted
-[Tue Sep 30 19:12:07 2025] DatabaseAPI: PDO connection established on attempt 1
-[Tue Sep 30 19:12:07 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
-[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - GET params: Array
-(
-    [action] => get_community_user_data
-)
-[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - POST params: Array
-(
-)
-[Tue Sep 30 19:12:07 2025] 100.64.0.6:26356 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
-[Tue Sep 30 19:12:07 2025] 100.64.0.6:26356 Closing
-[Tue Sep 30 19:12:07 2025] 100.64.0.6:46446 Accepted
-[Tue Sep 30 19:12:07 2025] DatabaseAPI: PDO connection established on attempt 1
-[Tue Sep 30 19:12:07 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
-[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - Action received: 'get_community_user_data'
-[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - GET params: Array
-(
-    [action] => get_community_user_data
-)
-[Tue Sep 30 19:12:07 2025] 🔍 DatabaseAPI Debug - POST params: Array
-(
-)
-[Tue Sep 30 19:12:07 2025] 100.64.0.6:46446 [200]: POST /api/DatabaseAPI.php?action=get_community_user_data
-[Tue Sep 30 19:12:07 2025] 100.64.0.6:46446 Closing
+--------- beginning of crash
+--------- beginning of system
+--------- beginning of main
+2025-10-01 07:10:06.724  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:14:47.175  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:15:02.713  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:17:43.226  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:18:11.955  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:20:14.113  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:20:22.732  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:30:12.152  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:43:37.957  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:43:57.289  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9992   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+---------------------------- PROCESS STARTED (24299) for package com.example.nutrisaur11 ----------------------------
+2025-10-01 07:48:16.274 24299-24299 nativeloader            com.example.nutrisaur11              D  Configuring clns-4 for other apk /apex/com.android.extservices/javalib/android.ext.adservices.jar. target_sdk_version=35, uses_libraries=ALL, library_path=/data/app/~~k07uodS8_0hzlVrmkQkHiQ==/com.example.nutrisaur11-z1OYbxtyabsKH2DMrT4_CA==/lib/arm64:/data/app/~~k07uodS8_0hzlVrmkQkHiQ==/com.example.nutrisaur11-z1OYbxtyabsKH2DMrT4_CA==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.example.nutrisaur11
+2025-10-01 07:48:16.274 24299-24299 nativeloader            com.example.nutrisaur11              D  Extending system_exposed_libraries: libvraudio_client.qti.so:libbinauralrenderer_wrapper.qti.so:libhoaeffects.qti.so:libQOC.qti.so:libcamera_algoup_jni.xiaomi.so:libcamera_mianode_jni.xiaomi.so:libupdateprof.qti.so:libthermalclient.qti.so:libQOC.qti.so:libdiag_system.qti.so:libqape.qti.so:libqesdk_ndk_platform.qti.so:liblistenjni.qti.so
+2025-10-01 07:48:16.281 24299-24299 nativeloader            com.example.nutrisaur11              D  InitApexLibraries:
+                                                                                                      com_android_appsearch: libicing.so
+                                                                                                      com_android_art: libartservice.so
+                                                                                                      com_android_conscrypt: libjavacrypto.so
+                                                                                                      com_android_extservices: libtflite_support_classifiers_native.so
+                                                                                                      com_android_mediaprovider: libpdfclient.so
+                                                                                                      com_android_os_statsd: libstats_jni.so
+                                                                                                      com_android_tethering: libandroid_net_connectivity_com_android_net_module_util_jni.so:libframework-connectivity-jni.so:libframework-connectivity-tiramisu-jni.so:libmainlinecronet.138.0.7156.0.so:libservice-connectivity.so:libservice-thread-jni.so:stable_cronet_libcrypto.so:stable_cronet_libssl.so
+2025-10-01 07:48:16.353 24299-24299 ple.nutrisaur1          com.example.nutrisaur11              W  ClassLoaderContext classpath size mismatch. expected=0, found=1 (PCL[]{PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]} | PCL[/data/data/com.example.nutrisaur11/code_cache/.overlay/base.apk/classes4.dex*2101514043]{PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]})
+2025-10-01 07:48:16.466 24299-24299 nativeloader            com.example.nutrisaur11              D  Configuring clns-5 for other apk /data/app/~~k07uodS8_0hzlVrmkQkHiQ==/com.example.nutrisaur11-z1OYbxtyabsKH2DMrT4_CA==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~k07uodS8_0hzlVrmkQkHiQ==/com.example.nutrisaur11-z1OYbxtyabsKH2DMrT4_CA==/lib/arm64:/data/app/~~k07uodS8_0hzlVrmkQkHiQ==/com.example.nutrisaur11-z1OYbxtyabsKH2DMrT4_CA==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.example.nutrisaur11
+2025-10-01 07:48:16.493 24299-24299 Perf                    com.example.nutrisaur11              I  Connecting to perf service.
+2025-10-01 07:48:16.504 24299-24299 GraphicsEnvironment     com.example.nutrisaur11              V  ANGLE Developer option for 'com.example.nutrisaur11' set to: 'default'
+2025-10-01 07:48:16.505 24299-24299 GraphicsEnvironment     com.example.nutrisaur11              V  Updatable production driver is not supported on the device.
+2025-10-01 07:48:16.510 24299-24299 ForceDarkHelperStubImpl com.example.nutrisaur11              I  initialize for com.example.nutrisaur11 , ForceDarkOrigin
+2025-10-01 07:48:16.512 24299-24299 nativeloader            com.example.nutrisaur11              D  Load libforcedarkimpl.so using system ns (caller=/system/framework/miui-framework.jar): ok
+2025-10-01 07:48:16.513 24299-24299 OpenGLRenderer          com.example.nutrisaur11              D  JNI_OnLoad success
+2025-10-01 07:48:16.513 24299-24299 MiuiForceDarkConfig     com.example.nutrisaur11              I  setConfig density:2.750000, mainRule:0, secondaryRule:0, tertiaryRule:0
+2025-10-01 07:48:16.520 24299-24299 NetworkSecurityConfig   com.example.nutrisaur11              D  No Network Security Config specified, using platform default
+2025-10-01 07:48:16.522 24299-24299 NetworkSecurityConfig   com.example.nutrisaur11              D  No Network Security Config specified, using platform default
+2025-10-01 07:48:16.574 24299-24299 FirebaseApp             com.example.nutrisaur11              I  Device unlocked: initializing all Firebase APIs for app [DEFAULT]
+2025-10-01 07:48:16.611 24299-24299 FirebaseInitProvider    com.example.nutrisaur11              I  FirebaseApp initialization successful
+2025-10-01 07:48:16.673 24299-24341 ple.nutrisaur1          com.example.nutrisaur11              W  ClassLoaderContext classpath size mismatch. expected=1, found=0 (DLC[];PCL[base.apk*3742189454]{PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]#PCL[/system/framework/com.android.media.remotedisplay.jar*3472798123]#PCL[/system/framework/com.android.location.provider.jar*3633238672]#PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]} | DLC[];PCL[])
+2025-10-01 07:48:16.679 24299-24341 DynamiteModule          com.example.nutrisaur11              I  Considering local module com.google.android.gms.measurement.dynamite:155 and remote module com.google.android.gms.measurement.dynamite:161
+2025-10-01 07:48:16.679 24299-24341 DynamiteModule          com.example.nutrisaur11              I  Selected remote version of com.google.android.gms.measurement.dynamite, version >= 161
+2025-10-01 07:48:16.680 24299-24341 DynamiteModule          com.example.nutrisaur11              V  Dynamite loader version >= 2, using loadModule2NoCrashUtils
+2025-10-01 07:48:16.728 24299-24341 System                  com.example.nutrisaur11              W  ClassLoader referenced unknown path: 
+2025-10-01 07:48:16.729 24299-24341 nativeloader            com.example.nutrisaur11              D  Configuring clns-6 for other apk . target_sdk_version=36, uses_libraries=, library_path=/data/app/~~WqlP-jy9t9aadxJLvfGIXg==/com.google.android.gms-C-D9N1twokZOu6BGYwGrPg==/lib/arm64:/data/app/~~WqlP-jy9t9aadxJLvfGIXg==/com.google.android.gms-C-D9N1twokZOu6BGYwGrPg==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+2025-10-01 07:48:16.782 24299-24341 ple.nutrisaur1          com.example.nutrisaur11              W  ClassLoaderContext classpath size mismatch. expected=1, found=2 (DLC[];PCL[base.apk*3742189454]{PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]#PCL[/system/framework/com.android.media.remotedisplay.jar*3472798123]#PCL[/system/framework/com.android.location.provider.jar*3633238672]#PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]} | DLC[];PCL[/data/data/com.example.nutrisaur11/code_cache/.overlay/base.apk/classes4.dex*2101514043:/data/app/~~k07uodS8_0hzlVrmkQkHiQ==/com.example.nutrisaur11-z1OYbxtyabsKH2DMrT4_CA==/base.apk*3223942326]{PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]})
+2025-10-01 07:48:16.875 24299-24365 ple.nutrisaur1          com.example.nutrisaur11              I  hiddenapi: Accessing hidden method Ldalvik/system/VMStack;->getStackClass2()Ljava/lang/Class; (runtime_flags=0, domain=core-platform, api=unsupported) from Lm7/aov; (domain=app) using reflection: allowed
+2025-10-01 07:48:16.911 24299-24363 ple.nutrisaur1          com.example.nutrisaur11              E  No package ID 6a found for ID 0x6a0b000f.
+2025-10-01 07:48:16.915 24299-24363 FA                      com.example.nutrisaur11              I  App measurement initialized, version: 139000
+2025-10-01 07:48:16.915 24299-24363 FA                      com.example.nutrisaur11              I  To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+2025-10-01 07:48:16.915 24299-24363 FA                      com.example.nutrisaur11              I  To enable faster debug mode event logging run:
+                                                                                                      adb shell setprop debug.firebase.analytics.app com.example.nutrisaur11
+2025-10-01 07:48:17.060 24299-24363 FA                      com.example.nutrisaur11              I  Tag Manager is not found and thus will not be used
+2025-10-01 07:48:22.035 24299-24438 ProfileInstaller        com.example.nutrisaur11              D  Installing profile for com.example.nutrisaur11
+---------------------------- PROCESS ENDED (24299) for package com.example.nutrisaur11 ----------------------------
+2025-10-01 07:48:28.221  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9996   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+---------------------------- PROCESS STARTED (24521) for package com.example.nutrisaur11 ----------------------------
+2025-10-01 07:48:28.468 24521-24521 FirebaseInitProvider    com.example.nutrisaur11              I  FirebaseApp initialization successful
+2025-10-01 07:48:28.501 24521-24521 AppCompatDelegate       com.example.nutrisaur11              D  Checking for metadata for AppLocalesMetadataHolderService : Service not found
+2025-10-01 07:48:28.503 24521-24551 ple.nutrisaur1          com.example.nutrisaur11              W  ClassLoaderContext classpath size mismatch. expected=1, found=0 (DLC[];PCL[base.apk*3742189454]{PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]#PCL[/system/framework/com.android.media.remotedisplay.jar*3472798123]#PCL[/system/framework/com.android.location.provider.jar*3633238672]#PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]} | DLC[];PCL[])
+2025-10-01 07:48:28.506 24521-24551 DynamiteModule          com.example.nutrisaur11              I  Considering local module com.google.android.gms.measurement.dynamite:155 and remote module com.google.android.gms.measurement.dynamite:161
+2025-10-01 07:48:28.506 24521-24551 DynamiteModule          com.example.nutrisaur11              I  Selected remote version of com.google.android.gms.measurement.dynamite, version >= 161
+2025-10-01 07:48:28.506 24521-24551 DynamiteModule          com.example.nutrisaur11              V  Dynamite loader version >= 2, using loadModule2NoCrashUtils
+2025-10-01 07:48:28.518 24521-24551 System                  com.example.nutrisaur11              W  ClassLoader referenced unknown path: 
+2025-10-01 07:48:28.518 24521-24551 nativeloader            com.example.nutrisaur11              D  Configuring clns-6 for other apk . target_sdk_version=36, uses_libraries=, library_path=/data/app/~~WqlP-jy9t9aadxJLvfGIXg==/com.google.android.gms-C-D9N1twokZOu6BGYwGrPg==/lib/arm64:/data/app/~~WqlP-jy9t9aadxJLvfGIXg==/com.google.android.gms-C-D9N1twokZOu6BGYwGrPg==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+2025-10-01 07:48:28.527 24521-24521 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759276108527
+2025-10-01 07:48:28.527 24521-24521 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-01 07:48:28.547 24521-24521 SessionManager          com.example.nutrisaur11              D  No recent valid session found, performing real-time database check
+2025-10-01 07:48:28.549 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:28.550 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:28.550 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Cache expired for user: kevinpingol123@gmail.com
+2025-10-01 07:48:28.550 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  No cached data available, fetching in background
+2025-10-01 07:48:28.550 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-01 07:48:28.550 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Cache expired for user: kevinpingol123@gmail.com
+2025-10-01 07:48:28.551 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:48:28.552 24521-24521 SessionManager          com.example.nutrisaur11              D  User not found in database: kevinpingol123@gmail.com
+2025-10-01 07:48:28.553 24521-24551 ple.nutrisaur1          com.example.nutrisaur11              W  ClassLoaderContext classpath size mismatch. expected=1, found=2 (DLC[];PCL[base.apk*3742189454]{PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]#PCL[/system/framework/com.android.media.remotedisplay.jar*3472798123]#PCL[/system/framework/com.android.location.provider.jar*3633238672]#PCL[/system/framework/org.apache.http.legacy.jar*2058259661]#PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]} | DLC[];PCL[/data/data/com.example.nutrisaur11/code_cache/.overlay/base.apk/classes4.dex*481429270:/data/app/~~k07uodS8_0hzlVrmkQkHiQ==/com.example.nutrisaur11-z1OYbxtyabsKH2DMrT4_CA==/base.apk*3223942326]{PCL[/apex/com.android.extservices/javalib/android.ext.adservices.jar*315867857]})
+2025-10-01 07:48:28.553 24521-24521 SessionManager          com.example.nutrisaur11              D  Real-time validation failed, user not found in database
+2025-10-01 07:48:28.553 24521-24521 SessionManager          com.example.nutrisaur11              D  === HANDLING INVALID SESSION ===
+2025-10-01 07:48:28.553 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity: MainActivity
+2025-10-01 07:48:28.553 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity finishing: false
+2025-10-01 07:48:28.553 24521-24521 SessionManager          com.example.nutrisaur11              D  Showing logout dialog
+2025-10-01 07:48:28.559 24521-24565 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-01 07:48:28.559 24521-24565 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
+2025-10-01 07:48:28.565 24521-24521 ViewScrollStubImpl      com.example.nutrisaur11              D  the value of ScrollFrictionRes is: 0.019499999
+2025-10-01 07:48:28.572 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.572 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.573 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.573 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.573 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.573 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.596 24521-24521 ple.nutrisaur1          com.example.nutrisaur11              I  hiddenapi: Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (runtime_flags=0, domain=platform, api=unsupported) from Landroidx/appcompat/widget/ViewUtils; (domain=app) using reflection: allowed
+2025-10-01 07:48:28.617 24521-24521 Compatibil...geReporter com.example.nutrisaur11              D  Compat change id reported: 171228096; UID 10345; state: ENABLED
+2025-10-01 07:48:28.630 24521-24575 ple.nutrisaur1          com.example.nutrisaur11              I  hiddenapi: Accessing hidden method Ldalvik/system/VMStack;->getStackClass2()Ljava/lang/Class; (runtime_flags=0, domain=core-platform, api=unsupported) from Lm7/aov; (domain=app) using reflection: allowed
+2025-10-01 07:48:28.660 24521-24568 ple.nutrisaur1          com.example.nutrisaur11              E  No package ID 6a found for ID 0x6a0b000f.
+2025-10-01 07:48:28.663 24521-24568 FA                      com.example.nutrisaur11              I  App measurement initialized, version: 139000
+2025-10-01 07:48:28.663 24521-24568 FA                      com.example.nutrisaur11              I  To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
+2025-10-01 07:48:28.663 24521-24568 FA                      com.example.nutrisaur11              I  To enable faster debug mode event logging run:
+                                                                                                      adb shell setprop debug.firebase.analytics.app com.example.nutrisaur11
+2025-10-01 07:48:28.731 24521-24521 DailyResetManager       com.example.nutrisaur11              D  Same day, no reset needed. Current: 2025-10-01
+2025-10-01 07:48:28.735 24521-24568 FA                      com.example.nutrisaur11              I  Tag Manager is not found and thus will not be used
+2025-10-01 07:48:28.745 24521-24521 MainActivity            com.example.nutrisaur11              D  Started food preload service
+2025-10-01 07:48:28.750 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.750 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.753 24521-24521 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-10-01 07:48:28.896 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:28.896 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Cache expired for user: kevinpingol123@gmail.com
+2025-10-01 07:48:28.896 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  No cached data available, fetching in background
+2025-10-01 07:48:28.896 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-01 07:48:28.896 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Cache expired for user: kevinpingol123@gmail.com
+2025-10-01 07:48:28.896 24521-24609 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-01 07:48:28.897 24521-24609 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
+2025-10-01 07:48:28.905 24521-24521 MainActivity            com.example.nutrisaur11              D  Fetched barangay from database for kevinpingol123@gmail.com: 
+2025-10-01 07:48:28.905 24521-24521 MainActivity            com.example.nutrisaur11              D  User has no barangay data, FCM initialization delayed until screening completion
+2025-10-01 07:48:28.911 24521-24521 CalorieTracker          com.example.nutrisaur11              D  Cleared all calorie data for the day
+2025-10-01 07:48:28.922 24521-24521 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759276108921
+2025-10-01 07:48:28.922 24521-24521 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-01 07:48:28.922 24521-24521 SessionManager          com.example.nutrisaur11              D  No recent valid session found, performing real-time database check
+2025-10-01 07:48:28.923 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:28.923 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:28.923 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Cache expired for user: kevinpingol123@gmail.com
+2025-10-01 07:48:28.923 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  No cached data available, fetching in background
+2025-10-01 07:48:28.923 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-01 07:48:28.923 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Cache expired for user: kevinpingol123@gmail.com
+2025-10-01 07:48:28.923 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 0ms
+2025-10-01 07:48:28.923 24521-24521 SessionManager          com.example.nutrisaur11              D  User not found in database: kevinpingol123@gmail.com
+2025-10-01 07:48:28.923 24521-24613 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-01 07:48:28.923 24521-24521 SessionManager          com.example.nutrisaur11              D  Real-time validation failed, user not found in database
+2025-10-01 07:48:28.923 24521-24521 SessionManager          com.example.nutrisaur11              D  === HANDLING INVALID SESSION ===
+2025-10-01 07:48:28.923 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity: MainActivity
+2025-10-01 07:48:28.923 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity finishing: false
+2025-10-01 07:48:28.923 24521-24521 SessionManager          com.example.nutrisaur11              D  Showing logout dialog
+2025-10-01 07:48:28.924 24521-24613 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
+2025-10-01 07:48:28.926 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.926 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:48:28.980 24521-24521 MainActivity            com.example.nutrisaur11              D  Checking for new events for user: kevinpingol123@gmail.com
+2025-10-01 07:48:28.990 24521-24521 Looper                  com.example.nutrisaur11              W  PerfMonitor looperActivity : package=com.example.nutrisaur11/.MainActivity time=0ms latency=777ms running=0ms  procState=-1  historyMsgCount=4 (msgIndex=1 wall=182ms seq=1 running=19ms runnable=5ms h=android.app.ActivityThread$H w=162) (msgIndex=3 wall=103ms seq=3 running=90ms runnable=4ms swapin=1ms binder=11ms h=android.app.ActivityThread$H w=110) (msgIndex=4 wall=507ms seq=4 running=401ms runnable=30ms io=12ms swapin=12ms binder=52ms late=279ms h=android.app.ActivityThread$H w=159)
+2025-10-01 07:48:28.991 24521-24521 Choreographer           com.example.nutrisaur11              I  Skipped 30 frames!  The application may be doing too much work on its main thread.
+2025-10-01 07:48:29.024 24521-24554 AdrenoGLES-0            com.example.nutrisaur11              I  QUALCOMM build                   : c5f0e23, I9972db7aac
+                                                                                                    Build Date                       : 04/28/21
+                                                                                                    OpenGL ES Shader Compiler Version: EV031.32.02.10
+                                                                                                    Local Branch                     : mybrancheba83f1e-3815-f156-b760-08f1eafda2d8
+                                                                                                    Remote Branch                    : quic/gfx-adreno.lnx.1.0.r99-rel
+                                                                                                    Remote Branch                    : NONE
+                                                                                                    Reconstruct Branch               : NOTHING
+2025-10-01 07:48:29.024 24521-24554 AdrenoGLES-0            com.example.nutrisaur11              I  Build Config                     : S P 10.0.7 AArch64
+2025-10-01 07:48:29.024 24521-24554 AdrenoGLES-0            com.example.nutrisaur11              I  Driver Path                      : /vendor/lib64/egl/libGLESv2_adreno.so
+2025-10-01 07:48:29.031 24521-24554 AdrenoGLES-0            com.example.nutrisaur11              I  PFP: 0x016ee190, ME: 0x00000000
+2025-10-01 07:48:29.043 24521-24554 hw-ProcessState         com.example.nutrisaur11              D  Binder ioctl to enable oneway spam detection failed: Invalid argument
+2025-10-01 07:48:29.087 24521-24554 ple.nutrisaur1          com.example.nutrisaur11              E  open libmigui.so failed! dlopen - dlopen failed: library "libmigui.so" not found
+2025-10-01 07:48:29.241 24521-24521 Looper                  com.example.nutrisaur11              W  PerfMonitor doFrame : time=250ms vsyncFrame=0 latency=511ms procState=-1 historyMsgCount=5 (msgIndex=2 wall=250ms seq=7 running=177ms runnable=10ms io=2ms binder=20ms late=511ms h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver) (msgIndex=3 wall=507ms seq=4 running=401ms runnable=30ms io=12ms swapin=12ms binder=52ms late=279ms h=android.app.ActivityThread$H w=159)
+2025-10-01 07:48:29.251 24521-24537 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=762ms; Flags=1, FrameTimelineVsyncId=616438, IntendedVsync=16091248506205, Vsync=16091748506185, InputEventId=0, HandleInputStart=16091759431775, AnimationStart=16091759443546, PerformTraversalsStart=16091759669744, DrawStart=16091982009484, FrameDeadline=16091265172871, FrameInterval=16091759199484, FrameStartTime=16666666, SyncQueued=16091994094223, SyncStart=16091994191359, IssueDrawCommandsStart=16091994334588, SwapBuffers=16092006191932, FrameCompleted=16092011221255, DequeueBufferDuration=16041, QueueBufferDuration=1021198, GpuCompleted=16092011221255, SwapBuffersCompleted=16092007630942, DisplayPresentTime=0, 
+2025-10-01 07:48:29.253 24521-24521 FoodPreloadService      com.example.nutrisaur11              D  FoodPreloadService created
+2025-10-01 07:48:29.254 24521-24521 FoodPreloadService      com.example.nutrisaur11              D  FoodPreloadService started
+2025-10-01 07:48:29.256 24521-24521 Compatibil...geReporter com.example.nutrisaur11              D  Compat change id reported: 160794467; UID 10345; state: ENABLED
+2025-10-01 07:48:29.269 24521-24629 FoodPreloadService      com.example.nutrisaur11              D  Starting background food preload
+2025-10-01 07:48:29.269 24521-24629 FoodPreloadService      com.example.nutrisaur11              D  Successfully preloaded 0 food recommendations
+2025-10-01 07:48:29.289 24521-24521 FoodPreloadService      com.example.nutrisaur11              D  FoodPreloadService destroyed
+2025-10-01 07:48:29.295 24521-24521 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-01 07:48:29.354 24521-24565 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-01 07:48:29.354 24521-24565 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-01 07:48:29.356 24521-24565 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"CITY OF BALANGA","barangay":"Cataning","sex":"Male","birthday":"2005-10-01","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-09-30 19:10:56","fcm_token":"e_qZbCqyTjepIGf-CA1lfG:APA91bGapkGjGYJ0_6Mq7S42KZGVvmFFfzbKf3U4qcRZpN3RlrtyaD5SNdrdeoTrpwcRtSxu70qigSaCtRFYE7CYfhFuCcJas8sZPjGFeocxXgI4EIUnVnw","bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-01 07:48:29.358 24521-24565 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:29.358 24521-24565 CommunityUserManager    com.example.nutrisaur11              D  User data retrieved successfully: {birthday=2005-10-01, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=CITY OF BALANGA, muac_cm=, screening_date=2025-09-30 19:10:56, bmi_category=, name=Pingol , Kevin C., barangay=Cataning, email=kevinpingol123@gmail.com, age=, bmi=}
+2025-10-01 07:48:29.358 24521-24565 CommunityUserManager    com.example.nutrisaur11              D  Background fetch completed for: kevinpingol123@gmail.com
+2025-10-01 07:48:29.381 24521-24609 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-01 07:48:29.381 24521-24609 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-01 07:48:29.383 24521-24609 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"CITY OF BALANGA","barangay":"Cataning","sex":"Male","birthday":"2005-10-01","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-09-30 19:10:56","fcm_token":"e_qZbCqyTjepIGf-CA1lfG:APA91bGapkGjGYJ0_6Mq7S42KZGVvmFFfzbKf3U4qcRZpN3RlrtyaD5SNdrdeoTrpwcRtSxu70qigSaCtRFYE7CYfhFuCcJas8sZPjGFeocxXgI4EIUnVnw","bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-01 07:48:29.384 24521-24609 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:29.385 24521-24609 CommunityUserManager    com.example.nutrisaur11              D  User data retrieved successfully: {birthday=2005-10-01, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=CITY OF BALANGA, muac_cm=, screening_date=2025-09-30 19:10:56, bmi_category=, name=Pingol , Kevin C., barangay=Cataning, email=kevinpingol123@gmail.com, age=, bmi=}
+2025-10-01 07:48:29.385 24521-24609 CommunityUserManager    com.example.nutrisaur11              D  Background fetch completed for: kevinpingol123@gmail.com
+2025-10-01 07:48:29.394 24521-24613 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-01 07:48:29.394 24521-24613 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-01 07:48:29.396 24521-24613 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"CITY OF BALANGA","barangay":"Cataning","sex":"Male","birthday":"2005-10-01","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-09-30 19:10:56","fcm_token":"e_qZbCqyTjepIGf-CA1lfG:APA91bGapkGjGYJ0_6Mq7S42KZGVvmFFfzbKf3U4qcRZpN3RlrtyaD5SNdrdeoTrpwcRtSxu70qigSaCtRFYE7CYfhFuCcJas8sZPjGFeocxXgI4EIUnVnw","bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-01 07:48:29.396 24521-24613 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:29.396 24521-24613 CommunityUserManager    com.example.nutrisaur11              D  User data retrieved successfully: {birthday=2005-10-01, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=CITY OF BALANGA, muac_cm=, screening_date=2025-09-30 19:10:56, bmi_category=, name=Pingol , Kevin C., barangay=Cataning, email=kevinpingol123@gmail.com, age=, bmi=}
+2025-10-01 07:48:29.396 24521-24613 CommunityUserManager    com.example.nutrisaur11              D  Background fetch completed for: kevinpingol123@gmail.com
+2025-10-01 07:48:29.473 24521-24615 MainActivity            com.example.nutrisaur11              D  Events API response code: 200
+2025-10-01 07:48:29.476 24521-24615 MainActivity            com.example.nutrisaur11              D  Events API response: {"success":true,"events":[{"id":1,"title":"abdhada","type":"Event","description":"abdhad","date_time":"2025-10-01 04:26:00","location":"All Locations","organizer":"azizacutie","created_at":1759276109},{"id":2,"title":"chupapi munyayo","type":"Event","description":"wow","date_time":"2025-10-02 04:26:00","location":"All Locations","organizer":"azizacutie","created_at":1759276109}]}
+2025-10-01 07:48:29.477 24521-24615 MainActivity            com.example.nutrisaur11              D  Found 2 events
+2025-10-01 07:48:29.477 24521-24615 MainActivity            com.example.nutrisaur11              D  New event detected: abdhada
+2025-10-01 07:48:29.477 24521-24615 MainActivity            com.example.nutrisaur11              D  New event detected: chupapi munyayo
+2025-10-01 07:48:29.477 24521-24615 MainActivity            com.example.nutrisaur11              D  Found 2 new events, refreshing dashboard
+2025-10-01 07:48:29.702 24521-24621 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223355944422ms; Flags=0, FrameTimelineVsyncId=616505, IntendedVsync=16092432283525, Vsync=16092432283525, InputEventId=0, HandleInputStart=16092432705629, AnimationStart=16092432709848, PerformTraversalsStart=16092432712504, DrawStart=16092455473286, FrameDeadline=16092448950191, FrameInterval=16092432680004, FrameStartTime=16666666, SyncQueued=16092458233442, SyncStart=16092458343859, IssueDrawCommandsStart=16092458805577, SwapBuffers=16092461906046, FrameCompleted=9223372036854775807, DequeueBufferDuration=32709, QueueBufferDuration=813907, GpuCompleted=9223372036854775807, SwapBuffersCompleted=16092463361515, DisplayPresentTime=0, 
+2025-10-01 07:48:31.529 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:31.530 24521-24521 SessionManager          com.example.nutrisaur11              D  Using cached session validation result: false
+2025-10-01 07:48:34.531 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:34.533 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:48:34.533 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:34.533 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:34.535 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:34.535 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:34.535 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:48:34.536 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:34.540 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:34.540 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:34.542 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:34.542 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:34.542 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:48:34.543 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:34.818 24521-24645 ProfileInstaller        com.example.nutrisaur11              D  Installing profile for com.example.nutrisaur11
+2025-10-01 07:48:37.546 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:37.547 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:48:37.547 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:37.547 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:37.548 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:37.548 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:37.548 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:48:37.548 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:37.553 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:37.553 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:37.553 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:37.553 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:37.554 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:48:37.554 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:40.556 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:40.557 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:48:40.557 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:40.557 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:40.558 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:40.558 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:40.559 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:48:40.559 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:40.564 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:40.565 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:40.569 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:40.570 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:40.570 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 6ms
+2025-10-01 07:48:40.571 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:40.677 24521-24531 System                  com.example.nutrisaur11              W  A resource failed to call close. 
+2025-10-01 07:48:40.680 24521-24531 System                  com.example.nutrisaur11              W  A resource failed to call close. 
+2025-10-01 07:48:43.575 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:43.575 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:48:43.575 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:43.576 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:43.576 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:43.576 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:43.576 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 0ms
+2025-10-01 07:48:43.576 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:43.580 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:43.580 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:43.581 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:43.581 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:43.581 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:48:43.581 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:46.587 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:46.588 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:48:46.588 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:46.588 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:46.589 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:46.589 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:46.589 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:48:46.590 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:46.595 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:46.596 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:46.597 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:46.597 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:46.597 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:48:46.598 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:49.604 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:49.604 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:48:49.605 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:49.605 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:49.606 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:49.606 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:49.606 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:48:49.607 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:49.612 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:49.612 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:49.614 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:49.614 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:49.614 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:48:49.615 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:52.620 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:52.620 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:48:52.621 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:52.621 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:52.622 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:52.623 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:52.623 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:48:52.623 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:52.629 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:52.629 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:52.630 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:52.631 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:52.631 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:48:52.631 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:55.635 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:55.636 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:48:55.636 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:55.636 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:55.637 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:55.637 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:55.638 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:48:55.638 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:55.643 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:55.643 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:55.644 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:55.645 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:55.645 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:48:55.645 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:58.650 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:48:58.651 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:48:58.651 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:58.651 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:58.653 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:58.653 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:58.653 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:48:58.654 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:48:58.659 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:48:58.659 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:48:58.660 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:48:58.660 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:48:58.660 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:48:58.661 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:01.667 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:01.668 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:49:01.668 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:01.668 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:01.669 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:01.670 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:01.670 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:49:01.670 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:01.675 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:01.676 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:01.677 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:01.677 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:01.677 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:49:01.678 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:04.684 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:04.684 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:49:04.685 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:04.685 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:04.686 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:04.687 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:04.687 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:49:04.687 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:04.692 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:04.693 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:04.694 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:04.694 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:04.694 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:49:04.695 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:07.699 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:07.699 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:49:07.699 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:07.700 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:07.700 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:07.700 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:07.700 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:49:07.700 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:07.703 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:07.703 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:07.703 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:07.703 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:07.703 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 0ms
+2025-10-01 07:49:07.704 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:10.709 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:10.710 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:49:10.710 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:10.710 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:10.711 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:10.712 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:10.712 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:49:10.713 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:10.718 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:10.718 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:10.719 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:10.720 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:10.720 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:49:10.721 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:13.725 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:13.725 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:49:13.726 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:13.726 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:13.727 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:13.727 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:13.727 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:49:13.728 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:13.733 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:13.734 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:13.735 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:13.735 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:13.735 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:49:13.736 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:16.741 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:16.742 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:49:16.742 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:16.742 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:16.743 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:16.744 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:16.744 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:49:16.745 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:16.751 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:16.751 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:16.752 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:16.753 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:16.753 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:49:16.754 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:19.758 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:19.759 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:49:19.759 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:19.759 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:19.760 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:19.761 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:19.761 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:49:19.761 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:19.767 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:19.767 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:19.769 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:19.769 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:19.769 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-01 07:49:19.770 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:21.353 24521-24521 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-10-01 07:49:22.772 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:22.772 24521-24521 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-01 07:49:22.772 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:22.772 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:22.773 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:22.773 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:22.773 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:49:22.773 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:22.775 24521-24521 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-01 07:49:22.775 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-01 07:49:22.775 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-01 07:49:22.775 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-01 07:49:22.776 24521-24521 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-01 07:49:22.776 24521-24521 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01 07:49:22.874 24521-24521 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-01 07:49:22.917 24521-24638 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223355891205ms; Flags=0, FrameTimelineVsyncId=616813, IntendedVsync=16145648827180, Vsync=16145648827180, InputEventId=0, HandleInputStart=16145649592536, AnimationStart=16145649595557, PerformTraversalsStart=16145649598161, DrawStart=16145649690974, FrameDeadline=16145665493846, FrameInterval=16145649577484, FrameStartTime=16666666, SyncQueued=16145658215297, SyncStart=16145658295713, IssueDrawCommandsStart=16145658393422, SwapBuffers=16145659200713, FrameCompleted=9223372036854775807, DequeueBufferDuration=21875, QueueBufferDuration=766563, GpuCompleted=9223372036854775807, SwapBuffersCompleted=16145660302015, DisplayPresentTime=0, 
+2025-10-01 07:49:24.286 24521-24521 SessionManager          com.example.nutrisaur11              D  User clicked OK on logout dialog
+2025-10-01 07:49:24.286 24521-24521 SessionManager          com.example.nutrisaur11              D  === SESSION CLEARING DEBUG START ===
+2025-10-01 07:49:24.286 24521-24521 SessionManager          com.example.nutrisaur11              D  Current user email: kevinpingol123@gmail.com
+2025-10-01 07:49:24.286 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 1: Clearing AddedFoodManager data
+2025-10-01 07:49:24.294 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 1.1: AddedFoodManager cleared
+2025-10-01 07:49:24.294 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 2: Clearing CalorieTracker data
+2025-10-01 07:49:24.294 24521-24521 CalorieTracker          com.example.nutrisaur11              D  Cleared all calorie data for user: kevinpingol123@gmail.com
+2025-10-01 07:49:24.294 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 2.1: CalorieTracker cleared
+2025-10-01 07:49:24.294 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 3: Clearing GeminiCacheManager data
+2025-10-01 07:49:24.298 24521-24521 GeminiCacheManager      com.example.nutrisaur11              D  Cleared all cache data for user: kevinpingol123@gmail.com
+2025-10-01 07:49:24.298 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 3.1: GeminiCacheManager cleared
+2025-10-01 07:49:24.298 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 4: Clearing FavoritesManager data
+2025-10-01 07:49:24.301 24521-24521 FavoritesManager        com.example.nutrisaur11              D  Cleared all favorites data for user: kevinpingol123@gmail.com
+2025-10-01 07:49:24.301 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 4.1: FavoritesManager cleared
+2025-10-01 07:49:24.301 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 5: Creating FCMTokenManager instance
+2025-10-01 07:49:24.302 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 5.1: FCMTokenManager created
+2025-10-01 07:49:24.302 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 6: Calling clearFCMTokenForUser
+2025-10-01 07:49:24.302 24521-24521 FCMTokenManager         com.example.nutrisaur11              D  === FCM TOKEN CLEARING DEBUG START ===
+2025-10-01 07:49:24.302 24521-24521 FCMTokenManager         com.example.nutrisaur11              D  Input userEmail: kevinpingol123@gmail.com
+2025-10-01 07:49:24.302 24521-24521 FCMTokenManager         com.example.nutrisaur11              D  Step 1: Starting FCM token clearing for: kevinpingol123@gmail.com
+2025-10-01 07:49:24.303 24521-24521 FCMTokenManager         com.example.nutrisaur11              D  Step 11: Waiting for background thread to complete
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 2: Creating JSON data object
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 2.1: Created data JSON: {"fcm_token":""}
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 3: Creating request data object
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 3.1: Created requestData JSON: {"table":"community_users","data":{"fcm_token":""},"where":"email = ?","params":["kevinpingol123@gmail.com"]}
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 4: Final request body: {"table":"community_users","data":{"fcm_token":""},"where":"email = ?","params":["kevinpingol123@gmail.com"]}
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 5: Creating RequestBody
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 5.1: RequestBody created successfully
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 6: Checking httpClient
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 6.1: HttpClient is not null
+2025-10-01 07:49:24.303 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 7: Checking SERVER_URL
+2025-10-01 07:49:24.304 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 7.1: SERVER_URL value: 'https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=update'
+2025-10-01 07:49:24.304 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 7.2: SERVER_URL is valid
+2025-10-01 07:49:24.304 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 8: Building HTTP request
+2025-10-01 07:49:24.305 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 8.1: HTTP request built successfully
+2025-10-01 07:49:24.305 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 8.2: Request URL: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=update
+2025-10-01 07:49:24.305 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 8.3: Request method: POST
+2025-10-01 07:49:24.305 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 8.4: Request headers: Content-Type: application/json
+2025-10-01 07:49:24.305 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 9: Executing HTTP request
+2025-10-01 07:49:24.600 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 9.1: HTTP request executed
+2025-10-01 07:49:24.600 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 9.2: Response code: 200
+2025-10-01 07:49:24.601 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 9.3: Response message: 
+2025-10-01 07:49:24.601 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 9.4: Response headers: access-control-allow-headers: Content-Type
+                                                                                                    access-control-allow-methods: GET, POST, OPTIONS
+                                                                                                    access-control-allow-origin: *
+                                                                                                    content-type: application/json
+                                                                                                    date: Tue, 30 Sep 2025 23:49:24 GMT
+                                                                                                    server: railway-edge
+                                                                                                    x-powered-by: PHP/8.1.33
+                                                                                                    x-railway-edge: railway/asia-southeast1-eqsg3a
+                                                                                                    x-railway-request-id: cum7NhytSUyrhAo0acI7Nw
+2025-10-01 07:49:24.601 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  SUCCESS: FCM token cleared from database for: kevinpingol123@gmail.com
+2025-10-01 07:49:24.603 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 9.5: Response body: {"success":true,"message":"Record updated successfully","affected_rows":1,"sql":"UPDATE community_users SET fcm_token = ? WHERE email = ?"}
+2025-10-01 07:49:24.603 24521-24784 FCMTokenManager         com.example.nutrisaur11              D  Step 10: HTTP request completed
+2025-10-01 07:49:24.603 24521-24521 FCMTokenManager         com.example.nutrisaur11              D  Step 11.1: Background thread completed
+2025-10-01 07:49:24.603 24521-24521 FCMTokenManager         com.example.nutrisaur11              D  === FCM TOKEN CLEARING DEBUG END ===
+2025-10-01 07:49:24.603 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 6.1: clearFCMTokenForUser call completed
+2025-10-01 07:49:24.603 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 7: Clearing CommunityUserManager cache
+2025-10-01 07:49:24.604 24521-24521 CommunityUserManager    com.example.nutrisaur11              D  Cleared user cache for: kevinpingol123@gmail.com
+2025-10-01 07:49:24.604 24521-24521 SessionManager          com.example.nutrisaur11              D  Step 7.1: CommunityUserManager cache cleared
+2025-10-01 07:49:24.604 24521-24521 SessionManager          com.example.nutrisaur11              D  SUCCESS: Cleared user-specific data for: kevinpingol123@gmail.com
+2025-10-01 07:49:24.604 24521-24521 SessionManager          com.example.nutrisaur11              D  === SESSION CLEARING DEBUG END ===
+2025-10-01 07:49:24.604 24521-24521 SessionManager          com.example.nutrisaur11              D  User session cleared
+2025-10-01 07:49:24.693 24521-24521 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-01 07:49:24.755 24521-24521 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759276164755
+2025-10-01 07:49:24.756 24521-24521 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-01 07:49:24.756 24521-24521 SessionManager          com.example.nutrisaur11              D  User not logged in
+2025-10-01 07:49:24.756 24521-24521 SessionManager          com.example.nutrisaur11              D  === HANDLING INVALID SESSION ===
+2025-10-01 07:49:24.756 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity: FoodActivity
+2025-10-01 07:49:24.756 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity finishing: false
+2025-10-01 07:49:24.756 24521-24521 SessionManager          com.example.nutrisaur11              D  Showing logout dialog
+2025-10-01 07:49:24.758 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:49:24.758 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:49:24.797 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:49:24.797 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:49:24.800 24521-24521 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-10-01 07:49:24.812  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9996   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:49:24.951 24521-24521 FoodActivity            com.example.nutrisaur11              D  FoodActivity onCreate started
+2025-10-01 07:49:24.952 24521-24521 DailyResetManager       com.example.nutrisaur11              D  New day detected. Performing daily reset. Current: 2025-10-01, Last: 
+2025-10-01 07:49:24.955 24521-24521 DailyResetManager       com.example.nutrisaur11              D  CalorieTracker data reset completed for user: default_user
+2025-10-01 07:49:24.955 24521-24521 DailyResetManager       com.example.nutrisaur11              D  Daily reset completed successfully
+2025-10-01 07:49:24.958 24521-24521 FoodActivity            com.example.nutrisaur11              D  Date navigation initialized with date: 2025-10-01
+2025-10-01 07:49:24.959 24521-24521 FoodActivity            com.example.nutrisaur11              D  Date display updated to: 2025-10-01
+2025-10-01 07:49:24.959 24521-24521 FoodActivity            com.example.nutrisaur11              D  Nutrition views initialized
+2025-10-01 07:49:24.959 24521-24521 FoodActivity            com.example.nutrisaur11              D  Views initialized
+2025-10-01 07:49:24.961 24521-24521 FoodActivity            com.example.nutrisaur11              D  Data update receiver registered
+2025-10-01 07:49:24.961 24521-24521 FoodActivity            com.example.nutrisaur11              D  Fetching user screening data from community_users table...
+2025-10-01 07:49:24.961 24521-24521 FoodActivity            com.example.nutrisaur11              W  User not logged in, cannot fetch nutrition data
+2025-10-01 07:49:24.961 24521-24521 FoodActivity            com.example.nutrisaur11              D  Showing default nutrition data
+2025-10-01 07:49:24.966 24521-24521 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759276164965
+2025-10-01 07:49:24.966 24521-24521 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-01 07:49:24.966 24521-24521 SessionManager          com.example.nutrisaur11              D  User not logged in
+2025-10-01 07:49:24.966 24521-24521 SessionManager          com.example.nutrisaur11              D  === HANDLING INVALID SESSION ===
+2025-10-01 07:49:24.966 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity: FoodActivity
+2025-10-01 07:49:24.966 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity finishing: false
+2025-10-01 07:49:24.966 24521-24521 SessionManager          com.example.nutrisaur11              D  Showing logout dialog
+2025-10-01 07:49:24.967 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:49:24.967 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:49:24.995 24521-24521 FoodActivity            com.example.nutrisaur11              D  FoodActivity onResume - refreshing meal progress
+2025-10-01 07:49:24.995 24521-24521 FoodActivity            com.example.nutrisaur11              D  No current user data, skipping refresh to avoid conflicts
+2025-10-01 07:49:25.204 24521-24533 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223355889072ms; Flags=0, FrameTimelineVsyncId=616912, IntendedVsync=16147782471202, Vsync=16147949137862, InputEventId=0, HandleInputStart=16147955985296, AnimationStart=16147955987119, PerformTraversalsStart=16147956409514, DrawStart=16147960696077, FrameDeadline=16147815804534, FrameInterval=16147955972848, FrameStartTime=16666666, SyncQueued=16147963127379, SyncStart=16147963220869, IssueDrawCommandsStart=16147963401702, SwapBuffers=16147964836546, FrameCompleted=9223372036854775807, DequeueBufferDuration=14219, QueueBufferDuration=1095834, GpuCompleted=9223372036854775807, SwapBuffersCompleted=16147966218525, DisplayPresentTime=0, 
+2025-10-01 07:49:25.217 24521-24521 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-01 07:49:25.237 24521-24521 WindowManager           com.example.nutrisaur11              E  android.view.WindowLeaked: Activity com.example.nutrisaur11.MainActivity has leaked window DecorView@6ccdcc5[MainActivity] that was originally added here
+                                                                                                    	at android.view.ViewRootImpl.<init>(ViewRootImpl.java:831)
+                                                                                                    	at android.view.ViewRootImpl.<init>(ViewRootImpl.java:815)
+                                                                                                    	at android.view.WindowManagerGlobal.addView(WindowManagerGlobal.java:393)
+                                                                                                    	at android.view.WindowManagerImpl.addView(WindowManagerImpl.java:135)
+                                                                                                    	at android.app.Dialog.show(Dialog.java:354)
+                                                                                                    	at androidx.appcompat.app.AlertDialog$Builder.show(AlertDialog.java:1008)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.lambda$handleInvalidSession$5(SessionManager.java:378)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.$r8$lambda$8cEwmt9P1h5RTDVlZPlFkYi9S1I(Unknown Source:0)
+                                                                                                    	at com.example.nutrisaur11.SessionManager$$ExternalSyntheticLambda7.run(D8$$SyntheticClass:0)
+                                                                                                    	at android.app.Activity.runOnUiThread(Activity.java:7236)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.handleInvalidSession(SessionManager.java:368)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.validateSession(SessionManager.java:286)
+                                                                                                    	at com.example.nutrisaur11.BaseActivity.onCreate(BaseActivity.java:20)
+                                                                                                    	at com.example.nutrisaur11.MainActivity.onCreate(MainActivity.java:68)
+                                                                                                    	at android.app.Activity.performCreate(Activity.java:8178)
+                                                                                                    	at android.app.Activity.performCreate(Activity.java:8146)
+                                                                                                    	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1330)
+                                                                                                    	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3713)
+                                                                                                    	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3907)
+                                                                                                    	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:103)
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135)
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95)
+                                                                                                    	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2260)
+                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:106)
+                                                                                                    	at android.os.Looper.loopOnce(Looper.java:210)
+                                                                                                    	at android.os.Looper.loop(Looper.java:299)
+                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:8168)
+                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
+                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
+                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1037)
+2025-10-01 07:49:25.248 24521-24521 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-01 07:49:25.779 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:26.492 24521-24521 SessionManager          com.example.nutrisaur11              D  User clicked OK on logout dialog
+2025-10-01 07:49:26.492 24521-24521 SessionManager          com.example.nutrisaur11              D  User session cleared
+2025-10-01 07:49:26.571 24521-24521 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-01 07:49:26.614 24521-24521 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759276166614
+2025-10-01 07:49:26.614 24521-24521 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-01 07:49:26.614 24521-24521 SessionManager          com.example.nutrisaur11              D  User not logged in
+2025-10-01 07:49:26.614 24521-24521 SessionManager          com.example.nutrisaur11              D  === HANDLING INVALID SESSION ===
+2025-10-01 07:49:26.614 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity: FoodActivity
+2025-10-01 07:49:26.614 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity finishing: false
+2025-10-01 07:49:26.614 24521-24521 SessionManager          com.example.nutrisaur11              D  Showing logout dialog
+2025-10-01 07:49:26.617 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:49:26.617 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:49:26.647 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:49:26.647 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:49:26.648 24521-24521 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-10-01 07:49:26.689  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9996   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:49:26.774 24521-24521 FoodActivity            com.example.nutrisaur11              D  FoodActivity onCreate started
+2025-10-01 07:49:26.775 24521-24521 DailyResetManager       com.example.nutrisaur11              D  New day detected. Performing daily reset. Current: 2025-10-01, Last: 
+2025-10-01 07:49:26.775 24521-24521 DailyResetManager       com.example.nutrisaur11              D  CalorieTracker data reset completed for user: default_user
+2025-10-01 07:49:26.775 24521-24521 DailyResetManager       com.example.nutrisaur11              D  Daily reset completed successfully
+2025-10-01 07:49:26.776 24521-24521 FoodActivity            com.example.nutrisaur11              D  Date navigation initialized with date: 2025-10-01
+2025-10-01 07:49:26.777 24521-24521 FoodActivity            com.example.nutrisaur11              D  Date display updated to: 2025-10-01
+2025-10-01 07:49:26.777 24521-24521 FoodActivity            com.example.nutrisaur11              D  Nutrition views initialized
+2025-10-01 07:49:26.777 24521-24521 FoodActivity            com.example.nutrisaur11              D  Views initialized
+2025-10-01 07:49:26.778 24521-24521 FoodActivity            com.example.nutrisaur11              D  Data update receiver registered
+2025-10-01 07:49:26.778 24521-24521 FoodActivity            com.example.nutrisaur11              D  Fetching user screening data from community_users table...
+2025-10-01 07:49:26.778 24521-24521 FoodActivity            com.example.nutrisaur11              W  User not logged in, cannot fetch nutrition data
+2025-10-01 07:49:26.778 24521-24521 FoodActivity            com.example.nutrisaur11              D  Showing default nutrition data
+2025-10-01 07:49:26.782 24521-24521 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759276166782
+2025-10-01 07:49:26.782 24521-24521 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-01 07:49:26.782 24521-24521 SessionManager          com.example.nutrisaur11              D  User not logged in
+2025-10-01 07:49:26.782 24521-24521 SessionManager          com.example.nutrisaur11              D  === HANDLING INVALID SESSION ===
+2025-10-01 07:49:26.782 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity: FoodActivity
+2025-10-01 07:49:26.782 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity finishing: false
+2025-10-01 07:49:26.782 24521-24521 SessionManager          com.example.nutrisaur11              D  Showing logout dialog
+2025-10-01 07:49:26.784 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:49:26.784 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:49:26.812 24521-24521 FoodActivity            com.example.nutrisaur11              D  FoodActivity onResume - refreshing meal progress
+2025-10-01 07:49:26.812 24521-24521 FoodActivity            com.example.nutrisaur11              D  No current user data, skipping refresh to avoid conflicts
+2025-10-01 07:49:26.952 24521-24537 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223355887488ms; Flags=1, FrameTimelineVsyncId=616969, IntendedVsync=16149365394240, Vsync=16149582060898, InputEventId=0, HandleInputStart=16149587498941, AnimationStart=16149587500660, PerformTraversalsStart=16149587501858, DrawStart=16149696492847, FrameDeadline=16149382060906, FrameInterval=16149587490920, FrameStartTime=16666666, SyncQueued=16149708743993, SyncStart=16149709160503, IssueDrawCommandsStart=16149709430920, SwapBuffers=16149712122222, FrameCompleted=9223372036854775807, DequeueBufferDuration=12188, QueueBufferDuration=1011250, GpuCompleted=9223372036854775807, SwapBuffersCompleted=16149713402951, DisplayPresentTime=0, 
+2025-10-01 07:49:26.978 24521-24534 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223355887255ms; Flags=0, FrameTimelineVsyncId=616999, IntendedVsync=16149599062294, Vsync=16149715728956, InputEventId=0, HandleInputStart=16149718575816, AnimationStart=16149718577899, PerformTraversalsStart=16149718930035, DrawStart=16149726665764, FrameDeadline=16149632395626, FrameInterval=16149718565295, FrameStartTime=16666666, SyncQueued=16149727601024, SyncStart=16149728130972, IssueDrawCommandsStart=16149728314410, SwapBuffers=16149729560920, FrameCompleted=9223372036854775807, DequeueBufferDuration=14323, QueueBufferDuration=759948, GpuCompleted=9223372036854775807, SwapBuffersCompleted=16149730586701, DisplayPresentTime=0, 
+2025-10-01 07:49:27.004 24521-24521 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-01 07:49:27.005 24521-24521 NutritionService        com.example.nutrisaur11              D  Shutting down executor service
+2025-10-01 07:49:27.006 24521-24521 FoodActivity            com.example.nutrisaur11              D  Data update receiver unregistered
+2025-10-01 07:49:27.017 24521-24521 WindowManager           com.example.nutrisaur11              E  android.view.WindowLeaked: Activity com.example.nutrisaur11.FoodActivity has leaked window DecorView@c144bb4[FoodActivity] that was originally added here
+                                                                                                    	at android.view.ViewRootImpl.<init>(ViewRootImpl.java:831)
+                                                                                                    	at android.view.ViewRootImpl.<init>(ViewRootImpl.java:815)
+                                                                                                    	at android.view.WindowManagerGlobal.addView(WindowManagerGlobal.java:393)
+                                                                                                    	at android.view.WindowManagerImpl.addView(WindowManagerImpl.java:135)
+                                                                                                    	at android.app.Dialog.show(Dialog.java:354)
+                                                                                                    	at androidx.appcompat.app.AlertDialog$Builder.show(AlertDialog.java:1008)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.lambda$handleInvalidSession$5(SessionManager.java:378)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.$r8$lambda$8cEwmt9P1h5RTDVlZPlFkYi9S1I(Unknown Source:0)
+                                                                                                    	at com.example.nutrisaur11.SessionManager$$ExternalSyntheticLambda7.run(D8$$SyntheticClass:0)
+                                                                                                    	at android.app.Activity.runOnUiThread(Activity.java:7236)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.handleInvalidSession(SessionManager.java:368)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.validateSession(SessionManager.java:236)
+                                                                                                    	at com.example.nutrisaur11.BaseActivity.onCreate(BaseActivity.java:20)
+                                                                                                    	at com.example.nutrisaur11.FoodActivity.onCreate(FoodActivity.java:86)
+                                                                                                    	at android.app.Activity.performCreate(Activity.java:8178)
+                                                                                                    	at android.app.Activity.performCreate(Activity.java:8146)
+                                                                                                    	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1330)
+                                                                                                    	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3713)
+                                                                                                    	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3907)
+                                                                                                    	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:103)
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135)
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95)
+                                                                                                    	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2260)
+                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:106)
+                                                                                                    	at android.os.Looper.loopOnce(Looper.java:210)
+                                                                                                    	at android.os.Looper.loop(Looper.java:299)
+                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:8168)
+                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
+                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
+                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1037)
+2025-10-01 07:49:27.017 24521-24521 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-01 07:49:28.378 24521-24521 SessionManager          com.example.nutrisaur11              D  User clicked OK on logout dialog
+2025-10-01 07:49:28.378 24521-24521 SessionManager          com.example.nutrisaur11              D  User session cleared
+2025-10-01 07:49:28.441 24521-24521 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-01 07:49:28.464 24521-24521 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759276168464
+2025-10-01 07:49:28.464 24521-24521 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-01 07:49:28.464 24521-24521 SessionManager          com.example.nutrisaur11              D  User not logged in
+2025-10-01 07:49:28.464 24521-24521 SessionManager          com.example.nutrisaur11              D  === HANDLING INVALID SESSION ===
+2025-10-01 07:49:28.464 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity: FoodActivity
+2025-10-01 07:49:28.464 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity finishing: false
+2025-10-01 07:49:28.464 24521-24521 SessionManager          com.example.nutrisaur11              D  Showing logout dialog
+2025-10-01 07:49:28.465 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:49:28.465 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:49:28.498 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:49:28.498 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:49:28.500 24521-24521 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-10-01 07:49:28.552  3016-3342  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=9996   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.MainActivity }
+2025-10-01 07:49:28.618 24521-24521 FoodActivity            com.example.nutrisaur11              D  FoodActivity onCreate started
+2025-10-01 07:49:28.618 24521-24521 DailyResetManager       com.example.nutrisaur11              D  New day detected. Performing daily reset. Current: 2025-10-01, Last: 
+2025-10-01 07:49:28.618 24521-24521 DailyResetManager       com.example.nutrisaur11              D  CalorieTracker data reset completed for user: default_user
+2025-10-01 07:49:28.618 24521-24521 DailyResetManager       com.example.nutrisaur11              D  Daily reset completed successfully
+2025-10-01 07:49:28.619 24521-24521 FoodActivity            com.example.nutrisaur11              D  Date navigation initialized with date: 2025-10-01
+2025-10-01 07:49:28.620 24521-24521 FoodActivity            com.example.nutrisaur11              D  Date display updated to: 2025-10-01
+2025-10-01 07:49:28.620 24521-24521 FoodActivity            com.example.nutrisaur11              D  Nutrition views initialized
+2025-10-01 07:49:28.620 24521-24521 FoodActivity            com.example.nutrisaur11              D  Views initialized
+2025-10-01 07:49:28.621 24521-24521 FoodActivity            com.example.nutrisaur11              D  Data update receiver registered
+2025-10-01 07:49:28.621 24521-24521 FoodActivity            com.example.nutrisaur11              D  Fetching user screening data from community_users table...
+2025-10-01 07:49:28.622 24521-24521 FoodActivity            com.example.nutrisaur11              W  User not logged in, cannot fetch nutrition data
+2025-10-01 07:49:28.622 24521-24521 FoodActivity            com.example.nutrisaur11              D  Showing default nutrition data
+2025-10-01 07:49:28.625 24521-24521 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759276168625
+2025-10-01 07:49:28.625 24521-24521 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-01 07:49:28.625 24521-24521 SessionManager          com.example.nutrisaur11              D  User not logged in
+2025-10-01 07:49:28.625 24521-24521 SessionManager          com.example.nutrisaur11              D  === HANDLING INVALID SESSION ===
+2025-10-01 07:49:28.625 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity: FoodActivity
+2025-10-01 07:49:28.625 24521-24521 SessionManager          com.example.nutrisaur11              D  Activity finishing: false
+2025-10-01 07:49:28.625 24521-24521 SessionManager          com.example.nutrisaur11              D  Showing logout dialog
+2025-10-01 07:49:28.627 24521-24521 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-01 07:49:28.627 24521-24521 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-01 07:49:28.655 24521-24521 FoodActivity            com.example.nutrisaur11              D  FoodActivity onResume - refreshing meal progress
+2025-10-01 07:49:28.655 24521-24521 FoodActivity            com.example.nutrisaur11              D  No current user data, skipping refresh to avoid conflicts
+2025-10-01 07:49:28.765 24521-24529 ple.nutrisaur1          com.example.nutrisaur11              W  Cleared Reference was only reachable from finalizer (only reported once)
+2025-10-01 07:49:28.859 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:28.859 24521-24521 SessionManager          com.example.nutrisaur11              D  User not logged in
+2025-10-01 07:49:28.864 24521-24521 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-01 07:49:28.888 24521-24521 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-01 07:49:28.890 24521-24521 NutritionService        com.example.nutrisaur11              D  Shutting down executor service
+2025-10-01 07:49:28.891 24521-24521 FoodActivity            com.example.nutrisaur11              D  Data update receiver unregistered
+2025-10-01 07:49:28.904 24521-24521 WindowManager           com.example.nutrisaur11              E  android.view.WindowLeaked: Activity com.example.nutrisaur11.FoodActivity has leaked window DecorView@26682fc[FoodActivity] that was originally added here
+                                                                                                    	at android.view.ViewRootImpl.<init>(ViewRootImpl.java:831)
+                                                                                                    	at android.view.ViewRootImpl.<init>(ViewRootImpl.java:815)
+                                                                                                    	at android.view.WindowManagerGlobal.addView(WindowManagerGlobal.java:393)
+                                                                                                    	at android.view.WindowManagerImpl.addView(WindowManagerImpl.java:135)
+                                                                                                    	at android.app.Dialog.show(Dialog.java:354)
+                                                                                                    	at androidx.appcompat.app.AlertDialog$Builder.show(AlertDialog.java:1008)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.lambda$handleInvalidSession$5(SessionManager.java:378)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.$r8$lambda$8cEwmt9P1h5RTDVlZPlFkYi9S1I(Unknown Source:0)
+                                                                                                    	at com.example.nutrisaur11.SessionManager$$ExternalSyntheticLambda7.run(D8$$SyntheticClass:0)
+                                                                                                    	at android.app.Activity.runOnUiThread(Activity.java:7236)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.handleInvalidSession(SessionManager.java:368)
+                                                                                                    	at com.example.nutrisaur11.SessionManager.validateSession(SessionManager.java:236)
+                                                                                                    	at com.example.nutrisaur11.BaseActivity.onCreate(BaseActivity.java:20)
+                                                                                                    	at com.example.nutrisaur11.FoodActivity.onCreate(FoodActivity.java:86)
+                                                                                                    	at android.app.Activity.performCreate(Activity.java:8178)
+                                                                                                    	at android.app.Activity.performCreate(Activity.java:8146)
+                                                                                                    	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1330)
+                                                                                                    	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:3713)
+                                                                                                    	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:3907)
+                                                                                                    	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:103)
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.executeCallbacks(TransactionExecutor.java:135)
+                                                                                                    	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:95)
+                                                                                                    	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2260)
+                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:106)
+                                                                                                    	at android.os.Looper.loopOnce(Looper.java:210)
+                                                                                                    	at android.os.Looper.loop(Looper.java:299)
+                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:8168)
+                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
+                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
+                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1037)
+2025-10-01 07:49:30.296 24521-24537 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223355883821ms; Flags=0, FrameTimelineVsyncId=617120, IntendedVsync=16153032768110, Vsync=16153032768110, InputEventId=0, HandleInputStart=16153034485085, AnimationStart=16153034499356, PerformTraversalsStart=16153034508106, DrawStart=16153034904408, FrameDeadline=16153049434776, FrameInterval=16153034420606, FrameStartTime=16666666, SyncQueued=16153036783210, SyncStart=16153037062742, IssueDrawCommandsStart=16153037530658, SwapBuffers=16153042454565, FrameCompleted=9223372036854775807, DequeueBufferDuration=85209, QueueBufferDuration=2515208, GpuCompleted=9223372036854775807, SwapBuffersCompleted=16153046005346, DisplayPresentTime=0, 
+2025-10-01 07:49:31.862 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-01 07:49:34.864 24521-24521 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===

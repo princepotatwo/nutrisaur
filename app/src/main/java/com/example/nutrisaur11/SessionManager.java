@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -170,7 +172,29 @@ public class SessionManager {
             long startTime = System.currentTimeMillis();
             
             CommunityUserManager userManager = new CommunityUserManager(context);
-            Map<String, String> userData = userManager.getCurrentUserDataFromDatabase();
+            
+            // Use a synchronous approach for session validation
+            // We need to wait for the result to determine if user exists
+            final boolean[] userExists = {false};
+            final CountDownLatch latch = new CountDownLatch(1);
+            
+            userManager.getCurrentUserDataFromDatabaseAsync(new CommunityUserManager.UserDataCallback() {
+                @Override
+                public void onUserDataReceived(Map<String, String> userData) {
+                    // Check if we have essential user data
+                    boolean hasEssentialData = userData.containsKey("name") || userData.containsKey("email");
+                    userExists[0] = !userData.isEmpty() && hasEssentialData;
+                    latch.countDown();
+                }
+            });
+            
+            // Wait for the result (max 5 seconds)
+            try {
+                latch.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Interrupted while waiting for user data: " + e.getMessage());
+                return false;
+            }
             
             long duration = System.currentTimeMillis() - startTime;
             Log.d(TAG, "Database check completed in " + duration + "ms");
@@ -187,16 +211,8 @@ public class SessionManager {
                 Log.d(TAG, "Slow connection detected (" + duration + "ms), monitoring connection quality");
             }
             
-            // If we get empty data, user doesn't exist
-            if (userData.isEmpty()) {
+            if (!userExists[0]) {
                 Log.d(TAG, "User not found in database: " + email);
-                return false;
-            }
-            
-            // Check if we have essential user data
-            boolean hasEssentialData = userData.containsKey("name") || userData.containsKey("email");
-            if (!hasEssentialData) {
-                Log.d(TAG, "User data incomplete in database: " + email);
                 return false;
             }
             
@@ -557,7 +573,7 @@ public class SessionManager {
      */
     private void redirectToLogin(Activity activity) {
         try {
-            Intent intent = new Intent(activity, MainActivity.class);
+            Intent intent = new Intent(activity, FoodActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             activity.startActivity(intent);
             activity.finish();
