@@ -1353,6 +1353,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 
 // 🚨 CLEAN CSV IMPORT METHOD - NO COMPLEX LOGIC
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
+    error_log("🔍 CSV: Import request received - POST data: " . print_r($_POST, true));
     error_log("=== CLEAN CSV IMPORT STARTED ===");
     
     if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
