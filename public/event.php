@@ -1378,6 +1378,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             exit;
         }
         
+        error_log("🔍 CSV: File size check - size: " . $file['size'] . " bytes, max: 5000000 bytes");
         if ($file['size'] > 5000000) {
             // Debug: Log the response before sending
             error_log("🔍 CSV: About to send JSON response - imported_count: $importedCount");
@@ -1386,6 +1387,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             exit;
         }
         
+        error_log("🔍 CSV: File validation passed, starting CSV processing...");
         try {
             // Simple database connection
             require_once __DIR__ . '/../config.php';
