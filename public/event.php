@@ -207,15 +207,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                         'event_date' => date('M j, Y g:i A', strtotime($date_time))
                     ];
                     
-                    // Simple duplicate prevention - track sent notifications
-                    static $sentNotifications = [];
-                    $notificationKey = $eventId . "_" . $title;
-                    
-                    if (isset($sentNotifications[$notificationKey])) {
-                        error_log("⚠️ Notification already sent for event: $title - skipping duplicate");
-                        return;
-                    }
-                    $sentNotifications[$notificationKey] = true;
                     
                     // Send FCM notifications directly
                     $successCount = 0;
@@ -759,15 +750,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         
         error_log("✅ AJAX Event created successfully with ID: $eventId");
         
-        // Simple duplicate prevention for CSV
-                            static $csvSentNotifications = [];
-                            $csvNotificationKey = $nextId . "_" . $title;
-                            
-                            if (isset($csvSentNotifications[$csvNotificationKey])) {
-                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                return;
-                            }
-                            $csvSentNotifications[$csvNotificationKey] = true;
                             
                             // Send notifications using the SAME approach as dash.php
         $notificationMessage = '';
@@ -837,15 +819,6 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
         $locationText = ($location === 'all' || empty($location)) ? 'All Locations' : $location;
         $notificationBody = "New event: $title at $locationText on " . date('M j, Y g:i A', strtotime($date_time));
         
-        // Simple duplicate prevention for CSV
-                            static $csvSentNotifications = [];
-                            $csvNotificationKey = $nextId . "_" . $title;
-                            
-                            if (isset($csvSentNotifications[$csvNotificationKey])) {
-                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                return;
-                            }
-                            $csvSentNotifications[$csvNotificationKey] = true;
                             
                             // Send notifications using the working API
         $successCount = 0;
@@ -952,15 +925,6 @@ function sendNotificationViaAPI($notificationData) {
             return ['success' => false, 'error' => 'No active FCM tokens found'];
         }
         
-        // Simple duplicate prevention for CSV
-                            static $csvSentNotifications = [];
-                            $csvNotificationKey = $nextId . "_" . $title;
-                            
-                            if (isset($csvSentNotifications[$csvNotificationKey])) {
-                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                return;
-                            }
-                            $csvSentNotifications[$csvNotificationKey] = true;
                             
                             // Send notification to each token
         $successCount = 0;
@@ -1461,15 +1425,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             $importedCount++;
                         error_log("✅ CSV: Row $row imported - ID: $nextId");
                         
-                        // Simple duplicate prevention for CSV
-                            static $csvSentNotifications = [];
-                            $csvNotificationKey = $nextId . "_" . $title;
-                            
-                            if (isset($csvSentNotifications[$csvNotificationKey])) {
-                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                return;
-                            }
-                            $csvSentNotifications[$csvNotificationKey] = true;
                             
                             // Send notification
                         try {
@@ -1603,15 +1558,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
         
         $stmt->execute();
         
-        // Simple duplicate prevention for CSV
-                            static $csvSentNotifications = [];
-                            $csvNotificationKey = $nextId . "_" . $title;
-                            
-                            if (isset($csvSentNotifications[$csvNotificationKey])) {
-                                error_log("⚠️ CSV: Notification already sent for event: $title - skipping duplicate");
-                                return;
-                            }
-                            $csvSentNotifications[$csvNotificationKey] = true;
                             
                             // Send notification about the updated event with location-based targeting
         try {
