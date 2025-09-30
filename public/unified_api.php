@@ -369,6 +369,20 @@ function handleCreateEventRequest($db) {
         
         if ($result) {
             $eventId = $pdo->lastInsertId();
+            
+            // Add lock file mechanism for manual event creation
+            $eventKey = md5($title . $location . date('Y-m-d H:i:s', strtotime($date_time)));
+            $lockFile = "/tmp/notification_" . $eventKey . ".lock";
+            
+            // Check if notification already sent for this exact event
+            if (!file_exists($lockFile)) {
+                // Create lock file to prevent duplicates
+                file_put_contents($lockFile, time());
+                error_log("🔔 Unified API: Created lock file for event: $title at $location");
+            } else {
+                error_log("⚠️ Unified API: Notification already sent for event: $title at $location - skipping duplicate");
+            }
+            
             echo json_encode([
                 'success' => true,
                 'message' => 'Event created successfully',

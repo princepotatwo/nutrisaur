@@ -770,6 +770,24 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
     try {
         error_log("🚨 sendEventNotifications called for event: $title");
         
+        // Create unique lock file name based on event details (same as CSV import)
+        $eventKey = md5($title . $location . date('Y-m-d H:i:s', strtotime($date_time)));
+        $lockFile = "/tmp/notification_" . $eventKey . ".lock";
+        
+        // Check if notification already sent for this exact event
+        if (file_exists($lockFile)) {
+            error_log("⚠️ Manual Event: Notification already sent for event: $title at $location - skipping duplicate");
+            return [
+                'success' => true,
+                'message' => 'Event created but notification already sent for this event',
+                'devices_notified' => 0
+            ];
+        }
+        
+        // Create lock file to prevent duplicates
+        file_put_contents($lockFile, time());
+        error_log("🔔 Manual Event: Sending notification for event: $title at $location");
+        
         // Get FCM tokens based on location
         $fcmTokenData = getFCMTokensByLocation($location);
         $fcmTokens = array_column($fcmTokenData, 'fcm_token');
