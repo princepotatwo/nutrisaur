@@ -874,7 +874,7 @@ if (isset($_GET['logout'])) {
 
 /* Base navbar styles */
 .navbar {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 40px;
@@ -7209,13 +7209,32 @@ body {
     transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hide navbar text when minimized, show when expanded */
+/* Minimized navbar state - hide all text content */
 .navbar-logo-text,
 .navbar span:not(.navbar-icon),
 .navbar-footer {
     opacity: 0;
     transition: opacity 0.3s ease;
     overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Minimized navbar - center the logo icon */
+.navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 20px;
+}
+
+/* Expanded navbar state - show everything */
+.navbar:hover {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    padding-top: 0;
 }
 
 .navbar:hover .navbar-logo-text,
