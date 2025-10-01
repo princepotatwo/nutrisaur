@@ -11,11 +11,11 @@ error_log("🚀 GET PARAMS: " . json_encode($_GET));
 require_once __DIR__ . '/api/DatabaseAPI.php';
 
 // Use DatabaseAPI for FCM notifications instead of custom implementation
-function sendEventFCMNotificationToToken($fcmToken, $title, $body) {
+function sendEventFCMNotificationToToken($fcmToken, $title, $body, $dataPayload = null) {
     try {
         // Use the working FCM implementation from DatabaseAPI
-        // Call the global function from DatabaseAPI.php
-        return \sendFCMNotificationToToken($fcmToken, $title, $body);
+        // Call the global function from DatabaseAPI.php with proper data payload
+        return \sendFCMNotificationToToken($fcmToken, $title, $body, $dataPayload);
     } catch (Exception $e) {
         return ['success' => false, 'error' => $e->getMessage()];
     }
@@ -208,7 +208,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                         $userEmail = $tokenData['user_email'];
                         
                         error_log("🔍 Attempting to send FCM notification to user: $userEmail, token: " . substr($fcmToken, 0, 20) . "...");
-                        $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body']);
+                        
+                        // Create proper data payload for event notifications
+                        $dataPayload = [
+                            'type' => 'event_created',
+                            'title' => $notificationData['title'],
+                            'body' => $notificationData['body'],
+                            'event_id' => $eventId,
+                            'event_type' => $type,
+                            'event_location' => $location,
+                            'event_date' => date('M j, Y g:i A', strtotime($date_time)),
+                            'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
+                        ];
+                        
+                        $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body'], $dataPayload);
                         error_log("🔍 FCM Result: " . json_encode($fcmResult));
                         if ($fcmResult['success']) {
                             $successCount++;
