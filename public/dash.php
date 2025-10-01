@@ -7419,55 +7419,145 @@ body {
         margin-bottom: 10px !important;
     }
     
-    /* Filter Section - One Row on Mobile */
+    /* Filter Section - Mobile Optimized */
     .filter-section {
-        padding: 8px 15px !important;
-        margin-bottom: 12px !important;
+        padding: 12px 15px !important;
+        margin-bottom: 15px !important;
+        border-radius: 12px !important;
     }
     
     .filter-container {
         display: flex !important;
-        flex-direction: row !important;
-        gap: 8px !important;
-        align-items: flex-end !important;
-        flex-wrap: nowrap !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: stretch !important;
     }
     
     .filter-group {
         display: flex !important;
         flex-direction: column !important;
-        flex: 1 !important;
-        min-width: 120px !important;
-        max-width: 150px !important;
+        width: 100% !important;
+        position: relative !important;
     }
     
     .filter-group label {
-        font-size: 10px !important;
-        margin-bottom: 2px !important;
-        font-weight: 500 !important;
-        line-height: 1.2 !important;
+        font-size: 12px !important;
+        margin-bottom: 6px !important;
+        font-weight: 600 !important;
+        color: var(--color-text) !important;
     }
     
     .custom-select-container {
         width: 100% !important;
+        position: relative !important;
     }
     
     .custom-select-container.small-width {
-        max-width: 100% !important;
+        width: 100% !important;
     }
     
     .select-header {
-        font-size: 11px !important;
-        padding: 4px 6px !important;
+        font-size: 14px !important;
+        padding: 12px 16px !important;
         height: auto !important;
-        min-height: 28px !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
+        min-height: 48px !important;
+        background: var(--color-card) !important;
+        border: 2px solid var(--color-border) !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        transition: all 0.3s ease !important;
+        -webkit-tap-highlight-color: transparent !important;
+        user-select: none !important;
+        touch-action: manipulation !important;
+    }
+    
+    .select-header:hover,
+    .select-header:active {
+        border-color: var(--color-highlight) !important;
+        background: var(--color-bg) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
     }
     
     .dropdown-arrow {
-        font-size: 8px !important;
+        font-size: 12px !important;
+        transition: transform 0.3s ease !important;
+        pointer-events: none !important;
+    }
+    
+    .select-header.active .dropdown-arrow {
+        transform: rotate(180deg) !important;
+    }
+    
+    /* Mobile Dropdown Styling */
+    .dropdown-content {
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: var(--color-card) !important;
+        border: 2px solid var(--color-border) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        z-index: 1000 !important;
+        max-height: 200px !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .dropdown-content.active {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+    }
+    
+    .search-container {
+        padding: 8px !important;
+        border-bottom: 1px solid var(--color-border) !important;
+        position: sticky !important;
+        top: 0 !important;
+        background: var(--color-card) !important;
+        z-index: 10 !important;
+    }
+    
+    .search-container input {
+        width: 100% !important;
+        padding: 8px 12px !important;
+        border: 1px solid var(--color-border) !important;
+        border-radius: 6px !important;
+        font-size: 14px !important;
+        background: var(--color-bg) !important;
+        color: var(--color-text) !important;
+    }
+    
+    .options-container {
+        max-height: 150px !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .option-item {
+        padding: 12px 16px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        border-bottom: 1px solid var(--color-border) !important;
+        font-size: 14px !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+    
+    .option-item:hover,
+    .option-item:active {
+        background: var(--color-highlight) !important;
+        color: white !important;
+    }
+    
+    .option-item:last-child {
+        border-bottom: none !important;
     }
     
     /* Charts and content - Smaller on mobile */
@@ -12938,6 +13028,9 @@ body {
             // Check if elements exist
             console.log('📱 Desktop navbar exists:', !!navbar);
             
+            // Initialize mobile dropdown functionality
+            initMobileDropdowns();
+            
             // Desktop hover navigation (unchanged)
             if (navbar && window.innerWidth >= 769) {
                 navbar.addEventListener('mouseenter', function() {
@@ -13006,6 +13099,123 @@ body {
             }
             
             console.log('✅ Modern mobile top navigation system initialized successfully');
+        }
+        
+        // Initialize mobile dropdown functionality
+        function initMobileDropdowns() {
+            console.log('📱 Initializing mobile dropdown functionality...');
+            
+            // Get all dropdown elements
+            const selectHeaders = document.querySelectorAll('.select-header');
+            const dropdownContents = document.querySelectorAll('.dropdown-content');
+            const optionItems = document.querySelectorAll('.option-item');
+            
+            console.log('📱 Found select headers:', selectHeaders.length);
+            console.log('📱 Found dropdown contents:', dropdownContents.length);
+            console.log('📱 Found option items:', optionItems.length);
+            
+            // Add touch and click event listeners to select headers
+            selectHeaders.forEach((header, index) => {
+                const dropdown = dropdownContents[index];
+                if (!dropdown) return;
+                
+                // Touch events for mobile
+                header.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    toggleDropdown(header, dropdown);
+                });
+                
+                // Click events for desktop
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleDropdown(header, dropdown);
+                });
+                
+                // Add active class styling
+                header.addEventListener('touchstart', function() {
+                    header.classList.add('active');
+                });
+                
+                header.addEventListener('touchend', function() {
+                    setTimeout(() => header.classList.remove('active'), 150);
+                });
+            });
+            
+            // Add event listeners to option items
+            optionItems.forEach((item) => {
+                // Touch events for mobile
+                item.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    selectOption(item);
+                });
+                
+                // Click events for desktop
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    selectOption(item);
+                });
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('touchstart', function(e) {
+                if (!e.target.closest('.custom-select-container')) {
+                    closeAllDropdowns();
+                }
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.custom-select-container')) {
+                    closeAllDropdowns();
+                }
+            });
+            
+            console.log('✅ Mobile dropdown functionality initialized');
+        }
+        
+        // Toggle dropdown function
+        function toggleDropdown(header, dropdown) {
+            const isActive = dropdown.classList.contains('active');
+            
+            // Close all other dropdowns first
+            closeAllDropdowns();
+            
+            if (!isActive) {
+                dropdown.classList.add('active');
+                header.classList.add('active');
+            }
+        }
+        
+        // Close all dropdowns
+        function closeAllDropdowns() {
+            const dropdowns = document.querySelectorAll('.dropdown-content');
+            const headers = document.querySelectorAll('.select-header');
+            
+            dropdowns.forEach(dropdown => dropdown.classList.remove('active'));
+            headers.forEach(header => header.classList.remove('active'));
+        }
+        
+        // Select option function
+        function selectOption(item) {
+            const value = item.getAttribute('data-value');
+            const text = item.textContent.trim();
+            const container = item.closest('.custom-select-container');
+            const header = container.querySelector('.select-header span');
+            
+            if (header) {
+                header.textContent = text;
+            }
+            
+            // Close dropdown
+            closeAllDropdowns();
+            
+            // Trigger change event if needed
+            if (typeof selectOption === 'function') {
+                selectOption(value, text);
+            }
+            
+            console.log('📱 Option selected:', value, text);
         }
 
         // Initialize when DOM is ready
