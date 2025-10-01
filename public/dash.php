@@ -7196,9 +7196,9 @@ body {
 
 /* Desktop Navbar Toggle Button - Removed duplicate */
 
-/* Hover-based Navbar Animation */
+/* Hover-based Navbar Animation with Synchronized Content */
 .navbar {
-    transition: transform 0.3s ease, width 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Default state - navbar minimized (shows 40px) */
@@ -7212,13 +7212,16 @@ body {
     transform: translateX(0); /* Show full navbar */
 }
 
-/* Body padding with smooth transitions */
+/* Body padding with synchronized smooth transitions */
 body {
-    transition: padding-left 0.3s ease;
+    transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     padding-left: 40px !important; /* Default: show 40px of navbar */
 }
 
-/* Body padding will be handled by JavaScript on hover */
+/* Content area animation */
+.dashboard {
+    transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
 /* Mobile Styles */
 @media (max-width: 768px) {
@@ -7281,6 +7284,7 @@ body {
         width: 320px !important;
         transform: translateX(-280px); /* Default: minimized */
         overflow: visible !important;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .navbar:hover {
@@ -7289,7 +7293,11 @@ body {
     
     body {
         padding-left: 40px !important; /* Default: minimized */
-        transition: padding-left 0.3s ease;
+        transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .dashboard {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 }
 
@@ -12499,10 +12507,11 @@ body {
             body.style.overflow = '';
         }
 
-        // Desktop hover functions
+        // Desktop hover functions with synchronized animations
         function expandNavbar() {
             if (!navState.isMobile) {
                 console.log('🖥️ Expanding navbar on hover');
+                // Smoothly animate content to make room for expanded navbar
                 body.style.paddingLeft = '320px';
             }
         }
@@ -12510,6 +12519,7 @@ body {
         function minimizeNavbar() {
             if (!navState.isMobile) {
                 console.log('🖥️ Minimizing navbar on mouse leave');
+                // Smoothly animate content back to minimized state
                 body.style.paddingLeft = '40px';
             }
         }
