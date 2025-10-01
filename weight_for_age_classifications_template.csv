@@ -1,0 +1,6 @@
+name,email,password,municipality,barangay,sex,birthday,is_pregnant,weight,height,screening_date
+"John Doe","john@example.com","password123","CITY OF BALANGA","Bagumbayan","Male","2020-01-15","No","8.5","75.0","2024-01-15 10:30:00"
+"Jane Smith","jane@example.com","mypass456","MARIVELES","Alion","Female","2020-03-20","No","7.2","70.0","2024-01-15 14:30:00"
+"Mike Johnson","mike@example.com","testpass789","ORANI","Poblacion","Male","2021-06-10","No","6.8","65.0","2024-01-15 09:15:00"
+"Sarah Wilson","sarah@example.com","demo123","ABUCAY","Wawa","Female","2021-09-25","No","5.9","60.0","2024-01-15 16:45:00"
+"David Brown","david@example.com","sample456","SAMAL","Sapa","Male","2022-02-14","No","4.2","55.0","2024-01-15 11:20:00"
