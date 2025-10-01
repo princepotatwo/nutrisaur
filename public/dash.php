@@ -3465,6 +3465,19 @@ header .user-info {
     margin-top: -30px; /* Move container up */
 }
 
+/* Chart header section styling */
+.chart-header-section {
+    margin-bottom: 20px;
+}
+
+.chart-header-section h3 {
+    margin-bottom: 8px;
+}
+
+.chart-header-section .chart-description {
+    margin-bottom: 0;
+}
+
 #ageClassificationChart {
     width: 100% !important;
     height: 100% !important;
@@ -7867,6 +7880,21 @@ body {
         padding: 10px !important;
     }
     
+    /* Age chart header section - stack vertically on mobile */
+    .chart-header-section {
+        margin-bottom: 15px !important;
+    }
+    
+    .chart-header-section h3 {
+        margin-bottom: 8px !important;
+        text-align: center !important;
+    }
+    
+    .chart-header-section .chart-description {
+        text-align: center !important;
+        margin-bottom: 15px !important;
+    }
+    
     /* Chart canvas optimization */
     .trends-chart-container canvas,
     .age-classification-chart-container canvas {
@@ -8472,9 +8500,13 @@ body {
 
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
-                <h3>Age Classification Chart</h3>
-                <p class="chart-description">Nutritional classifications by age groups. Age range adjusts based on selected WHO standard.</p>
+                <!-- Header Section - Stacked for mobile -->
+                <div class="chart-header-section">
+                    <h3>Age Classification Chart</h3>
+                    <p class="chart-description">Nutritional classifications by age groups. Age range adjusts based on selected WHO standard.</p>
+                </div>
                 
+                <!-- Chart Section -->
                 <div class="age-classification-chart-container">
                     <canvas id="ageClassificationLineChart"></canvas>
                 </div>
