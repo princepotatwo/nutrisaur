@@ -2658,18 +2658,20 @@ header {
             max-width: none;
         }
 
-        /* Ensure name column shows full names */
+        /* Ensure name column shows full names - HIGH PRIORITY */
         .user-table th:nth-child(1),
         .user-table td:nth-child(1) {
-            min-width: 200px !important;
+            min-width: 250px !important;
             max-width: none !important;
             white-space: nowrap !important;
             word-wrap: normal !important;
+            word-break: normal !important;
+            overflow-wrap: normal !important;
             text-align: left !important;
             padding-left: 12px !important;
             overflow: visible !important;
             text-overflow: clip !important;
-            width: 200px !important;
+            width: 250px !important;
         }
 
         /* Ensure email column shows full email address */
@@ -2758,6 +2760,18 @@ header {
             max-width: none;
             overflow: visible;
             text-overflow: clip;
+        }
+
+        /* CRITICAL: Override name column to show full text */
+        .user-table th:nth-child(1),
+        .user-table td:nth-child(1) {
+            white-space: nowrap !important;
+            word-wrap: normal !important;
+            word-break: normal !important;
+            overflow-wrap: normal !important;
+            text-align: left !important;
+            min-width: 250px !important;
+            width: 250px !important;
         }
 
         /* Professional table borders - Add vertical grid lines between columns */
