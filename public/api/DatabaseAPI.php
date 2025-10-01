@@ -1948,12 +1948,19 @@ class DatabaseAPI {
                             $classification = $results['bmi_for_age']['classification'] ?? 'Normal';
                         } else if ($whoStandard === 'bmi-adult') {
                             // For BMI-adult, use adult BMI classification
-                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                            if ($bmi < 16.0) $classification = 'Severely Underweight';
-                            else if ($bmi < 18.5) $classification = 'Underweight';
-                            else if ($bmi < 25) $classification = 'Normal';
-                            else if ($bmi < 30) $classification = 'Overweight';
-                            else $classification = 'Obese';
+                            $weight = floatval($user['weight']);
+                            $height = floatval($user['height']);
+                            
+                            if ($weight > 0 && $height > 0) {
+                                $bmi = $weight / pow($height / 100, 2);
+                                if ($bmi < 16.0) $classification = 'Severely Underweight';
+                                else if ($bmi < 18.5) $classification = 'Underweight';
+                                else if ($bmi < 25) $classification = 'Normal';
+                                else if ($bmi < 30) $classification = 'Overweight';
+                                else $classification = 'Obese';
+                            } else {
+                                $classification = 'No Data';
+                            }
                         }
                         
                         // Count the classification
@@ -3423,7 +3430,8 @@ class DatabaseAPI {
                         // Check for valid weight and height values
                         if ($weight > 0 && $height > 0) {
                             $bmi = $weight / pow($height / 100, 2);
-                            if ($bmi < 18.5) $classification = 'Underweight';
+                            if ($bmi < 16.0) $classification = 'Severely Underweight';
+                            else if ($bmi < 18.5) $classification = 'Underweight';
                             else if ($bmi < 25) $classification = 'Normal';
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';
@@ -3678,9 +3686,14 @@ class DatabaseAPI {
                     // Check BMI Adult - only include SEVERELY underweight cases
                     $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
                     if ($ageInMonths >= 228) { // 19+ years
-                        $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                        if ($bmi < 16.0) { // Only severely underweight (BMI < 16.0)
-                            $severeClassifications[] = 'Severely Underweight (BMI Adult)';
+                        $weight = floatval($user['weight']);
+                        $height = floatval($user['height']);
+                        
+                        if ($weight > 0 && $height > 0) {
+                            $bmi = $weight / pow($height / 100, 2);
+                            if ($bmi < 16.0) { // Only severely underweight (BMI < 16.0)
+                                $severeClassifications[] = 'Severely Underweight (BMI Adult)';
+                            }
                         }
                     }
                     
@@ -3841,13 +3854,19 @@ class DatabaseAPI {
             return;
         }
         
-        $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+        $weight = floatval($user['weight']);
+        $height = floatval($user['height']);
         
-        if ($bmi < 16.0) $classification = 'Severely Underweight';
-        else if ($bmi < 18.5) $classification = 'Underweight';
-        else if ($bmi < 25) $classification = 'Normal';
-        else if ($bmi < 30) $classification = 'Overweight';
-        else $classification = 'Obese';
+        if ($weight > 0 && $height > 0) {
+            $bmi = $weight / pow($height / 100, 2);
+            if ($bmi < 16.0) $classification = 'Severely Underweight';
+            else if ($bmi < 18.5) $classification = 'Underweight';
+            else if ($bmi < 25) $classification = 'Normal';
+            else if ($bmi < 30) $classification = 'Overweight';
+            else $classification = 'Obese';
+        } else {
+            $classification = 'No Data';
+        }
         
         if (isset($classifications[$classification])) {
             $classifications[$classification]++;

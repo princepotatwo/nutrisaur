@@ -212,6 +212,7 @@ function getInitialClassifications($whoStandard) {
             ];
         case 'bmi-adult':
             return [
+                'Severely Underweight' => 0,
                 'Underweight' => 0,
                 'Normal' => 0,
                 'Overweight' => 0,
