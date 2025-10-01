@@ -7151,33 +7151,79 @@ body {
     font-weight: bold;
 }
 
-/* Desktop Navbar Toggle Button (Left Side) */
-.desktop-nav-toggle {
+/* Navbar Handle Container */
+.navbar-handle {
     position: absolute;
     top: 50%;
-    left: -15px;
+    left: -25px;
     transform: translateY(-50%);
     z-index: 10001;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-highlight), rgba(161, 180, 84, 0.8));
-    border: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    transition: all 0.3s ease;
     display: none;
 }
 
+/* Desktop Navbar Toggle Button (Left Side) */
+.desktop-nav-toggle {
+    position: relative;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-highlight), rgba(161, 180, 84, 0.9));
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .desktop-nav-toggle:hover {
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(135deg, var(--color-highlight), rgba(161, 180, 84, 1));
 }
 
 .desktop-nav-toggle .toggle-icon {
     color: white;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
+}
+
+/* Handle Extension (Drawer-like grip) */
+.handle-extension {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(161, 180, 84, 0.8), rgba(161, 180, 84, 0.6));
+    border-radius: 8px 0 0 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.handle-line {
+    width: 3px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.navbar-handle:hover .handle-extension {
+    background: linear-gradient(135deg, rgba(161, 180, 84, 0.9), rgba(161, 180, 84, 0.7));
+    transform: translateY(-50%) scale(1.05);
+}
+
+.navbar-handle:hover .handle-line {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
 }
 
 /* Navigation Overlay (Mobile) */
@@ -7303,7 +7349,7 @@ body.navbar-expanded {
 
 /* Desktop Styles */
 @media (min-width: 769px) {
-    .desktop-nav-toggle {
+    .navbar-handle {
         display: block !important;
     }
     
@@ -7352,10 +7398,17 @@ body.navbar-expanded {
                 <span class="close-icon">×</span>
             </button>
             
-            <!-- Desktop Toggle Button (Left Side) -->
-            <button class="desktop-nav-toggle" id="desktopNavToggle" aria-label="Toggle Navigation">
-                <span class="toggle-icon">◀</span>
-            </button>
+            <!-- Desktop Toggle Handle (Left Side) -->
+            <div class="navbar-handle" id="navbarHandle">
+                <button class="desktop-nav-toggle" id="desktopNavToggle" aria-label="Toggle Navigation">
+                    <span class="toggle-icon">◀</span>
+                </button>
+                <div class="handle-extension">
+                    <div class="handle-line"></div>
+                    <div class="handle-line"></div>
+                    <div class="handle-line"></div>
+                </div>
+            </div>
             
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
@@ -12474,6 +12527,7 @@ body.navbar-expanded {
         const mobileNavClose = document.getElementById('mobileNavClose');
         const navOverlay = document.getElementById('navOverlay');
         const desktopNavToggle = document.getElementById('desktopNavToggle');
+        const navbarHandle = document.getElementById('navbarHandle');
         const body = document.body;
 
         // Initialize navigation
@@ -12489,6 +12543,7 @@ body.navbar-expanded {
             // Debug: Check if elements exist
             console.log('📱 Mobile toggle exists:', !!mobileNavToggle);
             console.log('🖥️ Desktop toggle exists:', !!desktopNavToggle);
+            console.log('🔧 Navbar handle exists:', !!navbarHandle);
             console.log('📱 Navbar exists:', !!navbar);
             console.log('📱 Is mobile:', navState.isMobile);
 
