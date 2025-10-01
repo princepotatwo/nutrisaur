@@ -4579,9 +4579,9 @@ header {
             const deleteAllBtn = document.querySelector('.btn-delete-all .btn-text');
             if (deleteAllBtn) {
                 if (currentTableType === 'users') {
-                    deleteAllBtn.textContent = 'Delete Admin Users';
-                } else {
                     deleteAllBtn.textContent = 'Delete Community Users';
+                } else {
+                    deleteAllBtn.textContent = 'Delete Admin Users';
                 }
             }
         }
