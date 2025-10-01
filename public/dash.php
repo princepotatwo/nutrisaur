@@ -2812,32 +2812,7 @@ header .user-info {
     opacity: 0.06;
 }
 
-/* Update the responsive navbar styles */
-@media (max-width: 768px) {
-    .navbar {
-        width: 80px;
-        transform: translateX(0);
-        transition: transform 0.3s ease, width 0.3s ease;
-    }
-    
-    .navbar:hover {
-        width: 320px;
-    }
-    
-    .navbar-logo-text, .navbar span:not(.navbar-icon) {
-        opacity: 0;
-        transition: opacity 0.2s ease;
-    }
-    
-    .navbar:hover .navbar-logo-text, 
-    .navbar:hover span:not(.navbar-icon) {
-        opacity: 1;
-    }
-    
-    body {
-        padding-left: 80px;
-    }
-}
+/* Legacy mobile styles - now handled by modern navigation system */
 
 /* Add this media query for responsive adjustments */
 @media (max-width: 768px) {
@@ -4734,32 +4709,7 @@ header .user-info {
     opacity: 0.06;
 }
 
-/* Update the responsive navbar styles */
-@media (max-width: 768px) {
-    .navbar {
-        width: 80px;
-        transform: translateX(0);
-        transition: transform 0.3s ease, width 0.3s ease;
-    }
-    
-    .navbar:hover {
-        width: 320px;
-    }
-    
-    .navbar-logo-text, .navbar span:not(.navbar-icon) {
-        opacity: 0;
-        transition: opacity 0.2s ease;
-    }
-    
-    .navbar:hover .navbar-logo-text, 
-    .navbar:hover span:not(.navbar-icon) {
-        opacity: 1;
-    }
-    
-    body {
-        padding-left: 80px;
-    }
-}
+/* Legacy mobile styles - now handled by modern navigation system */
 
 /* Add this media query for responsive adjustments */
 @media (max-width: 768px) {
@@ -7170,11 +7120,261 @@ body {
         padding: 3px 6px;
     }
 }
+
+/* ===== MODERN 2025 MOBILE NAVIGATION ===== */
+
+/* Mobile Navigation Toggle Button */
+.mobile-nav-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 10001;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-highlight), rgba(161, 180, 84, 0.8));
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.mobile-nav-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-nav-toggle .toggle-icon {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Desktop Minimize Toggle Button */
+.desktop-minimize-toggle {
+    position: fixed;
+    top: 20px;
+    left: 350px;
+    z-index: 10001;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-highlight), rgba(161, 180, 84, 0.8));
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.desktop-minimize-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.desktop-minimize-toggle .minimize-icon {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Navigation Overlay (Mobile) */
+.nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.nav-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile Close Button in Navbar */
+.mobile-nav-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.mobile-nav-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Desktop Navbar Toggle Button */
+.desktop-nav-toggle {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--color-text);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.desktop-nav-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Navbar States */
+.navbar.collapsed {
+    width: 0 !important;
+    transform: translateX(-100%);
+}
+
+.navbar.expanded {
+    width: 320px !important;
+    transform: translateX(0);
+}
+
+/* Body padding adjustments */
+body.navbar-collapsed {
+    padding-left: 0 !important;
+}
+
+body.navbar-minimized {
+    padding-left: 80px !important;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .mobile-nav-toggle {
+        display: block !important;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 10001;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-nav-close {
+        display: block !important;
+    }
+    
+    .desktop-minimize-toggle,
+    .desktop-nav-toggle {
+        display: none !important;
+    }
+    
+    .navbar {
+        width: 320px !important;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 9999;
+        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .navbar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    body {
+        padding-left: 0 !important;
+    }
+    
+    .mobile-nav-toggle.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* Desktop Styles */
+@media (min-width: 769px) {
+    .desktop-minimize-toggle,
+    .desktop-nav-toggle {
+        display: block !important;
+    }
+    
+    .mobile-nav-toggle,
+    .mobile-nav-close,
+    .nav-overlay {
+        display: none !important;
+    }
+    
+    .navbar {
+        width: 320px !important;
+        transform: translateX(0);
+        transition: width 0.3s ease, transform 0.3s ease;
+    }
+    
+    body {
+        padding-left: 320px !important;
+        transition: padding-left 0.3s ease;
+    }
+}
+
+/* Light Theme Adjustments */
+.light-theme .mobile-nav-toggle {
+    background: linear-gradient(135deg, var(--color-highlight), rgba(142, 185, 110, 0.8));
+    box-shadow: 0 4px 15px rgba(142, 185, 110, 0.3);
+}
+
+.light-theme .desktop-minimize-toggle {
+    background: linear-gradient(135deg, var(--color-highlight), rgba(142, 185, 110, 0.8));
+    box-shadow: 0 4px 15px rgba(142, 185, 110, 0.3);
+}
 </style>
 <body class="light-theme">
 
-    <div class="navbar">
+    <!-- Mobile Navigation Toggle Button -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Navigation">
+        <span class="toggle-icon">☰</span>
+    </button>
+
+    <!-- Desktop Minimize Toggle Button -->
+    <button class="desktop-minimize-toggle" id="desktopMinimizeToggle" aria-label="Minimize Navigation">
+        <span class="minimize-icon">◀</span>
+    </button>
+
+    <!-- Navigation Overlay (Mobile) -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <div class="navbar" id="navbar">
         <div class="navbar-header">
+            <!-- Mobile Close Button -->
+            <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close Navigation">
+                <span class="close-icon">×</span>
+            </button>
+            
+            <!-- Desktop Minimize Button -->
+            <button class="desktop-nav-toggle" id="desktopNavToggle" aria-label="Toggle Navigation">
+                <span class="toggle-icon">◀</span>
+            </button>
+            
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
                     <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
@@ -12275,6 +12475,159 @@ body {
                     severeCasesList.innerHTML = '<div class="severe-cases-empty">Error loading severe cases: ' + error.message + '</div>';
                 }
             }
+        }
+
+        // ===== MODERN 2025 NAVIGATION SYSTEM =====
+        
+        // Navigation state management
+        let navState = {
+            isMobile: window.innerWidth <= 768,
+            isCollapsed: false,
+            isMinimized: false
+        };
+
+        // DOM elements
+        const navbar = document.getElementById('navbar');
+        const mobileNavToggle = document.getElementById('mobileNavToggle');
+        const mobileNavClose = document.getElementById('mobileNavClose');
+        const navOverlay = document.getElementById('navOverlay');
+        const desktopMinimizeToggle = document.getElementById('desktopMinimizeToggle');
+        const desktopNavToggle = document.getElementById('desktopNavToggle');
+        const body = document.body;
+
+        // Initialize navigation
+        function initNavigation() {
+            console.log('🚀 Initializing modern navigation system...');
+            
+            // Load saved state
+            const savedState = localStorage.getItem('navbarState');
+            if (savedState) {
+                navState = { ...navState, ...JSON.parse(savedState) };
+            }
+
+            // Debug: Check if elements exist
+            console.log('📱 Mobile toggle exists:', !!mobileNavToggle);
+            console.log('🖥️ Desktop minimize exists:', !!desktopMinimizeToggle);
+            console.log('📱 Navbar exists:', !!navbar);
+            console.log('📱 Is mobile:', navState.isMobile);
+
+            // Set initial state
+            updateNavbarState();
+            setupEventListeners();
+            
+            console.log('✅ Navigation system initialized!');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Mobile navigation
+            if (mobileNavToggle) {
+                mobileNavToggle.addEventListener('click', openMobileNav);
+            }
+            
+            if (mobileNavClose) {
+                mobileNavClose.addEventListener('click', closeMobileNav);
+            }
+            
+            if (navOverlay) {
+                navOverlay.addEventListener('click', closeMobileNav);
+            }
+
+            // Desktop navigation
+            if (desktopMinimizeToggle) {
+                desktopMinimizeToggle.addEventListener('click', toggleDesktopNav);
+            }
+            
+            if (desktopNavToggle) {
+                desktopNavToggle.addEventListener('click', toggleDesktopNav);
+            }
+
+            // Handle window resize
+            window.addEventListener('resize', handleResize);
+            
+            // Handle escape key
+            document.addEventListener('keydown', handleKeydown);
+        }
+
+        // Mobile navigation functions
+        function openMobileNav() {
+            navbar.classList.add('mobile-open');
+            navOverlay.classList.add('active');
+            mobileNavToggle.classList.add('hidden');
+            body.style.overflow = 'hidden';
+        }
+
+        function closeMobileNav() {
+            navbar.classList.remove('mobile-open');
+            navOverlay.classList.remove('active');
+            mobileNavToggle.classList.remove('hidden');
+            body.style.overflow = '';
+        }
+
+        // Desktop navigation functions
+        function toggleDesktopNav() {
+            navState.isCollapsed = !navState.isCollapsed;
+            updateNavbarState();
+            saveNavbarState();
+        }
+
+        function updateNavbarState() {
+            if (navState.isMobile) {
+                // Mobile behavior
+                body.classList.remove('navbar-collapsed', 'navbar-minimized');
+                navbar.classList.remove('collapsed', 'expanded');
+            } else {
+                // Desktop behavior
+                if (navState.isCollapsed) {
+                    navbar.classList.add('collapsed');
+                    body.classList.add('navbar-collapsed');
+                    body.classList.remove('navbar-minimized');
+                } else {
+                    navbar.classList.remove('collapsed');
+                    body.classList.remove('navbar-collapsed');
+                    body.classList.add('navbar-minimized');
+                }
+            }
+        }
+
+        // Handle window resize
+        function handleResize() {
+            const wasMobile = navState.isMobile;
+            navState.isMobile = window.innerWidth <= 768;
+            
+            if (wasMobile !== navState.isMobile) {
+                // Device type changed
+                updateNavbarState();
+                
+                if (navState.isMobile) {
+                    // Switched to mobile - close any open nav
+                    closeMobileNav();
+                }
+            }
+        }
+
+        // Handle keyboard navigation
+        function handleKeydown(event) {
+            if (event.key === 'Escape') {
+                if (navState.isMobile && navbar.classList.contains('mobile-open')) {
+                    closeMobileNav();
+                }
+            }
+        }
+
+        // Save navigation state
+        function saveNavbarState() {
+            localStorage.setItem('navbarState', JSON.stringify({
+                isCollapsed: navState.isCollapsed,
+                isMinimized: navState.isMinimized
+            }));
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavigation);
+        } else {
+            initNavigation();
         }
 
     </script>
