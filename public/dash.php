@@ -7197,10 +7197,12 @@ body {
 
 /* Desktop Navbar Toggle Button - Removed duplicate */
 
-/* Hover state - navbar expanded (shows full width) */
-.navbar:hover {
-    width: 320px !important;
+/* JavaScript-controlled hover to prevent shaking */
+.navbar {
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* CSS hover removed - handled by JavaScript with delay */
 
 /* Body padding will be handled by base styles */
 
@@ -12517,20 +12519,29 @@ body {
             body.style.overflow = '';
         }
 
-        // Desktop hover functions with synchronized animations
+        // Desktop hover functions with delay to prevent shaking
+        let hoverTimeout;
+        let isNavbarExpanded = false;
+
         function expandNavbar() {
-            if (!navState.isMobile) {
+            if (!navState.isMobile && !isNavbarExpanded) {
+                clearTimeout(hoverTimeout);
                 console.log('🖥️ Expanding navbar on hover');
-                // Smoothly animate content to make room for expanded navbar
+                isNavbarExpanded = true;
+                navbar.style.width = '320px';
                 body.style.paddingLeft = '320px';
             }
         }
 
         function minimizeNavbar() {
-            if (!navState.isMobile) {
-                console.log('🖥️ Minimizing navbar on mouse leave');
-                // Smoothly animate content back to minimized state
-                body.style.paddingLeft = '40px';
+            if (!navState.isMobile && isNavbarExpanded) {
+                // Add delay before minimizing to prevent shaking
+                hoverTimeout = setTimeout(() => {
+                    console.log('🖥️ Minimizing navbar after delay');
+                    isNavbarExpanded = false;
+                    navbar.style.width = '40px';
+                    body.style.paddingLeft = '40px';
+                }, 150); // 150ms delay
             }
         }
 
@@ -12541,7 +12552,9 @@ body {
                 navbar.classList.remove('collapsed', 'expanded');
             } else {
                 // Desktop behavior - start minimized
+                navbar.style.width = '40px';
                 body.style.paddingLeft = '40px';
+                isNavbarExpanded = false;
             }
         }
 
