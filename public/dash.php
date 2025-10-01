@@ -7499,11 +7499,11 @@ body {
         margin-left: 0 !important;
     }
     
-    /* Mobile: WHO Standard filter sizing */
+    /* Mobile: WHO Standard filter sizing - same as other dropdowns */
     .filter-container > .filter-group:last-child {
         flex: 0 0 auto !important;
-        max-width: 140px !important;
-        min-width: 100px !important;
+        max-width: 120px !important;
+        min-width: 80px !important;
         margin-right: 0 !important;
         margin-left: 0 !important;
     }
@@ -7583,14 +7583,15 @@ body {
         position: relative !important;
     }
     
-    /* Mobile: WHO Standard select - compact and visible */
+    /* Mobile: WHO Standard select - same size as other dropdowns */
     .filter-group select {
         padding: 3px 5px !important;
         font-size: 8px !important;
-        flex: 1 !important;
+        flex: 0 0 auto !important;
         min-width: 0 !important;
-        max-width: 140px !important;
-        min-width: 100px !important;
+        max-width: 120px !important;
+        min-width: 80px !important;
+        width: auto !important;
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
