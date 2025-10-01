@@ -3867,8 +3867,7 @@ header {
                                             
                                             echo '<tr data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             $fullName = htmlspecialchars($user['name'] ?? 'N/A');
-                                            $truncatedName = strlen($fullName) > 8 ? substr($fullName, 0, 8) . '...' : $fullName;
-                                            echo '<td class="text-center" title="' . $fullName . '" data-full-name="' . $fullName . '">' . $truncatedName . '</td>';
+                                            echo '<td class="text-center" title="' . $fullName . '" data-full-name="' . $fullName . '">' . $fullName . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">' . $ageDisplay . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
