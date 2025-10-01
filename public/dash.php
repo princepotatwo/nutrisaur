@@ -7419,34 +7419,133 @@ body {
         margin-bottom: 10px !important;
     }
     
-    /* Filter Section - Compact on mobile */
+    /* Filter Section - One Row on Mobile */
     .filter-section {
-        padding: 10px 15px !important;
-        margin-bottom: 15px !important;
+        padding: 8px 15px !important;
+        margin-bottom: 12px !important;
     }
     
     .filter-container {
-        flex-direction: column !important;
-        gap: 10px !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
     }
     
     .filter-group {
-        width: 100% !important;
+        flex: 1 !important;
+        min-width: 140px !important;
+    }
+    
+    .filter-group label {
+        font-size: 11px !important;
+        margin-bottom: 4px !important;
+        font-weight: 500 !important;
     }
     
     .custom-select-container {
         width: 100% !important;
     }
     
+    .custom-select-container.small-width {
+        max-width: 160px !important;
+    }
+    
+    .select-header {
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+        height: auto !important;
+        min-height: 32px !important;
+    }
+    
+    .dropdown-arrow {
+        font-size: 10px !important;
+    }
+    
     /* Charts and content - Smaller on mobile */
     .chart-container {
-        padding: 10px !important;
-        margin: 10px 0 !important;
+        padding: 8px !important;
+        margin: 8px 0 !important;
     }
     
     .chart-container h3 {
-        font-size: 16px !important;
+        font-size: 14px !important;
+        margin-bottom: 6px !important;
+    }
+    
+    /* Chart Cards - Compact on Mobile */
+    .chart-card {
+        padding: 8px !important;
+        margin: 6px 0 !important;
+        min-height: 200px !important;
+    }
+    
+    .chart-card h3 {
+        font-size: 14px !important;
+        margin-bottom: 6px !important;
+        line-height: 1.3 !important;
+    }
+    
+    .chart-description {
+        font-size: 11px !important;
         margin-bottom: 8px !important;
+        line-height: 1.3 !important;
+        opacity: 0.8 !important;
+    }
+    
+    /* Donut Charts - Smaller on Mobile */
+    .donut-chart-container {
+        height: 180px !important;
+        padding: 5px !important;
+    }
+    
+    .donut-chart {
+        width: 140px !important;
+        height: 140px !important;
+    }
+    
+    .donut-center-text {
+        font-size: 14px !important;
+        width: 60px !important;
+        height: 60px !important;
+        line-height: 60px !important;
+    }
+    
+    .donut-chart::before {
+        width: 50% !important;
+        height: 50% !important;
+    }
+    
+    /* Chart Segments - Smaller on Mobile */
+    .segments {
+        margin-top: 8px !important;
+        gap: 4px !important;
+    }
+    
+    .segment {
+        padding: 4px 6px !important;
+        font-size: 10px !important;
+        border-radius: 4px !important;
+    }
+    
+    .segment-dot {
+        width: 8px !important;
+        height: 8px !important;
+    }
+    
+    .segment-label {
+        font-size: 10px !important;
+    }
+    
+    .segment-count {
+        font-size: 10px !important;
+    }
+    
+    /* Chart Row - Single Column on Mobile */
+    .chart-row {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
     }
     
     /* Critical Alerts - Compact on mobile */
@@ -7506,26 +7605,50 @@ body {
     
     /* Geographic Chart - Smaller on mobile */
     .geographic-chart-container {
-        padding: 10px !important;
-        margin: 10px 0 !important;
-        height: 300px !important;
+        padding: 8px !important;
+        margin: 8px 0 !important;
+        height: 220px !important;
     }
     
     .geographic-chart-container h3 {
-        font-size: 16px !important;
-        margin-bottom: 8px !important;
+        font-size: 14px !important;
+        margin-bottom: 6px !important;
     }
     
     /* Trends Chart - Smaller on mobile */
     .trends-chart-container {
-        padding: 10px !important;
-        margin: 10px 0 !important;
-        height: 250px !important;
+        padding: 8px !important;
+        margin: 8px 0 !important;
+        height: 180px !important;
     }
     
     .trends-chart-container h3 {
-        font-size: 16px !important;
-        margin-bottom: 8px !important;
+        font-size: 14px !important;
+        margin-bottom: 6px !important;
+    }
+    
+    /* Age Classification Chart - Smaller on mobile */
+    .age-classification-chart-container {
+        padding: 8px !important;
+        margin: 8px 0 !important;
+        height: 180px !important;
+    }
+    
+    .age-classification-chart-container h3 {
+        font-size: 14px !important;
+        margin-bottom: 6px !important;
+    }
+    
+    /* Bar Charts - Smaller on mobile */
+    .bar-chart-container {
+        padding: 8px !important;
+        margin: 8px 0 !important;
+        height: 180px !important;
+    }
+    
+    .bar-chart-container h3 {
+        font-size: 14px !important;
+        margin-bottom: 6px !important;
     }
     
     /* Ensure content doesn't cause horizontal scroll */
