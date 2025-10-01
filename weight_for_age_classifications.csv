@@ -1,0 +1,577 @@
+age_months,sex,weight_min,weight_max,classification,z_score,description
+0,Male,0,2.1,Severely Underweight,-3.0,Birth - Severely Underweight
+0,Male,2.2,2.4,Underweight,-2.5,Birth - Underweight
+0,Male,2.5,4.4,Normal,0.0,Birth - Normal
+0,Male,4.5,999,Overweight,2.5,Birth - Overweight
+1,Male,0,2.9,Severely Underweight,-3.0,1 Month - Severely Underweight
+1,Male,3.0,3.3,Underweight,-2.5,1 Month - Underweight
+1,Male,3.4,5.8,Normal,0.0,1 Month - Normal
+1,Male,5.9,999,Overweight,2.5,1 Month - Overweight
+2,Male,0,3.8,Severely Underweight,-3.0,2 Months - Severely Underweight
+2,Male,3.9,4.2,Underweight,-2.5,2 Months - Underweight
+2,Male,4.3,7.1,Normal,0.0,2 Months - Normal
+2,Male,7.2,999,Overweight,2.5,2 Months - Overweight
+3,Male,0,4.4,Severely Underweight,-3.0,3 Months - Severely Underweight
+3,Male,4.5,4.9,Underweight,-2.5,3 Months - Underweight
+3,Male,5.0,8.0,Normal,0.0,3 Months - Normal
+3,Male,8.1,999,Overweight,2.5,3 Months - Overweight
+4,Male,0,4.9,Severely Underweight,-3.0,4 Months - Severely Underweight
+4,Male,5.0,5.5,Underweight,-2.5,4 Months - Underweight
+4,Male,5.6,8.7,Normal,0.0,4 Months - Normal
+4,Male,8.8,999,Overweight,2.5,4 Months - Overweight
+5,Male,0,5.3,Severely Underweight,-3.0,5 Months - Severely Underweight
+5,Male,5.4,5.9,Underweight,-2.5,5 Months - Underweight
+5,Male,6.0,9.3,Normal,0.0,5 Months - Normal
+5,Male,9.4,999,Overweight,2.5,5 Months - Overweight
+6,Male,0,5.7,Severely Underweight,-3.0,6 Months - Severely Underweight
+6,Male,5.8,6.3,Underweight,-2.5,6 Months - Underweight
+6,Male,6.4,9.8,Normal,0.0,6 Months - Normal
+6,Male,9.9,999,Overweight,2.5,6 Months - Overweight
+7,Male,0,5.9,Severely Underweight,-3.0,7 Months - Severely Underweight
+7,Male,6.0,6.6,Underweight,-2.5,7 Months - Underweight
+7,Male,6.7,10.3,Normal,0.0,7 Months - Normal
+7,Male,10.4,999,Overweight,2.5,7 Months - Overweight
+8,Male,0,6.2,Severely Underweight,-3.0,8 Months - Severely Underweight
+8,Male,6.3,6.8,Underweight,-2.5,8 Months - Underweight
+8,Male,6.9,10.7,Normal,0.0,8 Months - Normal
+8,Male,10.8,999,Overweight,2.5,8 Months - Overweight
+9,Male,0,6.4,Severely Underweight,-3.0,9 Months - Severely Underweight
+9,Male,6.5,7.0,Underweight,-2.5,9 Months - Underweight
+9,Male,7.1,11.0,Normal,0.0,9 Months - Normal
+9,Male,11.1,999,Overweight,2.5,9 Months - Overweight
+10,Male,0,6.6,Severely Underweight,-3.0,10 Months - Severely Underweight
+10,Male,6.7,7.3,Underweight,-2.5,10 Months - Underweight
+10,Male,7.4,11.4,Normal,0.0,10 Months - Normal
+10,Male,11.5,999,Overweight,2.5,10 Months - Overweight
+11,Male,0,6.8,Severely Underweight,-3.0,11 Months - Severely Underweight
+11,Male,6.9,7.5,Underweight,-2.5,11 Months - Underweight
+11,Male,7.6,11.7,Normal,0.0,11 Months - Normal
+11,Male,11.8,999,Overweight,2.5,11 Months - Overweight
+12,Male,0,6.9,Severely Underweight,-3.0,12 Months - Severely Underweight
+12,Male,7.0,7.6,Underweight,-2.5,12 Months - Underweight
+12,Male,7.7,12.0,Normal,0.0,12 Months - Normal
+12,Male,12.1,999,Overweight,2.5,12 Months - Overweight
+13,Male,0,7.1,Severely Underweight,-3.0,13 Months - Severely Underweight
+13,Male,7.2,7.8,Underweight,-2.5,13 Months - Underweight
+13,Male,7.9,12.3,Normal,0.0,13 Months - Normal
+13,Male,12.4,999,Overweight,2.5,13 Months - Overweight
+14,Male,0,7.2,Severely Underweight,-3.0,14 Months - Severely Underweight
+14,Male,7.3,7.9,Underweight,-2.5,14 Months - Underweight
+14,Male,8.0,12.6,Normal,0.0,14 Months - Normal
+14,Male,12.7,999,Overweight,2.5,14 Months - Overweight
+15,Male,0,7.4,Severely Underweight,-3.0,15 Months - Severely Underweight
+15,Male,7.5,8.1,Underweight,-2.5,15 Months - Underweight
+15,Male,8.2,12.9,Normal,0.0,15 Months - Normal
+15,Male,13.0,999,Overweight,2.5,15 Months - Overweight
+16,Male,0,7.5,Severely Underweight,-3.0,16 Months - Severely Underweight
+16,Male,7.6,8.2,Underweight,-2.5,16 Months - Underweight
+16,Male,8.3,13.1,Normal,0.0,16 Months - Normal
+16,Male,13.2,999,Overweight,2.5,16 Months - Overweight
+17,Male,0,7.6,Severely Underweight,-3.0,17 Months - Severely Underweight
+17,Male,7.7,8.3,Underweight,-2.5,17 Months - Underweight
+17,Male,8.4,13.3,Normal,0.0,17 Months - Normal
+17,Male,13.4,999,Overweight,2.5,17 Months - Overweight
+18,Male,0,7.7,Severely Underweight,-3.0,18 Months - Severely Underweight
+18,Male,7.8,8.4,Underweight,-2.5,18 Months - Underweight
+18,Male,8.5,13.5,Normal,0.0,18 Months - Normal
+18,Male,13.6,999,Overweight,2.5,18 Months - Overweight
+19,Male,0,7.8,Severely Underweight,-3.0,19 Months - Severely Underweight
+19,Male,7.9,8.5,Underweight,-2.5,19 Months - Underweight
+19,Male,8.6,13.7,Normal,0.0,19 Months - Normal
+19,Male,13.8,999,Overweight,2.5,19 Months - Overweight
+20,Male,0,7.9,Severely Underweight,-3.0,20 Months - Severely Underweight
+20,Male,8.0,8.6,Underweight,-2.5,20 Months - Underweight
+20,Male,8.7,13.9,Normal,0.0,20 Months - Normal
+20,Male,14.0,999,Overweight,2.5,20 Months - Overweight
+21,Male,0,8.0,Severely Underweight,-3.0,21 Months - Severely Underweight
+21,Male,8.1,8.7,Underweight,-2.5,21 Months - Underweight
+21,Male,8.8,14.1,Normal,0.0,21 Months - Normal
+21,Male,14.2,999,Overweight,2.5,21 Months - Overweight
+22,Male,0,8.1,Severely Underweight,-3.0,22 Months - Severely Underweight
+22,Male,8.2,8.8,Underweight,-2.5,22 Months - Underweight
+22,Male,8.9,14.3,Normal,0.0,22 Months - Normal
+22,Male,14.4,999,Overweight,2.5,22 Months - Overweight
+23,Male,0,8.2,Severely Underweight,-3.0,23 Months - Severely Underweight
+23,Male,8.3,8.9,Underweight,-2.5,23 Months - Underweight
+23,Male,9.0,14.5,Normal,0.0,23 Months - Normal
+23,Male,14.6,999,Overweight,2.5,23 Months - Overweight
+24,Male,0,8.3,Severely Underweight,-3.0,24 Months - Severely Underweight
+24,Male,8.4,9.0,Underweight,-2.5,24 Months - Underweight
+24,Male,9.1,14.7,Normal,0.0,24 Months - Normal
+24,Male,14.8,999,Overweight,2.5,24 Months - Overweight
+25,Male,0,8.4,Severely Underweight,-3.0,25 Months - Severely Underweight
+25,Male,8.5,9.1,Underweight,-2.5,25 Months - Underweight
+25,Male,9.2,14.9,Normal,0.0,25 Months - Normal
+25,Male,15.0,999,Overweight,2.5,25 Months - Overweight
+26,Male,0,8.5,Severely Underweight,-3.0,26 Months - Severely Underweight
+26,Male,8.6,9.2,Underweight,-2.5,26 Months - Underweight
+26,Male,9.3,15.1,Normal,0.0,26 Months - Normal
+26,Male,15.2,999,Overweight,2.5,26 Months - Overweight
+27,Male,0,8.6,Severely Underweight,-3.0,27 Months - Severely Underweight
+27,Male,8.7,9.3,Underweight,-2.5,27 Months - Underweight
+27,Male,9.4,15.3,Normal,0.0,27 Months - Normal
+27,Male,15.4,999,Overweight,2.5,27 Months - Overweight
+28,Male,0,8.7,Severely Underweight,-3.0,28 Months - Severely Underweight
+28,Male,8.8,9.4,Underweight,-2.5,28 Months - Underweight
+28,Male,9.5,15.5,Normal,0.0,28 Months - Normal
+28,Male,15.6,999,Overweight,2.5,28 Months - Overweight
+29,Male,0,8.8,Severely Underweight,-3.0,29 Months - Severely Underweight
+29,Male,8.9,9.5,Underweight,-2.5,29 Months - Underweight
+29,Male,9.6,15.7,Normal,0.0,29 Months - Normal
+29,Male,15.8,999,Overweight,2.5,29 Months - Overweight
+30,Male,0,8.9,Severely Underweight,-3.0,30 Months - Severely Underweight
+30,Male,9.0,9.6,Underweight,-2.5,30 Months - Underweight
+30,Male,9.7,15.9,Normal,0.0,30 Months - Normal
+30,Male,16.0,999,Overweight,2.5,30 Months - Overweight
+31,Male,0,9.0,Severely Underweight,-3.0,31 Months - Severely Underweight
+31,Male,9.1,9.7,Underweight,-2.5,31 Months - Underweight
+31,Male,9.8,16.1,Normal,0.0,31 Months - Normal
+31,Male,16.2,999,Overweight,2.5,31 Months - Overweight
+32,Male,0,9.1,Severely Underweight,-3.0,32 Months - Severely Underweight
+32,Male,9.2,9.8,Underweight,-2.5,32 Months - Underweight
+32,Male,9.9,16.3,Normal,0.0,32 Months - Normal
+32,Male,16.4,999,Overweight,2.5,32 Months - Overweight
+33,Male,0,9.2,Severely Underweight,-3.0,33 Months - Severely Underweight
+33,Male,9.3,9.9,Underweight,-2.5,33 Months - Underweight
+33,Male,10.0,16.5,Normal,0.0,33 Months - Normal
+33,Male,16.6,999,Overweight,2.5,33 Months - Overweight
+34,Male,0,9.3,Severely Underweight,-3.0,34 Months - Severely Underweight
+34,Male,9.4,10.0,Underweight,-2.5,34 Months - Underweight
+34,Male,10.1,16.7,Normal,0.0,34 Months - Normal
+34,Male,16.8,999,Overweight,2.5,34 Months - Overweight
+35,Male,0,9.4,Severely Underweight,-3.0,35 Months - Severely Underweight
+35,Male,9.5,10.1,Underweight,-2.5,35 Months - Underweight
+35,Male,10.2,16.9,Normal,0.0,35 Months - Normal
+35,Male,17.0,999,Overweight,2.5,35 Months - Overweight
+36,Male,0,9.5,Severely Underweight,-3.0,36 Months - Severely Underweight
+36,Male,9.6,10.2,Underweight,-2.5,36 Months - Underweight
+36,Male,10.3,17.1,Normal,0.0,36 Months - Normal
+36,Male,17.2,999,Overweight,2.5,36 Months - Overweight
+37,Male,0,9.6,Severely Underweight,-3.0,37 Months - Severely Underweight
+37,Male,9.7,10.3,Underweight,-2.5,37 Months - Underweight
+37,Male,10.4,17.3,Normal,0.0,37 Months - Normal
+37,Male,17.4,999,Overweight,2.5,37 Months - Overweight
+38,Male,0,9.7,Severely Underweight,-3.0,38 Months - Severely Underweight
+38,Male,9.8,10.4,Underweight,-2.5,38 Months - Underweight
+38,Male,10.5,17.5,Normal,0.0,38 Months - Normal
+38,Male,17.6,999,Overweight,2.5,38 Months - Overweight
+39,Male,0,9.8,Severely Underweight,-3.0,39 Months - Severely Underweight
+39,Male,9.9,10.5,Underweight,-2.5,39 Months - Underweight
+39,Male,10.6,17.7,Normal,0.0,39 Months - Normal
+39,Male,17.8,999,Overweight,2.5,39 Months - Overweight
+40,Male,0,9.9,Severely Underweight,-3.0,40 Months - Severely Underweight
+40,Male,10.0,10.6,Underweight,-2.5,40 Months - Underweight
+40,Male,10.7,17.9,Normal,0.0,40 Months - Normal
+40,Male,18.0,999,Overweight,2.5,40 Months - Overweight
+41,Male,0,10.0,Severely Underweight,-3.0,41 Months - Severely Underweight
+41,Male,10.1,10.7,Underweight,-2.5,41 Months - Underweight
+41,Male,10.8,18.1,Normal,0.0,41 Months - Normal
+41,Male,18.2,999,Overweight,2.5,41 Months - Overweight
+42,Male,0,10.1,Severely Underweight,-3.0,42 Months - Severely Underweight
+42,Male,10.2,10.8,Underweight,-2.5,42 Months - Underweight
+42,Male,10.9,18.3,Normal,0.0,42 Months - Normal
+42,Male,18.4,999,Overweight,2.5,42 Months - Overweight
+43,Male,0,10.2,Severely Underweight,-3.0,43 Months - Severely Underweight
+43,Male,10.3,10.9,Underweight,-2.5,43 Months - Underweight
+43,Male,11.0,18.5,Normal,0.0,43 Months - Normal
+43,Male,18.6,999,Overweight,2.5,43 Months - Overweight
+44,Male,0,10.3,Severely Underweight,-3.0,44 Months - Severely Underweight
+44,Male,10.4,11.0,Underweight,-2.5,44 Months - Underweight
+44,Male,11.1,18.7,Normal,0.0,44 Months - Normal
+44,Male,18.8,999,Overweight,2.5,44 Months - Overweight
+45,Male,0,10.4,Severely Underweight,-3.0,45 Months - Severely Underweight
+45,Male,10.5,11.1,Underweight,-2.5,45 Months - Underweight
+45,Male,11.2,18.9,Normal,0.0,45 Months - Normal
+45,Male,19.0,999,Overweight,2.5,45 Months - Overweight
+46,Male,0,10.5,Severely Underweight,-3.0,46 Months - Severely Underweight
+46,Male,10.6,11.2,Underweight,-2.5,46 Months - Underweight
+46,Male,11.3,19.1,Normal,0.0,46 Months - Normal
+46,Male,19.2,999,Overweight,2.5,46 Months - Overweight
+47,Male,0,10.6,Severely Underweight,-3.0,47 Months - Severely Underweight
+47,Male,10.7,11.3,Underweight,-2.5,47 Months - Underweight
+47,Male,11.4,19.3,Normal,0.0,47 Months - Normal
+47,Male,19.4,999,Overweight,2.5,47 Months - Overweight
+48,Male,0,10.7,Severely Underweight,-3.0,48 Months - Severely Underweight
+48,Male,10.8,11.4,Underweight,-2.5,48 Months - Underweight
+48,Male,11.5,19.5,Normal,0.0,48 Months - Normal
+48,Male,19.6,999,Overweight,2.5,48 Months - Overweight
+49,Male,0,10.8,Severely Underweight,-3.0,49 Months - Severely Underweight
+49,Male,10.9,11.5,Underweight,-2.5,49 Months - Underweight
+49,Male,11.6,19.7,Normal,0.0,49 Months - Normal
+49,Male,19.8,999,Overweight,2.5,49 Months - Overweight
+50,Male,0,10.9,Severely Underweight,-3.0,50 Months - Severely Underweight
+50,Male,11.0,11.6,Underweight,-2.5,50 Months - Underweight
+50,Male,11.7,19.9,Normal,0.0,50 Months - Normal
+50,Male,20.0,999,Overweight,2.5,50 Months - Overweight
+51,Male,0,11.0,Severely Underweight,-3.0,51 Months - Severely Underweight
+51,Male,11.1,11.7,Underweight,-2.5,51 Months - Underweight
+51,Male,11.8,20.1,Normal,0.0,51 Months - Normal
+51,Male,20.2,999,Overweight,2.5,51 Months - Overweight
+52,Male,0,11.1,Severely Underweight,-3.0,52 Months - Severely Underweight
+52,Male,11.2,11.8,Underweight,-2.5,52 Months - Underweight
+52,Male,11.9,20.3,Normal,0.0,52 Months - Normal
+52,Male,20.4,999,Overweight,2.5,52 Months - Overweight
+53,Male,0,11.2,Severely Underweight,-3.0,53 Months - Severely Underweight
+53,Male,11.3,11.9,Underweight,-2.5,53 Months - Underweight
+53,Male,12.0,20.5,Normal,0.0,53 Months - Normal
+53,Male,20.6,999,Overweight,2.5,53 Months - Overweight
+54,Male,0,11.3,Severely Underweight,-3.0,54 Months - Severely Underweight
+54,Male,11.4,12.0,Underweight,-2.5,54 Months - Underweight
+54,Male,12.1,20.7,Normal,0.0,54 Months - Normal
+54,Male,20.8,999,Overweight,2.5,54 Months - Overweight
+55,Male,0,11.4,Severely Underweight,-3.0,55 Months - Severely Underweight
+55,Male,11.5,12.1,Underweight,-2.5,55 Months - Underweight
+55,Male,12.2,20.9,Normal,0.0,55 Months - Normal
+55,Male,21.0,999,Overweight,2.5,55 Months - Overweight
+56,Male,0,11.5,Severely Underweight,-3.0,56 Months - Severely Underweight
+56,Male,11.6,12.2,Underweight,-2.5,56 Months - Underweight
+56,Male,12.3,21.1,Normal,0.0,56 Months - Normal
+56,Male,21.2,999,Overweight,2.5,56 Months - Overweight
+57,Male,0,11.6,Severely Underweight,-3.0,57 Months - Severely Underweight
+57,Male,11.7,12.3,Underweight,-2.5,57 Months - Underweight
+57,Male,12.4,21.3,Normal,0.0,57 Months - Normal
+57,Male,21.4,999,Overweight,2.5,57 Months - Overweight
+58,Male,0,11.7,Severely Underweight,-3.0,58 Months - Severely Underweight
+58,Male,11.8,12.4,Underweight,-2.5,58 Months - Underweight
+58,Male,12.5,21.5,Normal,0.0,58 Months - Normal
+58,Male,21.6,999,Overweight,2.5,58 Months - Overweight
+59,Male,0,11.8,Severely Underweight,-3.0,59 Months - Severely Underweight
+59,Male,11.9,12.5,Underweight,-2.5,59 Months - Underweight
+59,Male,12.6,21.7,Normal,0.0,59 Months - Normal
+59,Male,21.8,999,Overweight,2.5,59 Months - Overweight
+60,Male,0,11.9,Severely Underweight,-3.0,60 Months - Severely Underweight
+60,Male,12.0,12.6,Underweight,-2.5,60 Months - Underweight
+60,Male,12.7,21.9,Normal,0.0,60 Months - Normal
+60,Male,22.0,999,Overweight,2.5,60 Months - Overweight
+61,Male,0,12.0,Severely Underweight,-3.0,61 Months - Severely Underweight
+61,Male,12.1,12.7,Underweight,-2.5,61 Months - Underweight
+61,Male,12.8,22.1,Normal,0.0,61 Months - Normal
+61,Male,22.2,999,Overweight,2.5,61 Months - Overweight
+62,Male,0,12.1,Severely Underweight,-3.0,62 Months - Severely Underweight
+62,Male,12.2,12.8,Underweight,-2.5,62 Months - Underweight
+62,Male,12.9,22.3,Normal,0.0,62 Months - Normal
+62,Male,22.4,999,Overweight,2.5,62 Months - Overweight
+63,Male,0,12.2,Severely Underweight,-3.0,63 Months - Severely Underweight
+63,Male,12.3,12.9,Underweight,-2.5,63 Months - Underweight
+63,Male,13.0,22.5,Normal,0.0,63 Months - Normal
+63,Male,22.6,999,Overweight,2.5,63 Months - Overweight
+64,Male,0,12.3,Severely Underweight,-3.0,64 Months - Severely Underweight
+64,Male,12.4,13.0,Underweight,-2.5,64 Months - Underweight
+64,Male,13.1,22.7,Normal,0.0,64 Months - Normal
+64,Male,22.8,999,Overweight,2.5,64 Months - Overweight
+65,Male,0,12.4,Severely Underweight,-3.0,65 Months - Severely Underweight
+65,Male,12.5,13.1,Underweight,-2.5,65 Months - Underweight
+65,Male,13.2,22.9,Normal,0.0,65 Months - Normal
+65,Male,23.0,999,Overweight,2.5,65 Months - Overweight
+66,Male,0,12.5,Severely Underweight,-3.0,66 Months - Severely Underweight
+66,Male,12.6,13.2,Underweight,-2.5,66 Months - Underweight
+66,Male,13.3,23.1,Normal,0.0,66 Months - Normal
+66,Male,23.2,999,Overweight,2.5,66 Months - Overweight
+67,Male,0,12.6,Severely Underweight,-3.0,67 Months - Severely Underweight
+67,Male,12.7,13.3,Underweight,-2.5,67 Months - Underweight
+67,Male,13.4,23.3,Normal,0.0,67 Months - Normal
+67,Male,23.4,999,Overweight,2.5,67 Months - Overweight
+68,Male,0,12.7,Severely Underweight,-3.0,68 Months - Severely Underweight
+68,Male,12.8,13.4,Underweight,-2.5,68 Months - Underweight
+68,Male,13.5,23.5,Normal,0.0,68 Months - Normal
+68,Male,23.6,999,Overweight,2.5,68 Months - Overweight
+69,Male,0,12.8,Severely Underweight,-3.0,69 Months - Severely Underweight
+69,Male,12.9,13.5,Underweight,-2.5,69 Months - Underweight
+69,Male,13.6,23.7,Normal,0.0,69 Months - Normal
+69,Male,23.8,999,Overweight,2.5,69 Months - Overweight
+70,Male,0,12.9,Severely Underweight,-3.0,70 Months - Severely Underweight
+70,Male,13.0,13.6,Underweight,-2.5,70 Months - Underweight
+70,Male,13.7,23.9,Normal,0.0,70 Months - Normal
+70,Male,24.0,999,Overweight,2.5,70 Months - Overweight
+71,Male,0,13.0,Severely Underweight,-3.0,71 Months - Severely Underweight
+71,Male,13.1,13.7,Underweight,-2.5,71 Months - Underweight
+71,Male,13.8,24.1,Normal,0.0,71 Months - Normal
+71,Male,24.2,999,Overweight,2.5,71 Months - Overweight
+0,Female,0,2.0,Severely Underweight,-3.0,Birth - Severely Underweight
+0,Female,2.1,2.3,Underweight,-2.5,Birth - Underweight
+0,Female,2.4,4.2,Normal,0.0,Birth - Normal
+0,Female,4.3,999,Overweight,2.5,Birth - Overweight
+1,Female,0,2.7,Severely Underweight,-3.0,1 Month - Severely Underweight
+1,Female,2.8,3.1,Underweight,-2.5,1 Month - Underweight
+1,Female,3.2,5.5,Normal,0.0,1 Month - Normal
+1,Female,5.6,999,Overweight,2.5,1 Month - Overweight
+2,Female,0,3.4,Severely Underweight,-3.0,2 Months - Severely Underweight
+2,Female,3.5,3.9,Underweight,-2.5,2 Months - Underweight
+2,Female,4.0,6.5,Normal,0.0,2 Months - Normal
+2,Female,6.6,999,Overweight,2.5,2 Months - Overweight
+3,Female,0,4.0,Severely Underweight,-3.0,3 Months - Severely Underweight
+3,Female,4.1,4.5,Underweight,-2.5,3 Months - Underweight
+3,Female,4.6,7.4,Normal,0.0,3 Months - Normal
+3,Female,7.5,999,Overweight,2.5,3 Months - Overweight
+4,Female,0,4.4,Severely Underweight,-3.0,4 Months - Severely Underweight
+4,Female,4.5,5.0,Underweight,-2.5,4 Months - Underweight
+4,Female,5.1,8.1,Normal,0.0,4 Months - Normal
+4,Female,8.2,999,Overweight,2.5,4 Months - Overweight
+5,Female,0,4.8,Severely Underweight,-3.0,5 Months - Severely Underweight
+5,Female,4.9,5.4,Underweight,-2.5,5 Months - Underweight
+5,Female,5.5,8.7,Normal,0.0,5 Months - Normal
+5,Female,8.8,999,Overweight,2.5,5 Months - Overweight
+6,Female,0,5.1,Severely Underweight,-3.0,6 Months - Severely Underweight
+6,Female,5.2,5.7,Underweight,-2.5,6 Months - Underweight
+6,Female,5.8,9.2,Normal,0.0,6 Months - Normal
+6,Female,9.3,999,Overweight,2.5,6 Months - Overweight
+7,Female,0,5.3,Severely Underweight,-3.0,7 Months - Severely Underweight
+7,Female,5.4,6.0,Underweight,-2.5,7 Months - Underweight
+7,Female,6.1,9.6,Normal,0.0,7 Months - Normal
+7,Female,9.7,999,Overweight,2.5,7 Months - Overweight
+8,Female,0,5.6,Severely Underweight,-3.0,8 Months - Severely Underweight
+8,Female,5.7,6.2,Underweight,-2.5,8 Months - Underweight
+8,Female,6.3,10.0,Normal,0.0,8 Months - Normal
+8,Female,10.1,999,Overweight,2.5,8 Months - Overweight
+9,Female,0,5.8,Severely Underweight,-3.0,9 Months - Severely Underweight
+9,Female,5.9,6.5,Underweight,-2.5,9 Months - Underweight
+9,Female,6.6,10.4,Normal,0.0,9 Months - Normal
+9,Female,10.5,999,Overweight,2.5,9 Months - Overweight
+10,Female,0,6.0,Severely Underweight,-3.0,10 Months - Severely Underweight
+10,Female,6.1,6.7,Underweight,-2.5,10 Months - Underweight
+10,Female,6.8,10.8,Normal,0.0,10 Months - Normal
+10,Female,10.9,999,Overweight,2.5,10 Months - Overweight
+11,Female,0,6.2,Severely Underweight,-3.0,11 Months - Severely Underweight
+11,Female,6.3,6.9,Underweight,-2.5,11 Months - Underweight
+11,Female,7.0,11.1,Normal,0.0,11 Months - Normal
+11,Female,11.2,999,Overweight,2.5,11 Months - Overweight
+12,Female,0,6.4,Severely Underweight,-3.0,12 Months - Severely Underweight
+12,Female,6.5,7.1,Underweight,-2.5,12 Months - Underweight
+12,Female,7.2,11.5,Normal,0.0,12 Months - Normal
+12,Female,11.6,999,Overweight,2.5,12 Months - Overweight
+13,Female,0,6.5,Severely Underweight,-3.0,13 Months - Severely Underweight
+13,Female,6.6,7.2,Underweight,-2.5,13 Months - Underweight
+13,Female,7.3,11.8,Normal,0.0,13 Months - Normal
+13,Female,11.9,999,Overweight,2.5,13 Months - Overweight
+14,Female,0,6.7,Severely Underweight,-3.0,14 Months - Severely Underweight
+14,Female,6.8,7.4,Underweight,-2.5,14 Months - Underweight
+14,Female,7.5,12.1,Normal,0.0,14 Months - Normal
+14,Female,12.2,999,Overweight,2.5,14 Months - Overweight
+15,Female,0,6.8,Severely Underweight,-3.0,15 Months - Severely Underweight
+15,Female,6.9,7.5,Underweight,-2.5,15 Months - Underweight
+15,Female,7.6,12.4,Normal,0.0,15 Months - Normal
+15,Female,12.5,999,Overweight,2.5,15 Months - Overweight
+16,Female,0,6.9,Severely Underweight,-3.0,16 Months - Severely Underweight
+16,Female,7.0,7.6,Underweight,-2.5,16 Months - Underweight
+16,Female,7.7,12.6,Normal,0.0,16 Months - Normal
+16,Female,12.7,999,Overweight,2.5,16 Months - Overweight
+17,Female,0,7.0,Severely Underweight,-3.0,17 Months - Severely Underweight
+17,Female,7.1,7.7,Underweight,-2.5,17 Months - Underweight
+17,Female,7.8,12.8,Normal,0.0,17 Months - Normal
+17,Female,12.9,999,Overweight,2.5,17 Months - Overweight
+18,Female,0,7.1,Severely Underweight,-3.0,18 Months - Severely Underweight
+18,Female,7.2,7.8,Underweight,-2.5,18 Months - Underweight
+18,Female,7.9,13.0,Normal,0.0,18 Months - Normal
+18,Female,13.1,999,Overweight,2.5,18 Months - Overweight
+19,Female,0,7.2,Severely Underweight,-3.0,19 Months - Severely Underweight
+19,Female,7.3,7.9,Underweight,-2.5,19 Months - Underweight
+19,Female,8.0,13.2,Normal,0.0,19 Months - Normal
+19,Female,13.3,999,Overweight,2.5,19 Months - Overweight
+20,Female,0,7.3,Severely Underweight,-3.0,20 Months - Severely Underweight
+20,Female,7.4,8.0,Underweight,-2.5,20 Months - Underweight
+20,Female,8.1,13.4,Normal,0.0,20 Months - Normal
+20,Female,13.5,999,Overweight,2.5,20 Months - Overweight
+21,Female,0,7.4,Severely Underweight,-3.0,21 Months - Severely Underweight
+21,Female,7.5,8.1,Underweight,-2.5,21 Months - Underweight
+21,Female,8.2,13.6,Normal,0.0,21 Months - Normal
+21,Female,13.7,999,Overweight,2.5,21 Months - Overweight
+22,Female,0,7.5,Severely Underweight,-3.0,22 Months - Severely Underweight
+22,Female,7.6,8.2,Underweight,-2.5,22 Months - Underweight
+22,Female,8.3,13.8,Normal,0.0,22 Months - Normal
+22,Female,13.9,999,Overweight,2.5,22 Months - Overweight
+23,Female,0,7.6,Severely Underweight,-3.0,23 Months - Severely Underweight
+23,Female,7.7,8.3,Underweight,-2.5,23 Months - Underweight
+23,Female,8.4,14.0,Normal,0.0,23 Months - Normal
+23,Female,14.1,999,Overweight,2.5,23 Months - Overweight
+24,Female,0,7.7,Severely Underweight,-3.0,24 Months - Severely Underweight
+24,Female,7.8,8.4,Underweight,-2.5,24 Months - Underweight
+24,Female,8.5,14.2,Normal,0.0,24 Months - Normal
+24,Female,14.3,999,Overweight,2.5,24 Months - Overweight
+25,Female,0,7.8,Severely Underweight,-3.0,25 Months - Severely Underweight
+25,Female,7.9,8.5,Underweight,-2.5,25 Months - Underweight
+25,Female,8.6,14.4,Normal,0.0,25 Months - Normal
+25,Female,14.5,999,Overweight,2.5,25 Months - Overweight
+26,Female,0,7.9,Severely Underweight,-3.0,26 Months - Severely Underweight
+26,Female,8.0,8.6,Underweight,-2.5,26 Months - Underweight
+26,Female,8.7,14.6,Normal,0.0,26 Months - Normal
+26,Female,14.7,999,Overweight,2.5,26 Months - Overweight
+27,Female,0,8.0,Severely Underweight,-3.0,27 Months - Severely Underweight
+27,Female,8.1,8.7,Underweight,-2.5,27 Months - Underweight
+27,Female,8.8,14.8,Normal,0.0,27 Months - Normal
+27,Female,14.9,999,Overweight,2.5,27 Months - Overweight
+28,Female,0,8.1,Severely Underweight,-3.0,28 Months - Severely Underweight
+28,Female,8.2,8.8,Underweight,-2.5,28 Months - Underweight
+28,Female,8.9,15.0,Normal,0.0,28 Months - Normal
+28,Female,15.1,999,Overweight,2.5,28 Months - Overweight
+29,Female,0,8.2,Severely Underweight,-3.0,29 Months - Severely Underweight
+29,Female,8.3,8.9,Underweight,-2.5,29 Months - Underweight
+29,Female,9.0,15.2,Normal,0.0,29 Months - Normal
+29,Female,15.3,999,Overweight,2.5,29 Months - Overweight
+30,Female,0,8.3,Severely Underweight,-3.0,30 Months - Severely Underweight
+30,Female,8.4,9.0,Underweight,-2.5,30 Months - Underweight
+30,Female,9.1,15.4,Normal,0.0,30 Months - Normal
+30,Female,15.5,999,Overweight,2.5,30 Months - Overweight
+31,Female,0,8.4,Severely Underweight,-3.0,31 Months - Severely Underweight
+31,Female,8.5,9.1,Underweight,-2.5,31 Months - Underweight
+31,Female,9.2,15.6,Normal,0.0,31 Months - Normal
+31,Female,15.7,999,Overweight,2.5,31 Months - Overweight
+32,Female,0,8.5,Severely Underweight,-3.0,32 Months - Severely Underweight
+32,Female,8.6,9.2,Underweight,-2.5,32 Months - Underweight
+32,Female,9.3,15.8,Normal,0.0,32 Months - Normal
+32,Female,15.9,999,Overweight,2.5,32 Months - Overweight
+33,Female,0,8.6,Severely Underweight,-3.0,33 Months - Severely Underweight
+33,Female,8.7,9.3,Underweight,-2.5,33 Months - Underweight
+33,Female,9.4,16.0,Normal,0.0,33 Months - Normal
+33,Female,16.1,999,Overweight,2.5,33 Months - Overweight
+34,Female,0,8.7,Severely Underweight,-3.0,34 Months - Severely Underweight
+34,Female,8.8,9.4,Underweight,-2.5,34 Months - Underweight
+34,Female,9.5,16.2,Normal,0.0,34 Months - Normal
+34,Female,16.3,999,Overweight,2.5,34 Months - Overweight
+35,Female,0,8.8,Severely Underweight,-3.0,35 Months - Severely Underweight
+35,Female,8.9,9.5,Underweight,-2.5,35 Months - Underweight
+35,Female,9.6,16.4,Normal,0.0,35 Months - Normal
+35,Female,16.5,999,Overweight,2.5,35 Months - Overweight
+36,Female,0,8.9,Severely Underweight,-3.0,36 Months - Severely Underweight
+36,Female,9.0,9.6,Underweight,-2.5,36 Months - Underweight
+36,Female,9.7,16.6,Normal,0.0,36 Months - Normal
+36,Female,16.7,999,Overweight,2.5,36 Months - Overweight
+37,Female,0,9.0,Severely Underweight,-3.0,37 Months - Severely Underweight
+37,Female,9.1,9.7,Underweight,-2.5,37 Months - Underweight
+37,Female,9.8,16.8,Normal,0.0,37 Months - Normal
+37,Female,16.9,999,Overweight,2.5,37 Months - Overweight
+38,Female,0,9.1,Severely Underweight,-3.0,38 Months - Severely Underweight
+38,Female,9.2,9.8,Underweight,-2.5,38 Months - Underweight
+38,Female,9.9,17.0,Normal,0.0,38 Months - Normal
+38,Female,17.1,999,Overweight,2.5,38 Months - Overweight
+39,Female,0,9.2,Severely Underweight,-3.0,39 Months - Severely Underweight
+39,Female,9.3,9.9,Underweight,-2.5,39 Months - Underweight
+39,Female,10.0,17.2,Normal,0.0,39 Months - Normal
+39,Female,17.3,999,Overweight,2.5,39 Months - Overweight
+40,Female,0,9.3,Severely Underweight,-3.0,40 Months - Severely Underweight
+40,Female,9.4,10.0,Underweight,-2.5,40 Months - Underweight
+40,Female,10.1,17.4,Normal,0.0,40 Months - Normal
+40,Female,17.5,999,Overweight,2.5,40 Months - Overweight
+41,Female,0,9.4,Severely Underweight,-3.0,41 Months - Severely Underweight
+41,Female,9.5,10.1,Underweight,-2.5,41 Months - Underweight
+41,Female,10.2,17.6,Normal,0.0,41 Months - Normal
+41,Female,17.7,999,Overweight,2.5,41 Months - Overweight
+42,Female,0,9.5,Severely Underweight,-3.0,42 Months - Severely Underweight
+42,Female,9.6,10.2,Underweight,-2.5,42 Months - Underweight
+42,Female,10.3,17.8,Normal,0.0,42 Months - Normal
+42,Female,17.9,999,Overweight,2.5,42 Months - Overweight
+43,Female,0,9.6,Severely Underweight,-3.0,43 Months - Severely Underweight
+43,Female,9.7,10.3,Underweight,-2.5,43 Months - Underweight
+43,Female,10.4,18.0,Normal,0.0,43 Months - Normal
+43,Female,18.1,999,Overweight,2.5,43 Months - Overweight
+44,Female,0,9.7,Severely Underweight,-3.0,44 Months - Severely Underweight
+44,Female,9.8,10.4,Underweight,-2.5,44 Months - Underweight
+44,Female,10.5,18.2,Normal,0.0,44 Months - Normal
+44,Female,18.3,999,Overweight,2.5,44 Months - Overweight
+45,Female,0,9.8,Severely Underweight,-3.0,45 Months - Severely Underweight
+45,Female,9.9,10.5,Underweight,-2.5,45 Months - Underweight
+45,Female,10.6,18.4,Normal,0.0,45 Months - Normal
+45,Female,18.5,999,Overweight,2.5,45 Months - Overweight
+46,Female,0,9.9,Severely Underweight,-3.0,46 Months - Severely Underweight
+46,Female,10.0,10.6,Underweight,-2.5,46 Months - Underweight
+46,Female,10.7,18.6,Normal,0.0,46 Months - Normal
+46,Female,18.7,999,Overweight,2.5,46 Months - Overweight
+47,Female,0,10.0,Severely Underweight,-3.0,47 Months - Severely Underweight
+47,Female,10.1,10.7,Underweight,-2.5,47 Months - Underweight
+47,Female,10.8,18.8,Normal,0.0,47 Months - Normal
+47,Female,18.9,999,Overweight,2.5,47 Months - Overweight
+48,Female,0,10.1,Severely Underweight,-3.0,48 Months - Severely Underweight
+48,Female,10.2,10.8,Underweight,-2.5,48 Months - Underweight
+48,Female,10.9,19.0,Normal,0.0,48 Months - Normal
+48,Female,19.1,999,Overweight,2.5,48 Months - Overweight
+49,Female,0,10.2,Severely Underweight,-3.0,49 Months - Severely Underweight
+49,Female,10.3,10.9,Underweight,-2.5,49 Months - Underweight
+49,Female,11.0,19.2,Normal,0.0,49 Months - Normal
+49,Female,19.3,999,Overweight,2.5,49 Months - Overweight
+50,Female,0,10.3,Severely Underweight,-3.0,50 Months - Severely Underweight
+50,Female,10.4,11.0,Underweight,-2.5,50 Months - Underweight
+50,Female,11.1,19.4,Normal,0.0,50 Months - Normal
+50,Female,19.5,999,Overweight,2.5,50 Months - Overweight
+51,Female,0,10.4,Severely Underweight,-3.0,51 Months - Severely Underweight
+51,Female,10.5,11.1,Underweight,-2.5,51 Months - Underweight
+51,Female,11.2,19.6,Normal,0.0,51 Months - Normal
+51,Female,19.7,999,Overweight,2.5,51 Months - Overweight
+52,Female,0,10.5,Severely Underweight,-3.0,52 Months - Severely Underweight
+52,Female,10.6,11.2,Underweight,-2.5,52 Months - Underweight
+52,Female,11.3,19.8,Normal,0.0,52 Months - Normal
+52,Female,19.9,999,Overweight,2.5,52 Months - Overweight
+53,Female,0,10.6,Severely Underweight,-3.0,53 Months - Severely Underweight
+53,Female,10.7,11.3,Underweight,-2.5,53 Months - Underweight
+53,Female,11.4,20.0,Normal,0.0,53 Months - Normal
+53,Female,20.1,999,Overweight,2.5,53 Months - Overweight
+54,Female,0,10.7,Severely Underweight,-3.0,54 Months - Severely Underweight
+54,Female,10.8,11.4,Underweight,-2.5,54 Months - Underweight
+54,Female,11.5,20.2,Normal,0.0,54 Months - Normal
+54,Female,20.3,999,Overweight,2.5,54 Months - Overweight
+55,Female,0,10.8,Severely Underweight,-3.0,55 Months - Severely Underweight
+55,Female,10.9,11.5,Underweight,-2.5,55 Months - Underweight
+55,Female,11.6,20.4,Normal,0.0,55 Months - Normal
+55,Female,20.5,999,Overweight,2.5,55 Months - Overweight
+56,Female,0,10.9,Severely Underweight,-3.0,56 Months - Severely Underweight
+56,Female,11.0,11.6,Underweight,-2.5,56 Months - Underweight
+56,Female,11.7,20.6,Normal,0.0,56 Months - Normal
+56,Female,20.7,999,Overweight,2.5,56 Months - Overweight
+57,Female,0,11.0,Severely Underweight,-3.0,57 Months - Severely Underweight
+57,Female,11.1,11.7,Underweight,-2.5,57 Months - Underweight
+57,Female,11.8,20.8,Normal,0.0,57 Months - Normal
+57,Female,20.9,999,Overweight,2.5,57 Months - Overweight
+58,Female,0,11.1,Severely Underweight,-3.0,58 Months - Severely Underweight
+58,Female,11.2,11.8,Underweight,-2.5,58 Months - Underweight
+58,Female,11.9,21.0,Normal,0.0,58 Months - Normal
+58,Female,21.1,999,Overweight,2.5,58 Months - Overweight
+59,Female,0,11.2,Severely Underweight,-3.0,59 Months - Severely Underweight
+59,Female,11.3,11.9,Underweight,-2.5,59 Months - Underweight
+59,Female,12.0,21.2,Normal,0.0,59 Months - Normal
+59,Female,21.3,999,Overweight,2.5,59 Months - Overweight
+60,Female,0,11.3,Severely Underweight,-3.0,60 Months - Severely Underweight
+60,Female,11.4,12.0,Underweight,-2.5,60 Months - Underweight
+60,Female,12.1,21.4,Normal,0.0,60 Months - Normal
+60,Female,21.5,999,Overweight,2.5,60 Months - Overweight
+61,Female,0,11.4,Severely Underweight,-3.0,61 Months - Severely Underweight
+61,Female,11.5,12.1,Underweight,-2.5,61 Months - Underweight
+61,Female,12.2,21.6,Normal,0.0,61 Months - Normal
+61,Female,21.7,999,Overweight,2.5,61 Months - Overweight
+62,Female,0,11.5,Severely Underweight,-3.0,62 Months - Severely Underweight
+62,Female,11.6,12.2,Underweight,-2.5,62 Months - Underweight
+62,Female,12.3,21.8,Normal,0.0,62 Months - Normal
+62,Female,21.9,999,Overweight,2.5,62 Months - Overweight
+63,Female,0,11.6,Severely Underweight,-3.0,63 Months - Severely Underweight
+63,Female,11.7,12.3,Underweight,-2.5,63 Months - Underweight
+63,Female,12.4,22.0,Normal,0.0,63 Months - Normal
+63,Female,22.1,999,Overweight,2.5,63 Months - Overweight
+64,Female,0,11.7,Severely Underweight,-3.0,64 Months - Severely Underweight
+64,Female,11.8,12.4,Underweight,-2.5,64 Months - Underweight
+64,Female,12.5,22.2,Normal,0.0,64 Months - Normal
+64,Female,22.3,999,Overweight,2.5,64 Months - Overweight
+65,Female,0,11.8,Severely Underweight,-3.0,65 Months - Severely Underweight
+65,Female,11.9,12.5,Underweight,-2.5,65 Months - Underweight
+65,Female,12.6,22.4,Normal,0.0,65 Months - Normal
+65,Female,22.5,999,Overweight,2.5,65 Months - Overweight
+66,Female,0,11.9,Severely Underweight,-3.0,66 Months - Severely Underweight
+66,Female,12.0,12.6,Underweight,-2.5,66 Months - Underweight
+66,Female,12.7,22.6,Normal,0.0,66 Months - Normal
+66,Female,22.7,999,Overweight,2.5,66 Months - Overweight
+67,Female,0,12.0,Severely Underweight,-3.0,67 Months - Severely Underweight
+67,Female,12.1,12.7,Underweight,-2.5,67 Months - Underweight
+67,Female,12.8,22.8,Normal,0.0,67 Months - Normal
+67,Female,22.9,999,Overweight,2.5,67 Months - Overweight
+68,Female,0,12.1,Severely Underweight,-3.0,68 Months - Severely Underweight
+68,Female,12.2,12.8,Underweight,-2.5,68 Months - Underweight
+68,Female,12.9,23.0,Normal,0.0,68 Months - Normal
+68,Female,23.1,999,Overweight,2.5,68 Months - Overweight
+69,Female,0,12.2,Severely Underweight,-3.0,69 Months - Severely Underweight
+69,Female,12.3,12.9,Underweight,-2.5,69 Months - Underweight
+69,Female,13.0,23.2,Normal,0.0,69 Months - Normal
+69,Female,23.3,999,Overweight,2.5,69 Months - Overweight
+70,Female,0,12.3,Severely Underweight,-3.0,70 Months - Severely Underweight
+70,Female,12.4,13.0,Underweight,-2.5,70 Months - Underweight
+70,Female,13.1,23.4,Normal,0.0,70 Months - Normal
+70,Female,23.5,999,Overweight,2.5,70 Months - Overweight
+71,Female,0,12.4,Severely Underweight,-3.0,71 Months - Severely Underweight
+71,Female,12.5,13.1,Underweight,-2.5,71 Months - Underweight
+71,Female,13.2,23.6,Normal,0.0,71 Months - Normal
+71,Female,23.7,999,Overweight,2.5,71 Months - Overweight
