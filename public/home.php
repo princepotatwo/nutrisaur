@@ -663,62 +663,76 @@ function getGoogleUserInfo($accessToken) {
 }
 
 /**
- * Send verification email using Resend API
+ * Send verification email using SendGrid API
  */
 function sendVerificationEmail($email, $username, $verificationCode) {
-    // Use Resend API for reliable email delivery
-    $apiKey = 're_P6tUyJB2_FjTagamRhwJrJ29q22mmyU4V';
-    $apiUrl = 'https://api.resend.com/emails';
+    // SendGrid API configuration
+    $apiKey = $_ENV['SENDGRID_API_KEY'] ?? 'YOUR_SENDGRID_API_KEY_HERE';
+    $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
     
     $emailData = [
-        'from' => 'NUTRISAUR <onboarding@resend.dev>',
-        'to' => [$email],
-        'subject' => 'NUTRISAUR - Email Verification',
-        'html' => "
-        <html>
-        <head>
-            <title>Email Verification</title>
-            <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: #2A3326; color: #A1B454; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-                .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-                .verification-code { 
-                    background: #2A3326; 
-                    color: #A1B454; 
-                    font-size: 32px; 
-                    font-weight: bold; 
-                    text-align: center; 
-                    padding: 20px; 
-                    border-radius: 8px; 
-                    margin: 20px 0;
-                    letter-spacing: 4px;
-                }
-                .footer { text-align: center; margin-top: 30px; color: #666; }
-            </style>
-        </head>
-        <body>
-            <div class='container'>
-                <div class='header'>
-                    <h1>Welcome to NUTRISAUR!</h1>
-                </div>
-                <div class='content'>
-                    <p>Hello " . htmlspecialchars($username) . ",</p>
-                    <p>Thank you for registering with NUTRISAUR. To complete your registration, please use the verification code below:</p>
-                    <div class='verification-code'>" . $verificationCode . "</div>
-                    <p><strong>This code will expire in 5 minutes.</strong></p>
-                    <p>If you did not create an account with NUTRISAUR, please ignore this email.</p>
-                    <div class='footer'>
-                        <p>Best regards,<br>NUTRISAUR Team</p>
+        'personalizations' => [
+            [
+                'to' => [
+                    ['email' => $email, 'name' => $username]
+                ],
+                'subject' => 'NUTRISAUR - Email Verification'
+            ]
+        ],
+        'from' => [
+            'email' => 'kevinpingol123@gmail.com',
+            'name' => 'NUTRISAUR'
+        ],
+        'content' => [
+            [
+                'type' => 'text/html',
+                'value' => "
+                <html>
+                <head>
+                    <title>Email Verification</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #2A3326; color: #A1B454; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+                        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
+                        .verification-code { 
+                            background: #2A3326; 
+                            color: #A1B454; 
+                            font-size: 32px; 
+                            font-weight: bold; 
+                            text-align: center; 
+                            padding: 20px; 
+                            border-radius: 8px; 
+                            margin: 20px 0;
+                            letter-spacing: 4px;
+                        }
+                        .footer { text-align: center; margin-top: 30px; color: #666; }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h1>Welcome to NUTRISAUR!</h1>
+                        </div>
+                        <div class='content'>
+                            <p>Hello " . htmlspecialchars($username) . ",</p>
+                            <p>Thank you for registering with NUTRISAUR. To complete your registration, please use the verification code below:</p>
+                            <div class='verification-code'>" . $verificationCode . "</div>
+                            <p><strong>This code will expire in 5 minutes.</strong></p>
+                            <p>If you did not create an account with NUTRISAUR, please ignore this email.</p>
+                            <div class='footer'>
+                                <p>Best regards,<br>NUTRISAUR Team</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </body>
-        </html>
-        "
+                </body>
+                </html>
+                "
+            ]
+        ]
     ];
     
-    // Send email via Resend API
+    // Send email via SendGrid API
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $apiUrl);
     curl_setopt($ch, CURLOPT_POST, true);
@@ -735,20 +749,20 @@ function sendVerificationEmail($email, $username, $verificationCode) {
     $curlError = curl_error($ch);
     curl_close($ch);
     
+    // Enhanced error logging
+    error_log("SendGrid API Response: HTTP $httpCode, Response: $response, Error: " . ($curlError ?: 'None'));
+    
     if ($curlError) {
-        error_log("Resend API cURL error: " . $curlError);
+        error_log("SendGrid cURL error: " . $curlError);
         return false;
     }
     
-    if ($httpCode === 200) {
-        $responseData = json_decode($response, true);
-        if (isset($responseData['id'])) {
-            error_log("Email sent successfully via Resend API. Email ID: " . $responseData['id']);
-            return true;
-        }
+    if ($httpCode >= 200 && $httpCode < 300) {
+        error_log("Email sent successfully via SendGrid API");
+        return true;
     }
     
-    error_log("Resend API failed. HTTP Code: $httpCode, Response: $response");
+    error_log("SendGrid API failed. HTTP Code: $httpCode, Response: $response");
     return false;
 }
 ?>
