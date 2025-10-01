@@ -40,11 +40,17 @@ class GoogleOAuth {
                 client_id: GOOGLE_OAUTH_CONFIG.clientId,
                 callback: this.handleGoogleResponse.bind(this),
                 auto_select: false,
-                cancel_on_tap_outside: true
+                cancel_on_tap_outside: true,
+                // Use popup mode for better modal experience
+                ux_mode: 'popup'
             });
 
+            console.log('Google Sign-In initialized successfully');
+            
             // Render the sign-in button
             this.renderSignInButton();
+        } else {
+            console.error('Google accounts API not available');
         }
     }
 
@@ -93,11 +99,20 @@ class GoogleOAuth {
 
     triggerGoogleSignIn() {
         if (this.isLoaded && typeof google !== 'undefined' && google.accounts) {
-            google.accounts.id.prompt((notification) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    // Fallback to popup
-                    this.showGoogleSignInPopup();
+            // Use Google's popup method which shows as a modal
+            google.accounts.oauth2.initCodeClient({
+                client_id: GOOGLE_OAUTH_CONFIG.clientId,
+                scope: GOOGLE_OAUTH_CONFIG.scope,
+                ux_mode: 'popup',
+                callback: (response) => {
+                    console.log('Google OAuth response received');
+                    this.exchangeCodeForToken(response.code);
                 }
+            }).then((client) => {
+                client.requestCode();
+            }).catch((error) => {
+                console.error('Google OAuth error:', error);
+                this.showMessage('Google sign-in failed. Please try again.', 'error');
             });
         } else {
             console.error('Google API not loaded');
