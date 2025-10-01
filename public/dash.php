@@ -888,7 +888,9 @@ if (isset($_GET['logout'])) {
     display: flex;
     flex-direction: column;
     backdrop-filter: blur(10px);
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.3s ease,
+                background-color 0.3s ease;
 }
 
 /* Base body styles */
@@ -896,7 +898,11 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color 0.2s ease, 
+                color 0.2s ease, 
+                border-color 0.2s ease, 
+                box-shadow 0.2s ease, 
+                padding-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     min-height: 100vh;
     background-color: var(--color-bg);
     color: var(--color-text);
@@ -7200,13 +7206,17 @@ body {
 /* Hover state - navbar expanded (shows full width) */
 .navbar:hover {
     width: 320px !important;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(15px);
 }
 
 /* Body padding will be handled by base styles */
 
 /* Content area animation */
 .dashboard {
-    transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: margin-left 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.3s ease;
 }
 
 /* Minimized navbar state - hide all text content */
@@ -7214,7 +7224,9 @@ body {
 .navbar span:not(.navbar-icon),
 .navbar-footer {
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transform: translateX(-10px);
+    transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     overflow: hidden;
     white-space: nowrap;
 }
@@ -7226,6 +7238,16 @@ body {
     justify-content: flex-start;
     align-items: center;
     padding-top: 20px;
+}
+
+/* Navbar icon hover effect when minimized */
+.navbar-icon {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.navbar:hover .navbar-icon {
+    transform: scale(1.05);
+    color: var(--color-primary);
 }
 
 /* Expanded navbar state - show everything */
@@ -7241,6 +7263,7 @@ body {
 .navbar:hover span:not(.navbar-icon),
 .navbar:hover .navbar-footer {
     opacity: 1;
+    transform: translateX(0);
 }
 
 /* Mobile Styles */
