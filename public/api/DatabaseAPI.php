@@ -261,22 +261,9 @@ function sendProfileUpdatedNotification($userEmail, $updateType = 'profile') {
                 $dataType = 'data_updated';
         }
         
-        // Send notification with proper data payload including type
-        $dataPayload = [
-            'type' => $dataType,
-            'title' => $title,
-            'body' => $body,
-            'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
-        ];
-        $result = sendFCMNotificationToToken($fcmToken, $title, $body, $dataPayload);
-        
-        if ($result['success']) {
-            error_log("Profile update notification sent successfully to: $userEmail");
-        } else {
-            error_log("Failed to send profile update notification to: $userEmail - " . $result['error']);
-        }
-        
-        return $result['success'];
+        // FCM notifications disabled - AccountActivity will check for updates on each visit
+        error_log("Profile update notification disabled - user will see changes on next app visit");
+        return true;
         
     } catch (Exception $e) {
         error_log("Error sending profile update notification: " . $e->getMessage());
@@ -326,22 +313,9 @@ function sendDataRefreshNotification($userEmail, $dataType = 'general') {
                 $body = 'Please refresh the app to see the latest information';
         }
         
-        // Send notification with proper data payload including type
-        $dataPayload = [
-            'type' => $dataType,
-            'title' => $title,
-            'body' => $body,
-            'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
-        ];
-        $result = sendFCMNotificationToToken($fcmToken, $title, $body, $dataPayload);
-        
-        if ($result['success']) {
-            error_log("Data refresh notification sent successfully to: $userEmail");
-        } else {
-            error_log("Failed to send data refresh notification to: $userEmail - " . $result['error']);
-        }
-        
-        return $result['success'];
+        // FCM notifications disabled - AccountActivity will check for updates on each visit
+        error_log("Data refresh notification disabled - user will see changes on next app visit");
+        return true;
         
     } catch (Exception $e) {
         error_log("Error sending data refresh notification: " . $e->getMessage());
