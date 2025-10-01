@@ -108,21 +108,27 @@ class GoogleOAuth {
             // Try to use OAuth2 popup first (better modal experience)
             if (google.accounts.oauth2) {
                 console.log('Using Google OAuth2 popup...');
-                google.accounts.oauth2.initCodeClient({
-                    client_id: GOOGLE_OAUTH_CONFIG.clientId,
-                    scope: GOOGLE_OAUTH_CONFIG.scope,
-                    ux_mode: 'popup',
-                    callback: (response) => {
-                        console.log('Google OAuth2 response received');
-                        this.exchangeCodeForToken(response.code);
+                try {
+                    const client = google.accounts.oauth2.initCodeClient({
+                        client_id: GOOGLE_OAUTH_CONFIG.clientId,
+                        scope: GOOGLE_OAUTH_CONFIG.scope,
+                        ux_mode: 'popup',
+                        callback: (response) => {
+                            console.log('Google OAuth2 response received');
+                            this.exchangeCodeForToken(response.code);
+                        }
+                    });
+                    
+                    if (client && typeof client.requestCode === 'function') {
+                        client.requestCode();
+                    } else {
+                        console.error('OAuth2 client not properly initialized');
+                        this.tryOneTap();
                     }
-                }).then((client) => {
-                    client.requestCode();
-                }).catch((error) => {
+                } catch (error) {
                     console.error('Google OAuth2 error:', error);
-                    // Fallback to One Tap
                     this.tryOneTap();
-                });
+                }
             } else {
                 console.log('OAuth2 not available, trying One Tap...');
                 this.tryOneTap();
