@@ -7245,11 +7245,14 @@ body {
     top: 0;
     left: 0;
     right: 0;
+    width: 100vw;
+    max-width: 100vw;
     z-index: 10000;
     background: var(--color-card);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--color-border);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    overflow-x: hidden;
 }
 
 .mobile-nav-container {
@@ -7258,6 +7261,10 @@ body {
     justify-content: space-between;
     padding: 12px 20px;
     height: 60px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .mobile-nav-logo {
@@ -7278,181 +7285,48 @@ body {
     color: var(--color-text);
 }
 
-.mobile-menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border: none;
-    background: var(--color-highlight);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.mobile-menu-toggle:hover {
-    background: var(--color-accent);
-    transform: scale(1.05);
-}
-
-.menu-icon {
-    width: 20px;
-    height: 20px;
-    color: white;
-}
-
-/* Mobile Navigation Menu Overlay */
-.mobile-nav-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    z-index: 10001;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.mobile-nav-menu.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.mobile-nav-content {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 280px;
-    height: 100%;
-    background: var(--color-card);
-    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.mobile-nav-menu.active .mobile-nav-content {
-    transform: translateX(0);
-}
-
-.mobile-nav-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.mobile-nav-logo-full {
+.mobile-nav-icons {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
 }
 
-.mobile-logo-img-large {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-}
-
-.mobile-logo-text-large {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--color-text);
-}
-
-.mobile-nav-close {
+.mobile-nav-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: none;
-    background: var(--color-bg);
+    width: 40px;
+    height: 40px;
     border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.mobile-nav-close:hover {
-    background: var(--color-border);
-}
-
-.close-icon {
-    width: 18px;
-    height: 18px;
-    color: var(--color-text);
-}
-
-.mobile-nav-links {
-    flex: 1;
-    padding: 20px 0;
-    overflow-y: auto;
-}
-
-.mobile-nav-link {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 20px;
+    background: var(--color-bg);
     color: var(--color-text);
     text-decoration: none;
     transition: all 0.3s ease;
-    border-left: 3px solid transparent;
+    border: 1px solid var(--color-border);
 }
 
-.mobile-nav-link:hover {
-    background: var(--color-bg);
-    border-left-color: var(--color-highlight);
-    color: var(--color-highlight);
+.mobile-nav-icon:hover {
+    background: var(--color-highlight);
+    color: white;
+    transform: scale(1.05);
 }
 
-.mobile-nav-link.mobile-nav-logout {
-    color: #ff5252;
-}
-
-.mobile-nav-link.mobile-nav-logout:hover {
+.mobile-nav-icon.mobile-nav-logout {
     background: rgba(255, 82, 82, 0.1);
-    border-left-color: #ff5252;
+    color: #ff5252;
+    border-color: rgba(255, 82, 82, 0.3);
+}
+
+.mobile-nav-icon.mobile-nav-logout:hover {
+    background: #ff5252;
+    color: white;
 }
 
 .nav-icon {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
-}
-
-.mobile-nav-link span {
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.mobile-nav-footer {
-    padding: 20px;
-    border-top: 1px solid var(--color-border);
-    background: var(--color-bg);
-}
-
-.mobile-user-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.mobile-user-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--color-text);
-}
-
-.mobile-app-version {
-    font-size: 12px;
-    color: var(--color-text-secondary);
 }
 
 /* Mobile Styles */
@@ -7468,16 +7342,45 @@ body {
     body {
         padding-left: 0 !important;
         padding-top: 60px !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        right: 0;
     }
     
     .dashboard {
         margin-left: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        padding: 0 15px !important;
+        box-sizing: border-box !important;
     }
     
     .mobile-nav-toggle,
     .mobile-nav-close,
     .nav-overlay {
         display: none !important;
+    }
+    
+    /* Prevent horizontal scrolling on all elements */
+    * {
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Ensure content doesn't cause horizontal scroll */
+    .dashboard-content,
+    .dashboard-header,
+    .dashboard-stats,
+    .dashboard-cards {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
     }
 }
 
@@ -7536,83 +7439,39 @@ body {
                 <img src="/logo.png" alt="NutriSaur" class="mobile-logo-img">
                 <span class="mobile-logo-text">NutriSaur</span>
             </div>
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle Menu">
-                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-        
-        <!-- Mobile Navigation Menu -->
-        <div class="mobile-nav-menu" id="mobileNavMenu">
-            <div class="mobile-nav-content">
-                <div class="mobile-nav-header">
-                    <div class="mobile-nav-logo-full">
-                        <img src="/logo.png" alt="NutriSaur" class="mobile-logo-img-large">
-                        <span class="mobile-logo-text-large">NutriSaur</span>
-                    </div>
-                    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close Menu">
-                        <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                </div>
-                
-                <div class="mobile-nav-links">
-                    <a href="dash" class="mobile-nav-link">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="screening" class="mobile-nav-link">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 11H5a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h4m0-7V9a2 2 0 0 1 2-2h4m0 0V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2m0 0h4m0 0v2"></path>
-                        </svg>
-                        <span>MHO Assessment</span>
-                    </a>
-                    <a href="event" class="mobile-nav-link">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12,6 12,12 16,14"></polyline>
-                        </svg>
-                        <span>Event Notifications</span>
-                    </a>
-                    <a href="ai" class="mobile-nav-link">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        <span>AI Chatbot</span>
-                    </a>
-                    <a href="settings" class="mobile-nav-link">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                        </svg>
-                        <span>Settings</span>
-                    </a>
-                    <a href="logout" class="mobile-nav-link mobile-nav-logout">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                            <polyline points="16,17 21,12 16,7"></polyline>
-                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                        </svg>
-                        <span>Logout</span>
-                    </a>
-                </div>
-                
-                <div class="mobile-nav-footer">
-                    <div class="mobile-user-info">
-                        <span class="mobile-user-name"><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></span>
-                        <span class="mobile-app-version">NutriSaur v2.0</span>
-                    </div>
-                </div>
+            <div class="mobile-nav-icons">
+                <a href="dash" class="mobile-nav-icon" title="Dashboard">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </a>
+                <a href="screening" class="mobile-nav-icon" title="MHO Assessment">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11H5a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h4m0-7V9a2 2 0 0 1 2-2h4m0 0V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2m0 0h4m0 0v2"></path>
+                    </svg>
+                </a>
+                <a href="event" class="mobile-nav-icon" title="Event Notifications">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12,6 12,12 16,14"></polyline>
+                    </svg>
+                </a>
+                <a href="settings" class="mobile-nav-icon" title="Settings">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </a>
+                <a href="logout" class="mobile-nav-icon mobile-nav-logout" title="Logout">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16,17 21,12 16,7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </a>
             </div>
         </div>
     </nav>
@@ -12730,54 +12589,10 @@ body {
         function initNavigation() {
             console.log('🚀 Initializing modern mobile top navigation...');
             
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileNavMenu = document.getElementById('mobileNavMenu');
-            const mobileNavClose = document.getElementById('mobileNavClose');
             const navbar = document.getElementById('navbar');
             
             // Check if elements exist
-            console.log('📱 Mobile menu toggle exists:', !!mobileMenuToggle);
-            console.log('📱 Mobile nav menu exists:', !!mobileNavMenu);
             console.log('📱 Desktop navbar exists:', !!navbar);
-            
-            // Mobile navigation functions
-            function openMobileMenu() {
-                if (mobileNavMenu) {
-                    mobileNavMenu.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                }
-            }
-            
-            function closeMobileMenu() {
-                if (mobileNavMenu) {
-                    mobileNavMenu.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            }
-            
-            // Event listeners for mobile navigation
-            if (mobileMenuToggle) {
-                mobileMenuToggle.addEventListener('click', openMobileMenu);
-            }
-            
-            if (mobileNavClose) {
-                mobileNavClose.addEventListener('click', closeMobileMenu);
-            }
-            
-            if (mobileNavMenu) {
-                // Close menu when clicking on overlay
-                mobileNavMenu.addEventListener('click', function(e) {
-                    if (e.target === mobileNavMenu) {
-                        closeMobileMenu();
-                    }
-                });
-                
-                // Close menu when clicking on navigation links
-                const mobileNavLinks = mobileNavMenu.querySelectorAll('.mobile-nav-link');
-                mobileNavLinks.forEach(link => {
-                    link.addEventListener('click', closeMobileMenu);
-                });
-            }
             
             // Desktop hover navigation (unchanged)
             if (navbar && window.innerWidth >= 769) {
@@ -12799,13 +12614,17 @@ body {
                     if (navbar) navbar.style.display = 'none';
                     document.body.style.paddingLeft = '0';
                     document.body.style.paddingTop = '60px';
-                    closeMobileMenu(); // Close mobile menu on resize
+                    document.body.style.width = '100vw';
+                    document.body.style.maxWidth = '100vw';
+                    document.body.style.overflowX = 'hidden';
                 } else {
                     // Desktop: show desktop navbar, hide mobile top nav
                     if (navbar) navbar.style.display = 'flex';
                     document.body.style.paddingLeft = '40px';
                     document.body.style.paddingTop = '0';
-                    closeMobileMenu(); // Close mobile menu on resize
+                    document.body.style.width = '';
+                    document.body.style.maxWidth = '';
+                    document.body.style.overflowX = '';
                 }
             });
             
@@ -12828,10 +12647,16 @@ body {
                 if (navbar) navbar.style.display = 'none';
                 document.body.style.paddingLeft = '0';
                 document.body.style.paddingTop = '60px';
+                document.body.style.width = '100vw';
+                document.body.style.maxWidth = '100vw';
+                document.body.style.overflowX = 'hidden';
             } else {
                 if (navbar) navbar.style.display = 'flex';
                 document.body.style.paddingLeft = '40px';
                 document.body.style.paddingTop = '0';
+                document.body.style.width = '';
+                document.body.style.maxWidth = '';
+                document.body.style.overflowX = '';
             }
             
             console.log('✅ Modern mobile top navigation system initialized successfully');
