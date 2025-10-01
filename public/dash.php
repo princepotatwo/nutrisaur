@@ -7345,10 +7345,7 @@ body {
         width: 100vw !important;
         max-width: 100vw !important;
         overflow-x: hidden !important;
-        position: fixed !important;
-        top: 0;
-        left: 0;
-        right: 0;
+        min-height: 100vh !important;
     }
     
     .dashboard {
@@ -7370,6 +7367,165 @@ body {
     * {
         max-width: 100vw !important;
         overflow-x: hidden !important;
+    }
+    
+    /* Mobile Layout - Mimic Desktop in Smaller Version */
+    
+    /* Community Metrics Cards - Display in one row on mobile */
+    .card-container {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+        overflow-x: auto !important;
+        padding: 10px 15px !important;
+        margin: 0 !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .card {
+        min-width: 120px !important;
+        width: 120px !important;
+        padding: 12px !important;
+        font-size: 12px !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .card h2 {
+        font-size: 11px !important;
+        margin-bottom: 8px !important;
+        line-height: 1.2 !important;
+    }
+    
+    .metric-value {
+        font-size: 18px !important;
+        font-weight: bold !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .metric-change {
+        font-size: 10px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .metric-note {
+        font-size: 9px !important;
+        line-height: 1.2 !important;
+        opacity: 0.8 !important;
+    }
+    
+    /* Dashboard Header - Smaller on mobile */
+    .dashboard-header h1 {
+        font-size: 24px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    /* Filter Section - Compact on mobile */
+    .filter-section {
+        padding: 10px 15px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .filter-container {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    
+    .filter-group {
+        width: 100% !important;
+    }
+    
+    .custom-select-container {
+        width: 100% !important;
+    }
+    
+    /* Charts and content - Smaller on mobile */
+    .chart-container {
+        padding: 10px !important;
+        margin: 10px 0 !important;
+    }
+    
+    .chart-container h3 {
+        font-size: 16px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    /* Critical Alerts - Compact on mobile */
+    .critical-alerts {
+        padding: 10px !important;
+        margin: 10px 0 !important;
+    }
+    
+    .critical-alerts h3 {
+        font-size: 16px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .alert-item {
+        padding: 8px !important;
+        margin-bottom: 6px !important;
+        font-size: 12px !important;
+    }
+    
+    .alert-item h4 {
+        font-size: 13px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .alert-item p {
+        font-size: 11px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    /* Intelligent Programs - Compact on mobile */
+    .intelligent-programs {
+        padding: 10px !important;
+        margin: 10px 0 !important;
+    }
+    
+    .intelligent-programs h3 {
+        font-size: 16px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .program-card {
+        padding: 8px !important;
+        margin-bottom: 6px !important;
+        font-size: 12px !important;
+    }
+    
+    .program-title {
+        font-size: 13px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .program-description {
+        font-size: 11px !important;
+        margin-bottom: 4px !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* Geographic Chart - Smaller on mobile */
+    .geographic-chart-container {
+        padding: 10px !important;
+        margin: 10px 0 !important;
+        height: 300px !important;
+    }
+    
+    .geographic-chart-container h3 {
+        font-size: 16px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    /* Trends Chart - Smaller on mobile */
+    .trends-chart-container {
+        padding: 10px !important;
+        margin: 10px 0 !important;
+        height: 250px !important;
+    }
+    
+    .trends-chart-container h3 {
+        font-size: 16px !important;
+        margin-bottom: 8px !important;
     }
     
     /* Ensure content doesn't cause horizontal scroll */
@@ -12617,6 +12773,7 @@ body {
                     document.body.style.width = '100vw';
                     document.body.style.maxWidth = '100vw';
                     document.body.style.overflowX = 'hidden';
+                    document.body.style.minHeight = '100vh';
                 } else {
                     // Desktop: show desktop navbar, hide mobile top nav
                     if (navbar) navbar.style.display = 'flex';
@@ -12650,6 +12807,7 @@ body {
                 document.body.style.width = '100vw';
                 document.body.style.maxWidth = '100vw';
                 document.body.style.overflowX = 'hidden';
+                document.body.style.minHeight = '100vh';
             } else {
                 if (navbar) navbar.style.display = 'flex';
                 document.body.style.paddingLeft = '40px';
