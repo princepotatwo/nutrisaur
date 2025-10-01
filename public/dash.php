@@ -3424,19 +3424,23 @@ header .user-info {
     line-height: 1.2;
 }
 
-/* Trends Chart Styles */
+/* Trends Chart Styles - Bootstrap Enhanced */
 .trends-chart-container {
-    height: 400px;
-    max-height: 400px;
+    height: 500px;
     width: 100%;
-    max-width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: visible; /* Allow tooltips to appear outside */
     position: relative;
+    background: var(--color-card);
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    padding: 15px;
+    box-sizing: border-box;
 }
 
+/* Bootstrap Integration Styles */
 .quick-date-btn:hover {
     background: rgba(161, 180, 84, 0.2) !important;
     border-color: rgba(161, 180, 84, 0.5) !important;
@@ -3449,20 +3453,77 @@ header .user-info {
     border-color: var(--color-highlight) !important;
 }
 
-/* Age Classification Chart Styles */
+/* Chart Card Enhancements */
+.chart-card {
+    background: var(--color-card);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-card h3 {
+    color: var(--color-text);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.chart-description {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Bootstrap Form Controls Integration */
+.form-control {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.form-control:focus {
+    background-color: var(--color-bg);
+    border-color: var(--color-highlight);
+    color: var(--color-text);
+    box-shadow: 0 0 0 0.2rem rgba(161, 180, 84, 0.25);
+}
+
+.btn-primary {
+    background-color: var(--color-highlight);
+    border-color: var(--color-highlight);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-highlight-dark, #8a9a3f);
+    border-color: var(--color-highlight-dark, #8a9a3f);
+}
+
+/* Alert Integration */
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.1);
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    color: var(--color-text);
+}
+
+.alert-info .fas {
+    color: #0dcaf0;
+}
+
+/* Age Classification Chart Styles - Bootstrap Enhanced */
 .age-classification-chart-container {
-    height: 400px;
-    max-height: 400px;
+    height: 500px;
     width: 100%;
-    max-width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: visible; /* Allow tooltips to appear outside */
     position: relative;
+    background: var(--color-card);
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    padding: 15px;
     box-sizing: border-box;
-    padding: 10px;
-    margin-top: -30px; /* Move container up */
 }
 
 #ageClassificationChart {
@@ -7850,7 +7911,7 @@ body {
     .age-classification-chart-container {
         padding: 2px !important;
         margin: 2px 0 !important;
-        height: 140px !important;
+        height: 300px !important;
         width: 100% !important;
     }
     
@@ -7858,6 +7919,46 @@ body {
         font-size: 11px !important;
         margin-bottom: 2px !important;
         line-height: 1.2 !important;
+    }
+    
+    /* Bootstrap responsive adjustments for mobile */
+    .chart-card {
+        padding: 15px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .chart-card h3 {
+        font-size: 16px !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .chart-description {
+        font-size: 12px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .trends-chart-container,
+    .age-classification-chart-container {
+        height: 300px !important;
+        padding: 10px !important;
+    }
+    
+    .form-control {
+        font-size: 14px !important;
+    }
+    
+    .btn-sm {
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+    }
+    
+    .alert {
+        padding: 10px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .alert .small {
+        font-size: 11px !important;
     }
     
     /* Chart canvas optimization */
@@ -8429,57 +8530,106 @@ body {
 
 
 
+        <!-- Trends Chart Section - Bootstrap Layout -->
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
-                <div style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <div style="flex: 1;">
-                            <h3 style="margin: 0; padding: 0;">Community Health Trends Over Time</h3>
-                            <p class="chart-description" style="margin: 2px 0 0 0; font-size: 12px; line-height: 1.3;">Nutritional trends over time periods.</p>
-                        </div>
-                        
-                        <!-- Date Picker Controls - Compact layout -->
-                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: 15px;">
-                            <div style="display: flex; gap: 5px; align-items: center;">
-                                <label style="font-size: 12px; color: var(--color-text); font-weight: 500;">From:</label>
-                                <input type="date" id="trends-from-date" style="padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg); color: var(--color-text); font-size: 12px; width: 120px;">
-                            </div>
-                            <div style="display: flex; gap: 5px; align-items: center;">
-                                <label style="font-size: 12px; color: var(--color-text); font-weight: 500;">To:</label>
-                                <input type="date" id="trends-to-date" style="padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg); color: var(--color-text); font-size: 12px; width: 120px;">
-                            </div>
-                            <button id="generate-trends-chart" style="padding: 6px 12px; background: var(--color-highlight); color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">
-                                📊 Generate
-                            </button>
-                        </div>
+                <!-- Header Section -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h3 class="mb-2">Community Health Trends Over Time</h3>
+                        <p class="chart-description mb-3">Nutritional trends over time periods showing changes in classification distribution.</p>
                     </div>
-                    
                 </div>
                 
-                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px; box-sizing: border-box; margin-top: 0 !important;">
-                    <canvas id="trendsLineChart" style="max-width: 100%; max-height: 100%;"></canvas>
+                <!-- Filters Section -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card bg-light border-0 p-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                                    <label class="form-label small fw-semibold text-muted">From Date:</label>
+                                    <input type="date" id="trends-from-date" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                                    <label class="form-label small fw-semibold text-muted">To Date:</label>
+                                    <input type="date" id="trends-to-date" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                                    <label class="form-label small fw-semibold text-muted">Quick Filters:</label>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-outline-secondary quick-date-btn" data-days="7">7D</button>
+                                        <button type="button" class="btn btn-outline-secondary quick-date-btn" data-days="30">30D</button>
+                                        <button type="button" class="btn btn-outline-secondary quick-date-btn" data-days="90">90D</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 text-end">
+                                    <button id="generate-trends-chart" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-chart-line me-1"></i>Generate Chart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chart Section -->
+                <div class="row">
+                    <div class="col-12">
+                        <div id="trends-chart-container" class="trends-chart-container" style="height: 500px; width: 100%; position: relative;">
+                            <canvas id="trendsLineChart" style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
 
+        <!-- Age Classification Chart Section - Bootstrap Layout -->
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
-                        <div style="flex: 1;">
-                <h3>Age Classification Chart</h3>
-                <p class="chart-description">Nutritional classifications by age groups. Age range adjusts based on selected WHO standard.</p>
-                </div>
-                        
+                <!-- Header Section -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h3 class="mb-2">Age Classification Analysis</h3>
+                        <p class="chart-description mb-3">Nutritional classifications by age groups. Age range and classifications adjust based on the selected WHO standard.</p>
                     </div>
                 </div>
                 
-                <div class="age-classification-chart-container">
-                    <canvas id="ageClassificationLineChart"></canvas>
-                </div>
+                <!-- Info Section -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="alert alert-info border-0 p-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span class="small">
+                                        <strong>Current WHO Standard:</strong> <span id="age-chart-who-standard">Weight-for-Age</span>
+                                        <br>
+                                        <strong>Age Range:</strong> <span id="age-chart-age-range">0-71 months</span>
+                                        <br>
+                                        <strong>Classifications:</strong> <span id="age-chart-classifications">Severely Underweight, Underweight, Normal, Overweight</span>
+                                    </span>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="updateAgeClassificationChart('')">
+                                        <i class="fas fa-sync-alt me-1"></i>Refresh Chart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
+                <!-- Chart Section -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="age-classification-chart-container" style="height: 500px; width: 100%; position: relative;">
+                            <canvas id="ageClassificationLineChart" style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
                 
 
                 
@@ -11427,6 +11577,51 @@ body {
             const descriptionElement = document.getElementById('who-chart-description');
             if (descriptionElement) {
                 descriptionElement.textContent = descriptions[whoStandard] || descriptions['weight-for-age'];
+            }
+            
+            // Update age chart info
+            updateAgeChartInfo(whoStandard);
+        }
+        
+        // Function to update age chart information based on WHO standard
+        function updateAgeChartInfo(whoStandard) {
+            const ageChartInfo = {
+                'weight-for-age': {
+                    standard: 'Weight-for-Age',
+                    ageRange: '0-71 months',
+                    classifications: 'Severely Underweight, Underweight, Normal, Overweight'
+                },
+                'height-for-age': {
+                    standard: 'Height-for-Age',
+                    ageRange: '0-71 months',
+                    classifications: 'Severely Stunted, Stunted, Normal Height, Tall'
+                },
+                'weight-for-height': {
+                    standard: 'Weight-for-Height',
+                    ageRange: '0-71 months',
+                    classifications: 'Severely Wasted, Wasted, Normal Weight, Overweight, Obese'
+                },
+                'bmi-for-age': {
+                    standard: 'BMI-for-Age',
+                    ageRange: '5-19 years',
+                    classifications: 'Underweight, Normal, Overweight, Obese'
+                },
+                'bmi-adult': {
+                    standard: 'BMI Adult',
+                    ageRange: '18+ years',
+                    classifications: 'Underweight, Normal Weight, Overweight, Obese'
+                }
+            };
+            
+            const info = ageChartInfo[whoStandard];
+            if (info) {
+                const standardElement = document.getElementById('age-chart-who-standard');
+                const ageRangeElement = document.getElementById('age-chart-age-range');
+                const classificationsElement = document.getElementById('age-chart-classifications');
+                
+                if (standardElement) standardElement.textContent = info.standard;
+                if (ageRangeElement) ageRangeElement.textContent = info.ageRange;
+                if (classificationsElement) classificationsElement.textContent = info.classifications;
             }
         }
 

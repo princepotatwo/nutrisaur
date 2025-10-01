@@ -53,14 +53,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         SessionManager.getInstance(this).markUserAsIdle();
     }
     
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        
-        // Cleanup SessionManager resources to prevent memory leaks
-        SessionManager.getInstance(this).cleanup();
-    }
-    
     /**
      * Override this method to perform additional setup after session validation
      */
