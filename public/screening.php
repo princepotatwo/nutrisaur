@@ -2355,6 +2355,13 @@ header {
                 gap: 8px;
             }
 
+            /* Ensure name column is still readable on mobile */
+            .user-table th:nth-child(1),
+            .user-table td:nth-child(1) {
+                min-width: 150px !important;
+                font-size: 12px !important;
+            }
+
             .action-buttons {
                 flex-direction: column;
                 gap: 6px;
@@ -2649,6 +2656,19 @@ header {
             width: auto !important;
             min-width: 60px;
             max-width: none;
+        }
+
+        /* Ensure name column shows full names */
+        .user-table th:nth-child(1),
+        .user-table td:nth-child(1) {
+            min-width: 180px !important;
+            max-width: none !important;
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            text-align: left !important;
+            padding-left: 12px !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
         }
 
         /* Ensure email column shows full email address */
