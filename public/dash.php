@@ -7458,46 +7458,44 @@ body {
     
     .filter-container {
         display: flex !important;
-        flex-direction: column !important;
+        flex-direction: row !important;
         gap: 6px !important;
-        align-items: stretch !important;
-    }
-    
-    /* First Row - Labels */
-    .filter-labels-row {
-        display: flex !important;
-        gap: 8px !important;
-        margin-bottom: 4px !important;
-    }
-    
-    .filter-label {
-        flex: 1 !important;
-        font-size: 10px !important;
-        font-weight: 600 !important;
-        color: var(--color-text) !important;
-        text-align: center !important;
-        padding: 2px 0 !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
     }
     
     .filter-group {
         display: contents !important;
+        margin-bottom: 0 !important;
     }
     
     .filter-group label {
         display: none !important;
     }
     
-    /* Second Row - Dropdowns */
-    .filter-dropdowns-row {
-        display: flex !important;
-        gap: 8px !important;
-        align-items: stretch !important;
+    /* Compact dropdown styling */
+    .custom-select-container {
+        flex: 1 !important;
+        min-width: 0 !important;
+        margin-bottom: 0 !important;
     }
     
-    .custom-select-container {
-        width: 100% !important;
-        position: relative !important;
+    .custom-select-container .select-header {
+        padding: 6px 8px !important;
+        font-size: 10px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
+    
+    /* WHO Standard select - compact */
+    .filter-group select {
+        padding: 6px 8px !important;
+        font-size: 10px !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+    
     
     .custom-select-container.small-width {
         width: 100% !important;
