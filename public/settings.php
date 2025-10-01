@@ -4579,9 +4579,9 @@ header {
             const deleteAllBtn = document.querySelector('.btn-delete-all .btn-text');
             if (deleteAllBtn) {
                 if (currentTableType === 'users') {
-                    deleteAllBtn.textContent = 'Delete Community Users';
-                } else {
                     deleteAllBtn.textContent = 'Delete Admin Users';
+                } else {
+                    deleteAllBtn.textContent = 'Delete Community Users';
                 }
             }
         }
@@ -6175,6 +6175,11 @@ header {
             if (searchInput) {
                 searchInput.addEventListener('input', applyAllFilters);
             }
+            
+            // Ensure button text is set correctly after everything loads
+            setTimeout(() => {
+                updateTableToggleButton();
+            }, 100);
         });
 
     </script>
