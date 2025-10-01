@@ -4643,9 +4643,19 @@ header {
                 });
                 console.log('Restored', originalCommunityUsersData.length, 'community users');
             } else {
-                // If no stored data, reload the page
-                console.log('No stored data, reloading page to show community users table');
-                window.location.reload();
+                // If no stored data, show empty table with message
+                console.log('No stored community users data, showing empty table');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="7" style="text-align: center; padding: 20px; color: #666;">
+                        No community users found. All users may have been deleted.
+                        <br><br>
+                        <button onclick="loadUsers()" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+                            Refresh Data
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
             }
             
             // Update table toggle button and current table type
