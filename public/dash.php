@@ -7532,6 +7532,9 @@ body {
         visibility: visible !important;
         opacity: 1 !important;
         flex: 0 0 auto !important;
+        max-width: 120px !important;
+        min-width: 80px !important;
+        height: 24px !important;
     }
     
     .filter-group label {
@@ -7583,7 +7586,7 @@ body {
         position: relative !important;
     }
     
-    /* Mobile: WHO Standard select - same size as other dropdowns */
+    /* Mobile: WHO Standard select - match custom-select-container styling */
     .filter-group select {
         padding: 3px 5px !important;
         font-size: 8px !important;
@@ -7595,6 +7598,12 @@ body {
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
+        height: 24px !important;
+        border: 2px solid var(--color-border) !important;
+        border-radius: 8px !important;
+        background-color: var(--color-card) !important;
+        color: var(--color-text) !important;
+        cursor: pointer !important;
     }
     
     
@@ -8236,7 +8245,7 @@ body {
     <div class="dashboard">
         <header>
             <div class="dashboard-header">
-                <h1>Dashboard</h1>
+                <h1>Centralized Dashboard for Real-Time Data Analytics</h1>
             </div>
             <div class="user-info">
                 <button id="new-theme-toggle" class="new-theme-toggle-btn" title="Toggle theme">
