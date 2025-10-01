@@ -4,7 +4,7 @@
 const GOOGLE_OAUTH_CONFIG = {
     // You'll need to get these from Google Cloud Console
     clientId: '43537903747-ppt6bbcnfa60p0hchanl32equ9c3b0ao.apps.googleusercontent.com',
-    redirectUri: window.location.origin + '/home.php',
+    redirectUri: 'postmessage', // Use postmessage for popup mode
     scope: 'openid email profile',
     responseType: 'code',
     state: 'google_oauth_state'

@@ -585,7 +585,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
 function exchangeGoogleCodeForToken($code) {
     $clientId = '43537903747-ppt6bbcnfa60p0hchanl32equ9c3b0ao.apps.googleusercontent.com';
     $clientSecret = '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';
-    $redirectUri = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . '/home.php';
+    $redirectUri = 'postmessage'; // Use postmessage for popup mode
     
     $tokenUrl = 'https://oauth2.googleapis.com/token';
     $data = [
