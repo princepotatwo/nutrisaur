@@ -7157,26 +7157,6 @@ body {
 }
 
 
-/* Navigation Overlay (Mobile) */
-.nav-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    z-index: 9998;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.nav-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
 /* Mobile Close Button in Navbar */
 .mobile-nav-close {
     position: absolute;
@@ -7256,134 +7236,263 @@ body {
     opacity: 1;
 }
 
+/* ===== MOBILE TOP NAVIGATION STYLES ===== */
+
+/* Mobile Top Navigation Bar */
+.mobile-top-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    background: var(--color-card);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    height: 60px;
+}
+
+.mobile-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mobile-logo-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+}
+
+.mobile-logo-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: var(--color-highlight);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+    background: var(--color-accent);
+    transform: scale(1.05);
+}
+
+.menu-icon {
+    width: 20px;
+    height: 20px;
+    color: white;
+}
+
+/* Mobile Navigation Menu Overlay */
+.mobile-nav-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 10001;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mobile-nav-menu.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-nav-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100%;
+    background: var(--color-card);
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-nav-menu.active .mobile-nav-content {
+    transform: translateX(0);
+}
+
+.mobile-nav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.mobile-nav-logo-full {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mobile-logo-img-large {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+}
+
+.mobile-logo-text-large {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.mobile-nav-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--color-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mobile-nav-close:hover {
+    background: var(--color-border);
+}
+
+.close-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--color-text);
+}
+
+.mobile-nav-links {
+    flex: 1;
+    padding: 20px 0;
+    overflow-y: auto;
+}
+
+.mobile-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.mobile-nav-link:hover {
+    background: var(--color-bg);
+    border-left-color: var(--color-highlight);
+    color: var(--color-highlight);
+}
+
+.mobile-nav-link.mobile-nav-logout {
+    color: #ff5252;
+}
+
+.mobile-nav-link.mobile-nav-logout:hover {
+    background: rgba(255, 82, 82, 0.1);
+    border-left-color: #ff5252;
+}
+
+.nav-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.mobile-nav-link span {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.mobile-nav-footer {
+    padding: 20px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg);
+}
+
+.mobile-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mobile-user-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.mobile-app-version {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
 /* Mobile Styles */
 @media (max-width: 768px) {
-    .mobile-nav-toggle {
+    .mobile-top-nav {
         display: block !important;
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 10001;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #4CAF50, #45a049);
-        border: none;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .mobile-nav-close {
-        display: block !important;
-    }
-    
-    .desktop-minimize-toggle,
-    .desktop-nav-toggle {
-        display: none !important;
     }
     
     .navbar {
-        width: 280px !important;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-        z-index: 9999;
-        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-    }
-    
-    .navbar.mobile-open {
-        transform: translateX(0);
+        display: none !important;
     }
     
     body {
         padding-left: 0 !important;
+        padding-top: 60px !important;
     }
     
-    /* Mobile navbar content adjustments */
-    .navbar-header {
-        padding: 20px;
-        text-align: center;
+    .dashboard {
+        margin-left: 0 !important;
     }
     
-    .navbar-logo {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .navbar-logo-icon {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .navbar-logo-text {
-        font-size: 18px;
-        opacity: 1 !important;
-    }
-    
-    .navbar-menu {
-        padding: 0 20px;
-    }
-    
-    .navbar-menu ul {
-        gap: 8px;
-    }
-    
-    .navbar a {
-        padding: 15px 20px;
-        font-size: 16px;
-        border-radius: 10px;
-    }
-    
-    .navbar-footer {
-        padding: 20px;
-        opacity: 1 !important;
-    }
-    
-    .navbar-footer .user-section {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .mobile-nav-toggle.hidden {
-        opacity: 0;
-        visibility: hidden;
+    .mobile-nav-toggle,
+    .mobile-nav-close,
+    .nav-overlay {
+        display: none !important;
     }
 }
 
-/* Mobile Landscape Orientation */
-@media (max-width: 768px) and (orientation: landscape) {
+/* Desktop Styles */
+@media (min-width: 769px) {
+    .mobile-top-nav {
+        display: none !important;
+    }
+    
     .navbar {
-        width: 250px !important;
+        display: flex !important;
     }
     
-    .navbar-header {
-        padding: 15px;
-    }
-    
-    .navbar-menu {
-        padding: 0 15px;
-    }
-    
-    .navbar a {
-        padding: 12px 15px;
-        font-size: 14px;
-    }
-    
-    .navbar-footer {
-        padding: 15px;
-    }
-    
-    .mobile-nav-toggle {
-        width: 45px;
-        height: 45px;
-        top: 15px;
-        left: 15px;
+    body {
+        padding-top: 0 !important;
     }
 }
 
@@ -7420,21 +7529,97 @@ body {
 </style>
 <body class="light-theme">
 
-    <!-- Mobile Navigation Toggle Button -->
-    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Navigation">
-        <span class="toggle-icon">☰</span>
-    </button>
+    <!-- Mobile Top Navigation -->
+    <nav class="mobile-top-nav" id="mobileTopNav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-logo">
+                <img src="/logo.png" alt="NutriSaur" class="mobile-logo-img">
+                <span class="mobile-logo-text">NutriSaur</span>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle Menu">
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation Menu -->
+        <div class="mobile-nav-menu" id="mobileNavMenu">
+            <div class="mobile-nav-content">
+                <div class="mobile-nav-header">
+                    <div class="mobile-nav-logo-full">
+                        <img src="/logo.png" alt="NutriSaur" class="mobile-logo-img-large">
+                        <span class="mobile-logo-text-large">NutriSaur</span>
+                    </div>
+                    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close Menu">
+                        <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="mobile-nav-links">
+                    <a href="dash" class="mobile-nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="screening" class="mobile-nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11H5a2 2 0 0 0-2 2v3c0 1.1.9 2 2 2h4m0-7V9a2 2 0 0 1 2-2h4m0 0V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2m0 0h4m0 0v2"></path>
+                        </svg>
+                        <span>MHO Assessment</span>
+                    </a>
+                    <a href="event" class="mobile-nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12,6 12,12 16,14"></polyline>
+                        </svg>
+                        <span>Event Notifications</span>
+                    </a>
+                    <a href="ai" class="mobile-nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <span>AI Chatbot</span>
+                    </a>
+                    <a href="settings" class="mobile-nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span>Settings</span>
+                    </a>
+                    <a href="logout" class="mobile-nav-link mobile-nav-logout">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16,17 21,12 16,7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
+                
+                <div class="mobile-nav-footer">
+                    <div class="mobile-user-info">
+                        <span class="mobile-user-name"><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></span>
+                        <span class="mobile-app-version">NutriSaur v2.0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-
-    <!-- Navigation Overlay (Mobile) -->
-    <div class="nav-overlay" id="navOverlay"></div>
-
+    <!-- Desktop Sidebar Navigation (unchanged) -->
     <div class="navbar" id="navbar">
         <div class="navbar-header">
-            <!-- Mobile Close Button -->
-            <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close Navigation">
-                <span class="close-icon">×</span>
-            </button>
             
             
             <div class="navbar-logo">
@@ -12539,131 +12724,117 @@ body {
             }
         }
 
-        // ===== HOVER-BASED NAVIGATION SYSTEM =====
+        // ===== MODERN MOBILE TOP NAVIGATION SYSTEM =====
         
-        // Navigation state management
-        let navState = {
-            isMobile: window.innerWidth <= 768
-        };
-
-        // DOM elements
-        const navbar = document.getElementById('navbar');
-        const mobileNavToggle = document.getElementById('mobileNavToggle');
-        const mobileNavClose = document.getElementById('mobileNavClose');
-        const navOverlay = document.getElementById('navOverlay');
-        const body = document.body;
-
-        // Initialize navigation
+        // Initialize modern mobile top navigation
         function initNavigation() {
-            console.log('🚀 Initializing hover-based navigation system...');
+            console.log('🚀 Initializing modern mobile top navigation...');
             
-            // Debug: Check if elements exist
-            console.log('📱 Mobile toggle exists:', !!mobileNavToggle);
-            console.log('📱 Navbar exists:', !!navbar);
-            console.log('📱 Is mobile:', navState.isMobile);
-
-            // Set initial state
-            updateNavbarState();
-            setupEventListeners();
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileNavMenu = document.getElementById('mobileNavMenu');
+            const mobileNavClose = document.getElementById('mobileNavClose');
+            const navbar = document.getElementById('navbar');
             
-            console.log('✅ Hover navigation system initialized!');
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Mobile navigation
-            if (mobileNavToggle) {
-                mobileNavToggle.addEventListener('click', openMobileNav);
+            // Check if elements exist
+            console.log('📱 Mobile menu toggle exists:', !!mobileMenuToggle);
+            console.log('📱 Mobile nav menu exists:', !!mobileNavMenu);
+            console.log('📱 Desktop navbar exists:', !!navbar);
+            
+            // Mobile navigation functions
+            function openMobileMenu() {
+                if (mobileNavMenu) {
+                    mobileNavMenu.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+            
+            function closeMobileMenu() {
+                if (mobileNavMenu) {
+                    mobileNavMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+            
+            // Event listeners for mobile navigation
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', openMobileMenu);
             }
             
             if (mobileNavClose) {
-                mobileNavClose.addEventListener('click', closeMobileNav);
+                mobileNavClose.addEventListener('click', closeMobileMenu);
             }
             
-            if (navOverlay) {
-                navOverlay.addEventListener('click', closeMobileNav);
-            }
-
-            // Desktop hover navigation
-            if (navbar && !navState.isMobile) {
-                navbar.addEventListener('mouseenter', expandNavbar);
-                navbar.addEventListener('mouseleave', minimizeNavbar);
-            }
-
-            // Handle window resize
-            window.addEventListener('resize', handleResize);
-            
-            // Handle escape key
-            document.addEventListener('keydown', handleKeydown);
-        }
-
-        // Mobile navigation functions
-        function openMobileNav() {
-            navbar.classList.add('mobile-open');
-            navOverlay.classList.add('active');
-            mobileNavToggle.classList.add('hidden');
-            body.style.overflow = 'hidden';
-        }
-
-        function closeMobileNav() {
-            navbar.classList.remove('mobile-open');
-            navOverlay.classList.remove('active');
-            mobileNavToggle.classList.remove('hidden');
-            body.style.overflow = '';
-        }
-
-        // Desktop hover functions with synchronized animations
-        function expandNavbar() {
-            if (!navState.isMobile) {
-                console.log('🖥️ Expanding navbar on hover');
-                // Smoothly animate content to make room for expanded navbar
-                body.style.paddingLeft = '320px';
-            }
-        }
-
-        function minimizeNavbar() {
-            if (!navState.isMobile) {
-                console.log('🖥️ Minimizing navbar on mouse leave');
-                // Smoothly animate content back to minimized state
-                body.style.paddingLeft = '40px';
-            }
-        }
-
-        function updateNavbarState() {
-            if (navState.isMobile) {
-                // Mobile behavior
-                body.classList.remove('navbar-collapsed', 'navbar-expanded');
-                navbar.classList.remove('collapsed', 'expanded');
-            } else {
-                // Desktop behavior - start minimized
-                body.style.paddingLeft = '40px';
-            }
-        }
-
-        // Handle window resize
-        function handleResize() {
-            const wasMobile = navState.isMobile;
-            navState.isMobile = window.innerWidth <= 768;
-            
-            if (wasMobile !== navState.isMobile) {
-                // Device type changed
-                updateNavbarState();
-                setupEventListeners(); // Re-setup event listeners
+            if (mobileNavMenu) {
+                // Close menu when clicking on overlay
+                mobileNavMenu.addEventListener('click', function(e) {
+                    if (e.target === mobileNavMenu) {
+                        closeMobileMenu();
+                    }
+                });
                 
-                if (navState.isMobile) {
-                    // Switched to mobile - close any open nav
-                    closeMobileNav();
+                // Close menu when clicking on navigation links
+                const mobileNavLinks = mobileNavMenu.querySelectorAll('.mobile-nav-link');
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', closeMobileMenu);
+                });
+            }
+            
+            // Desktop hover navigation (unchanged)
+            if (navbar && window.innerWidth >= 769) {
+                navbar.addEventListener('mouseenter', function() {
+                    expandNavbar();
+                });
+                
+                navbar.addEventListener('mouseleave', function() {
+                    minimizeNavbar();
+                });
+            }
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Mobile: hide desktop navbar, show mobile top nav
+                    if (navbar) navbar.style.display = 'none';
+                    document.body.style.paddingLeft = '0';
+                    document.body.style.paddingTop = '60px';
+                    closeMobileMenu(); // Close mobile menu on resize
+                } else {
+                    // Desktop: show desktop navbar, hide mobile top nav
+                    if (navbar) navbar.style.display = 'flex';
+                    document.body.style.paddingLeft = '40px';
+                    document.body.style.paddingTop = '0';
+                    closeMobileMenu(); // Close mobile menu on resize
+                }
+            });
+            
+            // Desktop navigation functions (unchanged)
+            function expandNavbar() {
+                if (window.innerWidth >= 769) {
+                    document.body.style.paddingLeft = '320px';
                 }
             }
-        }
-
-        // Handle keyboard navigation
-        function handleKeydown(event) {
-            if (event.key === 'Escape') {
-                if (navState.isMobile && navbar.classList.contains('mobile-open')) {
-                    closeMobileNav();
+            
+            function minimizeNavbar() {
+                if (window.innerWidth >= 769) {
+                    document.body.style.paddingLeft = '40px';
                 }
             }
+            
+            // Set initial state
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                if (navbar) navbar.style.display = 'none';
+                document.body.style.paddingLeft = '0';
+                document.body.style.paddingTop = '60px';
+            } else {
+                if (navbar) navbar.style.display = 'flex';
+                document.body.style.paddingLeft = '40px';
+                document.body.style.paddingTop = '0';
+            }
+            
+            console.log('✅ Modern mobile top navigation system initialized successfully');
         }
 
         // Initialize when DOM is ready
