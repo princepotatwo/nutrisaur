@@ -7505,7 +7505,8 @@ body {
         margin-bottom: 0 !important;
     }
     
-    .custom-select-container .select-header {
+    /* Mobile: Override desktop styles with higher specificity */
+    .filter-section .custom-select-container .select-header {
         padding: 3px 5px !important;
         font-size: 8px !important;
         white-space: nowrap !important;
@@ -7513,17 +7514,25 @@ body {
         text-overflow: ellipsis !important;
         gap: 1px !important;
         justify-content: space-between !important;
+        display: flex !important;
+        align-items: center !important;
+        min-height: 24px !important;
     }
     
-    /* Reduce spacing between text and arrow */
-    .custom-select-container .select-header span:first-child {
+    /* Mobile: Reduce spacing between text and arrow */
+    .filter-section .custom-select-container .select-header span:first-child {
         flex: 1 !important;
-        margin-right: 2px !important;
+        margin-right: 1px !important;
+        max-width: calc(100% - 12px) !important;
+        padding-right: 0 !important;
     }
     
-    .custom-select-container .select-header .dropdown-arrow {
+    .filter-section .custom-select-container .select-header .dropdown-arrow {
         flex-shrink: 0 !important;
-        margin-left: 2px !important;
+        margin-left: 1px !important;
+        font-size: 6px !important;
+        width: 8px !important;
+        text-align: center !important;
     }
     
     /* Mobile: WHO Standard select - compact */
