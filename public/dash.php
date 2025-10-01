@@ -7151,31 +7151,32 @@ body {
     font-weight: bold;
 }
 
-/* Desktop Minimize Toggle Button */
-.desktop-minimize-toggle {
-    position: fixed;
-    top: 20px;
-    left: 350px;
+/* Desktop Navbar Toggle Button (Left Side) */
+.desktop-nav-toggle {
+    position: absolute;
+    top: 50%;
+    left: -15px;
+    transform: translateY(-50%);
     z-index: 10001;
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--color-highlight), rgba(161, 180, 84, 0.8));
     border: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: all 0.3s ease;
     display: none;
 }
 
-.desktop-minimize-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+.desktop-nav-toggle:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.desktop-minimize-toggle .minimize-icon {
+.desktop-nav-toggle .toggle-icon {
     color: white;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: bold;
 }
 
@@ -7221,46 +7222,34 @@ body {
     transform: scale(1.1);
 }
 
-/* Desktop Navbar Toggle Button */
-.desktop-nav-toggle {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: var(--color-text);
-    font-size: 18px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: none;
+/* Desktop Navbar Toggle Button - Removed duplicate */
+
+/* Navbar States with Smooth Animations */
+.navbar {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.desktop-nav-toggle:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
-}
-
-/* Navbar States */
 .navbar.collapsed {
-    width: 0 !important;
-    transform: translateX(-100%);
+    transform: translateX(-280px); /* Show 40px of navbar */
+    width: 320px !important;
 }
 
 .navbar.expanded {
-    width: 320px !important;
     transform: translateX(0);
+    width: 320px !important;
 }
 
-/* Body padding adjustments */
+/* Body padding adjustments with smooth transitions */
+body {
+    transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 body.navbar-collapsed {
-    padding-left: 0 !important;
+    padding-left: 40px !important; /* Show 40px of navbar */
 }
 
-body.navbar-minimized {
-    padding-left: 80px !important;
+body.navbar-expanded {
+    padding-left: 320px !important;
 }
 
 /* Mobile Styles */
@@ -7314,7 +7303,6 @@ body.navbar-minimized {
 
 /* Desktop Styles */
 @media (min-width: 769px) {
-    .desktop-minimize-toggle,
     .desktop-nav-toggle {
         display: block !important;
     }
@@ -7328,12 +7316,10 @@ body.navbar-minimized {
     .navbar {
         width: 320px !important;
         transform: translateX(0);
-        transition: width 0.3s ease, transform 0.3s ease;
     }
     
     body {
         padding-left: 320px !important;
-        transition: padding-left 0.3s ease;
     }
 }
 
@@ -7355,10 +7341,6 @@ body.navbar-minimized {
         <span class="toggle-icon">☰</span>
     </button>
 
-    <!-- Desktop Minimize Toggle Button -->
-    <button class="desktop-minimize-toggle" id="desktopMinimizeToggle" aria-label="Minimize Navigation">
-        <span class="minimize-icon">◀</span>
-    </button>
 
     <!-- Navigation Overlay (Mobile) -->
     <div class="nav-overlay" id="navOverlay"></div>
@@ -7370,7 +7352,7 @@ body.navbar-minimized {
                 <span class="close-icon">×</span>
             </button>
             
-            <!-- Desktop Minimize Button -->
+            <!-- Desktop Toggle Button (Left Side) -->
             <button class="desktop-nav-toggle" id="desktopNavToggle" aria-label="Toggle Navigation">
                 <span class="toggle-icon">◀</span>
             </button>
@@ -12491,7 +12473,6 @@ body.navbar-minimized {
         const mobileNavToggle = document.getElementById('mobileNavToggle');
         const mobileNavClose = document.getElementById('mobileNavClose');
         const navOverlay = document.getElementById('navOverlay');
-        const desktopMinimizeToggle = document.getElementById('desktopMinimizeToggle');
         const desktopNavToggle = document.getElementById('desktopNavToggle');
         const body = document.body;
 
@@ -12507,7 +12488,7 @@ body.navbar-minimized {
 
             // Debug: Check if elements exist
             console.log('📱 Mobile toggle exists:', !!mobileNavToggle);
-            console.log('🖥️ Desktop minimize exists:', !!desktopMinimizeToggle);
+            console.log('🖥️ Desktop toggle exists:', !!desktopNavToggle);
             console.log('📱 Navbar exists:', !!navbar);
             console.log('📱 Is mobile:', navState.isMobile);
 
@@ -12534,10 +12515,6 @@ body.navbar-minimized {
             }
 
             // Desktop navigation
-            if (desktopMinimizeToggle) {
-                desktopMinimizeToggle.addEventListener('click', toggleDesktopNav);
-            }
-            
             if (desktopNavToggle) {
                 desktopNavToggle.addEventListener('click', toggleDesktopNav);
             }
@@ -12569,23 +12546,34 @@ body.navbar-minimized {
             navState.isCollapsed = !navState.isCollapsed;
             updateNavbarState();
             saveNavbarState();
+            console.log('🔄 Desktop nav toggled, collapsed:', navState.isCollapsed);
         }
 
         function updateNavbarState() {
             if (navState.isMobile) {
                 // Mobile behavior
-                body.classList.remove('navbar-collapsed', 'navbar-minimized');
+                body.classList.remove('navbar-collapsed', 'navbar-expanded');
                 navbar.classList.remove('collapsed', 'expanded');
             } else {
-                // Desktop behavior
+                // Desktop behavior with smooth animations
                 if (navState.isCollapsed) {
                     navbar.classList.add('collapsed');
+                    navbar.classList.remove('expanded');
                     body.classList.add('navbar-collapsed');
-                    body.classList.remove('navbar-minimized');
+                    body.classList.remove('navbar-expanded');
+                    
+                    // Update toggle button icon
+                    const toggleIcon = document.querySelector('#desktopNavToggle .toggle-icon');
+                    if (toggleIcon) toggleIcon.textContent = '▶';
                 } else {
                     navbar.classList.remove('collapsed');
+                    navbar.classList.add('expanded');
                     body.classList.remove('navbar-collapsed');
-                    body.classList.add('navbar-minimized');
+                    body.classList.add('navbar-expanded');
+                    
+                    // Update toggle button icon
+                    const toggleIcon = document.querySelector('#desktopNavToggle .toggle-icon');
+                    if (toggleIcon) toggleIcon.textContent = '◀';
                 }
             }
         }
