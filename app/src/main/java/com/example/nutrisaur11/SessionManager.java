@@ -39,6 +39,9 @@ public class SessionManager {
     private Handler validationHandler;
     private Runnable validationRunnable;
     
+    // Dialog management to prevent WindowLeaked errors
+    private AlertDialog currentDialog;
+    
     private SessionManager(Context context) {
         this.context = context.getApplicationContext();
         this.executorService = Executors.newSingleThreadExecutor();
@@ -380,18 +383,37 @@ public class SessionManager {
             return;
         }
         
+        // Dismiss any existing dialog to prevent multiple dialogs
+        dismissCurrentDialog();
+        
         Log.d(TAG, "Showing logout dialog");
         activity.runOnUiThread(() -> {
-            new AlertDialog.Builder(activity)
-                .setTitle("Account Not Found")
-                .setMessage("Your account is no longer available or has been deleted from the database. Please log in again.")
-                .setCancelable(false)
-                .setPositiveButton("OK", (dialog, which) -> {
-                    Log.d(TAG, "User clicked OK on logout dialog");
-                    clearUserSession();
-                    redirectToLogin(activity);
-                })
-                .show();
+            try {
+                currentDialog = new AlertDialog.Builder(activity)
+                    .setTitle("Account Not Found")
+                    .setMessage("Your account is no longer available or has been deleted from the database. Please log in again.")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        Log.d(TAG, "User clicked OK on logout dialog");
+                        clearUserSession();
+                        redirectToLogin(activity);
+                        currentDialog = null; // Clear reference
+                    })
+                    .setOnDismissListener(dialog -> {
+                        Log.d(TAG, "Logout dialog dismissed");
+                        currentDialog = null; // Clear reference when dismissed
+                    })
+                    .setOnCancelListener(dialog -> {
+                        Log.d(TAG, "Logout dialog cancelled");
+                        currentDialog = null; // Clear reference when cancelled
+                    })
+                    .show();
+            } catch (Exception e) {
+                Log.e(TAG, "Error showing logout dialog: " + e.getMessage());
+                // If dialog fails, still clear session and redirect
+                clearUserSession();
+                redirectToLogin(activity);
+            }
         });
     }
     
@@ -408,18 +430,37 @@ public class SessionManager {
             return;
         }
         
+        // Dismiss any existing dialog to prevent multiple dialogs
+        dismissCurrentDialog();
+        
         Log.d(TAG, "Showing offline dialog");
         activity.runOnUiThread(() -> {
-            new AlertDialog.Builder(activity)
-                .setTitle("You went offline")
-                .setMessage("No internet connection detected. Please check your network and try again.")
-                .setCancelable(false)
-                .setPositiveButton("OK", (dialog, which) -> {
-                    Log.d(TAG, "User clicked OK on offline dialog");
-                    clearUserSession();
-                    redirectToLogin(activity);
-                })
-                .show();
+            try {
+                currentDialog = new AlertDialog.Builder(activity)
+                    .setTitle("You went offline")
+                    .setMessage("No internet connection detected. Please check your network and try again.")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        Log.d(TAG, "User clicked OK on offline dialog");
+                        clearUserSession();
+                        redirectToLogin(activity);
+                        currentDialog = null; // Clear reference
+                    })
+                    .setOnDismissListener(dialog -> {
+                        Log.d(TAG, "Offline dialog dismissed");
+                        currentDialog = null; // Clear reference when dismissed
+                    })
+                    .setOnCancelListener(dialog -> {
+                        Log.d(TAG, "Offline dialog cancelled");
+                        currentDialog = null; // Clear reference when cancelled
+                    })
+                    .show();
+            } catch (Exception e) {
+                Log.e(TAG, "Error showing offline dialog: " + e.getMessage());
+                // If dialog fails, still clear session and redirect
+                clearUserSession();
+                redirectToLogin(activity);
+            }
         });
     }
     
@@ -590,16 +631,35 @@ public class SessionManager {
             return;
         }
         
+        // Dismiss any existing dialog to prevent multiple dialogs
+        dismissCurrentDialog();
+        
         activity.runOnUiThread(() -> {
-            new AlertDialog.Builder(activity)
-                .setTitle("Account Issue")
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("OK", (dialog, which) -> {
-                    clearUserSession();
-                    redirectToLogin(activity);
-                })
-                .show();
+            try {
+                currentDialog = new AlertDialog.Builder(activity)
+                    .setTitle("Account Issue")
+                    .setMessage(message)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        clearUserSession();
+                        redirectToLogin(activity);
+                        currentDialog = null; // Clear reference
+                    })
+                    .setOnDismissListener(dialog -> {
+                        Log.d(TAG, "Force logout dialog dismissed");
+                        currentDialog = null; // Clear reference when dismissed
+                    })
+                    .setOnCancelListener(dialog -> {
+                        Log.d(TAG, "Force logout dialog cancelled");
+                        currentDialog = null; // Clear reference when cancelled
+                    })
+                    .show();
+            } catch (Exception e) {
+                Log.e(TAG, "Error showing force logout dialog: " + e.getMessage());
+                // If dialog fails, still clear session and redirect
+                clearUserSession();
+                redirectToLogin(activity);
+            }
         });
     }
     
@@ -670,9 +730,31 @@ public class SessionManager {
     }
     
     /**
+     * Dismiss current dialog if it exists
+     */
+    private void dismissCurrentDialog() {
+        if (currentDialog != null && currentDialog.isShowing()) {
+            try {
+                Log.d(TAG, "Dismissing current dialog");
+                currentDialog.dismiss();
+            } catch (Exception e) {
+                Log.e(TAG, "Error dismissing current dialog: " + e.getMessage());
+            }
+            currentDialog = null;
+        }
+    }
+    
+    /**
      * Cleanup resources
      */
     public void cleanup() {
+        // Dismiss any open dialog first
+        dismissCurrentDialog();
+        
+        // Stop periodic validation
+        stopPeriodicValidation();
+        
+        // Shutdown executor service
         if (executorService != null && !executorService.isShutdown()) {
             executorService.shutdown();
         }
