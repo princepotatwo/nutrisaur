@@ -902,7 +902,7 @@ body {
                 color 0.2s ease, 
                 border-color 0.2s ease, 
                 box-shadow 0.2s ease, 
-                padding-left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                padding-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     min-height: 100vh;
     background-color: var(--color-bg);
     color: var(--color-text);
@@ -7214,7 +7214,7 @@ body {
 
 /* Content area animation */
 .dashboard {
-    transition: margin-left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transition: margin-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 transform 0.3s ease;
 }
 
@@ -7223,9 +7223,9 @@ body {
 .navbar span:not(.navbar-icon),
 .navbar-footer {
     opacity: 0;
-    transform: translateX(-15px);
-    transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateX(-10px);
+    transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     overflow: hidden;
     white-space: nowrap;
 }
