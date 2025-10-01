@@ -7487,6 +7487,21 @@ body {
         gap: 3px !important;
         align-items: center !important;
         flex-wrap: wrap !important;
+        justify-content: space-between !important;
+    }
+    
+    /* Mobile: Ensure proper sizing for filter groups */
+    .filter-container > .filter-group {
+        flex: 0 0 auto !important;
+        max-width: 120px !important;
+        min-width: 80px !important;
+    }
+    
+    /* Mobile: WHO Standard filter sizing */
+    .filter-container > .filter-group:last-child {
+        flex: 0 0 auto !important;
+        max-width: 140px !important;
+        min-width: 100px !important;
     }
     
     .filter-group {
@@ -7498,11 +7513,13 @@ body {
         display: none !important;
     }
     
-    /* Mobile: Compact dropdown styling - reduce internal spacing */
+    /* Mobile: Compact dropdown styling - reduce width and size */
     .custom-select-container {
-        flex: 1 !important;
+        flex: 0 1 auto !important;
         min-width: 0 !important;
         margin-bottom: 0 !important;
+        max-width: 120px !important;
+        width: auto !important;
     }
     
     /* Mobile: Override desktop styles with higher specificity */
@@ -7517,7 +7534,9 @@ body {
         display: flex !important;
         align-items: center !important;
         min-height: 24px !important;
-        width: 100% !important;
+        width: auto !important;
+        max-width: 120px !important;
+        min-width: 80px !important;
     }
     
     /* Mobile: Reduce spacing between text and arrow */
