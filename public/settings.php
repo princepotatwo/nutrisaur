@@ -243,6 +243,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
            }
            break;
            
+       case 'delete_all_admin_users':
+           try {
+               $confirm = $_POST['confirm'] ?? false;
+               
+               if (!$confirm) {
+                   echo json_encode(['success' => false, 'error' => 'Confirmation required']);
+                   break;
+               }
+               
+               require_once __DIR__ . "/../config.php";
+               $pdo = getDatabaseConnection();
+               if (!$pdo) {
+                   echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                   break;
+               }
+               
+               // Delete all users from the users table (admin users)
+               $deleteStmt = $pdo->prepare("DELETE FROM users");
+               $result = $deleteStmt->execute();
+               
+               if ($result) {
+                   $deletedCount = $deleteStmt->rowCount();
+                   echo json_encode(['success' => true, 'message' => "Successfully deleted {$deletedCount} admin users"]);
+               } else {
+                   echo json_encode(['success' => false, 'error' => 'Failed to delete admin users']);
+               }
+           } catch (Exception $e) {
+               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+           }
+           break;
+           
        case 'update_user':
            try {
                $user_id = $_POST['user_id'] ?? '';
@@ -4543,6 +4574,16 @@ header {
                     btn.querySelector('.btn-text').textContent = 'Switch to Community';
                 }
             }
+            
+            // Update Delete All Users button text based on current table
+            const deleteAllBtn = document.querySelector('.btn-delete-all .btn-text');
+            if (deleteAllBtn) {
+                if (currentTableType === 'users') {
+                    deleteAllBtn.textContent = 'Delete All Admin Users';
+                } else {
+                    deleteAllBtn.textContent = 'Delete All Community Users';
+                }
+            }
         }
 
         function loadUsersTable() {
@@ -5248,15 +5289,18 @@ header {
                 return;
             }
 
+            // Get table type for confirmation message
+            const tableTypeName = currentTableType === 'users' ? 'Admin Users' : 'Community Users';
+            
             // Double confirmation for delete all
-            const confirmMessage = `⚠️ WARNING: This will delete ALL ${userCount} users from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
+            const confirmMessage = `⚠️ WARNING: This will delete ALL ${userCount} ${tableTypeName.toLowerCase()} from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
             
             if (!confirm(confirmMessage)) {
                 return;
             }
 
             // Second confirmation
-            if (!confirm('FINAL CONFIRMATION: Delete ALL users? This will permanently remove all user data.')) {
+            if (!confirm(`FINAL CONFIRMATION: Delete ALL ${tableTypeName.toLowerCase()}? This will permanently remove all user data.`)) {
                 return;
             }
 
@@ -5266,15 +5310,33 @@ header {
             deleteAllBtn.innerHTML = '⏳ Deleting...';
             deleteAllBtn.disabled = true;
 
-            // Send delete all request to server
-            fetch('/api/delete_all_users.php', {
-                method: 'POST',
-                headers: {
+            // Determine endpoint and request data based on current table type
+            let endpoint, requestData, headers;
+            
+            if (currentTableType === 'users') {
+                // Delete all admin users
+                endpoint = '/settings.php';
+                requestData = 'action=delete_all_admin_users&confirm=true';
+                headers = {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                };
+            } else {
+                // Delete all community users
+                endpoint = '/api/delete_all_users.php';
+                requestData = JSON.stringify({
+                    confirm: true,
+                    table_type: 'community_users'
+                });
+                headers = {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    confirm: true
-                })
+                };
+            }
+
+            // Send delete all request to server
+            fetch(endpoint, {
+                method: 'POST',
+                headers: headers,
+                body: requestData
             })
             .then(response => response.json())
             .then(data => {
