@@ -685,44 +685,33 @@ function sendVerificationEmail($email, $username, $verificationCode) {
         ],
         'content' => [
             [
+                'type' => 'text/plain',
+                'value' => "Hello " . htmlspecialchars($username) . ",\n\nThank you for registering with NUTRISAUR. To complete your registration, please use the verification code below:\n\nVerification Code: " . $verificationCode . "\n\nThis code will expire in 5 minutes.\n\nIf you did not create an account with NUTRISAUR, please ignore this email.\n\nBest regards,\nNUTRISAUR Team"
+            ],
+            [
                 'type' => 'text/html',
                 'value' => "
                 <html>
                 <head>
-                    <title>Email Verification</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                        .header { background: #2A3326; color: #A1B454; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-                        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-                        .verification-code { 
-                            background: #2A3326; 
-                            color: #A1B454; 
-                            font-size: 32px; 
-                            font-weight: bold; 
-                            text-align: center; 
-                            padding: 20px; 
-                            border-radius: 8px; 
-                            margin: 20px 0;
-                            letter-spacing: 4px;
-                        }
-                        .footer { text-align: center; margin-top: 30px; color: #666; }
-                    </style>
+                    <title>NUTRISAUR Email Verification</title>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
                 </head>
-                <body>
-                    <div class='container'>
-                        <div class='header'>
-                            <h1>Welcome to NUTRISAUR!</h1>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4;'>
+                    <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
+                        <div style='text-align: center; background-color: #2A3326; color: #A1B454; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;'>
+                            <h1 style='margin: 0; font-size: 24px;'>NUTRISAUR</h1>
                         </div>
-                        <div class='content'>
+                        <div style='padding: 20px 0;'>
                             <p>Hello " . htmlspecialchars($username) . ",</p>
                             <p>Thank you for registering with NUTRISAUR. To complete your registration, please use the verification code below:</p>
-                            <div class='verification-code'>" . $verificationCode . "</div>
+                            <div style='background-color: #f8f9fa; border: 2px solid #2A3326; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;'>
+                                <span style='font-size: 28px; font-weight: bold; color: #2A3326; letter-spacing: 4px;'>" . $verificationCode . "</span>
+                            </div>
                             <p><strong>This code will expire in 5 minutes.</strong></p>
                             <p>If you did not create an account with NUTRISAUR, please ignore this email.</p>
-                            <div class='footer'>
-                                <p>Best regards,<br>NUTRISAUR Team</p>
-                            </div>
+                        </div>
+                        <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;'>
+                            <p>Best regards,<br>NUTRISAUR Team</p>
                         </div>
                     </div>
                 </body>
