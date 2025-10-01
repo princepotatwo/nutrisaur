@@ -7484,10 +7484,10 @@ body {
     .filter-container {
         display: flex !important;
         flex-direction: row !important;
-        gap: 3px !important;
+        gap: 1px !important;
         align-items: center !important;
         flex-wrap: wrap !important;
-        justify-content: space-between !important;
+        justify-content: flex-start !important;
     }
     
     /* Mobile: Ensure proper sizing for filter groups */
@@ -7495,6 +7495,8 @@ body {
         flex: 0 0 auto !important;
         max-width: 120px !important;
         min-width: 80px !important;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
     }
     
     /* Mobile: WHO Standard filter sizing */
@@ -7502,6 +7504,14 @@ body {
         flex: 0 0 auto !important;
         max-width: 140px !important;
         min-width: 100px !important;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+    
+    /* Mobile: Remove any additional spacing between dropdowns */
+    .filter-container .custom-select-container {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
     }
     
     .filter-group {
