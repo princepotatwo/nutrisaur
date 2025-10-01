@@ -4579,9 +4579,9 @@ header {
             const deleteAllBtn = document.querySelector('.btn-delete-all .btn-text');
             if (deleteAllBtn) {
                 if (currentTableType === 'users') {
-                    deleteAllBtn.textContent = 'Delete All Admin Users';
+                    deleteAllBtn.textContent = 'Delete Admin Users';
                 } else {
-                    deleteAllBtn.textContent = 'Delete All Community Users';
+                    deleteAllBtn.textContent = 'Delete Community Users';
                 }
             }
         }
@@ -5290,17 +5290,17 @@ header {
             }
 
             // Get table type for confirmation message
-            const tableTypeName = currentTableType === 'users' ? 'Admin Users' : 'Community Users';
+            const tableTypeName = currentTableType === 'users' ? 'admin users' : 'community users';
             
             // Double confirmation for delete all
-            const confirmMessage = `⚠️ WARNING: This will delete ALL ${userCount} ${tableTypeName.toLowerCase()} from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
+            const confirmMessage = `⚠️ WARNING: This will delete ALL ${userCount} ${tableTypeName} from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
             
             if (!confirm(confirmMessage)) {
                 return;
             }
 
             // Second confirmation
-            if (!confirm(`FINAL CONFIRMATION: Delete ALL ${tableTypeName.toLowerCase()}? This will permanently remove all user data.`)) {
+            if (!confirm(`FINAL CONFIRMATION: Delete ALL ${tableTypeName}? This will permanently remove all user data.`)) {
                 return;
             }
 
