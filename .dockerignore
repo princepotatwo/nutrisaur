@@ -1,7 +1,12 @@
+# Git directory (large)
+.git/
+.gitignore
+
 # Android app files
 app/
 build/
 gradle/
+.gradle/
 gradlew
 gradlew.bat
 gradle.properties
@@ -62,3 +67,19 @@ vendor/
 
 # Large directories that aren't needed
 sss/
+temp_saved_model/
+
+# Additional large files/directories
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.webp
+*.svg
+*.ico
+
+# Dataset directories (large image files)
+*dataset*
+*malnutrition*
