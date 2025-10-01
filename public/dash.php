@@ -1034,13 +1034,53 @@ header {
 
 /* Theme toggle button - OLD STYLES REMOVED */
 
-/* Filter section styles */
+/* Filter section styles - Desktop */
 .filter-section {
     background: var(--color-card);
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 30px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Desktop: Ensure original layout is preserved */
+@media (min-width: 768px) {
+    .filter-container {
+        display: flex !important;
+        gap: 20px !important;
+        align-items: center !important;
+        position: relative !important;
+        overflow: visible !important;
+    }
+    
+    .filter-group {
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .filter-group label {
+        font-weight: 600 !important;
+        color: var(--color-text) !important;
+        min-width: 120px !important;
+        display: block !important;
+    }
+    
+    .custom-select-container .select-header {
+        padding: 8px 12px !important;
+        font-size: 14px !important;
+    }
+    
+    .filter-group select {
+        padding: 8px 12px !important;
+        font-size: 14px !important;
+    }
+    
+    .custom-select-container .dropdown-arrow {
+        margin-left: 8px !important;
+        font-size: 12px !important;
+    }
 }
 
 /* Critical Alerts - Simple and Clean Design */
@@ -7456,10 +7496,11 @@ body {
         border-radius: 8px !important;
     }
     
+    /* Mobile: Make filters fit in one row with minimal spacing */
     .filter-container {
         display: flex !important;
         flex-direction: row !important;
-        gap: 6px !important;
+        gap: 3px !important;
         align-items: center !important;
         flex-wrap: wrap !important;
     }
@@ -7473,7 +7514,7 @@ body {
         display: none !important;
     }
     
-    /* Compact dropdown styling */
+    /* Mobile: Compact dropdown styling - reduce internal spacing */
     .custom-select-container {
         flex: 1 !important;
         min-width: 0 !important;
@@ -7481,19 +7522,26 @@ body {
     }
     
     .custom-select-container .select-header {
-        padding: 6px 8px !important;
-        font-size: 10px !important;
+        padding: 3px 5px !important;
+        font-size: 8px !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+        gap: 1px !important;
     }
     
-    /* WHO Standard select - compact */
+    /* Mobile: WHO Standard select - compact */
     .filter-group select {
-        padding: 6px 8px !important;
-        font-size: 10px !important;
+        padding: 3px 5px !important;
+        font-size: 8px !important;
         flex: 1 !important;
         min-width: 0 !important;
+    }
+    
+    /* Mobile: Reduce dropdown arrow spacing */
+    .custom-select-container .dropdown-arrow {
+        margin-left: 1px !important;
+        font-size: 7px !important;
     }
     
     
