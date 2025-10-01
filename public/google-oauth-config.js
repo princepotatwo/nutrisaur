@@ -105,45 +105,142 @@ class GoogleOAuth {
         if (this.isLoaded && typeof google !== 'undefined' && google.accounts) {
             console.log('Triggering Google Sign-In...');
             
-            // Use Google One Tap which shows as a modal/popup
-            google.accounts.id.prompt((notification) => {
-                console.log('Google prompt notification:', notification);
-                
-                if (notification.isNotDisplayed()) {
-                    console.log('One Tap not displayed, trying popup fallback');
-                    this.showGoogleSignInPopup();
-                } else if (notification.isSkippedMoment()) {
-                    console.log('One Tap skipped, trying popup fallback');
-                    this.showGoogleSignInPopup();
-                } else if (notification.isDismissedMoment()) {
-                    console.log('One Tap dismissed by user');
-                } else {
-                    console.log('One Tap displayed successfully');
-                }
-            });
+            // Try to use OAuth2 popup first (better modal experience)
+            if (google.accounts.oauth2) {
+                console.log('Using Google OAuth2 popup...');
+                google.accounts.oauth2.initCodeClient({
+                    client_id: GOOGLE_OAUTH_CONFIG.clientId,
+                    scope: GOOGLE_OAUTH_CONFIG.scope,
+                    ux_mode: 'popup',
+                    callback: (response) => {
+                        console.log('Google OAuth2 response received');
+                        this.exchangeCodeForToken(response.code);
+                    }
+                }).then((client) => {
+                    client.requestCode();
+                }).catch((error) => {
+                    console.error('Google OAuth2 error:', error);
+                    // Fallback to One Tap
+                    this.tryOneTap();
+                });
+            } else {
+                console.log('OAuth2 not available, trying One Tap...');
+                this.tryOneTap();
+            }
         } else {
             console.error('Google API not loaded, using fallback');
             this.showGoogleSignInPopup();
         }
     }
 
-    showGoogleSignInPopup() {
-        // Fallback method using popup
-        const authUrl = this.buildAuthUrl();
-        const popup = window.open(
-            authUrl,
-            'googleSignIn',
-            'width=500,height=600,scrollbars=yes,resizable=yes'
-        );
-        
-        // Listen for popup completion
-        const checkClosed = setInterval(() => {
-            if (popup.closed) {
-                clearInterval(checkClosed);
-                // The popup was closed, check if we have the auth code
-                this.checkForAuthCode();
+    tryOneTap() {
+        google.accounts.id.prompt((notification) => {
+            console.log('Google One Tap notification:', notification);
+            
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                console.log('One Tap failed, using popup fallback');
+                this.showGoogleSignInPopup();
+            } else {
+                console.log('One Tap displayed successfully');
             }
-        }, 1000);
+        });
+    }
+
+    showGoogleSignInPopup() {
+        console.log('Using custom modal approach...');
+        
+        // Create a modal overlay
+        const modal = document.createElement('div');
+        modal.id = 'google-signin-modal';
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        `;
+        
+        // Create modal content
+        const modalContent = document.createElement('div');
+        modalContent.style.cssText = `
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        `;
+        
+        // Add close button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '×';
+        closeBtn.style.cssText = `
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        `;
+        closeBtn.onclick = () => {
+            document.body.removeChild(modal);
+        };
+        
+        // Add Google Sign-In button
+        const googleBtn = document.createElement('div');
+        googleBtn.innerHTML = `
+            <div style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 12px 24px;
+                border: 1px solid #dadce0;
+                border-radius: 4px;
+                background: white;
+                cursor: pointer;
+                font-family: 'Google Sans', Roboto, sans-serif;
+                font-size: 14px;
+                color: #3c4043;
+                margin: 20px 0;
+            ">
+                <svg width="18" height="18" viewBox="0 0 24 24" style="margin-right: 12px;">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Sign in with Google
+            </div>
+        `;
+        
+        googleBtn.onclick = () => {
+            const authUrl = this.buildAuthUrl();
+            window.open(authUrl, 'googleSignIn', 'width=500,height=600,scrollbars=yes,resizable=yes');
+            document.body.removeChild(modal);
+        };
+        
+        modalContent.appendChild(closeBtn);
+        modalContent.appendChild(document.createElement('h3')).textContent = 'Sign in to NUTRISAUR';
+        modalContent.appendChild(googleBtn);
+        modal.appendChild(modalContent);
+        
+        // Add to page
+        document.body.appendChild(modal);
+        
+        // Close on outside click
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        };
     }
 
     buildAuthUrl() {
