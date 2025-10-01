@@ -36,13 +36,14 @@ class GoogleOAuth {
 
     initializeGoogleSignIn() {
         if (typeof google !== 'undefined' && google.accounts) {
+            console.log('Initializing Google Sign-In...');
+            
+            // Initialize both ID and OAuth2
             google.accounts.id.initialize({
                 client_id: GOOGLE_OAUTH_CONFIG.clientId,
                 callback: this.handleGoogleResponse.bind(this),
                 auto_select: false,
-                cancel_on_tap_outside: true,
-                // Use popup mode for better modal experience
-                ux_mode: 'popup'
+                cancel_on_tap_outside: true
             });
 
             console.log('Google Sign-In initialized successfully');
@@ -92,6 +93,9 @@ class GoogleOAuth {
             // Add click handler
             button.addEventListener('click', (e) => {
                 e.preventDefault();
+                console.log('Google button clicked');
+                console.log('Google API loaded:', this.isLoaded);
+                console.log('Google accounts available:', typeof google !== 'undefined' && google.accounts);
                 this.triggerGoogleSignIn();
             });
         });
@@ -99,23 +103,26 @@ class GoogleOAuth {
 
     triggerGoogleSignIn() {
         if (this.isLoaded && typeof google !== 'undefined' && google.accounts) {
-            // Use Google's popup method which shows as a modal
-            google.accounts.oauth2.initCodeClient({
-                client_id: GOOGLE_OAUTH_CONFIG.clientId,
-                scope: GOOGLE_OAUTH_CONFIG.scope,
-                ux_mode: 'popup',
-                callback: (response) => {
-                    console.log('Google OAuth response received');
-                    this.exchangeCodeForToken(response.code);
+            console.log('Triggering Google Sign-In...');
+            
+            // Use Google One Tap which shows as a modal/popup
+            google.accounts.id.prompt((notification) => {
+                console.log('Google prompt notification:', notification);
+                
+                if (notification.isNotDisplayed()) {
+                    console.log('One Tap not displayed, trying popup fallback');
+                    this.showGoogleSignInPopup();
+                } else if (notification.isSkippedMoment()) {
+                    console.log('One Tap skipped, trying popup fallback');
+                    this.showGoogleSignInPopup();
+                } else if (notification.isDismissedMoment()) {
+                    console.log('One Tap dismissed by user');
+                } else {
+                    console.log('One Tap displayed successfully');
                 }
-            }).then((client) => {
-                client.requestCode();
-            }).catch((error) => {
-                console.error('Google OAuth error:', error);
-                this.showMessage('Google sign-in failed. Please try again.', 'error');
             });
         } else {
-            console.error('Google API not loaded');
+            console.error('Google API not loaded, using fallback');
             this.showGoogleSignInPopup();
         }
     }
