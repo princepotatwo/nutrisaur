@@ -3478,6 +3478,23 @@ header .user-info {
     margin-bottom: 0;
 }
 
+/* Trends chart header and filters sections */
+.trends-header-section {
+    margin-bottom: 15px;
+}
+
+.trends-header-section h3 {
+    margin-bottom: 8px;
+}
+
+.trends-header-section .chart-description {
+    margin-bottom: 0;
+}
+
+.trends-filters-section {
+    margin-bottom: 15px;
+}
+
 #ageClassificationChart {
     width: 100% !important;
     height: 100% !important;
@@ -7895,6 +7912,30 @@ body {
         margin-bottom: 15px !important;
     }
     
+    /* Trends chart header section - center on mobile */
+    .trends-header-section {
+        margin-bottom: 15px !important;
+    }
+    
+    .trends-header-section h3 {
+        margin-bottom: 8px !important;
+        text-align: center !important;
+    }
+    
+    .trends-header-section .chart-description {
+        text-align: center !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* Trends chart filters - center on mobile */
+    .trends-filters-section {
+        margin-bottom: 15px !important;
+    }
+    
+    .trends-filters-section > div {
+        justify-content: center !important;
+    }
+    
     /* Chart canvas optimization */
     .trends-chart-container canvas,
     .age-classification-chart-container canvas {
@@ -8466,32 +8507,31 @@ body {
 
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
-                <div style="margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                        <div style="flex: 1;">
-                            <h3 style="margin: 0; padding: 0;">Community Health Trends Over Time</h3>
-                            <p class="chart-description" style="margin: 2px 0 0 0; font-size: 12px; line-height: 1.3;">Nutritional trends over time periods.</p>
-                        </div>
-                        
-                        <!-- Date Picker Controls - Keep in one row -->
-                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: 15px;">
-                            <div style="display: flex; gap: 5px; align-items: center;">
-                                <label style="font-size: 12px; color: var(--color-text); font-weight: 500;">From:</label>
-                                <input type="date" id="trends-from-date" style="padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg); color: var(--color-text); font-size: 12px; width: 120px;">
-                            </div>
-                            <div style="display: flex; gap: 5px; align-items: center;">
-                                <label style="font-size: 12px; color: var(--color-text); font-weight: 500;">To:</label>
-                                <input type="date" id="trends-to-date" style="padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg); color: var(--color-text); font-size: 12px; width: 120px;">
-                            </div>
-                            <button id="generate-trends-chart" style="padding: 6px 12px; background: var(--color-highlight); color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">
-                                📊 Generate
-                            </button>
-                        </div>
-                    </div>
-                    
+                <!-- Header Section - Title and Description on top -->
+                <div class="trends-header-section">
+                    <h3>Community Health Trends Over Time</h3>
+                    <p class="chart-description">Nutritional trends over time periods.</p>
                 </div>
                 
-                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px; box-sizing: border-box; margin-top: 0 !important;">
+                <!-- Filters Section - Date controls below -->
+                <div class="trends-filters-section">
+                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: center;">
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <label style="font-size: 12px; color: var(--color-text); font-weight: 500;">From:</label>
+                            <input type="date" id="trends-from-date" style="padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg); color: var(--color-text); font-size: 12px; width: 120px;">
+                        </div>
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <label style="font-size: 12px; color: var(--color-text); font-weight: 500;">To:</label>
+                            <input type="date" id="trends-to-date" style="padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg); color: var(--color-text); font-size: 12px; width: 120px;">
+                        </div>
+                        <button id="generate-trends-chart" style="padding: 6px 12px; background: var(--color-highlight); color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;">
+                            📊 Generate
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Chart Section -->
+                <div id="trends-chart-container" class="trends-chart-container" style="height: 400px; max-height: 400px; width: 100%; max-width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; padding: 10px; box-sizing: border-box; margin-top: 15px;">
                     <canvas id="trendsLineChart" style="max-width: 100%; max-height: 100%;"></canvas>
                 </div>
             </div>
