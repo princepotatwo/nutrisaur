@@ -2642,7 +2642,7 @@ header {
             border-collapse: separate;
             border-spacing: 0;
             margin-top: 10px;
-            table-layout: auto;
+            table-layout: fixed;
             border-radius: 15px;
             overflow: hidden;
             border: 1px solid var(--color-border);
@@ -2661,14 +2661,15 @@ header {
         /* Ensure name column shows full names */
         .user-table th:nth-child(1),
         .user-table td:nth-child(1) {
-            min-width: 180px !important;
+            min-width: 200px !important;
             max-width: none !important;
-            white-space: normal !important;
-            word-wrap: break-word !important;
+            white-space: nowrap !important;
+            word-wrap: normal !important;
             text-align: left !important;
             padding-left: 12px !important;
             overflow: visible !important;
             text-overflow: clip !important;
+            width: 200px !important;
         }
 
         /* Ensure email column shows full email address */
