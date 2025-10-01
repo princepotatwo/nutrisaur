@@ -1,0 +1,42 @@
+digraph BMIClassificationTree {
+    graph [rankdir=TB, bgcolor=white, fontname="Arial", fontsize=12];
+    node [shape=box, style=filled, fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9, labeldistance=2];
+
+    // BMI-for-Age Decision Tree
+    root [label="BMI-for-Age\nZ-Score Input", shape=ellipse, fillcolor=lightgreen];
+    
+    // First decision
+    decision1 [label="Z-Score < -1.645?", fillcolor=lightyellow];
+    
+    // Underweight path
+    underweight [label="Underweight\n<-1.645 SD", fillcolor=orange];
+    
+    // Second decision
+    decision2 [label="Z-Score <= 1.036?", fillcolor=lightyellow];
+    
+    // Normal path
+    normal [label="Normal BMI\n-1.645 to +1.036 SD", fillcolor=lightgreen];
+    
+    // Third decision
+    decision3 [label="Z-Score <= 1.645?", fillcolor=lightyellow];
+    
+    // Overweight path
+    overweight [label="Overweight\n+1.036 to +1.645 SD", fillcolor=lightcoral];
+    
+    // Obese path
+    obese [label="Obese\n>+1.645 SD", fillcolor=red, fontcolor=white];
+
+    // Connections
+    root -> decision1 [label="Input Z-Score"];
+    decision1 -> underweight [label="Yes"];
+    decision1 -> decision2 [label="No"];
+    decision2 -> normal [label="Yes"];
+    decision2 -> decision3 [label="No"];
+    decision3 -> overweight [label="Yes"];
+    decision3 -> obese [label="No"];
+    
+    // Add WHO classification reference
+    who_ref [label="WHO BMI-for-Age Standards:\n< -1.645 SD: Underweight\n-1.645 to +1.036 SD: Normal\n+1.036 to +1.645 SD: Overweight\n> +1.645 SD: Obese", 
+             shape=note, fillcolor=lightblue, fontsize=8];
+}

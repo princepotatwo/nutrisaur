@@ -1,0 +1,42 @@
+digraph HeightForAgeTree {
+    graph [rankdir=TB, bgcolor=white, fontname="Arial", fontsize=12];
+    node [shape=box, style=filled, fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9, labeldistance=2];
+
+    // Height-for-Age Decision Tree (Stunting Assessment)
+    root [label="Height-for-Age\nZ-Score Input", shape=ellipse, fillcolor=lightgreen];
+    
+    // First decision
+    decision1 [label="Z-Score < -3?", fillcolor=lightyellow];
+    
+    // Severely stunted path
+    severe_stunted [label="Severely Stunted\n<-3 SD", fillcolor=red, fontcolor=white];
+    
+    // Second decision
+    decision2 [label="Z-Score >= -3\nAND < -2?", fillcolor=lightyellow];
+    
+    // Stunted path
+    stunted [label="Stunted\n-3 to -2 SD", fillcolor=orange];
+    
+    // Third decision
+    decision3 [label="Z-Score >= -2\nAND <= 2?", fillcolor=lightyellow];
+    
+    // Normal path
+    normal [label="Normal Height\n-2 to +2 SD", fillcolor=lightgreen];
+    
+    // Tall path
+    tall [label="Tall\n>+2 SD", fillcolor=lightblue];
+
+    // Connections
+    root -> decision1 [label="Input Z-Score"];
+    decision1 -> severe_stunted [label="Yes"];
+    decision1 -> decision2 [label="No"];
+    decision2 -> stunted [label="Yes"];
+    decision2 -> decision3 [label="No"];
+    decision3 -> normal [label="Yes"];
+    decision3 -> tall [label="No"];
+    
+    // Add WHO classification reference
+    who_ref [label="WHO Stunting Standards:\n< -3 SD: Severely Stunted\n-3 to -2 SD: Stunted\n-2 to +2 SD: Normal Height\n> +2 SD: Tall", 
+             shape=note, fillcolor=lightblue, fontsize=8];
+}

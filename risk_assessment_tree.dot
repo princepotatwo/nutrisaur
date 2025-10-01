@@ -1,0 +1,34 @@
+digraph RiskAssessmentTree {
+    graph [rankdir=TB, bgcolor=white, fontname="Arial", fontsize=12];
+    node [shape=box, style=filled, fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9, labeldistance=2];
+
+    // Risk Assessment Decision Tree
+    root [label="Risk Assessment\n(All Growth Indicators)", shape=ellipse, fillcolor=lightgreen];
+    
+    // First decision - Severe Risk
+    decision1 [label="Severe indicators?\n• Severely Underweight (WFA)\n• Severely Stunted (HFA)\n• Severely Wasted (WFH)", fillcolor=lightyellow];
+    
+    // Severe risk path
+    severe_risk [label="SEVERE RISK\n• Immediate medical attention\n• Intensive nutritional support\n• Hospital referral", fillcolor=red, fontcolor=white];
+    
+    // Second decision - Moderate Risk
+    decision2 [label="Moderate indicators?\n• Underweight (WFA)\n• Stunted (HFA)\n• Wasted (WFH)\n• Overweight (BMI)", fillcolor=lightyellow];
+    
+    // Moderate risk path
+    moderate_risk [label="MODERATE RISK\n• Nutritional counseling\n• Regular monitoring\n• Community health support", fillcolor=orange];
+    
+    // Low risk path
+    low_risk [label="LOW RISK\n• Continue current care\n• Routine monitoring\n• Health education", fillcolor=lightgreen];
+
+    // Connections
+    root -> decision1 [label="Evaluate All Indicators"];
+    decision1 -> severe_risk [label="Yes"];
+    decision1 -> decision2 [label="No"];
+    decision2 -> moderate_risk [label="Yes"];
+    decision2 -> low_risk [label="No"];
+    
+    // Add intervention guidelines
+    interventions [label="Intervention Guidelines:\n\nSEVERE: Hospital admission, therapeutic feeding\nMODERATE: Community-based management, regular follow-up\nLOW: Preventive care, health promotion", 
+                   shape=note, fillcolor=lightblue, fontsize=8];
+}

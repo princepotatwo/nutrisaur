@@ -1,0 +1,42 @@
+digraph AdultBMITree {
+    graph [rankdir=TB, bgcolor=white, fontname="Arial", fontsize=12];
+    node [shape=box, style=filled, fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9, labeldistance=2];
+
+    // Adult BMI Decision Tree (for ages 18+)
+    root [label="Adult BMI\n(BMI Value Input)", shape=ellipse, fillcolor=lightgreen];
+    
+    // First decision
+    decision1 [label="BMI < 18.5?", fillcolor=lightyellow];
+    
+    // Underweight path
+    underweight [label="Underweight\nBMI < 18.5", fillcolor=lightblue];
+    
+    // Second decision
+    decision2 [label="BMI < 25?", fillcolor=lightyellow];
+    
+    // Normal path
+    normal [label="Normal Weight\nBMI 18.5-24.9", fillcolor=lightgreen];
+    
+    // Third decision
+    decision3 [label="BMI < 30?", fillcolor=lightyellow];
+    
+    // Overweight path
+    overweight [label="Overweight\nBMI 25-29.9", fillcolor=orange];
+    
+    // Obese path
+    obese [label="Obese\nBMI ≥ 30", fillcolor=red, fontcolor=white];
+
+    // Connections
+    root -> decision1 [label="Input BMI Value"];
+    decision1 -> underweight [label="Yes"];
+    decision1 -> decision2 [label="No"];
+    decision2 -> normal [label="Yes"];
+    decision2 -> decision3 [label="No"];
+    decision3 -> overweight [label="Yes"];
+    decision3 -> obese [label="No"];
+    
+    // Add WHO classification reference
+    who_ref [label="WHO Adult BMI Classification:\n< 18.5: Underweight\n18.5-24.9: Normal weight\n25.0-29.9: Overweight\n≥ 30.0: Obese", 
+             shape=note, fillcolor=lightblue, fontsize=8];
+}

@@ -1,272 +1,357 @@
-2025-10-01 10:34:20.649 18365-18365 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-01 10:34:20.650 18365-18365 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-01 10:34:20.650 18365-18365 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-01 10:34:20.650 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-01 10:34:20.651 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-01 10:34:20.651 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-01 10:34:20.652 18365-18365 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-01 10:34:20.652 18365-18365 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-01 10:34:20.659 18365-18365 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-01 10:34:20.659 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-01 10:34:20.660 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-01 10:34:20.660 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-01 10:34:20.660 18365-18365 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-01 10:34:20.661 18365-18365 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-01 10:34:21.915 18365-19275 GeminiService           com.example.nutrisaur11              D  Gemini API Response Code: 200
-2025-10-01 10:34:21.916 18365-19275 GeminiService           com.example.nutrisaur11              D  Gemini API Response: {  "candidates": [    {      "content": {        "parts": [          {            "text": "```json\n{\n  \"foods\": [\n    {\n      \"id\": \"1\",\n      \"name\": \"Ginisang Tofu\",\n      \"emoji\": \"🫘\",\n      \"calories\": 120,\n      \"protein\": 10,\n      \"carbs\": 8,\n      \"fat\": 6,\n      \"serving_size\": 100,\n      \"serving_unit\": \"g\",\n      \"description\": \"A great source of plant-based protein and essential nutrients. Tofu is low in calories and helps maintain a healthy weight. Stir-frying retains nutrients and adds flavor with vegetables.\"\n    },\n    {\n      \"id\": \"2\",\n      \"name\": \"Sinigang na Gulay\",\n      \"emoji\": \"🍲\",\n      \"calories\": 80,\n      \"protein\": 3,\n      \"carbs\": 12,\n      \"fat\": 2,\n      \"serving_size\": 100,\n      \"serving_unit\": \"g\",\n      \"description\": \"A flavorful and nutritious vegetable soup rich in vitamins and fiber. The sour broth aids digestion and the vegetables contribute to overall health.\"\n    },\n    {\n      \"id\": \"3\",\n      \"name\": \"Adobong Kangkong\",\n      \"emoji\": \"🥬\",\n      \"calories\": 60,\n      \"protein\": 4,\n      \"carbs\": 6,\n      \"fat\": 2,\n      \"serving_size\": 100,\n      \"serving_unit\": \"g\",\n      \"description\": \"Kangkong (water spinach) is packed with vitamins and minerals. Adobo style (using soy sauce and vinegar) provides a tasty and low-calorie way to enjoy this leafy green.\"\n    },\n    {\n      \"id\": \"4\",\n      \"name\": \"Vegan Laing\",\n      \"emoji\": \"🥬\",\n      \"calories\": 150,\n      \"protein\": 5,\n      \"carbs\": 10,\n      \"fat\": 10,\n      \"serving_size\": 100,\n      \"serving_unit\": \"g\",\n      \"description\": \"Made with taro leaves, coconut milk, ginger, and chili, this dish provides a good source of fiber and healthy fats. Coconut milk adds creaminess and essential nutrients.\"\n    },\n    {\n      \"id\": \"5\",\n      \"name\": \"Ginataang Kalabasa at Sitaw\",\n      \"emoji\": \"🥘\",\n      \"calories\": 130,\n      \"protein\": 4,\n      \"carbs\": 15,\n      \"fat\": 7,\n      \"serving_size\": 100,\n      \"serving_unit\": \"g\",\n      \"description\": \"Kalabasa (squash) and sitaw (string beans) are rich in vitamins and fiber. Cooking in coconut milk adds a creamy texture and healthy fats, promoting satiety.\"\n    },\n    {\n      \"id\": \"6\",\n      \"name\": \"Tofu Sisig\",\n      \"emoji\": \"🫘\",\n      \"calories\": 200,\n      \"protein\": 15,\n      \"carbs\": 8,\n      \"fat\": 12,\n      \"serving_size\": 100,\n      \"serving_unit\": \"g\",\n      \"description\": \"A vegan twist on a popular Filipino dish. Tofu provides a high-protein alternative. A good source of protein and iron while being mindful of sodium content.\"\n    },\n    {\n      \"id\": \"7\",\n      \"name\": \"Munggo Guisado\",\n      \"emoji\": \"🥣\",\n      \"calories\": 110,\n      \"protein\": 7,\n      \"carbs\": 15,\n      \"fat\": 2,\n      \"serving_size\": 100,\n      \"serving_unit\": \"g\",\n      \"description\": \"Mung beans are a great source of plant-based protein and fiber. This dish is filling and helps regulate blood sugar levels. It is a good source of iron.\"\n    },\n    {\n      \"id\": \"8\",\n      \"name\": \"Vegetable Lumpia\",\n      \"emoji\": \"🥗\",\n      \"calories\": 90,\n      \"protein\": 2,\n      \"carbs\": 12,\n      \"fat\": 4,\n      \"serving_size\": 100,\n      \"serving_unit\": \"g\",\n      \"description\": \"Filled with various vegetables, lumpia provides essential vitamins and minerals. Choose baked or lightly fried versions to minimize fat intake.\"\n    },\n    {\n      \"id\": \"9\",\n      \"name\": \"Pancit Bihon\",\n      \"emoji\": \"🍜\",\n      \"calories\": 150,\n      \"protein\": 5,\n      \"carbs\": 25,\n      \"fat\": 4,\n      \"serving_size\": 100,\n      \"serving_unit\": \"g\",\n      \"description\": \"Rice noodles with mixed vegetables, providing carbohydrates for energy and fiber for diges
-2025-10-01 10:34:21.924 18365-19275 GeminiService           com.example.nutrisaur11              D  Extracted JSON string: {
-                                                                                                      "foods": [
-                                                                                                        {
-                                                                                                          "id": "1",
-                                                                                                          "name": "Ginisang Tofu",
-                                                                                                          "emoji": "🫘",
-                                                                                                          "calories": 120,
-                                                                                                          "protein": 10,
-                                                                                                          "carbs": 8,
-                                                                                                          "fat": 6,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "A great source of plant-based protein and essential nutrients. Tofu is low in calories and helps maintain a healthy weight. Stir-frying retains nutrients and adds flavor with vegetables."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "2",
-                                                                                                          "name": "Sinigang na Gulay",
-                                                                                                          "emoji": "🍲",
-                                                                                                          "calories": 80,
-                                                                                                          "protein": 3,
-                                                                                                          "carbs": 12,
-                                                                                                          "fat": 2,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "A flavorful and nutritious vegetable soup rich in vitamins and fiber. The sour broth aids digestion and the vegetables contribute to overall health."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "3",
-                                                                                                          "name": "Adobong Kangkong",
-                                                                                                          "emoji": "🥬",
-                                                                                                          "calories": 60,
-                                                                                                          "protein": 4,
-                                                                                                          "carbs": 6,
-                                                                                                          "fat": 2,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "Kangkong (water spinach) is packed with vitamins and minerals. Adobo style (using soy sauce and vinegar) provides a tasty and low-calorie way to enjoy this leafy green."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "4",
-                                                                                                          "name": "Vegan Laing",
-                                                                                                          "emoji": "🥬",
-                                                                                                          "calories": 150,
-                                                                                                          "protein": 5,
-                                                                                                          "carbs": 10,
-                                                                                                          "fat": 10,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "Made with taro leaves, coconut milk, ginger, and chili, this dish provides a good source of fiber and healthy fats. Coconut milk adds creaminess and essential nutrients."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "5",
-                                                                                                          "name": "Ginataang Kalabasa at Sitaw",
-                                                                                                          "emoji": "🥘",
-                                                                                                          "calories": 130,
-                                                                                                          "protein": 4,
-                                                                                                          "carbs": 15,
-                                                                                                          "fat": 7,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "Kalabasa (squash) and sitaw (string beans) are rich in vitamins and fiber. Cooking in coconut milk adds a creamy texture and healthy fats, promoting satiety."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "6",
-                                                                                                          "name": "Tofu Sisig",
-                                                                                                          "emoji": "🫘",
-                                                                                                          "calories": 200,
-                                                                                                          "protein": 15,
-                                                                                                          "carbs": 8,
-                                                                                                          "fat": 12,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "A vegan twist on a popular Filipino dish. Tofu provides a high-protein alternative. A good source of protein and iron while being mindful of sodium content."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "7",
-                                                                                                          "name": "Munggo Guisado",
-                                                                                                          "emoji": "🥣",
-                                                                                                          "calories": 110,
-                                                                                                          "protein": 7,
-                                                                                                          "carbs": 15,
-                                                                                                          "fat": 2,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "Mung beans are a great source of plant-based protein and fiber. This dish is filling and helps regulate blood sugar levels. It is a good source of iron."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "8",
-                                                                                                          "name": "Vegetable Lumpia",
-                                                                                                          "emoji": "🥗",
-                                                                                                          "calories": 90,
-                                                                                                          "protein": 2,
-                                                                                                          "carbs": 12,
-                                                                                                          "fat": 4,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "Filled with various vegetables, lumpia provides essential vitamins and minerals. Choose baked or lightly fried versions to minimize fat intake."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "9",
-                                                                                                          "name": "Pancit Bihon",
-                                                                                                          "emoji": "🍜",
-                                                                                                          "calories": 150,
-                                                                                                          "protein": 5,
-                                                                                                          "carbs": 25,
-                                                                                                          "fat": 4,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "Rice noodles with mixed vegetables, providing carbohydrates for energy and fiber for digestion. Ensure it's made without any meat products."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "10",
-                                                                                                          "name": "Champorado",
-                                                                                                          "emoji": "🍚",
-                                                                                                          "calories": 120,
-                                                                                                          "protein": 2,
-                                                                                                          "carbs": 25,
-                                                                                                          "fat": 2,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-2025-10-01 10:34:21.925 18365-19275 GeminiService           com.example.nutrisaur11              D        "description": "A sweet chocolate rice porridge, can be prepared with plant-based milk. Provides carbohydrates for energy and antioxidants from cocoa. Use dark chocolate and less sugar."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "11",
-                                                                                                          "name": "Tinolang Munggo",
-                                                                                                          "emoji": "🥣",
-                                                                                                          "calories": 100,
-                                                                                                          "protein": 6,
-                                                                                                          "carbs": 14,
-                                                                                                          "fat": 1,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "A variation of munggo soup, incorporating ginger, garlic, and leafy greens. It is a lighter and healthier alternative, providing essential vitamins and minerals."
-                                                                                                        },
-                                                                                                        {
-                                                                                                          "id": "12",
-                                                                                                          "name": "Tokwa't Baboy (Tofu Version)",
-                                                                                                          "emoji": "🫘",
-                                                                                                          "calories": 180,
-                                                                                                          "protein": 12,
-                                                                                                          "carbs": 8,
-                                                                                                          "fat": 12,
-                                                                                                          "serving_size": 100,
-                                                                                                          "serving_unit": "g",
-                                                                                                          "description": "A vegan-friendly version using tofu instead of pork. It provides a good source of protein and can be a satisfying and flavorful dish. Use a vinegar-based sauce."
-                                                                                                        }
-                                                                                                      ],
-                                                                                                      "summary": "Healthy individual food options personalized for this user's BMI, age, and health goals"
-                                                                                                    }
-2025-10-01 10:34:21.928 18365-19275 GeminiService           com.example.nutrisaur11              D  Found 12 foods in JSON response
-2025-10-01 10:34:21.929 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Ginisang Tofu 🫘 (120 kcal, 10.0g protein, 8.0g carbs, 6.0g fat)
-2025-10-01 10:34:21.929 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Sinigang na Gulay 🍲 (80 kcal, 3.0g protein, 12.0g carbs, 2.0g fat)
-2025-10-01 10:34:21.930 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Adobong Kangkong 🥬 (60 kcal, 4.0g protein, 6.0g carbs, 2.0g fat)
-2025-10-01 10:34:21.930 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Vegan Laing 🥬 (150 kcal, 5.0g protein, 10.0g carbs, 10.0g fat)
-2025-10-01 10:34:21.930 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Ginataang Kalabasa at Sitaw 🥘 (130 kcal, 4.0g protein, 15.0g carbs, 7.0g fat)
-2025-10-01 10:34:21.931 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Tofu Sisig 🫘 (200 kcal, 15.0g protein, 8.0g carbs, 12.0g fat)
-2025-10-01 10:34:21.931 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Munggo Guisado 🥣 (110 kcal, 7.0g protein, 15.0g carbs, 2.0g fat)
-2025-10-01 10:34:21.931 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Vegetable Lumpia 🥗 (90 kcal, 2.0g protein, 12.0g carbs, 4.0g fat)
-2025-10-01 10:34:21.932 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Pancit Bihon 🍜 (150 kcal, 5.0g protein, 25.0g carbs, 4.0g fat)
-2025-10-01 10:34:21.932 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Champorado 🍚 (120 kcal, 2.0g protein, 25.0g carbs, 2.0g fat)
-2025-10-01 10:34:21.932 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Tinolang Munggo 🥣 (100 kcal, 6.0g protein, 14.0g carbs, 1.0g fat)
-2025-10-01 10:34:21.933 18365-19275 GeminiService           com.example.nutrisaur11              D  Added food: Tokwa't Baboy (Tofu Version) 🫘 (180 kcal, 12.0g protein, 8.0g carbs, 12.0g fat)
-2025-10-01 10:34:21.937 18365-19275 NutritionistValidator   com.example.nutrisaur11              D  Validation result - Valid: true, Errors: , Warnings: 
-2025-10-01 10:34:21.937 18365-19275 NutritionistValidator   com.example.nutrisaur11              D  === NUTRITIONIST VALIDATION RESULTS ===
-2025-10-01 10:34:21.937 18365-19275 NutritionistValidator   com.example.nutrisaur11              D  Meal: Dinner
-2025-10-01 10:34:21.937 18365-19275 NutritionistValidator   com.example.nutrisaur11              D  User: Pingol , Kevin C. (BMI: 23.938989774631512, Normal weight)
-2025-10-01 10:34:21.937 18365-19275 NutritionistValidator   com.example.nutrisaur11              D  Valid: true
-2025-10-01 10:34:21.938 18365-19275 NutritionistValidator   com.example.nutrisaur11              W  ⚠️ WARNINGS: 
-2025-10-01 10:34:21.938 18365-19275 NutritionistValidator   com.example.nutrisaur11              D  =====================================
-2025-10-01 10:34:21.938 18365-19275 FatSecretService        com.example.nutrisaur11              D  Gemini AI returned 12 personalized foods for Dinner
-2025-10-01 10:34:21.938 18365-19275 FatSecretService        com.example.nutrisaur11              D  AI Summary: Healthy individual food options personalized for this user's BMI, age, and health goals
-2025-10-01 10:34:21.996 18365-19275 GeminiCacheManager      com.example.nutrisaur11              D  Cached persistent recommendations for Dinner (user: 20_Male_70.0_171.0, ingredient: null)
-2025-10-01 10:34:21.997 18365-19275 FatSecretService        com.example.nutrisaur11              D  Cached Gemini recommendations for Dinner
-2025-10-01 10:34:21.997 18365-19275 FoodActivityIntegration com.example.nutrisaur11              D  Loaded questionnaire answers: 5 answers for user: kevinpingol123@gmail.com
-2025-10-01 10:34:21.997 18365-19275 FatSecretService        com.example.nutrisaur11              D  Applying strict dietary filtering for: VEGAN
-2025-10-01 10:34:21.997 18365-19275 FatSecretService        com.example.nutrisaur11              D  Filtered out: Ginisang Tofu (not allowed for VEGAN)
-2025-10-01 10:34:21.997 18365-19275 FatSecretService        com.example.nutrisaur11              D  Filtered out: Sinigang na Gulay (not allowed for VEGAN)
-2025-10-01 10:34:21.998 18365-19275 FatSecretService        com.example.nutrisaur11              D  Filtered out: Adobong Kangkong (not allowed for VEGAN)
-2025-10-01 10:34:21.998 18365-19275 FatSecretService        com.example.nutrisaur11              D  Filtered out: Vegan Laing (not allowed for VEGAN)
-2025-10-01 10:34:21.998 18365-19275 FatSecretService        com.example.nutrisaur11              D  Filtered out: Ginataang Kalabasa at Sitaw (not allowed for VEGAN)
-2025-10-01 10:34:21.999 18365-19275 FatSecretService        com.example.nutrisaur11              D  Filtered out: Pancit Bihon (not allowed for VEGAN)
-2025-10-01 10:34:21.999 18365-19275 FatSecretService        com.example.nutrisaur11              D  Filtered out: Champorado (not allowed for VEGAN)
-2025-10-01 10:34:21.999 18365-19275 FatSecretService        com.example.nutrisaur11              D  Filtered out: Tinolang Munggo (not allowed for VEGAN)
-2025-10-01 10:34:21.999 18365-19275 FatSecretService        com.example.nutrisaur11              D  Filtered out: Tokwa't Baboy (Tofu Version) (not allowed for VEGAN)
-2025-10-01 10:34:21.999 18365-19275 FatSecretService        com.example.nutrisaur11              D  Dietary filtering: 12 -> 3 foods
-2025-10-01 10:34:22.002 18365-18365 FoodLoggingActivity     com.example.nutrisaur11              D  Refreshed 3 recommendations for Dinner
-2025-10-01 10:34:22.041 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-01
-2025-10-01 10:34:22.041 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 2 foods
-2025-10-01 10:34:22.041 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Ginisang Repolyo in Breakfast
-2025-10-01 10:34:22.041 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Vegan Monggo Guisado in Breakfast
-2025-10-01 10:34:22.041 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 2 foods from daily storage for 2025-10-01
-2025-10-01 10:34:22.042 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Checking if Tofu Sisig is in Dinner: false
-2025-10-01 10:34:22.042 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-01:
-2025-10-01 10:34:22.042 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Ginisang Repolyo in Breakfast
-2025-10-01 10:34:22.042 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Vegan Monggo Guisado in Breakfast
-2025-10-01 10:34:22.047 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-01
-2025-10-01 10:34:22.047 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 2 foods
-2025-10-01 10:34:22.048 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Ginisang Repolyo in Breakfast
-2025-10-01 10:34:22.048 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Vegan Monggo Guisado in Breakfast
-2025-10-01 10:34:22.048 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 2 foods from daily storage for 2025-10-01
-2025-10-01 10:34:22.048 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Checking if Munggo Guisado is in Dinner: false
-2025-10-01 10:34:22.048 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-01:
-2025-10-01 10:34:22.048 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Ginisang Repolyo in Breakfast
-2025-10-01 10:34:22.048 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Vegan Monggo Guisado in Breakfast
-2025-10-01 10:34:22.052 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-01
-2025-10-01 10:34:22.052 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 2 foods
-2025-10-01 10:34:22.052 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Ginisang Repolyo in Breakfast
-2025-10-01 10:34:22.053 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Vegan Monggo Guisado in Breakfast
-2025-10-01 10:34:22.053 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 2 foods from daily storage for 2025-10-01
-2025-10-01 10:34:22.053 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Checking if Vegetable Lumpia is in Dinner: false
-2025-10-01 10:34:22.053 18365-18365 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-01:
-2025-10-01 10:34:22.053 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Ginisang Repolyo in Breakfast
-2025-10-01 10:34:22.053 18365-18365 AddedFoodManager        com.example.nutrisaur11              D    - Vegan Monggo Guisado in Breakfast
-2025-10-01 10:34:23.664 18365-18380 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223346202552ms; Flags=0, FrameTimelineVsyncId=900253, IntendedVsync=25834301724915, Vsync=25834301724915, InputEventId=0, HandleInputStart=25834304135976, AnimationStart=25834304148528, PerformTraversalsStart=25834304158371, DrawStart=25834304600819, FrameDeadline=25834318391581, FrameInterval=25834304077851, FrameStartTime=16666666, SyncQueued=25834306209465, SyncStart=25834306323996, IssueDrawCommandsStart=25834306931028, SwapBuffers=25834313030142, FrameCompleted=9223372036854775807, DequeueBufferDuration=101510, QueueBufferDuration=2658541, GpuCompleted=9223372036854775807, SwapBuffersCompleted=25834317639830, DisplayPresentTime=517, 
-2025-10-01 10:34:23.673 18365-18365 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-01 10:34:23.674 18365-18365 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-01 10:34:23.674 18365-18365 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-01 10:34:23.674 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-01 10:34:23.675 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-01 10:34:23.675 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-01 10:34:23.675 18365-18365 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-01 10:34:23.676 18365-18365 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-01 10:34:23.681 18365-18365 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-01 10:34:23.681 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-01 10:34:23.682 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-01 10:34:23.682 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-01 10:34:23.682 18365-18365 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-01 10:34:23.683 18365-18365 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-01 10:34:26.685 18365-18365 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-01 10:34:26.686 18365-18365 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-01 10:34:26.686 18365-18365 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-01 10:34:26.686 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-01 10:34:26.687 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-01 10:34:26.687 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-01 10:34:26.688 18365-18365 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-01 10:34:26.688 18365-18365 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-01 10:34:26.693 18365-18365 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-01 10:34:26.693 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-01 10:34:26.695 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-01 10:34:26.695 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-01 10:34:26.695 18365-18365 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
-2025-10-01 10:34:26.696 18365-18365 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-01 10:34:29.700 18365-18365 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-01 10:34:29.700 18365-18365 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-01 10:34:29.700 18365-18365 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-01 10:34:29.701 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-01 10:34:29.701 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-01 10:34:29.701 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-01 10:34:29.701 18365-18365 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-01 10:34:29.702 18365-18365 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-01 10:34:29.705 18365-18365 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-01 10:34:29.705 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-01 10:34:29.706 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-01 10:34:29.706 18365-18365 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-01 10:34:29.706 18365-18365 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-01 10:34:29.707 18365-18365 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-01T11:01:53.000000000Z [inf]  Starting Container
+2025-10-01T11:01:53.987219574Z [err]  [Wed Oct  1 11:01:53 2025] PHP 8.1.33 Development Server (http://0.0.0.0:8080) started
+2025-10-01T11:01:56.403426836Z [err]  [Wed Oct  1 11:01:56 2025] 100.64.0.2:47421 Accepted
+2025-10-01T11:01:56.403434095Z [err]  [Wed Oct  1 11:01:56 2025] === ROUTER DEBUG ===
+2025-10-01T11:01:56.403438826Z [err]  [Wed Oct  1 11:01:56 2025] Requested path: health
+2025-10-01T11:01:56.403448604Z [err]  [Wed Oct  1 11:01:56 2025] Public path: /var/www/html/public/
+2025-10-01T11:01:56.403454627Z [err]  [Wed Oct  1 11:01:56 2025] Public API path: /var/www/html/public/api/
+2025-10-01T11:01:56.403459344Z [err]  [Wed Oct  1 11:01:56 2025] Request URI: /health
+2025-10-01T11:01:56.403463766Z [err]  [Wed Oct  1 11:01:56 2025] Script Name: /index.php
+2025-10-01T11:01:56.403467696Z [err]  [Wed Oct  1 11:01:56 2025] 100.64.0.2:47421 [200]: GET /health
+2025-10-01T11:01:56.403471479Z [err]  [Wed Oct  1 11:01:56 2025] 100.64.0.2:47421 Closing
+2025-10-01T11:03:06.438400730Z [err]  [Wed Oct  1 11:02:57 2025] 100.64.0.3:31856 Accepted
+2025-10-01T11:03:06.438411692Z [err]  [Wed Oct  1 11:02:57 2025] === ROUTER DEBUG ===
+2025-10-01T11:03:06.438418495Z [err]  [Wed Oct  1 11:02:57 2025] Requested path: 
+2025-10-01T11:03:06.438424561Z [err]  [Wed Oct  1 11:02:57 2025] Public path: /var/www/html/public/
+2025-10-01T11:03:06.438431474Z [err]  [Wed Oct  1 11:02:57 2025] Public API path: /var/www/html/public/api/
+2025-10-01T11:03:06.438437755Z [err]  [Wed Oct  1 11:02:57 2025] Request URI: /
+2025-10-01T11:03:06.438443696Z [err]  [Wed Oct  1 11:02:57 2025] Script Name: /index.php
+2025-10-01T11:03:06.438449007Z [err]  [Wed Oct  1 11:02:57 2025] 100.64.0.3:31856 [200]: GET /
+2025-10-01T11:03:06.438454992Z [err]  [Wed Oct  1 11:02:57 2025] 100.64.0.3:31856 Closing
+2025-10-01T11:03:06.438460486Z [err]  [Wed Oct  1 11:02:58 2025] 100.64.0.3:31870 Accepted
+2025-10-01T11:03:06.438467179Z [err]  [Wed Oct  1 11:02:58 2025] 100.64.0.3:31870 [200]: GET /google-oauth-config.js
+2025-10-01T11:03:06.438472940Z [err]  [Wed Oct  1 11:02:58 2025] 100.64.0.3:31870 Closing
+2025-10-01T11:03:06.438478681Z [err]  [Wed Oct  1 11:02:58 2025] 100.64.0.3:31880 Accepted
+2025-10-01T11:03:06.438484427Z [err]  [Wed Oct  1 11:02:58 2025] 100.64.0.3:31880 [200]: POST /home.php
+2025-10-01T11:03:06.438490645Z [err]  [Wed Oct  1 11:02:58 2025] 100.64.0.3:31880 Closing
+2025-10-01T11:03:07.438039781Z [err]  [Wed Oct  1 11:03:07 2025] 100.64.0.3:52450 Accepted
+2025-10-01T11:03:07.587929271Z [err]  [Wed Oct  1 11:03:07 2025] 100.64.0.3:52450 [200]: POST /home.php
+2025-10-01T11:03:07.587939372Z [err]  [Wed Oct  1 11:03:07 2025] 100.64.0.3:52450 Closing
+2025-10-01T11:03:08.660692290Z [err]  [Wed Oct  1 11:03:08 2025] 100.64.0.3:52456 Accepted
+2025-10-01T11:03:08.660698345Z [err]  [Wed Oct  1 11:03:08 2025] === ROUTER DEBUG ===
+2025-10-01T11:03:08.660709736Z [err]  [Wed Oct  1 11:03:08 2025] Requested path: dash
+2025-10-01T11:03:08.660715480Z [err]  [Wed Oct  1 11:03:08 2025] Public path: /var/www/html/public/
+2025-10-01T11:03:08.660720289Z [err]  [Wed Oct  1 11:03:08 2025] Public API path: /var/www/html/public/api/
+2025-10-01T11:03:08.660725102Z [err]  [Wed Oct  1 11:03:08 2025] Request URI: /dash
+2025-10-01T11:03:08.660730419Z [err]  [Wed Oct  1 11:03:08 2025] Script Name: /index.php
+2025-10-01T11:03:08.698410298Z [err]  [Wed Oct  1 11:03:08 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:08.698418989Z [err]  [Wed Oct  1 11:03:08 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:08.698424883Z [err]  [Wed Oct  1 11:03:08 2025] 🔍 getTimeFrameData Debug - Starting
+2025-10-01T11:03:08.698443942Z [err]  [Wed Oct  1 11:03:08 2025]   - Barangay: null
+2025-10-01T11:03:08.698450474Z [err]  [Wed Oct  1 11:03:08 2025] 🔍 getTimeFrameData Debug - Querying database
+2025-10-01T11:03:08.698456853Z [err]  [Wed Oct  1 11:03:08 2025]   - WHERE clause: 1=1
+2025-10-01T11:03:08.698462137Z [err]  [Wed Oct  1 11:03:08 2025]   - Params: []
+2025-10-01T11:03:08.698467698Z [err]  [Wed Oct  1 11:03:08 2025]   - Query result success: YES
+2025-10-01T11:03:08.698473535Z [err]  [Wed Oct  1 11:03:08 2025]   - Query result message: No message
+2025-10-01T11:03:08.698478956Z [err]  [Wed Oct  1 11:03:08 2025]   - Number of users found: 0
+2025-10-01T11:03:08.698484857Z [err]  [Wed Oct  1 11:03:08 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:08.701688445Z [err]  [Wed Oct  1 11:03:08 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:08.701697038Z [err]  [Wed Oct  1 11:03:08 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:08.705670807Z [err]  [Wed Oct  1 11:03:08 2025] 🔍 Nutritional Statistics Debug - Starting
+2025-10-01T11:03:08.705679756Z [err]  [Wed Oct  1 11:03:08 2025]   - Barangay: null
+2025-10-01T11:03:08.705690381Z [err]  [Wed Oct  1 11:03:08 2025]   - Total users found: 5
+2025-10-01T11:03:08.705695706Z [err]  [Wed Oct  1 11:03:08 2025] 🔍 Nutritional Statistics generated successfully
+2025-10-01T11:03:08.714916146Z [err]  [Wed Oct  1 11:03:08 2025] 100.64.0.3:52456 [200]: GET /dash
+2025-10-01T11:03:08.714925280Z [err]  [Wed Oct  1 11:03:08 2025] 100.64.0.3:52456 Closing
+2025-10-01T11:03:08.951696436Z [err]  [Wed Oct  1 11:03:08 2025] 100.64.0.3:52460 Accepted
+2025-10-01T11:03:08.951700888Z [err]  [Wed Oct  1 11:03:08 2025] 100.64.0.3:52460 [200]: GET /logo.png
+2025-10-01T11:03:08.951707640Z [err]  [Wed Oct  1 11:03:08 2025] 100.64.0.3:52460 Closing
+2025-10-01T11:03:09.089837552Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52462 Accepted
+2025-10-01T11:03:09.089843908Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52476 Accepted
+2025-10-01T11:03:09.089849696Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.089856412Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.089861826Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_trends_chart_data'
+2025-10-01T11:03:09.089867111Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.089872744Z [err]  (
+2025-10-01T11:03:09.089878839Z [err]      [action] => get_trends_chart_data
+2025-10-01T11:03:09.089885717Z [err]      [from_date] => 2024-01-01
+2025-10-01T11:03:09.089891227Z [err]      [to_date] => 2024-12-31
+2025-10-01T11:03:09.089898672Z [err]      [barangay] => 
+2025-10-01T11:03:09.089904719Z [err]      [who_standard] => weight-for-age
+2025-10-01T11:03:09.089912014Z [err]  )
+2025-10-01T11:03:09.089918464Z [err]  
+2025-10-01T11:03:09.089924613Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.089930606Z [err]  (
+2025-10-01T11:03:09.089938296Z [err]  )
+2025-10-01T11:03:09.089945174Z [err]  
+2025-10-01T11:03:09.089951986Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52462 [200]: GET /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2024-01-01&to_date=2024-12-31&barangay=&who_standard=weight-for-age
+2025-10-01T11:03:09.089957977Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52462 Closing
+2025-10-01T11:03:09.089964215Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52482 Accepted
+2025-10-01T11:03:09.089970079Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.096109492Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.096115971Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_severe_cases'
+2025-10-01T11:03:09.096120757Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.096125204Z [err]  (
+2025-10-01T11:03:09.096129138Z [err]      [action] => get_severe_cases
+2025-10-01T11:03:09.096133413Z [err]      [barangay] => 
+2025-10-01T11:03:09.096137803Z [err]      [who_standard] => weight-for-age
+2025-10-01T11:03:09.096142225Z [err]  )
+2025-10-01T11:03:09.096146814Z [err]  
+2025-10-01T11:03:09.096151116Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.096155256Z [err]  (
+2025-10-01T11:03:09.096159978Z [err]  )
+2025-10-01T11:03:09.096165169Z [err]  
+2025-10-01T11:03:09.096169616Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getSevereCasesBulk called with barangay: '', whoStandard: 'weight-for-age'
+2025-10-01T11:03:09.099358847Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:09.099368502Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getSevereCasesBulk found 0 users after filtering
+2025-10-01T11:03:09.099375628Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52476 [200]: GET /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
+2025-10-01T11:03:09.099383471Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52476 Closing
+2025-10-01T11:03:09.107726704Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.111959222Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.111968049Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_all_who_classifications_bulk'
+2025-10-01T11:03:09.111973914Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.111979928Z [err]  (
+2025-10-01T11:03:09.111985758Z [err]      [action] => get_all_who_classifications_bulk
+2025-10-01T11:03:09.111991429Z [err]      [barangay] => 
+2025-10-01T11:03:09.111997245Z [err]      [who_standard] => weight-for-age
+2025-10-01T11:03:09.112003058Z [err]  )
+2025-10-01T11:03:09.112009153Z [err]  
+2025-10-01T11:03:09.112016759Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.112022339Z [err]  (
+2025-10-01T11:03:09.112027613Z [err]  )
+2025-10-01T11:03:09.112033082Z [err]  
+2025-10-01T11:03:09.112039811Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:09.120840354Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52482 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
+2025-10-01T11:03:09.120849249Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52482 Closing
+2025-10-01T11:03:09.182880542Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52494 Accepted
+2025-10-01T11:03:09.188770722Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.197245257Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.197253365Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_age_classification_line_chart'
+2025-10-01T11:03:09.197258266Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.197262570Z [err]  (
+2025-10-01T11:03:09.197266766Z [err]      [action] => get_age_classification_line_chart
+2025-10-01T11:03:09.197277434Z [err]      [who_standard] => weight-for-age
+2025-10-01T11:03:09.197286069Z [err]      [barangay] => 
+2025-10-01T11:03:09.197290461Z [err]  )
+2025-10-01T11:03:09.197294828Z [err]  
+2025-10-01T11:03:09.197299443Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.197303331Z [err]  (
+2025-10-01T11:03:09.197307019Z [err]  )
+2025-10-01T11:03:09.197312520Z [err]  
+2025-10-01T11:03:09.197317519Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:09.205836990Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Donut data success: YES
+2025-10-01T11:03:09.205845773Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-01T11:03:09.205852058Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Classifications from donut: {"Severely Underweight":0,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":0}
+2025-10-01T11:03:09.205858640Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:09.209733577Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-01T11:03:09.209741359Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Processed 0 users, skipped 0, eligible 0, charted 0
+2025-10-01T11:03:09.209746805Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Classification counts: []
+2025-10-01T11:03:09.209752592Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Age classification summary - Total users: 0
+2025-10-01T11:03:09.209758177Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Classification counts: []
+2025-10-01T11:03:09.209763479Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52494 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
+2025-10-01T11:03:09.209768886Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52494 Closing
+2025-10-01T11:03:09.275978009Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52506 Accepted
+2025-10-01T11:03:09.275987627Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.284884953Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.284893749Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_trends_chart_data'
+2025-10-01T11:03:09.284899709Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.284905376Z [err]  (
+2025-10-01T11:03:09.284911200Z [err]      [action] => get_trends_chart_data
+2025-10-01T11:03:09.284916531Z [err]      [from_date] => 2024-01-01
+2025-10-01T11:03:09.284923897Z [err]      [to_date] => 2024-12-31
+2025-10-01T11:03:09.284929794Z [err]      [barangay] => 
+2025-10-01T11:03:09.284934814Z [err]      [who_standard] => weight-for-age
+2025-10-01T11:03:09.284940250Z [err]  )
+2025-10-01T11:03:09.284945838Z [err]  
+2025-10-01T11:03:09.284950655Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.284957045Z [err]  (
+2025-10-01T11:03:09.284965039Z [err]  )
+2025-10-01T11:03:09.284970058Z [err]  
+2025-10-01T11:03:09.284975405Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52506 [200]: GET /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2024-01-01&to_date=2024-12-31&barangay=&who_standard=weight-for-age
+2025-10-01T11:03:09.284982675Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52506 Closing
+2025-10-01T11:03:09.355902955Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52518 Accepted
+2025-10-01T11:03:09.355907970Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.360197035Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.360205490Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_severe_cases'
+2025-10-01T11:03:09.360211726Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.360215900Z [err]  (
+2025-10-01T11:03:09.360220512Z [err]      [action] => get_severe_cases
+2025-10-01T11:03:09.360224726Z [err]      [barangay] => 
+2025-10-01T11:03:09.360229176Z [err]      [who_standard] => weight-for-age
+2025-10-01T11:03:09.360233163Z [err]  )
+2025-10-01T11:03:09.360237392Z [err]  
+2025-10-01T11:03:09.360242234Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.360245926Z [err]  (
+2025-10-01T11:03:09.360249623Z [err]  )
+2025-10-01T11:03:09.360253262Z [err]  
+2025-10-01T11:03:09.360257575Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getSevereCasesBulk called with barangay: '', whoStandard: 'weight-for-age'
+2025-10-01T11:03:09.363577635Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:09.363586413Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getSevereCasesBulk found 0 users after filtering
+2025-10-01T11:03:09.363594670Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52518 [200]: GET /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
+2025-10-01T11:03:09.363601222Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52518 Closing
+2025-10-01T11:03:09.433341143Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52532 Accepted
+2025-10-01T11:03:09.433345605Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.436578015Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.436583282Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_trends_chart_data'
+2025-10-01T11:03:09.436587789Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.436592829Z [err]  (
+2025-10-01T11:03:09.436597099Z [err]      [action] => get_trends_chart_data
+2025-10-01T11:03:09.436601055Z [err]      [from_date] => 2024-01-01
+2025-10-01T11:03:09.436604840Z [err]      [to_date] => 2024-12-31
+2025-10-01T11:03:09.436608862Z [err]      [barangay] => 
+2025-10-01T11:03:09.436613066Z [err]      [who_standard] => weight-for-age
+2025-10-01T11:03:09.436617331Z [err]  )
+2025-10-01T11:03:09.436621336Z [err]  
+2025-10-01T11:03:09.436625727Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.436630430Z [err]  (
+2025-10-01T11:03:09.436635317Z [err]  )
+2025-10-01T11:03:09.436639033Z [err]  
+2025-10-01T11:03:09.439690130Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52532 [200]: GET /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2024-01-01&to_date=2024-12-31&barangay=&who_standard=weight-for-age
+2025-10-01T11:03:09.439699741Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52532 Closing
+2025-10-01T11:03:09.510395689Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52548 Accepted
+2025-10-01T11:03:09.510400954Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.513735917Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.513740340Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_age_classification_line_chart'
+2025-10-01T11:03:09.513745962Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.513750310Z [err]  (
+2025-10-01T11:03:09.513755701Z [err]      [action] => get_age_classification_line_chart
+2025-10-01T11:03:09.513759906Z [err]      [who_standard] => weight-for-age
+2025-10-01T11:03:09.513763845Z [err]      [barangay] => 
+2025-10-01T11:03:09.513772675Z [err]  )
+2025-10-01T11:03:09.513776766Z [err]  
+2025-10-01T11:03:09.513780944Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.513784894Z [err]  (
+2025-10-01T11:03:09.513788924Z [err]  )
+2025-10-01T11:03:09.513792761Z [err]  
+2025-10-01T11:03:09.515865858Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:09.524883654Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Donut data success: YES
+2025-10-01T11:03:09.524890593Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-01T11:03:09.524895077Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Classifications from donut: {"Severely Underweight":0,"Underweight":0,"Normal":0,"Overweight":0,"Obese":0,"No Data":0}
+2025-10-01T11:03:09.528796147Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:09.532862491Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-01T11:03:09.532869917Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Processed 0 users, skipped 0, eligible 0, charted 0
+2025-10-01T11:03:09.532875438Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Classification counts: []
+2025-10-01T11:03:09.532880412Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Age classification summary - Total users: 0
+2025-10-01T11:03:09.532885713Z [err]  [Wed Oct  1 11:03:09 2025] DEBUG: Classification counts: []
+2025-10-01T11:03:09.532890455Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52548 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
+2025-10-01T11:03:09.532895395Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52548 Closing
+2025-10-01T11:03:09.602697573Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52552 Accepted
+2025-10-01T11:03:09.612065411Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.630903476Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.630911998Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_barangay_distribution_bulk'
+2025-10-01T11:03:09.630918225Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.630924310Z [err]  (
+2025-10-01T11:03:09.630929763Z [err]      [action] => get_barangay_distribution_bulk
+2025-10-01T11:03:09.630935482Z [err]      [barangay] => 
+2025-10-01T11:03:09.630941301Z [err]  )
+2025-10-01T11:03:09.630947091Z [err]  
+2025-10-01T11:03:09.630952430Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.630957880Z [err]  (
+2025-10-01T11:03:09.630963427Z [err]  )
+2025-10-01T11:03:09.630969417Z [err]  
+2025-10-01T11:03:09.630976375Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:09.630982101Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52552 [200]: GET /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
+2025-10-01T11:03:09.630988483Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52552 Closing
+2025-10-01T11:03:09.698576123Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52564 Accepted
+2025-10-01T11:03:09.724023102Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:09.727853299Z [err]  [Wed Oct  1 11:03:09 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:09.727859558Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - Action received: 'get_gender_distribution_bulk'
+2025-10-01T11:03:09.727868707Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:03:09.727875967Z [err]  (
+2025-10-01T11:03:09.727882019Z [err]      [action] => get_gender_distribution_bulk
+2025-10-01T11:03:09.727886545Z [err]      [barangay] => 
+2025-10-01T11:03:09.727890911Z [err]  )
+2025-10-01T11:03:09.727895543Z [err]  
+2025-10-01T11:03:09.727900134Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:03:09.727904255Z [err]  (
+2025-10-01T11:03:09.727909230Z [err]  )
+2025-10-01T11:03:09.727913216Z [err]  
+2025-10-01T11:03:09.730869548Z [err]  [Wed Oct  1 11:03:09 2025] 🔍 getDetailedScreeningResponses: Found 0 users for location: 
+2025-10-01T11:03:09.730878512Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52564 [200]: GET /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+2025-10-01T11:03:09.730884675Z [err]  [Wed Oct  1 11:03:09 2025] 100.64.0.3:52564 Closing
+2025-10-01T11:03:10.268928937Z [err]  [Wed Oct  1 11:03:10 2025] 100.64.0.3:52572 Accepted
+2025-10-01T11:03:10.268935203Z [err]  [Wed Oct  1 11:03:10 2025] === ROUTER DEBUG ===
+2025-10-01T11:03:10.268941012Z [err]  [Wed Oct  1 11:03:10 2025] Requested path: settings
+2025-10-01T11:03:10.268947232Z [err]  [Wed Oct  1 11:03:10 2025] Public path: /var/www/html/public/
+2025-10-01T11:03:10.268953294Z [err]  [Wed Oct  1 11:03:10 2025] Public API path: /var/www/html/public/api/
+2025-10-01T11:03:10.268960187Z [err]  [Wed Oct  1 11:03:10 2025] Request URI: /settings
+2025-10-01T11:03:10.268967037Z [err]  [Wed Oct  1 11:03:10 2025] Script Name: /index.php
+2025-10-01T11:03:10.268973303Z [err]  [Wed Oct  1 11:03:10 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:10.268979426Z [err]  [Wed Oct  1 11:03:10 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:10.276620112Z [err]  [Wed Oct  1 11:03:10 2025] 100.64.0.3:52572 [200]: GET /settings
+2025-10-01T11:03:10.276624719Z [err]  [Wed Oct  1 11:03:10 2025] 100.64.0.3:52572 Closing
+2025-10-01T11:03:10.354096961Z [err]  [Wed Oct  1 11:03:10 2025] 100.64.0.3:52582 Accepted
+2025-10-01T11:03:10.354106353Z [err]  [Wed Oct  1 11:03:10 2025] 100.64.0.3:52582 [200]: GET /logo.png
+2025-10-01T11:03:10.354112507Z [err]  [Wed Oct  1 11:03:10 2025] 100.64.0.3:52582 Closing
+2025-10-01T11:03:16.704586241Z [err]  [Wed Oct  1 11:03:16 2025] 100.64.0.4:62888 Accepted
+2025-10-01T11:03:16.704590117Z [err]  [Wed Oct  1 11:03:16 2025] === ROUTER DEBUG ===
+2025-10-01T11:03:16.704594665Z [err]  [Wed Oct  1 11:03:16 2025] Requested path: screening
+2025-10-01T11:03:16.704599274Z [err]  [Wed Oct  1 11:03:16 2025] Public path: /var/www/html/public/
+2025-10-01T11:03:16.704603125Z [err]  [Wed Oct  1 11:03:16 2025] Public API path: /var/www/html/public/api/
+2025-10-01T11:03:16.704606954Z [err]  [Wed Oct  1 11:03:16 2025] Request URI: /screening
+2025-10-01T11:03:16.704610931Z [err]  [Wed Oct  1 11:03:16 2025] Script Name: /index.php
+2025-10-01T11:03:16.713340127Z [err]  [Wed Oct  1 11:03:16 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:03:16.721442805Z [err]  [Wed Oct  1 11:03:16 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:03:16.729869289Z [err]  [Wed Oct  1 11:03:16 2025] 100.64.0.4:62888 [200]: GET /screening
+2025-10-01T11:03:16.729876254Z [err]  [Wed Oct  1 11:03:16 2025] 100.64.0.4:62888 Closing
+2025-10-01T11:03:16.924244012Z [err]  [Wed Oct  1 11:03:16 2025] 100.64.0.4:62902 Accepted
+2025-10-01T11:03:16.924249338Z [err]  [Wed Oct  1 11:03:16 2025] 100.64.0.4:62902 [200]: GET /logo.png
+2025-10-01T11:03:16.924253646Z [err]  [Wed Oct  1 11:03:16 2025] 100.64.0.4:62902 Closing
+2025-10-01T11:11:17.353160646Z [err]  [Wed Oct  1 11:11:17 2025] 100.64.0.5:17570 Accepted
+2025-10-01T11:11:17.353167574Z [err]  [Wed Oct  1 11:11:17 2025] === ROUTER DEBUG ===
+2025-10-01T11:11:17.353172511Z [err]  [Wed Oct  1 11:11:17 2025] Requested path: event
+2025-10-01T11:11:17.353178028Z [err]  [Wed Oct  1 11:11:17 2025] Public path: /var/www/html/public/
+2025-10-01T11:11:17.353182627Z [err]  [Wed Oct  1 11:11:17 2025] Public API path: /var/www/html/public/api/
+2025-10-01T11:11:17.353186880Z [err]  [Wed Oct  1 11:11:17 2025] Request URI: /event
+2025-10-01T11:11:17.353191702Z [err]  [Wed Oct  1 11:11:17 2025] Script Name: /index.php
+2025-10-01T11:11:17.353196337Z [err]  [Wed Oct  1 11:11:17 2025] 🚀 EVENT.PHP LOADED - URI: /event
+2025-10-01T11:11:17.353202026Z [err]  [Wed Oct  1 11:11:17 2025] 🚀 GET PARAMS: []
+2025-10-01T11:11:17.353206299Z [err]  [Wed Oct  1 11:11:17 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:11:17.353210978Z [err]  [Wed Oct  1 11:11:17 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:11:17.353215385Z [err]  [Wed Oct  1 11:11:17 2025] 100.64.0.5:17570 [200]: GET /event
+2025-10-01T11:11:17.353219873Z [err]  [Wed Oct  1 11:11:17 2025] 100.64.0.5:17570 Closing
+2025-10-01T11:11:17.532396848Z [err]  [Wed Oct  1 11:11:17 2025] 100.64.0.5:17582 Accepted
+2025-10-01T11:11:17.532404437Z [err]  [Wed Oct  1 11:11:17 2025] 100.64.0.5:17582 [200]: GET /logo.png
+2025-10-01T11:11:17.535835432Z [err]  [Wed Oct  1 11:11:17 2025] 100.64.0.5:17582 Closing
+2025-10-01T11:11:17.597233352Z [err]  [Wed Oct  1 11:11:17 2025] 100.64.0.5:17586 Accepted
+2025-10-01T11:11:17.605326759Z [err]  [Wed Oct  1 11:11:17 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:11:17.613812166Z [err]  [Wed Oct  1 11:11:17 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:11:17.613819295Z [err]  [Wed Oct  1 11:11:17 2025] 🔍 DatabaseAPI Debug - Action received: ''
+2025-10-01T11:11:17.613823602Z [err]  [Wed Oct  1 11:11:17 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-01T11:11:17.613827938Z [err]  (
+2025-10-01T11:11:17.613832731Z [err]  )
+2025-10-01T11:11:17.613837339Z [err]  
+2025-10-01T11:11:17.613842198Z [err]  [Wed Oct  1 11:11:17 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-01T11:11:17.613848119Z [err]  (
+2025-10-01T11:11:17.613854350Z [err]  )
+2025-10-01T11:11:17.613859928Z [err]  
+2025-10-01T11:11:17.613865134Z [err]  [Wed Oct  1 11:11:17 2025] 100.64.0.5:17586 [200]: POST /api/DatabaseAPI.php
+2025-10-01T11:11:17.613870745Z [err]  [Wed Oct  1 11:11:17 2025] 100.64.0.5:17586 Closing
+2025-10-01T11:11:18.106562757Z [err]  [Wed Oct  1 11:11:18 2025] 100.64.0.5:17594 Accepted
+2025-10-01T11:11:18.106566941Z [err]  [Wed Oct  1 11:11:18 2025] === ROUTER DEBUG ===
+2025-10-01T11:11:18.106570993Z [err]  [Wed Oct  1 11:11:18 2025] Requested path: screening
+2025-10-01T11:11:18.106574805Z [err]  [Wed Oct  1 11:11:18 2025] Public path: /var/www/html/public/
+2025-10-01T11:11:18.106580007Z [err]  [Wed Oct  1 11:11:18 2025] Public API path: /var/www/html/public/api/
+2025-10-01T11:11:18.106583664Z [err]  [Wed Oct  1 11:11:18 2025] Request URI: /screening
+2025-10-01T11:11:18.106587377Z [err]  [Wed Oct  1 11:11:18 2025] Script Name: /index.php
+2025-10-01T11:11:18.106591577Z [err]  [Wed Oct  1 11:11:18 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:11:18.106595616Z [err]  [Wed Oct  1 11:11:18 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:11:18.106599857Z [err]  [Wed Oct  1 11:11:18 2025] 100.64.0.5:17594 [200]: GET /screening
+2025-10-01T11:11:18.106603661Z [err]  [Wed Oct  1 11:11:18 2025] 100.64.0.5:17594 Closing
+2025-10-01T11:11:18.195875086Z [err]  [Wed Oct  1 11:11:18 2025] 100.64.0.5:17610 Accepted
+2025-10-01T11:11:18.195879731Z [err]  [Wed Oct  1 11:11:18 2025] 100.64.0.5:17610 [200]: GET /logo.png
+2025-10-01T11:11:18.195884487Z [err]  [Wed Oct  1 11:11:18 2025] 100.64.0.5:17610 Closing
+2025-10-01T11:11:38.210817367Z [err]  [Wed Oct  1 11:11:34 2025] 100.64.0.3:35034 Accepted
+2025-10-01T11:11:38.210821976Z [err]  [Wed Oct  1 11:11:34 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:11:38.210826409Z [err]  [Wed Oct  1 11:11:34 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:11:38.210830596Z [err]  [Wed Oct  1 11:11:34 2025] 100.64.0.3:35034 [200]: POST /api/community_users_api.php
+2025-10-01T11:11:38.210835258Z [err]  [Wed Oct  1 11:11:34 2025] 100.64.0.3:35034 Closing
+2025-10-01T11:11:41.805578326Z [err]  [Wed Oct  1 11:11:41 2025] 100.64.0.6:31662 Accepted
+2025-10-01T11:11:41.808654873Z [err]  [Wed Oct  1 11:11:41 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:11:41.817716033Z [err]  [Wed Oct  1 11:11:41 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:11:41.817722212Z [err]  [Wed Oct  1 11:11:41 2025] 100.64.0.6:31662 [200]: POST /api/community_users_api.php
+2025-10-01T11:11:41.817726937Z [err]  [Wed Oct  1 11:11:41 2025] 100.64.0.6:31662 Closing
+2025-10-01T11:12:01.817365080Z [err]  [Wed Oct  1 11:11:58 2025] 100.64.0.4:19464 Accepted
+2025-10-01T11:12:01.817372071Z [err]  [Wed Oct  1 11:11:58 2025] === ROUTER DEBUG ===
+2025-10-01T11:12:01.817378809Z [err]  [Wed Oct  1 11:11:58 2025] Requested path: screening
+2025-10-01T11:12:01.817390250Z [err]  [Wed Oct  1 11:11:58 2025] Public path: /var/www/html/public/
+2025-10-01T11:12:01.817397369Z [err]  [Wed Oct  1 11:11:58 2025] Public API path: /var/www/html/public/api/
+2025-10-01T11:12:01.817403482Z [err]  [Wed Oct  1 11:11:58 2025] Request URI: /screening
+2025-10-01T11:12:01.817410454Z [err]  [Wed Oct  1 11:11:58 2025] Script Name: /index.php
+2025-10-01T11:12:01.817417464Z [err]  [Wed Oct  1 11:11:58 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-01T11:12:01.817423309Z [err]  [Wed Oct  1 11:11:58 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-01T11:12:01.817428711Z [err]  [Wed Oct  1 11:11:58 2025] 100.64.0.4:19464 [200]: GET /screening
+2025-10-01T11:12:01.817433298Z [err]  [Wed Oct  1 11:11:58 2025] 100.64.0.4:19464 Closing
+2025-10-01T11:12:01.817437726Z [err]  [Wed Oct  1 11:11:59 2025] 100.64.0.4:19472 Accepted
+2025-10-01T11:12:01.817442638Z [err]  [Wed Oct  1 11:11:59 2025] 100.64.0.4:19472 [200]: GET /logo.png
+2025-10-01T11:12:01.817446687Z [err]  [Wed Oct  1 11:11:59 2025] 100.64.0.4:19472 Closing

@@ -3678,7 +3678,9 @@ class DatabaseAPI {
                     // Check BMI-for-Age
                     if (isset($assessment['results']['bmi_for_age']['classification'])) {
                         $bfaClassification = $assessment['results']['bmi_for_age']['classification'];
-                        if (in_array($bfaClassification, ['Severely Underweight'])) {
+                        // BMI-for-age doesn't have "Severely" classifications
+                        // Consider Underweight and Obese as concerning cases
+                        if (in_array($bfaClassification, ['Underweight', 'Obese'])) {
                             $severeClassifications[] = $bfaClassification;
                         }
                     }
@@ -3716,8 +3718,10 @@ class DatabaseAPI {
                             });
                             break;
                         case 'bmi-for-age':
+                            // BMI-for-age doesn't have "Severely" classifications
+                            // Show cases that are concerning: Underweight or Obese
                             $filteredClassifications = array_filter($severeClassifications, function($c) {
-                                return $c === 'Severely Underweight' && strpos($c, 'BMI Adult') === false;
+                                return in_array($c, ['Underweight', 'Obese']) && strpos($c, 'BMI Adult') === false;
                             });
                             break;
                         case 'bmi-adult':

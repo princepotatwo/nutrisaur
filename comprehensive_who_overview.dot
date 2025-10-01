@@ -1,0 +1,93 @@
+digraph ComprehensiveWHOOverview {
+    graph [rankdir=LR, bgcolor=white, fontname="Arial", fontsize=14];
+    node [shape=box, style=filled, fontname="Arial", fontsize=11];
+    edge [fontname="Arial", fontsize=10];
+
+    // Main components
+    subgraph cluster_input {
+        label="Input Data";
+        style=filled;
+        color=lightgreen;
+        
+        weight [label="Weight (kg)", fillcolor=white];
+        height [label="Height (cm)", fillcolor=white];
+        age [label="Age (months)", fillcolor=white];
+        sex [label="Sex (M/F)", fillcolor=white];
+    }
+    
+    subgraph cluster_tables {
+        label="WHO Growth Standards Tables";
+        style=filled;
+        color=lightblue;
+        
+        wfa_table [label="Weight-for-Age\nBoys & Girls\n(0-71 months)", fillcolor=lightcyan];
+        hfa_table [label="Height-for-Age\nBoys & Girls\n(0-71 months)", fillcolor=lightcyan];
+        wfh_table [label="Weight-for-Height\nBoys & Girls\n(45-120 cm)", fillcolor=lightcyan];
+        bmi_table [label="BMI-for-Age\nBoys & Girls\n(0-71 months)", fillcolor=lightcyan];
+    }
+    
+    subgraph cluster_calculations {
+        label="Z-Score Calculations";
+        style=filled;
+        color=lightyellow;
+        
+        wfa_z [label="WFA Z-Score", fillcolor=yellow];
+        hfa_z [label="HFA Z-Score", fillcolor=yellow];
+        wfh_z [label="WFH Z-Score", fillcolor=yellow];
+        bmi_z [label="BMI Z-Score", fillcolor=yellow];
+    }
+    
+    subgraph cluster_trees {
+        label="Decision Trees";
+        style=filled;
+        color=orange;
+        
+        wfa_tree [label="WFA\nDecision Tree", fillcolor=orange];
+        hfa_tree [label="HFA\nDecision Tree", fillcolor=orange];
+        wfh_tree [label="WFH\nDecision Tree", fillcolor=orange];
+        bmi_tree [label="BMI\nDecision Tree", fillcolor=orange];
+        risk_tree [label="Risk\nAssessment Tree", fillcolor=red, fontcolor=white];
+    }
+    
+    subgraph cluster_output {
+        label="Assessment Results";
+        style=filled;
+        color=lightcoral;
+        
+        classifications [label="Growth Classifications:\n• Underweight/Normal/Overweight\n• Stunted/Normal/Tall\n• Wasted/Normal/Obese", fillcolor=lightpink];
+        risk_level [label="Risk Level:\n• Severe\n• Moderate\n• Low", fillcolor=lightpink];
+        recommendations [label="Recommendations:\n• Medical intervention\n• Nutritional support\n• Monitoring schedule", fillcolor=lightpink];
+    }
+
+    // Connections
+    weight -> wfa_z;
+    weight -> wfh_z;
+    height -> hfa_z;
+    height -> wfh_z;
+    age -> wfa_z;
+    age -> hfa_z;
+    age -> bmi_z;
+    sex -> wfa_table;
+    sex -> hfa_table;
+    sex -> wfh_table;
+    sex -> bmi_table;
+    
+    wfa_table -> wfa_z;
+    hfa_table -> hfa_z;
+    wfh_table -> wfh_z;
+    bmi_table -> bmi_z;
+    
+    wfa_z -> wfa_tree;
+    hfa_z -> hfa_tree;
+    wfh_z -> wfh_tree;
+    bmi_z -> bmi_tree;
+    
+    wfa_tree -> risk_tree;
+    hfa_tree -> risk_tree;
+    wfh_tree -> risk_tree;
+    bmi_tree -> risk_tree;
+    
+    risk_tree -> classifications;
+    risk_tree -> risk_level;
+    risk_tree -> recommendations;
+}

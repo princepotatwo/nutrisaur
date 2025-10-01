@@ -1,0 +1,42 @@
+digraph WeightForAgeTree {
+    graph [rankdir=TB, bgcolor=white, fontname="Arial", fontsize=12];
+    node [shape=box, style=filled, fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9, labeldistance=2];
+
+    // Weight-for-Age Decision Tree
+    root [label="Weight-for-Age\nZ-Score Input", shape=ellipse, fillcolor=lightgreen];
+    
+    // First decision
+    decision1 [label="Z-Score < -3?", fillcolor=lightyellow];
+    
+    // Severely underweight path
+    severe_underweight [label="Severely Underweight\n<-3 SD", fillcolor=red, fontcolor=white];
+    
+    // Second decision
+    decision2 [label="Z-Score >= -3\nAND < -2?", fillcolor=lightyellow];
+    
+    // Underweight path
+    underweight [label="Underweight\n-3 to -2 SD", fillcolor=orange];
+    
+    // Third decision
+    decision3 [label="Z-Score >= -2\nAND <= 2?", fillcolor=lightyellow];
+    
+    // Normal path
+    normal [label="Normal\n-2 to +2 SD", fillcolor=lightgreen];
+    
+    // Overweight path
+    overweight [label="Overweight\n>+2 SD", fillcolor=lightcoral];
+
+    // Connections
+    root -> decision1 [label="Input Z-Score"];
+    decision1 -> severe_underweight [label="Yes"];
+    decision1 -> decision2 [label="No"];
+    decision2 -> underweight [label="Yes"];
+    decision2 -> decision3 [label="No"];
+    decision3 -> normal [label="Yes"];
+    decision3 -> overweight [label="No"];
+    
+    // Add WHO classification reference
+    who_ref [label="WHO Standards Reference:\n< -3 SD: Severely Underweight\n-3 to -2 SD: Underweight\n-2 to +2 SD: Normal\n> +2 SD: Overweight", 
+             shape=note, fillcolor=lightblue, fontsize=8];
+}

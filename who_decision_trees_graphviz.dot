@@ -1,0 +1,47 @@
+digraph WHOGrowthDecisionTrees {
+    // Overall styling
+    graph [rankdir=TB, bgcolor=white, fontname="Arial", fontsize=12];
+    node [shape=box, style=filled, fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9];
+
+    // Define color scheme
+    subgraph cluster_legend {
+        label="WHO Growth Standards Decision Trees";
+        style=filled;
+        color=lightgray;
+        
+        subgraph cluster_main {
+            label="Main Growth Assessment Flow";
+            style=filled;
+            color=lightblue;
+            
+            Start [label="Child Screening\n(Weight, Height, Age, Sex)", shape=ellipse, fillcolor=lightgreen];
+            
+            // Z-Score Calculation
+            ZCalc [label="Calculate Z-Scores\nfor each indicator", fillcolor=lightyellow];
+            
+            // Individual Decision Trees
+            WFA [label="Weight-for-Age\nDecision Tree", fillcolor=orange];
+            HFA [label="Height-for-Age\nDecision Tree", fillcolor=orange];
+            WFH [label="Weight-for-Height\nDecision Tree", fillcolor=orange];
+            BMI [label="BMI-for-Age\nDecision Tree", fillcolor=orange];
+            
+            // Risk Assessment
+            Risk [label="Overall Risk\nAssessment Tree", fillcolor=red, fontcolor=white];
+            
+            // Results
+            Results [label="Comprehensive\nAssessment Results", shape=ellipse, fillcolor=lightcoral];
+            
+            Start -> ZCalc;
+            ZCalc -> WFA;
+            ZCalc -> HFA;
+            ZCalc -> WFH;
+            ZCalc -> BMI;
+            WFA -> Risk;
+            HFA -> Risk;
+            WFH -> Risk;
+            BMI -> Risk;
+            Risk -> Results;
+        }
+    }
+}

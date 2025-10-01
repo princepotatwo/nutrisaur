@@ -1,0 +1,50 @@
+digraph WeightForHeightTree {
+    graph [rankdir=TB, bgcolor=white, fontname="Arial", fontsize=12];
+    node [shape=box, style=filled, fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=9, labeldistance=2];
+
+    // Weight-for-Height Decision Tree (Wasting Assessment)
+    root [label="Weight-for-Height\nZ-Score Input", shape=ellipse, fillcolor=lightgreen];
+    
+    // First decision
+    decision1 [label="Z-Score < -3?", fillcolor=lightyellow];
+    
+    // Severely wasted path
+    severe_wasted [label="Severely Wasted\n<-3 SD", fillcolor=red, fontcolor=white];
+    
+    // Second decision
+    decision2 [label="Z-Score >= -3\nAND < -2?", fillcolor=lightyellow];
+    
+    // Wasted path
+    wasted [label="Wasted\n-3 to -2 SD", fillcolor=orange];
+    
+    // Third decision
+    decision3 [label="Z-Score >= -2\nAND <= 2?", fillcolor=lightyellow];
+    
+    // Normal path
+    normal [label="Normal Weight\n-2 to +2 SD", fillcolor=lightgreen];
+    
+    // Fourth decision
+    decision4 [label="Z-Score > 2\nAND <= 3?", fillcolor=lightyellow];
+    
+    // Overweight path
+    overweight [label="Overweight\n+2 to +3 SD", fillcolor=lightcoral];
+    
+    // Obese path
+    obese [label="Obese\n>+3 SD", fillcolor=red, fontcolor=white];
+
+    // Connections
+    root -> decision1 [label="Input Z-Score"];
+    decision1 -> severe_wasted [label="Yes"];
+    decision1 -> decision2 [label="No"];
+    decision2 -> wasted [label="Yes"];
+    decision2 -> decision3 [label="No"];
+    decision3 -> normal [label="Yes"];
+    decision3 -> decision4 [label="No"];
+    decision4 -> overweight [label="Yes"];
+    decision4 -> obese [label="No"];
+    
+    // Add WHO classification reference
+    who_ref [label="WHO Wasting Standards:\n< -3 SD: Severely Wasted\n-3 to -2 SD: Wasted\n-2 to +2 SD: Normal\n+2 to +3 SD: Overweight\n> +3 SD: Obese", 
+             shape=note, fillcolor=lightblue, fontsize=8];
+}
