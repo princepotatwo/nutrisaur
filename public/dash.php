@@ -7514,9 +7514,24 @@ body {
         margin-left: 0 !important;
     }
     
+    /* Mobile: Ensure filter container doesn't hide WHO dropdown */
+    .filter-container {
+        overflow: visible !important;
+        flex-wrap: wrap !important;
+    }
+    
     .filter-group {
         display: contents !important;
         margin-bottom: 0 !important;
+    }
+    
+    /* Mobile: Override display:contents for WHO dropdown group */
+    .filter-container > .filter-group:last-child {
+        display: flex !important;
+        align-items: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        flex: 0 0 auto !important;
     }
     
     .filter-group label {
@@ -7568,13 +7583,19 @@ body {
         position: relative !important;
     }
     
-    /* Mobile: WHO Standard select - compact */
+    /* Mobile: WHO Standard select - compact and visible */
     .filter-group select {
         padding: 3px 5px !important;
         font-size: 8px !important;
         flex: 1 !important;
         min-width: 0 !important;
+        max-width: 140px !important;
+        min-width: 100px !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
+    
     
     /* Mobile: Force minimal spacing in all select headers */
     .filter-section .select-header {
