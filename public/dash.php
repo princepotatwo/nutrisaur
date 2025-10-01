@@ -877,7 +877,7 @@ if (isset($_GET['logout'])) {
     position: fixed;
     top: 0;
     left: 0;
-    width: 40px;
+    width: 320px;
     height: 100vh;
     background-color: var(--color-card);
     box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
@@ -888,9 +888,8 @@ if (isset($_GET['logout'])) {
     display: flex;
     flex-direction: column;
     backdrop-filter: blur(10px);
-    transition: width 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                box-shadow 0.4s ease,
-                background-color 0.3s ease;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-280px); /* Show only 40px */
 }
 
 /* Base body styles */
@@ -901,8 +900,7 @@ body {
     transition: background-color 0.2s ease, 
                 color 0.2s ease, 
                 border-color 0.2s ease, 
-                box-shadow 0.2s ease, 
-                padding-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                box-shadow 0.2s ease;
     min-height: 100vh;
     background-color: var(--color-bg);
     color: var(--color-text);
@@ -7205,27 +7203,21 @@ body {
 
 /* Hover state - navbar expanded (shows full width) */
 .navbar:hover {
-    width: 320px !important;
+    transform: translateX(0); /* Show full navbar */
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(15px);
 }
 
 /* Body padding will be handled by base styles */
 
-/* Content area animation */
-.dashboard {
-    transition: margin-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                transform 0.3s ease;
-}
+/* Content area animation - removed since we're using transform now */
 
-/* Minimized navbar state - hide all text content */
+/* Text content visibility - simple fade */
 .navbar-logo-text,
 .navbar span:not(.navbar-icon),
 .navbar-footer {
     opacity: 0;
-    transform: translateX(-10px);
-    transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: opacity 0.2s ease;
     overflow: hidden;
     white-space: nowrap;
 }
@@ -7262,7 +7254,6 @@ body {
 .navbar:hover span:not(.navbar-icon),
 .navbar:hover .navbar-footer {
     opacity: 1;
-    transform: translateX(0);
 }
 
 /* Mobile Styles */
