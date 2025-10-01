@@ -7196,20 +7196,24 @@ body {
 
 /* Desktop Navbar Toggle Button - Removed duplicate */
 
-/* Hover-based Navbar Animation with Synchronized Content */
+/* Hover-based Navbar Animation - Pushing Content */
 .navbar {
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 1000;
 }
 
 /* Default state - navbar minimized (shows 40px) */
 .navbar {
-    transform: translateX(-280px); /* Show 40px of navbar */
-    width: 320px !important;
+    width: 40px !important;
 }
 
 /* Hover state - navbar expanded (shows full width) */
 .navbar:hover {
-    transform: translateX(0); /* Show full navbar */
+    width: 320px !important;
 }
 
 /* Body padding with synchronized smooth transitions */
@@ -7221,6 +7225,21 @@ body {
 /* Content area animation */
 .dashboard {
     transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hide navbar text when minimized, show when expanded */
+.navbar-logo-text,
+.navbar span:not(.navbar-icon),
+.navbar-footer {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    overflow: hidden;
+}
+
+.navbar:hover .navbar-logo-text,
+.navbar:hover span:not(.navbar-icon),
+.navbar:hover .navbar-footer {
+    opacity: 1;
 }
 
 /* Mobile Styles */
@@ -7281,14 +7300,12 @@ body {
     }
     
     .navbar {
-        width: 320px !important;
-        transform: translateX(-280px); /* Default: minimized */
-        overflow: visible !important;
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 40px !important; /* Default: minimized */
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .navbar:hover {
-        transform: translateX(0); /* Hover: expanded */
+        width: 320px !important; /* Hover: expanded */
     }
     
     body {
