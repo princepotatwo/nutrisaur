@@ -680,7 +680,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             ]
         ],
         'from' => [
-            'email' => 'noreply@sendgrid.com',
+            'email' => 'noreply.nutrisaur@gmail.com',
             'name' => 'NUTRISAUR'
         ],
         'content' => [
