@@ -7513,26 +7513,30 @@ body {
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         gap: 1px !important;
-        justify-content: space-between !important;
+        justify-content: flex-start !important;
         display: flex !important;
         align-items: center !important;
         min-height: 24px !important;
+        width: 100% !important;
     }
     
     /* Mobile: Reduce spacing between text and arrow */
     .filter-section .custom-select-container .select-header span:first-child {
-        flex: 1 !important;
-        margin-right: 1px !important;
-        max-width: calc(100% - 12px) !important;
+        flex: 0 1 auto !important;
+        margin-right: 0 !important;
+        max-width: none !important;
         padding-right: 0 !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
     
     .filter-section .custom-select-container .select-header .dropdown-arrow {
-        flex-shrink: 0 !important;
-        margin-left: 1px !important;
+        flex: 0 0 auto !important;
+        margin-left: 2px !important;
         font-size: 6px !important;
-        width: 8px !important;
+        width: 6px !important;
         text-align: center !important;
+        position: relative !important;
     }
     
     /* Mobile: WHO Standard select - compact */
@@ -7541,6 +7545,22 @@ body {
         font-size: 8px !important;
         flex: 1 !important;
         min-width: 0 !important;
+    }
+    
+    /* Mobile: Force minimal spacing in all select headers */
+    .filter-section .select-header {
+        justify-content: flex-start !important;
+        padding: 2px 4px !important;
+        min-height: 20px !important;
+    }
+    
+    .filter-section .select-header > span {
+        margin-right: 1px !important;
+    }
+    
+    .filter-section .select-header .dropdown-arrow {
+        margin-left: 1px !important;
+        font-size: 5px !important;
     }
     
     /* Mobile: Reduce dropdown arrow spacing */
