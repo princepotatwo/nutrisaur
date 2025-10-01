@@ -7502,7 +7502,7 @@ body {
         opacity: 0.8 !important;
     }
     
-    /* Donut Charts - Compact with proper centering */
+    /* Donut Charts - Perfect center alignment */
     .donut-chart-container {
         height: 160px !important;
         padding: 0 !important;
@@ -7518,31 +7518,56 @@ body {
         height: 120px !important;
         margin: 0 auto !important;
         position: relative !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
     }
     
     .donut-center-text {
-        font-size: 14px !important;
-        width: 60px !important;
-        height: 60px !important;
-        line-height: 60px !important;
-        border-radius: 50% !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
         position: absolute !important;
         top: 50% !important;
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
-        z-index: 10 !important;
+        z-index: 15 !important;
         text-align: center !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        width: 50px !important;
+        height: 50px !important;
+        border-radius: 50% !important;
+        background: var(--color-card) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
     }
     
     .donut-chart::before {
         width: 50% !important;
         height: 50% !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
+    
+    /* Ensure donut center text is always perfectly centered */
+    .donut-center-text {
+        line-height: 1 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: 2px solid var(--color-border) !important;
+    }
+    
+    /* Dark theme support for donut center */
+    .dark-theme .donut-center-text {
+        background: var(--color-card) !important;
+        color: #FFFFFF !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    /* Light theme support for donut center */
+    .light-theme .donut-center-text {
+        background: #FFFFFF !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
     }
     
     /* Chart Segments - Smaller on Mobile */
