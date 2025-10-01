@@ -7419,32 +7419,49 @@ body {
         margin-bottom: 10px !important;
     }
     
-    /* Filter Section - Mobile Optimized */
+    /* Filter Section - Mobile 2-Row Layout */
     .filter-section {
-        padding: 12px 15px !important;
-        margin-bottom: 15px !important;
-        border-radius: 12px !important;
+        padding: 8px 15px !important;
+        margin-bottom: 12px !important;
+        border-radius: 8px !important;
     }
     
     .filter-container {
         display: flex !important;
         flex-direction: column !important;
-        gap: 12px !important;
+        gap: 6px !important;
         align-items: stretch !important;
     }
     
-    .filter-group {
+    /* First Row - Labels */
+    .filter-labels-row {
         display: flex !important;
-        flex-direction: column !important;
-        width: 100% !important;
-        position: relative !important;
+        gap: 8px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .filter-label {
+        flex: 1 !important;
+        font-size: 10px !important;
+        font-weight: 600 !important;
+        color: var(--color-text) !important;
+        text-align: center !important;
+        padding: 2px 0 !important;
+    }
+    
+    .filter-group {
+        display: contents !important;
     }
     
     .filter-group label {
-        font-size: 12px !important;
-        margin-bottom: 6px !important;
-        font-weight: 600 !important;
-        color: var(--color-text) !important;
+        display: none !important;
+    }
+    
+    /* Second Row - Dropdowns */
+    .filter-dropdowns-row {
+        display: flex !important;
+        gap: 8px !important;
+        align-items: stretch !important;
     }
     
     .custom-select-container {
@@ -7457,13 +7474,13 @@ body {
     }
     
     .select-header {
-        font-size: 14px !important;
-        padding: 12px 16px !important;
+        font-size: 11px !important;
+        padding: 6px 8px !important;
         height: auto !important;
-        min-height: 48px !important;
+        min-height: 32px !important;
         background: var(--color-card) !important;
-        border: 2px solid var(--color-border) !important;
-        border-radius: 8px !important;
+        border: 1px solid var(--color-border) !important;
+        border-radius: 6px !important;
         cursor: pointer !important;
         display: flex !important;
         align-items: center !important;
@@ -7472,6 +7489,7 @@ body {
         -webkit-tap-highlight-color: transparent !important;
         user-select: none !important;
         touch-action: manipulation !important;
+        flex: 1 !important;
     }
     
     .select-header:hover,
@@ -7759,30 +7777,87 @@ body {
         margin-bottom: 4px !important;
     }
     
-    /* Trends Chart - Better space utilization */
+    /* Trends Chart - Mobile 2-Row Layout */
     .trends-chart-container {
         padding: 2px !important;
         margin: 2px 0 !important;
-        height: 200px !important;
+        height: 180px !important;
         width: 100% !important;
     }
     
     .trends-chart-container h3 {
-        font-size: 13px !important;
+        font-size: 12px !important;
         margin-bottom: 2px !important;
+        line-height: 1.2 !important;
     }
     
-    /* Age Classification Chart - Better space utilization */
+    /* Trend Chart Title and Description Row */
+    .trends-chart-container .chart-title-row {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .trends-chart-container .chart-title-row h3 {
+        margin-bottom: 0 !important;
+        flex: 1 !important;
+    }
+    
+    .trends-chart-container .chart-description {
+        font-size: 9px !important;
+        margin-bottom: 0 !important;
+        opacity: 0.8 !important;
+        flex: 1 !important;
+    }
+    
+    /* Trend Chart Filter Row */
+    .trends-chart-container .chart-filter-row {
+        display: flex !important;
+        gap: 6px !important;
+        margin-bottom: 4px !important;
+        align-items: center !important;
+    }
+    
+    .trends-chart-container .chart-filter-row .filter-label {
+        font-size: 9px !important;
+        font-weight: 500 !important;
+        color: var(--color-text-secondary) !important;
+        min-width: 40px !important;
+    }
+    
+    .trends-chart-container .chart-filter-row .date-input {
+        flex: 1 !important;
+        padding: 4px 6px !important;
+        font-size: 10px !important;
+        border: 1px solid var(--color-border) !important;
+        border-radius: 4px !important;
+        background: var(--color-card) !important;
+        color: var(--color-text) !important;
+    }
+    
+    .trends-chart-container .chart-filter-row .generate-btn {
+        padding: 4px 8px !important;
+        font-size: 10px !important;
+        border-radius: 4px !important;
+        background: var(--color-highlight) !important;
+        color: white !important;
+        border: none !important;
+        cursor: pointer !important;
+    }
+    
+    /* Age Classification Chart - Compact space utilization */
     .age-classification-chart-container {
         padding: 2px !important;
         margin: 2px 0 !important;
-        height: 200px !important;
+        height: 140px !important;
         width: 100% !important;
     }
     
     .age-classification-chart-container h3 {
-        font-size: 13px !important;
+        font-size: 11px !important;
         margin-bottom: 2px !important;
+        line-height: 1.2 !important;
     }
     
     /* Chart canvas optimization */
