@@ -7964,7 +7964,7 @@ body {
     }
     
     
-    /* Mobile: Stack trends chart layout */
+    /* Mobile: Stack trends chart layout - title/description on top, filters in one row below */
     .chart-card > div:first-child > div:first-child {
         display: flex !important;
         flex-direction: column !important;
@@ -7978,10 +7978,34 @@ body {
     
     .chart-card > div:first-child > div:first-child > div:last-child {
         display: flex !important;
-        flex-direction: column !important;
-        gap: 8px !important;
+        flex-direction: row !important;
+        gap: 4px !important;
         align-items: center !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
         margin-left: 0 !important;
+    }
+    
+    /* Mobile: Compact date filter inputs */
+    .chart-card > div:first-child > div:first-child > div:last-child > div {
+        display: flex !important;
+        gap: 3px !important;
+        align-items: center !important;
+    }
+    
+    .chart-card > div:first-child > div:first-child > div:last-child input {
+        padding: 4px 6px !important;
+        font-size: 10px !important;
+        width: 100px !important;
+    }
+    
+    .chart-card > div:first-child > div:first-child > div:last-child label {
+        font-size: 9px !important;
+    }
+    
+    .chart-card > div:first-child > div:first-child > div:last-child button {
+        padding: 4px 8px !important;
+        font-size: 10px !important;
     }
     
     /* Chart canvas optimization */
