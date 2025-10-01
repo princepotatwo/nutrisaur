@@ -874,10 +874,10 @@ if (isset($_GET['logout'])) {
 
 /* Base navbar styles */
 .navbar {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 320px;
+    width: 40px;
     height: 100vh;
     background-color: var(--color-card);
     box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
@@ -888,6 +888,7 @@ if (isset($_GET['logout'])) {
     display: flex;
     flex-direction: column;
     backdrop-filter: blur(10px);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Base body styles */
@@ -895,12 +896,12 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     min-height: 100vh;
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding-left: 320px;
+    padding-left: 40px;
     line-height: 1.6;
     letter-spacing: 0.2px;
 }
@@ -7196,31 +7197,12 @@ body {
 
 /* Desktop Navbar Toggle Button - Removed duplicate */
 
-/* Hover-based Navbar Animation - Pushing Content */
-.navbar {
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    z-index: 1000;
-}
-
-/* Default state - navbar minimized (shows 40px) */
-.navbar {
-    width: 40px !important;
-}
-
 /* Hover state - navbar expanded (shows full width) */
 .navbar:hover {
     width: 320px !important;
 }
 
-/* Body padding with synchronized smooth transitions */
-body {
-    transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    padding-left: 40px !important; /* Default: show 40px of navbar */
-}
+/* Body padding will be handled by base styles */
 
 /* Content area animation */
 .dashboard {
@@ -7299,19 +7281,11 @@ body {
         display: none !important;
     }
     
-    .navbar {
-        width: 40px !important; /* Default: minimized */
-        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
     .navbar:hover {
         width: 320px !important; /* Hover: expanded */
     }
     
-    body {
-        padding-left: 40px !important; /* Default: minimized */
-        transition: padding-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+    /* Body padding will be handled by JavaScript */
     
     .dashboard {
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
