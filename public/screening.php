@@ -2499,13 +2499,17 @@ header {
             box-sizing: border-box;
         }
 
-        /* Row 1: Action Buttons and Search - Larger for Full Screen */
+        /* Row 1: Action Buttons and Search - Properly Contained */
         .control-row-1 {
             display: flex;
             gap: 20px;
             align-items: center;
             justify-content: space-between;
             padding: 10px 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .action-section {
@@ -2513,6 +2517,8 @@ header {
             gap: 15px;
             align-items: center;
             flex-shrink: 0;
+            max-width: 50%;
+            box-sizing: border-box;
         }
 
         .filter-dropdowns {
@@ -2555,6 +2561,8 @@ header {
             gap: 12px;
             flex: 1;
             justify-content: flex-end;
+            max-width: 50%;
+            box-sizing: border-box;
         }
 
         .search-input {
@@ -2598,7 +2606,7 @@ header {
             transform: scale(1.05);
         }
 
-        /* Row 2: Filter Controls - Larger for Full Screen */
+        /* Row 2: Filter Controls - Properly Contained */
         .control-row-2 {
             background: linear-gradient(135deg, rgba(161, 180, 84, 0.15) 0%, rgba(161, 180, 84, 0.05) 100%);
             border-radius: 10px;
@@ -2607,6 +2615,9 @@ header {
             overflow: visible;
             position: relative;
             z-index: 50;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .filter-section {
@@ -2617,6 +2628,9 @@ header {
             overflow: visible;
             position: relative;
             z-index: 40;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .filter-item {
