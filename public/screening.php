@@ -2711,10 +2711,10 @@ header {
 
         .who-standard-btn {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px clamp(4px, 1vw, 20px);
+            padding: 8px clamp(4px, 1vw, 20px);
             border: 2px solid rgba(161, 180, 84, 0.3);
             border-radius: 8px;
             background: var(--color-bg);
@@ -2723,11 +2723,11 @@ header {
             transition: all 0.3s ease, flex-grow 0.3s ease, padding 0.3s ease;
             flex: 1 1 0;
             min-width: 0;
-            min-height: 45px;
+            min-height: 50px;
             font-family: inherit;
             position: relative;
             overflow: hidden;
-            gap: clamp(2px, 0.5vw, 8px);
+            gap: 2px;
         }
 
         .who-standard-btn:hover {
@@ -2754,7 +2754,7 @@ header {
         .btn-title {
             font-size: clamp(10px, 1.2vw, 14px);
             font-weight: 600;
-            line-height: 1.1;
+            line-height: 1.2;
             margin: 0;
             text-align: center;
             white-space: nowrap;
@@ -2764,11 +2764,12 @@ header {
         .btn-subtitle {
             font-size: clamp(8px, 1vw, 12px);
             opacity: 0.8;
-            line-height: 1;
+            line-height: 1.1;
             text-align: center;
             font-weight: 400;
             white-space: nowrap;
             transition: font-size 0.3s ease;
+            margin-top: 1px;
         }
 
         .who-standard-btn.active .btn-subtitle {
@@ -2780,9 +2781,9 @@ header {
         /* Large screens - navbar expanded (more space available) */
         @media (min-width: 1400px) {
             .who-standard-btn {
-                padding: 15px clamp(12px, 1.5vw, 25px);
-                min-height: 50px;
-                gap: clamp(4px, 0.8vw, 10px);
+                padding: 12px clamp(12px, 1.5vw, 25px);
+                min-height: 60px;
+                gap: 3px;
             }
             
             .btn-title {
@@ -2797,8 +2798,9 @@ header {
         /* Medium screens - navbar collapsed (more space available) */
         @media (min-width: 1200px) and (max-width: 1399px) {
             .who-standard-btn {
-                padding: 14px clamp(10px, 1.3vw, 22px);
-                min-height: 48px;
+                padding: 10px clamp(10px, 1.3vw, 22px);
+                min-height: 55px;
+                gap: 3px;
             }
             
             .btn-title {
@@ -2813,8 +2815,9 @@ header {
         /* Standard desktop - responsive to navbar state */
         @media (min-width: 769px) and (max-width: 1199px) {
             .who-standard-btn {
-                padding: 12px clamp(6px, 1.1vw, 18px);
-                min-height: 45px;
+                padding: 8px clamp(6px, 1.1vw, 18px);
+                min-height: 50px;
+                gap: 2px;
             }
             
             .btn-title {
@@ -2834,8 +2837,8 @@ header {
             
             .who-standard-btn {
                 padding: 6px clamp(4px, 2vw, 10px);
-                min-height: 35px;
-                gap: 3px;
+                min-height: 40px;
+                gap: 1px;
             }
             
             .btn-title {
@@ -2849,8 +2852,9 @@ header {
 
         /* Dynamic responsiveness based on navbar state */
         .who-standard-buttons.navbar-collapsed .who-standard-btn {
-            padding: 12px clamp(8px, 1.2vw, 16px);
-            gap: clamp(3px, 0.6vw, 6px);
+            padding: 10px clamp(8px, 1.2vw, 16px);
+            min-height: 55px;
+            gap: 3px;
         }
         
         .who-standard-buttons.navbar-collapsed .btn-title {
@@ -2862,8 +2866,9 @@ header {
         }
         
         .who-standard-buttons.navbar-expanded .who-standard-btn {
-            padding: 12px clamp(6px, 0.9vw, 14px);
-            gap: clamp(2px, 0.4vw, 5px);
+            padding: 8px clamp(6px, 0.9vw, 14px);
+            min-height: 48px;
+            gap: 2px;
         }
         
         .who-standard-buttons.navbar-expanded .btn-title {
