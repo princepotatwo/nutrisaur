@@ -7188,7 +7188,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
                 
                 // Update the notes field for the user
-                $stmt = $db->pdo->prepare("UPDATE community_users SET notes = ? WHERE email = ?");
+                $stmt = $db->getPDO()->prepare("UPDATE community_users SET notes = ? WHERE email = ?");
                 $result = $stmt->execute([$note, $email]);
                 
                 if ($result) {
@@ -7205,6 +7205,60 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             } catch (Exception $e) {
                 error_log("Error saving user note: " . $e->getMessage());
                 echo json_encode(['success' => false, 'message' => 'Error saving note: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
+        // TOGGLE USER FLAG
+        // ========================================
+        case 'toggle_user_flag':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                    echo json_encode(['success' => false, 'message' => 'POST method required']);
+                    break;
+                }
+                
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                $email = $data['email'] ?? '';
+                
+                if (empty($email)) {
+                    echo json_encode(['success' => false, 'message' => 'Email is required']);
+                    break;
+                }
+                
+                // First, check if user exists and get current flag status
+                $stmt = $db->getPDO()->prepare("SELECT is_flagged FROM community_users WHERE email = ?");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$user) {
+                    echo json_encode(['success' => false, 'message' => 'User not found']);
+                    break;
+                }
+                
+                // Toggle the flag status
+                $newFlagStatus = $user['is_flagged'] ? 0 : 1;
+                
+                // Update the flag status
+                $stmt = $db->getPDO()->prepare("UPDATE community_users SET is_flagged = ? WHERE email = ?");
+                $result = $stmt->execute([$newFlagStatus, $email]);
+                
+                if ($result) {
+                    echo json_encode([
+                        'success' => true, 
+                        'message' => $newFlagStatus ? 'User flagged successfully' : 'User unflagged successfully',
+                        'email' => $email,
+                        'is_flagged' => $newFlagStatus
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to update flag status']);
+                }
+                
+            } catch (Exception $e) {
+                error_log("Error toggling user flag: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Error updating flag: ' . $e->getMessage()]);
             }
             break;
             

@@ -2032,6 +2032,25 @@ header {
             background-color: rgba(255, 193, 7, 0.25);
         }
 
+        /* Flagged User Row Highlighting */
+        .flagged-user-row {
+            background-color: rgba(244, 67, 54, 0.1) !important;
+            border-left: 4px solid #F44336 !important;
+        }
+
+        .flagged-user-row:hover {
+            background-color: rgba(244, 67, 54, 0.15) !important;
+        }
+
+        .light-theme .flagged-user-row {
+            background-color: rgba(244, 67, 54, 0.08) !important;
+            border-left: 4px solid #F44336 !important;
+        }
+
+        .light-theme .flagged-user-row:hover {
+            background-color: rgba(244, 67, 54, 0.12) !important;
+        }
+
         /* Assessment Details Modal */
         .modal {
             display: none;
@@ -5042,7 +5061,9 @@ header {
                                                 $zScoreDisplay = $accurateRange;
                                             }
                                             
-                                            echo '<tr data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
+                                            // Add flagged class if user is flagged
+                                            $flaggedClass = (!empty($user['is_flagged']) && $user['is_flagged'] == 1) ? ' flagged-user-row' : '';
+                                            echo '<tr class="' . $flaggedClass . '" data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             $fullName = htmlspecialchars($user['name'] ?? 'N/A');
                                             echo '<td class="text-center" title="' . $fullName . '" data-full-name="' . $fullName . '">' . $fullName . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
@@ -6714,12 +6735,58 @@ header {
                 position: relative;
             `;
             
-            const closeBtn = document.createElement('button');
-            closeBtn.innerHTML = '✕';
-            closeBtn.style.cssText = `
+            // Create header buttons container
+            const headerButtons = document.createElement('div');
+            headerButtons.style.cssText = `
                 position: absolute;
                 top: 15px;
                 right: 20px;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            `;
+            
+            // Create Note button
+            const noteBtn = document.createElement('button');
+            noteBtn.innerHTML = 'Note';
+            noteBtn.style.cssText = `
+                background: #FFC107;
+                color: #1B1B1B;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            `;
+            noteBtn.addEventListener('click', function() {
+                modal.remove();
+                addUserNote(userEmail, userData.name);
+            });
+            
+            // Create Flag button
+            const flagBtn = document.createElement('button');
+            const isFlagged = userData.is_flagged == 1;
+            flagBtn.innerHTML = isFlagged ? 'Unflag' : 'Flag';
+            flagBtn.style.cssText = `
+                background: ${isFlagged ? '#4CAF50' : '#F44336'};
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            `;
+            flagBtn.addEventListener('click', function() {
+                toggleUserFlag(userEmail, userData.name, isFlagged);
+            });
+
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '✕';
+            closeBtn.style.cssText = `
                 background: none;
                 border: none;
                 color: var(--color-highlight);
@@ -6734,6 +6801,10 @@ header {
                 justify-content: center;
                 transition: all 0.3s ease;
             `;
+            
+            headerButtons.appendChild(noteBtn);
+            headerButtons.appendChild(flagBtn);
+            headerButtons.appendChild(closeBtn);
             
             closeBtn.addEventListener('mouseenter', function() {
                 this.style.background = 'var(--color-highlight)';
@@ -6796,7 +6867,7 @@ header {
                 </div>
             `;
             
-            modalContent.appendChild(closeBtn);
+            modalContent.appendChild(headerButtons);
             modal.appendChild(modalContent);
             document.body.appendChild(modal);
             
@@ -7161,6 +7232,59 @@ header {
                 alert('Error saving note. Please try again.');
                 saveBtn.textContent = originalText;
                 saveBtn.disabled = false;
+            });
+        }
+
+        // Toggle User Flag Function
+        function toggleUserFlag(userEmail, userName, currentFlagStatus) {
+            console.log('🚩 Toggle Flag function called for:', userEmail, userName, 'Current status:', currentFlagStatus);
+            
+            if (!userEmail || userEmail === 'undefined' || userEmail === 'null') {
+                console.error('❌ Invalid userEmail:', userEmail);
+                alert('Error: Invalid user email');
+                return;
+            }
+
+            const action = currentFlagStatus ? 'unflag' : 'flag';
+            const confirmMessage = currentFlagStatus ? 
+                `Are you sure you want to unflag ${userName}?` : 
+                `Are you sure you want to flag ${userName} for attention?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            console.log('🚩 Toggling flag for:', userEmail, 'Action:', action);
+            
+            // Save flag status via API
+            fetch('api/DatabaseAPI.php?action=toggle_user_flag', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    email: userEmail
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('🚩 Flag toggle response:', data);
+                
+                if (data.success) {
+                    const message = data.is_flagged ? 
+                        `${userName} has been flagged for attention!` : 
+                        `${userName} has been unflagged.`;
+                    alert(message);
+                    
+                    // Refresh the page to show updated flag status
+                    location.reload();
+                } else {
+                    alert('Error updating flag: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error toggling flag:', error);
+                alert('Error updating flag. Please try again.');
             });
         }
 
