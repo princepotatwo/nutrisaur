@@ -2699,12 +2699,12 @@ header {
             font-family: 'Courier New', monospace;
         }
 
-        /* WHO Standard buttons styling - Single Row */
+        /* WHO Standard buttons styling - Responsive to Container */
         .who-standard-buttons {
             display: flex;
             flex-wrap: nowrap;
             gap: 4px;
-            justify-content: center;
+            justify-content: stretch;
             align-items: center;
             width: 100%;
         }
@@ -2714,20 +2714,20 @@ header {
             flex-direction: row;
             align-items: center;
             justify-content: center;
-            padding: 12px 15px;
+            padding: 12px clamp(4px, 1vw, 20px);
             border: 2px solid rgba(161, 180, 84, 0.3);
             border-radius: 8px;
             background: var(--color-bg);
             color: var(--color-text);
             cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
+            transition: all 0.3s ease, flex-grow 0.3s ease, padding 0.3s ease;
+            flex: 1 1 0;
             min-width: 0;
             min-height: 45px;
             font-family: inherit;
             position: relative;
             overflow: hidden;
-            gap: 6px;
+            gap: clamp(2px, 0.5vw, 8px);
         }
 
         .who-standard-btn:hover {
@@ -2752,21 +2752,23 @@ header {
         }
 
         .btn-title {
-            font-size: 12px;
+            font-size: clamp(10px, 1.2vw, 14px);
             font-weight: 600;
             line-height: 1.1;
             margin: 0;
             text-align: center;
             white-space: nowrap;
+            transition: font-size 0.3s ease;
         }
 
         .btn-subtitle {
-            font-size: 10px;
+            font-size: clamp(8px, 1vw, 12px);
             opacity: 0.8;
             line-height: 1;
             text-align: center;
             font-weight: 400;
             white-space: nowrap;
+            transition: font-size 0.3s ease;
         }
 
         .who-standard-btn.active .btn-subtitle {
@@ -2774,24 +2776,102 @@ header {
         }
 
         /* Responsive adjustments for WHO standard buttons */
+        
+        /* Large screens - navbar expanded (more space available) */
+        @media (min-width: 1400px) {
+            .who-standard-btn {
+                padding: 15px clamp(12px, 1.5vw, 25px);
+                min-height: 50px;
+                gap: clamp(4px, 0.8vw, 10px);
+            }
+            
+            .btn-title {
+                font-size: clamp(12px, 1.4vw, 16px);
+            }
+            
+            .btn-subtitle {
+                font-size: clamp(10px, 1.2vw, 14px);
+            }
+        }
+        
+        /* Medium screens - navbar collapsed (more space available) */
+        @media (min-width: 1200px) and (max-width: 1399px) {
+            .who-standard-btn {
+                padding: 14px clamp(10px, 1.3vw, 22px);
+                min-height: 48px;
+            }
+            
+            .btn-title {
+                font-size: clamp(11px, 1.3vw, 15px);
+            }
+            
+            .btn-subtitle {
+                font-size: clamp(9px, 1.1vw, 13px);
+            }
+        }
+        
+        /* Standard desktop - responsive to navbar state */
+        @media (min-width: 769px) and (max-width: 1199px) {
+            .who-standard-btn {
+                padding: 12px clamp(6px, 1.1vw, 18px);
+                min-height: 45px;
+            }
+            
+            .btn-title {
+                font-size: clamp(10px, 1.2vw, 14px);
+            }
+            
+            .btn-subtitle {
+                font-size: clamp(8px, 1vw, 12px);
+            }
+        }
+        
+        /* Mobile screens */
         @media (max-width: 768px) {
             .who-standard-buttons {
                 gap: 3px;
             }
             
             .who-standard-btn {
-                padding: 6px 8px;
+                padding: 6px clamp(4px, 2vw, 10px);
                 min-height: 35px;
                 gap: 3px;
             }
             
             .btn-title {
-                font-size: 8px;
+                font-size: clamp(7px, 2.5vw, 10px);
             }
             
             .btn-subtitle {
-                font-size: 6px;
+                font-size: clamp(6px, 2vw, 8px);
             }
+        }
+
+        /* Dynamic responsiveness based on navbar state */
+        .who-standard-buttons.navbar-collapsed .who-standard-btn {
+            padding: 12px clamp(8px, 1.2vw, 16px);
+            gap: clamp(3px, 0.6vw, 6px);
+        }
+        
+        .who-standard-buttons.navbar-collapsed .btn-title {
+            font-size: clamp(10px, 1.3vw, 13px);
+        }
+        
+        .who-standard-buttons.navbar-collapsed .btn-subtitle {
+            font-size: clamp(8px, 1.1vw, 11px);
+        }
+        
+        .who-standard-buttons.navbar-expanded .who-standard-btn {
+            padding: 12px clamp(6px, 0.9vw, 14px);
+            gap: clamp(2px, 0.4vw, 5px);
+        }
+        
+        .who-standard-buttons.navbar-expanded .btn-title {
+            font-size: clamp(9px, 1.1vw, 12px);
+        }
+        
+        .who-standard-buttons.navbar-expanded .btn-subtitle {
+            font-size: clamp(7px, 0.9vw, 10px);
         }
 
         /* Hidden dropdown for compatibility */
@@ -4749,6 +4829,23 @@ header {
                 } else {
                     body.style.paddingLeft = '40px'; // Minimized navbar width
                 }
+                
+                // Update WHO standard buttons responsiveness based on available space
+                updateWHOButtonsResponsiveness();
+            }
+        }
+        
+        function updateWHOButtonsResponsiveness() {
+            const whoButtons = document.querySelector('.who-standard-buttons');
+            if (whoButtons) {
+                // Add class to indicate navbar state for additional CSS targeting
+                if (navState.isHovered) {
+                    whoButtons.classList.add('navbar-expanded');
+                    whoButtons.classList.remove('navbar-collapsed');
+                } else {
+                    whoButtons.classList.add('navbar-collapsed');
+                    whoButtons.classList.remove('navbar-expanded');
+                }
             }
         }
 
@@ -4765,9 +4862,13 @@ header {
 
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initNavigation);
+            document.addEventListener('DOMContentLoaded', function() {
+                initNavigation();
+                updateWHOButtonsResponsiveness();
+            });
         } else {
             initNavigation();
+            updateWHOButtonsResponsiveness();
         }
 
         // Municipalities and Barangays data
