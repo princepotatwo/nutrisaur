@@ -3133,15 +3133,18 @@ class DatabaseAPI {
                         $this->processWHOStandard($allClassifications['height_for_age'], $results, 'height_for_age', $ageInMonths, $user);
                         $this->processWHOStandard($allClassifications['weight_for_height'], $results, 'weight_for_height', $ageInMonths, $user);
                         $this->processWHOStandard($allClassifications['bmi_for_age'], $results, 'bmi_for_age', $ageInMonths, $user);
-                        $this->processBMIAdult($allClassifications['bmi_adult'], $user, $ageInMonths);
                         
                         $totalProcessed++;
                     } else {
-                        // Mark all as no data if assessment failed
-                        foreach ($allClassifications as &$classifications) {
-                            $classifications['No Data']++;
-                        }
+                        // Mark WHO standards as no data if assessment failed
+                        $allClassifications['weight_for_age']['No Data']++;
+                        $allClassifications['height_for_age']['No Data']++;
+                        $allClassifications['weight_for_height']['No Data']++;
+                        $allClassifications['bmi_for_age']['No Data']++;
                     }
+                    
+                    // Process BMI adult independently (doesn't need WHO assessment)
+                    $this->processBMIAdult($allClassifications['bmi_adult'], $user, $ageInMonths);
                 } catch (Exception $e) {
                     error_log("Bulk WHO processing error for user {$user['email']}: " . $e->getMessage());
                     foreach ($allClassifications as &$classifications) {
