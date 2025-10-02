@@ -5203,7 +5203,13 @@ header {
                                             }
                                             
                                             echo '<td class="text-center">' . htmlspecialchars($classificationDisplay) . '</td>';
-                                            echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
+                                            // Format screening date to show only date
+                                            $screeningDate = $user['screening_date'] ?? 'N/A';
+                                            if ($screeningDate !== 'N/A' && $screeningDate) {
+                                                $date = new DateTime($screeningDate);
+                                                $screeningDate = $date->format('Y-m-d');
+                                            }
+                                            echo '<td class="text-center">' . htmlspecialchars($screeningDate) . '</td>';
                                             echo '<td class="text-center">';
                                             echo '<div class="action-buttons">';
                                             echo '<button class="btn-view" onclick="console.log(\'🔍 View button clicked for user EMAIL: ' . htmlspecialchars($user['email']) . '\'); viewUserDetails(\'' . htmlspecialchars($user['email']) . '\')" title="View Full Details">';
@@ -7484,8 +7490,11 @@ header {
             })
             .then(data => {
                 console.log('🗑️ Note delete response:', data);
+                console.log('🗑️ Response type:', typeof data);
+                console.log('🗑️ Success value:', data.success);
+                console.log('🗑️ Message:', data.message);
                 
-                if (data.success) {
+                if (data && data.success === true) {
                     alert(`Note deleted successfully for ${userName}!`);
                     closeNoteModal(event.target);
                     // Refresh the page to update the note button visibility
