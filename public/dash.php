@@ -9278,14 +9278,11 @@ body {
                     params.barangay = barangay;
                 }
 
-                // Update Risk Distribution Chart - Use correct DatabaseAPI with proper URL construction
-                const apiParams = { action: 'analysis_data' };
-                if (barangay && barangay !== '') {
-                    apiParams.barangay = barangay;
-                }
-                const apiUrl = constructAPIURL('/api/DatabaseAPI.php', apiParams);
-                const response = await fetch(apiUrl);
-                const riskData = await response.json();
+                // DISABLED: Risk Distribution Chart - This was overriding correct WHO classification data
+                // The analysis_data API returns incorrect counts (all users instead of specific classifications)
+                // We now rely on WHO classification data which provides accurate severely cases counts
+                console.log('📈 Risk distribution data now handled by WHO classification system');
+                const riskData = { success: false }; // Disable the problematic API call
                 console.log('📈 Risk Distribution Data (RAW):', riskData);
                 console.log('📈 Risk Data Type:', typeof riskData);
                 console.log('📈 Risk Data Keys:', Object.keys(riskData || {}));

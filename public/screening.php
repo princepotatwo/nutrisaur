@@ -2035,21 +2035,25 @@ header {
 
         /* Flagged User Row Highlighting */
         .flagged-user-row {
-            background-color: rgba(255, 23, 68, 0.15) !important;
-            border-left: 4px solid #FF1744 !important;
+            background-color: rgba(255, 23, 68, 0.25) !important;
+            border-left: 6px solid #FF1744 !important;
+            box-shadow: 0 0 10px rgba(255, 23, 68, 0.3) !important;
         }
 
         .flagged-user-row:hover {
-            background-color: rgba(255, 23, 68, 0.2) !important;
+            background-color: rgba(255, 23, 68, 0.35) !important;
+            box-shadow: 0 0 15px rgba(255, 23, 68, 0.4) !important;
         }
 
         .light-theme .flagged-user-row {
-            background-color: rgba(255, 23, 68, 0.12) !important;
-            border-left: 4px solid #FF1744 !important;
+            background-color: rgba(255, 23, 68, 0.2) !important;
+            border-left: 6px solid #FF1744 !important;
+            box-shadow: 0 0 8px rgba(255, 23, 68, 0.25) !important;
         }
 
         .light-theme .flagged-user-row:hover {
-            background-color: rgba(255, 23, 68, 0.18) !important;
+            background-color: rgba(255, 23, 68, 0.3) !important;
+            box-shadow: 0 0 12px rgba(255, 23, 68, 0.35) !important;
         }
 
         /* Assessment Details Modal */
