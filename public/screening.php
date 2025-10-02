@@ -2629,7 +2629,7 @@ header {
 
         .filter-section {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: 1fr 1fr 1fr 2fr;
             gap: 20px;
             align-items: end;
             overflow: hidden;
@@ -2941,7 +2941,7 @@ header {
         /* Responsive Design */
         @media (max-width: 1200px) {
             .filter-section {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: 1fr 1fr 1fr 1.5fr;
                 gap: 10px;
             }
         }
@@ -2961,8 +2961,13 @@ header {
             }
 
             .filter-section {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: 1fr 1fr 2fr;
                 gap: 8px;
+            }
+            
+            /* Give WHO STANDARD more space on mobile */
+            .filter-item:nth-child(4) {
+                grid-column: 3 / 4;
             }
 
             .action-section {
@@ -3002,8 +3007,13 @@ header {
             }
 
             .filter-section {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr 1fr;
                 gap: 6px;
+            }
+            
+            /* Make WHO STANDARD span full width on very small screens */
+            .filter-item:nth-child(4) {
+                grid-column: 1 / -1;
             }
 
             .action-section {
