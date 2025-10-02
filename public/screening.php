@@ -1698,6 +1698,45 @@ header {
             padding-bottom: 8px;
         }
 
+        /* User Details Modal Styles */
+        .user-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .detail-section h3 {
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            font-size: 1.2em;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-item label {
+            font-weight: bold;
+            color: var(--text-color);
+            min-width: 120px;
+        }
+
+        .detail-item span {
+            color: var(--text-color);
+            text-align: right;
+        }
+
         .detail-item {
             margin-bottom: 10px;
         }
@@ -3727,6 +3766,7 @@ header {
                             <th id="standardHeader">Z-SCORE</th>
                             <th>CLASSIFICATION</th>
                             <th>SCREENING DATE</th>
+                            <th>ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
@@ -3922,6 +3962,12 @@ header {
                                             
                                             echo '<td class="text-center">' . htmlspecialchars($classificationDisplay) . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
+                                            echo '<td class="text-center">';
+                                            echo '<button class="btn-view" onclick="viewUserDetails(' . $user['id'] . ')" title="View Full Details">';
+                                            echo '<span class="btn-icon">👁️</span>';
+                                            echo '<span class="btn-text">View Details</span>';
+                                            echo '</button>';
+                                            echo '</td>';
                                             echo '</tr>';
                                         }
                                         
@@ -4318,6 +4364,24 @@ header {
                 });
         }
 
+        function viewUserDetails(userId) {
+            // Fetch user details via AJAX
+            fetch(`/api/DatabaseAPI.php?action=get_user_details&user_id=${userId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error fetching user details:', data.error);
+                        alert('Error loading user details: ' + data.error);
+                        return;
+                    }
+                    showUserDetailsModal(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading user details');
+                });
+        }
+
         function showAssessmentModal(assessment) {
             const modal = document.createElement('div');
             modal.className = 'modal';
@@ -4419,6 +4483,104 @@ header {
                             </div>
                         </div>
                         ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function showUserDetailsModal(userData) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>User Details - ${userData.name || 'N/A'}</h2>
+                        <span class="close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="user-details-grid">
+                            <div class="detail-section">
+                                <h3>Personal Information</h3>
+                                <div class="detail-item">
+                                    <label>Name:</label>
+                                    <span>${userData.name || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Email:</label>
+                                    <span>${userData.email || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Age:</label>
+                                    <span>${userData.age || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Sex:</label>
+                                    <span>${userData.sex || 'N/A'}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h3>Location Information</h3>
+                                <div class="detail-item">
+                                    <label>Municipality:</label>
+                                    <span>${userData.municipality || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Barangay:</label>
+                                    <span>${userData.barangay || 'N/A'}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h3>Physical Measurements</h3>
+                                <div class="detail-item">
+                                    <label>Weight (kg):</label>
+                                    <span>${userData.weight || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Height (cm):</label>
+                                    <span>${userData.height || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>BMI:</label>
+                                    <span>${userData.bmi || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>MUAC (cm):</label>
+                                    <span>${userData.muac_cm || 'N/A'}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-section">
+                                <h3>Assessment Results</h3>
+                                <div class="detail-item">
+                                    <label>Z-Score:</label>
+                                    <span>${userData.z_score || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Classification:</label>
+                                    <span>${userData.classification || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Nutritional Risk:</label>
+                                    <span>${userData.nutritional_risk || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Screening Date:</label>
+                                    <span>${userData.screening_date || 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
