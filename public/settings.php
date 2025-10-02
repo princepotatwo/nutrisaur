@@ -415,9 +415,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                    break;
                }
                
-               // Check if user is logged in
+               // Check if user is logged in (admin user)
                if (!isset($_SESSION['user_id'])) {
-                   echo json_encode(['success' => false, 'error' => 'User not logged in']);
+                   echo json_encode(['success' => false, 'error' => 'Admin user not logged in']);
                    break;
                }
                
@@ -428,26 +428,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                    break;
                }
                
-               // Get current user's password hash
+               // Get current admin user's password hash from users table
+               // Only admin users (from users table) can delete users
                $stmt = $pdo->prepare("SELECT password FROM users WHERE user_id = ?");
                $result = $stmt->execute([$_SESSION['user_id']]);
                
                if (!$result) {
-                   echo json_encode(['success' => false, 'error' => 'Failed to verify user']);
+                   echo json_encode(['success' => false, 'error' => 'Failed to verify admin user']);
                    break;
                }
                
                $user = $stmt->fetch(PDO::FETCH_ASSOC);
                if (!$user) {
-                   echo json_encode(['success' => false, 'error' => 'User not found']);
+                   echo json_encode(['success' => false, 'error' => 'Admin user not found']);
                    break;
                }
                
                // Verify password
                if (password_verify($password, $user['password'])) {
-                   echo json_encode(['success' => true, 'message' => 'Password verified']);
+                   echo json_encode(['success' => true, 'message' => 'Admin password verified']);
                } else {
-                   echo json_encode(['success' => false, 'error' => 'Incorrect password']);
+                   echo json_encode(['success' => false, 'error' => 'Incorrect admin password']);
                }
                
            } catch (Exception $e) {
@@ -4320,7 +4321,7 @@ header {
                         <span style="font-size: 24px;">⚠️</span>
                         <div>
                             <h4 style="color: var(--color-danger); margin: 0 0 5px 0;">Security Verification Required</h4>
-                            <p style="margin: 0; color: var(--color-danger); font-weight: 600;" id="deleteConfirmMessage">Please enter your password to confirm this deletion.</p>
+                            <p style="margin: 0; color: var(--color-danger); font-weight: 600;" id="deleteConfirmMessage">Please enter your admin password to confirm this deletion.</p>
                         </div>
                     </div>
                 </div>
@@ -5592,7 +5593,7 @@ header {
 
             // Show password confirmation modal instead of simple confirm
             const userType = currentTableType === 'users' ? 'admin user' : 'community user';
-            const confirmMessage = `You are about to permanently delete this ${userType}. This action cannot be undone. Please enter your password to confirm.`;
+            const confirmMessage = `You are about to permanently delete this ${userType}. This action cannot be undone. Please enter your admin password to confirm.`;
             
             showPasswordConfirmModal(performDeleteUser, identifier, confirmMessage);
         }
@@ -5768,7 +5769,7 @@ header {
             pendingDeleteAction = deleteAction;
             pendingDeleteData = deleteData;
             
-            document.getElementById('deleteConfirmMessage').textContent = confirmMessage || 'Please enter your password to confirm this deletion.';
+            document.getElementById('deleteConfirmMessage').textContent = confirmMessage || 'Please enter your admin password to confirm this deletion.';
             document.getElementById('confirmPassword').value = '';
             document.getElementById('passwordError').style.display = 'none';
             document.getElementById('passwordConfirmModal').style.display = 'block';
@@ -5865,7 +5866,7 @@ header {
 
             // Show password confirmation modal instead of simple confirm
             const tableTypeName = currentTableType === 'users' ? 'admin users' : 'community users';
-            const confirmMessage = `You are about to permanently delete ALL ${userCount} ${tableTypeName} from the database. This action cannot be undone and will remove all their data. Please enter your password to confirm this critical operation.`;
+            const confirmMessage = `You are about to permanently delete ALL ${userCount} ${tableTypeName} from the database. This action cannot be undone and will remove all their data. Please enter your admin password to confirm this critical operation.`;
             
             showPasswordConfirmModal(performDeleteAllUsers, userCount, confirmMessage);
         }
