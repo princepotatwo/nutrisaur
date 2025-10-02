@@ -1627,6 +1627,8 @@ header {
             width: 100%;
             box-sizing: border-box;
             text-align: center;
+            height: 100%;
+            min-height: 100%;
         }
 
         .action-buttons .btn-view {
@@ -1639,7 +1641,7 @@ header {
             border: none;
             min-width: 55px;
             height: 32px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -1647,6 +1649,8 @@ header {
             flex-shrink: 0;
             background-color: var(--color-highlight) !important;
             color: white !important;
+            vertical-align: middle;
+            margin: 0;
         }
 
         .action-buttons .btn-view:hover {
@@ -2821,6 +2825,8 @@ header {
         .user-table tbody tr {
             transition: all 0.3s ease;
             border-left: 3px solid transparent;
+            height: auto;
+            min-height: 50px;
         }
 
         .user-table tbody tr:hover {
@@ -2840,8 +2846,9 @@ header {
             word-break: break-word;
             overflow-wrap: break-word;
             font-size: 13px;
-            font-weight: 500;
             vertical-align: middle;
+            height: auto;
+            font-weight: 500;
             position: relative;
             line-height: 1.4;
             max-width: none;
@@ -2876,6 +2883,9 @@ header {
             min-width: 140px;
             text-align: center;
             border-right: 1px solid rgba(161, 180, 84, 0.1);
+            vertical-align: middle;
+            height: auto;
+            padding: 11.25px 7.5px;
         }
 
         /* Center alignment utility class */
