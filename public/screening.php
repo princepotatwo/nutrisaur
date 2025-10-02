@@ -2660,13 +2660,14 @@ header {
             font-family: 'Courier New', monospace;
         }
 
-        /* WHO Standard buttons styling */
+        /* WHO Standard buttons styling - Single Row */
         .who-standard-buttons {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-wrap: nowrap;
+            gap: 4px;
             justify-content: center;
             align-items: center;
+            width: 100%;
         }
 
         .who-standard-btn {
@@ -2674,15 +2675,16 @@ header {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 8px 12px;
+            padding: 6px 8px;
             border: 2px solid rgba(161, 180, 84, 0.3);
-            border-radius: 6px;
+            border-radius: 4px;
             background: var(--color-bg);
             color: var(--color-text);
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 80px;
-            min-height: 50px;
+            flex: 1;
+            min-width: 0;
+            min-height: 45px;
             font-family: inherit;
             position: relative;
             overflow: hidden;
@@ -2710,15 +2712,15 @@ header {
         }
 
         .btn-title {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
             line-height: 1.1;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             text-align: center;
         }
 
         .btn-subtitle {
-            font-size: 8px;
+            font-size: 7px;
             opacity: 0.8;
             line-height: 1;
             text-align: center;
@@ -2732,21 +2734,20 @@ header {
         /* Responsive adjustments for WHO standard buttons */
         @media (max-width: 768px) {
             .who-standard-buttons {
-                gap: 6px;
+                gap: 3px;
             }
             
             .who-standard-btn {
-                min-width: 70px;
-                min-height: 45px;
-                padding: 6px 8px;
+                padding: 4px 6px;
+                min-height: 40px;
             }
             
             .btn-title {
-                font-size: 9px;
+                font-size: 8px;
             }
             
             .btn-subtitle {
-                font-size: 7px;
+                font-size: 6px;
             }
         }
 
