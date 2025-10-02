@@ -2061,7 +2061,7 @@ header {
         }
 
         .user-profile-modal.modal-show .profile-modal-content {
-            transform: translateY(0) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .user-profile-modal.modal-hide {
@@ -2069,12 +2069,15 @@ header {
         }
 
         .user-profile-modal.modal-hide .profile-modal-content {
-            transform: translateY(-20px) scale(0.95);
+            transform: translate(-50%, -50%) scale(0.95);
         }
 
         .profile-modal-content {
             background: var(--card-bg);
-            margin: 2% auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
             padding: 0;
             border-radius: 20px;
             width: 95%;
@@ -2082,7 +2085,6 @@ header {
             max-height: 90vh;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            transform: translateY(-20px) scale(0.95);
             transition: all 0.3s ease-out;
         }
 
@@ -2324,9 +2326,19 @@ header {
         /* Responsive Design for Profile Modal */
         @media (max-width: 768px) {
             .profile-modal-content {
-                margin: 5% auto;
                 width: 98%;
                 max-height: 95vh;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0.95);
+            }
+            
+            .user-profile-modal.modal-show .profile-modal-content {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            
+            .user-profile-modal.modal-hide .profile-modal-content {
+                transform: translate(-50%, -50%) scale(0.95);
             }
 
             .profile-header {
