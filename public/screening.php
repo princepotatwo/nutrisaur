@@ -1408,8 +1408,8 @@ header {
 }
 
 .bmi-underweight {
-    color: #FF5252 !important;
-    background: rgba(255, 82, 82, 0.15);
+    color: #FF1744 !important;
+    background: rgba(255, 23, 68, 0.15);
     padding: 1px 4px;
     border-radius: 6px;
     font-weight: 600;
@@ -1456,8 +1456,8 @@ header {
 }
 
 .risk-high-risk {
-    color: #FF5252 !important;
-    background: rgba(255, 82, 82, 0.15);
+    color: #FF1744 !important;
+    background: rgba(255, 23, 68, 0.15);
     padding: 2px 6px;
     border-radius: 8px;
     font-weight: 700;
@@ -2035,21 +2035,21 @@ header {
 
         /* Flagged User Row Highlighting */
         .flagged-user-row {
-            background-color: rgba(255, 82, 82, 0.15) !important;
-            border-left: 4px solid #FF5252 !important;
+            background-color: rgba(255, 23, 68, 0.15) !important;
+            border-left: 4px solid #FF1744 !important;
         }
 
         .flagged-user-row:hover {
-            background-color: rgba(255, 82, 82, 0.2) !important;
+            background-color: rgba(255, 23, 68, 0.2) !important;
         }
 
         .light-theme .flagged-user-row {
-            background-color: rgba(255, 82, 82, 0.12) !important;
-            border-left: 4px solid #FF5252 !important;
+            background-color: rgba(255, 23, 68, 0.12) !important;
+            border-left: 4px solid #FF1744 !important;
         }
 
         .light-theme .flagged-user-row:hover {
-            background-color: rgba(255, 82, 82, 0.18) !important;
+            background-color: rgba(255, 23, 68, 0.18) !important;
         }
 
         /* Assessment Details Modal */
@@ -2302,7 +2302,7 @@ header {
         }
 
         .profile-flag-btn {
-            background: rgba(255, 82, 82, 0.9);
+            background: rgba(255, 23, 68, 0.9);
             color: white;
         }
 
@@ -2311,7 +2311,7 @@ header {
         }
 
         .profile-flag-btn:hover {
-            background: rgba(255, 82, 82, 1);
+            background: rgba(255, 23, 68, 1);
             transform: translateY(-1px);
         }
 
@@ -4527,7 +4527,7 @@ header {
         }
 
         .nutritional-status.severe-acute-malnutrition-sam {
-            color: #FF5252;
+            color: #FF1744;
         }
 
         .nutritional-status.moderate-acute-malnutrition-mam {
@@ -4551,7 +4551,7 @@ header {
         }
 
         .nutritional-status.severe-underweight {
-            color: #FF5252;
+            color: #FF1744;
         }
 
         .nutritional-status.moderate-underweight {
@@ -4575,11 +4575,11 @@ header {
         }
 
         .nutritional-status.obesity-class-ii {
-            color: #FF5252;
+            color: #FF1744;
         }
 
         .nutritional-status.obesity-class-iii-severe {
-            color: #FF5252;
+            color: #FF1744;
         }
 
         .nutritional-status.invalid-data {
@@ -4684,11 +4684,11 @@ header {
         }
 
         .risk-level.very-high {
-            color: #FF5252;
+            color: #FF1744;
         }
 
         .risk-level.high {
-            color: #FF5252;
+            color: #FF1744;
         }
 
         .risk-level.medium {
@@ -4720,7 +4720,7 @@ header {
         }
 
         .category.overnutrition {
-            color: #FF5252;
+            color: #FF1744;
         }
 
         .category.normal {
@@ -5977,7 +5977,7 @@ header {
                                     Add Note
                                 </button>`
                             }
-                            <button class="profile-action-btn profile-flag-btn ${userData.is_flagged == 1 ? 'flagged' : ''}" onclick="toggleUserFlag('${userData.email}', '${userData.name}', ${userData.is_flagged == 1 ? 'true' : 'false'});" title="${userData.is_flagged == 1 ? 'Unflag User' : 'Flag User'}">
+                            <button class="profile-action-btn profile-flag-btn ${userData.is_flagged == 1 ? 'flagged' : ''}" onclick="toggleUserFlag('${userData.email}', '${userData.name}', ${userData.is_flagged == 1 ? 'true' : 'false'}, this);" title="${userData.is_flagged == 1 ? 'Unflag User' : 'Flag User'}">
                                 ${userData.is_flagged == 1 ? 'Unflag' : 'Flag'}
                             </button>
                             <button class="profile-close-btn" onclick="closeUserModal(this)">
@@ -6859,7 +6859,7 @@ header {
             const isFlagged = userData.is_flagged == 1;
             flagBtn.innerHTML = isFlagged ? 'Unflag' : 'Flag';
             flagBtn.style.cssText = `
-                background: ${isFlagged ? '#4CAF50' : '#FF5252'};
+                background: ${isFlagged ? '#4CAF50' : '#FF1744'};
                 color: white;
                 border: none;
                 padding: 8px 16px;
@@ -6928,7 +6928,7 @@ header {
                         <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Height:</strong> ${assessment.height} cm</p>
                         <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Weight:</strong> ${assessment.weight} kg</p>
                         <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>BMI:</strong> ${assessment.bmi}</p>
-                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Risk Level:</strong> <span style="color: ${assessment.risk_level === 'Low Risk' ? '#4CAF50' : assessment.risk_level === 'Medium Risk' ? '#FF9800' : '#FF5252'}">${assessment.risk_level}</span></p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Risk Level:</strong> <span style="color: ${assessment.risk_level === 'Low Risk' ? '#4CAF50' : assessment.risk_level === 'Medium Risk' ? '#FF9800' : '#FF1744'}">${assessment.risk_level}</span></p>
                     </div>
                 </div>
                 
@@ -7346,7 +7346,7 @@ header {
         }
 
         // Toggle User Flag Function
-        function toggleUserFlag(userEmail, userName, currentFlagStatus) {
+        function toggleUserFlag(userEmail, userName, currentFlagStatus, buttonElement) {
             console.log('🚩 Toggle Flag function called for:', userEmail, userName, 'Current status:', currentFlagStatus);
             
             if (!userEmail || userEmail === 'undefined' || userEmail === 'null') {
@@ -7372,12 +7372,14 @@ header {
                 
                 if (data.success) {
                     // Update the button text and style immediately
-                    const flagBtn = event.target;
+                    const flagBtn = buttonElement || event.target;
                     const newFlagStatus = data.is_flagged == 1;
                     
-                    flagBtn.innerHTML = newFlagStatus ? 'Unflag' : 'Flag';
-                    flagBtn.title = newFlagStatus ? 'Unflag User' : 'Flag User';
-                    flagBtn.style.background = newFlagStatus ? '#4CAF50' : '#FF5252';
+                    if (flagBtn) {
+                        flagBtn.innerHTML = newFlagStatus ? 'Unflag' : 'Flag';
+                        flagBtn.title = newFlagStatus ? 'Unflag User' : 'Flag User';
+                        flagBtn.style.background = newFlagStatus ? '#4CAF50' : '#FF1744';
+                    }
                     
                     // Update the table row highlighting
                     const tableRow = document.querySelector(`tr[data-email="${userEmail}"]`);
