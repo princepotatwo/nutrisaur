@@ -1616,19 +1616,59 @@ header {
         }
 
 
-        .btn-view {
-            background: var(--accent-color);
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background 0.3s ease;
+        /* Action buttons styling - matching settings.php design */
+        .action-buttons {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            align-items: center;
+            padding: 4px;
+            flex-wrap: nowrap;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        .btn-view:hover {
-            background: var(--accent-color-dark);
+        .action-buttons .btn-view {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 55px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            flex-shrink: 0;
+            background-color: var(--color-highlight) !important;
+            color: white !important;
+        }
+
+        .action-buttons .btn-view:hover {
+            background-color: #8CA86E !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(161, 180, 84, 0.3) !important;
+        }
+
+        .action-buttons .btn-view:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Light theme action buttons */
+        .light-theme .action-buttons .btn-view {
+            background-color: rgba(102, 187, 106, 0.15);
+            color: var(--color-highlight);
+            border: 2px solid rgba(102, 187, 106, 0.4);
+        }
+
+        .light-theme .action-buttons .btn-view:hover {
+            background-color: rgba(102, 187, 106, 0.25);
         }
 
         /* Assessment Details Modal */
@@ -2404,6 +2444,13 @@ header {
             .action-buttons {
                 flex-direction: column;
                 gap: 6px;
+            }
+
+            .action-buttons .btn-view {
+                padding: 4px 8px;
+                font-size: 9px;
+                min-width: 40px;
+                height: 24px;
             }
 
             .filter-dropdowns {
@@ -3962,10 +4009,9 @@ header {
                                             
                                             echo '<td class="text-center">' . htmlspecialchars($classificationDisplay) . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
-                                            echo '<td class="text-center">';
+                                            echo '<td class="action-buttons">';
                                             echo '<button class="btn-view" onclick="viewUserDetails(' . $user['id'] . ')" title="View Full Details">';
-                                            echo '<span class="btn-icon">👁️</span>';
-                                            echo '<span class="btn-text">View Details</span>';
+                                            echo 'View';
                                             echo '</button>';
                                             echo '</td>';
                                             echo '</tr>';
