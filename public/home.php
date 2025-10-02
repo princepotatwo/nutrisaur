@@ -164,11 +164,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
         }
         
         // Check if user already exists by Google ID
-        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified FROM users WHERE google_id = ?");
+        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified, is_active FROM users WHERE google_id = ?");
         $stmt->execute([$googleId]);
         $existingUser = $stmt->fetch();
         
         if ($existingUser) {
+            // Check if user is archived/inactive
+            if (isset($existingUser['is_active']) && $existingUser['is_active'] == 0) {
+                echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                exit;
+            }
+            
             // User exists, log them in
             $_SESSION['user_id'] = $existingUser['user_id'];
             $_SESSION['username'] = $existingUser['username'];
@@ -182,11 +188,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
             echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
         } else {
             // Check if user exists by email
-            $stmt = $pdo->prepare("SELECT user_id, username, email FROM users WHERE email = ?");
+            $stmt = $pdo->prepare("SELECT user_id, username, email, is_active FROM users WHERE email = ?");
             $stmt->execute([$email]);
             $userByEmail = $stmt->fetch();
             
             if ($userByEmail) {
+                // Check if user is archived/inactive
+                if (isset($userByEmail['is_active']) && $userByEmail['is_active'] == 0) {
+                    echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                    exit;
+                }
+                
                 // Link Google account to existing user
                 $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
                 $updateStmt->execute([$googleId, $name, $picture, $userByEmail['user_id']]);
@@ -283,11 +295,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
         }
         
         // Check if user already exists by Google ID
-        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified FROM users WHERE google_id = ?");
+        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified, is_active FROM users WHERE google_id = ?");
         $stmt->execute([$googleId]);
         $existingUser = $stmt->fetch();
         
         if ($existingUser) {
+            // Check if user is archived/inactive
+            if (isset($existingUser['is_active']) && $existingUser['is_active'] == 0) {
+                echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                exit;
+            }
+            
             // User exists, log them in
             $_SESSION['user_id'] = $existingUser['user_id'];
             $_SESSION['username'] = $existingUser['username'];
@@ -301,11 +319,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
             echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
         } else {
             // Check if user exists by email
-            $stmt = $pdo->prepare("SELECT user_id, username, email FROM users WHERE email = ?");
+            $stmt = $pdo->prepare("SELECT user_id, username, email, is_active FROM users WHERE email = ?");
             $stmt->execute([$email]);
             $userByEmail = $stmt->fetch();
             
             if ($userByEmail) {
+                // Check if user is archived/inactive
+                if (isset($userByEmail['is_active']) && $userByEmail['is_active'] == 0) {
+                    echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                    exit;
+                }
+                
                 // Link Google account to existing user
                 $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
                 $updateStmt->execute([$googleId, $name, $picture, $userByEmail['user_id']]);
