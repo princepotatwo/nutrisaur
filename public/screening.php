@@ -2250,8 +2250,8 @@ header {
 
         .profile-close-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
             background: #ff4444;
             border: none;
             border-radius: 50%;
@@ -2264,7 +2264,7 @@ header {
             color: white;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            z-index: 10;
+            z-index: 1000;
         }
 
         .profile-close-btn:hover {
@@ -5212,8 +5212,17 @@ header {
                                             // Only show note button if user has notes
                                             $hasNotes = !empty($user['notes']);
                                             if ($hasNotes) {
-                                                echo '<button class="btn-note" onclick="addUserNote(\'' . htmlspecialchars($user['email']) . '\', \'' . htmlspecialchars($user['name']) . '\')" title="View/Edit Note">';
+                                                // Extract date from note (format: [date] note content)
+                                                $noteDate = '';
+                                                if (preg_match('/^\[([^\]]+)\]/', $user['notes'], $matches)) {
+                                                    $noteDate = $matches[1];
+                                                }
+                                                
+                                                echo '<button class="btn-note" onclick="viewUserNote(\'' . htmlspecialchars($user['email']) . '\', \'' . htmlspecialchars($user['name']) . '\')" title="View Note - ' . htmlspecialchars($noteDate) . '">';
                                                 echo 'Note';
+                                                if ($noteDate) {
+                                                    echo '<br><small style="font-size: 9px; opacity: 0.8;">' . htmlspecialchars($noteDate) . '</small>';
+                                                }
                                                 echo '</button>';
                                             }
                                             echo '</div>';
@@ -7186,7 +7195,7 @@ header {
             resetCSVForm();
         }
 
-        // Add Note Functions
+        // Note System Functions
         function addUserNote(userEmail, userName) {
             console.log('📝 Add Note function called for:', userEmail, userName);
             
@@ -7196,7 +7205,19 @@ header {
                 return;
             }
 
-            // First, fetch existing notes for this user
+            // Show edit note modal for adding new note
+            showEditNoteModal(userEmail, userName, '');
+        }
+
+        function viewUserNote(userEmail, userName) {
+            console.log('👁️ View Note function called for:', userEmail, userName);
+            
+            if (!userEmail || userEmail === 'undefined' || userEmail === 'null') {
+                console.error('❌ Invalid userEmail:', userEmail);
+                return;
+            }
+
+            // Fetch existing notes for this user
             fetch('api/DatabaseAPI.php?action=get_user_notes', {
                 method: 'POST',
                 headers: {
@@ -7207,17 +7228,25 @@ header {
             .then(response => response.json())
             .then(data => {
                 const existingNotes = data.success && data.notes ? data.notes : '';
-                showNoteModal(userEmail, userName, existingNotes);
+                showViewNoteModal(userEmail, userName, existingNotes);
             })
             .catch(error => {
                 console.error('❌ Error fetching existing notes:', error);
-                // Show modal with empty notes if fetch fails
-                showNoteModal(userEmail, userName, '');
+                showViewNoteModal(userEmail, userName, '');
             });
         }
 
-        function showNoteModal(userEmail, userName, existingNotes) {
-            // Create note modal
+        function showViewNoteModal(userEmail, userName, noteContent) {
+            // Extract date and content from note
+            let noteDate = '';
+            let noteText = noteContent;
+            
+            if (noteContent && noteContent.match(/^\[([^\]]+)\]/)) {
+                const match = noteContent.match(/^\[([^\]]+)\]\s*(.*)/);
+                noteDate = match[1];
+                noteText = match[2];
+            }
+            
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.style.display = 'block';
@@ -7226,7 +7255,70 @@ header {
                     <button class="profile-close-btn" onclick="closeNoteModal(this)" style="position: absolute; top: 15px; right: 15px;">
                         ✕
                     </button>
-                    <h3 style="margin: 0 0 20px 0; color: var(--color-text); font-size: 20px;">Add Note</h3>
+                    <h3 style="margin: 0 0 10px 0; color: var(--color-text); font-size: 20px;">Note</h3>
+                    <p style="margin: 0 0 15px 0; color: var(--color-text); opacity: 0.8;">
+                        <strong>User:</strong> ${userName} (${userEmail})
+                    </p>
+                    ${noteDate ? `<p style="margin: 0 0 20px 0; color: var(--color-text); opacity: 0.7; font-style: italic; font-size: 14px;">${noteDate}</p>` : ''}
+                    <div style="margin-bottom: 20px; padding: 15px; background: var(--color-input); border-radius: 8px; border: 1px solid var(--color-border);">
+                        <p style="margin: 0; color: var(--color-text); line-height: 1.5; white-space: pre-wrap;">${noteText || 'No note content'}</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button onclick="closeNoteModal(this)" 
+                                style="padding: 10px 20px; border: 2px solid var(--color-border); background: transparent; 
+                                       color: var(--color-text); border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Close
+                        </button>
+                        <button onclick="closeNoteModal(this); showEditNoteModal('${userEmail}', '${userName}', '${noteContent.replace(/'/g, "\\'")}')" 
+                                style="padding: 10px 20px; background: var(--color-highlight); color: white; 
+                                       border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Edit Note
+                        </button>
+                        <button onclick="deleteUserNote('${userEmail}', '${userName}')" 
+                                style="padding: 10px 20px; background: #ff4444; color: white; 
+                                       border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            Delete Note
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeNoteModal(modal.querySelector('.profile-close-btn'));
+                }
+            });
+            
+            // Close with Escape key
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    closeNoteModal(modal.querySelector('.profile-close-btn'));
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+        }
+
+        function showEditNoteModal(userEmail, userName, existingNotes) {
+            // Extract content without date for editing
+            let noteText = existingNotes;
+            if (existingNotes && existingNotes.match(/^\[([^\]]+)\]/)) {
+                const match = existingNotes.match(/^\[([^\]]+)\]\s*(.*)/);
+                noteText = match[2];
+            }
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px; padding: 30px; border-radius: 12px; background: var(--color-card);">
+                    <button class="profile-close-btn" onclick="closeNoteModal(this)" style="position: absolute; top: 15px; right: 15px;">
+                        ✕
+                    </button>
+                    <h3 style="margin: 0 0 20px 0; color: var(--color-text); font-size: 20px;">${existingNotes ? 'Edit Note' : 'Add Note'}</h3>
                     <p style="margin: 0 0 15px 0; color: var(--color-text); opacity: 0.8;">
                         <strong>User:</strong> ${userName} (${userEmail})
                     </p>
@@ -7236,7 +7328,7 @@ header {
                                 style="width: 100%; height: 120px; padding: 12px; border: 2px solid var(--color-border); 
                                        border-radius: 8px; background: var(--color-input); color: var(--color-text); 
                                        font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box;"
-                                maxlength="1000">${existingNotes}</textarea>
+                                maxlength="1000">${noteText}</textarea>
                         <div style="text-align: right; margin-top: 5px; font-size: 12px; color: var(--color-text); opacity: 0.6;">
                             <span id="charCount">0</span>/1000 characters
                         </div>
@@ -7244,13 +7336,13 @@ header {
                     <div style="display: flex; gap: 10px; justify-content: flex-end;">
                         <button onclick="closeNoteModal(this)" 
                                 style="padding: 10px 20px; border: 2px solid var(--color-border); background: transparent; 
-                                       color: var(--color-text); border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                       color: var(--color-text); border-radius: 8px; cursor: pointer; font-weight: 600;">
                             Cancel
                         </button>
                         <button onclick="saveUserNote('${userEmail}', '${userName}')" 
-                                style="padding: 10px 20px; border: none; background: #FFC107; color: #1B1B1B; 
-                                       border-radius: 6px; cursor: pointer; font-weight: 600;">
-                            Save Note
+                                style="padding: 10px 20px; background: var(--color-highlight); color: white; 
+                                       border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            ${existingNotes ? 'Update Note' : 'Save Note'}
                         </button>
                     </div>
                 </div>
@@ -7258,14 +7350,16 @@ header {
             
             document.body.appendChild(modal);
             
-            // Focus on textarea
+            // Set up character counter
             const textarea = document.getElementById('noteText');
-            textarea.focus();
+            const charCount = document.getElementById('charCount');
             
-            // Character counter
             textarea.addEventListener('input', function() {
-                document.getElementById('charCount').textContent = this.value.length;
+                charCount.textContent = this.value.length;
             });
+            
+            // Initialize character count
+            charCount.textContent = textarea.value.length;
             
             // Close modal when clicking outside
             modal.addEventListener('click', function(e) {
@@ -7340,6 +7434,43 @@ header {
                 alert('Error saving note. Please try again.');
                 saveBtn.textContent = originalText;
                 saveBtn.disabled = false;
+            });
+        }
+
+        function deleteUserNote(userEmail, userName) {
+            if (!confirm(`Are you sure you want to delete the note for ${userName}?`)) {
+                return;
+            }
+            
+            console.log('🗑️ Deleting note for:', userEmail);
+            
+            // Delete note via API
+            fetch('api/DatabaseAPI.php?action=save_user_note', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    email: userEmail, 
+                    note: '' 
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('🗑️ Note delete response:', data);
+                
+                if (data.success) {
+                    alert(`Note deleted successfully for ${userName}!`);
+                    closeNoteModal(event.target);
+                    // Refresh the page to update the note button visibility
+                    location.reload();
+                } else {
+                    alert('Error deleting note: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error deleting note:', error);
+                alert('Error deleting note. Please try again.');
             });
         }
 
