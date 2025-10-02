@@ -2672,7 +2672,7 @@ header {
 
         .who-standard-btn {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
             padding: 8px 12px;
@@ -2688,6 +2688,7 @@ header {
             font-family: inherit;
             position: relative;
             overflow: hidden;
+            gap: 4px;
         }
 
         .who-standard-btn:hover {
@@ -2715,8 +2716,9 @@ header {
             font-size: 9px;
             font-weight: 600;
             line-height: 1.1;
-            margin-bottom: 1px;
+            margin: 0;
             text-align: center;
+            white-space: nowrap;
         }
 
         .btn-subtitle {
@@ -2725,6 +2727,7 @@ header {
             line-height: 1;
             text-align: center;
             font-weight: 400;
+            white-space: nowrap;
         }
 
         .who-standard-btn.active .btn-subtitle {
@@ -2738,8 +2741,9 @@ header {
             }
             
             .who-standard-btn {
-                padding: 6px 10px;
+                padding: 6px 8px;
                 min-height: 35px;
+                gap: 3px;
             }
             
             .btn-title {
