@@ -7480,32 +7480,40 @@ body {
         border-radius: 8px !important;
     }
     
-    /* Mobile: Make filters fit in one row with minimal spacing */
+    /* Mobile: All dropdowns in one row with equal sizing */
     .filter-container {
         display: flex !important;
         flex-direction: row !important;
-        gap: 1px !important;
+        gap: 2px !important;
         align-items: center !important;
         flex-wrap: wrap !important;
-        justify-content: flex-start !important;
+        justify-content: space-between !important;
     }
     
-    /* Mobile: Ensure proper sizing for filter groups */
+    /* Mobile: All filter groups same size */
     .filter-container > .filter-group {
-        flex: 0 0 auto !important;
-        max-width: 120px !important;
-        min-width: 80px !important;
+        flex: 1 1 auto !important;
+        max-width: none !important;
+        min-width: 0 !important;
         margin-right: 0 !important;
         margin-left: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
     }
     
-    /* Mobile: WHO Standard filter sizing - same as other dropdowns */
-    .filter-container > .filter-group:last-child {
-        flex: 0 0 auto !important;
-        max-width: 120px !important;
-        min-width: 80px !important;
-        margin-right: 0 !important;
-        margin-left: 0 !important;
+    /* Mobile: Equal sizing for all dropdowns */
+    .filter-container .custom-select-container {
+        flex: 1 !important;
+        max-width: none !important;
+        min-width: 0 !important;
+    }
+    
+    .filter-container .filter-group select {
+        flex: 1 !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        width: 100% !important;
     }
     
     /* Mobile: Remove any additional spacing between dropdowns */
@@ -7541,30 +7549,30 @@ body {
         display: none !important;
     }
     
-    /* Mobile: Compact dropdown styling - reduce width and size */
+    /* Mobile: Compact dropdown styling - equal sizing */
     .custom-select-container {
-        flex: 0 1 auto !important;
+        flex: 1 !important;
         min-width: 0 !important;
         margin-bottom: 0 !important;
-        max-width: 120px !important;
+        max-width: none !important;
         width: auto !important;
     }
     
     /* Mobile: Override desktop styles with higher specificity */
     .filter-section .custom-select-container .select-header {
-        padding: 3px 5px !important;
-        font-size: 8px !important;
+        padding: 4px 6px !important;
+        font-size: 9px !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         gap: 1px !important;
-        justify-content: flex-start !important;
+        justify-content: space-between !important;
         display: flex !important;
         align-items: center !important;
-        min-height: 24px !important;
-        width: auto !important;
-        max-width: 120px !important;
-        min-width: 80px !important;
+        min-height: 28px !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
     }
     
     /* Mobile: Reduce spacing between text and arrow */
@@ -7588,19 +7596,18 @@ body {
     
     /* Mobile: WHO Standard select - match custom-select-container styling */
     .filter-group select {
-        padding: 3px 5px !important;
-        font-size: 8px !important;
-        flex: 0 0 auto !important;
+        padding: 4px 6px !important;
+        font-size: 9px !important;
+        flex: 1 !important;
         min-width: 0 !important;
-        max-width: 120px !important;
-        min-width: 80px !important;
-        width: auto !important;
+        max-width: none !important;
+        width: 100% !important;
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
-        height: 24px !important;
-        border: 2px solid var(--color-border) !important;
-        border-radius: 8px !important;
+        min-height: 28px !important;
+        border: 1px solid var(--color-border) !important;
+        border-radius: 6px !important;
         background-color: var(--color-card) !important;
         color: var(--color-text) !important;
         cursor: pointer !important;
@@ -8574,17 +8581,16 @@ body {
                         </div>
                     </div>
                 </div>
-            </div>
-            </div>
-            <div class="filter-group">
-                <label>WHO Standard:</label>
-                <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
-                    <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
-                    <option value="height-for-age">Height-for-Age (0-71 months)</option>
-                    <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
-                    <option value="bmi-for-age">BMI-for-Age (5-19 years)</option>
-                    <option value="bmi-adult">BMI Adult (≥19 years)</option>
-                </select>
+                <div class="filter-group">
+                    <label>WHO Standard:</label>
+                    <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
+                        <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
+                        <option value="height-for-age">Height-for-Age (0-71 months)</option>
+                        <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
+                        <option value="bmi-for-age">BMI-for-Age (5-19 years)</option>
+                        <option value="bmi-adult">BMI Adult (≥19 years)</option>
+                    </select>
+                </div>
             </div>
         </div>
 
