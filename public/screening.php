@@ -2250,19 +2250,20 @@ header {
 
         .profile-close-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
             background: #ff4444;
             border: none;
-            border-radius: 6px;
-            padding: 8px 16px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             color: white;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: bold;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             z-index: 1000;
@@ -2275,12 +2276,10 @@ header {
 
         /* Profile Header Buttons */
         .profile-header-buttons {
-            position: absolute;
-            top: 10px;
-            right: 50px;
             display: flex;
             gap: 10px;
             align-items: center;
+            margin-left: auto;
         }
 
         .profile-action-btn {
@@ -6003,6 +6002,9 @@ header {
             modal.className = 'modal user-profile-modal';
             modal.innerHTML = `
                 <div class="modal-content profile-modal-content">
+                    <button class="profile-close-btn" onclick="closeUserModal(this)">
+                        X
+                    </button>
                     <div class="profile-header">
                         <div class="profile-avatar">
                             <div class="avatar-circle">
@@ -6029,9 +6031,6 @@ header {
                             }
                             <button class="profile-action-btn profile-flag-btn ${userData.is_flagged == 1 ? 'flagged' : ''}" onclick="toggleUserFlag('${userData.email}', '${userData.name}', ${userData.is_flagged == 1 ? 'true' : 'false'}, this);" title="${userData.is_flagged == 1 ? 'Unflag User' : 'Flag User'}">
                                 ${userData.is_flagged == 1 ? 'Unflag' : 'Flag'}
-                            </button>
-                            <button class="profile-close-btn" onclick="closeUserModal(this)">
-                                X
                             </button>
                         </div>
                     </div>
