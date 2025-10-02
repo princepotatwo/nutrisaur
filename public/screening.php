@@ -3060,7 +3060,7 @@ header {
         }
 
         .btn-title {
-            font-size: clamp(10px, 1.2vw, 14px);
+            font-size: clamp(8px, 1vw, 11px);
             font-weight: 600;
             line-height: 1.2;
             margin: 0;
@@ -3070,7 +3070,7 @@ header {
         }
 
         .btn-subtitle {
-            font-size: clamp(8px, 1vw, 12px);
+            font-size: clamp(6px, 0.8vw, 9px);
             opacity: 0.8;
             line-height: 1.1;
             text-align: center;
@@ -3095,11 +3095,11 @@ header {
             }
             
             .btn-title {
-                font-size: clamp(12px, 1.4vw, 16px);
+                font-size: clamp(9px, 1.1vw, 13px);
             }
             
             .btn-subtitle {
-                font-size: clamp(10px, 1.2vw, 14px);
+                font-size: clamp(7px, 0.9vw, 11px);
             }
         }
         
@@ -3112,11 +3112,11 @@ header {
             }
             
             .btn-title {
-                font-size: clamp(11px, 1.3vw, 15px);
+                font-size: clamp(8px, 1vw, 12px);
             }
             
             .btn-subtitle {
-                font-size: clamp(9px, 1.1vw, 13px);
+                font-size: clamp(6px, 0.8vw, 10px);
             }
         }
         
@@ -3129,11 +3129,11 @@ header {
             }
             
             .btn-title {
-                font-size: clamp(10px, 1.2vw, 14px);
+                font-size: clamp(7px, 0.9vw, 11px);
             }
             
             .btn-subtitle {
-                font-size: clamp(8px, 1vw, 12px);
+                font-size: clamp(5px, 0.7vw, 9px);
             }
         }
         
@@ -3150,11 +3150,11 @@ header {
             }
             
             .btn-title {
-                font-size: clamp(7px, 2.5vw, 10px);
+                font-size: clamp(6px, 2vw, 8px);
             }
             
             .btn-subtitle {
-                font-size: clamp(6px, 2vw, 8px);
+                font-size: clamp(5px, 1.5vw, 6px);
             }
         }
 
@@ -3166,11 +3166,11 @@ header {
         }
         
         .who-standard-buttons.navbar-collapsed .btn-title {
-            font-size: clamp(10px, 1.3vw, 13px);
+            font-size: clamp(7px, 1vw, 10px);
         }
         
         .who-standard-buttons.navbar-collapsed .btn-subtitle {
-            font-size: clamp(8px, 1.1vw, 11px);
+            font-size: clamp(5px, 0.8vw, 8px);
         }
         
         .who-standard-buttons.navbar-expanded .who-standard-btn {
@@ -3180,11 +3180,11 @@ header {
         }
         
         .who-standard-buttons.navbar-expanded .btn-title {
-            font-size: clamp(9px, 1.1vw, 12px);
+            font-size: clamp(6px, 0.8vw, 9px);
         }
         
         .who-standard-buttons.navbar-expanded .btn-subtitle {
-            font-size: clamp(7px, 0.9vw, 10px);
+            font-size: clamp(4px, 0.6vw, 7px);
         }
 
         /* Hidden dropdown for compatibility */
