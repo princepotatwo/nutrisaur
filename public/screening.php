@@ -2032,6 +2032,30 @@ header {
             background-color: rgba(255, 193, 7, 0.25);
         }
 
+        /* Note button with existing notes */
+        .action-buttons .btn-note.has-notes {
+            background-color: #4CAF50 !important;
+            color: white !important;
+            border: 2px solid #4CAF50 !important;
+            font-weight: 600;
+        }
+
+        .action-buttons .btn-note.has-notes:hover {
+            background-color: #45a049 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3) !important;
+        }
+
+        .light-theme .action-buttons .btn-note.has-notes {
+            background-color: rgba(76, 175, 80, 0.9) !important;
+            color: white !important;
+            border: 2px solid rgba(76, 175, 80, 0.9) !important;
+        }
+
+        .light-theme .action-buttons .btn-note.has-notes:hover {
+            background-color: rgba(76, 175, 80, 1) !important;
+        }
+
         /* Flagged User Row Highlighting */
         .flagged-user-row {
             background-color: rgba(244, 67, 54, 0.1) !important;
@@ -5186,8 +5210,15 @@ header {
                                             echo '<button class="btn-view" onclick="console.log(\'🔍 View button clicked for user EMAIL: ' . htmlspecialchars($user['email']) . '\'); viewUserDetails(\'' . htmlspecialchars($user['email']) . '\')" title="View Full Details">';
                                             echo 'View';
                                             echo '</button>';
-                                            echo '<button class="btn-note" onclick="addUserNote(\'' . htmlspecialchars($user['email']) . '\', \'' . htmlspecialchars($user['name']) . '\')" title="Add Note">';
-                                            echo 'Note';
+                                            // Check if user has notes
+                                            $hasNotes = !empty($user['notes']);
+                                            $notePreview = $hasNotes ? 
+                                                (strlen($user['notes']) > 30 ? substr($user['notes'], 0, 30) . '...' : $user['notes']) : 
+                                                'Note';
+                                            $noteTitle = $hasNotes ? 'View/Edit Note: ' . htmlspecialchars($notePreview) : 'Add Note';
+                                            
+                                            echo '<button class="btn-note' . ($hasNotes ? ' has-notes' : '') . '" onclick="addUserNote(\'' . htmlspecialchars($user['email']) . '\', \'' . htmlspecialchars($user['name']) . '\')" title="' . htmlspecialchars($noteTitle) . '">';
+                                            echo htmlspecialchars($notePreview);
                                             echo '</button>';
                                             echo '</div>';
                                             echo '</td>';
@@ -7178,6 +7209,27 @@ header {
                 return;
             }
 
+            // First, fetch existing notes for this user
+            fetch('api/DatabaseAPI.php?action=get_user_notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: userEmail })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const existingNotes = data.success && data.notes ? data.notes : '';
+                showNoteModal(userEmail, userName, existingNotes);
+            })
+            .catch(error => {
+                console.error('❌ Error fetching existing notes:', error);
+                // Show modal with empty notes if fetch fails
+                showNoteModal(userEmail, userName, '');
+            });
+        }
+
+        function showNoteModal(userEmail, userName, existingNotes) {
             // Create note modal
             const modal = document.createElement('div');
             modal.className = 'modal';
@@ -7197,7 +7249,7 @@ header {
                                 style="width: 100%; height: 120px; padding: 12px; border: 2px solid var(--color-border); 
                                        border-radius: 8px; background: var(--color-input); color: var(--color-text); 
                                        font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box;"
-                                maxlength="1000"></textarea>
+                                maxlength="1000">${existingNotes}</textarea>
                         <div style="text-align: right; margin-top: 5px; font-size: 12px; color: var(--color-text); opacity: 0.6;">
                             <span id="charCount">0</span>/1000 characters
                         </div>

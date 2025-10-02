@@ -7266,6 +7266,48 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // GET USER NOTES
+        // ========================================
+        case 'get_user_notes':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                    echo json_encode(['success' => false, 'message' => 'POST method required']);
+                    break;
+                }
+                
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                $email = $data['email'] ?? '';
+                
+                if (empty($email)) {
+                    echo json_encode(['success' => false, 'message' => 'Email is required']);
+                    break;
+                }
+                
+                // Get user notes
+                $stmt = $db->getPDO()->prepare("SELECT notes FROM community_users WHERE email = ?");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$user) {
+                    echo json_encode(['success' => false, 'message' => 'User not found']);
+                    break;
+                }
+                
+                echo json_encode([
+                    'success' => true, 
+                    'notes' => $user['notes'] ?? '',
+                    'email' => $email
+                ]);
+                
+            } catch (Exception $e) {
+                error_log("Error getting user notes: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Error getting notes: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:
