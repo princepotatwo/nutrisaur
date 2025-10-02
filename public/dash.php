@@ -13343,8 +13343,16 @@ body {
                     if (document.visibilityState === 'visible' && !dashboardState.updateInProgress) {
                         console.log('🔄 Real-time update for barangay:', currentBarangay);
                         
-                        // Update dashboard components silently
+                        // Get current WHO standard to maintain filter
+                        const currentWHOStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
+                        console.log('🔄 Real-time update with WHO standard:', currentWHOStandard);
+                        
+                        // Update dashboard components silently with current filters
                         await updateDashboardForBarangay(currentBarangay);
+                        
+                        // Also update WHO chart to respect current WHO standard filter
+                        await handleWHOStandardChange();
+                        
                         console.log('✅ Real-time update completed');
                     } else {
                         console.log('⏸️ Skipping real-time update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
