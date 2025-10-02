@@ -7167,6 +7167,48 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // SAVE USER NOTE
+        // ========================================
+        case 'save_user_note':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                    echo json_encode(['success' => false, 'message' => 'POST method required']);
+                    break;
+                }
+                
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                $email = $data['email'] ?? '';
+                $note = $data['note'] ?? '';
+                
+                if (empty($email) || empty($note)) {
+                    echo json_encode(['success' => false, 'message' => 'Email and note are required']);
+                    break;
+                }
+                
+                // Update the notes field for the user
+                $stmt = $db->pdo->prepare("UPDATE community_users SET notes = ? WHERE email = ?");
+                $result = $stmt->execute([$note, $email]);
+                
+                if ($result) {
+                    echo json_encode([
+                        'success' => true, 
+                        'message' => 'Note saved successfully',
+                        'email' => $email,
+                        'note_length' => strlen($note)
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to save note']);
+                }
+                
+            } catch (Exception $e) {
+                error_log("Error saving user note: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Error saving note: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:

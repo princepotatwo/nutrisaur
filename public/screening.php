@@ -1983,6 +1983,55 @@ header {
             background-color: rgba(102, 187, 106, 0.25);
         }
 
+        /* Note Button Styling */
+        .action-buttons .btn-note {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            min-width: 55px;
+            height: 32px;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            background-color: #FFC107 !important;
+            color: #1B1B1B !important;
+            vertical-align: middle;
+            margin: 0 0 0 6px;
+            line-height: 1;
+            position: relative;
+            z-index: 20;
+            overflow: visible;
+            pointer-events: auto;
+        }
+
+        .action-buttons .btn-note:hover {
+            background-color: #FFB300 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3) !important;
+        }
+
+        .action-buttons .btn-note:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Light theme note buttons */
+        .light-theme .action-buttons .btn-note {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #FF8F00;
+            border: 2px solid rgba(255, 193, 7, 0.4);
+        }
+
+        .light-theme .action-buttons .btn-note:hover {
+            background-color: rgba(255, 193, 7, 0.25);
+        }
+
         /* Assessment Details Modal */
         .modal {
             display: none;
@@ -3398,6 +3447,12 @@ header {
             }
 
             .action-buttons .btn-view {
+                padding: 4px 8px;
+                font-size: 9px;
+                min-width: 40px;
+            }
+
+            .action-buttons .btn-note {
                 padding: 4px 8px;
                 font-size: 9px;
                 min-width: 40px;
@@ -5048,6 +5103,9 @@ header {
                                             echo '<div class="action-buttons">';
                                             echo '<button class="btn-view" onclick="console.log(\'🔍 View button clicked for user EMAIL: ' . htmlspecialchars($user['email']) . '\'); viewUserDetails(\'' . htmlspecialchars($user['email']) . '\')" title="View Full Details">';
                                             echo 'View';
+                                            echo '</button>';
+                                            echo '<button class="btn-note" onclick="addUserNote(\'' . htmlspecialchars($user['email']) . '\', \'' . htmlspecialchars($user['name']) . '\')" title="Add Note">';
+                                            echo 'Note';
                                             echo '</button>';
                                             echo '</div>';
                                             echo '</td>';
@@ -6968,6 +7026,142 @@ header {
 
         function cancelUpload() {
             resetCSVForm();
+        }
+
+        // Add Note Functions
+        function addUserNote(userEmail, userName) {
+            console.log('📝 Add Note function called for:', userEmail, userName);
+            
+            if (!userEmail || userEmail === 'undefined' || userEmail === 'null') {
+                console.error('❌ Invalid userEmail:', userEmail);
+                alert('Error: Invalid user email');
+                return;
+            }
+
+            // Create note modal
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px; padding: 30px; border-radius: 12px; background: var(--color-card);">
+                    <button class="profile-close-btn" onclick="closeNoteModal(this)" style="position: absolute; top: 15px; right: 15px;">
+                        ✕
+                    </button>
+                    <h3 style="margin: 0 0 20px 0; color: var(--color-text); font-size: 20px;">Add Note</h3>
+                    <p style="margin: 0 0 15px 0; color: var(--color-text); opacity: 0.8;">
+                        <strong>User:</strong> ${userName} (${userEmail})
+                    </p>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; color: var(--color-text); font-weight: 600;">Note:</label>
+                        <textarea id="noteText" placeholder="Enter your note about this user..." 
+                                style="width: 100%; height: 120px; padding: 12px; border: 2px solid var(--color-border); 
+                                       border-radius: 8px; background: var(--color-input); color: var(--color-text); 
+                                       font-family: inherit; font-size: 14px; resize: vertical; box-sizing: border-box;"
+                                maxlength="1000"></textarea>
+                        <div style="text-align: right; margin-top: 5px; font-size: 12px; color: var(--color-text); opacity: 0.6;">
+                            <span id="charCount">0</span>/1000 characters
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button onclick="closeNoteModal(this)" 
+                                style="padding: 10px 20px; border: 2px solid var(--color-border); background: transparent; 
+                                       color: var(--color-text); border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            Cancel
+                        </button>
+                        <button onclick="saveUserNote('${userEmail}', '${userName}')" 
+                                style="padding: 10px 20px; border: none; background: #FFC107; color: #1B1B1B; 
+                                       border-radius: 6px; cursor: pointer; font-weight: 600;">
+                            Save Note
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Focus on textarea
+            const textarea = document.getElementById('noteText');
+            textarea.focus();
+            
+            // Character counter
+            textarea.addEventListener('input', function() {
+                document.getElementById('charCount').textContent = this.value.length;
+            });
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeNoteModal(modal.querySelector('.profile-close-btn'));
+                }
+            });
+            
+            // Close with Escape key
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    closeNoteModal(modal.querySelector('.profile-close-btn'));
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+        }
+
+        function closeNoteModal(button) {
+            const modal = button.closest('.modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function saveUserNote(userEmail, userName) {
+            const noteText = document.getElementById('noteText').value.trim();
+            
+            if (!noteText) {
+                alert('Please enter a note before saving.');
+                return;
+            }
+            
+            console.log('💾 Saving note for:', userEmail, 'Note:', noteText);
+            
+            // Show loading state
+            const saveBtn = event.target;
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = 'Saving...';
+            saveBtn.disabled = true;
+            
+            // Create note with timestamp
+            const timestamp = new Date().toLocaleString();
+            const noteWithTimestamp = `[${timestamp}] ${noteText}`;
+            
+            // Save note via API
+            fetch('api/DatabaseAPI.php?action=save_user_note', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    email: userEmail, 
+                    note: noteWithTimestamp 
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('📝 Note save response:', data);
+                
+                if (data.success) {
+                    alert(`Note saved successfully for ${userName}!`);
+                    closeNoteModal(saveBtn);
+                } else {
+                    alert('Error saving note: ' + (data.message || 'Unknown error'));
+                    saveBtn.textContent = originalText;
+                    saveBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error saving note:', error);
+                alert('Error saving note. Please try again.');
+                saveBtn.textContent = originalText;
+                saveBtn.disabled = false;
+            });
         }
 
 
