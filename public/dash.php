@@ -7938,31 +7938,7 @@ body {
     background: linear-gradient(135deg, var(--color-highlight), rgba(142, 185, 110, 0.8));
     box-shadow: 0 4px 15px rgba(142, 185, 110, 0.3);
 }
-            /* Seamless update transitions */
-            .chart-container, .metric-card, .data-display {
-                transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-            }
-            
-            .updating {
-                opacity: 0.7;
-                transform: scale(0.98);
-            }
-            
-            .chart-updating {
-                opacity: 0.8;
-                filter: blur(0.5px);
-            }
-            
-            .smooth-fade {
-                animation: smoothFade 0.4s ease-in-out;
-            }
-            
-            @keyframes smoothFade {
-                0% { opacity: 1; }
-                50% { opacity: 0.8; }
-                100% { opacity: 1; }
-            }
-        </style>
+</style>
 <body class="light-theme">
 
     <!-- Mobile Top Navigation -->
@@ -13339,65 +13315,6 @@ body {
         let realtimeUpdateInterval = null;
         let isRealtimeActive = false;
         
-        // Seamless update functions
-        function addUpdatingClass(selector) {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-                el.classList.add('updating');
-            });
-        }
-        
-        function removeUpdatingClass(selector) {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-                el.classList.remove('updating');
-            });
-        }
-        
-        function addSmoothFade(selector) {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-                el.classList.add('smooth-fade');
-                setTimeout(() => {
-                    el.classList.remove('smooth-fade');
-                }, 400);
-            });
-        }
-        
-        // Optimized chart update function
-        function updateChartSmoothly(chartInstance, newData, options = {}) {
-            if (!chartInstance) return;
-            
-            // Add updating class to chart container
-            const chartContainer = chartInstance.canvas.parentElement;
-            if (chartContainer) {
-                chartContainer.classList.add('chart-updating');
-            }
-            
-            // Update chart data smoothly
-            if (newData.datasets) {
-                chartInstance.data.datasets = newData.datasets;
-            }
-            if (newData.labels) {
-                chartInstance.data.labels = newData.labels;
-            }
-            
-            // Update options if provided
-            if (options) {
-                Object.assign(chartInstance.options, options);
-            }
-            
-            // Update chart with animation
-            chartInstance.update('none'); // No animation for instant update
-            
-            // Remove updating class after a short delay
-            setTimeout(() => {
-                if (chartContainer) {
-                    chartContainer.classList.remove('chart-updating');
-                }
-            }, 300);
-        }
-        
         // Function to start real-time updates
         function startRealtimeUpdates() {
             if (isRealtimeActive) {
@@ -13430,24 +13347,13 @@ body {
                         const currentWHOStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
                         console.log('🔄 Real-time update with WHO standard:', currentWHOStandard);
                         
-                        // Add subtle visual feedback for updating
-                        addUpdatingClass('.metric-card, .chart-container, .data-display');
+                        // Update dashboard components silently with current filters
+                        await updateDashboardForBarangay(currentBarangay);
                         
-                        try {
-                            // Update dashboard components silently with current filters
-                            await updateDashboardForBarangay(currentBarangay);
-                            
-                            // Also update WHO chart to respect current WHO standard filter
-                            await handleWHOStandardChange();
-                            
-                            // Add smooth fade effect to indicate successful update
-                            addSmoothFade('.metric-card, .chart-container');
-                            
-                            console.log('✅ Real-time update completed');
-                        } finally {
-                            // Always remove updating class
-                            removeUpdatingClass('.metric-card, .chart-container, .data-display');
-                        }
+                        // Also update WHO chart to respect current WHO standard filter
+                        await handleWHOStandardChange();
+                        
+                        console.log('✅ Real-time update completed');
                     } else {
                         console.log('⏸️ Skipping real-time update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
                         
