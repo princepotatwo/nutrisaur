@@ -1951,7 +1951,7 @@ header {
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             border: 2px solid rgba(161, 180, 84, 0.3);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             display: grid;
             grid-template-columns: 1fr;
             gap: 15px;
@@ -2291,6 +2291,9 @@ header {
             border-radius: 8px;
             padding: 12px;
             border: 1px solid rgba(161, 180, 84, 0.2);
+            overflow: visible;
+            position: relative;
+            z-index: 50;
         }
 
         .filter-section {
@@ -2298,12 +2301,17 @@ header {
             grid-template-columns: repeat(6, 1fr);
             gap: 12px;
             align-items: end;
+            overflow: visible;
+            position: relative;
+            z-index: 40;
         }
 
         .filter-item {
             display: flex;
             flex-direction: column;
             gap: 4px;
+            position: relative;
+            z-index: 30;
         }
 
         .filter-item label {
@@ -2330,6 +2338,8 @@ header {
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
+            position: relative;
+            z-index: 100;
         }
 
         .filter-item select:hover,
@@ -2347,6 +2357,21 @@ header {
         /* Age input formatting */
         .filter-item input[type="text"] {
             font-family: 'Courier New', monospace;
+        }
+
+        /* WHO Standard dropdown specific styling */
+        #standardFilter {
+            background: var(--color-bg) !important;
+            border: 2px solid rgba(161, 180, 84, 0.3) !important;
+            position: relative !important;
+            z-index: 200 !important;
+        }
+
+        #standardFilter option {
+            background: var(--color-bg) !important;
+            color: var(--color-text) !important;
+            padding: 8px !important;
+            border: none !important;
         }
 
         /* Light theme adjustments */
