@@ -3017,12 +3017,13 @@ header {
             width: 100%;
         }
 
-        /* Ensure text always fits within button boundaries */
+        /* Ensure text wraps properly and displays fully */
         .who-standard-btn * {
             box-sizing: border-box;
             max-width: 100%;
             word-wrap: break-word;
             hyphens: auto;
+            white-space: normal;
         }
 
         .who-standard-btn {
@@ -3030,7 +3031,7 @@ header {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 6px clamp(2px, 0.5vw, 8px);
+            padding: 8px clamp(3px, 0.6vw, 10px);
             border: 2px solid rgba(161, 180, 84, 0.3);
             border-radius: 8px;
             background: var(--color-bg);
@@ -3039,12 +3040,12 @@ header {
             transition: all 0.3s ease, flex-grow 0.3s ease, padding 0.3s ease;
             flex: 1 1 0;
             min-width: 0;
-            min-height: 45px;
-            max-height: 60px;
+            min-height: 55px;
+            height: auto;
             font-family: inherit;
             position: relative;
-            overflow: hidden;
-            gap: 1px;
+            overflow: visible;
+            gap: 2px;
             box-sizing: border-box;
         }
 
@@ -3070,30 +3071,34 @@ header {
         }
 
         .btn-title {
-            font-size: clamp(6px, 0.7vw, 10px);
+            font-size: clamp(5px, 0.6vw, 9px);
             font-weight: 600;
             line-height: 1.1;
             margin: 0;
             text-align: center;
-            white-space: nowrap;
+            white-space: normal;
+            word-wrap: break-word;
             transition: font-size 0.3s ease;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            overflow: visible;
             max-width: 100%;
+            display: block;
+            hyphens: auto;
         }
 
         .btn-subtitle {
-            font-size: clamp(5px, 0.6vw, 8px);
+            font-size: clamp(4px, 0.5vw, 7px);
             opacity: 0.8;
-            line-height: 1;
+            line-height: 1.1;
             text-align: center;
             font-weight: 400;
-            white-space: nowrap;
+            white-space: normal;
+            word-wrap: break-word;
             transition: font-size 0.3s ease;
-            margin-top: 1px;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-top: 2px;
+            overflow: visible;
             max-width: 100%;
+            display: block;
+            hyphens: auto;
         }
 
         .who-standard-btn.active .btn-subtitle {
@@ -3105,10 +3110,26 @@ header {
         /* Large screens - navbar expanded (more space available) */
         @media (min-width: 1400px) {
             .who-standard-btn {
-                padding: 8px clamp(4px, 0.8vw, 12px);
-                min-height: 50px;
-                max-height: 65px;
-                gap: 2px;
+                padding: 10px clamp(6px, 1vw, 15px);
+                min-height: 60px;
+                gap: 3px;
+            }
+            
+            .btn-title {
+                font-size: clamp(8px, 0.9vw, 12px);
+            }
+            
+            .btn-subtitle {
+                font-size: clamp(7px, 0.8vw, 10px);
+            }
+        }
+        
+        /* Medium screens - navbar collapsed (more space available) */
+        @media (min-width: 1200px) and (max-width: 1399px) {
+            .who-standard-btn {
+                padding: 9px clamp(5px, 0.8vw, 12px);
+                min-height: 58px;
+                gap: 3px;
             }
             
             .btn-title {
@@ -3120,12 +3141,11 @@ header {
             }
         }
         
-        /* Medium screens - navbar collapsed (more space available) */
-        @media (min-width: 1200px) and (max-width: 1399px) {
+        /* Standard desktop - responsive to navbar state */
+        @media (min-width: 769px) and (max-width: 1199px) {
             .who-standard-btn {
-                padding: 7px clamp(3px, 0.7vw, 10px);
-                min-height: 48px;
-                max-height: 60px;
+                padding: 8px clamp(4px, 0.7vw, 10px);
+                min-height: 55px;
                 gap: 2px;
             }
             
@@ -3138,75 +3158,54 @@ header {
             }
         }
         
-        /* Standard desktop - responsive to navbar state */
-        @media (min-width: 769px) and (max-width: 1199px) {
-            .who-standard-btn {
-                padding: 6px clamp(2px, 0.6vw, 8px);
-                min-height: 45px;
-                max-height: 55px;
-                gap: 1px;
-            }
-            
-            .btn-title {
-                font-size: clamp(6px, 0.6vw, 9px);
-            }
-            
-            .btn-subtitle {
-                font-size: clamp(5px, 0.5vw, 7px);
-            }
-        }
-        
         /* Mobile screens */
         @media (max-width: 768px) {
             .who-standard-buttons {
-                gap: 2px;
+                gap: 3px;
             }
             
             .who-standard-btn {
-                padding: 4px clamp(2px, 1vw, 6px);
-                min-height: 38px;
-                max-height: 45px;
-                gap: 1px;
+                padding: 6px clamp(3px, 1.2vw, 8px);
+                min-height: 50px;
+                gap: 2px;
             }
             
             .btn-title {
-                font-size: clamp(5px, 1.2vw, 7px);
+                font-size: clamp(6px, 1.5vw, 9px);
             }
             
             .btn-subtitle {
-                font-size: clamp(4px, 1vw, 6px);
+                font-size: clamp(5px, 1.2vw, 7px);
             }
         }
 
         /* Dynamic responsiveness based on navbar state */
         .who-standard-buttons.navbar-collapsed .who-standard-btn {
-            padding: 7px clamp(3px, 0.8vw, 10px);
-            min-height: 50px;
-            max-height: 60px;
-            gap: 2px;
+            padding: 9px clamp(5px, 0.9vw, 12px);
+            min-height: 58px;
+            gap: 3px;
         }
         
         .who-standard-buttons.navbar-collapsed .btn-title {
-            font-size: clamp(6px, 0.8vw, 9px);
+            font-size: clamp(7px, 0.9vw, 11px);
         }
         
         .who-standard-buttons.navbar-collapsed .btn-subtitle {
-            font-size: clamp(5px, 0.6vw, 7px);
+            font-size: clamp(6px, 0.8vw, 9px);
         }
         
         .who-standard-buttons.navbar-expanded .who-standard-btn {
-            padding: 5px clamp(2px, 0.6vw, 8px);
-            min-height: 45px;
-            max-height: 55px;
-            gap: 1px;
+            padding: 7px clamp(4px, 0.7vw, 10px);
+            min-height: 55px;
+            gap: 2px;
         }
         
         .who-standard-buttons.navbar-expanded .btn-title {
-            font-size: clamp(5px, 0.6vw, 8px);
+            font-size: clamp(6px, 0.7vw, 10px);
         }
         
         .who-standard-buttons.navbar-expanded .btn-subtitle {
-            font-size: clamp(4px, 0.5vw, 6px);
+            font-size: clamp(5px, 0.6vw, 8px);
         }
 
         /* Hidden dropdown for compatibility */
