@@ -405,6 +405,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
            }
            break;
+           
+       case 'verify_password':
+           try {
+               $password = $_POST['password'] ?? '';
+               
+               if (empty($password)) {
+                   echo json_encode(['success' => false, 'error' => 'Password is required']);
+                   break;
+               }
+               
+               // Check if user is logged in
+               if (!isset($_SESSION['user_id'])) {
+                   echo json_encode(['success' => false, 'error' => 'User not logged in']);
+                   break;
+               }
+               
+               require_once __DIR__ . "/../config.php";
+               $pdo = getDatabaseConnection();
+               if (!$pdo) {
+                   echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                   break;
+               }
+               
+               // Get current user's password hash
+               $stmt = $pdo->prepare("SELECT password FROM users WHERE user_id = ?");
+               $result = $stmt->execute([$_SESSION['user_id']]);
+               
+               if (!$result) {
+                   echo json_encode(['success' => false, 'error' => 'Failed to verify user']);
+                   break;
+               }
+               
+               $user = $stmt->fetch(PDO::FETCH_ASSOC);
+               if (!$user) {
+                   echo json_encode(['success' => false, 'error' => 'User not found']);
+                   break;
+               }
+               
+               // Verify password
+               if (password_verify($password, $user['password'])) {
+                   echo json_encode(['success' => true, 'message' => 'Password verified']);
+               } else {
+                   echo json_encode(['success' => false, 'error' => 'Incorrect password']);
+               }
+               
+           } catch (Exception $e) {
+               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+           }
+           break;
             
         default:
             echo json_encode(['success' => false, 'error' => 'Unknown action']);
@@ -3189,6 +3238,115 @@ header {
             user-select: none !important;
         }
 
+        /* Password Confirmation Modal Styling */
+        #passwordConfirmModal .modal-content {
+            max-width: 500px;
+            border: 2px solid var(--color-danger);
+            box-shadow: 0 20px 40px rgba(231, 76, 60, 0.3);
+        }
+
+        #passwordConfirmModal .modal-header {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(231, 76, 60, 0.05) 100%);
+            border-bottom: 2px solid rgba(231, 76, 60, 0.2);
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #passwordConfirmModal .modal-header h2 {
+            color: var(--color-danger);
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        #passwordConfirmModal .modal-body {
+            padding: 20px;
+        }
+
+        #passwordConfirmModal .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            background-color: rgba(0, 0, 0, 0.02);
+            border-radius: 0 0 10px 10px;
+        }
+
+        #passwordConfirmModal .input-group {
+            margin-bottom: 15px;
+        }
+
+        #passwordConfirmModal .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        #passwordConfirmModal .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: var(--color-card);
+            color: var(--color-text);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        #passwordConfirmModal .input-group input:focus {
+            outline: none;
+            border-color: var(--color-danger);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        #passwordConfirmModal .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #passwordConfirmModal .btn-danger:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+
+        #passwordConfirmModal .btn-danger:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #passwordConfirmModal .btn-secondary {
+            background-color: var(--color-border);
+            color: var(--color-text);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #passwordConfirmModal .btn-secondary:hover {
+            background-color: var(--color-hover);
+            transform: translateY(-1px);
+        }
+
         /* Delete All Users Button Styling */
         .btn-delete-all {
             background-color: #e74c3c !important;
@@ -4146,6 +4304,42 @@ header {
                     <button type="button" class="btn btn-cancel" onclick="closeUserImportModal()">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Password Confirmation Modal for Delete Operations -->
+    <div id="passwordConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔒 Confirm Deletion</h2>
+                <span class="close" onclick="closePasswordConfirmModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div style="background-color: rgba(231, 76, 60, 0.1); border: 2px solid var(--color-danger); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 24px;">⚠️</span>
+                        <div>
+                            <h4 style="color: var(--color-danger); margin: 0 0 5px 0;">Security Verification Required</h4>
+                            <p style="margin: 0; color: var(--color-danger); font-weight: 600;" id="deleteConfirmMessage">Please enter your password to confirm this deletion.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="passwordConfirmForm">
+                    <div class="input-group">
+                        <label for="confirmPassword">Your Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Enter your current password" autocomplete="current-password">
+                    </div>
+                    <div id="passwordError" style="color: var(--color-danger); font-size: 14px; margin-top: 5px; display: none;"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closePasswordConfirmModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmPasswordAndDelete()" id="confirmDeleteBtn">
+                    <span class="btn-icon">🗑️</span>
+                    <span class="btn-text">Confirm Delete</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -5396,16 +5590,15 @@ header {
                 return;
             }
 
-            // Confirm deletion
-            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
-                return;
-            }
+            // Show password confirmation modal instead of simple confirm
+            const userType = currentTableType === 'users' ? 'admin user' : 'community user';
+            const confirmMessage = `You are about to permanently delete this ${userType}. This action cannot be undone. Please enter your password to confirm.`;
+            
+            showPasswordConfirmModal(performDeleteUser, identifier, confirmMessage);
+        }
 
-            // Show loading state
-            const deleteBtn = event.target;
-            const originalText = deleteBtn.innerHTML;
-            deleteBtn.innerHTML = '⏳';
-            deleteBtn.disabled = true;
+        function performDeleteUser(identifier) {
+            console.log('Performing delete for user:', identifier);
 
             // Prepare request data based on table type
             let requestData = {};
@@ -5455,11 +5648,6 @@ header {
             .catch(error => {
                 console.error('Error:', error);
                 showNotification('Error deleting user: ' + error.message, 'error');
-            })
-            .finally(() => {
-                // Restore button state
-                deleteBtn.innerHTML = originalText;
-                deleteBtn.disabled = false;
             });
         }
 
@@ -5572,6 +5760,99 @@ header {
             });
         }
 
+        // Password confirmation modal functions
+        let pendingDeleteAction = null;
+        let pendingDeleteData = null;
+
+        function showPasswordConfirmModal(deleteAction, deleteData, confirmMessage) {
+            pendingDeleteAction = deleteAction;
+            pendingDeleteData = deleteData;
+            
+            document.getElementById('deleteConfirmMessage').textContent = confirmMessage || 'Please enter your password to confirm this deletion.';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+            document.getElementById('passwordConfirmModal').style.display = 'block';
+            
+            // Focus on password input
+            setTimeout(() => {
+                document.getElementById('confirmPassword').focus();
+            }, 100);
+        }
+
+        function closePasswordConfirmModal() {
+            document.getElementById('passwordConfirmModal').style.display = 'none';
+            pendingDeleteAction = null;
+            pendingDeleteData = null;
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+        }
+
+        function confirmPasswordAndDelete() {
+            const password = document.getElementById('confirmPassword').value;
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            const passwordError = document.getElementById('passwordError');
+            
+            if (!password) {
+                passwordError.textContent = 'Please enter your password';
+                passwordError.style.display = 'block';
+                return;
+            }
+            
+            // Show loading state
+            const originalText = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">Verifying...</span>';
+            confirmBtn.disabled = true;
+            passwordError.style.display = 'none';
+            
+            // Verify password first
+            fetch('/settings.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=verify_password&password=${encodeURIComponent(password)}`
+            })
+            .then(response => response.text().then(text => {
+                try { return JSON.parse(text); } catch { return {success: false, error: 'Invalid response'}; }
+            }))
+            .then(data => {
+                if (data.success) {
+                    // Password verified, proceed with deletion
+                    closePasswordConfirmModal();
+                    if (pendingDeleteAction && pendingDeleteData) {
+                        pendingDeleteAction(pendingDeleteData);
+                    }
+                } else {
+                    // Password verification failed
+                    passwordError.textContent = data.error || 'Incorrect password';
+                    passwordError.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Password verification error:', error);
+                passwordError.textContent = 'Error verifying password. Please try again.';
+                passwordError.style.display = 'block';
+            })
+            .finally(() => {
+                // Restore button state
+                confirmBtn.innerHTML = originalText;
+                confirmBtn.disabled = false;
+            });
+        }
+
+        // Handle Enter key in password field
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('confirmPassword');
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        confirmPasswordAndDelete();
+                    }
+                });
+            }
+        });
+
         function deleteAllUsers() {
             // Get total number of users
             const userRows = document.querySelectorAll('.user-table tbody tr');
@@ -5582,26 +5863,16 @@ header {
                 return;
             }
 
-            // Get table type for confirmation message
+            // Show password confirmation modal instead of simple confirm
             const tableTypeName = currentTableType === 'users' ? 'admin users' : 'community users';
+            const confirmMessage = `You are about to permanently delete ALL ${userCount} ${tableTypeName} from the database. This action cannot be undone and will remove all their data. Please enter your password to confirm this critical operation.`;
             
-            // Double confirmation for delete all
-            const confirmMessage = `⚠️ WARNING: This will delete ALL ${userCount} ${tableTypeName} from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
-            
-            if (!confirm(confirmMessage)) {
-                return;
-            }
+            showPasswordConfirmModal(performDeleteAllUsers, userCount, confirmMessage);
+        }
 
-            // Second confirmation
-            if (!confirm(`FINAL CONFIRMATION: Delete ALL ${tableTypeName}? This will permanently remove all user data.`)) {
-                return;
-            }
-
-            // Show loading state
-            const deleteAllBtn = event.target;
-            const originalText = deleteAllBtn.innerHTML;
-            deleteAllBtn.innerHTML = '⏳ Deleting...';
-            deleteAllBtn.disabled = true;
+        function performDeleteAllUsers(userCount) {
+            const tableTypeName = currentTableType === 'users' ? 'admin users' : 'community users';
+            console.log('Performing delete all for', userCount, tableTypeName);
 
             // Determine endpoint and request data based on current table type
             let endpoint, requestData, headers;
@@ -5652,11 +5923,6 @@ header {
             .catch(error => {
                 console.error('Error:', error);
                 showNotification('Error deleting all users: ' + error.message, 'error');
-            })
-            .finally(() => {
-                // Restore button state
-                deleteAllBtn.innerHTML = originalText;
-                deleteAllBtn.disabled = false;
             });
         }
 
