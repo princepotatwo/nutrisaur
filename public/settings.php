@@ -2725,7 +2725,7 @@ header {
 }
 
 /* Ensure buttons are always clickable */
-.btn-edit, .btn-suspend, .btn-delete {
+.btn-edit, .btn-suspend, .btn-delete, .btn-archive, .btn-unarchive {
     pointer-events: auto !important;
     cursor: pointer !important;
     position: relative;
@@ -3180,6 +3180,15 @@ header {
             box-shadow: 0 4px 8px rgba(50, 205, 50, 0.3) !important;
         }
 
+        /* Additional clickability rules for archive buttons */
+        .btn-archive, .btn-unarchive {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            position: relative !important;
+            z-index: 101 !important;
+            user-select: none !important;
+        }
+
         /* Delete All Users Button Styling */
         .btn-delete-all {
             background-color: #e74c3c !important;
@@ -3213,7 +3222,9 @@ header {
         }
 
         .action-buttons .btn-edit:disabled,
-        .action-buttons .btn-delete:disabled {
+        .action-buttons .btn-delete:disabled,
+        .action-buttons .btn-archive:disabled,
+        .action-buttons .btn-unarchive:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
@@ -5453,6 +5464,7 @@ header {
         }
 
         function archiveUser(identifier, action = 'archive') {
+            console.log('archiveUser called with:', identifier, action);
             if (!identifier || identifier === '') {
                 alert('Invalid user identifier');
                 return;
