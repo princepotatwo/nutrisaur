@@ -5212,10 +5212,13 @@ header {
                                             // Only show note button if user has notes
                                             $hasNotes = !empty($user['notes']);
                                             if ($hasNotes) {
-                                                // Extract date from note (format: [date] note content)
+                                                // Extract date from note (format: [date time] note content)
                                                 $noteDate = '';
                                                 if (preg_match('/^\[([^\]]+)\]/', $user['notes'], $matches)) {
-                                                    $noteDate = $matches[1];
+                                                    $fullDateTime = $matches[1];
+                                                    // Extract only the date part (before the space)
+                                                    $dateParts = explode(' ', $fullDateTime);
+                                                    $noteDate = $dateParts[0]; // Only the date part
                                                 }
                                                 
                                                 echo '<button class="btn-note" onclick="viewUserNote(\'' . htmlspecialchars($user['email']) . '\', \'' . htmlspecialchars($user['name']) . '\')" title="View Note - ' . htmlspecialchars($noteDate) . '">';
@@ -7407,7 +7410,10 @@ header {
             saveBtn.disabled = true;
             
             // Prepare note - if empty, save as empty (this will remove the note)
-            const noteToSave = noteText ? `[${new Date().toLocaleDateString()}] ${noteText}` : '';
+            const now = new Date();
+            const dateOnly = now.toLocaleDateString();
+            const timeOnly = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const noteToSave = noteText ? `[${dateOnly} ${timeOnly}] ${noteText}` : '';
             
             // Save note via API
             fetch('api/DatabaseAPI.php?action=save_user_note', {
