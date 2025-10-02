@@ -3060,7 +3060,6 @@ header {
             overflow: hidden;
             gap: 2px;
             box-sizing: border-box;
-            container-type: inline-size;
         }
 
         .who-standard-btn:hover {
@@ -3085,9 +3084,9 @@ header {
         }
 
         .btn-title {
-            font-size: clamp(4px, 2cqw, 10px);
+            font-size: clamp(6px, 0.8vw, 10px);
             font-weight: 600;
-            line-height: 1;
+            line-height: 1.1;
             margin: 0;
             text-align: center;
             white-space: nowrap;
@@ -3096,11 +3095,10 @@ header {
             text-overflow: ellipsis;
             max-width: 100%;
             display: block;
-            container-type: inline-size;
         }
 
         .btn-subtitle {
-            font-size: clamp(3px, 1.5cqw, 8px);
+            font-size: clamp(5px, 0.6vw, 8px);
             opacity: 0.8;
             line-height: 1;
             text-align: center;
@@ -3112,7 +3110,6 @@ header {
             text-overflow: ellipsis;
             max-width: 100%;
             display: block;
-            container-type: inline-size;
         }
 
         .who-standard-btn.active .btn-subtitle {
@@ -3129,11 +3126,11 @@ header {
             }
             
             .btn-title {
-                font-size: clamp(5px, 2.2cqw, 11px);
+                font-size: clamp(8px, 1vw, 12px);
             }
             
             .btn-subtitle {
-                font-size: clamp(4px, 1.7cqw, 9px);
+                font-size: clamp(6px, 0.8vw, 10px);
             }
         }
         
@@ -3145,11 +3142,11 @@ header {
             }
             
             .btn-title {
-                font-size: clamp(5px, 2.1cqw, 10px);
+                font-size: clamp(7px, 0.9vw, 11px);
             }
             
             .btn-subtitle {
-                font-size: clamp(4px, 1.6cqw, 8px);
+                font-size: clamp(5px, 0.7vw, 9px);
             }
         }
         
@@ -3161,11 +3158,11 @@ header {
             }
             
             .btn-title {
-                font-size: clamp(4px, 2cqw, 9px);
+                font-size: clamp(6px, 0.8vw, 10px);
             }
             
             .btn-subtitle {
-                font-size: clamp(3px, 1.5cqw, 7px);
+                font-size: clamp(5px, 0.6vw, 8px);
             }
         }
         
@@ -3181,11 +3178,11 @@ header {
             }
             
             .btn-title {
-                font-size: clamp(4px, 3cqw, 8px);
+                font-size: clamp(6px, 2vw, 9px);
             }
             
             .btn-subtitle {
-                font-size: clamp(3px, 2.5cqw, 6px);
+                font-size: clamp(5px, 1.5vw, 7px);
             }
         }
 
@@ -3196,11 +3193,11 @@ header {
         }
         
         .who-standard-buttons.navbar-collapsed .btn-title {
-            font-size: clamp(5px, 2.3cqw, 10px);
+            font-size: clamp(7px, 0.9vw, 11px);
         }
         
         .who-standard-buttons.navbar-collapsed .btn-subtitle {
-            font-size: clamp(4px, 1.8cqw, 8px);
+            font-size: clamp(5px, 0.7vw, 9px);
         }
         
         .who-standard-buttons.navbar-expanded .who-standard-btn {
@@ -3209,11 +3206,11 @@ header {
         }
         
         .who-standard-buttons.navbar-expanded .btn-title {
-            font-size: clamp(4px, 1.9cqw, 9px);
+            font-size: clamp(6px, 0.7vw, 9px);
         }
         
         .who-standard-buttons.navbar-expanded .btn-subtitle {
-            font-size: clamp(3px, 1.4cqw, 7px);
+            font-size: clamp(5px, 0.5vw, 7px);
         }
 
         /* Hidden dropdown for compatibility */
@@ -5018,7 +5015,7 @@ header {
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">';
                                             echo '<div class="action-buttons">';
-                                            echo '<button class="btn-view" onclick="viewUserDetails(' . $user['id'] . ')" title="View Full Details">';
+                                            echo '<button class="btn-view" onclick="console.log(\'🔍 View button clicked for user ID: ' . $user['id'] . '\'); viewUserDetails(' . $user['id'] . ')" title="View Full Details">';
                                             echo 'View';
                                             echo '</button>';
                                             echo '</div>';
@@ -5211,6 +5208,78 @@ header {
                 updateNavbarState();
             }
         }
+
+        // Debug: Test function to verify viewUserDetails is accessible
+        window.testViewUserDetails = function() {
+            console.log('🧪 Testing viewUserDetails function...');
+            console.log('   - Function exists:', typeof viewUserDetails);
+            console.log('   - Function definition:', viewUserDetails);
+            if (typeof viewUserDetails === 'function') {
+                console.log('✅ viewUserDetails function is accessible');
+                console.log('💡 You can test it by running: viewUserDetails(1)');
+            } else {
+                console.error('❌ viewUserDetails function is NOT accessible');
+            }
+        };
+
+        // Debug: Check if viewUserDetails function exists
+        console.log('🔧 Checking viewUserDetails function:', typeof viewUserDetails);
+        console.log('💡 Run testViewUserDetails() in console to test the function');
+        
+        // Debug: Add click event listeners to all view buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📋 DOM loaded, setting up view button debugging...');
+            
+            try {
+                const viewButtons = document.querySelectorAll('.btn-view');
+                console.log('🔍 Found', viewButtons.length, 'view buttons');
+                
+                if (viewButtons.length === 0) {
+                    console.warn('⚠️ No view buttons found! Check if table is rendered correctly.');
+                    console.log('🔍 Looking for table rows...');
+                    const tableRows = document.querySelectorAll('.user-table tbody tr');
+                    console.log('   - Found', tableRows.length, 'table rows');
+                }
+                
+                viewButtons.forEach((button, index) => {
+                    console.log(`🔘 View button ${index + 1}:`, button);
+                    console.log(`   - onclick attribute:`, button.getAttribute('onclick'));
+                    console.log(`   - has click listeners:`, button.onclick !== null);
+                    console.log(`   - parent element:`, button.parentElement);
+                    
+                    // Add additional click listener for debugging
+                    button.addEventListener('click', function(e) {
+                        console.log('🎯 Click event fired on view button:', e.target);
+                        console.log('   - Button text:', e.target.textContent);
+                        console.log('   - onclick attribute:', e.target.getAttribute('onclick'));
+                        
+                        // Try to manually execute the onclick if it exists
+                        const onclickAttr = e.target.getAttribute('onclick');
+                        if (onclickAttr) {
+                            console.log('🔧 Attempting to execute onclick manually...');
+                            try {
+                                eval(onclickAttr);
+                            } catch (error) {
+                                console.error('❌ Error executing onclick:', error);
+                            }
+                        }
+                    });
+                });
+                
+                // Test if viewUserDetails function is available
+                console.log('🧪 Testing viewUserDetails availability...');
+                if (typeof window.viewUserDetails === 'function') {
+                    console.log('✅ viewUserDetails is available on window object');
+                } else if (typeof viewUserDetails === 'function') {
+                    console.log('✅ viewUserDetails is available in local scope');
+                } else {
+                    console.error('❌ viewUserDetails function is NOT available');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error in view button debugging setup:', error);
+            }
+        });
 
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
@@ -5465,7 +5534,9 @@ header {
         }
 
         function viewUserDetails(userId) {
-            console.log('🔍 ViewUserDetails called with userId:', userId);
+            console.log('🔍 ViewUserDetails function called!');
+            console.log('   - userId parameter:', userId);
+            console.log('   - typeof userId:', typeof userId);
             
             // Validate userId
             if (!userId || userId === 'undefined' || userId === 'null') {
