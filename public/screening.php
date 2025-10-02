@@ -1993,6 +1993,12 @@ header {
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal[style*="display: block"] {
+            display: flex !important;
         }
 
         .modal-content {
@@ -2061,7 +2067,7 @@ header {
         }
 
         .user-profile-modal.modal-show .profile-modal-content {
-            transform: translate(-50%, -50%) scale(1);
+            transform: scale(1);
         }
 
         .user-profile-modal.modal-hide {
@@ -2069,15 +2075,12 @@ header {
         }
 
         .user-profile-modal.modal-hide .profile-modal-content {
-            transform: translate(-50%, -50%) scale(0.95);
+            transform: scale(0.95);
         }
 
         .profile-modal-content {
             background: var(--card-bg);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.95);
+            margin: 0;
             padding: 0;
             border-radius: 20px;
             width: 95%;
@@ -2085,6 +2088,7 @@ header {
             max-height: 90vh;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.95);
             transition: all 0.3s ease-out;
         }
 
@@ -2328,17 +2332,15 @@ header {
             .profile-modal-content {
                 width: 98%;
                 max-height: 95vh;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) scale(0.95);
+                transform: scale(0.95);
             }
             
             .user-profile-modal.modal-show .profile-modal-content {
-                transform: translate(-50%, -50%) scale(1);
+                transform: scale(1);
             }
             
             .user-profile-modal.modal-hide .profile-modal-content {
-                transform: translate(-50%, -50%) scale(0.95);
+                transform: scale(0.95);
             }
 
             .profile-header {
