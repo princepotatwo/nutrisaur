@@ -343,6 +343,14 @@ body {
     display: flex;
     flex-direction: column;
     backdrop-filter: blur(10px);
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-280px); /* Show only 40px */
+}
+
+/* Base body styles */
+body {
+    padding-left: 40px; /* Space for minimized navbar */
+    transition: padding-left 0.4s ease;
 }
 
 /* Dark theme navbar styles */
@@ -601,6 +609,299 @@ body {
 /* Dark theme navbar footer text styles */
 .dark-theme .navbar-footer div:first-child {
     color: var(--color-highlight);
+}
+
+/* Hover state - navbar expanded (shows full width) */
+.navbar:hover {
+    transform: translateX(0); /* Show full navbar */
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+}
+
+/* Hide text content when navbar is minimized */
+.navbar-logo-text,
+.navbar span:not(.navbar-icon),
+.navbar-footer {
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateX(-10px);
+    white-space: nowrap;
+}
+
+/* Show text content when navbar is hovered */
+.navbar:hover .navbar-logo-text,
+.navbar:hover span:not(.navbar-icon),
+.navbar:hover .navbar-footer {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Minimized navbar - center the logo icon */
+.navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 20px;
+}
+
+/* Navbar icon hover effect when minimized */
+.navbar-icon {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.navbar:hover .navbar-icon {
+    transform: scale(1.05);
+    color: var(--color-primary);
+}
+
+/* Expanded navbar state - show everything */
+.navbar:hover {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    padding-top: 0;
+}
+
+/* ===== MOBILE TOP NAVIGATION STYLES ===== */
+
+/* Mobile Top Navigation Bar */
+.mobile-top-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    max-width: 100vw;
+    z-index: 10000;
+    background: var(--color-card);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    overflow-x: hidden;
+}
+
+.mobile-nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    height: 60px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.mobile-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mobile-logo-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+}
+
+.mobile-logo-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.mobile-nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.mobile-nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.mobile-nav-icon:hover {
+    background: var(--color-hover);
+    border-color: var(--color-highlight);
+    color: var(--color-highlight);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-nav-icon.active {
+    background: var(--color-highlight);
+    border-color: var(--color-highlight);
+    color: white;
+}
+
+/* Mobile Navigation Overlay */
+.mobile-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.mobile-nav-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: var(--color-card);
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+    transition: right 0.3s ease;
+    z-index: 10001;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-nav-sidebar.open {
+    right: 0;
+}
+
+.mobile-nav-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mobile-nav-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.mobile-nav-close:hover {
+    background: var(--color-hover);
+    border-color: var(--color-highlight);
+    color: var(--color-highlight);
+}
+
+.mobile-nav-menu {
+    flex: 1;
+    padding: 20px 0;
+}
+
+.mobile-nav-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-nav-menu li {
+    margin-bottom: 2px;
+}
+
+.mobile-nav-menu a {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.mobile-nav-menu a:hover {
+    background: var(--color-hover);
+    border-left-color: var(--color-highlight);
+    color: var(--color-highlight);
+}
+
+.mobile-nav-menu a.active {
+    background: var(--color-active);
+    border-left-color: var(--color-highlight);
+    color: var(--color-highlight);
+    font-weight: 600;
+}
+
+.mobile-nav-menu .navbar-icon {
+    margin-right: 12px;
+    font-size: 18px;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Desktop styles - hover navigation */
+@media (min-width: 769px) {
+    .mobile-top-nav,
+    .mobile-nav-overlay,
+    .mobile-nav-sidebar,
+    .mobile-nav-close,
+    .nav-overlay {
+        display: none !important;
+    }
+    
+    .navbar:hover {
+        width: 320px !important; /* Hover: expanded */
+    }
+    
+    /* Body padding will be handled by JavaScript */
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    /* Hide desktop navbar on mobile */
+    .navbar {
+        display: none !important;
+    }
+    
+    /* Show mobile top navigation */
+    .mobile-top-nav {
+        display: block !important;
+    }
+    
+    /* Adjust body for mobile */
+    body {
+        padding-left: 0 !important;
+        padding-top: 60px !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        min-height: 100vh !important;
+    }
+    
+    /* Adjust main content for mobile */
+    .dashboard {
+        margin-left: 0 !important;
+        padding: 15px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
 }
 
 .light-theme .navbar-footer div:first-child {
@@ -3748,6 +4049,48 @@ header {
         </div>
     </div>
 
+    <!-- Mobile Top Navigation -->
+    <div class="mobile-top-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-logo">
+                <img src="/logo.png" alt="Logo" class="mobile-logo-img">
+                <span class="mobile-logo-text">NutriSaur</span>
+            </div>
+            <div class="mobile-nav-icons">
+                <a href="dash" class="mobile-nav-icon" title="Dashboard">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                </a>
+                <a href="screening" class="mobile-nav-icon active" title="MHO Assessment">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                </a>
+                <a href="event" class="mobile-nav-icon" title="Events">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
+                    </svg>
+                </a>
+                <a href="ai" class="mobile-nav-icon" title="AI Chatbot">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                    </svg>
+                </a>
+                <a href="settings" class="mobile-nav-icon" title="Settings">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                    </svg>
+                </a>
+                <a href="logout" class="mobile-nav-icon" title="Logout" style="color: #ff5252;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="dashboard">
         <header class="dashboard-header fade-in">
             <div class="dashboard-title">
@@ -4207,6 +4550,101 @@ header {
     </div>
 
     <script>
+        // ===== MODERN 2025 NAVIGATION SYSTEM =====
+        // Navigation state management
+        let navState = {
+            isMobile: window.innerWidth <= 768,
+            isHovered: false
+        };
+
+        // DOM elements
+        const navbar = document.querySelector('.navbar');
+        const mobileTopNav = document.querySelector('.mobile-top-nav');
+        const body = document.body;
+
+        // Initialize navigation
+        function initNavigation() {
+            console.log('🚀 Initializing Navigation System...');
+            
+            // Check initial screen size
+            navState.isMobile = window.innerWidth <= 768;
+            console.log('📱 Mobile mode:', navState.isMobile);
+            
+            updateNavbarState();
+            setupEventListeners();
+            
+            console.log('✅ Navigation system initialized');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Desktop hover events
+            if (navbar) {
+                navbar.addEventListener('mouseenter', () => {
+                    if (!navState.isMobile) {
+                        navState.isHovered = true;
+                        updateBodyPadding();
+                    }
+                });
+
+                navbar.addEventListener('mouseleave', () => {
+                    if (!navState.isMobile) {
+                        navState.isHovered = false;
+                        updateBodyPadding();
+                    }
+                });
+            }
+
+            // Window resize handler
+            window.addEventListener('resize', handleResize);
+        }
+
+        // Update navbar state
+        function updateNavbarState() {
+            if (navState.isMobile) {
+                // Mobile: show top nav, hide sidebar
+                if (navbar) navbar.style.display = 'none';
+                if (mobileTopNav) mobileTopNav.style.display = 'block';
+                body.style.paddingLeft = '0';
+                body.style.paddingTop = '60px';
+            } else {
+                // Desktop: show sidebar, hide top nav
+                if (navbar) navbar.style.display = 'flex';
+                if (mobileTopNav) mobileTopNav.style.display = 'none';
+                body.style.paddingTop = '0';
+                updateBodyPadding();
+            }
+        }
+
+        // Update body padding for desktop hover effect
+        function updateBodyPadding() {
+            if (!navState.isMobile) {
+                if (navState.isHovered) {
+                    body.style.paddingLeft = '320px'; // Expanded navbar width
+                } else {
+                    body.style.paddingLeft = '40px'; // Minimized navbar width
+                }
+            }
+        }
+
+        // Handle window resize
+        function handleResize() {
+            const wasMobile = navState.isMobile;
+            navState.isMobile = window.innerWidth <= 768;
+            
+            if (wasMobile !== navState.isMobile) {
+                console.log('📱 Screen size changed. Mobile mode:', navState.isMobile);
+                updateNavbarState();
+            }
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavigation);
+        } else {
+            initNavigation();
+        }
+
         // Municipalities and Barangays data
         const municipalities = <?php echo json_encode($municipalities); ?>;
 
