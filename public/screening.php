@@ -2309,6 +2309,11 @@ header {
             }
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Responsive Design for Profile Modal */
         @media (max-width: 768px) {
             .profile-modal-content {
@@ -2821,9 +2826,9 @@ header {
             max-width: 100%;
             box-sizing: border-box;
             overflow: hidden;
-            position: static;
+            position: relative;
             flex-shrink: 0;
-            contain: layout;
+            contain: layout style;
         }
 
         .action-section {
@@ -2833,6 +2838,9 @@ header {
             flex-shrink: 0;
             max-width: 50%;
             box-sizing: border-box;
+            overflow: hidden;
+            position: static;
+            contain: layout;
         }
 
         .filter-dropdowns {
@@ -2877,6 +2885,9 @@ header {
             justify-content: flex-end;
             max-width: 50%;
             box-sizing: border-box;
+            overflow: hidden;
+            position: static;
+            contain: layout;
         }
 
         .search-input {
@@ -2889,11 +2900,13 @@ header {
             outline: none;
             transition: all 0.3s ease;
             width: 100%;
-            max-width: 350px;
-            min-width: 250px;
+            max-width: 100%;
+            min-width: 0;
+            flex: 1;
             flex-shrink: 1;
             height: 45px;
             box-sizing: border-box;
+            position: static;
         }
 
         .search-input:focus {
@@ -5452,20 +5465,70 @@ header {
         }
 
         function viewUserDetails(userId) {
+            console.log('🔍 ViewUserDetails called with userId:', userId);
+            
+            // Validate userId
+            if (!userId || userId === 'undefined' || userId === 'null') {
+                console.error('❌ Invalid userId:', userId);
+                alert('Error: Invalid user ID');
+                return;
+            }
+
+            // Show loading indicator
+            const loadingModal = document.createElement('div');
+            loadingModal.className = 'modal';
+            loadingModal.style.display = 'block';
+            loadingModal.innerHTML = `
+                <div class="modal-content" style="text-align: center; padding: 40px;">
+                    <h3>Loading user details...</h3>
+                    <div style="margin: 20px 0;">
+                        <div style="border: 4px solid #f3f3f3; border-top: 4px solid var(--color-highlight); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(loadingModal);
+
+            console.log('📡 Fetching user details from API...');
+            
             // Fetch user details via AJAX
             fetch(`/api/DatabaseAPI.php?action=get_user_details&user_id=${userId}`)
-                .then(response => response.json())
+                .then(response => {
+                    console.log('📥 API Response received:', response.status, response.statusText);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('📋 User data received:', data);
+                    
+                    // Remove loading modal
+                    loadingModal.remove();
+                    
                     if (data.error) {
-                        console.error('Error fetching user details:', data.error);
+                        console.error('❌ API Error:', data.error);
                         alert('Error loading user details: ' + data.error);
                         return;
                     }
+                    
+                    if (!data || Object.keys(data).length === 0) {
+                        console.error('❌ Empty data received');
+                        alert('Error: No user data received');
+                        return;
+                    }
+                    
+                    console.log('✅ Showing user modal...');
                     showUserDetailsModal(data);
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error loading user details');
+                    console.error('❌ Fetch Error:', error);
+                    
+                    // Remove loading modal
+                    loadingModal.remove();
+                    
+                    alert('Error loading user details: ' + error.message);
                 });
         }
 
