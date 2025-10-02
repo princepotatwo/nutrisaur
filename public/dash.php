@@ -13300,6 +13300,73 @@ body {
             initNavigation();
         }
 
+        // Real-time dashboard updates (every 3 seconds)
+        let realtimeUpdateInterval = null;
+        let isRealtimeActive = false;
+        
+        // Function to start real-time updates
+        function startRealtimeUpdates() {
+            if (isRealtimeActive) {
+                console.log('🔄 Real-time updates already active');
+                return;
+            }
+            
+            console.log('🚀 Starting real-time dashboard updates (3-second interval)');
+            isRealtimeActive = true;
+            
+            realtimeUpdateInterval = setInterval(async () => {
+                try {
+                    // Get current selected barangay
+                    const currentBarangay = currentSelectedBarangay || '';
+                    
+                    // Only update if dashboard is visible and not in loading state
+                    if (document.visibilityState === 'visible' && !dashboardState.updateInProgress) {
+                        console.log('🔄 Real-time update for barangay:', currentBarangay);
+                        
+                        // Update dashboard components silently
+                        await updateDashboardForBarangay(currentBarangay);
+                    }
+                } catch (error) {
+                    console.error('❌ Real-time update error:', error);
+                    // Don't stop real-time updates on individual errors
+                }
+            }, 3000); // 3 seconds
+        }
+        
+        // Function to stop real-time updates
+        function stopRealtimeUpdates() {
+            if (realtimeUpdateInterval) {
+                console.log('⏹️ Stopping real-time dashboard updates');
+                clearInterval(realtimeUpdateInterval);
+                realtimeUpdateInterval = null;
+                isRealtimeActive = false;
+            }
+        }
+        
+        // Start real-time updates when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Small delay to ensure all initializations are complete
+            setTimeout(() => {
+                startRealtimeUpdates();
+            }, 2000);
+        });
+        
+        // Pause real-time updates when page is hidden
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'hidden') {
+                console.log('⏸️ Pausing real-time updates (page hidden)');
+                stopRealtimeUpdates();
+            } else if (document.visibilityState === 'visible') {
+                console.log('▶️ Resuming real-time updates (page visible)');
+                startRealtimeUpdates();
+            }
+        });
+        
+        // Clean up on page unload
+        window.addEventListener('beforeunload', function() {
+            stopRealtimeUpdates();
+        });
+
     </script>
 </body>
 </html>
