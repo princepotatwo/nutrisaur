@@ -11459,11 +11459,28 @@ body {
 
                 // Check if we have valid data
                 if (!data || !data.classifications || data.total === 0) {
-                    centerText.textContent = 'No Data';
-                    centerText.style.color = '#999';
-                    chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
-                    chartBg.style.opacity = '0.3';
-                    segments.innerHTML = '<div style="text-align: center; color: #999; font-style: italic;">No data available</div>';
+                    // Check if we have "No Data" classifications (users outside age range)
+                    const hasNoData = data && data.classifications && data.classifications['No Data'] > 0;
+                    
+                    if (hasNoData) {
+                        const noDataCount = data.classifications['No Data'];
+                        centerText.innerHTML = `<div style="font-size: 14px; font-weight: 600; color: #666;">${noDataCount} Users</div><div style="font-size: 12px; color: #999; margin-top: 4px;">Outside Age Range</div>`;
+                        centerText.style.color = '#666';
+                        chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
+                        chartBg.style.opacity = '0.4';
+                        segments.innerHTML = `
+                            <div style="text-align: center; color: #666; font-size: 12px; line-height: 1.4;">
+                                <div style="font-weight: 600; margin-bottom: 4px;">Age Range Mismatch</div>
+                                <div style="opacity: 0.8;">Users are outside the required age range for this WHO standard</div>
+                            </div>
+                        `;
+                    } else {
+                        centerText.textContent = 'No Data';
+                        centerText.style.color = '#999';
+                        chartBg.style.background = 'conic-gradient(#e0e0e0 0% 100%)';
+                        chartBg.style.opacity = '0.3';
+                        segments.innerHTML = '<div style="text-align: center; color: #999; font-style: italic;">No data available</div>';
+                    }
                     return;
                 }
                 
