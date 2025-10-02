@@ -1711,9 +1711,10 @@ body {
     color: var(--color-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
-    padding-left: 320px;
+    padding-left: 60px; /* Space for minimized navbar + margin */
     line-height: 1.6;
     letter-spacing: 0.2px;
+    transition: padding-left 0.4s ease;
 }
 
 .light-theme body {
@@ -1722,9 +1723,10 @@ body {
 }
 
 .dashboard {
-    max-width: calc(100% - 60px);
+    max-width: 100%;
     width: 100%;
     margin: 0 auto;
+    transition: max-width 0.4s ease;
 }
 
 
@@ -4575,11 +4577,6 @@ header:hover {
     padding-top: 0;
 }
 
-/* ===== BODY PADDING FOR NAVBAR ===== */
-body {
-    padding-left: 40px !important; /* Space for minimized navbar */
-    transition: padding-left 0.4s ease;
-}
 
 /* ===== MOBILE TOP NAVIGATION ===== */
 .mobile-top-nav {
@@ -8001,9 +7998,9 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
         function updateBodyPadding() {
             if (!navState.isMobile) {
                 if (navState.isHovered) {
-                    body.style.paddingLeft = '320px'; // Expanded navbar width
+                    body.style.paddingLeft = '340px'; // Expanded navbar width + margin
                 } else {
-                    body.style.paddingLeft = '40px'; // Minimized navbar width
+                    body.style.paddingLeft = '60px'; // Minimized navbar width + margin
                 }
             }
         }
