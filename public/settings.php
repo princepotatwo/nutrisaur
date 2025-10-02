@@ -339,6 +339,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
            }
            break;
+           
+       case 'archive_user':
+           try {
+               $user_id = $_POST['user_id'] ?? '';
+               $action = $_POST['archive_action'] ?? 'archive'; // 'archive' or 'unarchive'
+               
+               if (empty($user_id)) {
+                   echo json_encode(['success' => false, 'error' => 'User ID is required']);
+                   break;
+               }
+               
+               require_once __DIR__ . "/../config.php";
+               $pdo = getDatabaseConnection();
+               if (!$pdo) {
+                   echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                   break;
+               }
+               
+               // Toggle the is_active status
+               $newStatus = ($action === 'archive') ? 0 : 1;
+               $updateStmt = $pdo->prepare("UPDATE users SET is_active = ? WHERE user_id = ?");
+               $result = $updateStmt->execute([$newStatus, $user_id]);
+               
+               if ($result && $updateStmt->rowCount() > 0) {
+                   $message = ($action === 'archive') ? 'User archived successfully' : 'User unarchived successfully';
+                   echo json_encode(['success' => true, 'message' => $message]);
+               } else {
+                   echo json_encode(['success' => false, 'error' => 'User not found or could not be updated']);
+               }
+           } catch (Exception $e) {
+               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+           }
+           break;
+           
+       case 'archive_community_user':
+           try {
+               $user_email = $_POST['user_email'] ?? '';
+               $action = $_POST['archive_action'] ?? 'archive'; // 'archive' or 'unarchive'
+               
+               if (empty($user_email)) {
+                   echo json_encode(['success' => false, 'error' => 'User email is required']);
+                   break;
+               }
+               
+               require_once __DIR__ . "/../config.php";
+               $pdo = getDatabaseConnection();
+               if (!$pdo) {
+                   echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                   break;
+               }
+               
+               // Toggle the status for community users
+               $newStatus = ($action === 'archive') ? 'inactive' : 'active';
+               $updateStmt = $pdo->prepare("UPDATE community_users SET status = ? WHERE email = ?");
+               $result = $updateStmt->execute([$newStatus, $user_email]);
+               
+               if ($result && $updateStmt->rowCount() > 0) {
+                   $message = ($action === 'archive') ? 'Community user archived successfully' : 'Community user unarchived successfully';
+                   echo json_encode(['success' => true, 'message' => $message]);
+               } else {
+                   echo json_encode(['success' => false, 'error' => 'Community user not found or could not be updated']);
+               }
+           } catch (Exception $e) {
+               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+           }
+           break;
             
         default:
             echo json_encode(['success' => false, 'error' => 'Unknown action']);
@@ -2787,7 +2853,7 @@ header {
         
         .user-table th:nth-child(7),
         .user-table td:nth-child(7) {
-            min-width: 140px; /* ACTIONS - enough for both buttons */
+            min-width: 200px; /* ACTIONS - enough for three buttons (Edit, Archive/Unarchive, Delete) */
         }
 
         .user-table thead { 
@@ -2943,7 +3009,9 @@ header {
             }
             
             .action-buttons .btn-edit,
-            .action-buttons .btn-delete {
+            .action-buttons .btn-delete,
+            .action-buttons .btn-archive,
+            .action-buttons .btn-unarchive {
                 padding: 5px 10px;
                 font-size: 10px;
                 min-width: 45px;
@@ -2964,7 +3032,9 @@ header {
             }
             
             .action-buttons .btn-edit,
-            .action-buttons .btn-delete {
+            .action-buttons .btn-delete,
+            .action-buttons .btn-archive,
+            .action-buttons .btn-unarchive {
                 padding: 4px 8px;
                 font-size: 9px;
                 min-width: 40px;
@@ -3060,6 +3130,56 @@ header {
             box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3) !important;
         }
 
+        .action-buttons .btn-archive {
+            background-color: #ff8c00 !important;
+            color: white !important;
+            border: none !important;
+            padding: 6px 12px !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 60px !important;
+            height: 28px !important;
+            margin-right: 4px !important;
+        }
+
+        .action-buttons .btn-archive:hover {
+            background-color: #e67e00 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.3) !important;
+        }
+
+        .action-buttons .btn-unarchive {
+            background-color: #32cd32 !important;
+            color: white !important;
+            border: none !important;
+            padding: 6px 12px !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 60px !important;
+            height: 28px !important;
+            margin-right: 4px !important;
+        }
+
+        .action-buttons .btn-unarchive:hover {
+            background-color: #228b22 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(50, 205, 50, 0.3) !important;
+        }
+
         /* Delete All Users Button Styling */
         .btn-delete-all {
             background-color: #e74c3c !important;
@@ -3118,6 +3238,26 @@ header {
 
         .light-theme .action-buttons .btn-delete:hover {
             background-color: rgba(229, 115, 115, 0.25);
+        }
+
+        .light-theme .action-buttons .btn-archive {
+            background-color: rgba(255, 140, 0, 0.15);
+            color: #ff8c00;
+            border: 2px solid rgba(255, 140, 0, 0.4);
+        }
+
+        .light-theme .action-buttons .btn-archive:hover {
+            background-color: rgba(255, 140, 0, 0.25);
+        }
+
+        .light-theme .action-buttons .btn-unarchive {
+            background-color: rgba(50, 205, 50, 0.15);
+            color: #32cd32;
+            border: 2px solid rgba(50, 205, 50, 0.4);
+        }
+
+        .light-theme .action-buttons .btn-unarchive:hover {
+            background-color: rgba(50, 205, 50, 0.25);
         }
 
         /* Editable fields styling */
@@ -3884,6 +4024,19 @@ header {
                                     echo '<button class="btn-edit" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User">';
                                     echo 'Edit';
                                     echo '</button>';
+                                    
+                                    // Add archive/unarchive button based on status
+                                    $userStatus = $user['status'] ?? 'active';
+                                    if ($userStatus === 'active') {
+                                        echo '<button class="btn-archive" onclick="archiveUser(\'' . $userIdentifier . '\', \'archive\')" title="Archive User">';
+                                        echo 'Archive';
+                                        echo '</button>';
+                                    } else {
+                                        echo '<button class="btn-unarchive" onclick="archiveUser(\'' . $userIdentifier . '\', \'unarchive\')" title="Unarchive User">';
+                                        echo 'Unarchive';
+                                        echo '</button>';
+                                    }
+                                    
                                     echo '<button class="btn-delete" onclick="deleteUser(\'' . $userIdentifier . '\')" title="Delete User">';
                                     echo 'Delete';
                                     echo '</button>';
@@ -4675,6 +4828,10 @@ header {
                             <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                 Edit
                             </button>
+                            ${(user.status === 'active' || !user.status) ? 
+                                `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive')" title="Archive User">Archive</button>` :
+                                `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive')" title="Unarchive User">Unarchive</button>`
+                            }
                             <button class="btn-delete" onclick="deleteUser('${user.email}')" title="Delete User">
                                 Delete
                             </button>
@@ -4742,7 +4899,7 @@ header {
                     
                     // Update table body with users data
                     altTableBody.innerHTML = users.map(user => `
-                        <tr>
+                        <tr data-user-id="${user.user_id}">
                             <td>${user.user_id}</td>
                             <td><span class="editable" data-field="username" data-id="${user.user_id}">${user.username}</span></td>
                             <td><span class="editable" data-field="email" data-id="${user.user_id}">${user.email}</span></td>
@@ -4753,6 +4910,10 @@ header {
                                 <button class="btn-edit" onclick="editUser(${user.user_id})" title="Edit User">
                                     Edit
                                 </button>
+                                ${user.is_active == 1 ? 
+                                    `<button class="btn-archive" onclick="archiveUser(${user.user_id}, 'archive')" title="Archive User">Archive</button>` :
+                                    `<button class="btn-unarchive" onclick="archiveUser(${user.user_id}, 'unarchive')" title="Unarchive User">Unarchive</button>`
+                                }
                                 <button class="btn-delete" onclick="deleteUser(${user.user_id})" title="Delete User">
                                     Delete
                                 </button>
@@ -4782,10 +4943,14 @@ header {
                             <td>${user.birthday || 'N/A'}</td>
                             <td class="action-buttons">
                                 <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
-                                    <span>✏️</span>
+                                    Edit
                                 </button>
+                                ${(user.status === 'active' || !user.status) ? 
+                                    `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive')" title="Archive User">Archive</button>` :
+                                    `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive')" title="Unarchive User">Unarchive</button>`
+                                }
                                 <button class="btn-delete" onclick="deleteUser('${user.email}')" title="Delete User">
-                                    <span>🗑️</span>
+                                    Delete
                                 </button>
                             </td>
                         </tr>
@@ -4829,6 +4994,10 @@ header {
                             <button class="btn-edit" onclick="editUser(${user.user_id})" title="Edit User">
                                 Edit
                             </button>
+                            ${user.is_active == 1 ? 
+                                `<button class="btn-archive" onclick="archiveUser(${user.user_id}, 'archive')" title="Archive User">Archive</button>` :
+                                `<button class="btn-unarchive" onclick="archiveUser(${user.user_id}, 'unarchive')" title="Unarchive User">Unarchive</button>`
+                            }
                             <button class="btn-delete" onclick="deleteUser(${user.user_id})" title="Delete User">
                                 Delete
                             </button>
@@ -4858,10 +5027,14 @@ header {
                         <td>${user.birthday || 'N/A'}</td>
                         <td class="action-buttons">
                             <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
-                                <span>✏️</span>
+                                Edit
                             </button>
+                            ${(user.status === 'active' || !user.status) ? 
+                                `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive')" title="Archive User">Archive</button>` :
+                                `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive')" title="Unarchive User">Unarchive</button>`
+                            }
                             <button class="btn-delete" onclick="deleteUser('${user.email}')" title="Delete User">
-                                <span>🗑️</span>
+                                Delete
                             </button>
                         </td>
                     </tr>
@@ -5276,6 +5449,114 @@ header {
                 // Restore button state
                 deleteBtn.innerHTML = originalText;
                 deleteBtn.disabled = false;
+            });
+        }
+
+        function archiveUser(identifier, action = 'archive') {
+            if (!identifier || identifier === '') {
+                alert('Invalid user identifier');
+                return;
+            }
+
+            // Confirm action
+            const actionText = action === 'archive' ? 'archive' : 'unarchive';
+            const confirmText = action === 'archive' ? 
+                'Are you sure you want to archive this user? They will be disabled but not deleted.' :
+                'Are you sure you want to unarchive this user? They will be enabled again.';
+            
+            if (!confirm(confirmText)) {
+                return;
+            }
+
+            // Show loading state
+            const archiveBtn = event.target;
+            const originalText = archiveBtn.innerHTML;
+            archiveBtn.innerHTML = '⏳';
+            archiveBtn.disabled = true;
+
+            // Prepare request data based on table type
+            let requestData = {};
+            let endpoint = '';
+            
+            if (currentTableType === 'users') {
+                // For admin users table
+                requestData = {
+                    action: 'archive_user',
+                    user_id: identifier,
+                    archive_action: action
+                };
+                endpoint = '/settings.php';
+            } else {
+                // For community users table
+                requestData = {
+                    action: 'archive_community_user',
+                    user_email: identifier,
+                    archive_action: action
+                };
+                endpoint = '/settings.php';
+            }
+
+            // Send archive request to server
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: Object.keys(requestData).map(key => `${key}=${encodeURIComponent(requestData[key])}`).join('&')
+            })
+            .then(response => response.text().then(text => {
+                try { return JSON.parse(text); } catch { return {success: false, error: 'Invalid response'}; }
+            }))
+            .then(data => {
+                if (data.success) {
+                    // Update the button in the row
+                    let row;
+                    if (currentTableType === 'users') {
+                        row = document.querySelector(`tr[data-user-id="${identifier}"]`);
+                    } else {
+                        row = document.querySelector(`tr[data-user-email="${identifier}"]`);
+                    }
+                    
+                    if (row) {
+                        const actionCell = row.querySelector('.action-buttons');
+                        if (actionCell) {
+                            // Update the archive button based on new status
+                            if (action === 'archive') {
+                                // Replace archive button with unarchive button
+                                const archiveBtn = actionCell.querySelector('.btn-archive');
+                                if (archiveBtn) {
+                                    archiveBtn.className = 'btn-unarchive';
+                                    archiveBtn.innerHTML = 'Unarchive';
+                                    archiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'unarchive')`);
+                                    archiveBtn.setAttribute('title', 'Unarchive User');
+                                }
+                            } else {
+                                // Replace unarchive button with archive button
+                                const unarchiveBtn = actionCell.querySelector('.btn-unarchive');
+                                if (unarchiveBtn) {
+                                    unarchiveBtn.className = 'btn-archive';
+                                    unarchiveBtn.innerHTML = 'Archive';
+                                    unarchiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'archive')`);
+                                    unarchiveBtn.setAttribute('title', 'Archive User');
+                                }
+                            }
+                        }
+                    }
+                    
+                    const successMessage = action === 'archive' ? 'User archived successfully!' : 'User unarchived successfully!';
+                    showNotification(successMessage, 'success');
+                } else {
+                    showNotification('Error: ' + (data.message || data.error || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error: ' + error.message, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                archiveBtn.innerHTML = originalText;
+                archiveBtn.disabled = false;
             });
         }
 
