@@ -4178,8 +4178,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 $user = $result['data'][0];
                 
-                // Check if user is archived/inactive
-                if (isset($user['status']) && $user['status'] === 'inactive') {
+                // Check if user is archived/inactive (0 = archived, 1 = active)
+                if (isset($user['status']) && $user['status'] == 0) {
                     echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
                     break;
                 }
@@ -4414,8 +4414,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
                     if ($user && password_verify($password, $user['password'])) {
-                        // Check if user is archived/inactive
-                        if (isset($user['status']) && $user['status'] === 'inactive') {
+                        // Check if user is archived/inactive (0 = archived, 1 = active)
+                        if (isset($user['status']) && $user['status'] == 0) {
                             echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
                             break;
                         }
@@ -7021,7 +7021,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 } else {
                     // User exists - check if archived
                     $existingUser = $result['data'][0];
-                    if (isset($existingUser['status']) && $existingUser['status'] === 'inactive') {
+                    if (isset($existingUser['status']) && $existingUser['status'] == 0) {
                         throw new Exception('Your account has been archived. Please contact an administrator.');
                     }
                     // User exists (EXISTING USER - go to dashboard)

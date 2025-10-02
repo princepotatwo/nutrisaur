@@ -109,8 +109,8 @@ try {
         
         $message = 'NEW_USER:Account created successfully with Google Sign-In';
     } else {
-        // User exists - check if archived
-        if (isset($existingUser[0]['status']) && $existingUser[0]['status'] === 'inactive') {
+        // User exists - check if archived (0 = archived, 1 = active)
+        if (isset($existingUser[0]['status']) && $existingUser[0]['status'] == 0) {
             throw new Exception('Your account has been archived. Please contact an administrator.');
         }
         // User exists (EXISTING USER - go to dashboard)

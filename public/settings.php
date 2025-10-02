@@ -390,8 +390,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                    break;
                }
                
-               // Toggle the status for community users
-               $newStatus = ($action === 'archive') ? 'inactive' : 'active';
+               // Toggle the status for community users (1 = active, 0 = archived)
+               $newStatus = ($action === 'archive') ? 0 : 1;
                $updateStmt = $pdo->prepare("UPDATE community_users SET status = ? WHERE email = ?");
                $result = $updateStmt->execute([$newStatus, $user_email]);
                
@@ -5249,7 +5249,7 @@ header {
                             <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                 Edit
                             </button>
-                            ${(user.status === 'active' || !user.status) ? 
+                            ${(user.status == 1 || !user.status) ? 
                                 `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive')" title="Archive User">Archive</button>` :
                                 `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive')" title="Unarchive User">Unarchive</button>`
                             }
@@ -5450,7 +5450,7 @@ header {
                             <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                 Edit
                             </button>
-                            ${(user.status === 'active' || !user.status) ? 
+                            ${(user.status == 1 || !user.status) ? 
                                 `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive')" title="Archive User">Archive</button>` :
                                 `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive')" title="Unarchive User">Unarchive</button>`
                             }
