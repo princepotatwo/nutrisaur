@@ -13338,6 +13338,12 @@ body {
                         console.log('✅ Real-time update completed');
                     } else {
                         console.log('⏸️ Skipping real-time update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
+                        
+                        // If updateInProgress is stuck as true, reset it after a reasonable time
+                        if (dashboardState.updateInProgress) {
+                            console.log('🔧 Resetting stuck updateInProgress flag');
+                            dashboardState.updateInProgress = false;
+                        }
                     }
                 } catch (error) {
                     console.error('❌ Real-time update error:', error);
