@@ -9161,13 +9161,22 @@ body {
                 clearTimeout(updateCommunityMetrics.debounceTimer);
             }
             
-            updateCommunityMetrics.debounceTimer = setTimeout(async () => {
-                // Prevent concurrent updates
+            // Prevent concurrent updates
+            if (dashboardState.updateInProgress) {
+                console.log('⏳ Update already in progress, skipping...');
+                return;
+            }
+            dashboardState.updateInProgress = true;
+            
+            // Set a timeout to reset the flag in case something goes wrong
+            const resetTimeout = setTimeout(() => {
                 if (dashboardState.updateInProgress) {
-                    console.log('⏳ Update already in progress, skipping...');
-                    return;
+                    console.log('🔧 Auto-resetting stuck updateInProgress flag');
+                    dashboardState.updateInProgress = false;
                 }
-                dashboardState.updateInProgress = true;
+            }, 5000); // 5 seconds timeout
+            
+            updateCommunityMetrics.debounceTimer = setTimeout(async () => {
                 try {
                     console.log('🔄 Starting community metrics update...');
                 
@@ -9414,6 +9423,7 @@ body {
             } catch (error) {
                 console.error('Error updating community metrics:', error);
             } finally {
+                clearTimeout(resetTimeout); // Clear the auto-reset timeout
                 dashboardState.updateInProgress = false;
             }
             }, 1000); // 1000ms debounce delay to prevent flickering
