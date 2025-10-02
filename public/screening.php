@@ -4198,29 +4198,7 @@ header {
                                 </select>
                             </div>
                             
-                            <div class="filter-item">
-                                <label>AGE FROM</label>
-                                <div style="display: flex; gap: 4px; align-items: center;">
-                                    <input type="number" id="ageFromYears" min="0" max="120" placeholder="0" 
-                                           style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
-                                    <span style="font-size: 10px; color: var(--color-text);">Y</span>
-                                    <input type="number" id="ageFromMonths" min="0" max="11" placeholder="0" 
-                                           style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
-                                    <span style="font-size: 10px; color: var(--color-text);">M</span>
-                                </div>
-                            </div>
                             
-                            <div class="filter-item">
-                                <label>AGE TO</label>
-                                <div style="display: flex; gap: 4px; align-items: center;">
-                                    <input type="number" id="ageToYears" min="0" max="120" placeholder="0" 
-                                           style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
-                                    <span style="font-size: 10px; color: var(--color-text);">Y</span>
-                                    <input type="number" id="ageToMonths" min="0" max="11" placeholder="0" 
-                                           style="width: 50px; text-align: center;" onchange="filterByAgeRange()">
-                                    <span style="font-size: 10px; color: var(--color-text);">M</span>
-                                </div>
-                            </div>
                             
                             <div class="filter-item">
                                 <label>SEX</label>
@@ -4675,38 +4653,6 @@ header {
         }
         
 
-        function filterByAgeRange() {
-            // Validate age range inputs
-            const ageFromYears = document.getElementById('ageFromYears').value;
-            const ageFromMonths = document.getElementById('ageFromMonths').value;
-            const ageToYears = document.getElementById('ageToYears').value;
-            const ageToMonths = document.getElementById('ageToMonths').value;
-            
-            // Check if any age fields have values
-            if (ageFromYears || ageFromMonths || ageToYears || ageToMonths) {
-                const fromYears = parseInt(ageFromYears) || 0;
-                const fromMonths = parseInt(ageFromMonths) || 0;
-                const toYears = parseInt(ageToYears) || 0;
-                const toMonths = parseInt(ageToMonths) || 0;
-                
-                const fromTotalMonths = fromYears * 12 + fromMonths;
-                const toTotalMonths = toYears * 12 + toMonths;
-                
-                // Only validate if both from and to have values
-                if ((ageFromYears || ageFromMonths) && (ageToYears || ageToMonths)) {
-                    // Validate that "from" age is not greater than "to" age
-                    if (fromTotalMonths > toTotalMonths) {
-                        // Show warning and clear the "to" fields
-                        alert('Age "From" cannot be greater than Age "To". Please adjust your selection.');
-                        document.getElementById('ageToYears').value = '';
-                        document.getElementById('ageToMonths').value = '';
-                        return;
-                    }
-                }
-            }
-            
-            applyAllFilters();
-        }
         
         function filterBySex() {
             applyAllFilters();
@@ -4734,17 +4680,13 @@ header {
         function applyAllFilters() {
             const municipality = document.getElementById('municipalityFilter').value;
             const barangay = document.getElementById('barangayFilter').value;
-            const ageFromYears = document.getElementById('ageFromYears').value;
-            const ageFromMonths = document.getElementById('ageFromMonths').value;
-            const ageToYears = document.getElementById('ageToYears').value;
-            const ageToMonths = document.getElementById('ageToMonths').value;
             const sex = document.getElementById('sexFilter').value;
             const standard = document.getElementById('standardFilter').value;
             const classification = document.getElementById('classificationFilter').value;
             const risk = document.getElementById('riskFilter') ? document.getElementById('riskFilter').value : '';
             const location = document.getElementById('locationFilter') ? document.getElementById('locationFilter').value : '';
             
-            console.log('Applying filters:', { municipality, barangay, ageFromYears, ageFromMonths, ageToYears, ageToMonths, sex, standard });
+            console.log('Applying filters:', { municipality, barangay, sex, standard });
             
             const tableRows = document.querySelectorAll('.user-table tbody tr');
             let visibleCount = 0;
@@ -4786,41 +4728,6 @@ header {
                     }
                 }
                 
-                // Age range filter (now supports all ages)
-                if ((ageFromYears || ageFromMonths || ageToYears || ageToMonths) && showRow) {
-                    const ageMonths = parseInt(row.dataset.ageMonths);
-                    
-                    // Parse age from separate year and month inputs
-                    let fromMonths = null;
-                    let toMonths = null;
-                    
-                    // Only process if at least one field has a value (not empty string)
-                    if (ageFromYears || ageFromMonths) {
-                        const years = parseInt(ageFromYears) || 0;
-                        const months = parseInt(ageFromMonths) || 0;
-                        fromMonths = years * 12 + months;
-                    }
-                    
-                    if (ageToYears || ageToMonths) {
-                        const years = parseInt(ageToYears) || 0;
-                        const months = parseInt(ageToMonths) || 0;
-                        toMonths = years * 12 + months;
-                    }
-                    
-                    // Validate age range (from should not be greater than to)
-                    if (fromMonths !== null && toMonths !== null && fromMonths > toMonths) {
-                        // Invalid range - hide all rows
-                        showRow = false;
-                    } else {
-                        // Apply age filters
-                        if (fromMonths !== null && ageMonths < fromMonths) {
-                            showRow = false;
-                        }
-                        if (toMonths !== null && ageMonths > toMonths) {
-                            showRow = false;
-                        }
-                    }
-                }
                 
                 // Sex filter
                 if (sex && showRow) {
@@ -5238,20 +5145,12 @@ header {
             // Test if filter elements exist
             const municipalityFilter = document.getElementById('municipalityFilter');
             const barangayFilter = document.getElementById('barangayFilter');
-            const ageFromYearsFilter = document.getElementById('ageFromYears');
-            const ageFromMonthsFilter = document.getElementById('ageFromMonths');
-            const ageToYearsFilter = document.getElementById('ageToYears');
-            const ageToMonthsFilter = document.getElementById('ageToMonths');
             const sexFilter = document.getElementById('sexFilter');
             const standardFilter = document.getElementById('standardFilter');
             
             console.log('Filter elements found:', {
                 municipality: !!municipalityFilter,
                 barangay: !!barangayFilter,
-                ageFromYears: !!ageFromYearsFilter,
-                ageFromMonths: !!ageFromMonthsFilter,
-                ageToYears: !!ageToYearsFilter,
-                ageToMonths: !!ageToMonthsFilter,
                 sex: !!sexFilter,
                 standard: !!standardFilter
             });
@@ -5446,10 +5345,6 @@ header {
         function checkRowFilters(row) {
             const municipality = document.getElementById('municipalityFilter').value;
             const barangay = document.getElementById('barangayFilter').value;
-            const ageFromYears = document.getElementById('ageFromYears').value;
-            const ageFromMonths = document.getElementById('ageFromMonths').value;
-            const ageToYears = document.getElementById('ageToYears').value;
-            const ageToMonths = document.getElementById('ageToMonths').value;
             const sex = document.getElementById('sexFilter').value;
             const standard = document.getElementById('standardFilter').value;
             
@@ -5469,36 +5364,6 @@ header {
                 }
             }
             
-            // Age range filter
-            if ((ageFromYears || ageFromMonths || ageToYears || ageToMonths)) {
-                const ageMonths = parseInt(row.dataset.ageMonths);
-                
-                let fromMonths = null;
-                let toMonths = null;
-                
-                if (ageFromYears || ageFromMonths) {
-                    const years = parseInt(ageFromYears) || 0;
-                    const months = parseInt(ageFromMonths) || 0;
-                    fromMonths = years * 12 + months;
-                }
-                
-                if (ageToYears || ageToMonths) {
-                    const years = parseInt(ageToYears) || 0;
-                    const months = parseInt(ageToMonths) || 0;
-                    toMonths = years * 12 + months;
-                }
-                
-                if (fromMonths !== null && toMonths !== null && fromMonths > toMonths) {
-                    return false;
-                } else {
-                    if (fromMonths !== null && ageMonths < fromMonths) {
-                        return false;
-                    }
-                    if (toMonths !== null && ageMonths > toMonths) {
-                        return false;
-                    }
-                }
-            }
             
             // Sex filter
             if (sex) {
