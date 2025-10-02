@@ -9046,6 +9046,7 @@ body {
             criticalAlerts: null,
             lastUpdate: null,
             isFirstLoad: true,
+            updateInProgress: false,
             cache: new Map(),
             cacheTimeout: 30000 // 30 seconds cache
         };
@@ -13312,6 +13313,10 @@ body {
             }
             
             console.log('🚀 Starting real-time dashboard updates (3-second interval)');
+            console.log('🔍 Dashboard state:', dashboardState);
+            console.log('🔍 Current barangay:', currentSelectedBarangay);
+            console.log('🔍 Document visibility:', document.visibilityState);
+            
             isRealtimeActive = true;
             
             realtimeUpdateInterval = setInterval(async () => {
@@ -13319,12 +13324,20 @@ body {
                     // Get current selected barangay
                     const currentBarangay = currentSelectedBarangay || '';
                     
+                    console.log('⏰ Real-time interval triggered');
+                    console.log('🔍 Visibility state:', document.visibilityState);
+                    console.log('🔍 Update in progress:', dashboardState.updateInProgress);
+                    console.log('🔍 Current barangay:', currentBarangay);
+                    
                     // Only update if dashboard is visible and not in loading state
                     if (document.visibilityState === 'visible' && !dashboardState.updateInProgress) {
                         console.log('🔄 Real-time update for barangay:', currentBarangay);
                         
                         // Update dashboard components silently
                         await updateDashboardForBarangay(currentBarangay);
+                        console.log('✅ Real-time update completed');
+                    } else {
+                        console.log('⏸️ Skipping real-time update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
                     }
                 } catch (error) {
                     console.error('❌ Real-time update error:', error);
