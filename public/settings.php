@@ -5824,12 +5824,18 @@ header {
                 if (data.success) {
                     // Password verified, proceed with deletion
                     console.log('Password verified! Calling delete function:', pendingDeleteAction, 'with data:', pendingDeleteData);
+                    
+                    // Store the action and data before closing modal
+                    const actionToExecute = pendingDeleteAction;
+                    const dataToPass = pendingDeleteData;
+                    
                     closePasswordConfirmModal();
-                    if (pendingDeleteAction && pendingDeleteData) {
+                    
+                    if (actionToExecute && dataToPass) {
                         console.log('Executing delete action...');
-                        pendingDeleteAction(pendingDeleteData);
+                        actionToExecute(dataToPass);
                     } else {
-                        console.error('Missing delete action or data:', {pendingDeleteAction, pendingDeleteData});
+                        console.error('Missing delete action or data:', {actionToExecute, dataToPass});
                     }
                 } else {
                     // Password verification failed
