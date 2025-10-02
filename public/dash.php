@@ -10884,9 +10884,9 @@ body {
         
         // Function to initialize trends chart with default date range
         function initializeTrendsChart() {
-            // Set default date range to cover 2024 data (when most screening occurred)
-            const fromDate = '2024-01-01';
-            const toDate = '2024-12-31';
+            // Set default date range to cover 2025 data
+            const fromDate = '2025-01-01';
+            const toDate = '2025-10-09';
             
             const fromDateInput = document.getElementById('trends-from-date');
             const toDateInput = document.getElementById('trends-to-date');
