@@ -7285,7 +7285,7 @@ header {
                                        border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
                             Edit Note
                         </button>
-                        <button onclick="deleteUserNote('${userEmail}', '${userName}')" 
+                        <button onclick="deleteUserNote('${userEmail}', '${userName}', this)" 
                                 style="padding: 10px 20px; background: #ff4444; color: white; 
                                        border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
                             Delete Note
@@ -7461,7 +7461,7 @@ header {
             });
         }
 
-        function deleteUserNote(userEmail, userName) {
+        function deleteUserNote(userEmail, userName, buttonElement) {
             if (!confirm(`Are you sure you want to delete the note for ${userName}?`)) {
                 return;
             }
@@ -7493,7 +7493,7 @@ header {
                 
                 if (data && data.success === true) {
                     alert(`Note deleted successfully for ${userName}!`);
-                    closeNoteModal(event.target);
+                    closeNoteModal(buttonElement || event.target);
                     // Refresh the page to update the note button visibility
                     location.reload();
                 } else {
