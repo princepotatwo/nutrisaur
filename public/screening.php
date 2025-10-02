@@ -2482,56 +2482,60 @@ header {
             color: var(--color-text);
         }
 
-        /* New Control Grid Layout */
+        /* New Control Grid Layout - Larger for Full Screen */
         .control-grid {
             background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.1) 100%);
             border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             border: 2px solid rgba(161, 180, 84, 0.3);
             display: grid;
             grid-template-rows: auto auto;
-            gap: 15px;
+            gap: 20px;
+            width: 100%;
+            max-width: none;
         }
 
-        /* Row 1: Action Buttons and Search */
+        /* Row 1: Action Buttons and Search - Larger for Full Screen */
         .control-row-1 {
             display: flex;
-            gap: 12px;
+            gap: 20px;
             align-items: center;
             justify-content: space-between;
+            padding: 10px 0;
         }
 
         .action-section {
             display: flex;
-            gap: 8px;
+            gap: 15px;
             align-items: center;
             flex-shrink: 0;
         }
 
         .filter-dropdowns {
             display: flex;
-            gap: 6px;
+            gap: 12px;
             flex-shrink: 0;
             align-items: center;
         }
 
         .filter-select {
-            padding: 5px 8px;
+            padding: 10px 15px;
             border: 2px solid rgba(161, 180, 84, 0.3);
             background: var(--color-bg);
-            border-radius: 6px;
-            font-size: 10px;
+            border-radius: 8px;
+            font-size: 14px;
             color: var(--color-text);
             outline: none;
             transition: all 0.3s ease;
-            min-width: 130px;
-            max-width: 150px;
+            min-width: 160px;
+            max-width: 200px;
             cursor: pointer;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            height: 45px;
         }
 
         .filter-select:hover {
@@ -2546,7 +2550,7 @@ header {
         .search-section {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
             flex: 1;
             justify-content: flex-end;
         }
@@ -2554,14 +2558,16 @@ header {
         .search-input {
             border: 2px solid rgba(161, 180, 84, 0.4);
             background: var(--color-bg);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 11px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 14px;
             color: var(--color-text);
             outline: none;
             transition: all 0.3s ease;
-            width: 250px;
+            width: 350px;
             flex-shrink: 0;
+            height: 45px;
+            box-sizing: border-box;
         }
 
         .search-input:focus {
@@ -2573,12 +2579,14 @@ header {
             background: var(--color-accent1);
             border: none;
             color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 12px 18px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 11px;
-            margin-left: 8px;
+            font-size: 14px;
+            margin-left: 0;
             transition: all 0.3s ease;
+            height: 45px;
+            min-width: 60px;
         }
 
         .search-btn:hover {
@@ -2586,11 +2594,11 @@ header {
             transform: scale(1.05);
         }
 
-        /* Row 2: Filter Controls */
+        /* Row 2: Filter Controls - Larger for Full Screen */
         .control-row-2 {
             background: linear-gradient(135deg, rgba(161, 180, 84, 0.15) 0%, rgba(161, 180, 84, 0.05) 100%);
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 10px;
+            padding: 20px;
             border: 1px solid rgba(161, 180, 84, 0.2);
             overflow: visible;
             position: relative;
@@ -2600,7 +2608,7 @@ header {
         .filter-section {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 12px;
+            gap: 20px;
             align-items: end;
             overflow: visible;
             position: relative;
@@ -2610,13 +2618,13 @@ header {
         .filter-item {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 8px;
             position: relative;
             z-index: 30;
         }
 
         .filter-item label {
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 700;
             color: var(--color-highlight);
             text-align: center;
@@ -2629,18 +2637,20 @@ header {
         .filter-item select,
         .filter-item input {
             width: 100%;
-            padding: 6px 8px;
+            padding: 12px 15px;
             border: 2px solid rgba(161, 180, 84, 0.3);
-            border-radius: 4px;
+            border-radius: 8px;
             background: var(--color-bg);
             color: var(--color-text);
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
             position: relative;
             z-index: 100;
+            height: 45px;
+            box-sizing: border-box;
         }
 
         .filter-item select:hover,
@@ -2675,20 +2685,20 @@ header {
             flex-direction: row;
             align-items: center;
             justify-content: center;
-            padding: 8px 12px;
+            padding: 12px 15px;
             border: 2px solid rgba(161, 180, 84, 0.3);
-            border-radius: 6px;
+            border-radius: 8px;
             background: var(--color-bg);
             color: var(--color-text);
             cursor: pointer;
             transition: all 0.3s ease;
             flex: 1;
             min-width: 0;
-            min-height: 38px;
+            min-height: 45px;
             font-family: inherit;
             position: relative;
             overflow: hidden;
-            gap: 4px;
+            gap: 6px;
         }
 
         .who-standard-btn:hover {
@@ -2713,7 +2723,7 @@ header {
         }
 
         .btn-title {
-            font-size: 9px;
+            font-size: 12px;
             font-weight: 600;
             line-height: 1.1;
             margin: 0;
@@ -2722,7 +2732,7 @@ header {
         }
 
         .btn-subtitle {
-            font-size: 7px;
+            font-size: 10px;
             opacity: 0.8;
             line-height: 1;
             text-align: center;
