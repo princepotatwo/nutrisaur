@@ -581,12 +581,12 @@ class DatabaseAPI {
             
             $isEmail = filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL);
             
-            // First check in users table
+            // First check in users table (include is_active check)
             if ($isEmail) {
-                $stmt = $this->pdo->prepare("SELECT user_id, username, email, password FROM users WHERE email = :email");
+                $stmt = $this->pdo->prepare("SELECT user_id, username, email, password, is_active FROM users WHERE email = :email");
                 $stmt->bindParam(':email', $usernameOrEmail);
             } else {
-                $stmt = $this->pdo->prepare("SELECT user_id, username, email, password FROM users WHERE username = :username");
+                $stmt = $this->pdo->prepare("SELECT user_id, username, email, password, is_active FROM users WHERE username = :username");
                 $stmt->bindParam(':username', $usernameOrEmail);
             }
             
@@ -596,6 +596,11 @@ class DatabaseAPI {
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 
                 if (password_verify($password, $user['password'])) {
+                    // Check if user is archived/inactive
+                    if (isset($user['is_active']) && $user['is_active'] == 0) {
+                        return ['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.'];
+                    }
+                    
                     // Login successful - no email verification required for existing users
                     
                     // Check if user is also admin
@@ -4170,6 +4175,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 $user = $result['data'][0];
                 
+                // Check if user is archived/inactive
+                if (isset($user['status']) && $user['status'] === 'inactive') {
+                    echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                    break;
+                }
+                
                 // Verify password
                 if (!password_verify($password, $user['password'])) {
                     echo json_encode(['success' => false, 'message' => 'Invalid email or password']);
@@ -4400,6 +4411,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
                     if ($user && password_verify($password, $user['password'])) {
+                        // Check if user is archived/inactive
+                        if (isset($user['status']) && $user['status'] === 'inactive') {
+                            echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                            break;
+                        }
                         echo json_encode([
                             'success' => true,
                             'message' => 'Login successful',
@@ -6802,7 +6818,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'height-for-age' => ['Severely Stunted', 'Stunted', 'Normal', 'Tall'],
                     'weight-for-height' => ['Severely Wasted', 'Wasted', 'Normal', 'Overweight', 'Obese'],
                     'bmi-for-age' => ['Underweight', 'Normal', 'Overweight', 'Obese'],
-                    'bmi-adult' => ['Underweight', 'Normal', 'Overweight', 'Obese']
+                    'bmi-adult' => ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese']
                 ];
                 
                 $classifications = $allClassifications[$whoStandard] ?? $allClassifications['weight-for-age'];
@@ -7000,6 +7016,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     
                     $message = 'NEW_USER:Account created successfully with Google Sign-In';
                 } else {
+                    // User exists - check if archived
+                    $existingUser = $result['data'][0];
+                    if (isset($existingUser['status']) && $existingUser['status'] === 'inactive') {
+                        throw new Exception('Your account has been archived. Please contact an administrator.');
+                    }
                     // User exists (EXISTING USER - go to dashboard)
                     $message = 'EXISTING_USER:Signed in successfully with Google';
                 }

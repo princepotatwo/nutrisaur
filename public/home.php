@@ -44,25 +44,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
             $loginError = "Database connection unavailable. Please try again later.";
         } else {
             try {
-                // Check if user exists in users table
-                $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE email = ? OR username = ?");
+                // Check if user exists in users table and is active
+                $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified, is_active FROM users WHERE email = ? OR username = ?");
                 $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
                 $user = $stmt->fetch();
             
                 if ($user && password_verify($password, $user['password'])) {
+                    // Check if user is archived/inactive
+                    if (isset($user['is_active']) && $user['is_active'] == 0) {
+                        $loginError = "Your account has been archived. Please contact an administrator.";
+                    } else {
                     // Set session variables regardless of email verification status
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['is_admin'] = false;
                     
-                    // Update last login
-                    $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
-                    $updateStmt->execute([$user['user_id']]);
-                    
-                    // Redirect to dashboard
-                    header("Location: /dash");
-                    exit;
+                        // Update last login
+                        $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                        $updateStmt->execute([$user['user_id']]);
+                        
+                        // Redirect to dashboard
+                        header("Location: /dash");
+                        exit;
+                    }
                 } else {
                     $loginError = "Invalid username/email or password";
                 }
@@ -374,12 +379,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             }
             
             try {
-                // Check if user exists in users table
-                $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified FROM users WHERE email = ? OR username = ?");
+                // Check if user exists in users table and is active
+                $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified, is_active FROM users WHERE email = ? OR username = ?");
                 $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
                 $user = $stmt->fetch();
                 
                 if ($user && password_verify($password, $user['password'])) {
+                    // Check if user is archived/inactive
+                    if (isset($user['is_active']) && $user['is_active'] == 0) {
+                        echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                        exit;
+                    }
+                    
                     // Set session variables
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
