@@ -1622,13 +1622,13 @@ header {
             gap: 4px;
             justify-content: center;
             align-items: center;
-            padding: 4px;
+            padding: 0;
             flex-wrap: nowrap;
             width: 100%;
             box-sizing: border-box;
             text-align: center;
-            height: 100%;
-            min-height: 100%;
+            height: auto;
+            min-height: auto;
         }
 
         .action-buttons .btn-view {
@@ -1641,16 +1641,15 @@ header {
             border: none;
             min-width: 55px;
             height: 32px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-block;
+            text-align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             white-space: nowrap;
-            flex-shrink: 0;
             background-color: var(--color-highlight) !important;
             color: white !important;
             vertical-align: middle;
             margin: 0;
+            line-height: 1;
         }
 
         .action-buttons .btn-view:hover {
@@ -2733,7 +2732,7 @@ header {
             border-collapse: separate;
             border-spacing: 0;
             margin-top: 10px;
-            table-layout: fixed;
+            table-layout: auto;
             border-radius: 15px;
             overflow: hidden;
             border: 1px solid var(--color-border);
@@ -2886,6 +2885,7 @@ header {
             vertical-align: middle;
             height: auto;
             padding: 11.25px 7.5px;
+            display: table-cell;
         }
 
         /* Center alignment utility class */
@@ -4021,10 +4021,12 @@ header {
                                             
                                             echo '<td class="text-center">' . htmlspecialchars($classificationDisplay) . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
-                                            echo '<td class="text-center action-buttons">';
+                                            echo '<td class="text-center">';
+                                            echo '<div class="action-buttons">';
                                             echo '<button class="btn-view" onclick="viewUserDetails(' . $user['id'] . ')" title="View Full Details">';
                                             echo 'View';
                                             echo '</button>';
+                                            echo '</div>';
                                             echo '</td>';
                                             echo '</tr>';
                                         }
