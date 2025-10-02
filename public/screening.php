@@ -1930,6 +1930,9 @@ header {
             text-align: center;
             height: auto;
             min-height: auto;
+            position: relative;
+            z-index: 10;
+            overflow: visible;
         }
 
         .action-buttons .btn-view {
@@ -1951,6 +1954,10 @@ header {
             vertical-align: middle;
             margin: 0;
             line-height: 1;
+            position: relative;
+            z-index: 20;
+            overflow: visible;
+            pointer-events: auto;
         }
 
         .action-buttons .btn-view:hover {
@@ -3661,6 +3668,7 @@ header {
             /* Custom scrollbar styling */
             scrollbar-width: thin;
             scrollbar-color: rgba(161, 180, 84, 0.3) transparent;
+            pointer-events: auto;
         }
 
         .table-responsive::-webkit-scrollbar {
@@ -3783,6 +3791,8 @@ header {
             border-left: 3px solid transparent;
             height: auto;
             min-height: 50px;
+            position: relative;
+            overflow: visible;
         }
 
         .user-table tbody tr:hover {
@@ -3843,6 +3853,9 @@ header {
             height: auto;
             padding: 11.25px 7.5px;
             display: table-cell;
+            position: relative;
+            z-index: 5;
+            pointer-events: auto;
         }
 
         /* Center alignment utility class */
@@ -5251,23 +5264,29 @@ header {
                     console.log(`   - has click listeners:`, button.onclick !== null);
                     console.log(`   - parent element:`, button.parentElement);
                     
-                    // Add additional click listener for debugging
-                    button.addEventListener('click', function(e) {
-                        console.log('🎯 Click event fired on view button:', e.target);
-                        console.log('   - Button text:', e.target.textContent);
-                        console.log('   - onclick attribute:', e.target.getAttribute('onclick'));
-                        
-                        // Try to manually execute the onclick if it exists
-                        const onclickAttr = e.target.getAttribute('onclick');
-                        if (onclickAttr) {
-                            console.log('🔧 Attempting to execute onclick manually...');
-                            try {
-                                eval(onclickAttr);
-                            } catch (error) {
-                                console.error('❌ Error executing onclick:', error);
+                        // Add additional click listener for debugging
+                        button.addEventListener('click', function(e) {
+                            console.log('🎯 Click event fired on view button:', e.target);
+                            console.log('   - Button text:', e.target.textContent);
+                            console.log('   - onclick attribute:', e.target.getAttribute('onclick'));
+                            console.log('   - Button position:', e.target.getBoundingClientRect());
+                            console.log('   - Button z-index:', window.getComputedStyle(e.target).zIndex);
+                            console.log('   - Button pointer-events:', window.getComputedStyle(e.target).pointerEvents);
+                            console.log('   - Parent container:', e.target.parentElement);
+                            console.log('   - Parent z-index:', window.getComputedStyle(e.target.parentElement).zIndex);
+                            console.log('   - Parent overflow:', window.getComputedStyle(e.target.parentElement).overflow);
+                            
+                            // Try to manually execute the onclick if it exists
+                            const onclickAttr = e.target.getAttribute('onclick');
+                            if (onclickAttr) {
+                                console.log('🔧 Attempting to execute onclick manually...');
+                                try {
+                                    eval(onclickAttr);
+                                } catch (error) {
+                                    console.error('❌ Error executing onclick:', error);
+                                }
                             }
-                        }
-                    });
+                        });
                 });
                 
                 // Test if viewUserDetails function is available
