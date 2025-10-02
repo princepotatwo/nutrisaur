@@ -542,6 +542,8 @@ if ($db->isAvailable()) {
     display: flex;
     flex-direction: column;
     backdrop-filter: blur(10px);
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-280px); /* Show only 40px */
 }
 
 /* Dark theme navbar styles */
@@ -789,6 +791,58 @@ if ($db->isAvailable()) {
 /* Light theme navbar footer before styles */
 .light-theme .navbar-footer::before {
     background: linear-gradient(90deg, transparent, rgba(102, 187, 106, 0.2), transparent);
+}
+
+/* ===== MODERN NAVBAR HOVER SYSTEM ===== */
+.navbar:hover {
+    transform: translateX(0); /* Show full navbar */
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+}
+
+.navbar-logo-text,
+.navbar span:not(.navbar-icon),
+.navbar-footer {
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateX(-10px);
+    white-space: nowrap;
+}
+
+.navbar:hover .navbar-logo-text,
+.navbar:hover span:not(.navbar-icon),
+.navbar:hover .navbar-footer {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Minimized state */
+.navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.navbar:hover .navbar-icon {
+    transform: scale(1.05);
+    color: var(--color-highlight);
+}
+
+/* Expanded state */
+.navbar:hover {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    padding-top: 0;
+}
+
+/* ===== BODY PADDING FOR NAVBAR ===== */
+body {
+    padding-left: 40px; /* Space for minimized navbar */
+    transition: padding-left 0.4s ease;
 }
 
 .navbar-footer div:first-child {
@@ -4030,6 +4084,115 @@ header {
             margin-bottom: 10px;
         }
 
+        /* ===== MOBILE TOP NAVIGATION ===== */
+        .mobile-top-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--color-card);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .mobile-nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            padding: 0 20px;
+            max-width: 100%;
+        }
+
+        .mobile-nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-logo-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+
+        .mobile-logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .mobile-nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mobile-nav-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(161, 180, 84, 0.1);
+            color: var(--color-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(161, 180, 84, 0.2);
+        }
+
+        .mobile-nav-icon:hover,
+        .mobile-nav-icon.active {
+            background: var(--color-highlight);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+        }
+
+        .mobile-nav-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (min-width: 769px) {
+            .mobile-top-nav, .mobile-nav-overlay, .mobile-nav-sidebar, .mobile-nav-close, .nav-overlay {
+                display: none !important;
+            }
+            .navbar:hover {
+                width: 320px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                display: none !important;
+            }
+            .mobile-top-nav {
+                display: block !important;
+            }
+            body {
+                padding-left: 0 !important;
+                padding-top: 60px !important;
+                width: 100vw !important;
+                max-width: 100vw !important;
+                overflow-x: hidden !important;
+                min-height: 100vh !important;
+            }
+            .dashboard {
+                margin-left: 0 !important;
+                padding: 15px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+        }
+
     </style>
 </head>
 <body class="light-theme">
@@ -4056,6 +4219,58 @@ header {
         <div class="navbar-footer">
             <div>NutriSaur v2.0 • © 2025</div>
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
+        </div>
+    </div>
+
+    <!-- Mobile Top Navigation -->
+    <div class="mobile-top-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-logo">
+                <img src="/logo.png" alt="Logo" class="mobile-logo-img">
+                <span class="mobile-logo-text">NutriSaur</span>
+            </div>
+            <div class="mobile-nav-icons">
+                <a href="dash" class="mobile-nav-icon" title="Dashboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </a>
+                <a href="screening" class="mobile-nav-icon" title="MHO Assessment">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+                <a href="event" class="mobile-nav-icon" title="Events">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </a>
+                <a href="ai" class="mobile-nav-icon" title="AI Chatbot">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </a>
+                <a href="settings" class="mobile-nav-icon active" title="Settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </a>
+                <a href="logout" class="mobile-nav-icon" title="Logout" style="color: #ff5252;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16,17 21,12 16,7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -6874,6 +7089,97 @@ header {
             </div>
         </div>
     </div>
+
+    <script>
+        // ===== MODERN 2025 NAVIGATION SYSTEM =====
+        let navState = {
+            isMobile: window.innerWidth <= 768,
+            isHovered: false
+        };
+        const navbar = document.querySelector('.navbar');
+        const mobileTopNav = document.querySelector('.mobile-top-nav');
+        const body = document.body;
+
+        function initNavigation() {
+            console.log('🚀 Initializing Navigation System...');
+            
+            if (!navbar || !mobileTopNav) {
+                console.error('❌ Navigation elements not found');
+                return;
+            }
+            
+            console.log('📱 Mobile mode:', navState.isMobile);
+            
+            setupEventListeners();
+            updateNavbarState();
+            updateBodyPadding();
+            
+            console.log('✅ Navigation system initialized');
+        }
+
+        function setupEventListeners() {
+            // Desktop navbar hover events
+            if (navbar) {
+                navbar.addEventListener('mouseenter', () => {
+                    if (!navState.isMobile) {
+                        navState.isHovered = true;
+                        updateNavbarState();
+                        updateBodyPadding();
+                    }
+                });
+
+                navbar.addEventListener('mouseleave', () => {
+                    if (!navState.isMobile) {
+                        navState.isHovered = false;
+                        updateNavbarState();
+                        updateBodyPadding();
+                    }
+                });
+            }
+
+            // Window resize handler
+            window.addEventListener('resize', handleResize);
+        }
+
+        function updateNavbarState() {
+            if (!navbar) return;
+
+            if (navState.isHovered && !navState.isMobile) {
+                navbar.classList.add('expanded');
+                navbar.classList.remove('collapsed');
+            } else {
+                navbar.classList.add('collapsed');
+                navbar.classList.remove('expanded');
+            }
+        }
+
+        function updateBodyPadding() {
+            if (!navState.isMobile) {
+                if (navState.isHovered) {
+                    body.style.paddingLeft = '320px'; // Expanded navbar width
+                } else {
+                    body.style.paddingLeft = '40px'; // Minimized navbar width
+                }
+            }
+        }
+
+        function handleResize() {
+            const wasMobile = navState.isMobile;
+            navState.isMobile = window.innerWidth <= 768;
+            
+            if (wasMobile !== navState.isMobile) {
+                updateNavbarState();
+                updateBodyPadding();
+            }
+        }
+
+        // Initialize navigation system
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavigation);
+        } else {
+            initNavigation();
+        }
+    </script>
 
 </body>
 </html>
