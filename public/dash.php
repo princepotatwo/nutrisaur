@@ -7938,7 +7938,31 @@ body {
     background: linear-gradient(135deg, var(--color-highlight), rgba(142, 185, 110, 0.8));
     box-shadow: 0 4px 15px rgba(142, 185, 110, 0.3);
 }
-</style>
+            /* Seamless update transitions */
+            .chart-container, .metric-card, .data-display {
+                transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            }
+            
+            .updating {
+                opacity: 0.7;
+                transform: scale(0.98);
+            }
+            
+            .chart-updating {
+                opacity: 0.8;
+                filter: blur(0.5px);
+            }
+            
+            .smooth-fade {
+                animation: smoothFade 0.4s ease-in-out;
+            }
+            
+            @keyframes smoothFade {
+                0% { opacity: 1; }
+                50% { opacity: 0.8; }
+                100% { opacity: 1; }
+            }
+        </style>
 <body class="light-theme">
 
     <!-- Mobile Top Navigation -->
@@ -13314,6 +13338,31 @@ body {
         // Real-time dashboard updates (every 3 seconds)
         let realtimeUpdateInterval = null;
         let isRealtimeActive = false;
+        
+        // Seamless update functions
+        function addUpdatingClass(selector) {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                el.classList.add('updating');
+            });
+        }
+        
+        function removeUpdatingClass(selector) {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                el.classList.remove('updating');
+            });
+        }
+        
+        function addSmoothFade(selector) {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                el.classList.add('smooth-fade');
+                setTimeout(() => {
+                    el.classList.remove('smooth-fade');
+                }, 400);
+            });
+        }
         
         // Function to start real-time updates
         function startRealtimeUpdates() {

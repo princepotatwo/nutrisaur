@@ -2032,29 +2032,6 @@ header {
             background-color: rgba(255, 193, 7, 0.25);
         }
 
-        /* Note button with existing notes */
-        .action-buttons .btn-note.has-notes {
-            background-color: #4CAF50 !important;
-            color: white !important;
-            border: 2px solid #4CAF50 !important;
-            font-weight: 600;
-        }
-
-        .action-buttons .btn-note.has-notes:hover {
-            background-color: #45a049 !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3) !important;
-        }
-
-        .light-theme .action-buttons .btn-note.has-notes {
-            background-color: rgba(76, 175, 80, 0.9) !important;
-            color: white !important;
-            border: 2px solid rgba(76, 175, 80, 0.9) !important;
-        }
-
-        .light-theme .action-buttons .btn-note.has-notes:hover {
-            background-color: rgba(76, 175, 80, 1) !important;
-        }
 
         /* Flagged User Row Highlighting */
         .flagged-user-row {
@@ -2311,6 +2288,16 @@ header {
 
         .profile-note-btn:hover {
             background: rgba(255, 193, 7, 1);
+            transform: translateY(-1px);
+        }
+
+        .profile-add-note-btn {
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+        }
+
+        .profile-add-note-btn:hover {
+            background: rgba(76, 175, 80, 1);
             transform: translateY(-1px);
         }
 
@@ -5210,16 +5197,13 @@ header {
                                             echo '<button class="btn-view" onclick="console.log(\'🔍 View button clicked for user EMAIL: ' . htmlspecialchars($user['email']) . '\'); viewUserDetails(\'' . htmlspecialchars($user['email']) . '\')" title="View Full Details">';
                                             echo 'View';
                                             echo '</button>';
-                                            // Check if user has notes
+                                            // Only show note button if user has notes
                                             $hasNotes = !empty($user['notes']);
-                                            $notePreview = $hasNotes ? 
-                                                (strlen($user['notes']) > 30 ? substr($user['notes'], 0, 30) . '...' : $user['notes']) : 
-                                                'Note';
-                                            $noteTitle = $hasNotes ? 'View/Edit Note: ' . htmlspecialchars($notePreview) : 'Add Note';
-                                            
-                                            echo '<button class="btn-note' . ($hasNotes ? ' has-notes' : '') . '" onclick="addUserNote(\'' . htmlspecialchars($user['email']) . '\', \'' . htmlspecialchars($user['name']) . '\')" title="' . htmlspecialchars($noteTitle) . '">';
-                                            echo htmlspecialchars($notePreview);
-                                            echo '</button>';
+                                            if ($hasNotes) {
+                                                echo '<button class="btn-note" onclick="addUserNote(\'' . htmlspecialchars($user['email']) . '\', \'' . htmlspecialchars($user['name']) . '\')" title="View/Edit Note">';
+                                                echo 'Note';
+                                                echo '</button>';
+                                            }
                                             echo '</div>';
                                             echo '</td>';
                                             echo '</tr>';
@@ -5985,9 +5969,14 @@ header {
                             </div>
                         </div>
                         <div class="profile-header-buttons">
-                            <button class="profile-action-btn profile-note-btn" onclick="closeUserModal(this); addUserNote('${userData.email}', '${userData.name}');" title="Add Note">
-                                Note
-                            </button>
+                            ${userData.notes && userData.notes.trim() ? 
+                                `<button class="profile-action-btn profile-note-btn" onclick="closeUserModal(this); addUserNote('${userData.email}', '${userData.name}');" title="View/Edit Note">
+                                    Note
+                                </button>` : 
+                                `<button class="profile-action-btn profile-add-note-btn" onclick="closeUserModal(this); addUserNote('${userData.email}', '${userData.name}');" title="Add Note">
+                                    Add Note
+                                </button>`
+                            }
                             <button class="profile-action-btn profile-flag-btn ${userData.is_flagged == 1 ? 'flagged' : ''}" onclick="toggleUserFlag('${userData.email}', '${userData.name}', ${userData.is_flagged == 1 ? 'true' : 'false'});" title="${userData.is_flagged == 1 ? 'Unflag User' : 'Flag User'}">
                                 ${userData.is_flagged == 1 ? 'Unflag' : 'Flag'}
                             </button>
@@ -7307,11 +7296,6 @@ header {
         function saveUserNote(userEmail, userName) {
             const noteText = document.getElementById('noteText').value.trim();
             
-            if (!noteText) {
-                alert('Please enter a note before saving.');
-                return;
-            }
-            
             console.log('💾 Saving note for:', userEmail, 'Note:', noteText);
             
             // Show loading state
@@ -7320,9 +7304,8 @@ header {
             saveBtn.textContent = 'Saving...';
             saveBtn.disabled = true;
             
-            // Create note with timestamp
-            const timestamp = new Date().toLocaleString();
-            const noteWithTimestamp = `[${timestamp}] ${noteText}`;
+            // Prepare note - if empty, save as empty (this will remove the note)
+            const noteToSave = noteText ? `[${new Date().toLocaleString()}] ${noteText}` : '';
             
             // Save note via API
             fetch('api/DatabaseAPI.php?action=save_user_note', {
@@ -7332,7 +7315,7 @@ header {
                 },
                 body: JSON.stringify({ 
                     email: userEmail, 
-                    note: noteWithTimestamp 
+                    note: noteToSave 
                 })
             })
             .then(response => response.json())
@@ -7340,8 +7323,14 @@ header {
                 console.log('📝 Note save response:', data);
                 
                 if (data.success) {
-                    alert(`Note saved successfully for ${userName}!`);
+                    if (noteText) {
+                        alert(`Note saved successfully for ${userName}!`);
+                    } else {
+                        alert(`Note removed for ${userName}!`);
+                    }
                     closeNoteModal(saveBtn);
+                    // Refresh the page to update the note button visibility
+                    location.reload();
                 } else {
                     alert('Error saving note: ' + (data.message || 'Unknown error'));
                     saveBtn.textContent = originalText;
