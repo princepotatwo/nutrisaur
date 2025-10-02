@@ -2374,6 +2374,49 @@ header {
             border: none !important;
         }
 
+        /* Table responsive behavior for different screen sizes */
+        @media (max-width: 1400px) {
+            .table-responsive {
+                overflow-x: auto;
+            }
+            
+            .user-table {
+                min-width: 1200px;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .table-responsive {
+                overflow-x: auto;
+            }
+            
+            .user-table {
+                min-width: 1000px;
+            }
+            
+            .user-table th,
+            .user-table td {
+                min-width: 70px;
+                padding: 8px 5px;
+                font-size: 11px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .table-responsive {
+                overflow-x: auto;
+            }
+            
+            .user-table {
+                min-width: 900px;
+            }
+            
+            .user-table th:nth-child(1),
+            .user-table td:nth-child(1) {
+                min-width: 200px !important;
+            }
+        }
+
         /* Light theme adjustments */
         .light-theme .control-grid {
             background: linear-gradient(135deg, var(--color-card) 0%, rgba(102, 187, 106, 0.1) 100%);
@@ -2745,32 +2788,63 @@ header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
+        /* Table responsive container - main definition */
         .table-responsive {
-            border-radius: 12px;
-            border: 1px solid var(--color-border);
             width: 100%;
             max-width: 100%;
+            overflow-x: auto;
+            overflow-y: visible;
+            border-radius: 15px;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            background: var(--color-card);
+            margin-top: 15px;
+            position: relative;
+            /* Custom scrollbar styling */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(161, 180, 84, 0.3) transparent;
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: rgba(161, 180, 84, 0.1);
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: rgba(161, 180, 84, 0.3);
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: rgba(161, 180, 84, 0.5);
         }
 
         .user-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-top: 10px;
+            margin: 0;
             table-layout: auto;
             border-radius: 15px;
             overflow: hidden;
-            border: 1px solid var(--color-border);
-            box-shadow: 0 4px 20px var(--color-shadow);
+            border: none;
+            box-shadow: none;
             min-width: 100%;
+            max-width: 100%;
+            background: var(--color-card);
         }
 
         /* Auto-fit columns - automatically distributes space equally */
         .user-table th,
         .user-table td {
-            width: auto !important;
-            min-width: 60px;
+            width: auto;
+            min-width: 80px;
             max-width: none;
+            box-sizing: border-box;
         }
 
         /* Ensure name column shows full names - HIGH PRIORITY */
@@ -2936,11 +3010,7 @@ header {
 
 
 
-        /* Responsive table wrapper */
-        .table-responsive {
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
+        /* Responsive table wrapper - duplicate removed */
 
 
         /* Auto-fit columns - automatically distributes space equally */
