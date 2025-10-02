@@ -7247,6 +7247,11 @@ header {
                 noteText = match[2];
             }
             
+            // Clean up any remaining timestamps in the note text
+            if (noteText) {
+                noteText = noteText.replace(/\[\d+\/\d+\/\d+, \d+:\d+:\d+ [AP]M\]/g, '').trim();
+            }
+            
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.style.display = 'block';
@@ -7308,6 +7313,11 @@ header {
             if (existingNotes && existingNotes.match(/^\[([^\]]+)\]/)) {
                 const match = existingNotes.match(/^\[([^\]]+)\]\s*(.*)/);
                 noteText = match[2];
+            }
+            
+            // Clean up any remaining timestamps in the note text
+            if (noteText) {
+                noteText = noteText.replace(/\[\d+\/\d+\/\d+, \d+:\d+:\d+ [AP]M\]/g, '').trim();
             }
             
             const modal = document.createElement('div');
@@ -7397,7 +7407,7 @@ header {
             saveBtn.disabled = true;
             
             // Prepare note - if empty, save as empty (this will remove the note)
-            const noteToSave = noteText ? `[${new Date().toLocaleString()}] ${noteText}` : '';
+            const noteToSave = noteText ? `[${new Date().toLocaleDateString()}] ${noteText}` : '';
             
             // Save note via API
             fetch('api/DatabaseAPI.php?action=save_user_note', {
