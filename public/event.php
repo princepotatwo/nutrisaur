@@ -180,61 +180,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if ($result['success']) {
             $eventId = $nextId; // Use the program_id we calculated, not insert_id
             
-            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING (with location filtering)
+            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING using centralized function
             $notificationType = $_POST['notification_type'] ?? 'push';
+            $notificationMessage = '';
             if ($notificationType !== 'none') {
-                error_log("📱 Sending notifications for event ID: $eventId");
+                error_log("📱 Sending notifications for event ID: $eventId using sendEventNotifications function");
                 
-                // Use the centralized getFCMTokensByLocation function for consistent filtering
-                $fcmTokenData = getFCMTokensByLocation($location);
-                error_log("📱 FCM tokens found: " . count($fcmTokenData) . " for location: '$location'");
-                
-                if (!empty($fcmTokenData)) {
-                    // Enhanced notification data with event_id
-                    $notificationData = [
-                        'title' => "🎯 Event: $title",
-                        'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
-                        'target_user' => 'all',
-                        'event_id' => $eventId,
-                        'event_type' => $type,
-                        'event_location' => $location,
-                        'event_date' => date('M j, Y g:i A', strtotime($date_time))
-                    ];
+                try {
+                    // Use the centralized sendEventNotifications function for consistency
+                    $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer);
                     
-                    // Send FCM notifications directly
-                    $successCount = 0;
-                    foreach ($fcmTokenData as $tokenData) {
-                        $fcmToken = $tokenData['fcm_token'];
-                        $userEmail = $tokenData['user_email'];
-                        
-                        error_log("🔍 Attempting to send FCM notification to user: $userEmail, token: " . substr($fcmToken, 0, 20) . "...");
-                        
-                        // Create proper data payload for event notifications
-                        $dataPayload = [
-                            'type' => 'event_created',
-                            'title' => $notificationData['title'],
-                            'body' => $notificationData['body'],
-                            'event_id' => $eventId,
-                            'event_type' => $type,
-                            'event_location' => $location,
-                            'event_date' => date('M j, Y g:i A', strtotime($date_time)),
-                            'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
-                        ];
-                        
-                        $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationData['title'], $notificationData['body'], $dataPayload);
-                        error_log("🔍 FCM Result: " . json_encode($fcmResult));
-                        if ($fcmResult['success']) {
-                            $successCount++;
-                            error_log("✅ FCM notification sent successfully to $userEmail");
-                        } else {
-                            error_log("❌ FCM notification failed for $userEmail: " . ($fcmResult['error'] ?? 'Unknown error'));
-                        }
+                    if ($notificationResult['success']) {
+                        $notificationMessage = $notificationResult['message'];
+                        error_log("✅ Notification sent successfully: " . $notificationMessage);
+                    } else {
+                        $notificationMessage = $notificationResult['message'];
+                        error_log("⚠️ Notification warning: " . $notificationMessage);
                     }
-                    
-                    error_log("📱 Notification sent to " . $successCount . " users directly via FCM");
-                } else {
-                    error_log("⚠️ No FCM tokens found for location: $location");
+                } catch (Exception $e) {
+                    error_log("❌ Notification error: " . $e->getMessage());
+                    $notificationMessage = 'Event created but notification failed: ' . $e->getMessage();
                 }
+            } else {
+                $notificationMessage = 'Event created without notifications';
             }
         } else {
             throw new Exception('Failed to insert event: ' . $result['message']);
@@ -246,7 +214,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
-            'message' => 'Event saved and notifications sent successfully!',
+            'message' => $notificationMessage ?: 'Event saved successfully!',
             'event_id' => $eventId
         ]);
         exit;
@@ -734,22 +702,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         
         error_log("✅ AJAX Event created successfully with ID: $eventId");
         
-        // Send notifications using the SAME approach as dash.php
+        // Send notifications using the sendEventNotifications function
         $notificationMessage = '';
         if ($notificationType !== 'none') {
             try {
-                // Use the EXACT same notification approach as dash.php
-                $notificationData = [
-                    'title' => "🎯 Event: " . $title,
-                    'body' => "New event: $title at $location on " . date('M j, Y g:i A', strtotime($date_time)),
-                    'target_user' => 'all' // Send to all users since we don't have specific user targeting
-                ];
+                error_log("📱 AJAX: Sending notifications for event: $title at $location");
                 
-                // Use a simple, direct approach - just log that notification would be sent
-                // This avoids the complex notification system that's causing timeouts
-                $notificationMessage = "Event created successfully. Notification system is temporarily disabled to prevent timeouts.";
+                // Use the centralized sendEventNotifications function
+                $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer);
                 
-                error_log("✅ AJAX Notification sent via DatabaseAPI: $notificationMessage");
+                if ($notificationResult['success']) {
+                    $notificationMessage = $notificationResult['message'];
+                    error_log("✅ AJAX Notification sent successfully: " . $notificationMessage);
+                } else {
+                    $notificationMessage = $notificationResult['message'];
+                    error_log("⚠️ AJAX Notification warning: " . $notificationMessage);
+                }
+                
             } catch (Exception $e) {
                 error_log("❌ AJAX Notification error: " . $e->getMessage());
                 $notificationMessage = 'Event created but notification failed: ' . $e->getMessage();
