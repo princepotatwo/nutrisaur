@@ -2483,7 +2483,7 @@ header {
             color: var(--color-text);
         }
 
-        /* New Control Grid Layout - Properly Contained */
+        /* New Control Grid Layout - Strictly Contained */
         .control-grid {
             background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.1) 100%);
             border-radius: 12px;
@@ -2497,9 +2497,11 @@ header {
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Row 1: Action Buttons and Search - Properly Contained */
+        /* Row 1: Action Buttons and Search - Strictly Contained */
         .control-row-1 {
             display: flex;
             gap: 20px;
@@ -2510,6 +2512,7 @@ header {
             max-width: 100%;
             box-sizing: border-box;
             overflow: hidden;
+            position: static;
         }
 
         .action-section {
@@ -2613,8 +2616,7 @@ header {
             padding: 20px;
             border: 1px solid rgba(161, 180, 84, 0.2);
             overflow: visible;
-            position: relative;
-            z-index: 50;
+            position: static;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
@@ -2626,8 +2628,7 @@ header {
             gap: 20px;
             align-items: end;
             overflow: visible;
-            position: relative;
-            z-index: 40;
+            position: static;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
@@ -2637,8 +2638,7 @@ header {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            position: relative;
-            z-index: 30;
+            position: static;
         }
 
         .filter-item label {
@@ -2665,8 +2665,7 @@ header {
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
-            position: relative;
-            z-index: 100;
+            position: static;
             height: 45px;
             box-sizing: border-box;
         }
