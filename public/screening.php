@@ -2867,7 +2867,7 @@ header {
             border-right: 1px solid rgba(161, 180, 84, 0.1);
         }
 
-        /* Ensure actions column is always visible */
+        /* Ensure actions column is always visible and has right border */
         .user-table th:last-child,
         .user-table td:last-child {
             white-space: nowrap;
@@ -2875,6 +2875,7 @@ header {
             text-overflow: clip;
             min-width: 140px;
             text-align: center;
+            border-right: 1px solid rgba(161, 180, 84, 0.1);
         }
 
         /* Center alignment utility class */
