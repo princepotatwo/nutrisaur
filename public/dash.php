@@ -8931,9 +8931,7 @@ body {
             await updateSevereCasesList(barangay);
             
             // Update screening responses for the selected barangay
-            setTimeout(() => {
-                loadScreeningResponses(barangay);
-            }, 1000);
+            // Note: loadScreeningResponses function removed - using other update methods
         }
 
         // Function to calculate total programs across all areas
@@ -9110,9 +9108,22 @@ body {
                 }
                 
                 // Get severely cases from WHO classifications
-                const severelyUnderweight = whoData.data.weight_for_age?.['Severely Underweight'] || 0;
-                const severelyStunted = whoData.data.height_for_age?.['Severely Stunted'] || 0;
-                const severelyWasted = whoData.data.weight_for_height?.['Severely Wasted'] || 0;
+                // Handle both bulk API format and individual API format
+                let severelyUnderweight = 0;
+                let severelyStunted = 0;
+                let severelyWasted = 0;
+                
+                if (whoData.data.weight_for_age) {
+                    severelyUnderweight = whoData.data.weight_for_age['Severely Underweight'] || 0;
+                }
+                if (whoData.data.height_for_age) {
+                    severelyStunted = whoData.data.height_for_age['Severely Stunted'] || 0;
+                }
+                if (whoData.data.weight_for_height) {
+                    severelyWasted = whoData.data.weight_for_height['Severely Wasted'] || 0;
+                }
+                
+                console.log('📊 Raw WHO data structure:', whoData.data);
                 
                 console.log('📊 WHO Severely Cases:');
                 console.log('  - Severely Underweight (WFA):', severelyUnderweight);
@@ -9169,7 +9180,7 @@ body {
             dashboardState.updateInProgress = true;
             
             // Set a timeout to reset the flag in case something goes wrong
-            const resetTimeout = setTimeout(() => {
+            let resetTimeout = setTimeout(() => {
                 if (dashboardState.updateInProgress) {
                     console.log('🔧 Auto-resetting stuck updateInProgress flag');
                     dashboardState.updateInProgress = false;
