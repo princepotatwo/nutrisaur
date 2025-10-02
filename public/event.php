@@ -7934,5 +7934,96 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
             }
         });
     </script>
+
+    <script>
+        // ===== MODERN 2025 NAVIGATION SYSTEM =====
+        let navState = {
+            isMobile: window.innerWidth <= 768,
+            isHovered: false
+        };
+        const navbar = document.querySelector('.navbar');
+        const mobileTopNav = document.querySelector('.mobile-top-nav');
+        const body = document.body;
+
+        function initNavigation() {
+            console.log('🚀 Initializing Navigation System...');
+            
+            if (!navbar || !mobileTopNav) {
+                console.error('❌ Navigation elements not found');
+                return;
+            }
+            
+            console.log('📱 Mobile mode:', navState.isMobile);
+            
+            setupEventListeners();
+            updateNavbarState();
+            updateBodyPadding();
+            
+            console.log('✅ Navigation system initialized');
+        }
+
+        function setupEventListeners() {
+            // Desktop navbar hover events
+            if (navbar) {
+                navbar.addEventListener('mouseenter', () => {
+                    if (!navState.isMobile) {
+                        navState.isHovered = true;
+                        updateNavbarState();
+                        updateBodyPadding();
+                    }
+                });
+
+                navbar.addEventListener('mouseleave', () => {
+                    if (!navState.isMobile) {
+                        navState.isHovered = false;
+                        updateNavbarState();
+                        updateBodyPadding();
+                    }
+                });
+            }
+
+            // Window resize handler
+            window.addEventListener('resize', handleResize);
+        }
+
+        function updateNavbarState() {
+            if (!navbar) return;
+
+            if (navState.isHovered && !navState.isMobile) {
+                navbar.classList.add('expanded');
+                navbar.classList.remove('collapsed');
+            } else {
+                navbar.classList.add('collapsed');
+                navbar.classList.remove('expanded');
+            }
+        }
+
+        function updateBodyPadding() {
+            if (!navState.isMobile) {
+                if (navState.isHovered) {
+                    body.style.paddingLeft = '320px'; // Expanded navbar width
+                } else {
+                    body.style.paddingLeft = '40px'; // Minimized navbar width
+                }
+            }
+        }
+
+        function handleResize() {
+            const wasMobile = navState.isMobile;
+            navState.isMobile = window.innerWidth <= 768;
+            
+            if (wasMobile !== navState.isMobile) {
+                updateNavbarState();
+                updateBodyPadding();
+            }
+        }
+
+        // Initialize navigation system
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavigation);
+        } else {
+            initNavigation();
+        }
+    </script>
 </body>
 </html>
