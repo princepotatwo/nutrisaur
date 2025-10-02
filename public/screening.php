@@ -2259,6 +2259,55 @@ header {
             transform: scale(1.1);
         }
 
+        /* Profile Header Buttons */
+        .profile-header-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .profile-action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-note-btn {
+            background: rgba(255, 193, 7, 0.9);
+            color: #1B1B1B;
+        }
+
+        .profile-note-btn:hover {
+            background: rgba(255, 193, 7, 1);
+            transform: translateY(-1px);
+        }
+
+        .profile-flag-btn {
+            background: rgba(244, 67, 54, 0.9);
+            color: white;
+        }
+
+        .profile-flag-btn.flagged {
+            background: rgba(76, 175, 80, 0.9);
+        }
+
+        .profile-flag-btn:hover {
+            background: rgba(244, 67, 54, 1);
+            transform: translateY(-1px);
+        }
+
+        .profile-flag-btn.flagged:hover {
+            background: rgba(76, 175, 80, 1);
+        }
+
         .profile-content {
             padding: 30px;
             overflow-y: auto;
@@ -3476,6 +3525,18 @@ header {
                 font-size: 9px;
                 min-width: 40px;
                 height: 24px;
+            }
+
+            .profile-header-buttons {
+                flex-direction: column;
+                gap: 5px;
+                top: 10px;
+                right: 10px;
+            }
+
+            .profile-action-btn {
+                padding: 6px 12px;
+                font-size: 10px;
             }
 
             .filter-dropdowns {
@@ -5892,12 +5953,20 @@ header {
                                 ${userData.is_pregnant === 'Yes' ? '<span class="badge badge-orange">Pregnant</span>' : ''}
                             </div>
                         </div>
-                        <button class="profile-close-btn" onclick="closeUserModal(this)">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
+                        <div class="profile-header-buttons">
+                            <button class="profile-action-btn profile-note-btn" onclick="closeUserModal(this); addUserNote('${userData.email}', '${userData.name}');" title="Add Note">
+                                Note
+                            </button>
+                            <button class="profile-action-btn profile-flag-btn ${userData.is_flagged == 1 ? 'flagged' : ''}" onclick="toggleUserFlag('${userData.email}', '${userData.name}', ${userData.is_flagged == 1 ? 'true' : 'false'});" title="${userData.is_flagged == 1 ? 'Unflag User' : 'Flag User'}">
+                                ${userData.is_flagged == 1 ? 'Unflag' : 'Flag'}
+                            </button>
+                            <button class="profile-close-btn" onclick="closeUserModal(this)">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="profile-content">
