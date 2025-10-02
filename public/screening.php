@@ -2167,7 +2167,7 @@ header {
 
         .profile-header {
             background: linear-gradient(135deg, var(--color-highlight) 0%, rgba(161, 180, 84, 0.8) 100%);
-            padding: 30px;
+            padding: 20px 30px;
             display: flex;
             align-items: center;
             gap: 20px;
@@ -2206,9 +2206,16 @@ header {
         }
 
         .profile-subtitle {
-            margin: 0 0 15px 0;
+            margin: 0 0 5px 0;
             opacity: 0.9;
             font-size: 16px;
+        }
+
+        .profile-screening-date {
+            margin: 0 0 10px 0;
+            opacity: 0.8;
+            font-size: 13px;
+            font-style: italic;
         }
 
         .profile-badges {
@@ -2243,13 +2250,13 @@ header {
 
         .profile-close-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
+            top: 10px;
+            right: 10px;
+            background: #ff4444;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2257,18 +2264,19 @@ header {
             color: white;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            z-index: 10;
         }
 
         .profile-close-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: #ff6666;
             transform: scale(1.1);
         }
 
         /* Profile Header Buttons */
         .profile-header-buttons {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 10px;
+            right: 50px;
             display: flex;
             gap: 10px;
             align-items: center;
@@ -5954,6 +5962,24 @@ header {
                 });
             };
 
+            // Get pregnancy status display
+            const getPregnancyStatus = (isPregnant) => {
+                if (isPregnant === 'Yes') return 'Pregnant';
+                if (isPregnant === '0' || isPregnant === 0) return 'Not Pregnant';
+                return isPregnant || 'N/A';
+            };
+
+            // Format screening date for subtitle
+            const formatScreeningDate = (dateString) => {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return `Screened on ${date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                })}`;
+            };
+
             const modal = document.createElement('div');
             modal.className = 'modal user-profile-modal';
             modal.innerHTML = `
@@ -5967,6 +5993,7 @@ header {
                         <div class="profile-title">
                             <h2>${userData.name || 'Unknown User'}</h2>
                             <p class="profile-subtitle">${userData.email || 'No email provided'}</p>
+                            ${userData.screening_date ? `<p class="profile-screening-date">${formatScreeningDate(userData.screening_date)}</p>` : ''}
                             <div class="profile-badges">
                                 <span class="badge ${userData.sex === 'Male' ? 'badge-blue' : 'badge-pink'}">${userData.sex || 'N/A'}</span>
                                 ${userData.is_pregnant === 'Yes' ? '<span class="badge badge-orange">Pregnant</span>' : ''}
@@ -6018,15 +6045,21 @@ header {
                                         <span class="info-value">${ageDisplay}</span>
                                     </div>
                                     <div class="info-row">
-                                        <span class="info-label">Gender</span>
+                                        <span class="info-label">Sex</span>
                                         <span class="info-value">${userData.sex || 'N/A'}</span>
                                     </div>
-                                    ${userData.is_pregnant ? `
+                                    <div class="info-row">
+                                        <span class="info-label">Weight</span>
+                                        <span class="info-value">${userData.weight ? `${userData.weight} kg` : 'N/A'}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Height</span>
+                                        <span class="info-value">${userData.height ? `${userData.height} cm` : 'N/A'}</span>
+                                    </div>
                                     <div class="info-row">
                                         <span class="info-label">Pregnancy Status</span>
-                                        <span class="info-value ${userData.is_pregnant === 'Yes' ? 'text-orange' : ''}">${userData.is_pregnant}</span>
+                                        <span class="info-value">${getPregnancyStatus(userData.is_pregnant)}</span>
                                     </div>
-                                    ` : ''}
                                 </div>
                             </div>
 
@@ -6047,45 +6080,6 @@ header {
                                 </div>
                             </div>
 
-                            <!-- Physical Measurements Card -->
-                            <div class="profile-card">
-                                <div class="card-header">
-                                    <h3>Physical Measurements</h3>
-                                </div>
-                                <div class="card-content">
-                                    <div class="measurement-grid">
-                                        <div class="measurement-item">
-                                            <div class="measurement-value">${userData.weight || 'N/A'}</div>
-                                            <div class="measurement-label">Weight (kg)</div>
-                                        </div>
-                                        <div class="measurement-item">
-                                            <div class="measurement-value">${userData.height || 'N/A'}</div>
-                                            <div class="measurement-label">Height (cm)</div>
-                                        </div>
-                                        <div class="measurement-item">
-                                            <div class="measurement-value">${bmiDisplay}</div>
-                                            <div class="measurement-label">BMI</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Screening Information Card -->
-                            <div class="profile-card full-width">
-                                <div class="card-header">
-                                    <h3>Screening Information</h3>
-                                </div>
-                                <div class="card-content">
-                                    <div class="info-row">
-                                        <span class="info-label">Last Screening Date</span>
-                                        <span class="info-value">${formatDate(userData.screening_date)}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Record Created</span>
-                                        <span class="info-value">${formatDate(userData.created_at)}</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
