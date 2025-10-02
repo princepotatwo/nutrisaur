@@ -166,7 +166,7 @@ public class SessionManager {
     /**
      * Check if user exists in community_users database with timeout handling
      */
-    private boolean checkUserExistsInDatabase(String email) {
+    public boolean checkUserExistsInDatabase(String email) {
         try {
             Log.d(TAG, "Checking user existence in database: " + email);
             long startTime = System.currentTimeMillis();

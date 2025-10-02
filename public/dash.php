@@ -1034,53 +1034,13 @@ header {
 
 /* Theme toggle button - OLD STYLES REMOVED */
 
-/* Filter section styles - Desktop */
+/* Filter section styles */
 .filter-section {
     background: var(--color-card);
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 30px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Desktop: Ensure original layout is preserved */
-@media (min-width: 768px) {
-    .filter-container {
-        display: flex !important;
-        gap: 20px !important;
-        align-items: center !important;
-        position: relative !important;
-        overflow: visible !important;
-    }
-    
-    .filter-group {
-        display: flex !important;
-        align-items: center !important;
-        gap: 15px !important;
-        margin-bottom: 15px !important;
-    }
-    
-    .filter-group label {
-        font-weight: 600 !important;
-        color: var(--color-text) !important;
-        min-width: 120px !important;
-        display: block !important;
-    }
-    
-    .custom-select-container .select-header {
-        padding: 8px 12px !important;
-        font-size: 14px !important;
-    }
-    
-    .filter-group select {
-        padding: 8px 12px !important;
-        font-size: 14px !important;
-    }
-    
-    .custom-select-container .dropdown-arrow {
-        margin-left: 8px !important;
-        font-size: 12px !important;
-    }
 }
 
 /* Critical Alerts - Simple and Clean Design */
@@ -3504,20 +3464,6 @@ header .user-info {
     padding: 10px;
     margin-top: -30px; /* Move container up */
 }
-
-/* Chart header section styling */
-.chart-header-section {
-    margin-bottom: 20px;
-}
-
-.chart-header-section h3 {
-    margin-bottom: 8px;
-}
-
-.chart-header-section .chart-description {
-    margin-bottom: 0;
-}
-
 
 #ageClassificationChart {
     width: 100% !important;
@@ -7480,155 +7426,48 @@ body {
         border-radius: 8px !important;
     }
     
-    /* Mobile: Make filters fit in one row with minimal spacing */
     .filter-container {
         display: flex !important;
-        flex-direction: row !important;
-        gap: 1px !important;
-        align-items: center !important;
-        flex-wrap: wrap !important;
-        justify-content: flex-start !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+        align-items: stretch !important;
     }
     
-    /* Mobile: Ensure proper sizing for filter groups */
-    .filter-container > .filter-group {
-        flex: 0 0 auto !important;
-        max-width: 120px !important;
-        min-width: 80px !important;
-        margin-right: 0 !important;
-        margin-left: 0 !important;
+    /* First Row - Labels */
+    .filter-labels-row {
+        display: flex !important;
+        gap: 8px !important;
+        margin-bottom: 4px !important;
     }
     
-    /* Mobile: WHO Standard filter sizing - same as other dropdowns */
-    .filter-container > .filter-group:last-child {
-        flex: 0 0 auto !important;
-        max-width: 120px !important;
-        min-width: 80px !important;
-        margin-right: 0 !important;
-        margin-left: 0 !important;
-    }
-    
-    /* Mobile: Remove any additional spacing between dropdowns */
-    .filter-container .custom-select-container {
-        margin-right: 0 !important;
-        margin-left: 0 !important;
-    }
-    
-    /* Mobile: Ensure filter container doesn't hide WHO dropdown */
-    .filter-container {
-        overflow: visible !important;
-        flex-wrap: wrap !important;
+    .filter-label {
+        flex: 1 !important;
+        font-size: 10px !important;
+        font-weight: 600 !important;
+        color: var(--color-text) !important;
+        text-align: center !important;
+        padding: 2px 0 !important;
     }
     
     .filter-group {
         display: contents !important;
-        margin-bottom: 0 !important;
-    }
-    
-    /* Mobile: Override display:contents for WHO dropdown group */
-    .filter-container > .filter-group:last-child {
-        display: flex !important;
-        align-items: center !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        flex: 0 0 auto !important;
-        max-width: 120px !important;
-        min-width: 80px !important;
-        height: 24px !important;
     }
     
     .filter-group label {
         display: none !important;
     }
     
-    /* Mobile: Compact dropdown styling - reduce width and size */
-    .custom-select-container {
-        flex: 0 1 auto !important;
-        min-width: 0 !important;
-        margin-bottom: 0 !important;
-        max-width: 120px !important;
-        width: auto !important;
-    }
-    
-    /* Mobile: Override desktop styles with higher specificity */
-    .filter-section .custom-select-container .select-header {
-        padding: 3px 5px !important;
-        font-size: 8px !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        gap: 1px !important;
-        justify-content: flex-start !important;
+    /* Second Row - Dropdowns */
+    .filter-dropdowns-row {
         display: flex !important;
-        align-items: center !important;
-        min-height: 24px !important;
-        width: auto !important;
-        max-width: 120px !important;
-        min-width: 80px !important;
+        gap: 8px !important;
+        align-items: stretch !important;
     }
     
-    /* Mobile: Reduce spacing between text and arrow */
-    .filter-section .custom-select-container .select-header span:first-child {
-        flex: 0 1 auto !important;
-        margin-right: 0 !important;
-        max-width: none !important;
-        padding-right: 0 !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-    }
-    
-    .filter-section .custom-select-container .select-header .dropdown-arrow {
-        flex: 0 0 auto !important;
-        margin-left: 2px !important;
-        font-size: 6px !important;
-        width: 6px !important;
-        text-align: center !important;
+    .custom-select-container {
+        width: 100% !important;
         position: relative !important;
     }
-    
-    /* Mobile: WHO Standard select - match custom-select-container styling */
-    .filter-group select {
-        padding: 3px 5px !important;
-        font-size: 8px !important;
-        flex: 0 0 auto !important;
-        min-width: 0 !important;
-        max-width: 120px !important;
-        min-width: 80px !important;
-        width: auto !important;
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        height: 24px !important;
-        border: 2px solid var(--color-border) !important;
-        border-radius: 8px !important;
-        background-color: var(--color-card) !important;
-        color: var(--color-text) !important;
-        cursor: pointer !important;
-    }
-    
-    
-    /* Mobile: Force minimal spacing in all select headers */
-    .filter-section .select-header {
-        justify-content: flex-start !important;
-        padding: 2px 4px !important;
-        min-height: 20px !important;
-    }
-    
-    .filter-section .select-header > span {
-        margin-right: 1px !important;
-    }
-    
-    .filter-section .select-header .dropdown-arrow {
-        margin-left: 1px !important;
-        font-size: 5px !important;
-    }
-    
-    /* Mobile: Reduce dropdown arrow spacing */
-    .custom-select-container .dropdown-arrow {
-        margin-left: 1px !important;
-        font-size: 7px !important;
-    }
-    
     
     .custom-select-container.small-width {
         width: 100% !important;
@@ -8011,7 +7850,7 @@ body {
     .age-classification-chart-container {
         padding: 2px !important;
         margin: 2px 0 !important;
-        height: 300px !important;
+        height: 140px !important;
         width: 100% !important;
     }
     
@@ -8019,73 +7858,6 @@ body {
         font-size: 11px !important;
         margin-bottom: 2px !important;
         line-height: 1.2 !important;
-    }
-    
-    /* Mobile responsive adjustments for charts */
-    .trends-chart-container,
-    .age-classification-chart-container {
-        height: 300px !important;
-        padding: 10px !important;
-    }
-    
-    /* Age chart header section - stack vertically on mobile */
-    .chart-header-section {
-        margin-bottom: 15px !important;
-    }
-    
-    .chart-header-section h3 {
-        margin-bottom: 8px !important;
-        text-align: center !important;
-    }
-    
-    .chart-header-section .chart-description {
-        text-align: center !important;
-        margin-bottom: 15px !important;
-    }
-    
-    
-    /* Mobile: Stack trends chart layout - title/description on top, filters in one row below */
-    .chart-card > div:first-child > div:first-child {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-    }
-    
-    .chart-card > div:first-child > div:first-child > div:first-child {
-        margin-bottom: 10px !important;
-        text-align: center !important;
-    }
-    
-    .chart-card > div:first-child > div:first-child > div:last-child {
-        display: flex !important;
-        flex-direction: row !important;
-        gap: 4px !important;
-        align-items: center !important;
-        justify-content: center !important;
-        flex-wrap: wrap !important;
-        margin-left: 0 !important;
-    }
-    
-    /* Mobile: Compact date filter inputs */
-    .chart-card > div:first-child > div:first-child > div:last-child > div {
-        display: flex !important;
-        gap: 3px !important;
-        align-items: center !important;
-    }
-    
-    .chart-card > div:first-child > div:first-child > div:last-child input {
-        padding: 4px 6px !important;
-        font-size: 10px !important;
-        width: 100px !important;
-    }
-    
-    .chart-card > div:first-child > div:first-child > div:last-child label {
-        font-size: 9px !important;
-    }
-    
-    .chart-card > div:first-child > div:first-child > div:last-child button {
-        padding: 4px 8px !important;
-        font-size: 10px !important;
     }
     
     /* Chart canvas optimization */
@@ -8245,7 +8017,7 @@ body {
     <div class="dashboard">
         <header>
             <div class="dashboard-header">
-                <h1>Centralized Dashboard for Real-Time Data Analytics</h1>
+                <h1>Dashboard</h1>
             </div>
             <div class="user-info">
                 <button id="new-theme-toggle" class="new-theme-toggle-btn" title="Toggle theme">
@@ -8666,7 +8438,7 @@ body {
                             <p class="chart-description" style="margin: 2px 0 0 0; font-size: 12px; line-height: 1.3;">Nutritional trends over time periods.</p>
                         </div>
                         
-                        <!-- Date Picker Controls - Desktop side-by-side layout -->
+                        <!-- Date Picker Controls - Compact layout -->
                         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: 15px;">
                             <div style="display: flex; gap: 5px; align-items: center;">
                                 <label style="font-size: 12px; color: var(--color-text); font-weight: 500;">From:</label>
@@ -8693,18 +8465,21 @@ body {
 
         <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1; width: 100%;">
-                <!-- Header Section - Stacked for mobile -->
-                <div class="chart-header-section">
-                    <h3>Age Classification Chart</h3>
-                    <p class="chart-description">Nutritional classifications by age groups. Age range adjusts based on selected WHO standard.</p>
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                <h3>Age Classification Chart</h3>
+                <p class="chart-description">Nutritional classifications by age groups. Age range adjusts based on selected WHO standard.</p>
+                </div>
+                        
+                    </div>
                 </div>
                 
-                <!-- Chart Section -->
                 <div class="age-classification-chart-container">
                     <canvas id="ageClassificationLineChart"></canvas>
                 </div>
-            </div>
-        </div>
+                    </div>
+                </div>
                 
 
                 
