@@ -2675,16 +2675,16 @@ header {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 6px 8px;
+            padding: 8px 12px;
             border: 2px solid rgba(161, 180, 84, 0.3);
-            border-radius: 4px;
+            border-radius: 6px;
             background: var(--color-bg);
             color: var(--color-text);
             cursor: pointer;
             transition: all 0.3s ease;
             flex: 1;
             min-width: 0;
-            min-height: 45px;
+            min-height: 38px;
             font-family: inherit;
             position: relative;
             overflow: hidden;
@@ -2738,8 +2738,8 @@ header {
             }
             
             .who-standard-btn {
-                padding: 4px 6px;
-                min-height: 40px;
+                padding: 6px 10px;
+                min-height: 35px;
             }
             
             .btn-title {
