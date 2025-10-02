@@ -1408,8 +1408,8 @@ header {
 }
 
 .bmi-underweight {
-    color: #F44336 !important;
-    background: rgba(244, 67, 54, 0.1);
+    color: #FF5252 !important;
+    background: rgba(255, 82, 82, 0.15);
     padding: 1px 4px;
     border-radius: 6px;
     font-weight: 600;
@@ -1456,8 +1456,8 @@ header {
 }
 
 .risk-high-risk {
-    color: #F44336 !important;
-    background: rgba(244, 67, 54, 0.1);
+    color: #FF5252 !important;
+    background: rgba(255, 82, 82, 0.15);
     padding: 2px 6px;
     border-radius: 8px;
     font-weight: 700;
@@ -2035,21 +2035,21 @@ header {
 
         /* Flagged User Row Highlighting */
         .flagged-user-row {
-            background-color: rgba(244, 67, 54, 0.1) !important;
-            border-left: 4px solid #F44336 !important;
+            background-color: rgba(255, 82, 82, 0.15) !important;
+            border-left: 4px solid #FF5252 !important;
         }
 
         .flagged-user-row:hover {
-            background-color: rgba(244, 67, 54, 0.15) !important;
+            background-color: rgba(255, 82, 82, 0.2) !important;
         }
 
         .light-theme .flagged-user-row {
-            background-color: rgba(244, 67, 54, 0.08) !important;
-            border-left: 4px solid #F44336 !important;
+            background-color: rgba(255, 82, 82, 0.12) !important;
+            border-left: 4px solid #FF5252 !important;
         }
 
         .light-theme .flagged-user-row:hover {
-            background-color: rgba(244, 67, 54, 0.12) !important;
+            background-color: rgba(255, 82, 82, 0.18) !important;
         }
 
         /* Assessment Details Modal */
@@ -2302,7 +2302,7 @@ header {
         }
 
         .profile-flag-btn {
-            background: rgba(244, 67, 54, 0.9);
+            background: rgba(255, 82, 82, 0.9);
             color: white;
         }
 
@@ -2311,7 +2311,7 @@ header {
         }
 
         .profile-flag-btn:hover {
-            background: rgba(244, 67, 54, 1);
+            background: rgba(255, 82, 82, 1);
             transform: translateY(-1px);
         }
 
@@ -4527,7 +4527,7 @@ header {
         }
 
         .nutritional-status.severe-acute-malnutrition-sam {
-            color: #F44336;
+            color: #FF5252;
         }
 
         .nutritional-status.moderate-acute-malnutrition-mam {
@@ -4551,7 +4551,7 @@ header {
         }
 
         .nutritional-status.severe-underweight {
-            color: #F44336;
+            color: #FF5252;
         }
 
         .nutritional-status.moderate-underweight {
@@ -4575,11 +4575,11 @@ header {
         }
 
         .nutritional-status.obesity-class-ii {
-            color: #F44336;
+            color: #FF5252;
         }
 
         .nutritional-status.obesity-class-iii-severe {
-            color: #8B4513;
+            color: #FF5252;
         }
 
         .nutritional-status.invalid-data {
@@ -4684,11 +4684,11 @@ header {
         }
 
         .risk-level.very-high {
-            color: #8B4513;
+            color: #FF5252;
         }
 
         .risk-level.high {
-            color: #F44336;
+            color: #FF5252;
         }
 
         .risk-level.medium {
@@ -4720,7 +4720,7 @@ header {
         }
 
         .category.overnutrition {
-            color: #F44336;
+            color: #FF5252;
         }
 
         .category.normal {
@@ -5135,7 +5135,7 @@ header {
                                             
                                             // Add flagged class if user is flagged
                                             $flaggedClass = (!empty($user['is_flagged']) && $user['is_flagged'] == 1) ? ' flagged-user-row' : '';
-                                            echo '<tr class="' . $flaggedClass . '" data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
+                                            echo '<tr class="' . $flaggedClass . '" data-email="' . htmlspecialchars($user['email']) . '" data-standard="' . $standardName . '" data-age-months="' . $ageInMonths . '" data-height="' . $user['height'] . '" data-municipality="' . htmlspecialchars($user['municipality'] ?? '') . '" data-barangay="' . htmlspecialchars($user['barangay'] ?? '') . '" data-sex="' . htmlspecialchars($user['sex'] ?? '') . '">';
                                             $fullName = htmlspecialchars($user['name'] ?? 'N/A');
                                             echo '<td class="text-center" title="' . $fullName . '" data-full-name="' . $fullName . '">' . $fullName . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['email'] ?? 'N/A') . '</td>';
@@ -6859,7 +6859,7 @@ header {
             const isFlagged = userData.is_flagged == 1;
             flagBtn.innerHTML = isFlagged ? 'Unflag' : 'Flag';
             flagBtn.style.cssText = `
-                background: ${isFlagged ? '#4CAF50' : '#F44336'};
+                background: ${isFlagged ? '#4CAF50' : '#FF5252'};
                 color: white;
                 border: none;
                 padding: 8px 16px;
@@ -6928,7 +6928,7 @@ header {
                         <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Height:</strong> ${assessment.height} cm</p>
                         <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Weight:</strong> ${assessment.weight} kg</p>
                         <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>BMI:</strong> ${assessment.bmi}</p>
-                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Risk Level:</strong> <span style="color: ${assessment.risk_level === 'Low Risk' ? '#4CAF50' : assessment.risk_level === 'Medium Risk' ? '#FF9800' : '#F44336'}">${assessment.risk_level}</span></p>
+                        <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>Risk Level:</strong> <span style="color: ${assessment.risk_level === 'Low Risk' ? '#4CAF50' : assessment.risk_level === 'Medium Risk' ? '#FF9800' : '#FF5252'}">${assessment.risk_level}</span></p>
                     </div>
                 </div>
                 
@@ -7351,20 +7351,10 @@ header {
             
             if (!userEmail || userEmail === 'undefined' || userEmail === 'null') {
                 console.error('❌ Invalid userEmail:', userEmail);
-                alert('Error: Invalid user email');
                 return;
             }
 
-            const action = currentFlagStatus ? 'unflag' : 'flag';
-            const confirmMessage = currentFlagStatus ? 
-                `Are you sure you want to unflag ${userName}?` : 
-                `Are you sure you want to flag ${userName} for attention?`;
-            
-            if (!confirm(confirmMessage)) {
-                return;
-            }
-            
-            console.log('🚩 Toggling flag for:', userEmail, 'Action:', action);
+            console.log('🚩 Toggling flag for:', userEmail);
             
             // Save flag status via API
             fetch('api/DatabaseAPI.php?action=toggle_user_flag', {
@@ -7381,20 +7371,31 @@ header {
                 console.log('🚩 Flag toggle response:', data);
                 
                 if (data.success) {
-                    const message = data.is_flagged ? 
-                        `${userName} has been flagged for attention!` : 
-                        `${userName} has been unflagged.`;
-                    alert(message);
+                    // Update the button text and style immediately
+                    const flagBtn = event.target;
+                    const newFlagStatus = data.is_flagged == 1;
                     
-                    // Refresh the page to show updated flag status
-                    location.reload();
+                    flagBtn.innerHTML = newFlagStatus ? 'Unflag' : 'Flag';
+                    flagBtn.title = newFlagStatus ? 'Unflag User' : 'Flag User';
+                    flagBtn.style.background = newFlagStatus ? '#4CAF50' : '#FF5252';
+                    
+                    // Update the table row highlighting
+                    const tableRow = document.querySelector(`tr[data-email="${userEmail}"]`);
+                    if (tableRow) {
+                        if (newFlagStatus) {
+                            tableRow.classList.add('flagged-user-row');
+                        } else {
+                            tableRow.classList.remove('flagged-user-row');
+                        }
+                    }
+                    
+                    console.log('✅ Flag status updated successfully');
                 } else {
-                    alert('Error updating flag: ' + (data.message || 'Unknown error'));
+                    console.error('❌ Error updating flag:', data.message);
                 }
             })
             .catch(error => {
                 console.error('❌ Error toggling flag:', error);
-                alert('Error updating flag. Please try again.');
             });
         }
 
