@@ -1999,7 +1999,7 @@ header {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             white-space: nowrap;
             background-color: #FFC107 !important;
-            color: #1B1B1B !important;
+            color: white !important;
             vertical-align: middle;
             margin: 0 0 0 6px;
             line-height: 1;
@@ -2024,7 +2024,7 @@ header {
         /* Light theme note buttons */
         .light-theme .action-buttons .btn-note {
             background-color: rgba(255, 193, 7, 0.15);
-            color: #FF8F00;
+            color: white;
             border: 2px solid rgba(255, 193, 7, 0.4);
         }
 
@@ -2250,18 +2250,19 @@ header {
 
         .profile-close-btn {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 10px;
+            right: 10px;
             background: #ff4444;
             border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            border-radius: 6px;
+            padding: 8px 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             color: white;
+            font-size: 12px;
+            font-weight: 600;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
             z-index: 1000;
@@ -2304,12 +2305,12 @@ header {
         }
 
         .profile-add-note-btn {
-            background: rgba(76, 175, 80, 0.9);
-            color: white;
+            background: rgba(255, 193, 7, 0.9);
+            color: #1B1B1B;
         }
 
         .profile-add-note-btn:hover {
-            background: rgba(76, 175, 80, 1);
+            background: rgba(255, 193, 7, 1);
             transform: translateY(-1px);
         }
 
@@ -6030,10 +6031,7 @@ header {
                                 ${userData.is_flagged == 1 ? 'Unflag' : 'Flag'}
                             </button>
                             <button class="profile-close-btn" onclick="closeUserModal(this)">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
+                                X
                             </button>
                         </div>
                     </div>
