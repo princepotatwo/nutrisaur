@@ -5763,6 +5763,10 @@ header {
         }
 
         function showUserDetailsModal(userData) {
+            // Remove any existing modals first to prevent duplicates
+            const existingModals = document.querySelectorAll('.user-profile-modal');
+            existingModals.forEach(modal => modal.remove());
+            
             // Calculate age from birthday if available
             let ageDisplay = 'N/A';
             if (userData.birthday) {
@@ -5809,7 +5813,7 @@ header {
                                 ${userData.is_pregnant === 'Yes' ? '<span class="badge badge-orange">Pregnant</span>' : ''}
                             </div>
                         </div>
-                        <button class="profile-close-btn" onclick="this.closest('.modal').remove()">
+                        <button class="profile-close-btn" onclick="closeUserModal(this)">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -5822,7 +5826,6 @@ header {
                             <!-- Personal Information Card -->
                             <div class="profile-card">
                                 <div class="card-header">
-                                    <div class="card-icon">👤</div>
                                     <h3>Personal Information</h3>
                                 </div>
                                 <div class="card-content">
@@ -5858,7 +5861,6 @@ header {
                             <!-- Location Information Card -->
                             <div class="profile-card">
                                 <div class="card-header">
-                                    <div class="card-icon">📍</div>
                                     <h3>Location Details</h3>
                                 </div>
                                 <div class="card-content">
@@ -5876,7 +5878,6 @@ header {
                             <!-- Physical Measurements Card -->
                             <div class="profile-card">
                                 <div class="card-header">
-                                    <div class="card-icon">📏</div>
                                     <h3>Physical Measurements</h3>
                                 </div>
                                 <div class="card-content">
@@ -5900,7 +5901,6 @@ header {
                             <!-- Screening Information Card -->
                             <div class="profile-card full-width">
                                 <div class="card-header">
-                                    <div class="card-icon">🏥</div>
                                     <h3>Screening Information</h3>
                                 </div>
                                 <div class="card-content">
@@ -5930,20 +5930,28 @@ header {
             // Close modal when clicking outside
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
-                    modal.classList.add('modal-hide');
-                    setTimeout(() => modal.remove(), 300);
+                    closeUserModal(modal.querySelector('.profile-close-btn'));
                 }
             });
 
             // Close with Escape key
             const handleEscape = (e) => {
                 if (e.key === 'Escape') {
-                    modal.classList.add('modal-hide');
-                    setTimeout(() => modal.remove(), 300);
+                    closeUserModal(modal.querySelector('.profile-close-btn'));
                     document.removeEventListener('keydown', handleEscape);
                 }
             };
             document.addEventListener('keydown', handleEscape);
+        }
+
+        function closeUserModal(button) {
+            const modal = button.closest('.modal');
+            if (modal) {
+                modal.classList.add('modal-hide');
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
+            }
         }
 
         // BMI calculations are now handled by WHO Growth Standards PHP backend
